@@ -18,7 +18,6 @@ package com.ocpsoft.rewrite.spi;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.MutableRewriteEvent;
 import com.ocpsoft.rewrite.Restricted;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
@@ -26,9 +25,9 @@ import com.ocpsoft.rewrite.pattern.Weighted;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse> extends Weighted, Restricted
+public interface RequestCycleWrapper extends Weighted, Restricted
 {
-   void rewriteInbound(MutableRewriteEvent<IN, OUT> event);
+   ServletRequest wrapRequest(ServletRequest request, ServletResponse response);
 
-   void rewriteOutbound(MutableRewriteEvent<IN, OUT> event);
+   ServletResponse wrapResponse(ServletRequest request, ServletResponse response);
 }

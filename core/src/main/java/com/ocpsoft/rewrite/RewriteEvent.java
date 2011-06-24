@@ -15,60 +15,28 @@
  */
 package com.ocpsoft.rewrite;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletResponse;
-import javax.servlet.ServletResponseWrapper;
+
+import com.ocpsoft.rewrite.BaseRewriteEvent.Flow;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface RewriteEvent
+public interface RewriteEvent<IN extends ServletRequest, OUT extends ServletResponse>
 {
-   /**
-    * Marks the current {@link RewriteEvent} as handled, terminates further handling, and ends the current
-    * {@link ServletRequest}.
-    */
-   public void abort();
-
-   /**
-    * Marks the {@link RewriteEvent} as handled and proceeds with the rest of the handlers.
-    */
-   public void proceed();
-
-   /**
-    * Marks the {@link RewriteEvent} as handled and terminates further handling.
-    */
-   public void handled();
-
-   /**
-    * Marks the {@link RewriteEvent} as handled, terminates further handling, and instructs the container to forward the
-    * current {@link ServletRequest} and {@link ServletResponse} to the specified resource address. This forward must be
-    * implemented using {@link RequestDispatcher#forward(ServletRequest, javax.servlet.ServletResponse)}
-    */
-   public void forward(String resource);
-
    /**
     * Get the current {@link ServletRequest}.
     */
-   public ServletRequest getRequest();
+   public IN getRequest();
 
    /**
     * Get the current {@link ServletResponse}.
     */
-   public ServletResponse getResponse();
+   public OUT getResponse();
 
    /**
-    * Set a new {@link ServletRequest} to be used for the remaining duration of the current {@link ServletRequest}. This
-    * method is usually used to add {@link ServletRequestWrapper} implementations.
+    * Get the current {@link Flow} state.
     */
-   public void setRequest(ServletRequest request);
-
-   /**
-    * Set a new {@link ServletResponse} to be used for the remaining duration of the current {@link ServletRequest}.
-    * This method is usually used to add {@link ServletResponseWrapper} implementations.
-    */
-   public void setResponse(ServletResponse response);
+   public Flow getFlow();
 }

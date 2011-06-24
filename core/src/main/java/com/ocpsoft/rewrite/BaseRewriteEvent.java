@@ -17,22 +17,25 @@ package com.ocpsoft.rewrite;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class BaseRewriteEvent implements RewriteEvent
+public abstract class BaseRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> implements
+         MutableRewriteEvent<IN, OUT>
 {
    protected enum Flow
    {
          UN_HANDLED(null),
          HANDLED(null),
-            PROCEED(HANDLED),
-            ABORTED(HANDLED),
-            FORWARD(HANDLED);
+            CONTINUE(HANDLED),
+               PROCEED(CONTINUE),
+            HALT(HANDLED),
+               ABORT(HALT),
+                  INCLUDE(ABORT),
+                  FORWARD(ABORT),
+               CHAIN(HALT);
 
       private Flow parent;
 
@@ -80,19 +83,19 @@ public abstract class BaseRewriteEvent implements RewriteEvent
       }
    }
 
-   private ServletRequest request;
-   private ServletResponse response;
-   private Flow flow;
-   private String forwardResource;
+   private IN request;
+   private OUT response;
+   protected Flow flow;
+   private String dispatchResource;
 
-   public BaseRewriteEvent(final ServletRequest request, final ServletResponse response)
+   public BaseRewriteEvent(final IN request, final OUT response)
    {
       flow = Flow.UN_HANDLED;
       this.request = request;
       this.response = response;
    }
 
-   protected Flow getFlow()
+   public Flow getFlow()
    {
       return flow;
    }
@@ -104,7 +107,7 @@ public abstract class BaseRewriteEvent implements RewriteEvent
    @Override
    public void abort()
    {
-      this.flow = Flow.ABORTED;
+      this.flow = Flow.ABORT;
    }
 
    @Override
@@ -120,46 +123,48 @@ public abstract class BaseRewriteEvent implements RewriteEvent
    }
 
    @Override
+   public void include(final String resource)
+   {
+      this.dispatchResource = resource;
+      this.flow = Flow.INCLUDE;
+   }
+
+   @Override
    public void forward(final String resource)
    {
-      this.forwardResource = resource;
+      this.dispatchResource = resource;
       this.flow = Flow.FORWARD;
-   }
-
-   protected void setResponse(final HttpServletResponse response)
-   {
-      this.response = response;
-   }
-
-   public void setRequest(final HttpServletRequest request)
-   {
-      this.request = request;
    }
 
    /*
     * Getters
     */
 
+   protected String getDispatchResource()
+   {
+      return dispatchResource;
+   }
+
    @Override
-   public ServletRequest getRequest()
+   public IN getRequest()
    {
       return request;
    }
 
    @Override
-   public ServletResponse getResponse()
+   public OUT getResponse()
    {
       return response;
    }
 
    @Override
-   public void setRequest(final ServletRequest request)
+   public void setRequest(final IN request)
    {
       this.request = request;
    }
 
    @Override
-   public void setResponse(final ServletResponse response)
+   public void setResponse(final OUT response)
    {
       this.response = response;
    }

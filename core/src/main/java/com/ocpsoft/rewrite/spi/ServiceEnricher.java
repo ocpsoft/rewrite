@@ -15,20 +15,23 @@
  */
 package com.ocpsoft.rewrite.spi;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.ocpsoft.rewrite.MutableRewriteEvent;
-import com.ocpsoft.rewrite.Restricted;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.services.ServiceLoader;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Provides enriching for services loaded with {@link ServiceLoader}
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse> extends Weighted, Restricted
+public interface ServiceEnricher
 {
-   void rewriteInbound(MutableRewriteEvent<IN, OUT> event);
+   /**
+    * Produce an enriched service of the given type. If no enriching took place, this method must return null.
+    */
+   <T> T produce(Class<T> type);
 
-   void rewriteOutbound(MutableRewriteEvent<IN, OUT> event);
+   /**
+    * Enrich an instantiated instance of the given service type. If no enriching took place, this method must return the
+    * original service without modification.
+    */
+   <T> T enrich(T service);
 }

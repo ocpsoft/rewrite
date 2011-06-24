@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
+package com.ocpsoft.rewrite.spi.util;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.MutableRewriteEvent;
-import com.ocpsoft.rewrite.Restricted;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.spi.RewriteListener;
 
 /**
+ * A {@link RewriteListener} that only listens on {@link HttpServletRequest} and {@link HttpServletResponse} request
+ * cycle types.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse> extends Weighted, Restricted
+public abstract class HttpRewriteListener implements RewriteListener<HttpServletRequest, HttpServletResponse>
 {
-   void rewriteInbound(MutableRewriteEvent<IN, OUT> event);
-
-   void rewriteOutbound(MutableRewriteEvent<IN, OUT> event);
+   @Override
+   public boolean handles(final ServletRequest request, final ServletResponse response)
+   {
+      return (request instanceof HttpServletRequest) && (response instanceof HttpServletResponse);
+   }
 }

@@ -16,7 +16,6 @@
 package com.ocpsoft.rewrite;
 
 import java.io.IOException;
-import java.util.ServiceLoader;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -26,7 +25,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import com.ocpsoft.rewrite.BaseRewriteEvent.Flow;
+import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
+import com.ocpsoft.rewrite.spi.RequestCycleWrapper;
+import com.ocpsoft.rewrite.spi.RewriteListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
@@ -34,6 +36,8 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
  */
 public class CoreFilter implements Filter
 {
+
+   // @URLAction(CONFERENCE, methods=)
    @Override
    public void init(final FilterConfig filterConfig) throws ServletException
    {
@@ -41,29 +45,80 @@ public class CoreFilter implements Filter
    }
 
    @Override
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
             throws IOException, ServletException
    {
-      BaseRewriteEvent event = new InboundRewriteEventImpl(request, new RewriteWrappedResponse(request, response));
-
-      // TODO SPI wrap filter?
-      ServiceLoader<RewriteProvider> loader = ServiceLoader.load(RewriteProvider.class);
-      for (RewriteProvider provider : loader)
+      ServiceLoader<RewriteListener> listenerLoader = ServiceLoader.load(RewriteListener.class);
+      for (RewriteListener listener : listenerLoader)
       {
-         provider.rewriteInbound(event);
-         if (event.getFlow().is(Flow.ABORTED))
+         listener.onPreWrapRequestCycle(request, response);
+      }
+
+      BaseRewriteEvent<ServletRequest, ServletResponse> event = new InboundRewriteEventImpl<ServletRequest, ServletResponse>(
+               request, new RewriteWrappedResponse(request, response));
+
+      ServiceLoader<RequestCycleWrapper> wrapperLoader = ServiceLoader.load(RequestCycleWrapper.class);
+
+      for (RequestCycleWrapper wrapper : wrapperLoader)
+      {
+         event.setRequest(wrapper.wrapRequest(request, response));
+         event.setResponse(wrapper.wrapResponse(request, response));
+      }
+
+      for (RewriteListener listener : listenerLoader)
+      {
+         listener.onPreRewrite(event);
+      }
+
+      ServiceLoader<RewriteProvider> providerLoader = ServiceLoader.load(RewriteProvider.class);
+      for (RewriteProvider provider : providerLoader)
+      {
+         if (provider.handles(event.getRequest(), event.getResponse()))
          {
-            break;
+            provider.rewriteInbound(event);
+
+            if (event.getFlow().is(Flow.HALT))
+            {
+               break;
+            }
          }
       }
-      // TODO SPI publish rewrite outcome
 
-      chain.doFilter(event.getRequest(), event.getResponse());
+      if (event.getFlow().is(Flow.ABORT))
+      {
+         if (event.getFlow().is(Flow.INCLUDE))
+         {
+            event.getRequest().getRequestDispatcher(event.getDispatchResource())
+                     .include(event.getRequest(), event.getResponse());
+         }
+         else if (event.getFlow().is(Flow.FORWARD))
+         {
+            event.getRequest().getRequestDispatcher(event.getDispatchResource())
+                     .forward(event.getRequest(), event.getResponse());
+         }
+      }
+
+      for (RewriteListener listener : listenerLoader)
+      {
+         listener.onPostRewrite(event);
+      }
+
+      if (!event.getFlow().is(Flow.ABORT))
+      {
+         chain.doFilter(event.getRequest(), event.getResponse());
+
+         for (RewriteListener listener : listenerLoader)
+         {
+            listener.onPostChain(event);
+         }
+      }
+
    }
 
    @Override
    public void destroy()
    {
-      // TODO EXTENSION filter destroy
+      // TODO SPI filter destroy
    }
 }

@@ -13,22 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.ocpsoft.rewrite.MutableRewriteEvent;
-import com.ocpsoft.rewrite.Restricted;
-import com.ocpsoft.rewrite.pattern.Weighted;
+package com.ocpsoft.rewrite.exception;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse> extends Weighted, Restricted
+public class CoreException extends RuntimeException
 {
-   void rewriteInbound(MutableRewriteEvent<IN, OUT> event);
+   private static final long serialVersionUID = -6610549860707315081L;
 
-   void rewriteOutbound(MutableRewriteEvent<IN, OUT> event);
+   public CoreException()
+   {
+      super();
+   }
+
+   public CoreException(final String message, final Throwable e)
+   {
+      super(message, e);
+   }
+
+   public CoreException(final String message)
+   {
+      super(message);
+   }
+
+   public CoreException(final Throwable e)
+   {
+      super(e);
+   }
+
 }

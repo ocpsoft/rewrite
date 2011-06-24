@@ -29,6 +29,7 @@
 
    <modules>
       <module>core</module>
+      <module>integration-cdi</module>
    </modules>
 
    <repositories>

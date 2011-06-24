@@ -18,17 +18,21 @@ package com.ocpsoft.rewrite.spi;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.MutableRewriteEvent;
 import com.ocpsoft.rewrite.Restricted;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.RewriteEvent;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Listens to rewrite life-cycle events.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse> extends Weighted, Restricted
+public interface RewriteListener<IN extends ServletRequest, OUT extends ServletResponse> extends Restricted
 {
-   void rewriteInbound(MutableRewriteEvent<IN, OUT> event);
+   void onPreWrapRequestCycle(IN request, OUT response);
 
-   void rewriteOutbound(MutableRewriteEvent<IN, OUT> event);
+   void onPreRewrite(RewriteEvent<IN, OUT> event);
+
+   void onPostRewrite(RewriteEvent<IN, OUT> event);
+
+   void onPostChain(RewriteEvent<IN, OUT> event);
 }

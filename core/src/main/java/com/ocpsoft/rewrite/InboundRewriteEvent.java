@@ -15,11 +15,14 @@
  */
 package com.ocpsoft.rewrite;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface InboundRewriteEvent extends RewriteEvent
+public interface InboundRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> extends
+         MutableRewriteEvent<IN, OUT>
 {
    void chain(String resource);
 }

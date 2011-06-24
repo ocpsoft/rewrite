@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.spi.util;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * A {@link RewriteProvider} that only operates on {@link HttpServletRequest} and {@link HttpServletResponse} request
+ * cycle types.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class InboundRewriteEventImpl<IN extends ServletRequest, OUT extends ServletResponse> extends BaseRewriteEvent<IN, OUT>
-         implements InboundRewriteEvent<IN, OUT>
+public abstract class HttpRewriteProvider implements RewriteProvider<HttpServletRequest, HttpServletResponse>
 {
-
-   public InboundRewriteEventImpl(final IN request, final OUT response)
-   {
-      super(request, response);
-   }
-
    @Override
-   public void chain(final String resource)
+   public boolean handles(final ServletRequest request, final ServletResponse response)
    {
-      flow = Flow.CHAIN;
+      return (request instanceof HttpServletRequest) && (response instanceof HttpServletResponse);
    }
 }

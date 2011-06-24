@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.ocpsoft.rewrite.MutableRewriteEvent;
-import com.ocpsoft.rewrite.Restricted;
-import com.ocpsoft.rewrite.pattern.Weighted;
+package com.ocpsoft.rewrite.pattern;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Defines a class as having a weight for ordering.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse> extends Weighted, Restricted
+public interface Weighted
 {
-   void rewriteInbound(MutableRewriteEvent<IN, OUT> event);
-
-   void rewriteOutbound(MutableRewriteEvent<IN, OUT> event);
+   int priority();
 }
