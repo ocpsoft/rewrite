@@ -13,7 +13,7 @@
    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
    <groupId>com.ocpsoft.rewrite</groupId>
-   <artifactId>rewrite</artifactId>
+   <artifactId>rewrite-parent</artifactId>
    <version>1.0.0-SNAPSHOT</version>
    <packaging>pom</packaging>
 
@@ -29,7 +29,9 @@
 
    <modules>
       <module>core</module>
+      <module>servlet</module>
       <module>integration-cdi</module>
+      <module>prototype</module>
    </modules>
 
    <repositories>
@@ -42,9 +44,39 @@
          <url>http://repository.jboss.org/nexus/content/groups/public</url>
       </repository>
    </repositories>
+   
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-core</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-servlet</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-integration-cdi</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
 
    <build>
-      <finalName>rewrite</finalName>
+      <finalName>rewrite-parent</finalName>
+      <plugins>
+         <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+            </configuration>
+         </plugin>
+      </plugins>
    </build>
 
    <developers>

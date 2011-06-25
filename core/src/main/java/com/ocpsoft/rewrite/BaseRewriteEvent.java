@@ -31,11 +31,11 @@ public abstract class BaseRewriteEvent<IN extends ServletRequest, OUT extends Se
          HANDLED(null),
             CONTINUE(HANDLED),
                PROCEED(CONTINUE),
-            HALT(HANDLED),
-               ABORT(HALT),
-                  INCLUDE(ABORT),
-                  FORWARD(ABORT),
-               CHAIN(HALT);
+            HALT_HANDLING(HANDLED),
+               INCLUDE(HALT_HANDLING),
+               ABORT_REQUEST(HALT_HANDLING),
+                  FORWARD(ABORT_REQUEST),
+               CHAIN(HALT_HANDLING);
 
       private Flow parent;
 
@@ -107,7 +107,7 @@ public abstract class BaseRewriteEvent<IN extends ServletRequest, OUT extends Se
    @Override
    public void abort()
    {
-      this.flow = Flow.ABORT;
+      this.flow = Flow.ABORT_REQUEST;
    }
 
    @Override

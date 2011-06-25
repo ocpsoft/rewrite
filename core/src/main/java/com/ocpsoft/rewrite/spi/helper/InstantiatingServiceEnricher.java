@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi.util;
+package com.ocpsoft.rewrite.spi.helper;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ocpsoft.rewrite.spi.RewriteListener;
+import com.ocpsoft.rewrite.spi.ServiceEnricher;
 
 /**
- * A {@link RewriteListener} that only listens on {@link HttpServletRequest} and {@link HttpServletResponse} request
- * cycle types.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class HttpRewriteListener implements RewriteListener<HttpServletRequest, HttpServletResponse>
+public abstract class InstantiatingServiceEnricher implements ServiceEnricher
 {
    @Override
-   public boolean handles(final ServletRequest request, final ServletResponse response)
+   public final <T> T enrich(final T service)
    {
-      return (request instanceof HttpServletRequest) && (response instanceof HttpServletResponse);
+      return service;
    }
+
 }

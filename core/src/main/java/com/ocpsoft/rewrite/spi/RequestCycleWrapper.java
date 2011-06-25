@@ -18,16 +18,17 @@ package com.ocpsoft.rewrite.spi;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.Restricted;
+import com.ocpsoft.rewrite.Specialized;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RequestCycleWrapper extends Weighted, Restricted
+public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends ServletResponse>
+         extends Weighted, Specialized
 {
-   ServletRequest wrapRequest(ServletRequest request, ServletResponse response);
+   IN wrapRequest(IN request, OUT response);
 
-   ServletResponse wrapResponse(ServletRequest request, ServletResponse response);
+   OUT wrapResponse(IN request, OUT response);
 }

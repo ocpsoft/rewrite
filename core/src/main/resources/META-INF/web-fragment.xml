@@ -15,12 +15,15 @@
 	
 	<listener>
 		<listener-class>com.ocpsoft.rewrite.config.RequestConfigListener</listener-class>
-        <listener-class>com.ocpsoft.rewrite.config.ContextConfigListener</listener-class>
 	</listener>
+   
+   <listener>
+      <listener-class>com.ocpsoft.rewrite.config.ContextConfigListener</listener-class>
+   </listener>
 
 	<filter>
 		<filter-name>OCPSoft Rewrite Filter</filter-name>
-		<filter-class>com.ocpsoft.rewrite.CoreFilter</filter-class>
+		<filter-class>com.ocpsoft.rewrite.RewriteFilter</filter-class>
 		<async-supported>true</async-supported>
 	</filter>
 	<filter-mapping>

@@ -241,11 +241,12 @@ public class ServiceLoader<S> implements Iterable<S>
       }
       catch (ClassNotFoundException e)
       {
-         log.warn("Could not load service class " + serviceClassName);
+         log.warn("ClassNotFoundException: Service class [" + serviceClassName + "] could not be loaded.");
       }
       catch (ClassCastException e)
       {
-         throw new RuntimeException("Service class " + serviceClassName + " didn't implement the Extension interface");
+         throw new RuntimeException("ClassCastException: Service class [" + serviceClassName
+                  + "] did not implement the interface [" + expectedType.getName() + "]");
       }
       return serviceClass;
    }

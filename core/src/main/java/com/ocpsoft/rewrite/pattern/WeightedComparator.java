@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Lincoln Baxter, III
+ * Copyright 2011 Lincoln Baxter, III
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.ocpsoft.rewrite.pattern;
 
-package com.ocpsoft.rewrite.servlet;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletResponseWrapper;
+import java.util.Comparator;
 
 /**
- * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class RewriteWrappedResponse extends ServletResponseWrapper
+public class WeightedComparator implements Comparator<Weighted>
 {
-   private final ServletRequest request;
-
-   public RewriteWrappedResponse(final ServletRequest request,
-            final ServletResponse response)
+   @Override
+   public int compare(final Weighted left, final Weighted right)
    {
-      super(response);
-      this.request = request;
+      if ((left == null) || (right == null))
+      {
+         return 0;
+      }
+      return ((Integer) left.priority()).compareTo(right.priority());
    }
 
-   public ServletRequest getRequest()
-   {
-      return request;
-   }
 }

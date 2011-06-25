@@ -13,22 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
+package com.ocpsoft.rewrite.util;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.ocpsoft.rewrite.MutableRewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse> extends Weighted, Specialized
+public class Iterators
 {
-   void rewriteInbound(MutableRewriteEvent<IN, OUT> event);
+   public static <T> List<T> asList(final Iterable<T> iterable)
+   {
+      List<T> result = new ArrayList<T>();
+      for (T t : iterable)
+      {
+         result.add(t);
+      }
+      return result;
+   }
 
-   void rewriteOutbound(MutableRewriteEvent<IN, OUT> event);
+   public static <T> List<T> asList(final Iterator<T> iterator)
+   {
+      List<T> result = new ArrayList<T>();
+      while (iterator.hasNext())
+      {
+         T t = iterator.next();
+         result.add(t);
+      }
+      return result;
+   }
 }
