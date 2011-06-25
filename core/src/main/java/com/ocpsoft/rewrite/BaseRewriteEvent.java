@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Lincoln Baxter, III
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,15 @@ public abstract class BaseRewriteEvent<IN extends ServletRequest, OUT extends Se
 {
    protected enum Flow
    {
-         UN_HANDLED(null),
-         HANDLED(null),
-            CONTINUE(HANDLED),
-               PROCEED(CONTINUE),
-            HALT_HANDLING(HANDLED),
-               INCLUDE(HALT_HANDLING),
-               ABORT_REQUEST(HALT_HANDLING),
-                  FORWARD(ABORT_REQUEST),
-               CHAIN(HALT_HANDLING);
+      UN_HANDLED(null),
+      HANDLED(null),
+      CONTINUE(HANDLED),
+      PROCEED(CONTINUE),
+      HALT_HANDLING(HANDLED),
+      INCLUDE(HALT_HANDLING),
+      ABORT_REQUEST(HALT_HANDLING),
+      FORWARD(ABORT_REQUEST),
+      CHAIN(HALT_HANDLING);
 
       private Flow parent;
 
