@@ -19,8 +19,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.Specialized;
 import com.ocpsoft.rewrite.RewriteEvent;
+import com.ocpsoft.rewrite.Specialized;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
@@ -28,28 +28,30 @@ import com.ocpsoft.rewrite.pattern.Weighted;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteListener<IN extends ServletRequest, OUT extends ServletResponse> extends Specialized, Weighted
+public interface RewriteLifecycleListener<T extends RewriteEvent<? extends ServletRequest, ? extends ServletResponse>>
+         extends Specialized<RewriteEvent<?, ?>>,
+         Weighted
 {
    /**
     * Invoked before {@link RequestCycleWrapper} services are processed.
     */
-   void requestReceived(IN request, OUT response);
+   void beforeRewriteLifecycle(T event);
 
    /**
     * Invoked after {@link RequestCycleWrapper} services are processed, but before {@link RewriteProvider} services are
     * processed.
     */
-   void rewriteStarted(RewriteEvent<IN, OUT> event);
+   void beforeRewrite(T event);
 
    /**
     * Invoked after {@link RewriteProvider} services are processed, but before control of the request cycle is passed to
-    * the application via {@link FilterChain#doFilter(ServletRequest, ServletResponse)}
+    * the application via {@link FilterChain#doFilter(IN, OUT)}
     */
-   void rewriteCompleted(RewriteEvent<IN, OUT> event);
+   void afterRewrite(T event);
 
    /**
     * Invoked after application has returned control of the request to the rewrite engine, but before the rewrite engine
     * passes control of the application to other filters in the application chain.
     */
-   void requestProcessed(RewriteEvent<IN, OUT> event);
+   void afterRewriteLifecycle(T event);
 }

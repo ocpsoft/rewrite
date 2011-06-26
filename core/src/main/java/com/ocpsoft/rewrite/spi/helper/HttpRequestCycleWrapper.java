@@ -15,11 +15,11 @@
  */
 package com.ocpsoft.rewrite.spi.helper;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ocpsoft.rewrite.RewriteEvent;
+import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
 import com.ocpsoft.rewrite.spi.RequestCycleWrapper;
 
 /**
@@ -29,8 +29,8 @@ import com.ocpsoft.rewrite.spi.RequestCycleWrapper;
 public abstract class HttpRequestCycleWrapper implements RequestCycleWrapper<HttpServletRequest, HttpServletResponse>
 {
    @Override
-   public boolean handles(final ServletRequest request, final ServletResponse response)
+   public boolean handles(final RewriteEvent<?, ?> event)
    {
-      return (request instanceof HttpServletRequest) && (response instanceof HttpServletResponse);
+      return event instanceof HttpRewriteEvent;
    }
 }

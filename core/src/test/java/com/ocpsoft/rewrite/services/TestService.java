@@ -13,23 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+package com.ocpsoft.rewrite.services;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
-public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends ServletResponse>
-         extends Weighted, Specialized<RewriteEvent<?, ?>>
+public interface TestService
 {
-   IN wrapRequest(IN request, OUT response);
 
-   OUT wrapResponse(IN request, OUT response);
 }

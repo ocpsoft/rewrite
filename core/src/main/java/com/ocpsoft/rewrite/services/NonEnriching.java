@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+package com.ocpsoft.rewrite.services;
 
 /**
+ * Marker interface declaring that a particular service implementation will not be enriched when loaded via
+ * {@link ServiceLoader}
+ * <p>
+ * TODO consider replacing this with @EnrichedWith(NONE), @EnrichedWith(type=MyType.class), @EnrichedWith(ALL)
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends ServletResponse>
-         extends Weighted, Specialized<RewriteEvent<?, ?>>
+public interface NonEnriching
 {
-   IN wrapRequest(IN request, OUT response);
 
-   OUT wrapResponse(IN request, OUT response);
 }

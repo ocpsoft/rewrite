@@ -18,18 +18,18 @@ package com.ocpsoft.rewrite.spi;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
+import com.ocpsoft.rewrite.MutableRewriteEvent;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
+ * Responsible for creating the initial {@link MutableRewriteEvent} for an inbound request.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends ServletResponse>
-         extends Weighted, Specialized<RewriteEvent<?, ?>>
+public interface RewriteEventProducer extends Weighted
 {
-   IN wrapRequest(IN request, OUT response);
-
-   OUT wrapResponse(IN request, OUT response);
+   public MutableRewriteEvent<?, ?> createRewriteEvent(
+            ServletRequest request,
+            ServletResponse response);
 }

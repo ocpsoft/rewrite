@@ -15,18 +15,13 @@
  */
 package com.ocpsoft.rewrite;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface Specialized
+public interface Specialized<T>
 {
    /**
-    * Returns true if this object is appropriate for the given {@link ServletRequest} and {@link ServletResponse}
-    * objects.
+    * Returns true if this object is appropriate for the given payload.
     */
-   boolean handles(ServletRequest request, ServletResponse response);
+   boolean handles(T payload);
 }

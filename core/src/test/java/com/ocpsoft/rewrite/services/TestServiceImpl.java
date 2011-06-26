@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+package com.ocpsoft.rewrite.services;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ *
  */
-public interface InboundRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> extends
-         MutableRewriteEvent<IN, OUT>
+public class TestServiceImpl implements TestService
 {
-   void chain(String resource);
+
 }

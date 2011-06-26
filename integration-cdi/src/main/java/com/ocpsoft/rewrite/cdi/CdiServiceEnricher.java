@@ -36,7 +36,7 @@ public class CdiServiceEnricher extends BeanManagerAware implements ServiceEnric
       T instance = BeanManagerUtils.getContextualInstance(getBeanManager(), type);
       if (instance != null)
       {
-         log.info("Created CDI enriched service [" + type.getName() + "]");
+         log.debug("Created CDI enriched service [" + type.getName() + "]");
       }
       return instance;
    }
@@ -47,7 +47,7 @@ public class CdiServiceEnricher extends BeanManagerAware implements ServiceEnric
       CreationalContext<Object> context = BeanManagerUtils.injectNonContextualInstance(getBeanManager(), service);
       if (context != null)
       {
-         log.info("Enriched non-contextual intance of service [" + service.getClass().getName() + "]");
+         log.debug("Enriched non-contextual intance of service [" + service.getClass().getName() + "]");
       }
       return service;
    }

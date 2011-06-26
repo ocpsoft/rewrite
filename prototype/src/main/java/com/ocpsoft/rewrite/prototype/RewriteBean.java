@@ -13,26 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi.helper;
+package com.ocpsoft.rewrite.prototype;
 
+import javax.enterprise.event.Observes;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.RewriteEvent;
+import com.ocpsoft.rewrite.cdi.events.RewriteInbound;
+import com.ocpsoft.rewrite.cdi.events.RewriteOutbound;
 import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
-import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
- * A {@link RewriteProvider} that only operates on {@link HttpServletRequest} and {@link HttpServletResponse} request
- * cycle types.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public abstract class HttpRewriteProvider implements RewriteProvider<HttpRewriteEvent>
+public class RewriteBean
 {
-   @Override
-   public boolean handles(final RewriteEvent<?, ?> event)
+
+   public RewriteBean()
    {
-      return event instanceof HttpRewriteEvent;
    }
+
+   public void rewriteInbound(
+            @Observes @RewriteInbound final HttpRewriteEvent event)
+   {
+      HttpServletRequest request = event.getRequest();
+      System.out.println("INBOUND: " + request.getRequestURI());
+   }
+
+   public void rewriteOutbound(
+            @Observes @RewriteOutbound final HttpRewriteEvent event)
+   {
+      HttpServletRequest request = event.getRequest();
+      System.out.println("OUTBOUND: " + request.getRequestURI());
+   }
+
 }

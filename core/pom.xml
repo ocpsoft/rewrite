@@ -21,11 +21,14 @@
 
    <artifactId>rewrite-core</artifactId>
 
+   <properties>
+      <version.arquillian>1.0.0.Alpha5</version.arquillian>
+   </properties>
+
    <dependencies>
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-         <version>1.0.0.Final</version>
          <scope>provided</scope>
       </dependency>
       <dependency>
@@ -33,6 +36,24 @@
          <artifactId>jboss-logging</artifactId>
          <version>3.0.0.Beta4</version>
       </dependency>
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
-   
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-bom</artifactId>
+            <version>1.1.0.Final</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
 </project>

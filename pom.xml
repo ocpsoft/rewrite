@@ -25,6 +25,8 @@
 
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <version.jboss.spec>1.0.0.Final</version.jboss.spec>
+      <version.junit>4.8.1</version.junit>
    </properties>
 
    <modules>
@@ -44,7 +46,7 @@
          <url>http://repository.jboss.org/nexus/content/groups/public</url>
       </repository>
    </repositories>
-   
+
    <dependencyManagement>
       <dependencies>
          <dependency>
@@ -61,6 +63,18 @@
             <groupId>com.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-integration-cdi</artifactId>
             <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>${version.jboss.spec}</version>
+            <scope>provided</scope>
+         </dependency>
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
          </dependency>
       </dependencies>
    </dependencyManagement>
@@ -96,8 +110,8 @@
    </developers>
 
    <url>http://ocpsoft.com/prettyfaces/</url>
-   
-   
+
+
    <licenses>
       <license>
          <name>Apache License</name>

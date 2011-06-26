@@ -39,4 +39,10 @@ public interface RewriteEvent<IN extends ServletRequest, OUT extends ServletResp
     * Get the current {@link Flow} state.
     */
    public Flow getFlow();
+
+   /**
+    * Returns the resource address of the requested {@link MutableRewriteEvent#include(String)} or
+    * {@link MutableRewriteEvent#forward(String)}
+    */
+   public String getDispatchResource();
 }

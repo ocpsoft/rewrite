@@ -22,9 +22,100 @@ import javax.servlet.ServletResponse;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class BaseRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> implements
+public class BaseRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> implements
          MutableRewriteEvent<IN, OUT>
 {
+
+   private IN request;
+   private OUT response;
+   protected Flow flow;
+   protected String dispatchResource;
+
+   public BaseRewriteEvent(final IN request, final OUT response)
+   {
+      flow = Flow.UN_HANDLED;
+      this.request = request;
+      this.response = response;
+   }
+
+   /*
+    * Mutators
+    */
+
+   @Override
+   public void abort()
+   {
+      this.flow = Flow.ABORT_REQUEST;
+   }
+
+   @Override
+   public void proceed()
+   {
+      this.flow = Flow.PROCEED;
+   }
+
+   @Override
+   public void handled()
+   {
+      this.flow = Flow.HANDLED;
+   }
+
+   @Override
+   public void include(final String resource)
+   {
+      this.dispatchResource = resource;
+      this.flow = Flow.INCLUDE;
+   }
+
+   @Override
+   public void forward(final String resource)
+   {
+      this.dispatchResource = resource;
+      this.flow = Flow.FORWARD;
+   }
+
+   /*
+    * Getters
+    */
+
+   public Flow getFlow()
+   {
+      return flow;
+   }
+
+   public String getDispatchResource()
+   {
+      return dispatchResource;
+   }
+
+   @Override
+   public IN getRequest()
+   {
+      return request;
+   }
+
+   @Override
+   public OUT getResponse()
+   {
+      return response;
+   }
+
+   @Override
+   public void setRequest(final IN request)
+   {
+      this.request = request;
+   }
+
+   @Override
+   public void setResponse(final OUT response)
+   {
+      this.response = response;
+   }
+
+   /*
+    * Flow control enum
+    */
+
    protected enum Flow
    {
       UN_HANDLED(null),
@@ -81,91 +172,5 @@ public abstract class BaseRewriteEvent<IN extends ServletRequest, OUT extends Se
          }
          return false;
       }
-   }
-
-   private IN request;
-   private OUT response;
-   protected Flow flow;
-   private String dispatchResource;
-
-   public BaseRewriteEvent(final IN request, final OUT response)
-   {
-      flow = Flow.UN_HANDLED;
-      this.request = request;
-      this.response = response;
-   }
-
-   public Flow getFlow()
-   {
-      return flow;
-   }
-
-   /*
-    * Mutators
-    */
-
-   @Override
-   public void abort()
-   {
-      this.flow = Flow.ABORT_REQUEST;
-   }
-
-   @Override
-   public void proceed()
-   {
-      this.flow = Flow.PROCEED;
-   }
-
-   @Override
-   public void handled()
-   {
-      this.flow = Flow.HANDLED;
-   }
-
-   @Override
-   public void include(final String resource)
-   {
-      this.dispatchResource = resource;
-      this.flow = Flow.INCLUDE;
-   }
-
-   @Override
-   public void forward(final String resource)
-   {
-      this.dispatchResource = resource;
-      this.flow = Flow.FORWARD;
-   }
-
-   /*
-    * Getters
-    */
-
-   protected String getDispatchResource()
-   {
-      return dispatchResource;
-   }
-
-   @Override
-   public IN getRequest()
-   {
-      return request;
-   }
-
-   @Override
-   public OUT getResponse()
-   {
-      return response;
-   }
-
-   @Override
-   public void setRequest(final IN request)
-   {
-      this.request = request;
-   }
-
-   @Override
-   public void setResponse(final OUT response)
-   {
-      this.response = response;
    }
 }

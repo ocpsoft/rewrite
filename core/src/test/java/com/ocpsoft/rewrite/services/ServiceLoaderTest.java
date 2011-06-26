@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
+package com.ocpsoft.rewrite.services;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import java.util.List;
 
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+import com.ocpsoft.rewrite.util.Iterators;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends ServletResponse>
-         extends Weighted, Specialized<RewriteEvent<?, ?>>
+public class ServiceLoaderTest
 {
-   IN wrapRequest(IN request, OUT response);
-
-   OUT wrapResponse(IN request, OUT response);
+   @Test
+   public void test()
+   {
+      ServiceLoader<TestService> services = ServiceLoader.load(TestService.class);
+      List<TestService> list = Iterators.asList(services);
+      Assert.assertFalse(list.isEmpty());
+   }
 }

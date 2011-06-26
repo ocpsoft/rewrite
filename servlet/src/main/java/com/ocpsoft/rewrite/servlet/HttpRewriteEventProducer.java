@@ -17,22 +17,19 @@ package com.ocpsoft.rewrite.servlet;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.spi.RewriteListener;
+import com.ocpsoft.rewrite.MutableRewriteEvent;
+import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
+import com.ocpsoft.rewrite.spi.RewriteEventProducer;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpRewriteListener implements RewriteListener<ServletRequest, ServletResponse>
+public class HttpRewriteEventProducer implements RewriteEventProducer
 {
-   @Override
-   public boolean handles(final ServletRequest request, final ServletResponse response)
-   {
-      return true;
-   }
-
    @Override
    public int priority()
    {
@@ -40,23 +37,13 @@ public class HttpRewriteListener implements RewriteListener<ServletRequest, Serv
    }
 
    @Override
-   public void requestReceived(final ServletRequest request, final ServletResponse response)
+   public MutableRewriteEvent<?, ?> createRewriteEvent(final ServletRequest request,
+            final ServletResponse response)
    {
-   }
+      if ((request instanceof HttpServletRequest) && (response instanceof HttpServletResponse))
+         return new HttpRewriteEvent((HttpServletRequest) request, (HttpServletResponse) response);
 
-   @Override
-   public void rewriteStarted(final RewriteEvent<ServletRequest, ServletResponse> event)
-   {
-   }
-
-   @Override
-   public void rewriteCompleted(final RewriteEvent<ServletRequest, ServletResponse> event)
-   {
-   }
-
-   @Override
-   public void requestProcessed(final RewriteEvent<ServletRequest, ServletResponse> event)
-   {
+      return null;
    }
 
 }

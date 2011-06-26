@@ -13,40 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet;
+package com.ocpsoft.rewrite.cdi.bridge;
 
-import java.util.HashMap;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ocpsoft.rewrite.services.NonEnriching;
-import com.ocpsoft.rewrite.spi.helper.HttpRequestCycleWrapper;
+import com.ocpsoft.rewrite.cdi.events.RewriteInbound;
+import com.ocpsoft.rewrite.cdi.events.RewriteOutbound;
+import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
+import com.ocpsoft.rewrite.spi.helper.HttpRewriteProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper implements NonEnriching
+public class RewriteProviderBridge extends HttpRewriteProvider
 {
+   @Inject
+   private BeanManager manager;
 
    @Override
-   public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
+   public void rewriteInbound(final HttpRewriteEvent event)
    {
-      HashMap<String, String[]> additionalParams = new HashMap<String, String[]>();
-      return new HttpRewriteWrappedRequest(request, additionalParams);
+      manager.fireEvent(event, new AnnotationLiteral<RewriteInbound>()
+      {
+      });
    }
 
    @Override
-   public HttpServletResponse wrapResponse(final HttpServletRequest request, final HttpServletResponse response)
+   public void rewriteOutbound(final HttpRewriteEvent event)
    {
-      return new HttpRewriteWrappedResponse(request, response);
+      manager.fireEvent(event, new AnnotationLiteral<RewriteOutbound>()
+      {
+      });
    }
 
    @Override
    public int priority()
    {
-      return 0;
+      return 100;
    }
 
 }

@@ -260,15 +260,23 @@ public class ServiceLoader<S> implements Iterable<S>
    {
       try
       {
-         java.util.ServiceLoader<ServiceEnricher> enricherLoader = java.util.ServiceLoader.load(ServiceEnricher.class);
-
          S service = null;
-         for (ServiceEnricher enricher : enricherLoader)
+         java.util.ServiceLoader<ServiceEnricher> enricherLoader = null;
+         ServiceEnricher origin = null;
+
+         if (!NonEnriching.class.isAssignableFrom(serviceClass))
          {
-            service = enricher.produce(serviceClass);
-            if (service != null)
+            enricherLoader = java.util.ServiceLoader
+                     .load(ServiceEnricher.class);
+
+            for (ServiceEnricher enricher : enricherLoader)
             {
-               break;
+               service = enricher.produce(serviceClass);
+               if (service != null)
+               {
+                  origin = enricher;
+                  break;
+               }
             }
          }
 
@@ -279,9 +287,15 @@ public class ServiceLoader<S> implements Iterable<S>
             service = constructor.newInstance();
          }
 
-         for (ServiceEnricher enricher : enricherLoader)
+         if (!NonEnriching.class.isAssignableFrom(serviceClass))
          {
-            service = enricher.enrich(service);
+            for (ServiceEnricher enricher : enricherLoader)
+            {
+               if (!enricher.equals(origin))
+               {
+                  service = enricher.enrich(service);
+               }
+            }
          }
 
          return service;
