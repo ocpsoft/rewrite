@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import com.ocpsoft.rewrite.event.MutableRewriteEvent;
-import com.ocpsoft.rewrite.pattern.Weighted;
+package com.ocpsoft.rewrite.pattern;
 
 /**
- * Responsible for creating the initial {@link MutableRewriteEvent} for an inbound request.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface RewriteEventProducer extends Weighted
+public interface Specialized<T>
 {
-   public MutableRewriteEvent<?, ?> createRewriteEvent(
-            ServletRequest request,
-            ServletResponse response);
+   /**
+    * Returns true if this object is appropriate for the given payload.
+    */
+   boolean handles(T payload);
 }

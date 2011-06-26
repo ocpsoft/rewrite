@@ -15,35 +15,52 @@
  */
 package com.ocpsoft.rewrite.servlet;
 
-import java.util.HashMap;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.services.NonEnriching;
+import com.ocpsoft.rewrite.event.MutableOutboundRewriteEvent;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper implements NonEnriching
+public class HttpOutboundRewriteEvent implements MutableOutboundRewriteEvent<HttpServletRequest, HttpServletResponse>
 {
-   @Override
-   public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
+
+   private String url;
+   private final HttpServletResponse response;
+   private final HttpServletRequest request;
+
+   public HttpOutboundRewriteEvent(final HttpServletRequest request, final HttpServletResponse response,
+            final String url)
    {
-      HashMap<String, String[]> additionalParams = new HashMap<String, String[]>();
-      return new HttpRewriteWrappedRequest(request, additionalParams);
+      super();
+      this.url = url;
+      this.response = response;
+      this.request = request;
    }
 
    @Override
-   public HttpServletResponse wrapResponse(final HttpServletRequest request, final HttpServletResponse response)
+   public HttpServletRequest getRequest()
    {
-      return new HttpRewriteWrappedResponse(request, response);
+      return request;
    }
 
    @Override
-   public int priority()
+   public HttpServletResponse getResponse()
    {
-      return 0;
+      return response;
+   }
+
+   @Override
+   public String getURL()
+   {
+      return url;
+   }
+
+   @Override
+   public void setURL(final String url)
+   {
+      this.url = url;
    }
 }

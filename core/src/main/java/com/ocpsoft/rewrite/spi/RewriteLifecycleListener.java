@@ -16,11 +16,9 @@
 package com.ocpsoft.rewrite.spi;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
+import com.ocpsoft.rewrite.event.InboundRewriteEvent;
+import com.ocpsoft.rewrite.pattern.Specialized;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
@@ -28,8 +26,8 @@ import com.ocpsoft.rewrite.pattern.Weighted;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteLifecycleListener<T extends RewriteEvent<? extends ServletRequest, ? extends ServletResponse>>
-         extends Specialized<RewriteEvent<?, ?>>,
+public interface RewriteLifecycleListener<T extends InboundRewriteEvent<?, ?>>
+         extends Specialized<InboundRewriteEvent<?, ?>>,
          Weighted
 {
    /**

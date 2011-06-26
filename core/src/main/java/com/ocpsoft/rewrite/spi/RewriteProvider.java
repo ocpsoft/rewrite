@@ -15,19 +15,24 @@
  */
 package com.ocpsoft.rewrite.spi;
 
-import com.ocpsoft.rewrite.MutableRewriteEvent;
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import com.ocpsoft.rewrite.event.MutableOutboundRewriteEvent;
+import com.ocpsoft.rewrite.event.MutableRewriteEvent;
+import com.ocpsoft.rewrite.event.RewriteEvent;
+import com.ocpsoft.rewrite.pattern.Specialized;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteProvider<T extends MutableRewriteEvent<?, ?>> extends Weighted,
+public interface RewriteProvider<IN extends ServletRequest, OUT extends ServletResponse, T extends MutableRewriteEvent<IN, OUT>, S extends MutableOutboundRewriteEvent<IN, OUT>>
+         extends Weighted,
          Specialized<RewriteEvent<?, ?>>
 {
    void rewriteInbound(T event);
 
-   void rewriteOutbound(T event);
+   void rewriteOutbound(S event);
 }

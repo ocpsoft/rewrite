@@ -21,13 +21,14 @@ import javax.inject.Inject;
 
 import com.ocpsoft.rewrite.cdi.events.RewriteInbound;
 import com.ocpsoft.rewrite.cdi.events.RewriteOutbound;
-import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
-import com.ocpsoft.rewrite.spi.helper.HttpRewriteProvider;
+import com.ocpsoft.rewrite.servlet.HttpOutboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.HttpRewriteEvent;
+import com.ocpsoft.rewrite.servlet.HttpRewriteProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
+@SuppressWarnings("serial")
 public class RewriteProviderBridge extends HttpRewriteProvider
 {
    @Inject
@@ -36,17 +37,13 @@ public class RewriteProviderBridge extends HttpRewriteProvider
    @Override
    public void rewriteInbound(final HttpRewriteEvent event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<RewriteInbound>()
-      {
-      });
+      manager.fireEvent(event, new AnnotationLiteral<RewriteInbound>() {});
    }
 
    @Override
-   public void rewriteOutbound(final HttpRewriteEvent event)
+   public void rewriteOutbound(final HttpOutboundRewriteEvent event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<RewriteOutbound>()
-      {
-      });
+      manager.fireEvent(event, new AnnotationLiteral<RewriteOutbound>() {});
    }
 
    @Override

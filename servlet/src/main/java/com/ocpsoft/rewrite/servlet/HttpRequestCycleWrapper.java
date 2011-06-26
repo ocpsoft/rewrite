@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.inbound;
+package com.ocpsoft.rewrite.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.BaseRewriteEvent;
+import com.ocpsoft.rewrite.event.InboundRewriteEvent;
+import com.ocpsoft.rewrite.spi.RequestCycleWrapper;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class HttpRewriteEvent extends BaseRewriteEvent<HttpServletRequest, HttpServletResponse>
+public abstract class HttpRequestCycleWrapper implements RequestCycleWrapper<HttpServletRequest, HttpServletResponse>
 {
-   public HttpRewriteEvent(final HttpServletRequest request, final HttpServletResponse response)
+   @Override
+   public boolean handles(final InboundRewriteEvent<?, ?> event)
    {
-      super(request, response);
+      return event instanceof HttpRewriteEvent;
    }
 }

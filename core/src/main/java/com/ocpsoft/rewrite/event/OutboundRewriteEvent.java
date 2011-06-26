@@ -13,34 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.exception;
+package com.ocpsoft.rewrite.event;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class CoreException extends RuntimeException
+public interface OutboundRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> extends
+         RewriteEvent<IN, OUT>
 {
-   private static final long serialVersionUID = -6610549860707315081L;
-
-   public CoreException()
-   {
-      super();
-   }
-
-   public CoreException(final String message, final Throwable e)
-   {
-      super(message, e);
-   }
-
-   public CoreException(final String message)
-   {
-      super(message);
-   }
-
-   public CoreException(final Throwable e)
-   {
-      super(e);
-   }
-
+   String getURL();
 }

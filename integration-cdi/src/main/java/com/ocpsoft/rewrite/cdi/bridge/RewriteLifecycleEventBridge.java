@@ -23,13 +23,16 @@ import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
-import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
-import com.ocpsoft.rewrite.spi.helper.HttpRewriteLifecycleListener;
+import com.ocpsoft.rewrite.servlet.HttpRewriteEvent;
+import com.ocpsoft.rewrite.servlet.HttpRewriteLifecycleListener;
+import com.ocpsoft.rewrite.spi.RewriteLifecycleListener;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Propagates events from {@link RewriteLifecycleListener} to CDI Event bus.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
+@SuppressWarnings("serial")
 public class RewriteLifecycleEventBridge extends HttpRewriteLifecycleListener
 {
    @Inject
@@ -44,32 +47,24 @@ public class RewriteLifecycleEventBridge extends HttpRewriteLifecycleListener
    @Override
    public void beforeRewriteLifecycle(final HttpRewriteEvent event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<BeforeRewriteLifecycle>()
-      {
-      });
+      manager.fireEvent(event, new AnnotationLiteral<BeforeRewriteLifecycle>() {});
    }
 
    @Override
    public void beforeRewrite(final HttpRewriteEvent event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>()
-      {
-      });
+      manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>() {});
    }
 
    @Override
    public void afterRewrite(final HttpRewriteEvent event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>()
-      {
-      });
+      manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>() {});
    }
 
    @Override
    public void afterRewriteLifecycle(final HttpRewriteEvent event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<AfterRewriteLifecycle>()
-      {
-      });
+      manager.fireEvent(event, new AnnotationLiteral<AfterRewriteLifecycle>() {});
    }
 }

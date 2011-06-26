@@ -20,7 +20,7 @@
    <dependencies>
       <dependency>
          <groupId>com.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-core</artifactId>
+         <artifactId>rewrite-servlet</artifactId>
       </dependency>
 
       <dependency>

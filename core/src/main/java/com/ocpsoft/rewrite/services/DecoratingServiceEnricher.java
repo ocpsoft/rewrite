@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi.helper;
+package com.ocpsoft.rewrite.services;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
-import com.ocpsoft.rewrite.spi.RewriteProvider;
+import com.ocpsoft.rewrite.spi.ServiceEnricher;
 
 /**
- * A {@link RewriteProvider} that only operates on {@link HttpServletRequest} and {@link HttpServletResponse} request
- * cycle types.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public abstract class HttpRewriteProvider implements RewriteProvider<HttpRewriteEvent>
+public abstract class DecoratingServiceEnricher implements ServiceEnricher
 {
    @Override
-   public boolean handles(final RewriteEvent<?, ?> event)
+   public final <T> T produce(final Class<T> type)
    {
-      return event instanceof HttpRewriteEvent;
+      return null;
    }
 }

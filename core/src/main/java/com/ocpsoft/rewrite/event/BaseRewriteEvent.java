@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.event;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
+ * Base implementation of {@link MutableRewriteEvent}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public class BaseRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> implements
          MutableRewriteEvent<IN, OUT>
 {
-
-   private IN request;
-   private OUT response;
-   protected Flow flow;
+   private IN       request;
+   private OUT      response;
+   protected Flow   flow;
    protected String dispatchResource;
 
    public BaseRewriteEvent(final IN request, final OUT response)
@@ -77,7 +78,6 @@ public class BaseRewriteEvent<IN extends ServletRequest, OUT extends ServletResp
    /*
     * Getters
     */
-
    public Flow getFlow()
    {
       return flow;
@@ -116,7 +116,7 @@ public class BaseRewriteEvent<IN extends ServletRequest, OUT extends ServletResp
     * Flow control enum
     */
 
-   protected enum Flow
+   public enum Flow
    {
       UN_HANDLED(null),
       HANDLED(null),
@@ -172,5 +172,11 @@ public class BaseRewriteEvent<IN extends ServletRequest, OUT extends ServletResp
          }
          return false;
       }
+   }
+
+   @Override
+   public String toString()
+   {
+      return "RewriteEvent [flow=" + flow + ", dispatchResource=" + dispatchResource + "]";
    }
 }

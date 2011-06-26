@@ -18,8 +18,8 @@ package com.ocpsoft.rewrite.spi;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.Specialized;
+import com.ocpsoft.rewrite.event.InboundRewriteEvent;
+import com.ocpsoft.rewrite.pattern.Specialized;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
@@ -27,7 +27,7 @@ import com.ocpsoft.rewrite.pattern.Weighted;
  * 
  */
 public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends ServletResponse>
-         extends Weighted, Specialized<RewriteEvent<?, ?>>
+         extends Weighted, Specialized<InboundRewriteEvent<?, ?>>
 {
    IN wrapRequest(IN request, OUT response);
 

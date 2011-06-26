@@ -54,7 +54,7 @@ public class ServiceLoader<S> implements Iterable<S>
 {
    private static final String SERVICES = "META-INF/services";
 
-   Logger log = Logger.getLogger(ServiceLoader.class);
+   Logger                      log      = Logger.getLogger(ServiceLoader.class);
 
    /**
     * Creates a new service loader for the given service type, using the current thread's context class loader.
@@ -71,8 +71,9 @@ public class ServiceLoader<S> implements Iterable<S>
     * @param service The interface or abstract class representing the service
     * @return A new service loader
     */
-   public static <S> ServiceLoader<S> load(final Class<S> service)
+   public static <S> ServiceLoader load(final Class<S> service)
    {
+      // TODO fix generics here
       return load(service, Thread.currentThread().getContextClassLoader());
    }
 
@@ -115,11 +116,11 @@ public class ServiceLoader<S> implements Iterable<S>
       throw new UnsupportedOperationException("Not implemented");
    }
 
-   private final String serviceFile;
-   private final Class<S> expectedType;
+   private final String      serviceFile;
+   private final Class<S>    expectedType;
    private final ClassLoader loader;
 
-   private Set<S> providers;
+   private Set<S>            providers;
 
    private ServiceLoader(final Class<S> service, final ClassLoader loader)
    {

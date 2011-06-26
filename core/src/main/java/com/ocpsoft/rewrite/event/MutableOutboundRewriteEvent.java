@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi.helper;
+package com.ocpsoft.rewrite.event;
 
-import com.ocpsoft.rewrite.spi.ServiceEnricher;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public abstract class DecoratingServiceEnricher implements ServiceEnricher
+public interface MutableOutboundRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse> extends
+         OutboundRewriteEvent<IN, OUT>
 {
-   @Override
-   public final <T> T produce(final Class<T> type)
-   {
-      return null;
-   }
+   void setURL(String url);
 }

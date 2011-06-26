@@ -20,8 +20,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.MutableRewriteEvent;
-import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
+import com.ocpsoft.rewrite.event.MutableRewriteEvent;
 import com.ocpsoft.rewrite.spi.RewriteEventProducer;
 
 /**
@@ -41,7 +40,7 @@ public class HttpRewriteEventProducer implements RewriteEventProducer
             final ServletResponse response)
    {
       if ((request instanceof HttpServletRequest) && (response instanceof HttpServletResponse))
-         return new HttpRewriteEvent((HttpServletRequest) request, (HttpServletResponse) response);
+         return new HttpRewriteEventImpl((HttpServletRequest) request, (HttpServletResponse) response);
 
       return null;
    }

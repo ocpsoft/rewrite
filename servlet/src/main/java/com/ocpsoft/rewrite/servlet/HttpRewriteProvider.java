@@ -13,36 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.servlet;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.BaseRewriteEvent.Flow;
+import com.ocpsoft.rewrite.event.RewriteEvent;
+import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
+ * A {@link RewriteProvider} that only operates on {@link HttpServletRequest} and {@link HttpServletResponse} request
+ * cycle types.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteEvent<IN extends ServletRequest, OUT extends ServletResponse>
+public abstract class HttpRewriteProvider implements
+         RewriteProvider<HttpServletRequest, HttpServletResponse, HttpRewriteEvent, HttpOutboundRewriteEvent>
 {
-   /**
-    * Get the current {@link ServletRequest}.
-    */
-   public IN getRequest();
-
-   /**
-    * Get the current {@link ServletResponse}.
-    */
-   public OUT getResponse();
-
-   /**
-    * Get the current {@link Flow} state.
-    */
-   public Flow getFlow();
-
-   /**
-    * Returns the resource address of the requested {@link MutableRewriteEvent#include(String)} or
-    * {@link MutableRewriteEvent#forward(String)}
-    */
-   public String getDispatchResource();
+   @Override
+   public boolean handles(final RewriteEvent<?, ?> event)
+   {
+      return (event instanceof HttpRewriteEvent) || (event instanceof HttpOutboundRewriteEvent);
+   }
 }

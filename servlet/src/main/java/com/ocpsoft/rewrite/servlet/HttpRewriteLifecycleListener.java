@@ -15,46 +15,24 @@
  */
 package com.ocpsoft.rewrite.servlet;
 
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
-import com.ocpsoft.rewrite.services.NonEnriching;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.ocpsoft.rewrite.event.InboundRewriteEvent;
 import com.ocpsoft.rewrite.spi.RewriteLifecycleListener;
 
 /**
+ * A {@link RewriteLifecycleListener} that only listens on {@link HttpServletRequest} and {@link HttpServletResponse}
+ * request cycle types.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class HttpRewriteLifecycleListener implements RewriteLifecycleListener<HttpRewriteEvent>, NonEnriching
+public abstract class HttpRewriteLifecycleListener implements RewriteLifecycleListener<HttpRewriteEvent>
 {
    @Override
-   public boolean handles(final RewriteEvent<?, ?> event)
+   public boolean handles(final InboundRewriteEvent<?, ?> event)
    {
       return event instanceof HttpRewriteEvent;
    }
-
-   @Override
-   public int priority()
-   {
-      return 0;
-   }
-
-   @Override
-   public void beforeRewriteLifecycle(final HttpRewriteEvent event)
-   {
-   }
-
-   @Override
-   public void beforeRewrite(final HttpRewriteEvent event)
-   {
-   }
-
-   @Override
-   public void afterRewrite(final HttpRewriteEvent event)
-   {
-   }
-
-   @Override
-   public void afterRewriteLifecycle(final HttpRewriteEvent event)
-   {
-   }
-
 }

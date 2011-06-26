@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi.helper;
+package com.ocpsoft.rewrite;
 
-import com.ocpsoft.rewrite.spi.ServiceEnricher;
+import java.util.List;
+
+import com.ocpsoft.rewrite.spi.RequestCycleWrapper;
+import com.ocpsoft.rewrite.spi.RewriteEventProducer;
+import com.ocpsoft.rewrite.spi.RewriteLifecycleListener;
+import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public abstract class InstantiatingServiceEnricher implements ServiceEnricher
+public interface RewriteContext
 {
-   @Override
-   public final <T> T enrich(final T service)
-   {
-      return service;
-   }
+   List<RewriteLifecycleListener<?>> getRewriteLifecycleListeners();
 
+   List<RequestCycleWrapper<?, ?>> getRequestCycleWrappers();
+
+   List<RewriteProvider<?, ?, ?, ?>> getRewriteProviders();
+
+   List<RewriteEventProducer> getRewriteEventProducers();
 }

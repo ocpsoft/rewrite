@@ -28,7 +28,8 @@ import javax.servlet.ServletResponse;
 
 import org.jboss.logging.Logger;
 
-import com.ocpsoft.rewrite.BaseRewriteEvent.Flow;
+import com.ocpsoft.rewrite.event.BaseRewriteEvent.Flow;
+import com.ocpsoft.rewrite.event.MutableRewriteEvent;
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.spi.RequestCycleWrapper;
@@ -43,12 +44,13 @@ import com.ocpsoft.rewrite.util.Iterators;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class RewriteFilter implements Filter
 {
+   public static final String CONTEXT_KEY = "_com.ocpsoft.rewrite.RequestContext";
+
    Logger log = Logger.getLogger(RewriteFilter.class);
 
-   private List<RewriteLifecycleListener> listeners;
-   private List<RequestCycleWrapper> wrappers;
-   private List<RewriteProvider> providers;
-
+   private List<RewriteLifecycleListener<?>> listeners;
+   private List<RequestCycleWrapper<?, ?>> wrappers;
+   private List<RewriteProvider<?, ?, ?, ?>> providers;
    private List<RewriteEventProducer> producers;
 
    @Override
@@ -82,6 +84,12 @@ public class RewriteFilter implements Filter
    {
       MutableRewriteEvent event = createRewriteEvent(request,
                response);
+
+      if (request.getAttribute(CONTEXT_KEY) == null)
+      {
+         RewriteContext context = new RewriteContextImpl(producers, listeners, wrappers, providers);
+         request.setAttribute(CONTEXT_KEY, context);
+      }
 
       for (RewriteLifecycleListener listener : listeners)
       {
@@ -173,7 +181,7 @@ public class RewriteFilter implements Filter
       // TODO SPI filter destroy
    }
 
-   private <T> void logLoadedServices(final Class<T> type, final List<T> services)
+   private <T> void logLoadedServices(final Class<T> type, final List<? extends T> services)
    {
       log.info("Loaded [" + services.size() + "] " + type.getName() + " ["
                + joinTypeNames(services) + "]");

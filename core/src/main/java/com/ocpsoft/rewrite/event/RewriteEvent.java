@@ -13,15 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.event;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
+import com.ocpsoft.rewrite.spi.RewriteLifecycleListener;
+import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
+ * Immutable event propagated to registered {@link RewriteLifecycleListener} and {@link RewriteProvider} instances when
+ * an inbound as the rewrite lifecycle is executed.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Specialized<T>
+public interface RewriteEvent<IN extends ServletRequest, OUT extends ServletResponse>
 {
    /**
-    * Returns true if this object is appropriate for the given payload.
+    * Get the current {@link ServletRequest}.
     */
-   boolean handles(T payload);
+   public IN getRequest();
+
+   /**
+    * Get the current {@link ServletResponse}.
+    */
+   public OUT getResponse();
 }

@@ -13,24 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi.helper;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ocpsoft.rewrite.RewriteEvent;
-import com.ocpsoft.rewrite.inbound.HttpRewriteEvent;
-import com.ocpsoft.rewrite.spi.RequestCycleWrapper;
+package com.ocpsoft.rewrite.exception;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class HttpRequestCycleWrapper implements RequestCycleWrapper<HttpServletRequest, HttpServletResponse>
+public class RewriteException extends RuntimeException
 {
-   @Override
-   public boolean handles(final RewriteEvent<?, ?> event)
+   private static final long serialVersionUID = -6610549860707315081L;
+
+   public RewriteException()
    {
-      return event instanceof HttpRewriteEvent;
+      super();
    }
+
+   public RewriteException(final String message, final Throwable e)
+   {
+      super(message, e);
+   }
+
+   public RewriteException(final String message)
+   {
+      super(message);
+   }
+
+   public RewriteException(final Throwable e)
+   {
+      super(e);
+   }
+
 }
