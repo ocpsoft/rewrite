@@ -9,10 +9,10 @@
       <version>1.0.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
    </parent>
-   
+
    <artifactId>rewrite-prototype</artifactId>
    <packaging>war</packaging>
-   
+
    <dependencies>
       <dependency>
          <groupId>com.ocpsoft.rewrite</groupId>
@@ -21,6 +21,12 @@
       <dependency>
          <groupId>com.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-integration-cdi</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+         <version>1.0-SP4</version>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>org.jboss.spec</groupId>

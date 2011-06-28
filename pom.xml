@@ -32,8 +32,8 @@
    </properties>
 
    <modules>
-      <module>core</module>
-      <module>servlet</module>
+      <module>api</module>
+      <module>impl-servlet</module>
       <module>integration-cdi</module>
       <module>prototype</module>
    </modules>
