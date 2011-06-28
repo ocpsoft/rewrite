@@ -25,4 +25,5 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
  */
 public interface Rewrite
 {
+
 }

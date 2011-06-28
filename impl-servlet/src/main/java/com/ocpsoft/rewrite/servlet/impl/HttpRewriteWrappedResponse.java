@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.RewriteContext;
 import com.ocpsoft.rewrite.servlet.RewriteFilter;
+import com.ocpsoft.rewrite.servlet.event.RewriteEventBase.Flow;
+import com.ocpsoft.rewrite.servlet.http.HttpOutboundRewriteEvent;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
@@ -57,52 +59,50 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    }
 
    @Override
-   @SuppressWarnings({ "rawtypes", "unchecked" })
    public String encodeRedirectURL(final String url)
    {
-      RewriteContext context = (RewriteContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
+      HttpOutboundRewriteEvent event = new HttpOutboundRewriteEventImpl(request, this, url);
+      rewrite(event);
 
-      HttpOutboundRewriteEventImpl event = new HttpOutboundRewriteEventImpl(request, this, url);
-
-      for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
+      if (event.getFlow().is(Flow.ABORT_REQUEST))
       {
-         listener.beforeOutboundRewrite(event);
-      }
-
-      for (RewriteProvider p : context.getRewriteProviders())
-      {
-         if (p.handles(event))
-         {
-            p.rewrite(event);
-         }
-      }
-
-      for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
-      {
-         listener.afterOutboundRewrite(event);
+         return event.getOutboundURL();
       }
 
       return super.encodeRedirectURL(event.getOutboundURL());
    }
 
    @Override
-   @SuppressWarnings({ "rawtypes", "unchecked" })
    public String encodeURL(final String url)
    {
+      HttpOutboundRewriteEvent event = new HttpOutboundRewriteEventImpl(request, this, url);
+      rewrite(event);
+
+      if (event.getFlow().is(Flow.ABORT_REQUEST))
+      {
+         return event.getOutboundURL();
+      }
+
+      return super.encodeURL(event.getOutboundURL());
+   }
+
+   private void rewrite(HttpOutboundRewriteEvent event)
+   {
       RewriteContext context = (RewriteContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
-
-      HttpOutboundRewriteEventImpl event = new HttpOutboundRewriteEventImpl(request, this, url);
-
       for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
       {
          listener.beforeOutboundRewrite(event);
       }
 
-      for (RewriteProvider p : context.getRewriteProviders())
+      for (RewriteProvider<Rewrite> p : context.getRewriteProviders())
       {
          if (p.handles(event))
          {
             p.rewrite(event);
+            if (event.getFlow().is(Flow.HALT_HANDLING))
+            {
+               break;
+            }
          }
       }
 
@@ -110,7 +110,5 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       {
          listener.afterOutboundRewrite(event);
       }
-
-      return super.encodeURL(event.getOutboundURL());
    }
 }

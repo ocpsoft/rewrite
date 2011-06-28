@@ -27,11 +27,11 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <version.jboss.spec>1.0.0.Final</version.jboss.spec>
       <version.junit>4.8.1</version.junit>
-      <version.arquillian>1.0.0.Alpha5</version.arquillian>
       <version.jboss-logging>3.0.0.Beta4</version.jboss-logging>
    </properties>
 
    <modules>
+      <module>test-harness</module>
       <module>api</module>
       <module>impl-servlet</module>
       <module>integration-cdi</module>
@@ -67,6 +67,12 @@
             <version>${project.version}</version>
          </dependency>
          <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-test-harness</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+         </dependency>
+         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <version>${version.jboss.spec}</version>
@@ -96,68 +102,6 @@
          <artifactId>junit</artifactId>
       </dependency>
    </dependencies>
-
-   <profiles>
-      <profile>
-         <id>jetty-embedded</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-         </activation>
-         <dependencies>
-            <dependency>
-               <groupId>org.jboss.arquillian</groupId>
-               <artifactId>arquillian-junit</artifactId>
-               <version>${version.arquillian}</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-jetty-embedded-7</artifactId>
-               <version>1.0.0.Alpha5</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.eclipse.jetty</groupId>
-               <artifactId>jetty-webapp</artifactId>
-               <version>7.0.2.v20100331</version>
-               <scope>test</scope>
-            </dependency>
-            <!-- plus and naming requires for using JNDI -->
-            <dependency>
-               <groupId>org.eclipse.jetty</groupId>
-               <artifactId>jetty-plus</artifactId>
-               <version>7.0.2.v20100331</version>
-               <scope>test</scope>
-            </dependency>
-            <!-- Weld servlet, EL and JSP required for testing CDI injections -->
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
-               <version>1.1.0.Final</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>javax.enterprise</groupId>
-               <artifactId>cdi-api</artifactId>
-               <version>1.0-SP4</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <version>2.2</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>javax.servlet.jsp</groupId>
-               <artifactId>jsp-api</artifactId>
-               <version>2.2</version>
-               <scope>test</scope>
-            </dependency>
-         </dependencies>
-      </profile>
-   </profiles>
-
 
    <build>
       <finalName>rewrite-parent</finalName>

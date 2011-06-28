@@ -122,13 +122,13 @@ public class RewriteEventBase<IN extends ServletRequest, OUT extends ServletResp
    {
       UN_HANDLED(null),
       HANDLED(null),
-      CONTINUE(HANDLED),
-      PROCEED(CONTINUE),
-      HALT_HANDLING(HANDLED),
-      INCLUDE(HALT_HANDLING),
-      ABORT_REQUEST(HALT_HANDLING),
-      FORWARD(ABORT_REQUEST),
-      CHAIN(HALT_HANDLING);
+         CONTINUE(HANDLED),
+            PROCEED(CONTINUE),
+         HALT_HANDLING(HANDLED),
+            INCLUDE(HALT_HANDLING),
+            ABORT_REQUEST(HALT_HANDLING),
+               FORWARD(ABORT_REQUEST),
+            CHAIN(HALT_HANDLING);
 
       private Flow parent;
 

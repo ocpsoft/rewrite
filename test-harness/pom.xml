@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>rewrite-parent</artifactId>
+      <groupId>com.ocpsoft.rewrite</groupId>
+      <version>1.0.0-SNAPSHOT</version>
+      <relativePath>../</relativePath>
+   </parent>
+
+   <artifactId>rewrite-test-harness</artifactId>
+
+   <properties>
+      <version.arquillian>1.0.0.CR1-SNAPSHOT</version.arquillian>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>httpclient</artifactId>
+         <version>4.1.1</version>
+      </dependency>
+   </dependencies>
+
+   <profiles>
+      <profile>
+         <id>jetty-embedded</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian</groupId>
+               <artifactId>arquillian-junit</artifactId>
+               <version>1.0.0.Alpha5</version>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-jetty-embedded-7</artifactId>
+               <version>1.0.0.Alpha5</version>
+            </dependency>
+            <dependency>
+               <groupId>org.eclipse.jetty</groupId>
+               <artifactId>jetty-webapp</artifactId>
+               <version>7.0.2.v20100331</version>
+            </dependency>
+            <dependency>
+               <groupId>org.eclipse.jetty</groupId>
+               <artifactId>jetty-plus</artifactId>
+               <version>7.0.2.v20100331</version>
+            </dependency>
+
+            <!-- Weld servlet, EL and JSP required for testing CDI injections -->
+            <dependency>
+               <groupId>org.jboss.weld.servlet</groupId>
+               <artifactId>weld-servlet</artifactId>
+               <version>1.1.0.Final</version>
+            </dependency>
+            <dependency>
+               <groupId>javax.enterprise</groupId>
+               <artifactId>cdi-api</artifactId>
+               <version>1.0-SP4</version>
+            </dependency>
+            <dependency>
+               <groupId>org.glassfish.web</groupId>
+               <artifactId>el-impl</artifactId>
+               <version>2.2</version>
+            </dependency>
+            <dependency>
+               <groupId>javax.servlet.jsp</groupId>
+               <artifactId>jsp-api</artifactId>
+               <version>2.2</version>
+            </dependency>
+         </dependencies>
+      </profile>
+   </profiles>
+
+   <build>
+      <finalName>test-harness</finalName>
+      <plugins>
+         <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+</project>
