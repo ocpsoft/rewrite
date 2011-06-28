@@ -13,35 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.cdi.bridge;
+package com.ocpsoft.rewrite.servlet.config;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
-import com.ocpsoft.rewrite.cdi.events.Handles;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteEvent;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("serial")
-public class RewriteProviderBridge extends HttpRewriteProvider
+public class ContextConfigListener implements ServletContextListener
 {
-   @Inject
-   private BeanManager manager;
-
    @Override
-   public void rewrite(final HttpRewriteEvent event)
+   public void contextInitialized(final ServletContextEvent event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<Handles>() { });
+      // TODO EXTENSION configuration listener
    }
 
    @Override
-   public int priority()
+   public void contextDestroyed(final ServletContextEvent event)
    {
-      return 100;
+
    }
 
 }

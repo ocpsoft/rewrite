@@ -18,18 +18,20 @@ package com.ocpsoft.rewrite.prototype;
 import java.io.IOException;
 
 import javax.enterprise.event.Observes;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
-import com.ocpsoft.rewrite.cdi.events.RewriteInbound;
-import com.ocpsoft.rewrite.cdi.events.RewriteOutbound;
-import com.ocpsoft.rewrite.event.RewriteEvent;
-import com.ocpsoft.rewrite.servlet.HttpOutboundRewriteEvent;
-import com.ocpsoft.rewrite.servlet.HttpRewriteEvent;
+import com.ocpsoft.rewrite.cdi.events.Handles;
+import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.event.ServletRewriteEvent;
+import com.ocpsoft.rewrite.servlet.http.HttpInboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.http.HttpOutboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.http.HttpRewriteEvent;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -37,32 +39,55 @@ import com.ocpsoft.rewrite.servlet.HttpRewriteEvent;
  */
 public class RewriteBean
 {
-   public RewriteBean()
-   {}
-
    public void rewriteInbound(
-            @Observes @RewriteInbound final HttpRewriteEvent event) throws IOException
+            @Observes @Handles final HttpInboundRewriteEvent event) throws IOException
    {
-      HttpServletRequest request = event.getRequest();
-      System.out.println("INBOUND: " + request.getRequestURI());
+      String requestURL = event.getRequestURL();
+
+      System.out.println("INBOUND MAPPING: " + requestURL);
+
+      if ("/page".equals(requestURL))
+      {
+         event.forward("/faces/page.xhtml");
+
+         HttpServletResponse response = event.getResponse();
+         String url = response.encodeURL("I am going to miss you, Lincoln!");
+         System.out.println(url);
+      }
    }
 
-   public void rewriteOutbound(
-            @Observes @RewriteOutbound final HttpOutboundRewriteEvent event)
+   public void rewriteOutboundPage(
+            @Observes @Handles final HttpOutboundRewriteEvent event)
    {
-      System.out.println("OUTBOUND: " + event.getURL());
-      event.setURL(event.getURL().replaceAll("miss", "be thinking of you having fun" +
+      String outboundURL = event.getOutboundURL();
+
+      if (outboundURL.equals(event.getContextPath() + "/faces/page.xhtml"))
+      {
+         System.out.println("OUTBOUND MAPPING: " + outboundURL);
+         event.setOutboundURL(event.getContextPath() + "/page");
+      }
+   }
+
+   /*
+    * Examples
+    */
+
+   public void rewriteOutbound(
+            @Observes @Handles final HttpOutboundRewriteEvent event)
+   {
+      System.out.println("OUTBOUND: " + event.getOutboundURL());
+      event.setOutboundURL(event.getOutboundURL().replaceAll("miss you", "be thinking of you having fun" +
                ""));
    }
 
    public void before(
-            @Observes @BeforeRewriteLifecycle final RewriteEvent event)
+            @Observes @BeforeRewriteLifecycle final ServletRewriteEvent<ServletRequest, ServletResponse> event)
    {
       System.out.println("Before Rewrite Lifecycle");
    }
 
    public void beforeRewrite(
-            @Observes @BeforeRewrite final RewriteEvent event)
+            @Observes @BeforeRewrite final Rewrite event)
    {
       System.out.println("Before Rewrite");
    }
@@ -71,14 +96,10 @@ public class RewriteBean
             @Observes @AfterRewrite final HttpRewriteEvent event)
    {
       System.out.println("After Rewrite");
-
-      HttpServletResponse response = event.getResponse();
-      String url = response.encodeURL("I am going to miss you, Lincoln!");
-      System.out.println(url);
    }
 
    public void after(
-            @Observes @AfterRewriteLifecycle final HttpRewriteEvent event)
+            @Observes @AfterRewriteLifecycle final HttpInboundRewriteEvent event)
    {
       System.out.println("After Rewrite Lifecycle");
    }

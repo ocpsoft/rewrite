@@ -13,18 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.spi;
+package com.ocpsoft.rewrite.servlet;
+
+import java.util.List;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.pattern.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.servlet.spi.InboundRewriteEventProducer;
+import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
+import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
+import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface RewriteProvider<T extends Rewrite>
-         extends Weighted, Specialized<Rewrite>
+public interface RewriteContext
 {
-   void rewrite(T event);
+   List<RewriteLifecycleListener<Rewrite>> getRewriteLifecycleListeners();
+
+   List<RequestCycleWrapper<ServletRequest, ServletResponse>> getRequestCycleWrappers();
+
+   List<RewriteProvider<Rewrite>> getRewriteProviders();
+
+   List<InboundRewriteEventProducer<ServletRequest, ServletResponse>> getInboundRewriteEventProducers();
 }

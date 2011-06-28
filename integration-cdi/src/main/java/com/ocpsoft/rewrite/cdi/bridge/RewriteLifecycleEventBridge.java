@@ -23,9 +23,9 @@ import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
-import com.ocpsoft.rewrite.servlet.HttpRewriteEvent;
-import com.ocpsoft.rewrite.servlet.HttpRewriteLifecycleListener;
-import com.ocpsoft.rewrite.spi.RewriteLifecycleListener;
+import com.ocpsoft.rewrite.servlet.http.HttpRewriteEvent;
+import com.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleListener;
+import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
 /**
  * Propagates events from {@link RewriteLifecycleListener} to CDI Event bus.
@@ -45,26 +45,38 @@ public class RewriteLifecycleEventBridge extends HttpRewriteLifecycleListener
    }
 
    @Override
-   public void beforeRewriteLifecycle(final HttpRewriteEvent event)
+   public void beforeInboundLifecycle(final HttpRewriteEvent event)
    {
       manager.fireEvent(event, new AnnotationLiteral<BeforeRewriteLifecycle>() {});
    }
 
    @Override
-   public void beforeRewrite(final HttpRewriteEvent event)
+   public void beforeInboundRewrite(final HttpRewriteEvent event)
    {
       manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>() {});
    }
 
    @Override
-   public void afterRewrite(final HttpRewriteEvent event)
+   public void afterInboundRewrite(final HttpRewriteEvent event)
    {
       manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>() {});
    }
 
    @Override
-   public void afterRewriteLifecycle(final HttpRewriteEvent event)
+   public void afterInboundLifecycle(final HttpRewriteEvent event)
    {
       manager.fireEvent(event, new AnnotationLiteral<AfterRewriteLifecycle>() {});
+   }
+
+   @Override
+   public void beforeOutboundRewrite(HttpRewriteEvent event)
+   {
+      manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>() {});
+   }
+
+   @Override
+   public void afterOutboundRewrite(HttpRewriteEvent event)
+   {
+      manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>() {});
    }
 }

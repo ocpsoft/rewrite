@@ -10,17 +10,13 @@
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-servlet</artifactId>
+   <artifactId>rewrite-impl-servlet</artifactId>
 
-   <properties>
-   </properties>
-
-   <dependencies>
+   <dependencies> 
       <dependency>
          <groupId>com.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-core</artifactId>
+         <artifactId>rewrite-api</artifactId>
       </dependency>
-
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
