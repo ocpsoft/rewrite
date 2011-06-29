@@ -13,9 +13,14 @@
       <priority value="debug" />
       <appender-ref ref="console" />
    </root>
+
+   <logger name="org.apache">
+      <level value="info" />
+   </logger>
    
    <logger name="com.ocpsoft">
       <level value="debug" />
    </logger>
+
 
 </log4j:configuration>
