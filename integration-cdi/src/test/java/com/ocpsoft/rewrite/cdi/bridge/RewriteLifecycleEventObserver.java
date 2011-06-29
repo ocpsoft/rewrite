@@ -24,6 +24,7 @@ package com.ocpsoft.rewrite.cdi.bridge;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 
+import com.ocpsoft.rewrite.cdi.events.Handles;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 /**
@@ -33,7 +34,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 @RequestScoped
 public class RewriteLifecycleEventObserver
 {
-   public void rewriteInbound(@Observes HttpInboundServletRewrite event)
+   public void rewriteInbound(@Observes @Handles HttpInboundServletRewrite event)
    {
       if (event.getRequestURL().equals("/page"))
       {
