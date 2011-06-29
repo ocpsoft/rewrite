@@ -23,7 +23,7 @@ package com.ocpsoft.rewrite.cdi.bridge;
 
 import junit.framework.Assert;
 
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ocpsoft.rewrite.cdi.CDIRoot;
+import com.ocpsoft.rewrite.test.HttpAction;
 import com.ocpsoft.rewrite.test.RewriteTestBase;
 
 /**
@@ -54,14 +55,14 @@ public class RewriteProviderBridgeTest extends RewriteTestBase
    @Test
    public void testRewriteProviderBridgeAcceptsChanges()
    {
-      HttpResponse response = request("/page");
-      Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+      HttpAction<HttpGet> action = get("/success");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testRewriteProviderBridgeIgnoresUnchangedEvent()
+   public void testRewriteRedirect301()
    {
-      HttpResponse response = request("/unchanged");
-      Assert.assertEquals(404, response.getStatusLine().getStatusCode());
+      HttpAction<HttpGet> action = get("/redirect-301");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 }

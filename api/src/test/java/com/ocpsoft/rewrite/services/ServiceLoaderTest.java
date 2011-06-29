@@ -30,6 +30,7 @@ import com.ocpsoft.rewrite.util.Iterators;
 public class ServiceLoaderTest
 {
    @Test
+   @SuppressWarnings("unchecked")
    public void test()
    {
       ServiceLoader<TestService> services = ServiceLoader.load(TestService.class);

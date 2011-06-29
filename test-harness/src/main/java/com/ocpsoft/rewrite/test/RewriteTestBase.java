@@ -91,9 +91,9 @@ public class RewriteTestBase
     * <p>
     * E.g: A path of '/example' will be sent as '/rewrite-test/example'
     */
-   protected HttpResponse request(final String path)
+   protected HttpAction<HttpGet> get(final String path)
    {
-      DefaultHttpClient httpclient = new DefaultHttpClient();
+      DefaultHttpClient httpClient = new DefaultHttpClient();
       try {
          String url = baseURL.toExternalForm();
          if (url.endsWith("/"))
@@ -101,15 +101,14 @@ public class RewriteTestBase
             url = url.substring(0, url.length() - 1);
          }
          url = url + path;
-         HttpGet httpget = new HttpGet(url);
+         HttpGet httpGet = new HttpGet(url);
 
-         HttpResponse response = httpclient.execute(httpget);
-
+         HttpResponse response = httpClient.execute(httpGet);
          HttpEntity entity = response.getEntity();
          if (entity != null)
             EntityUtils.consume(entity);
 
-         return response;
+         return new HttpAction<HttpGet>(httpClient, httpGet, response);
       }
       catch (Exception e) {
          throw new RuntimeException(e);

@@ -19,40 +19,41 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.cdi.bridge;
+package com.ocpsoft.rewrite.test;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-
-import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
-import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-@RequestScoped
-public class RewriteLifecycleEventObserver
+public class HttpAction<T extends HttpRequest>
 {
-   public void rewriteInbound2(@Observes final HttpInboundServletRewrite event)
+   private final HttpClient client;
+   private final T request;
+   private final HttpResponse response;
+
+   public HttpAction(final HttpClient httpClient, final T httpGet, final HttpResponse response)
    {
-      System.out.println("Inbound: " + event.getRequestURL());
-      if (event.getRequestURL().equals("/redirect-301")) {
-         event.redirectTemporary(event.getContextPath() + "/outbound");
-      }
+      this.client = httpClient;
+      this.request = httpGet;
+      this.response = response;
    }
 
-   public void rewriteOutbound(@Observes final HttpOutboundServletRewrite event)
+   public HttpClient getClient()
    {
-      if (event.getOutboundURL().equals(event.getContextPath() + "/outbound")) {
-         event.setOutboundURL(event.getContextPath() + "/outbound-rewritten");
-      }
+      return client;
    }
 
-   public void rewriteInbound(@Observes final HttpInboundServletRewrite event)
+   public T getRequest()
    {
-      if (!event.getFlow().is(Flow.HANDLED))
-         event.sendStatusCode(200);
+      return request;
+   }
+
+   public HttpResponse getResponse()
+   {
+      return response;
    }
 }

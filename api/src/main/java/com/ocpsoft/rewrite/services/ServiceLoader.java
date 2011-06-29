@@ -72,7 +72,27 @@ public class ServiceLoader<S> implements Iterable<S>
     * @return A new service loader
     */
    @SuppressWarnings("rawtypes")
-   public static <S> ServiceLoader/* TODO fix this generic */load(final Class<S> service)
+   public static <S> ServiceLoader load(final Class<S> service)
+   {
+      return load(service, Thread.currentThread().getContextClassLoader());
+   }
+
+   /**
+    * Creates a new service loader for the given service type, using the current thread's context class loader.
+    * 
+    * An invocation of this convenience method of the form
+    * 
+    * {@code ServiceLoader.load(service)</code>}
+    * 
+    * is equivalent to
+    * 
+    * <code>ServiceLoader.load(service,
+    *                   Thread.currentThread().getContextClassLoader())</code>
+    * 
+    * @param service The interface or abstract class representing the service
+    * @return A new service loader
+    */
+   public static <S> ServiceLoader<S> loadTypesafe(final Class<S> service)
    {
       return load(service, Thread.currentThread().getContextClassLoader());
    }
@@ -185,8 +205,7 @@ public class ServiceLoader<S> implements Iterable<S>
       }
       catch (IOException e)
       {
-         // FIXME: correct exception
-         throw new RuntimeException("Could not read services file " + serviceFile);
+         throw new RuntimeException("Could not read services file " + serviceFile, e);
       }
       finally
       {
@@ -198,7 +217,6 @@ public class ServiceLoader<S> implements Iterable<S>
             }
             catch (IOException e)
             {
-               // FIXME: correct exception
                throw new RuntimeException("Could not close services file " + serviceFile, e);
             }
          }
@@ -246,7 +264,7 @@ public class ServiceLoader<S> implements Iterable<S>
       }
       catch (ClassCastException e)
       {
-         throw new RuntimeException("ClassCastException: Service class [" + serviceClassName
+         throw new ClassCastException("ClassCastException: Service class [" + serviceClassName
                   + "] did not implement the interface [" + expectedType.getName() + "]");
       }
       return serviceClass;
