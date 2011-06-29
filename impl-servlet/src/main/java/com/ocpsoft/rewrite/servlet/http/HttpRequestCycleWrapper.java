@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 
 /**
@@ -30,6 +31,6 @@ public abstract class HttpRequestCycleWrapper implements RequestCycleWrapper<Htt
    @Override
    public boolean handles(final Rewrite event)
    {
-      return event instanceof HttpRewriteEvent;
+      return event instanceof HttpServletRewrite;
    }
 }

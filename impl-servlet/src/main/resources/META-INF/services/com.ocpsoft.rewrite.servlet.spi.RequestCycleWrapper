@@ -1,1 +1,1 @@
-com.ocpsoft.rewrite.servlet.impl.HttpRewriteRequestCycleWrapper
+com.ocpsoft.rewrite.servlet.http.impl.HttpRewriteRequestCycleWrapper

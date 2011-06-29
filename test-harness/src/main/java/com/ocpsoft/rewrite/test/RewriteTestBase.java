@@ -22,24 +22,26 @@ package com.ocpsoft.rewrite.test;
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-import static org.junit.Assert.fail;
-
+import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.jboss.arquillian.api.ArquillianResource;
-import org.jboss.arquillian.api.Deployment;
+import org.apache.http.util.EntityUtils;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Test;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.junit.runner.RunWith;
 
 /**
@@ -52,28 +54,36 @@ public class RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
+      JavaArchive rewrite = ShrinkWrap.create(JavaArchive.class, "rewrite.jar")
+               .addAsResource(new File("../api/target/classes/com"))
+               .addAsResource(new File("../api/target/classes/META-INF"))
+               .addAsResource(new File("../impl-servlet/target/classes/com"))
+               .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
+
+      System.out.println(rewrite.toString(true) + "\n");
+
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
-               // .addAsLibraries(new File("../api/target/classes"),
-               // new File("../impl-servlet/target/classes"))
-               .addAsWebResource(
-                        new StringAsset("<beans/>"),
-                        ArchivePaths.create("WEB-INF/beans.xml"))
-               .addAsWebResource("jetty-env.xml",
-                        ArchivePaths.create("WEB-INF/jetty-env.xml"));
+               .addAsLibraries(rewrite)
+               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.1.Final"))
+               .addAsLibraries(resolveDependencies("org.jboss.logging:jboss-logging:3.0.0.Beta4"))
+               .setWebXML("jetty-web.xml")
+               .addAsWebResource(new StringAsset("<beans/>"), ArchivePaths.create("WEB-INF/beans.xml"))
+               .addAsWebResource("jetty-env.xml", ArchivePaths.create("WEB-INF/jetty-env.xml"))
+               .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"));
+   }
+
+   private static Collection<GenericArchive> resolveDependencies(String coords)
+   {
+      return DependencyResolvers.use(MavenDependencyResolver.class)
+               .artifacts(coords)
+               .resolveAs(GenericArchive.class);
    }
 
    @ArquillianResource
    URL baseURL;
 
-   @Test
-   public void test()
-   {
-      makeCall("/page");
-      fail("Not yet implemented");
-   }
-
-   protected void makeCall(String path)
+   protected HttpResponse request(String path)
    {
       DefaultHttpClient httpclient = new DefaultHttpClient();
       try
@@ -84,11 +94,9 @@ public class RewriteTestBase
 
          HttpEntity entity = response.getEntity();
          if (entity != null)
-            entity.consumeContent();
+            EntityUtils.consume(entity);
 
-         StatusLine statusLine = response.getStatusLine();
-         System.out.println("Status: " + statusLine);
-         Assert.assertEquals(200, statusLine.getStatusCode());
+         return response;
       }
       catch (Exception e)
       {

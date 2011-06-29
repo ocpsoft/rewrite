@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.impl;
+package com.ocpsoft.rewrite.servlet.http.impl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,19 +25,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.jboss.logging.Logger;
 
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.servlet.event.RewriteEventBase;
-import com.ocpsoft.rewrite.servlet.http.HttpInboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.event.RewriteBase;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.QueryString;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class HttpInboundRewriteEventImpl extends RewriteEventBase<HttpServletRequest, HttpServletResponse>
-         implements HttpInboundRewriteEvent
+public class HttpInboundRewriteImpl extends RewriteBase<HttpServletRequest, HttpServletResponse>
+         implements HttpInboundServletRewrite
 {
-   Logger log = Logger.getLogger(HttpInboundRewriteEventImpl.class);
+   Logger log = Logger.getLogger(HttpInboundRewriteImpl.class);
 
-   public HttpInboundRewriteEventImpl(final HttpServletRequest request, final HttpServletResponse response)
+   public HttpInboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response)
    {
       super(request, response);
    }
@@ -57,13 +57,13 @@ public class HttpInboundRewriteEventImpl extends RewriteEventBase<HttpServletReq
    }
 
    @Override
-   public void sendErrorCode(final int code)
+   public void sendStatusCode(final int code)
    {
-      sendErrorCode(code, null);
+      sendStatusCode(code, null);
    }
 
    @Override
-   public void sendErrorCode(final int code, final String message)
+   public void sendStatusCode(final int code, final String message)
    {
       HttpServletResponse response = getResponse();
       if (response.isCommitted())
@@ -137,13 +137,18 @@ public class HttpInboundRewriteEventImpl extends RewriteEventBase<HttpServletReq
    @Override
    public String getContextPath()
    {
-      return getRequest().getContextPath();
+      String contextPath = getRequest().getContextPath();
+      if (contextPath.endsWith("/"))
+      {
+         contextPath.substring(0, contextPath.length() - 1);
+      }
+      return contextPath;
    }
 
    @Override
    public String getRequestURL()
    {
-      return getRequest().getRequestURI().substring(getContextPath().length());
+      return getRequest().getRequestURI().substring(getContextPath().length() + 1);
    }
 
    @Override

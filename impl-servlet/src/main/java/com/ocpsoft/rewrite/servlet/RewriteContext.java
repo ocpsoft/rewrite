@@ -21,7 +21,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.spi.InboundRewriteEventProducer;
+import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
+import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
@@ -37,5 +38,7 @@ public interface RewriteContext
 
    List<RewriteProvider<Rewrite>> getRewriteProviders();
 
-   List<InboundRewriteEventProducer<ServletRequest, ServletResponse>> getInboundRewriteEventProducers();
+   List<InboundRewriteProducer<ServletRequest, ServletResponse>> getInboundRewriteEventProducers();
+
+   List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> getOutboundProducers();
 }

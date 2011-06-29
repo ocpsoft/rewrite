@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.http;
+package com.ocpsoft.rewrite.servlet.http.event;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.servlet.event.InboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 
 /**
  * Rewrite event for an {@link HttpServletRequest}, {@link HttpServletResponse} lifecycle.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface HttpInboundRewriteEvent extends InboundRewriteEvent<HttpServletRequest, HttpServletResponse>,
-         HttpRewriteEvent
+public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpServletRequest, HttpServletResponse>,
+         HttpServletRewrite
 {
    /**
     * Return the application context root {@link HttpServletRequest#getContextPath()}
@@ -60,11 +60,11 @@ public interface HttpInboundRewriteEvent extends InboundRewriteEvent<HttpServlet
     * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
     * {@link #abort()}.
     */
-   public void sendErrorCode(int code);
+   public void sendStatusCode(int code);
 
    /**
     * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
     * {@link #abort()}. Provide the given message to the browser.
     */
-   public void sendErrorCode(int code, String message);
+   public void sendStatusCode(int code, String message);
 }

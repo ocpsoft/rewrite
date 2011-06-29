@@ -28,10 +28,10 @@ import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.Handles;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.event.ServletRewriteEvent;
-import com.ocpsoft.rewrite.servlet.http.HttpInboundRewriteEvent;
-import com.ocpsoft.rewrite.servlet.http.HttpOutboundRewriteEvent;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteEvent;
+import com.ocpsoft.rewrite.servlet.event.ServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -40,7 +40,7 @@ import com.ocpsoft.rewrite.servlet.http.HttpRewriteEvent;
 public class RewriteBean
 {
    public void rewriteInbound(
-            @Observes @Handles final HttpInboundRewriteEvent event) throws IOException
+            @Observes @Handles final HttpInboundServletRewrite event) throws IOException
    {
       String requestURL = event.getRequestURL();
 
@@ -57,7 +57,7 @@ public class RewriteBean
    }
 
    public void rewriteOutboundPage(
-            @Observes @Handles final HttpOutboundRewriteEvent event)
+            @Observes @Handles final HttpOutboundServletRewrite event)
    {
       String outboundURL = event.getOutboundURL();
 
@@ -73,7 +73,7 @@ public class RewriteBean
     */
 
    public void rewriteOutbound(
-            @Observes @Handles final HttpOutboundRewriteEvent event)
+            @Observes @Handles final HttpOutboundServletRewrite event)
    {
       System.out.println("OUTBOUND: " + event.getOutboundURL());
       event.setOutboundURL(event.getOutboundURL().replaceAll("miss you", "be thinking of you having fun" +
@@ -81,7 +81,7 @@ public class RewriteBean
    }
 
    public void before(
-            @Observes @BeforeRewriteLifecycle final ServletRewriteEvent<ServletRequest, ServletResponse> event)
+            @Observes @BeforeRewriteLifecycle final ServletRewrite<ServletRequest, ServletResponse> event)
    {
       System.out.println("Before Rewrite Lifecycle");
    }
@@ -93,13 +93,13 @@ public class RewriteBean
    }
 
    public void afterRewrite(
-            @Observes @AfterRewrite final HttpRewriteEvent event)
+            @Observes @AfterRewrite final HttpServletRewrite event)
    {
       System.out.println("After Rewrite");
    }
 
    public void after(
-            @Observes @AfterRewriteLifecycle final HttpInboundRewriteEvent event)
+            @Observes @AfterRewriteLifecycle final Rewrite event)
    {
       System.out.println("After Rewrite Lifecycle");
    }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ocpsoft.rewrite.servlet.impl;
+package com.ocpsoft.rewrite.servlet.http.impl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.RewriteContext;
 import com.ocpsoft.rewrite.servlet.RewriteFilter;
-import com.ocpsoft.rewrite.servlet.event.RewriteEventBase.Flow;
-import com.ocpsoft.rewrite.servlet.http.HttpOutboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
+import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
@@ -61,7 +61,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public String encodeRedirectURL(final String url)
    {
-      HttpOutboundRewriteEvent event = new HttpOutboundRewriteEventImpl(request, this, url);
+      HttpOutboundServletRewrite event = new HttpOutboundRewriteImpl(request, this, url);
       rewrite(event);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
@@ -75,7 +75,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public String encodeURL(final String url)
    {
-      HttpOutboundRewriteEvent event = new HttpOutboundRewriteEventImpl(request, this, url);
+      HttpOutboundServletRewrite event = new HttpOutboundRewriteImpl(request, this, url);
       rewrite(event);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
@@ -86,7 +86,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       return super.encodeURL(event.getOutboundURL());
    }
 
-   private void rewrite(HttpOutboundRewriteEvent event)
+   private void rewrite(HttpOutboundServletRewrite event)
    {
       RewriteContext context = (RewriteContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
       for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())

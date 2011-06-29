@@ -32,10 +32,10 @@ import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.pattern.Weighted;
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
-import com.ocpsoft.rewrite.servlet.event.InboundRewriteEvent;
-import com.ocpsoft.rewrite.servlet.event.RewriteEventBase.Flow;
-import com.ocpsoft.rewrite.servlet.spi.InboundRewriteEventProducer;
-import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteEventProducer;
+import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
+import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
+import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
@@ -53,8 +53,8 @@ public class RewriteFilter implements Filter
    private List<RewriteLifecycleListener<Rewrite>> listeners;
    private List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;
    private List<RewriteProvider<Rewrite>> providers;
-   private List<InboundRewriteEventProducer<ServletRequest, ServletResponse>> inbound;
-   private List<OutboundRewriteEventProducer<ServletRequest, ServletResponse, Object>> outbound;
+   private List<InboundRewriteProducer<ServletRequest, ServletResponse>> inbound;
+   private List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> outbound;
 
    @Override
    @SuppressWarnings("unchecked")
@@ -66,8 +66,8 @@ public class RewriteFilter implements Filter
       listeners = Iterators.asList(ServiceLoader.load(RewriteLifecycleListener.class));
       wrappers = Iterators.asList(ServiceLoader.load(RequestCycleWrapper.class));
       providers = Iterators.asList(ServiceLoader.load(RewriteProvider.class));
-      inbound = Iterators.asList(ServiceLoader.load(InboundRewriteEventProducer.class));
-      outbound = Iterators.asList(ServiceLoader.load(OutboundRewriteEventProducer.class));
+      inbound = Iterators.asList(ServiceLoader.load(InboundRewriteProducer.class));
+      outbound = Iterators.asList(ServiceLoader.load(OutboundRewriteProducer.class));
 
       Collections.sort(listeners, new WeightedComparator());
       Collections.sort(wrappers, new WeightedComparator());
@@ -78,8 +78,8 @@ public class RewriteFilter implements Filter
       logLoadedServices(RewriteLifecycleListener.class, listeners);
       logLoadedServices(RequestCycleWrapper.class, wrappers);
       logLoadedServices(RewriteProvider.class, providers);
-      logLoadedServices(InboundRewriteEventProducer.class, inbound);
-      logLoadedServices(OutboundRewriteEventProducer.class, outbound);
+      logLoadedServices(InboundRewriteProducer.class, inbound);
+      logLoadedServices(OutboundRewriteProducer.class, outbound);
 
       log.info("RewriteFilter initialized.");
       // TODO SPI post filter init
@@ -89,63 +89,71 @@ public class RewriteFilter implements Filter
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
             throws IOException, ServletException
    {
-      InboundRewriteEvent<ServletRequest, ServletResponse> event = createRewriteEvent(request,
+      InboundServletRewrite<ServletRequest, ServletResponse> event = createRewriteEvent(request,
                response);
 
-      if (request.getAttribute(CONTEXT_KEY) == null)
+      if (event == null)
       {
-         RewriteContext context = new RewriteContextImpl(inbound, listeners, wrappers, providers);
-         request.setAttribute(CONTEXT_KEY, context);
+         log.warn("No Rewrite event was produced - RewriteFilter disabled on this request.");
+         chain.doFilter(request, response);
       }
-
-      for (RewriteLifecycleListener<Rewrite> listener : listeners)
+      else
       {
-         if (listener.handles(event))
-            listener.beforeInboundLifecycle(event);
-      }
-
-      for (RequestCycleWrapper<ServletRequest, ServletResponse> wrapper : wrappers)
-      {
-         if (wrapper.handles(event))
+         if (request.getAttribute(CONTEXT_KEY) == null)
          {
-            event.setRequest(wrapper.wrapRequest(request, response));
-            event.setResponse(wrapper.wrapResponse(request, response));
+            RewriteContext context = new RewriteContextImpl(inbound, outbound, listeners, wrappers, providers);
+            request.setAttribute(CONTEXT_KEY, context);
          }
-      }
 
-      for (RewriteLifecycleListener<Rewrite> listener : listeners)
-      {
-         if (listener.handles(event))
-            listener.beforeInboundRewrite(event);
-      }
+         for (RewriteLifecycleListener<Rewrite> listener : listeners)
+         {
+            if (listener.handles(event))
+               listener.beforeInboundLifecycle(event);
+         }
 
-      rewrite(event);
+         for (RequestCycleWrapper<ServletRequest, ServletResponse> wrapper : wrappers)
+         {
+            if (wrapper.handles(event))
+            {
+               event.setRequest(wrapper.wrapRequest(event.getRequest(), event.getResponse()));
+               event.setResponse(wrapper.wrapResponse(event.getRequest(), event.getResponse()));
+            }
+         }
 
-      if (!event.getFlow().is(Flow.ABORT_REQUEST))
-      {
-         chain.doFilter(event.getRequest(), event.getResponse());
-      }
+         for (RewriteLifecycleListener<Rewrite> listener : listeners)
+         {
+            if (listener.handles(event))
+               listener.beforeInboundRewrite(event);
+         }
 
-      for (RewriteLifecycleListener<Rewrite> listener : listeners)
-      {
-         if (listener.handles(event))
-            listener.afterInboundLifecycle(event);
+         rewrite(event);
+
+         if (!event.getFlow().is(Flow.ABORT_REQUEST))
+         {
+            chain.doFilter(event.getRequest(), event.getResponse());
+         }
+
+         for (RewriteLifecycleListener<Rewrite> listener : listeners)
+         {
+            if (listener.handles(event))
+               listener.afterInboundLifecycle(event);
+         }
       }
    }
 
-   public InboundRewriteEvent<ServletRequest, ServletResponse> createRewriteEvent(final ServletRequest request,
+   public InboundServletRewrite<ServletRequest, ServletResponse> createRewriteEvent(final ServletRequest request,
             final ServletResponse response)
    {
-      for (InboundRewriteEventProducer<ServletRequest, ServletResponse> producer : inbound)
+      for (InboundRewriteProducer<ServletRequest, ServletResponse> producer : inbound)
       {
-         InboundRewriteEvent<ServletRequest, ServletResponse> event = producer.createRewriteEvent(request, response);
+         InboundServletRewrite<ServletRequest, ServletResponse> event = producer.createRewriteEvent(request, response);
          if (event != null)
             return event;
       }
       return null;
    }
 
-   private void rewrite(final InboundRewriteEvent<ServletRequest, ServletResponse> event)
+   private void rewrite(final InboundServletRewrite<ServletRequest, ServletResponse> event)
             throws ServletException,
             IOException
    {

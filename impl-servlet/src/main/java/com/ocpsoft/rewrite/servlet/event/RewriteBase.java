@@ -24,15 +24,15 @@ import javax.servlet.ServletResponse;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class RewriteEventBase<IN extends ServletRequest, OUT extends ServletResponse> implements
-         InboundRewriteEvent<IN, OUT>, OutboundRewriteEvent<IN, OUT>
+public class RewriteBase<IN extends ServletRequest, OUT extends ServletResponse> implements
+         InboundServletRewrite<IN, OUT>, OutboundServletRewrite<IN, OUT>
 {
    private IN request;
    private OUT response;
    protected Flow flow;
    protected String dispatchResource;
 
-   public RewriteEventBase(final IN request, final OUT response)
+   public RewriteBase(final IN request, final OUT response)
    {
       flow = Flow.UN_HANDLED;
       this.request = request;

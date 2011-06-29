@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.impl;
+package com.ocpsoft.rewrite.servlet.http.impl;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -21,15 +21,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.services.NonEnriching;
-import com.ocpsoft.rewrite.servlet.event.InboundRewriteEvent;
-import com.ocpsoft.rewrite.servlet.spi.InboundRewriteEventProducer;
+import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpInboundRewriteEventProducer implements
-         InboundRewriteEventProducer<HttpServletRequest, HttpServletResponse>,
+public class HttpInboundRewriteProducer implements
+         InboundRewriteProducer<HttpServletRequest, HttpServletResponse>,
          NonEnriching
 {
    @Override
@@ -45,10 +45,10 @@ public class HttpInboundRewriteEventProducer implements
    }
 
    @Override
-   public InboundRewriteEvent<HttpServletRequest, HttpServletResponse> createRewriteEvent(final ServletRequest request,
+   public InboundServletRewrite<HttpServletRequest, HttpServletResponse> createRewriteEvent(final ServletRequest request,
             final ServletResponse response)
    {
-      return new HttpInboundRewriteEventImpl((HttpServletRequest) request, (HttpServletResponse) response);
+      return new HttpInboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response);
    }
 
 }

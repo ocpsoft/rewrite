@@ -21,23 +21,17 @@
  */
 package com.ocpsoft.rewrite.cdi.bridge;
 
-import static org.junit.Assert.fail;
-
 import java.net.URL;
 
-import org.apache.http.HttpEntity;
+import junit.framework.Assert;
+
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.jboss.arquillian.api.ArquillianResource;
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.RunAsClient;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -48,7 +42,6 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-@RunAsClient
 @RunWith(Arquillian.class)
 public class RewriteLifecycleEventBridgeTest extends RewriteTestBase
 {
@@ -57,10 +50,10 @@ public class RewriteLifecycleEventBridgeTest extends RewriteTestBase
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
                .addPackages(true, CDIRoot.class.getPackage())
-               .addAsResource(
+               .addAsManifestResource(
                         new StringAsset(RewriteLifecycleEventBridge.class.getName()),
                         ArchivePaths
-                                 .create("META-INF/services/com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener"));
+                                 .create("/services/com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener"));
       System.out.println(deployment.toString(true));
       return deployment;
    }
@@ -68,35 +61,17 @@ public class RewriteLifecycleEventBridgeTest extends RewriteTestBase
    @ArquillianResource
    URL baseURL;
 
-   @Override
    @Test
-   public void test()
+   public void testRewriteProviderBridgeAcceptsChanges()
    {
-      makeCall("/page");
-      fail("Not yet implemented");
+      HttpResponse response = request("/page");
+      Assert.assertEquals(200, response.getStatusLine().getStatusCode());
    }
 
-   @Override
-   protected void makeCall(String path)
+   @Test
+   public void testRewriteProviderBridgeIgnoresUnchangedEvent()
    {
-      DefaultHttpClient httpclient = new DefaultHttpClient();
-      try
-      {
-         HttpGet httpget = new HttpGet(baseURL.toExternalForm() + path);
-
-         HttpResponse response = httpclient.execute(httpget);
-
-         HttpEntity entity = response.getEntity();
-         if (entity != null)
-            entity.consumeContent();
-
-         StatusLine statusLine = response.getStatusLine();
-         System.out.println("Status: " + statusLine);
-         Assert.assertEquals(200, statusLine.getStatusCode());
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      HttpResponse response = request("/unchanged");
+      Assert.assertEquals(404, response.getStatusLine().getStatusCode());
    }
 }

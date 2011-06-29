@@ -13,38 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.impl;
+package com.ocpsoft.rewrite.servlet.http.impl;
 
-import java.util.HashMap;
-
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.services.NonEnriching;
-import com.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
+import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper implements NonEnriching
+public class HttpOutboundRewriteProducer implements
+         OutboundRewriteProducer<HttpServletRequest, HttpServletResponse, String>,
+         NonEnriching
 {
-   @Override
-   public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
-   {
-      HashMap<String, String[]> additionalParams = new HashMap<String, String[]>();
-      return new HttpRewriteWrappedRequest(request, additionalParams);
-   }
-
-   @Override
-   public HttpServletResponse wrapResponse(final HttpServletRequest request, final HttpServletResponse response)
-   {
-      return new HttpRewriteWrappedResponse(request, response);
-   }
-
    @Override
    public int priority()
    {
       return 0;
    }
+
+   @Override
+   public boolean handles(ServletResponse request)
+   {
+      return request instanceof HttpServletRequest;
+   }
+
+   @Override
+   public OutboundServletRewrite<HttpServletRequest, HttpServletResponse> createRewriteEvent(
+            final ServletRequest request,
+            final ServletResponse response, String payload)
+   {
+      return new HttpOutboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response, payload);
+   }
+
 }

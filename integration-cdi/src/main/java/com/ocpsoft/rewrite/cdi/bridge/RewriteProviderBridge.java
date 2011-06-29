@@ -20,8 +20,8 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import com.ocpsoft.rewrite.cdi.events.Handles;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteEvent;
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -33,7 +33,7 @@ public class RewriteProviderBridge extends HttpRewriteProvider
    private BeanManager manager;
 
    @Override
-   public void rewrite(final HttpRewriteEvent event)
+   public void rewrite(final HttpServletRewrite event)
    {
       manager.fireEvent(event, new AnnotationLiteral<Handles>() { });
    }

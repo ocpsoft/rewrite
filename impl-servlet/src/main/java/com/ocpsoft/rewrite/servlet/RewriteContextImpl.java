@@ -21,7 +21,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.spi.InboundRewriteEventProducer;
+import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
+import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
@@ -36,14 +37,17 @@ public class RewriteContextImpl implements RewriteContext
    private final List<RewriteProvider<Rewrite>> providers;
    private final List<RewriteLifecycleListener<Rewrite>> listeners;
    private final List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;
-   private final List<InboundRewriteEventProducer<ServletRequest, ServletResponse>> producers;
+   private final List<InboundRewriteProducer<ServletRequest, ServletResponse>> inboundProducers;
+   private final List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> outboundProducers;
 
-   public RewriteContextImpl(final List<InboundRewriteEventProducer<ServletRequest, ServletResponse>> producers,
+   public RewriteContextImpl(final List<InboundRewriteProducer<ServletRequest, ServletResponse>> inboundProducers,
+            final List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> outboundProducers,
             final List<RewriteLifecycleListener<Rewrite>> listeners,
             final List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers,
             final List<RewriteProvider<Rewrite>> providers)
    {
-      this.producers = producers;
+      this.inboundProducers = inboundProducers;
+      this.outboundProducers = outboundProducers;
       this.listeners = listeners;
       this.wrappers = wrappers;
       this.providers = providers;
@@ -68,9 +72,15 @@ public class RewriteContextImpl implements RewriteContext
    }
 
    @Override
-   public List<InboundRewriteEventProducer<ServletRequest, ServletResponse>> getInboundRewriteEventProducers()
+   public List<InboundRewriteProducer<ServletRequest, ServletResponse>> getInboundRewriteEventProducers()
    {
-      return producers;
+      return inboundProducers;
+   }
+
+   @Override
+   public List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> getOutboundProducers()
+   {
+      return outboundProducers;
    }
 
 }

@@ -19,19 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.http;
+package com.ocpsoft.rewrite.servlet.spi;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.servlet.event.ServletRewriteEvent;
+import com.ocpsoft.rewrite.pattern.Specialized;
+import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface HttpRewriteEvent extends
-         ServletRewriteEvent<HttpServletRequest, HttpServletResponse>
+public interface OutboundRewriteProducer<IN extends ServletRequest, OUT extends ServletResponse, P> extends
+         Specialized<ServletResponse>, Weighted
 {
-
+   OutboundServletRewrite<IN, OUT> createRewriteEvent(ServletRequest request, ServletResponse response, P payload);
 }

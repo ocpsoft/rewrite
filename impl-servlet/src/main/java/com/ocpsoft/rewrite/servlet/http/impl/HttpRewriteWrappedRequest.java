@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ocpsoft.rewrite.servlet.impl;
+package com.ocpsoft.rewrite.servlet.http.impl;
 
 import java.util.Collections;
 import java.util.Enumeration;

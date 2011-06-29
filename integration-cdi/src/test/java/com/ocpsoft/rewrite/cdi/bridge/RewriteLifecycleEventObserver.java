@@ -19,21 +19,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.spi;
+package com.ocpsoft.rewrite.cdi.bridge;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 
-import com.ocpsoft.rewrite.pattern.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
-import com.ocpsoft.rewrite.servlet.event.OutboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface OutboundRewriteEventProducer<IN extends ServletRequest, OUT extends ServletResponse, P> extends
-         Specialized<ServletResponse>, Weighted
+@RequestScoped
+public class RewriteLifecycleEventObserver
 {
-   OutboundRewriteEvent<IN, OUT> createRewriteEvent(ServletRequest request, ServletResponse response, P payload);
+   public void rewriteInbound(@Observes HttpInboundServletRewrite event)
+   {
+      if (event.getRequestURL().equals("/page"))
+      {
+         System.out.println("Inbound: " + event.getRequestURL());
+         event.sendStatusCode(200);
+      }
+   }
 }

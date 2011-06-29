@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
 /**
@@ -28,11 +29,11 @@ import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class HttpRewriteLifecycleListener implements RewriteLifecycleListener<HttpRewriteEvent>
+public abstract class HttpRewriteLifecycleListener implements RewriteLifecycleListener<HttpServletRewrite>
 {
    @Override
    public boolean handles(final Rewrite event)
    {
-      return event instanceof HttpRewriteEvent;
+      return event instanceof HttpServletRewrite;
    }
 }

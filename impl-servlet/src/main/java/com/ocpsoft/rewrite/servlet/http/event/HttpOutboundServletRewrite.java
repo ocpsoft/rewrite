@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.http;
+package com.ocpsoft.rewrite.servlet.http.event;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.servlet.event.OutboundRewriteEvent;
+import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface HttpOutboundRewriteEvent extends
-         OutboundRewriteEvent<HttpServletRequest, HttpServletResponse>, HttpRewriteEvent
+public interface HttpOutboundServletRewrite extends
+         OutboundServletRewrite<HttpServletRequest, HttpServletResponse>, HttpServletRewrite
 {
    /**
     * Return the application context root {@link HttpServletRequest#getContextPath()}

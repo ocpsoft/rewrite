@@ -30,7 +30,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface ServletRewriteEvent<IN extends ServletRequest, OUT extends ServletResponse>
+public interface ServletRewrite<IN extends ServletRequest, OUT extends ServletResponse>
          extends Rewrite
 {
    public IN getRequest();

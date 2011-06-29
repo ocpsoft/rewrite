@@ -23,8 +23,8 @@ import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteEvent;
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleListener;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
 /**
@@ -45,37 +45,37 @@ public class RewriteLifecycleEventBridge extends HttpRewriteLifecycleListener
    }
 
    @Override
-   public void beforeInboundLifecycle(final HttpRewriteEvent event)
+   public void beforeInboundLifecycle(final HttpServletRewrite event)
    {
       manager.fireEvent(event, new AnnotationLiteral<BeforeRewriteLifecycle>() {});
    }
 
    @Override
-   public void beforeInboundRewrite(final HttpRewriteEvent event)
+   public void beforeInboundRewrite(final HttpServletRewrite event)
    {
       manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>() {});
    }
 
    @Override
-   public void afterInboundRewrite(final HttpRewriteEvent event)
+   public void afterInboundRewrite(final HttpServletRewrite event)
    {
       manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>() {});
    }
 
    @Override
-   public void afterInboundLifecycle(final HttpRewriteEvent event)
+   public void afterInboundLifecycle(final HttpServletRewrite event)
    {
       manager.fireEvent(event, new AnnotationLiteral<AfterRewriteLifecycle>() {});
    }
 
    @Override
-   public void beforeOutboundRewrite(HttpRewriteEvent event)
+   public void beforeOutboundRewrite(HttpServletRewrite event)
    {
       manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>() {});
    }
 
    @Override
-   public void afterOutboundRewrite(HttpRewriteEvent event)
+   public void afterOutboundRewrite(HttpServletRewrite event)
    {
       manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>() {});
    }
