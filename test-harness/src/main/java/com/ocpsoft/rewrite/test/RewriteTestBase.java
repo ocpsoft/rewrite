@@ -26,6 +26,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -54,7 +56,7 @@ public class RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      JavaArchive rewrite = ShrinkWrap.create(JavaArchive.class, "rewrite.jar")
+      JavaArchive rewrite = ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
                .addAsResource(new File("../api/target/classes/com"))
                .addAsResource(new File("../api/target/classes/META-INF"))
                .addAsResource(new File("../impl-servlet/target/classes/com"))
@@ -73,7 +75,7 @@ public class RewriteTestBase
                .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"));
    }
 
-   private static Collection<GenericArchive> resolveDependencies(String coords)
+   private static Collection<GenericArchive> resolveDependencies(final String coords)
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
                .artifacts(coords)
@@ -83,12 +85,23 @@ public class RewriteTestBase
    @ArquillianResource
    URL baseURL;
 
-   protected HttpResponse request(String path)
+   /**
+    * Request a resource from the deployed test-application. The {@link HttpServletRequest#getContextPath()} will be
+    * automatically prepended to the given path.
+    * <p>
+    * E.g: A path of '/example' will be sent as '/rewrite-test/example'
+    */
+   protected HttpResponse request(final String path)
    {
       DefaultHttpClient httpclient = new DefaultHttpClient();
-      try
-      {
-         HttpGet httpget = new HttpGet(baseURL.toExternalForm() + path);
+      try {
+         String url = baseURL.toExternalForm();
+         if (url.endsWith("/"))
+         {
+            url = url.substring(0, url.length() - 1);
+         }
+         url = url + path;
+         HttpGet httpget = new HttpGet(url);
 
          HttpResponse response = httpclient.execute(httpget);
 
@@ -98,8 +111,7 @@ public class RewriteTestBase
 
          return response;
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          throw new RuntimeException(e);
       }
    }

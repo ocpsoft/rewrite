@@ -21,16 +21,11 @@
  */
 package com.ocpsoft.rewrite.cdi.bridge;
 
-import java.net.URL;
-
 import junit.framework.Assert;
 
 import org.apache.http.HttpResponse;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,23 +38,18 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * 
  */
 @RunWith(Arquillian.class)
-public class RewriteLifecycleEventBridgeTest extends RewriteTestBase
+public class RewriteProviderBridgeTest extends RewriteTestBase
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
-               .addPackages(true, CDIRoot.class.getPackage())
-               .addAsManifestResource(
-                        new StringAsset(RewriteLifecycleEventBridge.class.getName()),
-                        ArchivePaths
-                                 .create("/services/com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener"));
+               .addPackages(true, CDIRoot.class.getPackage());
+
       System.out.println(deployment.toString(true));
+
       return deployment;
    }
-
-   @ArquillianResource
-   URL baseURL;
 
    @Test
    public void testRewriteProviderBridgeAcceptsChanges()

@@ -45,7 +45,7 @@ public class HttpInboundRewriteProducer implements
    }
 
    @Override
-   public InboundServletRewrite<HttpServletRequest, HttpServletResponse> createRewriteEvent(final ServletRequest request,
+   public InboundServletRewrite<HttpServletRequest, HttpServletResponse> createInboundRewrite(final ServletRequest request,
             final ServletResponse response)
    {
       return new HttpInboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response);

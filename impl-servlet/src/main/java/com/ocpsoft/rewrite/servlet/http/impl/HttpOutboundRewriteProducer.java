@@ -45,7 +45,7 @@ public class HttpOutboundRewriteProducer implements
    }
 
    @Override
-   public OutboundServletRewrite<HttpServletRequest, HttpServletResponse> createRewriteEvent(
+   public OutboundServletRewrite<HttpServletRequest, HttpServletResponse> createOutboundRewrite(
             final ServletRequest request,
             final ServletResponse response, String payload)
    {

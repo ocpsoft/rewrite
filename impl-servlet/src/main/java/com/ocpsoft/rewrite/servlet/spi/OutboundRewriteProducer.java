@@ -35,5 +35,5 @@ import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 public interface OutboundRewriteProducer<IN extends ServletRequest, OUT extends ServletResponse, P> extends
          Specialized<ServletResponse>, Weighted
 {
-   OutboundServletRewrite<IN, OUT> createRewriteEvent(ServletRequest request, ServletResponse response, P payload);
+   OutboundServletRewrite<IN, OUT> createOutboundRewrite(ServletRequest request, ServletResponse response, P payload);
 }

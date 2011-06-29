@@ -146,7 +146,7 @@ public class RewriteFilter implements Filter
    {
       for (InboundRewriteProducer<ServletRequest, ServletResponse> producer : inbound)
       {
-         InboundServletRewrite<ServletRequest, ServletResponse> event = producer.createRewriteEvent(request, response);
+         InboundServletRewrite<ServletRequest, ServletResponse> event = producer.createInboundRewrite(request, response);
          if (event != null)
             return event;
       }

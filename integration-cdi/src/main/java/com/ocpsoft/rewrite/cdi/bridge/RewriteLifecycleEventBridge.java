@@ -16,11 +16,10 @@
 package com.ocpsoft.rewrite.cdi.bridge;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
+import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleListener;
@@ -32,7 +31,6 @@ import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("serial")
 public class RewriteLifecycleEventBridge extends HttpRewriteLifecycleListener
 {
    @Inject
@@ -47,36 +45,36 @@ public class RewriteLifecycleEventBridge extends HttpRewriteLifecycleListener
    @Override
    public void beforeInboundLifecycle(final HttpServletRewrite event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<BeforeRewriteLifecycle>() {});
+      manager.fireEvent(new BeforeRewriteLifecycle(event));
    }
 
    @Override
    public void beforeInboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>() {});
+      manager.fireEvent(new BeforeRewrite(event));
    }
 
    @Override
    public void afterInboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>() {});
+      manager.fireEvent(new AfterRewrite(event));
    }
 
    @Override
    public void afterInboundLifecycle(final HttpServletRewrite event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<AfterRewriteLifecycle>() {});
+      manager.fireEvent(new AfterRewriteLifecycle(event));
    }
 
    @Override
-   public void beforeOutboundRewrite(HttpServletRewrite event)
+   public void beforeOutboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<BeforeRewrite>() {});
+      manager.fireEvent(new BeforeRewrite(event));
    }
 
    @Override
-   public void afterOutboundRewrite(HttpServletRewrite event)
+   public void afterOutboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<AfterRewrite>() {});
+      manager.fireEvent(new AfterRewrite(event));
    }
 }

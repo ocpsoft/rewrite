@@ -16,26 +16,25 @@
 package com.ocpsoft.rewrite.cdi.bridge;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.cdi.events.Handles;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.servlet.ServletRewriteProvider;
+import com.ocpsoft.rewrite.servlet.event.ServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("serial")
-public class RewriteProviderBridge extends HttpRewriteProvider
+public class RewriteProviderBridge extends ServletRewriteProvider<ServletRewrite<ServletRequest, ServletResponse>>
 {
    @Inject
    private BeanManager manager;
 
    @Override
-   public void rewrite(final HttpServletRewrite event)
+   public void rewrite(final ServletRewrite<ServletRequest, ServletResponse> event)
    {
-      manager.fireEvent(event, new AnnotationLiteral<Handles>() { });
+      manager.fireEvent(event);
    }
 
    @Override
