@@ -18,20 +18,14 @@ package com.ocpsoft.rewrite.prototype;
 import java.io.IOException;
 
 import javax.enterprise.event.Observes;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
-import com.ocpsoft.rewrite.cdi.events.Handles;
-import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -40,14 +34,13 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class RewriteBean
 {
    public void rewriteInbound(
-            @Observes @Handles final HttpInboundServletRewrite event) throws IOException
+            @Observes final HttpInboundServletRewrite event) throws IOException
    {
       String requestURL = event.getRequestURL();
 
       System.out.println("INBOUND MAPPING: " + requestURL);
 
-      if ("/page".equals(requestURL))
-      {
+      if ("/page".equals(requestURL)) {
          event.forward("/faces/page.xhtml");
 
          HttpServletResponse response = event.getResponse();
@@ -57,12 +50,11 @@ public class RewriteBean
    }
 
    public void rewriteOutboundPage(
-            @Observes @Handles final HttpOutboundServletRewrite event)
+            @Observes final HttpOutboundServletRewrite event)
    {
       String outboundURL = event.getOutboundURL();
 
-      if (outboundURL.equals(event.getContextPath() + "/faces/page.xhtml"))
-      {
+      if (outboundURL.equals(event.getContextPath() + "/faces/page.xhtml")) {
          System.out.println("OUTBOUND MAPPING: " + outboundURL);
          event.setOutboundURL(event.getContextPath() + "/page");
       }
@@ -73,7 +65,7 @@ public class RewriteBean
     */
 
    public void rewriteOutbound(
-            @Observes @Handles final HttpOutboundServletRewrite event)
+            @Observes final HttpOutboundServletRewrite event)
    {
       System.out.println("OUTBOUND: " + event.getOutboundURL());
       event.setOutboundURL(event.getOutboundURL().replaceAll("miss you", "be thinking of you having fun" +
@@ -81,25 +73,25 @@ public class RewriteBean
    }
 
    public void before(
-            @Observes @BeforeRewriteLifecycle final ServletRewrite<ServletRequest, ServletResponse> event)
+            @Observes final BeforeRewriteLifecycle event)
    {
       System.out.println("Before Rewrite Lifecycle");
    }
 
    public void beforeRewrite(
-            @Observes @BeforeRewrite final Rewrite event)
+            @Observes final BeforeRewrite event)
    {
       System.out.println("Before Rewrite");
    }
 
    public void afterRewrite(
-            @Observes @AfterRewrite final HttpServletRewrite event)
+            @Observes final AfterRewrite event)
    {
       System.out.println("After Rewrite");
    }
 
    public void after(
-            @Observes @AfterRewriteLifecycle final Rewrite event)
+            @Observes final AfterRewriteLifecycle event)
    {
       System.out.println("After Rewrite Lifecycle");
    }

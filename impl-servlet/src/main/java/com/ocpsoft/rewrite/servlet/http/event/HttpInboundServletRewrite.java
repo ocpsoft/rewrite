@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.servlet.http.event;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,13 +47,15 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
 
    /**
     * If the {@link HttpServletResponse} is not already committed, issue a Temporary Redirect (302) and call
-    * {@link #abort()}.
+    * {@link #abort()}. This location must be include {@link #getContextPath()} if attempting to redirect within the
+    * current {@link ServletContext}
     */
    public void redirectTemporary(final String location);
 
    /**
     * If the {@link HttpServletResponse} is not already committed, issue a Permanent Redirect (302) and call
-    * {@link #abort()}.
+    * {@link #abort()}. This location must be include {@link #getContextPath()} if attempting to redirect within the
+    * current {@link ServletContext}
     */
    public void redirectPermanent(final String location);
 

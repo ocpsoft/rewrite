@@ -19,13 +19,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface OutboundServletRewrite<IN extends ServletRequest, OUT extends ServletResponse> extends
-         ServletRewrite<IN, OUT>
+         OutboundRewrite, ServletRewrite<IN, OUT>
 {
    /**
     * Marks the current {@link OutboundServletRewrite} as handled, terminates further handling, and immediately returns

@@ -60,7 +60,7 @@ public class RewriteFilter implements Filter
    @SuppressWarnings("unchecked")
    public void init(final FilterConfig filterConfig) throws ServletException
    {
-      // TODO SPI pre filter init
+      // TODO SPI pre filter init?
       log.info("RewriteFilter starting up...");
 
       listeners = Iterators.asList(ServiceLoader.load(RewriteLifecycleListener.class));
@@ -82,7 +82,7 @@ public class RewriteFilter implements Filter
       logLoadedServices(OutboundRewriteProducer.class, outbound);
 
       log.info("RewriteFilter initialized.");
-      // TODO SPI post filter init
+      // TODO SPI post filter init?
    }
 
    @Override
@@ -146,7 +146,8 @@ public class RewriteFilter implements Filter
    {
       for (InboundRewriteProducer<ServletRequest, ServletResponse> producer : inbound)
       {
-         InboundServletRewrite<ServletRequest, ServletResponse> event = producer.createRewriteEvent(request, response);
+         InboundServletRewrite<ServletRequest, ServletResponse> event = producer
+                  .createInboundRewrite(request, response);
          if (event != null)
             return event;
       }
@@ -194,7 +195,7 @@ public class RewriteFilter implements Filter
    @Override
    public void destroy()
    {
-      // TODO SPI filter destroy
+      // TODO SPI filter destroy?
    }
 
    private <T> void logLoadedServices(final Class<T> type, final List<? extends T> services)

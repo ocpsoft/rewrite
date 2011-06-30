@@ -21,6 +21,7 @@ import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 
+import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
@@ -32,7 +33,7 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface InboundServletRewrite<IN extends ServletRequest, OUT extends ServletResponse> extends
-         ServletRewrite<IN, OUT>
+         InboundRewrite, ServletRewrite<IN, OUT>
 {
    /**
     * Marks the current {@link InboundServletRewriteEvent} as handled, terminates further handling, and ends the current

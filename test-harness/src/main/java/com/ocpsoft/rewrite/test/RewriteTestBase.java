@@ -26,11 +26,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 
-import org.apache.http.HttpEntity;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -54,7 +56,7 @@ public class RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      JavaArchive rewrite = ShrinkWrap.create(JavaArchive.class, "rewrite.jar")
+      JavaArchive rewrite = ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
                .addAsResource(new File("../api/target/classes/com"))
                .addAsResource(new File("../api/target/classes/META-INF"))
                .addAsResource(new File("../impl-servlet/target/classes/com"))
@@ -73,7 +75,7 @@ public class RewriteTestBase
                .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"));
    }
 
-   private static Collection<GenericArchive> resolveDependencies(String coords)
+   private static Collection<GenericArchive> resolveDependencies(final String coords)
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
                .artifacts(coords)
@@ -83,23 +85,31 @@ public class RewriteTestBase
    @ArquillianResource
    URL baseURL;
 
-   protected HttpResponse request(String path)
+   /**
+    * Request a resource from the deployed test-application. The {@link HttpServletRequest#getContextPath()} will be
+    * automatically prepended to the given path.
+    * <p>
+    * E.g: A path of '/example' will be sent as '/rewrite-test/example'
+    */
+   protected HttpAction<HttpGet> get(final String path)
    {
-      DefaultHttpClient httpclient = new DefaultHttpClient();
-      try
-      {
-         HttpGet httpget = new HttpGet(baseURL.toExternalForm() + path);
+      DefaultHttpClient httpClient = new DefaultHttpClient();
+      try {
+         String url = baseURL.toExternalForm();
+         if (url.endsWith("/"))
+         {
+            url = url.substring(0, url.length() - 1);
+         }
+         String baseUrlString = url;
+         url = url + path;
 
-         HttpResponse response = httpclient.execute(httpget);
+         HttpGet httpGet = new HttpGet(url);
+         HttpContext context = new BasicHttpContext();
+         HttpResponse response = httpClient.execute(httpGet, context);
 
-         HttpEntity entity = response.getEntity();
-         if (entity != null)
-            EntityUtils.consume(entity);
-
-         return response;
+         return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString);
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          throw new RuntimeException(e);
       }
    }

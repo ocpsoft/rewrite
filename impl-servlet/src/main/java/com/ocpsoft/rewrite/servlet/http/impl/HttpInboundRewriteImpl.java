@@ -138,17 +138,13 @@ public class HttpInboundRewriteImpl extends RewriteBase<HttpServletRequest, Http
    public String getContextPath()
    {
       String contextPath = getRequest().getContextPath();
-      if (contextPath.endsWith("/"))
-      {
-         contextPath.substring(0, contextPath.length() - 1);
-      }
       return contextPath;
    }
 
    @Override
    public String getRequestURL()
    {
-      return getRequest().getRequestURI().substring(getContextPath().length() + 1);
+      return getRequest().getRequestURI().substring(getContextPath().length());
    }
 
    @Override

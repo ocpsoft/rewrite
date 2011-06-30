@@ -21,21 +21,17 @@
  */
 package com.ocpsoft.rewrite.cdi.bridge;
 
-import java.net.URL;
-
 import junit.framework.Assert;
 
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ocpsoft.rewrite.cdi.CDIRoot;
+import com.ocpsoft.rewrite.test.HttpAction;
 import com.ocpsoft.rewrite.test.RewriteTestBase;
 
 /**
@@ -43,35 +39,31 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * 
  */
 @RunWith(Arquillian.class)
-public class RewriteLifecycleEventBridgeTest extends RewriteTestBase
+public class RewriteProviderBridgeTest extends RewriteTestBase
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
-               .addPackages(true, CDIRoot.class.getPackage())
-               .addAsManifestResource(
-                        new StringAsset(RewriteLifecycleEventBridge.class.getName()),
-                        ArchivePaths
-                                 .create("/services/com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener"));
+               .addPackages(true, CDIRoot.class.getPackage());
+
       System.out.println(deployment.toString(true));
+
       return deployment;
    }
-
-   @ArquillianResource
-   URL baseURL;
 
    @Test
    public void testRewriteProviderBridgeAcceptsChanges()
    {
-      HttpResponse response = request("/page");
-      Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+      HttpAction<HttpGet> action = get("/success");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testRewriteProviderBridgeIgnoresUnchangedEvent()
+   public void testRewriteRedirect301()
    {
-      HttpResponse response = request("/unchanged");
-      Assert.assertEquals(404, response.getStatusLine().getStatusCode());
+      HttpAction<HttpGet> action = get("/redirect-301");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals("/outbound-rewritten", action.getCurrentURL());
    }
 }
