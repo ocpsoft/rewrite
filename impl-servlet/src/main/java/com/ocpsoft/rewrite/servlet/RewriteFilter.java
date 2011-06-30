@@ -63,11 +63,11 @@ public class RewriteFilter implements Filter
       // TODO SPI pre filter init?
       log.info("RewriteFilter starting up...");
 
-      listeners = Iterators.asList(ServiceLoader.load(RewriteLifecycleListener.class));
-      wrappers = Iterators.asList(ServiceLoader.load(RequestCycleWrapper.class));
-      providers = Iterators.asList(ServiceLoader.load(RewriteProvider.class));
-      inbound = Iterators.asList(ServiceLoader.load(InboundRewriteProducer.class));
-      outbound = Iterators.asList(ServiceLoader.load(OutboundRewriteProducer.class));
+      listeners = Iterators.asUniqueList(ServiceLoader.load(RewriteLifecycleListener.class));
+      wrappers = Iterators.asUniqueList(ServiceLoader.load(RequestCycleWrapper.class));
+      providers = Iterators.asUniqueList(ServiceLoader.load(RewriteProvider.class));
+      inbound = Iterators.asUniqueList(ServiceLoader.load(InboundRewriteProducer.class));
+      outbound = Iterators.asUniqueList(ServiceLoader.load(OutboundRewriteProducer.class));
 
       Collections.sort(listeners, new WeightedComparator());
       Collections.sort(wrappers, new WeightedComparator());

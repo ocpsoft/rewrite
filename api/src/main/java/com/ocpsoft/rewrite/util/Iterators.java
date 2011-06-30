@@ -45,4 +45,20 @@ public class Iterators
       }
       return result;
    }
+
+   public static <T> List<T> asUniqueList(final Iterable<T> iterable)
+   {
+      List<T> result = new ArrayList<T>();
+      for (T t : iterable)
+      {
+         boolean found = false;
+         for (T r : result) {
+            if ((r != null) && r.getClass().isInstance(t))
+               found = true;
+         }
+         if (!found)
+            result.add(t);
+      }
+      return result;
+   }
 }
