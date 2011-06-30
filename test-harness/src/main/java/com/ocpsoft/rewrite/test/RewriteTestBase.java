@@ -62,8 +62,6 @@ public class RewriteTestBase
                .addAsResource(new File("../impl-servlet/target/classes/com"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
 
-      System.out.println(rewrite.toString(true) + "\n");
-
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
                .addAsLibraries(rewrite)

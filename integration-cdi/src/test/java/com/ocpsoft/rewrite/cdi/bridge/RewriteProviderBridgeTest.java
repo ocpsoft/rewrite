@@ -47,8 +47,6 @@ public class RewriteProviderBridgeTest extends RewriteTestBase
       WebArchive deployment = RewriteTestBase.getDeployment()
                .addPackages(true, CDIRoot.class.getPackage());
 
-      System.out.println(deployment.toString(true));
-
       return deployment;
    }
 
