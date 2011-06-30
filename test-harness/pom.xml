@@ -15,11 +15,7 @@
 
    <properties>
       <version.arquillian>1.0.0.CR1</version.arquillian>
-   
       <version.jetty>8.0.0.M3</version.jetty>
-   <!--    
-      <version.jetty>7.0.2.v20100331</version.jetty>
-    -->
    </properties>
 
    <dependencies>

@@ -79,6 +79,7 @@ public class RewriteTestBase
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
                .artifacts(coords)
+               .loadReposFromPom("pom.xml")
                .resolveAs(GenericArchive.class);
    }
 
@@ -94,7 +95,8 @@ public class RewriteTestBase
    protected HttpAction<HttpGet> get(final String path)
    {
       DefaultHttpClient httpClient = new DefaultHttpClient();
-      try {
+      try
+      {
          String url = baseURL.toExternalForm();
          if (url.endsWith("/"))
          {
@@ -109,7 +111,8 @@ public class RewriteTestBase
 
          return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString);
       }
-      catch (Exception e) {
+      catch (Exception e)
+      {
          throw new RuntimeException(e);
       }
    }
