@@ -64,5 +64,6 @@ public class RewriteProviderBridgeTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/redirect-301");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals("/outbound-rewritten", action.getCurrentURL());
    }
 }

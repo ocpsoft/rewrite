@@ -28,11 +28,11 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -100,15 +100,14 @@ public class RewriteTestBase
          {
             url = url.substring(0, url.length() - 1);
          }
+         String baseUrlString = url;
          url = url + path;
+
          HttpGet httpGet = new HttpGet(url);
+         HttpContext context = new BasicHttpContext();
+         HttpResponse response = httpClient.execute(httpGet, context);
 
-         HttpResponse response = httpClient.execute(httpGet);
-         HttpEntity entity = response.getEntity();
-         if (entity != null)
-            EntityUtils.consume(entity);
-
-         return new HttpAction<HttpGet>(httpClient, httpGet, response);
+         return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString);
       }
       catch (Exception e) {
          throw new RuntimeException(e);

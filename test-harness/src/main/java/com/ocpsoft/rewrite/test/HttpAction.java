@@ -21,9 +21,13 @@
  */
 package com.ocpsoft.rewrite.test;
 
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpContext;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -34,12 +38,33 @@ public class HttpAction<T extends HttpRequest>
    private final HttpClient client;
    private final T request;
    private final HttpResponse response;
+   private final HttpContext context;
+   private final String baseUrl;
 
-   public HttpAction(final HttpClient httpClient, final T httpGet, final HttpResponse response)
+   public HttpAction(final HttpClient httpClient, final T httpGet, final HttpContext context,
+            final HttpResponse response, final String baseUrl)
    {
       this.client = httpClient;
       this.request = httpGet;
+      this.context = context;
       this.response = response;
+      this.baseUrl = baseUrl;
+   }
+
+   public String getCurrentURL()
+   {
+      HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(
+               ExecutionContext.HTTP_REQUEST);
+      HttpHost currentHost = (HttpHost) context.getAttribute(
+               ExecutionContext.HTTP_TARGET_HOST);
+      String currentUrl = currentHost.toURI() + currentReq.getURI();
+
+      if (currentUrl.startsWith(baseUrl))
+      {
+         currentUrl = currentUrl.substring(baseUrl.length());
+      }
+
+      return currentUrl;
    }
 
    public HttpClient getClient()
@@ -50,6 +75,11 @@ public class HttpAction<T extends HttpRequest>
    public T getRequest()
    {
       return request;
+   }
+
+   public HttpContext getContext()
+   {
+      return context;
    }
 
    public HttpResponse getResponse()
