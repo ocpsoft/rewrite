@@ -3,6 +3,7 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
+   
    <parent>
       <artifactId>rewrite-parent</artifactId>
       <groupId>com.ocpsoft.rewrite</groupId>
@@ -14,14 +15,15 @@
 
    <properties>
       <version.arquillian>1.0.0.CR1</version.arquillian>
-   
       <version.jetty>8.0.0.M3</version.jetty>
-   <!--    
-      <version.jetty>7.0.2.v20100331</version.jetty>
-    -->
    </properties>
 
    <dependencies>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>compile</scope>
+      </dependency>
       <dependency>
          <groupId>org.apache.httpcomponents</groupId>
          <artifactId>httpclient</artifactId>
