@@ -19,25 +19,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.cdi.events;
-
-import com.ocpsoft.rewrite.event.OutboundRewrite;
+package com.ocpsoft.rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class AfterOutboundRewrite extends AfterRewrite
+public interface RewriteContext
 {
-   public AfterOutboundRewrite(final OutboundRewrite rewrite)
-   {
-      super(rewrite);
-   }
+   Object get(String key);
 
-   @Override
-   public OutboundRewrite getRewrite()
-   {
-      return (OutboundRewrite) super.getRewrite();
-   }
+   void put(String key, Object value);
 
+   void hasKey(String key);
 }

@@ -18,6 +18,10 @@ package com.ocpsoft.rewrite.servlet.event;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import com.ocpsoft.rewrite.RewriteContext;
+import com.ocpsoft.rewrite.exception.RewriteException;
+import com.ocpsoft.rewrite.servlet.RewriteFilter;
+
 /**
  * Base implementation of {@link InboundServletRewriteEvent}
  * 
@@ -122,13 +126,13 @@ public class RewriteBase<IN extends ServletRequest, OUT extends ServletResponse>
    {
       UN_HANDLED(null),
       HANDLED(null),
-         CONTINUE(HANDLED),
-            PROCEED(CONTINUE),
-         HALT_HANDLING(HANDLED),
-            INCLUDE(HALT_HANDLING),
-            ABORT_REQUEST(HALT_HANDLING),
-               FORWARD(ABORT_REQUEST),
-            CHAIN(HALT_HANDLING);
+      CONTINUE(HANDLED),
+      PROCEED(CONTINUE),
+      HALT_HANDLING(HANDLED),
+      INCLUDE(HALT_HANDLING),
+      ABORT_REQUEST(HALT_HANDLING),
+      FORWARD(ABORT_REQUEST),
+      CHAIN(HALT_HANDLING);
 
       private Flow parent;
 
@@ -180,5 +184,17 @@ public class RewriteBase<IN extends ServletRequest, OUT extends ServletResponse>
    public String toString()
    {
       return "Rewrite [flow=" + flow + ", dispatchResource=" + dispatchResource + "]";
+   }
+
+   @Override
+   public RewriteContext getRewriteContext()
+   {
+      RewriteContext context = (RewriteContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
+      if (context == null)
+      {
+         throw new RewriteException("RewriteContext was null. Something is seriously wrong, " +
+                  "or you are attempting to access this event outside of the Rewrite lifecycle.");
+      }
+      return context;
    }
 }

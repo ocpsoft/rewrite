@@ -21,6 +21,7 @@
  */
 package com.ocpsoft.rewrite.cdi.events;
 
+import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -32,5 +33,11 @@ public class BeforeInboundRewrite extends BeforeRewrite
    public BeforeInboundRewrite(final Rewrite rewrite)
    {
       super(rewrite);
+   }
+
+   @Override
+   public InboundRewrite getRewrite()
+   {
+      return (InboundRewrite) super.getRewrite();
    }
 }

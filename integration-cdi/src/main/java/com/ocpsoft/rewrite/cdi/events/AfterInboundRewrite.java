@@ -21,7 +21,7 @@
  */
 package com.ocpsoft.rewrite.cdi.events;
 
-import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.event.InboundRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -29,9 +29,15 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public class AfterInboundRewrite extends AfterRewrite
 {
-   public AfterInboundRewrite(final Rewrite rewrite)
+   public AfterInboundRewrite(final InboundRewrite rewrite)
    {
       super(rewrite);
+   }
+
+   @Override
+   public InboundRewrite getRewrite()
+   {
+      return (InboundRewrite) super.getRewrite();
    }
 
 }

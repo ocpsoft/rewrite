@@ -31,7 +31,8 @@ public class HttpOutboundRewriteImpl extends RewriteBase<HttpServletRequest, Htt
 
    private String url;
 
-   public HttpOutboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response,
+   public HttpOutboundRewriteImpl(final HttpServletRequest request,
+            final HttpServletResponse response,
             final String url)
    {
       super(request, response);

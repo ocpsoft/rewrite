@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.event;
 
+import com.ocpsoft.rewrite.RewriteContext;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
@@ -25,5 +26,5 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
  */
 public interface Rewrite
 {
-
+   public RewriteContext getRewriteContext();
 }

@@ -41,7 +41,7 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
 @RunWith(Arquillian.class)
 public class RewriteProviderBridgeTest extends RewriteTestBase
 {
-   @Deployment(testable = false)
+   @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
