@@ -23,6 +23,7 @@ package com.ocpsoft.rewrite.test;
  */
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
@@ -35,7 +36,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -81,8 +81,8 @@ public class RewriteTestBase
                .resolveAs(GenericArchive.class);
    }
 
-   @ArquillianResource
-   URL baseURL;
+   // @ArquillianResource
+   // private URL baseURL;
 
    /**
     * Request a resource from the deployed test-application. The {@link HttpServletRequest#getContextPath()} will be
@@ -95,7 +95,7 @@ public class RewriteTestBase
       DefaultHttpClient httpClient = new DefaultHttpClient();
       try
       {
-         String url = baseURL.toExternalForm();
+         String url = baseURL().toExternalForm();
          if (url.endsWith("/"))
          {
             url = url.substring(0, url.length() - 1);
@@ -111,6 +111,16 @@ public class RewriteTestBase
       }
       catch (Exception e)
       {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public URL baseURL()
+   {
+      try {
+         return new URL("http://localhost:9090/rewrite-test/");
+      }
+      catch (MalformedURLException e) {
          throw new RuntimeException(e);
       }
    }

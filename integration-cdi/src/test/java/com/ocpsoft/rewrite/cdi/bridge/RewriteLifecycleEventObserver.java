@@ -26,7 +26,6 @@ import javax.enterprise.event.Observes;
 
 import com.ocpsoft.rewrite.cdi.events.AfterInboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 
@@ -61,7 +60,10 @@ public class RewriteLifecycleEventObserver
 
    public void rewriteInbound(@Observes final HttpInboundServletRewrite event)
    {
-      if (!event.getFlow().is(Flow.HANDLED))
+      String requestURL = event.getRequestURL();
+      if ("/success".equals(requestURL))
+         event.sendStatusCode(200);
+      else if ("/outbound-rewritten".equals(requestURL))
          event.sendStatusCode(200);
    }
 }
