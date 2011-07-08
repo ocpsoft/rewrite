@@ -19,17 +19,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.servlet.config;
+
+import java.util.List;
+
+import com.ocpsoft.rewrite.config.Configuration;
+import com.ocpsoft.rewrite.config.Rule;
 
 /**
+ * Configuration for HTTP rewrite environments.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public interface HttpConfiguration extends Configuration
 {
-   Object get(String key);
-
-   void put(String key, Object value);
-
-   void containsKey(String key);
+   public List<Rule> getInboundRules();
 }

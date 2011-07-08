@@ -19,17 +19,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.config;
+
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public interface Condition
 {
-   Object get(String key);
-
-   void put(String key, Object value);
-
-   void containsKey(String key);
+   boolean evaluate(Rewrite event);
 }

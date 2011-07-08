@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.RewriteContext;
+import com.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
 import com.ocpsoft.rewrite.servlet.RewriteFilter;
 import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
@@ -88,7 +88,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
 
    private void rewrite(HttpOutboundServletRewrite event)
    {
-      RewriteContext context = (RewriteContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
+      RewriteLifecycleContext context = (RewriteLifecycleContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
       for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
       {
          listener.beforeOutboundRewrite(event);

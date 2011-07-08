@@ -15,7 +15,9 @@
  */
 package com.ocpsoft.rewrite.servlet;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -31,8 +33,9 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class RewriteContextImpl implements RewriteContext
+public class RewriteContextImpl implements RewriteLifecycleContext
 {
+   private final Map<Object, Object> map = new HashMap<Object, Object>();;
 
    private final List<RewriteProvider<Rewrite>> providers;
    private final List<RewriteLifecycleListener<Rewrite>> listeners;
@@ -81,6 +84,24 @@ public class RewriteContextImpl implements RewriteContext
    public List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> getOutboundProducers()
    {
       return outboundProducers;
+   }
+
+   @Override
+   public Object get(final String key)
+   {
+      return map.get(key);
+   }
+
+   @Override
+   public void put(final String key, final Object value)
+   {
+      map.put(key, value);
+   }
+
+   @Override
+   public void containsKey(final String key)
+   {
+      map.containsKey(key);
    }
 
 }

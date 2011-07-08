@@ -19,17 +19,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.config;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.ocpsoft.rewrite.pattern.WeightedComparator;
+import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.rewrite.util.Iterators;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public class ConfigurationLoader
 {
-   Object get(String key);
+   public List<Configuration> loadConfigurations()
+   {
+      @SuppressWarnings("unchecked")
+      ServiceLoader<ConfigurationProvider> loader = ServiceLoader.load(ConfigurationProvider.class);
+      List<ConfigurationProvider> providers = Iterators.asList(loader.iterator());
 
-   void put(String key, Object value);
+      Collections.sort(providers, new WeightedComparator());
 
-   void containsKey(String key);
+      List<Configuration> configs = new ArrayList<Configuration>();
+      for (ConfigurationProvider provider : providers) {
+         configs.add(provider.getConfiguration());
+      }
+
+      return configs;
+   }
 }

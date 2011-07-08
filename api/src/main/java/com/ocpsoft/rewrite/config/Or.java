@@ -19,17 +19,42 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.config;
+
+import java.util.Arrays;
+import java.util.List;
+
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * Evaluates all conditions.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public class Or implements Condition
 {
-   Object get(String key);
+   private final List<Condition> conditions;
 
-   void put(String key, Object value);
+   private Or(final Condition... conditions)
+   {
+      this.conditions = Arrays.asList(conditions);
+   }
 
-   void containsKey(String key);
+   public static Or $(final Condition... conditions)
+   {
+      return new Or(conditions);
+   }
+
+   public boolean evaluate(final Rewrite event)
+   {
+      boolean result = false;
+      for (Condition c : conditions) {
+         if (c.evaluate(event))
+         {
+            result = true;
+         }
+      }
+      return result;
+   }
 }

@@ -19,17 +19,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.config;
+
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Condition that always returns true.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteContext
+public class True implements Condition
 {
-   Object get(String key);
-
-   void put(String key, Object value);
-
-   void containsKey(String key);
+   @Override
+   public boolean evaluate(final Rewrite event)
+   {
+      return true;
+   }
 }

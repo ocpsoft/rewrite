@@ -19,17 +19,28 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.config;
 
 /**
+ * Abstract access to conditional primitives.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public abstract class Conditions
 {
-   Object get(String key);
+   public Not not(final Condition condition)
+   {
+      return Not.$(condition);
+   }
 
-   void put(String key, Object value);
+   public And and(final Condition... conditions)
+   {
+      return And.$(conditions);
+   }
 
-   void containsKey(String key);
+   public Or or(final Condition... conditions)
+   {
+      return Or.$(conditions);
+   }
 }

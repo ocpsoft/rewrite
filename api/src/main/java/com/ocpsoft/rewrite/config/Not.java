@@ -19,17 +19,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.config;
+
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * Evaluates all conditions.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public class Not implements Condition
 {
-   Object get(String key);
+   private final Condition condition;
 
-   void put(String key, Object value);
+   private Not(final Condition condition)
 
-   void containsKey(String key);
+   {
+      this.condition = condition;
+   }
+
+   public static Not $(final Condition condition)
+   {
+      return new Not(condition);
+   }
+
+   public boolean evaluate(final Rewrite event)
+   {
+      return condition.evaluate(event) != true;
+   }
 }

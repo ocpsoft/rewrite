@@ -19,17 +19,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.config;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public class AndTest
 {
-   Object get(String key);
+   @Test
+   public void testTrueAndTrueIsTrue()
+   {
+      Assert.assertTrue(And.$(new True(), new True()).evaluate(new MockRewrite()));
+   }
 
-   void put(String key, Object value);
+   @Test
+   public void testTrueAndFalseIsFalse()
+   {
+      Assert.assertFalse(And.$(new True(), new False()).evaluate(new MockRewrite()));
+   }
 
-   void containsKey(String key);
+   @Test
+   public void testFalseAndFalseIsFalse()
+   {
+      Assert.assertFalse(And.$(new False(), new False()).evaluate(new MockRewrite()));
+   }
 }

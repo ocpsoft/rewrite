@@ -101,7 +101,7 @@ public class RewriteFilter implements Filter
       {
          if (request.getAttribute(CONTEXT_KEY) == null)
          {
-            RewriteContext context = new RewriteContextImpl(inbound, outbound, listeners, wrappers, providers);
+            RewriteLifecycleContext context = new RewriteContextImpl(inbound, outbound, listeners, wrappers, providers);
             request.setAttribute(CONTEXT_KEY, context);
          }
 
