@@ -1,0 +1,119 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2011, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+package com.ocpsoft.rewrite.servlet.config;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.regex.PatternSyntaxException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.easymock.EasyMock;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
+
+/**
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ */
+public class HeaderTest
+{
+   private Rewrite rewrite;
+   private HttpServletRequest request;
+
+   @Before
+   public void before()
+   {
+      request = EasyMock.createNiceMock(HttpServletRequest.class);
+      EasyMock.expect(request.getHeaderNames())
+               .andReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length"))).anyTimes();
+
+      EasyMock.expect(request.getHeaders("Content-Length"))
+               .andReturn(Collections.enumeration(Arrays.asList("06091984"))).anyTimes();
+
+      EasyMock.expect(request.getHeaders("Accept-Charset"))
+               .andReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8"))).anyTimes();
+
+      EasyMock.replay(request);
+
+      rewrite = new HttpInboundRewriteImpl(request, null);
+   }
+
+   @Test
+   public void testHeaderExists()
+   {
+      Assert.assertTrue(Header.exists("Accept-.*").isSatisfied(rewrite));
+   }
+
+   @Test
+   public void testHeaderExists2()
+   {
+      Assert.assertTrue(Header.exists("Content-Length").isSatisfied(rewrite));
+   }
+
+   @Test
+   public void testHeaderExistsFalse()
+   {
+      Assert.assertFalse(Header.exists("Host").isSatisfied(rewrite));
+   }
+
+   @Test
+   public void testHeaderContains()
+   {
+      Assert.assertTrue(Header.valueExists("UTF-.*").isSatisfied(rewrite));
+   }
+
+   @Test
+   public void testHeaderMatches()
+   {
+      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").isSatisfied(rewrite));
+   }
+
+   @Test(expected = PatternSyntaxException.class)
+   public void testBadRegexThrowsException()
+   {
+      Assert.assertTrue(Header.matches("*Accept-Charset", "blah").isSatisfied(rewrite));
+   }
+
+   @Test(expected = IllegalStateException.class)
+   public void testNullNameInput()
+   {
+      Assert.assertTrue(Header.exists(null).isSatisfied(rewrite));
+   }
+
+   @Test(expected = IllegalStateException.class)
+   public void testNullValueExistsInput()
+   {
+      Assert.assertTrue(Header.valueExists(null).isSatisfied(rewrite));
+   }
+
+   @Test(expected = IllegalStateException.class)
+   public void testNullInputs()
+   {
+      Assert.assertTrue(Header.matches(null, null).isSatisfied(rewrite));
+   }
+
+}

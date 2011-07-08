@@ -44,11 +44,11 @@ public class And implements Condition
       return new And(conditions);
    }
 
-   public boolean evaluate(final Rewrite event)
+   public boolean isSatisfied(final Rewrite event)
    {
       boolean result = true;
       for (Condition c : conditions) {
-         if (!c.evaluate(event))
+         if (!c.isSatisfied(event))
          {
             result = false;
          }

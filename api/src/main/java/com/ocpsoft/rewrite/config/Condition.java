@@ -24,10 +24,15 @@ package com.ocpsoft.rewrite.config;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * A condition that must be met in order for evaluation to return true.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface Condition
 {
-   boolean evaluate(Rewrite event);
+   /**
+    * Evaluate this condition against the given {@link Rewrite} event. If this condition does not apply to the given
+    * event, it must return false. If the condition applies and is satisfied, return true.
+    */
+   boolean isSatisfied(Rewrite event);
 }

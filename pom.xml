@@ -28,7 +28,7 @@
       <version.jboss.spec>1.0.0.Final</version.jboss.spec>
       <version.junit>4.8.1</version.junit>
       <version.jboss-logging>3.0.0.Beta4</version.jboss-logging>
-   </properties> 
+   </properties>
 
    <modules>
       <module>test-harness</module>
@@ -87,6 +87,19 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
+            <scope>test</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>3.0</version>
             <scope>test</scope>
          </dependency>
       </dependencies>

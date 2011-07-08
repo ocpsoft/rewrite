@@ -46,11 +46,11 @@ public class Or implements Condition
       return new Or(conditions);
    }
 
-   public boolean evaluate(final Rewrite event)
+   public boolean isSatisfied(final Rewrite event)
    {
       boolean result = false;
       for (Condition c : conditions) {
-         if (c.evaluate(event))
+         if (c.isSatisfied(event))
          {
             result = true;
          }

@@ -31,7 +31,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
 public class True implements Condition
 {
    @Override
-   public boolean evaluate(final Rewrite event)
+   public boolean isSatisfied(final Rewrite event)
    {
       return true;
    }

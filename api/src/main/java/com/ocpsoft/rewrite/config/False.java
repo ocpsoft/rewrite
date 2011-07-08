@@ -32,7 +32,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
 public class False implements Condition
 {
    @Override
-   public boolean evaluate(final Rewrite event)
+   public boolean isSatisfied(final Rewrite event)
    {
       return false;
    }
