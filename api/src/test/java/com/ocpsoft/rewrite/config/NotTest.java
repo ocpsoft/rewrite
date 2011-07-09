@@ -34,13 +34,13 @@ public class NotTest
    public void testNotFalseIsTrue()
    {
       Condition condition = Not.$(new False());
-      Assert.assertTrue(condition.isSatisfied(new MockRewrite()));
+      Assert.assertTrue(condition.accepts(new MockRewrite()));
    }
 
    @Test
    public void testNotTrueIsFalse()
    {
       Condition condition = Not.$(new True());
-      Assert.assertFalse(condition.isSatisfied(new MockRewrite()));
+      Assert.assertFalse(condition.accepts(new MockRewrite()));
    }
 }

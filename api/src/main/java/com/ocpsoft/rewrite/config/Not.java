@@ -44,8 +44,8 @@ public class Not implements Condition
       return new Not(condition);
    }
 
-   public boolean isSatisfied(final Rewrite event)
+   public boolean accepts(final Rewrite event)
    {
-      return condition.isSatisfied(event) != true;
+      return condition.accepts(event) != true;
    }
 }

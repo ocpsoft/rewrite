@@ -21,6 +21,8 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import java.util.List;
+
 /**
  * Base interface for all Rewrite configuration objects.
  * 
@@ -28,5 +30,5 @@ package com.ocpsoft.rewrite.config;
  */
 public interface Configuration
 {
-
+   public List<Rule> getRules();
 }

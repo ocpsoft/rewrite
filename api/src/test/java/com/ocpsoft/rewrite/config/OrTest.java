@@ -33,18 +33,18 @@ public class OrTest
    @Test
    public void testTrueAndTrueIsTrue()
    {
-      Assert.assertTrue(Or.$(new True(), new True()).isSatisfied(new MockRewrite()));
+      Assert.assertTrue(Or.$(new True(), new True()).accepts(new MockRewrite()));
    }
 
    @Test
    public void testTrueAndFalseIsTrue()
    {
-      Assert.assertTrue(Or.$(new True(), new False()).isSatisfied(new MockRewrite()));
+      Assert.assertTrue(Or.$(new True(), new False()).accepts(new MockRewrite()));
    }
 
    @Test
    public void testFalseAndFalseIsFalse()
    {
-      Assert.assertFalse(Or.$(new False(), new False()).isSatisfied(new MockRewrite()));
+      Assert.assertFalse(Or.$(new False(), new False()).accepts(new MockRewrite()));
    }
 }

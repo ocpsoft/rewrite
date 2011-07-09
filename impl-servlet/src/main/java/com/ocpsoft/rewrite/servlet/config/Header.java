@@ -81,7 +81,7 @@ public class Header implements Condition
    }
 
    @Override
-   public boolean isSatisfied(final Rewrite event)
+   public boolean accepts(final Rewrite event)
    {
       if (event instanceof HttpServletRewrite)
       {

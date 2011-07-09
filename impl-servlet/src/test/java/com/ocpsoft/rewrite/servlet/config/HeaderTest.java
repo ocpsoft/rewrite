@@ -65,55 +65,55 @@ public class HeaderTest
    @Test
    public void testHeaderExists()
    {
-      Assert.assertTrue(Header.exists("Accept-.*").isSatisfied(rewrite));
+      Assert.assertTrue(Header.exists("Accept-.*").accepts(rewrite));
    }
 
    @Test
    public void testHeaderExists2()
    {
-      Assert.assertTrue(Header.exists("Content-Length").isSatisfied(rewrite));
+      Assert.assertTrue(Header.exists("Content-Length").accepts(rewrite));
    }
 
    @Test
    public void testHeaderExistsFalse()
    {
-      Assert.assertFalse(Header.exists("Host").isSatisfied(rewrite));
+      Assert.assertFalse(Header.exists("Host").accepts(rewrite));
    }
 
    @Test
    public void testHeaderContains()
    {
-      Assert.assertTrue(Header.valueExists("UTF-.*").isSatisfied(rewrite));
+      Assert.assertTrue(Header.valueExists("UTF-.*").accepts(rewrite));
    }
 
    @Test
    public void testHeaderMatches()
    {
-      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").isSatisfied(rewrite));
+      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").accepts(rewrite));
    }
 
    @Test(expected = PatternSyntaxException.class)
    public void testBadRegexThrowsException()
    {
-      Assert.assertTrue(Header.matches("*Accept-Charset", "blah").isSatisfied(rewrite));
+      Assert.assertTrue(Header.matches("*Accept-Charset", "blah").accepts(rewrite));
    }
 
    @Test(expected = IllegalStateException.class)
    public void testNullNameInput()
    {
-      Assert.assertTrue(Header.exists(null).isSatisfied(rewrite));
+      Assert.assertTrue(Header.exists(null).accepts(rewrite));
    }
 
    @Test(expected = IllegalStateException.class)
    public void testNullValueExistsInput()
    {
-      Assert.assertTrue(Header.valueExists(null).isSatisfied(rewrite));
+      Assert.assertTrue(Header.valueExists(null).accepts(rewrite));
    }
 
    @Test(expected = IllegalStateException.class)
    public void testNullInputs()
    {
-      Assert.assertTrue(Header.matches(null, null).isSatisfied(rewrite));
+      Assert.assertTrue(Header.matches(null, null).accepts(rewrite));
    }
 
 }
