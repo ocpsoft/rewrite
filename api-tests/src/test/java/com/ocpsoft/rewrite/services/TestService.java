@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.http.event;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
+package com.ocpsoft.rewrite.services;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ *
  */
-public interface HttpOutboundServletRewrite extends
-         OutboundServletRewrite<HttpServletRequest, HttpServletResponse>, HttpServletRewrite
+public interface TestService
 {
-   /**
-    * Get the outbound URL to be rewritten.
-    */
-   public String getOutboundURL();
 
-   /**
-    * Set the new outbound URL.
-    */
-   public void setOutboundURL(final String url);
 }

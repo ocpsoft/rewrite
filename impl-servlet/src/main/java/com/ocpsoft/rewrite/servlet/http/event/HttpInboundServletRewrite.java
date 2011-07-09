@@ -30,22 +30,6 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
          HttpServletRewrite
 {
    /**
-    * Return the application context root {@link HttpServletRequest#getContextPath()}
-    */
-   public String getContextPath();
-
-   /**
-    * Portion of the request URL representing request path within the application. The context path is not included, and
-    * should be retrieved using {@link #getContextPath()}
-    */
-   public String getRequestURL();
-
-   /**
-    * Portion of the request URL representing the query string.
-    */
-   public String getRequestQueryString();
-
-   /**
     * If the {@link HttpServletResponse} is not already committed, issue a Temporary Redirect (302) and call
     * {@link #abort()}. This location must be include {@link #getContextPath()} if attempting to redirect within the
     * current {@link ServletContext}

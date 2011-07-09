@@ -19,33 +19,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.http.event;
+package com.ocpsoft.rewrite.mock;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.ocpsoft.rewrite.servlet.event.ServletRewrite;
+import com.ocpsoft.rewrite.RewriteContext;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface HttpServletRewrite extends
-         ServletRewrite<HttpServletRequest, HttpServletResponse>
+public class MockRewriteContext implements RewriteContext
 {
-   /**
-    * Return the application context root {@link HttpServletRequest#getContextPath()}
-    */
-   public String getContextPath();
 
-   /**
-    * Portion of the request URL representing request path within the application. The context path is not included, and
-    * should be retrieved using {@link #getContextPath()}
-    */
-   public String getRequestURL();
+   private final Map<Object, Object> map = new HashMap<Object, Object>();
 
-   /**
-    * Portion of the request URL representing the query string.
-    */
-   public String getRequestQueryString();
+   @Override
+   public Object get(final String key)
+   {
+      return map.get(key);
+   }
+
+   @Override
+   public void put(final String key, final Object value)
+   {
+      map.put(key, value);
+   }
+
+   @Override
+   public void containsKey(final String key)
+   {
+      map.containsKey(key);
+   }
+
 }

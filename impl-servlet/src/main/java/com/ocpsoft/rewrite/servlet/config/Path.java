@@ -19,33 +19,41 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.http.event;
+package com.ocpsoft.rewrite.servlet.config;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.regex.Pattern;
 
-import com.ocpsoft.rewrite.servlet.event.ServletRewrite;
+import com.ocpsoft.rewrite.config.Condition;
+import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface HttpServletRewrite extends
-         ServletRewrite<HttpServletRequest, HttpServletResponse>
+public class Path implements Condition
 {
-   /**
-    * Return the application context root {@link HttpServletRequest#getContextPath()}
-    */
-   public String getContextPath();
+   private final Pattern pattern;
 
-   /**
-    * Portion of the request URL representing request path within the application. The context path is not included, and
-    * should be retrieved using {@link #getContextPath()}
-    */
-   public String getRequestURL();
+   private Path(final String pattern)
+   {
+      Assert.notNull(pattern, "URL pattern must not be null.");
+      this.pattern = Pattern.compile(pattern);
+   }
 
-   /**
-    * Portion of the request URL representing the query string.
-    */
-   public String getRequestQueryString();
+   public static Path matches(final String pattern)
+   {
+      return new Path(pattern);
+   }
+
+   @Override
+   public boolean accepts(final Rewrite event)
+   {
+      if (event instanceof HttpServletRewrite)
+      {
+         return pattern.matcher(((HttpServletRewrite) event).getRequestURL()).matches();
+      }
+      return false;
+   }
+
 }

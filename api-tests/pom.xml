@@ -20,6 +20,17 @@
       <relativePath>../</relativePath>
    </parent>
    
-   <artifactId>rewrite-api</artifactId>
+   <artifactId>rewrite-api-tests</artifactId>
+
+   <dependencies>
+      <dependency>
+         <groupId>com.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-test-harness</artifactId>
+      </dependency>
+   </dependencies>
 
 </project>

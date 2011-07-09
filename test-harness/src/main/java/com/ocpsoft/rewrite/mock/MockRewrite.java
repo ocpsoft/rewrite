@@ -19,33 +19,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.http.event;
+package com.ocpsoft.rewrite.mock;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ocpsoft.rewrite.servlet.event.ServletRewrite;
+import com.ocpsoft.rewrite.RewriteContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface HttpServletRewrite extends
-         ServletRewrite<HttpServletRequest, HttpServletResponse>
+public class MockRewrite implements Rewrite
 {
-   /**
-    * Return the application context root {@link HttpServletRequest#getContextPath()}
-    */
-   public String getContextPath();
-
-   /**
-    * Portion of the request URL representing request path within the application. The context path is not included, and
-    * should be retrieved using {@link #getContextPath()}
-    */
-   public String getRequestURL();
-
-   /**
-    * Portion of the request URL representing the query string.
-    */
-   public String getRequestQueryString();
+   @Override
+   public RewriteContext getRewriteContext()
+   {
+      return new MockRewriteContext();
+   }
 }

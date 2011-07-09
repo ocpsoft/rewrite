@@ -23,7 +23,6 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,15 +31,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ocpsoft.rewrite.config.And;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.mock.MockRewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HeaderTest
+public class HeaderAndPathTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
@@ -58,68 +57,32 @@ public class HeaderTest
       EasyMock.expect(request.getHeaders("Accept-Charset"))
                .andReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8"))).anyTimes();
 
+      EasyMock.expect(request.getRequestURI())
+               .andReturn("/context/application/path").anyTimes();
+
+      EasyMock.expect(request.getContextPath())
+               .andReturn("/context").anyTimes();
+
       EasyMock.replay(request);
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }
 
    @Test
-   public void testHeaderExists()
+   public void testHeaderAndPath()
    {
-      Assert.assertTrue(Header.exists("Accept-.*").accepts(rewrite));
+      Assert.assertTrue(And.$(
+               Path.matches("/application/.*"),
+               Header.exists("Accept-.*")
+               ).accepts(rewrite));
    }
 
    @Test
-   public void testHeaderExists2()
+   public void testHeaderAndPathDoNotMatch()
    {
-      Assert.assertTrue(Header.exists("Content-Length").accepts(rewrite));
-   }
-
-   @Test
-   public void testHeaderExistsFalse()
-   {
-      Assert.assertFalse(Header.exists("Host").accepts(rewrite));
-   }
-
-   @Test
-   public void testHeaderContains()
-   {
-      Assert.assertTrue(Header.valueExists("UTF-.*").accepts(rewrite));
-   }
-
-   @Test
-   public void testHeaderMatches()
-   {
-      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").accepts(rewrite));
-   }
-
-   @Test(expected = PatternSyntaxException.class)
-   public void testBadRegexThrowsException()
-   {
-      Assert.assertTrue(Header.matches("*Accept-Charset", "blah").accepts(rewrite));
-   }
-
-   @Test(expected = IllegalArgumentException.class)
-   public void testNullNameInput()
-   {
-      Assert.assertTrue(Header.exists(null).accepts(rewrite));
-   }
-
-   @Test(expected = IllegalArgumentException.class)
-   public void testNullValueExistsInput()
-   {
-      Assert.assertTrue(Header.valueExists(null).accepts(rewrite));
-   }
-
-   @Test(expected = IllegalArgumentException.class)
-   public void testNullInputs()
-   {
-      Assert.assertTrue(Header.matches(null, null).accepts(rewrite));
-   }
-
-   @Test
-   public void testDoesNotMatchNonHttpRewrites()
-   {
-      Assert.assertFalse(Header.exists("Accept-Charset").accepts(new MockRewrite()));
+      Assert.assertFalse(And.$(
+               Path.matches("/wrong-application/.*"),
+               Header.exists("Accept-.*")
+               ).accepts(rewrite));
    }
 }

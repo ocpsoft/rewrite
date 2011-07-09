@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.http.event;
+package com.ocpsoft.rewrite.services;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+import com.ocpsoft.rewrite.util.Iterators;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public interface HttpOutboundServletRewrite extends
-         OutboundServletRewrite<HttpServletRequest, HttpServletResponse>, HttpServletRewrite
+public class ServiceLoaderTest
 {
-   /**
-    * Get the outbound URL to be rewritten.
-    */
-   public String getOutboundURL();
-
-   /**
-    * Set the new outbound URL.
-    */
-   public void setOutboundURL(final String url);
+   @Test
+   @SuppressWarnings("unchecked")
+   public void test()
+   {
+      ServiceLoader<TestService> services = ServiceLoader.load(TestService.class);
+      List<TestService> list = Iterators.asList(services);
+      Assert.assertFalse(list.isEmpty());
+   }
 }

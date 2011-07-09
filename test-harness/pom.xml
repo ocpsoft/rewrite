@@ -20,6 +20,11 @@
 
    <dependencies>
       <dependency>
+         <groupId>com.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api</artifactId>
+      </dependency>
+
+      <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
          <scope>compile</scope>

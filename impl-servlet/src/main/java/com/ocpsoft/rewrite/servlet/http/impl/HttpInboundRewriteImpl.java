@@ -144,7 +144,12 @@ public class HttpInboundRewriteImpl extends RewriteBase<HttpServletRequest, Http
    @Override
    public String getRequestURL()
    {
-      return getRequest().getRequestURI().substring(getContextPath().length());
+      String url = getRequest().getRequestURI();
+      if (url.startsWith(getContextPath()))
+      {
+         url = url.substring(getContextPath().length());
+      }
+      return url;
    }
 
    @Override
