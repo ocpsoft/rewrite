@@ -29,14 +29,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.mock.MockRewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class PathTest
+public class QueryStringTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
@@ -49,6 +48,9 @@ public class PathTest
       EasyMock.expect(request.getRequestURI())
                .andReturn("/context/application/path").anyTimes();
 
+      EasyMock.expect(request.getQueryString())
+               .andReturn("foo=bar&bar=baz").anyTimes();
+
       EasyMock.expect(request.getContextPath())
                .andReturn("/context").anyTimes();
 
@@ -58,26 +60,26 @@ public class PathTest
    }
 
    @Test
-   public void testPathMatchesLiteral()
+   public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite));
+      Assert.assertTrue(QueryString.matches("foo=bar&bar=baz").evaluate(rewrite));
    }
 
    @Test
-   public void testPathMatchesPattern()
+   public void testQueryStringMatchesPattern()
    {
-      Assert.assertTrue(Path.matches("/application/.*").evaluate(rewrite));
+      Assert.assertTrue(QueryString.matches("foo=bar.*").evaluate(rewrite));
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite()));
+      Assert.assertTrue(QueryString.matches(".*bar=baz").evaluate(rewrite));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullCausesException()
    {
-      Path.matches(null);
+      QueryString.matches(null);
    }
 }

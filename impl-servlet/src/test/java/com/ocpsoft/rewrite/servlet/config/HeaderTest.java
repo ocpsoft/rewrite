@@ -96,25 +96,25 @@ public class HeaderTest
    @Test(expected = PatternSyntaxException.class)
    public void testBadRegexThrowsException()
    {
-      Assert.assertTrue(Header.matches("*Accept-Charset", "blah").evaluate(rewrite));
+      Header.matches("*Accept-Charset", "blah");
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullNameInput()
    {
-      Assert.assertTrue(Header.exists(null).evaluate(rewrite));
+      Header.exists(null);
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullValueExistsInput()
    {
-      Assert.assertTrue(Header.valueExists(null).evaluate(rewrite));
+      Header.valueExists(null);
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullInputs()
    {
-      Assert.assertTrue(Header.matches(null, null).evaluate(rewrite));
+      Header.matches(null, null);
    }
 
    @Test
