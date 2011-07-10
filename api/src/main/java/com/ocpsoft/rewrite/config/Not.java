@@ -39,13 +39,13 @@ public class Not implements Condition
       this.condition = condition;
    }
 
-   public static Not $(final Condition condition)
+   public static Not any(final Condition condition)
    {
       return new Not(condition);
    }
 
-   public boolean accepts(final Rewrite event)
+   public boolean evaluate(final Rewrite event)
    {
-      return condition.accepts(event) != true;
+      return condition.evaluate(event) != true;
    }
 }

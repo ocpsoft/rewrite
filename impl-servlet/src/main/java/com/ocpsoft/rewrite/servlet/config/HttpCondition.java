@@ -21,33 +21,27 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import java.util.regex.Pattern;
-
+import com.ocpsoft.rewrite.config.Condition;
+import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.util.Assert;
 
 /**
+ * A condition that only applies to {@link HttpServletRewrite} events.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition
+public abstract class HttpCondition implements Condition
 {
-   private final Pattern pattern;
-
-   private Path(final String pattern)
-   {
-      Assert.notNull(pattern, "URL pattern must not be null.");
-      this.pattern = Pattern.compile(pattern);
-   }
-
-   public static Path matches(final String pattern)
-   {
-      return new Path(pattern);
-   }
+   public abstract boolean evaluateHttp(final HttpServletRewrite event);
 
    @Override
-   public boolean evaluateHttp(final HttpServletRewrite event)
+   public boolean evaluate(final Rewrite event)
    {
-      return pattern.matcher(event.getRequestURL()).matches();
+      if (event instanceof HttpServletRewrite)
+      {
+         return evaluateHttp((HttpServletRewrite) event);
+      }
+      return false;
    }
 
 }

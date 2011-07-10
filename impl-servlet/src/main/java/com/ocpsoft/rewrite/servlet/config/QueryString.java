@@ -29,25 +29,25 @@ import com.ocpsoft.rewrite.util.Assert;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition
+public class QueryString extends HttpCondition
 {
    private final Pattern pattern;
 
-   private Path(final String pattern)
+   private QueryString(final String pattern)
    {
       Assert.notNull(pattern, "URL pattern must not be null.");
       this.pattern = Pattern.compile(pattern);
    }
 
-   public static Path matches(final String pattern)
+   public static QueryString matches(final String pattern)
    {
-      return new Path(pattern);
+      return new QueryString(pattern);
    }
 
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event)
    {
-      return pattern.matcher(event.getRequestURL()).matches();
+      return pattern.matcher(event.getRequestQueryString()).matches();
    }
 
 }

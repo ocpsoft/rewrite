@@ -41,16 +41,16 @@ public class Or implements Condition
       this.conditions = Arrays.asList(conditions);
    }
 
-   public static Or $(final Condition... conditions)
+   public static Or any(final Condition... conditions)
    {
       return new Or(conditions);
    }
 
-   public boolean accepts(final Rewrite event)
+   public boolean evaluate(final Rewrite event)
    {
       boolean result = false;
       for (Condition c : conditions) {
-         if (c.accepts(event))
+         if (c.evaluate(event))
          {
             result = true;
          }

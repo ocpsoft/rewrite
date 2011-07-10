@@ -71,18 +71,21 @@ public class HeaderAndPathTest
    @Test
    public void testHeaderAndPath()
    {
-      Assert.assertTrue(And.$(
-               Path.matches("/application/.*"),
-               Header.exists("Accept-.*")
-               ).accepts(rewrite));
+      Assert.assertTrue(
+
+               And.all(
+                        Path.matches("/application/.*"),
+                        Header.exists("Accept-.*")
+                        )
+                        .evaluate(rewrite));
    }
 
    @Test
    public void testHeaderAndPathDoNotMatch()
    {
-      Assert.assertFalse(And.$(
+      Assert.assertFalse(And.all(
                Path.matches("/wrong-application/.*"),
                Header.exists("Accept-.*")
-               ).accepts(rewrite));
+               ).evaluate(rewrite));
    }
 }

@@ -21,33 +21,44 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import java.util.regex.Pattern;
-
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition
+public class Port extends HttpCondition
 {
-   private final Pattern pattern;
+   private final int[] ports;
 
-   private Path(final String pattern)
+   private Port(final int... ports)
    {
-      Assert.notNull(pattern, "URL pattern must not be null.");
-      this.pattern = Pattern.compile(pattern);
+      Assert.notNull(ports, "Must specify at least one valid port.");
+      for (int port : ports) {
+
+         if ((port < 1) || (port > 65535))
+         {
+            throw new IllegalArgumentException("Invalid port number: " + ports
+                     + " - must be between 1 and 65535, inclusive.");
+         }
+      }
+      this.ports = ports;
    }
 
-   public static Path matches(final String pattern)
+   public static Port is(final int... ports)
    {
-      return new Path(pattern);
+      return new Port(ports);
    }
 
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event)
    {
-      return pattern.matcher(event.getRequestURL()).matches();
+      int serverPort = event.getRequest().getServerPort();
+      for (int port : ports) {
+         if (serverPort == port)
+            return true;
+      }
+      return false;
    }
 
 }

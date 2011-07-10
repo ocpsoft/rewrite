@@ -31,16 +31,16 @@ public abstract class Conditions
 {
    public Not not(final Condition condition)
    {
-      return Not.$(condition);
+      return Not.any(condition);
    }
 
    public And and(final Condition... conditions)
    {
-      return And.$(conditions);
+      return And.all(conditions);
    }
 
    public Or or(final Condition... conditions)
    {
-      return Or.$(conditions);
+      return Or.any(conditions);
    }
 }

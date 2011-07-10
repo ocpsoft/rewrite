@@ -66,60 +66,60 @@ public class HeaderTest
    @Test
    public void testHeaderExists()
    {
-      Assert.assertTrue(Header.exists("Accept-.*").accepts(rewrite));
+      Assert.assertTrue(Header.exists("Accept-.*").evaluate(rewrite));
    }
 
    @Test
    public void testHeaderExists2()
    {
-      Assert.assertTrue(Header.exists("Content-Length").accepts(rewrite));
+      Assert.assertTrue(Header.exists("Content-Length").evaluate(rewrite));
    }
 
    @Test
    public void testHeaderExistsFalse()
    {
-      Assert.assertFalse(Header.exists("Host").accepts(rewrite));
+      Assert.assertFalse(Header.exists("Host").evaluate(rewrite));
    }
 
    @Test
    public void testHeaderContains()
    {
-      Assert.assertTrue(Header.valueExists("UTF-.*").accepts(rewrite));
+      Assert.assertTrue(Header.valueExists("UTF-.*").evaluate(rewrite));
    }
 
    @Test
    public void testHeaderMatches()
    {
-      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").accepts(rewrite));
+      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").evaluate(rewrite));
    }
 
    @Test(expected = PatternSyntaxException.class)
    public void testBadRegexThrowsException()
    {
-      Assert.assertTrue(Header.matches("*Accept-Charset", "blah").accepts(rewrite));
+      Assert.assertTrue(Header.matches("*Accept-Charset", "blah").evaluate(rewrite));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullNameInput()
    {
-      Assert.assertTrue(Header.exists(null).accepts(rewrite));
+      Assert.assertTrue(Header.exists(null).evaluate(rewrite));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullValueExistsInput()
    {
-      Assert.assertTrue(Header.valueExists(null).accepts(rewrite));
+      Assert.assertTrue(Header.valueExists(null).evaluate(rewrite));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullInputs()
    {
-      Assert.assertTrue(Header.matches(null, null).accepts(rewrite));
+      Assert.assertTrue(Header.matches(null, null).evaluate(rewrite));
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Header.exists("Accept-Charset").accepts(new MockRewrite()));
+      Assert.assertFalse(Header.exists("Accept-Charset").evaluate(new MockRewrite()));
    }
 }

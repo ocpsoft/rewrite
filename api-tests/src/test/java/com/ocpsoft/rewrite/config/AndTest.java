@@ -33,18 +33,18 @@ public class AndTest
    @Test
    public void testTrueAndTrueIsTrue()
    {
-      Assert.assertTrue(And.$(new True(), new True()).accepts(new MockRewrite()));
+      Assert.assertTrue(And.all(new True(), new True()).evaluate(new MockRewrite()));
    }
 
    @Test
    public void testTrueAndFalseIsFalse()
    {
-      Assert.assertFalse(And.$(new True(), new False()).accepts(new MockRewrite()));
+      Assert.assertFalse(And.all(new True(), new False()).evaluate(new MockRewrite()));
    }
 
    @Test
    public void testFalseAndFalseIsFalse()
    {
-      Assert.assertFalse(And.$(new False(), new False()).accepts(new MockRewrite()));
+      Assert.assertFalse(And.all(new False(), new False()).evaluate(new MockRewrite()));
    }
 }

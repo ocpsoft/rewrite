@@ -39,16 +39,16 @@ public class And implements Condition
       this.conditions = Arrays.asList(conditions);
    }
 
-   public static And $(final Condition... conditions)
+   public static And all(final Condition... conditions)
    {
       return new And(conditions);
    }
 
-   public boolean accepts(final Rewrite event)
+   public boolean evaluate(final Rewrite event)
    {
       boolean result = true;
       for (Condition c : conditions) {
-         if (!c.accepts(event))
+         if (!c.evaluate(event))
          {
             result = false;
          }

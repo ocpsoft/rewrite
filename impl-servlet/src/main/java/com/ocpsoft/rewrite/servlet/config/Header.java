@@ -26,15 +26,13 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.rewrite.config.Condition;
-import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Header implements Condition
+public class Header extends HttpCondition
 {
    private final Pattern name;
    private final Pattern value;
@@ -81,17 +79,14 @@ public class Header implements Condition
    }
 
    @Override
-   public boolean accepts(final Rewrite event)
+   public boolean evaluateHttp(final HttpServletRewrite event)
    {
-      if (event instanceof HttpServletRewrite)
+      HttpServletRequest request = event.getRequest();
+      for (String header : Collections.list(request.getHeaderNames()))
       {
-         HttpServletRequest request = ((HttpServletRewrite) event).getRequest();
-         for (String header : Collections.list(request.getHeaderNames()))
+         if (name.matcher(header).matches() && matchesValue(request, header))
          {
-            if (name.matcher(header).matches() && matchesValue(request, header))
-            {
-               return true;
-            }
+            return true;
          }
       }
       return false;

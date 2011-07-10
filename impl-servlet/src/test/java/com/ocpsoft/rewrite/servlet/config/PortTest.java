@@ -29,14 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.mock.MockRewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class PathTest
+public class PortTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
@@ -45,12 +43,8 @@ public class PathTest
    public void before()
    {
       request = EasyMock.createNiceMock(HttpServletRequest.class);
-
-      EasyMock.expect(request.getRequestURI())
-               .andReturn("/context/application/path").anyTimes();
-
-      EasyMock.expect(request.getContextPath())
-               .andReturn("/context").anyTimes();
+      EasyMock.expect(request.getServerPort())
+               .andReturn(8080).anyTimes();
 
       EasyMock.replay(request);
 
@@ -58,26 +52,44 @@ public class PathTest
    }
 
    @Test
-   public void testPathMatchesLiteral()
+   public void testPortMatches()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite));
+      Assert.assertTrue(Port.is(8080).evaluate(rewrite));
    }
 
    @Test
-   public void testPathMatchesPattern()
+   public void testMultiPortMatches()
    {
-      Assert.assertTrue(Path.matches("/application/.*").evaluate(rewrite));
+      Assert.assertTrue(Port.is(8080, 9090).evaluate(rewrite));
+   }
+
+   @Test
+   public void testMultiPortDoesNotMatch()
+   {
+      Assert.assertFalse(Port.is(9080, 9090).evaluate(rewrite));
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testOutOfRangePortThrowsException()
+   {
+      Port.is(0).evaluate(rewrite);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testOutOfRangePortThrowsExceptionWithMultiPort()
+   {
+      Port.is(8080, 0).evaluate(rewrite);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testOutOfRangePortThrowsExceptionWithMultiPort2()
+   {
+      Port.is(0, 8080).evaluate(rewrite);
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite()));
-   }
-
-   @Test(expected = IllegalArgumentException.class)
-   public void testNullCausesException()
-   {
-      Assert.assertFalse(Path.matches(null).evaluate(new MockRewrite()));
+      Assert.assertFalse(Port.is(9090).evaluate(rewrite));
    }
 }

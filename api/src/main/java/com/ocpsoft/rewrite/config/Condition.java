@@ -34,5 +34,5 @@ public interface Condition
     * Evaluate this condition against the given {@link Rewrite} event. If this condition does not apply to the given
     * event, it must return false. If the condition applies and is satisfied, return true.
     */
-   boolean accepts(Rewrite event);
+   boolean evaluate(Rewrite event);
 }
