@@ -29,25 +29,12 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public class Inbound implements Condition
 {
-   private final Condition condition;
-
-   private Inbound(final Condition condition)
-   {
-      this.condition = condition;
-   }
-
-   public static Inbound only(final Condition condition)
-   {
-      return new Inbound(condition);
-   }
+   public Inbound()
+   {}
 
    @Override
    public boolean evaluate(final Rewrite event)
    {
-      if (event instanceof InboundRewrite)
-      {
-         return condition.evaluate(event);
-      }
-      return false;
+      return event instanceof InboundRewrite;
    }
 }

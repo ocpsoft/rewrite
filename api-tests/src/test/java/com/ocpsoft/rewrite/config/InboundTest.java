@@ -34,14 +34,14 @@ public class InboundTest
    @Test
    public void testInboundReturnsTrue()
    {
-      Condition condition = Inbound.only(new True());
+      Condition condition = new Inbound();
       Assert.assertTrue(condition.evaluate(new MockInboundRewrite()));
    }
 
    @Test
    public void testNotInboundReturnsFalse()
    {
-      Condition condition = Inbound.only(new True());
+      Condition condition = new Inbound();
       Assert.assertFalse(condition.evaluate(new MockRewrite()));
    }
 }

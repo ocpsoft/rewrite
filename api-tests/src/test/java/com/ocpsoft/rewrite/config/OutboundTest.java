@@ -34,14 +34,14 @@ public class OutboundTest
    @Test
    public void testOutboundReturnsTrue()
    {
-      Condition condition = Outbound.only(new True());
+      Condition condition = new Outbound();
       Assert.assertTrue(condition.evaluate(new MockOutboundRewrite()));
    }
 
    @Test
    public void testNotOutboundReturnsFalse()
    {
-      Condition condition = Outbound.only(new True());
+      Condition condition = new Outbound();
       Assert.assertFalse(condition.evaluate(new MockRewrite()));
    }
 }
