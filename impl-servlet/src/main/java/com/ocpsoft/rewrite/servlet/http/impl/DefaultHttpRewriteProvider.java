@@ -19,43 +19,42 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.config;
+package com.ocpsoft.rewrite.servlet.http.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.ocpsoft.rewrite.pattern.WeightedComparator;
-import com.ocpsoft.rewrite.services.ServiceLoader;
-import com.ocpsoft.rewrite.util.Iterators;
+import com.ocpsoft.rewrite.config.Configuration;
+import com.ocpsoft.rewrite.config.ConfigurationLoader;
+import com.ocpsoft.rewrite.config.Rule;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class ConfigurationLoader
+public class DefaultHttpRewriteProvider extends HttpRewriteProvider
 {
-   public static Configuration loadConfiguration()
+
+   @Override
+   public void rewrite(final HttpServletRewrite event)
    {
-      @SuppressWarnings("unchecked")
-      ServiceLoader<ConfigurationProvider> loader = ServiceLoader.load(ConfigurationProvider.class);
-      List<ConfigurationProvider> providers = Iterators.asList(loader.iterator());
-
-      Collections.sort(providers, new WeightedComparator());
-
-      List<Configuration> configs = new ArrayList<Configuration>();
-      for (ConfigurationProvider provider : providers) {
-         configs.add(provider.getConfiguration());
-      }
-
-      ConfigurationBuilder result = ConfigurationBuilder.instance();
-
-      for (Configuration configuration : configs) {
-         for (Rule rule : configuration.getRules()) {
-            result.rule(rule);
+      Configuration loader = ConfigurationLoader.loadConfiguration();
+      for (Rule rule : loader.getRules()) {
+         if (rule.getCondition().evaluate(event))
+         {
+            rule.getOperation().perform(event);
+            if (event.getFlow().is(Flow.HANDLED))
+            {
+               break;
+            }
          }
       }
-
-      return result;
    }
+
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

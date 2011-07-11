@@ -18,14 +18,14 @@ package com.ocpsoft.rewrite.servlet.http.impl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.servlet.event.RewriteBase;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpOutboundRewriteImpl extends RewriteBase<HttpServletRequest, HttpServletResponse> implements
+public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse> implements
          HttpOutboundServletRewrite
 {
 

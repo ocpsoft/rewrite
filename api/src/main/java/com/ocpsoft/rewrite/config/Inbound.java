@@ -25,13 +25,12 @@ import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * A condition that returns true when operating on an {@link InboundRewrite}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Inbound implements Condition
 {
-   public Inbound()
-   {}
-
    @Override
    public boolean evaluate(final Rewrite event)
    {

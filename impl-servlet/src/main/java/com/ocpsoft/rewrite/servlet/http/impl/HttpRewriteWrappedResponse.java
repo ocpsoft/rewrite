@@ -21,9 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
 import com.ocpsoft.rewrite.servlet.RewriteFilter;
-import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
+import com.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
@@ -86,7 +86,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       return super.encodeURL(event.getOutboundURL());
    }
 
-   private void rewrite(HttpOutboundServletRewrite event)
+   private void rewrite(final HttpOutboundServletRewrite event)
    {
       RewriteLifecycleContext context = (RewriteLifecycleContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
       for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
@@ -99,7 +99,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
          if (p.handles(event))
          {
             p.rewrite(event);
-            if (event.getFlow().is(Flow.HALT_HANDLING))
+            if (event.getFlow().is(Flow.HANDLED))
             {
                break;
             }

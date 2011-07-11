@@ -25,6 +25,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -36,4 +37,24 @@ public interface ServletRewrite<IN extends ServletRequest, OUT extends ServletRe
    public IN getRequest();
 
    public OUT getResponse();
+
+   /**
+    * Marks the current {@link ServletRewrite} as handled and terminates further handling.
+    */
+   public void abort();
+
+   /**
+    * Marks the {@link ServletRewrite} as handled and proceeds with the rest of the handlers.
+    */
+   public void proceed();
+
+   /**
+    * Marks the {@link ServletRewrite} as handled and terminates further handling.
+    */
+   public void handled();
+
+   /**
+    * Get the current {@link Flow} state.
+    */
+   public Flow getFlow();
 }

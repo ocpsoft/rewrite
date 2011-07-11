@@ -27,8 +27,10 @@ import java.util.List;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Evaluates all provided conditions. If all provided conditions return true, this condition returns true. If any
+ * provided conditions return false, this condition returns false.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class And implements Condition
 {
@@ -39,6 +41,12 @@ public class And implements Condition
       this.conditions = Arrays.asList(conditions);
    }
 
+   /**
+    * Creates a new {@link And} condition. If all provided conditions return true, this condition returns true. If any
+    * provided conditions return false, this condition returns false.
+    * 
+    * @param conditions the array of conditions to be evaluated
+    */
    public static And all(final Condition... conditions)
    {
       return new And(conditions);

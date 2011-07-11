@@ -17,10 +17,8 @@ package com.ocpsoft.rewrite.servlet.event;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 import com.ocpsoft.rewrite.event.OutboundRewrite;
-import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -28,24 +26,4 @@ import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 public interface OutboundServletRewrite<IN extends ServletRequest, OUT extends ServletResponse> extends
          OutboundRewrite, ServletRewrite<IN, OUT>
 {
-   /**
-    * Marks the current {@link OutboundServletRewrite} as handled, terminates further handling, and immediately returns
-    * the current rewrite payload without invoking any wrapped {@link HttpServletResponseWrapper} instances.
-    */
-   public void abort();
-
-   /**
-    * Marks the {@link OutboundServletRewrite} as handled and proceeds with the rest of the handlers.
-    */
-   public void proceed();
-
-   /**
-    * Marks the {@link OutboundServletRewrite} as handled and terminates further handling.
-    */
-   public void handled();
-
-   /**
-    * Get the current {@link Flow} state.
-    */
-   public Flow getFlow();
 }

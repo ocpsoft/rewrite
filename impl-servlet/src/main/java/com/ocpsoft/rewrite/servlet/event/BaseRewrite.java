@@ -28,7 +28,7 @@ import com.ocpsoft.rewrite.servlet.RewriteFilter;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class RewriteBase<IN extends ServletRequest, OUT extends ServletResponse> implements
+public class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse> implements
          InboundServletRewrite<IN, OUT>, OutboundServletRewrite<IN, OUT>
 {
    private IN request;
@@ -36,7 +36,7 @@ public class RewriteBase<IN extends ServletRequest, OUT extends ServletResponse>
    protected Flow flow;
    protected String dispatchResource;
 
-   public RewriteBase(final IN request, final OUT response)
+   public BaseRewrite(final IN request, final OUT response)
    {
       flow = Flow.UN_HANDLED;
       this.request = request;
@@ -128,11 +128,10 @@ public class RewriteBase<IN extends ServletRequest, OUT extends ServletResponse>
       HANDLED(null),
       CONTINUE(HANDLED),
       PROCEED(CONTINUE),
-      HALT_HANDLING(HANDLED),
-      INCLUDE(HALT_HANDLING),
-      ABORT_REQUEST(HALT_HANDLING),
+      INCLUDE(HANDLED),
+      ABORT_REQUEST(HANDLED),
       FORWARD(ABORT_REQUEST),
-      CHAIN(HALT_HANDLING);
+      CHAIN(HANDLED);
 
       private Flow parent;
 

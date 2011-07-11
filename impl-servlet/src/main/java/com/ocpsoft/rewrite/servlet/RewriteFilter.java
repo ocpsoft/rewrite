@@ -32,8 +32,8 @@ import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.pattern.Weighted;
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
-import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
@@ -164,7 +164,7 @@ public class RewriteFilter implements Filter
          {
             provider.rewrite(event);
 
-            if (event.getFlow().is(Flow.HALT_HANDLING))
+            if (event.getFlow().is(Flow.HANDLED))
             {
                break;
             }

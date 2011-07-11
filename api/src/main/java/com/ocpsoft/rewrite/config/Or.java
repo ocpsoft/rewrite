@@ -27,7 +27,7 @@ import java.util.List;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Evaluates all conditions.
+ * Evaluates all provided conditions. If any return true, this condition returns true.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -41,6 +41,11 @@ public class Or implements Condition
       this.conditions = Arrays.asList(conditions);
    }
 
+   /**
+    * Creates a new {@link Or} condition. If any provided conditions return true, this condition returns true.
+    * 
+    * @param conditions the array of conditions to be evaluated
+    */
    public static Or any(final Condition... conditions)
    {
       return new Or(conditions);

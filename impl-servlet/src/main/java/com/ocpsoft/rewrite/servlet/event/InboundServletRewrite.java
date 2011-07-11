@@ -22,7 +22,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletResponseWrapper;
 
 import com.ocpsoft.rewrite.event.InboundRewrite;
-import com.ocpsoft.rewrite.servlet.event.RewriteBase.Flow;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
@@ -35,21 +34,6 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
 public interface InboundServletRewrite<IN extends ServletRequest, OUT extends ServletResponse> extends
          InboundRewrite, ServletRewrite<IN, OUT>
 {
-   /**
-    * Marks the current {@link InboundServletRewriteEvent} as handled, terminates further handling, and ends the current
-    * {@link ServletRequest}.
-    */
-   public void abort();
-
-   /**
-    * Marks the {@link InboundServletRewriteEvent} as handled and proceeds with the rest of the handlers.
-    */
-   public void proceed();
-
-   /**
-    * Marks the {@link InboundServletRewriteEvent} as handled and terminates further handling.
-    */
-   public void handled();
 
    /**
     * Marks the {@link InboundServletRewriteEvent} as handled, terminates further handling, and instructs the container
@@ -76,11 +60,6 @@ public interface InboundServletRewrite<IN extends ServletRequest, OUT extends Se
     * This method is usually used to add {@link ServletResponseWrapper} implementations.
     */
    public void setResponse(OUT response);
-
-   /**
-    * Get the current {@link Flow} state.
-    */
-   public Flow getFlow();
 
    /**
     * Returns the resource address of the requested {@link InboundServletRewriteEvent#include(String)} or

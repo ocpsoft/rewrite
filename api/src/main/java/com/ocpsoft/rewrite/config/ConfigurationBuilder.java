@@ -52,4 +52,11 @@ public class ConfigurationBuilder implements Configuration
       rules.add(rule);
       return rule;
    }
+
+   public RuleBuilder rule(final Rule rule)
+   {
+      RuleBuilder builder = new RuleBuilder(this, rule);
+      rules.add(builder);
+      return builder;
+   }
 }

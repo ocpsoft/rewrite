@@ -25,14 +25,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.jboss.logging.Logger;
 
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.servlet.event.RewriteBase;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.QueryString;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class HttpInboundRewriteImpl extends RewriteBase<HttpServletRequest, HttpServletResponse>
+public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse>
          implements HttpInboundServletRewrite
 {
    Logger log = Logger.getLogger(HttpInboundRewriteImpl.class);

@@ -39,6 +39,13 @@ public class RuleBuilder extends ConfigurationBuilder implements Rule
       this.config = config;
    }
 
+   public RuleBuilder(final ConfigurationBuilder config, final Rule rule)
+   {
+      this.config = config;
+      condition(rule.getCondition());
+      operation(rule.getOperation());
+   }
+
    public RuleBuilder condition(final Condition condition)
    {
       this.condition = condition;
