@@ -19,20 +19,63 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.config;
 
 import java.util.List;
 
-import com.ocpsoft.rewrite.config.Configuration;
-import com.ocpsoft.rewrite.config.Rule;
-
 /**
- * Configuration for HTTP rewrite environments.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface HttpConfiguration extends Configuration
+public class RuleBuilder extends ConfigurationBuilder implements Rule
 {
-   public List<Rule> getInboundRules();
+   private Condition condition;
+   private Operation operation;
+
+   private final ConfigurationBuilder config;
+
+   public RuleBuilder(final ConfigurationBuilder config)
+   {
+      this.config = config;
+   }
+
+   public RuleBuilder condition(final Condition condition)
+   {
+      this.condition = condition;
+      return this;
+   }
+
+   public RuleBuilder operation(final Operation operation)
+   {
+      this.operation = operation;
+      return this;
+   }
+
+   @Override
+   public Condition getCondition()
+   {
+      return condition;
+   }
+
+   @Override
+   public Operation getOperation()
+   {
+      return operation;
+   }
+
+   /**
+    * Passthroughs to wrapped builder.
+    */
+   @Override
+   public RuleBuilder rule()
+   {
+      return config.rule();
+   }
+
+   @Override
+   public List<Rule> getRules()
+   {
+      return config.getRules();
+   }
+
 }
