@@ -42,17 +42,17 @@ public class RuleBuilder extends ConfigurationBuilder implements Rule
    public RuleBuilder(final ConfigurationBuilder config, final Rule rule)
    {
       this.config = config;
-      condition(rule.getCondition());
-      operation(rule.getOperation());
+      setCondition(rule.getCondition());
+      setOperation(rule.getOperation());
    }
 
-   public RuleBuilder condition(final Condition condition)
+   public RuleBuilder setCondition(final Condition condition)
    {
       this.condition = condition;
       return this;
    }
 
-   public RuleBuilder operation(final Operation operation)
+   public RuleBuilder setOperation(final Operation operation)
    {
       this.operation = operation;
       return this;
@@ -74,9 +74,9 @@ public class RuleBuilder extends ConfigurationBuilder implements Rule
     * Passthroughs to wrapped builder.
     */
    @Override
-   public RuleBuilder rule()
+   public RuleBuilder addRule()
    {
-      return config.rule();
+      return config.addRule();
    }
 
    @Override

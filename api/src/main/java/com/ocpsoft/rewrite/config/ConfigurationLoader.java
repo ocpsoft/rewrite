@@ -48,11 +48,11 @@ public class ConfigurationLoader
          configs.add(provider.getConfiguration());
       }
 
-      ConfigurationBuilder result = ConfigurationBuilder.instance();
+      ConfigurationBuilder result = ConfigurationBuilder.begin();
 
       for (Configuration configuration : configs) {
          for (Rule rule : configuration.getRules()) {
-            result.rule(rule);
+            result.addRule(rule);
          }
       }
 

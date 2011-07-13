@@ -41,19 +41,19 @@ public class ConfigurationBuilder implements Configuration
       return rules;
    }
 
-   public static ConfigurationBuilder instance()
+   public static ConfigurationBuilder begin()
    {
       return new ConfigurationBuilder();
    }
 
-   public RuleBuilder rule()
+   public RuleBuilder addRule()
    {
       RuleBuilder rule = new RuleBuilder(this);
       rules.add(rule);
       return rule;
    }
 
-   public RuleBuilder rule(final Rule rule)
+   public RuleBuilder addRule(final Rule rule)
    {
       RuleBuilder builder = new RuleBuilder(this, rule);
       rules.add(builder);
