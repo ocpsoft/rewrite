@@ -31,9 +31,17 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public class Inbound implements Condition
 {
+   private Inbound()
+   {}
+
    @Override
    public boolean evaluate(final Rewrite event)
    {
       return event instanceof InboundRewrite;
+   }
+
+   public static Inbound only()
+   {
+      return new Inbound();
    }
 }

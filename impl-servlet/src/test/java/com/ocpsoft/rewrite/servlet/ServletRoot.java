@@ -19,29 +19,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.config;
-
-import org.junit.Assert;
-import org.junit.Test;
+package com.ocpsoft.rewrite.servlet;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
-public class InboundTest
+public interface ServletRoot
 {
 
-   @Test
-   public void testInboundReturnsTrue()
-   {
-      Condition condition = Inbound.only();
-      Assert.assertTrue(condition.evaluate(new MockInboundRewrite()));
-   }
-
-   @Test
-   public void testNotInboundReturnsFalse()
-   {
-      Condition condition = Inbound.only();
-      Assert.assertFalse(condition.evaluate(new MockRewrite()));
-   }
 }

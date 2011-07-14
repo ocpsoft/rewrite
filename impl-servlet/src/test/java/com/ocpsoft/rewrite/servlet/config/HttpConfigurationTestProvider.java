@@ -19,43 +19,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.config;
+package com.ocpsoft.rewrite.servlet.config;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
+import com.ocpsoft.rewrite.config.And;
+import com.ocpsoft.rewrite.config.Configuration;
+import com.ocpsoft.rewrite.config.ConfigurationBuilder;
+import com.ocpsoft.rewrite.config.ConfigurationProvider;
+import com.ocpsoft.rewrite.config.Inbound;
+import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class ConfigurationBuilderTest
+public class HttpConfigurationTestProvider implements ConfigurationProvider
 {
-   private boolean performed = false;
+   public static boolean performed = false;
 
-   @Test
-   public void testBuildConfiguration()
+   @Override
+   public int priority()
    {
-      Configuration config = ConfigurationBuilder.begin().addRule()
-               .setCondition(And.all(Inbound.only(), new True()))
-               .setOperation(operation);
-
-      Rule rule = config.getRules().get(0);
-      MockInboundRewrite rewrite = new MockInboundRewrite();
-      if (rule.getCondition().evaluate(rewrite))
-      {
-         rule.getOperation().perform(rewrite);
-      }
-      Assert.assertTrue(performed);
+      return 0;
    }
 
-   Operation operation = new Operation() {
-      @Override
-      public void perform(final Rewrite event)
-      {
-         performed = true;
-      }
-   };
+   @Override
+   public Configuration getConfiguration()
+   {
+      return ConfigurationBuilder.begin()
+               .addRule()
+               .setCondition(And.all(Inbound.only(), Path.matches("/path")))
+               .setOperation(new Operation() {
+                  @Override
+                  public void perform(final Rewrite event)
+                  {
+                     ((HttpInboundServletRewrite) event).sendStatusCode(200);
+                     performed = true;
+                  }
+               });
+   }
+
 }
