@@ -19,40 +19,43 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.http.impl;
+package com.ocpsoft.rewrite.util;
 
-import com.ocpsoft.rewrite.config.Configuration;
-import com.ocpsoft.rewrite.config.ConfigurationLoader;
-import com.ocpsoft.rewrite.config.Rule;
-import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import java.util.List;
+
+import org.jboss.logging.Logger;
+
+import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class DefaultHttpRewriteProvider extends HttpRewriteProvider
+public final class ServiceLogger
 {
-   @Override
-   public void rewrite(final HttpServletRewrite event)
+
+   public static <T> void logLoadedServices(final Logger log, final Class<T> type, final List<? extends T> services)
    {
-      Configuration loader = ConfigurationLoader.loadConfiguration();
-      for (Rule rule : loader.getRules()) {
-         if (rule.getCondition().evaluate(event))
-         {
-            rule.getOperation().perform(event);
-            if (event.getFlow().is(Flow.HANDLED))
-            {
-               break;
-            }
-         }
-      }
+      log.info("Loaded [" + services.size() + "] " + type.getName() + " ["
+               + joinTypeNames(services) + "]");
    }
 
-   @Override
-   public int priority()
+   private static String joinTypeNames(final List<?> list)
    {
-      return 0;
+      StringBuilder result = new StringBuilder();
+      for (int i = 0; i < list.size(); i++)
+      {
+         Object service = list.get(i);
+         result.append(service.getClass().getName());
+         if (service instanceof Weighted)
+         {
+            result.append("<" + ((Weighted) service).priority() + ">");
+         }
+         if ((i + 1) < list.size())
+         {
+            result.append(", ");
+         }
+      }
+      return result.toString();
    }
 }

@@ -19,40 +19,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.servlet.http.impl;
+package com.ocpsoft.rewrite.servlet.config;
 
+import com.ocpsoft.rewrite.config.And;
 import com.ocpsoft.rewrite.config.Configuration;
-import com.ocpsoft.rewrite.config.ConfigurationLoader;
-import com.ocpsoft.rewrite.config.Rule;
-import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
-import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.config.ConfigurationBuilder;
+import com.ocpsoft.rewrite.config.ConfigurationProvider;
+import com.ocpsoft.rewrite.config.Inbound;
+import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class DefaultHttpRewriteProvider extends HttpRewriteProvider
+public class HttpConfigurationTestProviderTwo implements ConfigurationProvider
 {
-   @Override
-   public void rewrite(final HttpServletRewrite event)
-   {
-      Configuration loader = ConfigurationLoader.loadConfiguration();
-      for (Rule rule : loader.getRules()) {
-         if (rule.getCondition().evaluate(event))
-         {
-            rule.getOperation().perform(event);
-            if (event.getFlow().is(Flow.HANDLED))
-            {
-               break;
-            }
-         }
-      }
-   }
+   public static boolean performed = false;
 
    @Override
    public int priority()
    {
-      return 0;
+      return 1;
    }
+
+   @Override
+   public Configuration getConfiguration()
+   {
+      return ConfigurationBuilder.begin()
+               .addRule()
+               .setCondition(And.all(Inbound.only(), Path.matches("/path")))
+               .setOperation(new Operation() {
+                  @Override
+                  public void perform(final Rewrite event)
+                  {
+                     ((HttpInboundServletRewrite) event).sendStatusCode(200);
+                     performed = true;
+                  }
+               });
+   }
+
 }

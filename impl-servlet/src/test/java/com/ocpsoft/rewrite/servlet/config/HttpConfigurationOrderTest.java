@@ -39,32 +39,30 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class HttpConfigurationTest extends RewriteTestBase
+public class HttpConfigurationOrderTest extends RewriteTestBase
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase.getDeployment()
+      WebArchive deployment = RewriteTestBase
+               .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
-               .addAsResource(new StringAsset("com.ocpsoft.rewrite.servlet.config.HttpConfigurationTestProvider"),
+               .addAsResource(
+                        new StringAsset(
+                                 "com.ocpsoft.rewrite.servlet.config.HttpConfigurationTestProvider" +
+                                          "\n" +
+                                          "com.ocpsoft.rewrite.servlet.config.HttpConfigurationTestProviderTwo"),
                         "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
+
       return deployment;
    }
 
    @Test
-   public void testRewriteProviderBridgeAcceptsChanges()
+   public void testLowerPriorityConfigsEvaluateFirst()
    {
       HttpAction<HttpGet> action = get("/path");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertTrue(HttpConfigurationTestProvider.performed);
-      HttpConfigurationTestProvider.performed = false;
-   }
-
-   @Test
-   public void testRewriteProviderBridgeIngoresUnconfiguredRequests()
-   {
-      HttpAction<HttpGet> action = get("/other");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertFalse(HttpConfigurationTestProvider.performed);
+      Assert.assertFalse(HttpConfigurationTestProviderTwo.performed);
    }
 }

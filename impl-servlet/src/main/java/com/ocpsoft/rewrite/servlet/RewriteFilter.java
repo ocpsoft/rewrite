@@ -29,7 +29,6 @@ import javax.servlet.ServletResponse;
 import org.jboss.logging.Logger;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.pattern.Weighted;
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
@@ -40,6 +39,7 @@ import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 import com.ocpsoft.rewrite.util.Iterators;
+import com.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -75,11 +75,11 @@ public class RewriteFilter implements Filter
       Collections.sort(inbound, new WeightedComparator());
       Collections.sort(outbound, new WeightedComparator());
 
-      logLoadedServices(RewriteLifecycleListener.class, listeners);
-      logLoadedServices(RequestCycleWrapper.class, wrappers);
-      logLoadedServices(RewriteProvider.class, providers);
-      logLoadedServices(InboundRewriteProducer.class, inbound);
-      logLoadedServices(OutboundRewriteProducer.class, outbound);
+      ServiceLogger.logLoadedServices(log, RewriteLifecycleListener.class, listeners);
+      ServiceLogger.logLoadedServices(log, RequestCycleWrapper.class, wrappers);
+      ServiceLogger.logLoadedServices(log, RewriteProvider.class, providers);
+      ServiceLogger.logLoadedServices(log, InboundRewriteProducer.class, inbound);
+      ServiceLogger.logLoadedServices(log, OutboundRewriteProducer.class, outbound);
 
       log.info("RewriteFilter initialized.");
       // TODO SPI post filter init?
@@ -198,28 +198,4 @@ public class RewriteFilter implements Filter
       // TODO SPI filter destroy?
    }
 
-   private <T> void logLoadedServices(final Class<T> type, final List<? extends T> services)
-   {
-      log.info("Loaded [" + services.size() + "] " + type.getName() + " ["
-               + joinTypeNames(services) + "]");
-   }
-
-   private String joinTypeNames(final List<?> list)
-   {
-      StringBuilder result = new StringBuilder();
-      for (int i = 0; i < list.size(); i++)
-      {
-         Object service = list.get(i);
-         result.append(service.getClass().getName());
-         if (service instanceof Weighted)
-         {
-            result.append("<" + ((Weighted) service).priority() + ">");
-         }
-         if ((i + 1) < list.size())
-         {
-            result.append(", ");
-         }
-      }
-      return result.toString();
-   }
 }

@@ -33,6 +33,8 @@ import java.util.Set;
 import org.jboss.logging.Logger;
 
 import com.ocpsoft.rewrite.spi.ServiceEnricher;
+import com.ocpsoft.rewrite.util.Iterators;
+import com.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * This class handles looking up service providers on the class path. It implements the <a
@@ -270,6 +272,8 @@ public class ServiceLoader<S> implements Iterable<S>
       return serviceClass;
    }
 
+   private static java.util.ServiceLoader<ServiceEnricher> enricherLoader = null;
+
    /**
     * Prepare our enriched service instance using any provided {@link ServiceEnricher} classes.
     * 
@@ -280,13 +284,16 @@ public class ServiceLoader<S> implements Iterable<S>
       try
       {
          S service = null;
-         java.util.ServiceLoader<ServiceEnricher> enricherLoader = null;
          ServiceEnricher origin = null;
 
          if (!NonEnriching.class.isAssignableFrom(serviceClass))
          {
-            enricherLoader = java.util.ServiceLoader
-                     .load(ServiceEnricher.class);
+            if (enricherLoader == null)
+            {
+               enricherLoader = java.util.ServiceLoader
+                        .load(ServiceEnricher.class);
+               ServiceLogger.logLoadedServices(log, ServiceEnricher.class, Iterators.asList(enricherLoader.iterator()));
+            }
 
             for (ServiceEnricher enricher : enricherLoader)
             {
