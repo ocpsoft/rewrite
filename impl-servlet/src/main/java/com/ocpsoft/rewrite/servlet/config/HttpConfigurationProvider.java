@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.config;
+package com.ocpsoft.rewrite.servlet.config;
 
-import com.ocpsoft.rewrite.pattern.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import javax.servlet.ServletContext;
+
+import com.ocpsoft.rewrite.config.ConfigurationProvider;
 
 /**
- * Provider configuration to the Rewrite runtime environment.
+ * Configuration provider for HTTP/Servlet environments.
  * 
- * Additional configuration providers my be specified by providing a service activator file containing the name of your
- * implementations:
- * <p>
- * <code> /META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider<br> 
- * 
- * --------------<br>
- * com.example.ConfigurationProviderImpl</code>
- * 
+ * @see ConfigurationProvider
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public interface ConfigurationProvider<T> extends Weighted, Specialized<Object>
+public abstract class HttpConfigurationProvider implements ConfigurationProvider<ServletContext>
 {
-   /**
-    * Return the additional configuration.
-    */
-   public Configuration getConfiguration(T context);
+   @Override
+   public boolean handles(final Object payload)
+   {
+      return payload instanceof ServletContext;
+   }
 }

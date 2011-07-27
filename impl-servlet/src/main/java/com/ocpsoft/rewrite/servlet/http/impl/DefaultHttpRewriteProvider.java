@@ -31,7 +31,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider
    @Override
    public void rewrite(final HttpServletRewrite event)
    {
-      Configuration loader = ConfigurationLoader.loadConfiguration();
+      Configuration loader = ConfigurationLoader.loadConfiguration(event.getRequest().getServletContext());
       for (Rule rule : loader.getRules()) {
          if (rule.getCondition().evaluate(event))
          {

@@ -15,10 +15,11 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import javax.servlet.ServletContext;
+
 import com.ocpsoft.rewrite.config.And;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
-import com.ocpsoft.rewrite.config.ConfigurationProvider;
 import com.ocpsoft.rewrite.config.Inbound;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
@@ -28,7 +29,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpConfigurationTestProviderTwo implements ConfigurationProvider
+public class HttpConfigurationTestProviderTwo extends HttpConfigurationProvider
 {
    public static boolean performed = false;
 
@@ -39,7 +40,7 @@ public class HttpConfigurationTestProviderTwo implements ConfigurationProvider
    }
 
    @Override
-   public Configuration getConfiguration()
+   public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
                .addRule()

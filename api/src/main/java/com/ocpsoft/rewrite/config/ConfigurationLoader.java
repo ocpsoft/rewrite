@@ -15,9 +15,10 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.jboss.logging.Logger;
 
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
@@ -29,7 +30,9 @@ import com.ocpsoft.rewrite.util.Iterators;
  */
 public class ConfigurationLoader
 {
-   public static Configuration loadConfiguration()
+   public static Logger log = Logger.getLogger(ConfigurationLoader.class);
+
+   public static Configuration loadConfiguration(final Object context)
    {
       @SuppressWarnings("unchecked")
       ServiceLoader<ConfigurationProvider> loader = ServiceLoader.load(ConfigurationProvider.class);
@@ -37,16 +40,38 @@ public class ConfigurationLoader
 
       Collections.sort(providers, new WeightedComparator());
 
-      List<Configuration> configs = new ArrayList<Configuration>();
-      for (ConfigurationProvider provider : providers) {
-         configs.add(provider.getConfiguration());
-      }
-
       ConfigurationBuilder result = ConfigurationBuilder.begin();
 
-      for (Configuration configuration : configs) {
-         for (Rule rule : configuration.getRules()) {
-            result.addRule(rule);
+      for (ConfigurationProvider provider : providers) {
+         if (provider.handles(context))
+         {
+            Configuration configuration = provider.getConfiguration(context);
+
+            if (configuration != null)
+            {
+               List<Rule> rules = configuration.getRules();
+               if (rules != null)
+               {
+                  for (Rule rule : rules) {
+                     if (rule != null)
+                     {
+                        result.addRule(rule);
+                     }
+                     else {
+                        log.debug("Ignoring null Rule from ConfigurationProvider [" + provider.getClass().getName()
+                                 + "]");
+                     }
+                  }
+               }
+               else {
+                  log.debug("Ignoring null List<Rule> from ConfigurationProvider [" + provider.getClass().getName()
+                           + "]");
+               }
+            }
+            else {
+               log.debug("Ignoring null Configuration from ConfigurationProvider [" + provider.getClass().getName()
+                        + "].");
+            }
          }
       }
 
