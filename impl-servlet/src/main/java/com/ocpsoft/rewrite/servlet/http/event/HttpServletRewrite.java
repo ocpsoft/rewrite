@@ -42,4 +42,11 @@ public interface HttpServletRewrite extends
     * Portion of the request URL representing the query string.
     */
    public String getRequestQueryString();
+
+   /**
+    * Portion of the request URL joining the {@link #getRequestURL()} and {@link #getRequestQueryString()}. If
+    * {@link #getRequestQueryString()} is valued, this will return "?"; otherwise, if {@link #getRequestQueryString()}
+    * is empty, this too will return an empty string.
+    */
+   String getRequestQueryStringSeparator();
 }

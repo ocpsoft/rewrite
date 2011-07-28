@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.spi;
 
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
+import javax.servlet.ServletContextEvent;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class RequestConfigListener implements ServletRequestListener
+public interface ContextListener
 {
-   public void requestDestroyed(final ServletRequestEvent sre)
-   {
-   }
+   void contextInitialized(ServletContextEvent event);
 
-   public void requestInitialized(final ServletRequestEvent sre)
-   {
-      // TODO EXTENSION configuration listener
-   }
-
+   void contextDestroyed(ServletContextEvent event);
 }

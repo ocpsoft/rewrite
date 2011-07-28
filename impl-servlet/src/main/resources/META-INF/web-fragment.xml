@@ -14,11 +14,11 @@
    </ordering>
 
    <listener>
-      <listener-class>com.ocpsoft.rewrite.servlet.config.RequestConfigListener</listener-class>
+      <listener-class>com.ocpsoft.rewrite.servlet.impl.RewriteServletRequestListener</listener-class>
    </listener>
 
    <listener>
-      <listener-class>com.ocpsoft.rewrite.servlet.config.ContextConfigListener</listener-class>
+      <listener-class>com.ocpsoft.rewrite.servlet.impl.RewriteServletContextListener</listener-class>
    </listener>
 
    <filter>

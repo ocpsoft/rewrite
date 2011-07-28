@@ -28,8 +28,7 @@ import com.ocpsoft.rewrite.servlet.RewriteFilter;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse> implements
-         InboundServletRewrite<IN, OUT>, OutboundServletRewrite<IN, OUT>
+public abstract class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse>
 {
    private IN request;
    private OUT response;
@@ -47,32 +46,27 @@ public class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse>
     * Mutators
     */
 
-   @Override
    public void abort()
    {
       this.flow = Flow.ABORT_REQUEST;
    }
 
-   @Override
    public void proceed()
    {
       this.flow = Flow.PROCEED;
    }
 
-   @Override
    public void handled()
    {
       this.flow = Flow.HANDLED;
    }
 
-   @Override
    public void include(final String resource)
    {
       this.dispatchResource = resource;
       this.flow = Flow.INCLUDE;
    }
 
-   @Override
    public void forward(final String resource)
    {
       this.dispatchResource = resource;
@@ -82,37 +76,31 @@ public class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse>
    /*
     * Getters
     */
-   @Override
    public Flow getFlow()
    {
       return flow;
    }
 
-   @Override
    public String getDispatchResource()
    {
       return dispatchResource;
    }
 
-   @Override
    public IN getRequest()
    {
       return request;
    }
 
-   @Override
    public OUT getResponse()
    {
       return response;
    }
 
-   @Override
    public void setRequest(final IN request)
    {
       this.request = request;
    }
 
-   @Override
    public void setResponse(final OUT response)
    {
       this.response = response;
@@ -185,7 +173,6 @@ public class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse>
       return "Rewrite [flow=" + flow + ", dispatchResource=" + dispatchResource + "]";
    }
 
-   @Override
    public RewriteContext getRewriteContext()
    {
       RewriteContext context = (RewriteContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);

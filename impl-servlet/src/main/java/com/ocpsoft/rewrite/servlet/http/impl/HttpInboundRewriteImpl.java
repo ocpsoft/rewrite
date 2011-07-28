@@ -153,6 +153,17 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    }
 
    @Override
+   public String getRequestQueryStringSeparator()
+   {
+      String queryString = getRequestQueryString();
+      if ((queryString != null) && !queryString.isEmpty())
+      {
+         return "?";
+      }
+      return "";
+   }
+
+   @Override
    public String getRequestQueryString()
    {
       return getRequest().getQueryString() == null ? "" : getRequest().getQueryString();

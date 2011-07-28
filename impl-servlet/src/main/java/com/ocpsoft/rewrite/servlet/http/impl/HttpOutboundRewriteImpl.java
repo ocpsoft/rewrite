@@ -68,4 +68,22 @@ public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, Htt
    {
       return getRequest().getQueryString() == null ? "" : getRequest().getQueryString();
    }
+
+   @Override
+   public String getRequestQueryStringSeparator()
+   {
+      String queryString = getRequestQueryString();
+      if ((queryString != null) && !queryString.isEmpty())
+      {
+         return "?";
+      }
+      return "";
+   }
+
+   @Override
+   public String toString()
+   {
+      return "OutboundRewrite [flow=" + flow + ", outboundURL=" + getOutboundURL() + ", dispatchResource="
+               + dispatchResource + "]";
+   }
 }

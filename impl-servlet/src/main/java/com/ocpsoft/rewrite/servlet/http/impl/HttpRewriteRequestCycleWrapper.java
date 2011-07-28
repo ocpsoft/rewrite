@@ -16,12 +16,15 @@
 package com.ocpsoft.rewrite.servlet.http.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.services.NonEnriching;
+import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
+import com.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -30,9 +33,21 @@ import com.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
 public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper implements NonEnriching
 {
    @Override
+   @SuppressWarnings("unchecked")
    public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
    {
-      HashMap<String, String[]> additionalParams = new HashMap<String, String[]>();
+      Map<String, String[]> additionalParams = new HashMap<String, String[]>();
+
+      ServiceLoader<RequestParameterProvider> providers = ServiceLoader.load(RequestParameterProvider.class);
+
+      for (RequestParameterProvider provider : providers) {
+         Map<String, String[]> m = provider.getParameters(request, response);
+         if (m != null)
+         {
+            additionalParams.putAll(m);
+         }
+      }
+
       return new HttpRewriteWrappedRequest(request, additionalParams);
    }
 

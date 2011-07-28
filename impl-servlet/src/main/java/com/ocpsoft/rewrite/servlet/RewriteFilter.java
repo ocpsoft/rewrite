@@ -33,6 +33,7 @@ import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.impl.RewriteContextImpl;
 import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
