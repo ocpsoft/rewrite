@@ -23,12 +23,11 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class Not implements Condition
+public class Not extends ConditionBuilder
 {
    private final Condition condition;
 
    private Not(final Condition condition)
-
    {
       this.condition = condition;
    }

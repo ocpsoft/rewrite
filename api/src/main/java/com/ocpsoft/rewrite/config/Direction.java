@@ -15,27 +15,18 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.rewrite.event.OutboundRewrite;
-import com.ocpsoft.rewrite.event.Rewrite;
-
 /**
- * A condition that returns true when operating on an {@link OutboundRewrite}
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Outbound extends ConditionBuilder
+public abstract class Direction extends ConditionBuilder
 {
-   public Outbound()
-   {}
-
-   @Override
-   public boolean evaluate(final Rewrite event)
+   public static Inbound isInbound()
    {
-      return event instanceof OutboundRewrite;
+      return Inbound.only();
    }
 
-   public static Outbound only()
+   public static Outbound isOutbound()
    {
-      return new Outbound();
+      return Outbound.only();
    }
 }

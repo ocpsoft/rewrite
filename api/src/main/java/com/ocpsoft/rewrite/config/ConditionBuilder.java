@@ -16,25 +16,30 @@
 package com.ocpsoft.rewrite.config;
 
 /**
- * Abstract access to conditional primitives.
+ * Used as a base class to create fluent relationships between {@link Condition} objects; this class adds logical
+ * operators to any class extending it.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public abstract class Conditions
+public abstract class ConditionBuilder implements Condition
 {
-   public Not not(final Condition condition)
+   public ConditionBuilder and(final Condition condition)
    {
-      return Not.any(condition);
+      return And.all(this, condition);
    }
 
-   public And and(final Condition... conditions)
+   public ConditionBuilder andNot(final Condition condition)
    {
-      return And.all(conditions);
+      return And.all(this, Not.any(condition));
    }
 
-   public Or or(final Condition... conditions)
+   public ConditionBuilder or(final Condition condition)
    {
-      return Or.any(conditions);
+      return Or.any(this, condition);
+   }
+
+   public ConditionBuilder orNot(final Condition condition)
+   {
+      return Or.any(this, Not.any(condition));
    }
 }

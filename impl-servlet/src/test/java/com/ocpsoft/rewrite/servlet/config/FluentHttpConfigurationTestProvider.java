@@ -28,7 +28,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpConfigurationTestProvider extends HttpConfigurationProvider
+public class FluentHttpConfigurationTestProvider extends HttpConfigurationProvider
 {
    public static boolean performed = false;
 
@@ -44,7 +44,13 @@ public class HttpConfigurationTestProvider extends HttpConfigurationProvider
       return ConfigurationBuilder.begin()
                .addRule()
                .setCondition(
-                        Direction.isInbound().and(Path.matches("/path"))
+                        Direction.isInbound()
+                                 .and(Path.matches("/path/{value}"))
+                                 .and(Method.isGet().or(Method.isPost()))
+                                 .orNot(
+                                          Path.matches("/other")
+                                                   .and(Method.isPost())
+                                 )
                )
                .setOperation(new Operation() {
                   @Override

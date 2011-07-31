@@ -22,7 +22,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class True implements Condition
+public class True extends ConditionBuilder
 {
    @Override
    public boolean evaluate(final Rewrite event)

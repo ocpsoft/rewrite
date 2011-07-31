@@ -15,27 +15,45 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import com.ocpsoft.rewrite.config.ConditionBuilder;
+import javax.servlet.http.HttpServletRequest;
+
+import org.easymock.EasyMock;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
- * A condition that only applies to {@link HttpServletRewrite} events.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class HttpCondition extends ConditionBuilder
+public class MethodTest
 {
-   public abstract boolean evaluateHttp(final HttpServletRewrite event);
+   private Rewrite rewrite;
+   private HttpServletRequest request;
 
-   @Override
-   public boolean evaluate(final Rewrite event)
+   @Before
+   public void before()
    {
-      if (event instanceof HttpServletRewrite)
-      {
-         return evaluateHttp((HttpServletRewrite) event);
-      }
-      return false;
+      request = EasyMock.createNiceMock(HttpServletRequest.class);
+      EasyMock.expect(request.getMethod())
+               .andReturn("HEAD").anyTimes();
+
+      EasyMock.replay(request);
+
+      rewrite = new HttpInboundRewriteImpl(request, null);
    }
 
+   @Test
+   public void testMethod()
+   {
+      Assert.assertTrue(Method.isHead().evaluate(rewrite));
+   }
+
+   @Test
+   public void testMethodNegative()
+   {
+      Assert.assertFalse(Method.isGet().evaluate(rewrite));
+   }
 }

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ocpsoft.rewrite.config.And;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
@@ -66,20 +65,17 @@ public class HeaderAndPathTest
    public void testHeaderAndPath()
    {
       Assert.assertTrue(
-
-               And.all(
-                        Path.matches("/application/.*"),
-                        Header.exists("Accept-.*")
-                        )
+               Path.matches("/application/.*").and(
+                        Header.exists("Accept-.*"))
                         .evaluate(rewrite));
    }
 
    @Test
    public void testHeaderAndPathDoNotMatch()
    {
-      Assert.assertFalse(And.all(
-               Path.matches("/wrong-application/.*"),
-               Header.exists("Accept-.*")
-               ).evaluate(rewrite));
+      Assert.assertFalse(
+               Path.matches("/wrong-application/.*").and(
+                        Header.exists("Accept-.*")
+                        ).evaluate(rewrite));
    }
 }

@@ -23,7 +23,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Inbound implements Condition
+public class Inbound extends ConditionBuilder
 {
    private Inbound()
    {}

@@ -18,8 +18,9 @@ package com.ocpsoft.rewrite.config;
 import java.util.List;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Build a {@link Configuration} rule.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RuleBuilder extends ConfigurationBuilder implements Rule
 {

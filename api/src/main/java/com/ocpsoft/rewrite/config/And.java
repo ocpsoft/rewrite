@@ -26,7 +26,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class And implements Condition
+public class And extends ConditionBuilder
 {
    private final List<Condition> conditions;
 

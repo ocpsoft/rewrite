@@ -18,7 +18,9 @@ package com.ocpsoft.rewrite.config;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * A condition that must be met in order for evaluation to return true.
+ * A condition that must be met in order for evaluation to return true. You may create custom {@link Condition}
+ * implementations. If creating custom implementations, you should likely extend {@link ConditionBuilder}, which adds
+ * logical operators to any class extending it.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */

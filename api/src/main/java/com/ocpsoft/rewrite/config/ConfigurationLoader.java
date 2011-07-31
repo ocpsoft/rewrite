@@ -32,9 +32,9 @@ public class ConfigurationLoader
 {
    public static Logger log = Logger.getLogger(ConfigurationLoader.class);
 
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    public static Configuration loadConfiguration(final Object context)
    {
-      @SuppressWarnings("unchecked")
       ServiceLoader<ConfigurationProvider> loader = ServiceLoader.load(ConfigurationProvider.class);
       List<ConfigurationProvider> providers = Iterators.asList(loader.iterator());
 

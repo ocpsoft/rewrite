@@ -17,10 +17,9 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.ServletContext;
 
-import com.ocpsoft.rewrite.config.And;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
-import com.ocpsoft.rewrite.config.Inbound;
+import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -44,7 +43,9 @@ public class HttpConfigurationTestProviderTwo extends HttpConfigurationProvider
    {
       return ConfigurationBuilder.begin()
                .addRule()
-               .setCondition(And.all(Inbound.only(), Path.matches("/path")))
+               .setCondition(
+                        Direction.isInbound().and(Path.matches("/path"))
+               )
                .setOperation(new Operation() {
                   @Override
                   public void perform(final Rewrite event)

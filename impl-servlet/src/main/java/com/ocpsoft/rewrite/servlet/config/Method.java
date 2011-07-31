@@ -15,34 +15,64 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import java.util.regex.Pattern;
-
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition
+public class Method extends HttpCondition
 {
-   private final Pattern pattern;
+   private final HttpMethod method;
 
-   private Path(final String pattern)
+   public enum HttpMethod
    {
-      Assert.notNull(pattern, "URL pattern must not be null.");
-      this.pattern = Pattern.compile(pattern);
+      GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE
    }
 
-   public static Path matches(final String pattern)
+   public Method(final HttpMethod method)
    {
-      // TODO Parameter extraction could occur here.
-      return new Path(pattern);
+      this.method = method;
+   }
+
+   public static Method isGet()
+   {
+      return new Method(HttpMethod.GET);
+   }
+
+   public static Method isPost()
+   {
+      return new Method(HttpMethod.POST);
+   }
+
+   public static Method isHead()
+   {
+      return new Method(HttpMethod.HEAD);
+   }
+
+   public static Method isOptions()
+   {
+      return new Method(HttpMethod.OPTIONS);
+   }
+
+   public static Method isPut()
+   {
+      return new Method(HttpMethod.PUT);
+   }
+
+   public static Method isDelete()
+   {
+      return new Method(HttpMethod.DELETE);
+   }
+
+   public static Method isTrace()
+   {
+      return new Method(HttpMethod.TRACE);
    }
 
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event)
    {
-      return pattern.matcher(event.getRequestURL()).matches();
+      return this.method.equals(HttpMethod.valueOf(event.getRequest().getMethod()));
    }
 
 }
