@@ -17,10 +17,9 @@ package com.ocpsoft.rewrite.servlet.wrapper;
 
 import javax.servlet.ServletContext;
 
-import com.ocpsoft.rewrite.config.And;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
-import com.ocpsoft.rewrite.config.Inbound;
+import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
@@ -47,9 +46,12 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
    {
       return ConfigurationBuilder.begin()
                .addRule()
-               .setCondition(And.all(Inbound.only(),
-                        Path.matches("/forward"),
-                        RequestParameter.exists("foo")))
+               .setCondition(
+
+                        Direction.isInbound()
+                                 .and(Path.matches("/forward"))
+                                 .and(RequestParameter.exists("foo")))
+
                .setOperation(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
@@ -58,11 +60,15 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                      performed = true;
                   }
                })
+
                .addRule()
-               .setCondition(And.all(Inbound.only(),
-                        Path.matches("/forward2"),
-                        RequestParameter.exists("foo"),
-                        RequestParameter.exists("baz")))
+               .setCondition(
+
+                        Direction.isInbound()
+                                 .and(Path.matches("/forward2"))
+                                 .and(RequestParameter.exists("foo"))
+                                 .and(RequestParameter.exists("baz")))
+
                .setOperation(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
@@ -71,10 +77,14 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                      performed = true;
                   }
                })
+
                .addRule()
-               .setCondition(And.all(Inbound.only(),
-                        Path.matches("/forward-fail"),
-                        RequestParameter.exists("foo")))
+               .setCondition(
+
+                        Direction.isInbound()
+                                 .and(Path.matches("/forward-fail"))
+                                 .and(RequestParameter.exists("foo")))
+
                .setOperation(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
@@ -83,5 +93,4 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                   }
                });
    }
-
 }
