@@ -11,7 +11,6 @@
    </parent>
    
    <artifactId>rewrite-config-jodatime</artifactId>
-   <name>JodaTime integration for Rewrite configuration</name>
    
    <properties>
       <version.jodatime>1.6.2</version.jodatime>
