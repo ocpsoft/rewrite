@@ -35,6 +35,7 @@
       <module>api</module>
       <module>api-tests</module>
       <module>config-jodatime</module>
+      <module>config-tuckey</module>
       <module>impl-servlet</module>
       <module>integration-cdi</module>
       <module>prototype</module>

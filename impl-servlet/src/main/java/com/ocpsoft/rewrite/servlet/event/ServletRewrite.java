@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.servlet.event;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -33,17 +34,22 @@ public interface ServletRewrite<IN extends ServletRequest, OUT extends ServletRe
    public OUT getResponse();
 
    /**
-    * Marks the current {@link ServletRewrite} as handled and terminates further handling.
+    * Marks the current {@link ServletRewrite} as handled and terminates further handling. Control of the request is
+    * <b>not</b> passed to the application; the request is terminated immediately following execution of the current
+    * handler.
     */
    public void abort();
 
    /**
-    * Marks the {@link ServletRewrite} as handled and proceeds with the rest of the handlers.
+    * Marks the {@link ServletRewrite} as handled and proceeds with the rest of the handlers. Unless another handler
+    * calls {@link #abort()}, this typically results in passing control of the request to the application via
+    * {@link FilterChain#doFilter(ServletRequest, ServletResponse)} after all handlers have processed.
     */
    public void proceed();
 
    /**
-    * Marks the {@link ServletRewrite} as handled and terminates further handling.
+    * Marks the {@link ServletRewrite} as handled and terminates further handling. Typically this results in passing
+    * control of the request to the application via {@link FilterChain#doFilter(ServletRequest, ServletResponse)}
     */
    public void handled();
 

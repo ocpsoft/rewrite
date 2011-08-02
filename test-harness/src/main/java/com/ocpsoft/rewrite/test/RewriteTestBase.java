@@ -88,7 +88,7 @@ public class RewriteTestBase
                .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"));
    }
 
-   private static Collection<GenericArchive> resolveDependencies(final String coords)
+   protected static Collection<GenericArchive> resolveDependencies(final String coords)
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
                .artifacts(coords)

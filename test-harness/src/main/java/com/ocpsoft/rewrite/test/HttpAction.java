@@ -45,6 +45,9 @@ public class HttpAction<T extends HttpRequest>
       this.baseUrl = baseUrl;
    }
 
+   /**
+    * Return the current full URL.
+    */
    public String getCurrentURL()
    {
       HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(
@@ -59,6 +62,30 @@ public class HttpAction<T extends HttpRequest>
       }
 
       return currentUrl;
+   }
+
+   /**
+    * Return the current URL excluding host or context root.
+    */
+   public String getRelativeURL()
+   {
+      if (!getCurrentURL().startsWith(getHost()))
+      {
+         throw new IllegalStateException("Cannot get relative URL for address outside context root [" + getHost()
+                  + "]");
+      }
+      return getCurrentURL().substring(getHost().length());
+   }
+
+   /**
+    * Return the URL up to and including the host and port.
+    */
+   public String getHost()
+   {
+      HttpHost currentHost = (HttpHost) context.getAttribute(
+               ExecutionContext.HTTP_TARGET_HOST);
+
+      return currentHost.toURI();
    }
 
    public HttpClient getClient()
