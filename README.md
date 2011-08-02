@@ -64,9 +64,9 @@ Get Started
 
 4. Create a file named: '/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider' which contains the fully qualified name of your ConfigurationProvider implementation:
 
-    /META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider |
-    --------------------------------------------------------------------|
-    com.example.ExampleConfigurationProvider
+        /META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider |
+        --------------------------------------------------------------------|
+        com.example.ExampleConfigurationProvider
 
 5. Add rules to your configuration. Condition objects such as 'Direction.isInbound()' and 'Path.matches(É)' can be found in the 'com.ocpsoft.rewrite.config.*' and 'com.ocpsoft.rewrite.servlet.config.*' packages.
 

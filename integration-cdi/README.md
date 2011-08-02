@@ -16,29 +16,29 @@ Get Started
 
 3. Use CDI in your configuration providers or listeners:
 
-	package com.example;
-
-	public class ExampleConfigurationProvider extends HttpConfigurationProvider
-	{
-         @Inject @My
-			private RuleDatabase source;
-
-   		@Override
-   		public int priority()
-   		{
-      			return 10;
-   		}
-
-   		@Override
-   		public Configuration getConfiguration(final ServletContext context)
-   		{
-     	 		return ConfigurationBuilder.begin()
-               		.addRule()
-               		.setCondition(new DatabaseConditionAdapter(source)) 
-	               	.setOperation(new DatabaseOperationAdapter(source));
-		}
-	}
-
+	    package com.example;
+    
+	    public class ExampleConfigurationProvider extends HttpConfigurationProvider
+	    {
+             @Inject @My
+			    private RuleDatabase source;
+    
+   		    @Override
+   		    public int priority()
+   		    {
+      			    return 10;
+   		    }
+    
+   		    @Override
+   		    public Configuration getConfiguration(final ServletContext context)
+   		    {
+     	 		    return ConfigurationBuilder.begin()
+               		    .addRule()
+               		    .setCondition(new DatabaseConditionAdapter(source)) 
+	               	    .setOperation(new DatabaseOperationAdapter(source));
+		    }
+	    }
+    
 4. Run your application!
 
 FEEDBACK

@@ -9,7 +9,7 @@ How to use
 
  * Remove URLRewriteFilter from your web.xml and POM.
 
- * Leave your existing /WEB-INF/urlrewrite.xml configuration file in place.
+ * Leave your existing /WEB-INF/urlrewrite.xml [configuration file](http://urlrewritefilter.googlecode.com/svn/trunk/src/doc/manual/3.2/index.html#configuration) in place.
 
  * Include OCPSoft Rewrite in your application's POM file:
 
