@@ -29,6 +29,10 @@
       </dependency>
       <dependency>
          <groupId>com.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl-servlet</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
       </dependency>
    </dependencies>
