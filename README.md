@@ -1,4 +1,4 @@
-Rewrite: Get Started
+Rewrite:
 =================================================
 
 A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applications, supporting integration with:
