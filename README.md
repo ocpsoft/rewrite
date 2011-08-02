@@ -16,6 +16,10 @@ A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applicat
  * Spring Web Flow
  * Any servlet & web framework!
 
+Get Help
+==========
+(http://ocpsoft.com/support/forum/core)
+
 Get Started
 ==========
 
