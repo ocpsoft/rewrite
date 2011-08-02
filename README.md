@@ -32,8 +32,8 @@ Get Started
 3. Add a configuration provider implementing the 'com.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
 
     package com.example;
-
     public class ExampleConfigurationProvider extends HttpConfigurationProvider
+	 {
 	    
        @Override
        public int priority()
