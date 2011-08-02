@@ -31,36 +31,36 @@ Get Started
 
 3. Add a configuration provider implementing the 'com.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
 
-    package com.example;
-    public class ExampleConfigurationProvider extends HttpConfigurationProvider
-	 {
+        package com.example;
+        public class ExampleConfigurationProvider extends HttpConfigurationProvider
+        {
 	    
-       @Override
-       public int priority()
-       {
-         return 10;
-       }
-
-       @Override
-       public Configuration getConfiguration(final ServletContext context)
-       {
-         return ConfigurationBuilder.begin()
-           .addRule()
-             .setCondition(
+           @Override
+           public int priority()
+           {
+             return 10;
+           }
     
-               Direction.isInbound()
-                        .and(Path.matches("/some/page/.*/"))
-			    )
-
-	          .setOperation(new Operation() {
-	            @Override
-	            public void perform(final Rewrite event)
-	            {
-	               ((HttpInboundServletRewrite) event).forward("/new-page/");
-	            }
-	         });
+           @Override
+           public Configuration getConfiguration(final ServletContext context)
+           {
+             return ConfigurationBuilder.begin()
+               .addRule()
+                 .setCondition(
+        
+                   Direction.isInbound()
+                            .and(Path.matches("/some/page/.*/"))
+    			    )
+    
+    	          .setOperation(new Operation() {
+    	            @Override
+    	            public void perform(final Rewrite event)
+    	            {
+    	               ((HttpInboundServletRewrite) event).forward("/new-page/");
+    	            }
+    	         });
+            }
         }
-    }
 
 4. Create a file named: '/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider' which contains the fully qualified name of your ConfigurationProvider implementation:
 
