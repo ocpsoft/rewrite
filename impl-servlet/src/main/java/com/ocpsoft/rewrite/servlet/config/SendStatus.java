@@ -15,27 +15,30 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import com.ocpsoft.rewrite.config.OperationBuilder;
-import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public abstract class HttpOperation extends OperationBuilder
+public class SendStatus extends HttpInboundOperation
 {
-   public abstract void performHttp(HttpServletRewrite event);
+   private final int code;
+
+   public SendStatus(final int code)
+   {
+      this.code = code;
+   }
 
    @Override
-   public void perform(final Rewrite event)
+   public void performInbound(final HttpInboundServletRewrite event)
    {
-      if (event instanceof HttpServletRewrite)
-      {
-         performHttp((HttpServletRewrite) event);
-      }
-      else {
-         throw new IllegalArgumentException("Cannot apply " + HttpOperation.class.getName() + " to event of type ["
-                  + event.getClass().getName() + "]. Must be of type " + HttpServletRewrite.class.getName());
-      }
+      event.sendStatusCode(code);
    }
+
+   public static SendStatus code(final int code)
+   {
+      return new SendStatus(code);
+   }
+
 }

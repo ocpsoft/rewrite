@@ -13,29 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public abstract class HttpOperation extends OperationBuilder
+public abstract class OperationBuilder implements Operation
 {
-   public abstract void performHttp(HttpServletRewrite event);
-
-   @Override
-   public void perform(final Rewrite event)
+   private class CompositeOperation extends OperationBuilder
    {
-      if (event instanceof HttpServletRewrite)
+      private final Operation left;
+      private final Operation right;
+
+      public CompositeOperation(final Operation left, final Operation right)
       {
-         performHttp((HttpServletRewrite) event);
+         this.left = left;
+         this.right = right;
       }
-      else {
-         throw new IllegalArgumentException("Cannot apply " + HttpOperation.class.getName() + " to event of type ["
-                  + event.getClass().getName() + "]. Must be of type " + HttpServletRewrite.class.getName());
+
+      @Override
+      public void perform(final Rewrite event)
+      {
+         left.perform(event);
+         right.perform(event);
       }
+
    }
+
+   /**
+    * Join this instance with another {@link Operation} to be performed.
+    */
+   public OperationBuilder and(final Operation other)
+   {
+      return new CompositeOperation(this, other);
+   }
+
 }

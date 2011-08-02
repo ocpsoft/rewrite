@@ -22,10 +22,11 @@ import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.config.Forward;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.RequestParameter;
-import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.config.SendStatus;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,51 +47,32 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
    {
       return ConfigurationBuilder.begin()
                .addRule()
-               .setCondition(
-
-                        Direction.isInbound()
-                                 .and(Path.matches("/forward"))
-                                 .and(RequestParameter.exists("foo")))
-
-               .setOperation(new Operation() {
+               .setCondition(Direction.isInbound().and(Path.matches("/forward")).and(RequestParameter.exists("foo")))
+               .setOperation(Forward.to("/forward2?baz=cab").and(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
                   {
-                     ((HttpInboundServletRewrite) event).forward("/forward2?baz=cab");
                      performed = true;
                   }
-               })
+               }))
 
                .addRule()
-               .setCondition(
-
-                        Direction.isInbound()
-                                 .and(Path.matches("/forward2"))
-                                 .and(RequestParameter.exists("foo"))
-                                 .and(RequestParameter.exists("baz")))
-
-               .setOperation(new Operation() {
+               .setCondition(Direction.isInbound()
+                        .and(Path.matches("/forward2"))
+                        .and(RequestParameter.exists("foo"))
+                        .and(RequestParameter.exists("baz")))
+               .setOperation(SendStatus.code(200).and(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
                   {
-                     ((HttpInboundServletRewrite) event).sendStatusCode(200);
                      performed = true;
                   }
-               })
+               }))
 
                .addRule()
-               .setCondition(
-
-                        Direction.isInbound()
-                                 .and(Path.matches("/forward-fail"))
-                                 .and(RequestParameter.exists("foo")))
-
-               .setOperation(new Operation() {
-                  @Override
-                  public void perform(final Rewrite event)
-                  {
-                     ((HttpInboundServletRewrite) event).forward("/forward2");
-                  }
-               });
+               .setCondition(Direction.isInbound()
+                        .and(Path.matches("/forward-fail"))
+                        .and(RequestParameter.exists("foo")))
+               .setOperation(Forward.to("/forward2"));
    }
 }

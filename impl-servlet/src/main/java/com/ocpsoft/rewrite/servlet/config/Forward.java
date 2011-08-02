@@ -15,27 +15,29 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import com.ocpsoft.rewrite.config.OperationBuilder;
-import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public abstract class HttpOperation extends OperationBuilder
+public class Forward extends HttpInboundOperation
 {
-   public abstract void performHttp(HttpServletRewrite event);
+   private final String location;
+
+   public Forward(final String location)
+   {
+      this.location = location;
+   }
 
    @Override
-   public void perform(final Rewrite event)
+   public void performInbound(final HttpInboundServletRewrite event)
    {
-      if (event instanceof HttpServletRewrite)
-      {
-         performHttp((HttpServletRewrite) event);
-      }
-      else {
-         throw new IllegalArgumentException("Cannot apply " + HttpOperation.class.getName() + " to event of type ["
-                  + event.getClass().getName() + "]. Must be of type " + HttpServletRewrite.class.getName());
-      }
+      event.forward(location);
+   }
+
+   public static Forward to(final String location)
+   {
+      return new Forward(location);
    }
 }

@@ -22,7 +22,6 @@ import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -43,17 +42,18 @@ public class HttpConfigurationTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder.begin()
                .addRule()
-               .setCondition(
-                        Direction.isInbound().and(Path.matches("/path"))
-               )
-               .setOperation(new Operation() {
+               .setCondition(Direction.isInbound().and(Path.matches("/path")))
+               .setOperation(SendStatus.code(200).and(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
                   {
-                     ((HttpInboundServletRewrite) event).sendStatusCode(200);
                      performed = true;
                   }
-               });
+               }))
+
+               .addRule()
+               .setCondition(Direction.isInbound().and(Path.matches("/redirect")))
+               .setOperation(Redirect.permanent(context.getContextPath() + "/path"));
    }
 
 }
