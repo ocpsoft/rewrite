@@ -13,11 +13,11 @@ How to use
 
  * Include OCPSoft Rewrite in your application's POM file:
 
-<dependency>
-   <groupId>com.ocpsoft.rewrite</groupId>
-   <artifactId>rewrite-config-tuckey</artifactId>
-   <version>${rewrite.version}</version>
-</dependency>
+        <dependency>
+           <groupId>com.ocpsoft.rewrite</groupId>
+           <artifactId>rewrite-config-tuckey</artifactId>
+           <version>${rewrite.version}</version>
+        </dependency>
 
  * Run your Rewrite enhanced application!
 
