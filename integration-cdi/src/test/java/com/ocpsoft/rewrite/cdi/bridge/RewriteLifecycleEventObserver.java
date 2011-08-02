@@ -19,7 +19,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 
 import com.ocpsoft.rewrite.cdi.events.AfterInboundRewrite;
-import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 
@@ -41,7 +40,7 @@ public class RewriteLifecycleEventObserver
 
    public void invokeAction(@Observes final AfterInboundRewrite event)
    {
-      Rewrite rewrite = event.getRewrite();
+      event.getRewrite();
    }
 
    public void rewriteOutbound(@Observes final HttpOutboundServletRewrite event)
