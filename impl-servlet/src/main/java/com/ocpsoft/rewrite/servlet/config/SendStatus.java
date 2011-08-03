@@ -36,6 +36,9 @@ public class SendStatus extends HttpInboundOperation
       event.sendStatusCode(code);
    }
 
+   /**
+    * Send an HTTP status code to the browser, then call {@link HttpInboundServletRewrite#abort()}
+    */
    public static SendStatus code(final int code)
    {
       return new SendStatus(code);

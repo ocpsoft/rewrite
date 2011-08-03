@@ -40,17 +40,16 @@ public class ConfigurationBuilder implements Configuration
       return new ConfigurationBuilder();
    }
 
-   public RuleBuilder addRule()
+   public ConfigurationRuleBuilder defineRule()
    {
-      RuleBuilder rule = new RuleBuilder(this);
+      RuleBuilder rule = RuleBuilder.define();
       rules.add(rule);
-      return rule;
+      return new ConfigurationRuleBuilder(this, rule);
    }
 
-   public RuleBuilder addRule(final Rule rule)
+   public ConfigurationBuilder add(final Rule rule)
    {
-      RuleBuilder builder = new RuleBuilder(this, rule);
-      rules.add(builder);
-      return builder;
+      rules.add(rule);
+      return this;
    }
 }

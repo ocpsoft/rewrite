@@ -41,11 +41,11 @@ public class HttpConfigurationTestProviderTwo extends HttpConfigurationProvider
    public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
-               .addRule()
-               .setCondition(
+               .defineRule()
+               .when(
                         Direction.isInbound().and(Path.matches("/path"))
                )
-               .setOperation(SendStatus.code(200).and(new Operation() {
+               .perform(SendStatus.code(200).and(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
                   {

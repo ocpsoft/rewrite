@@ -32,9 +32,9 @@ public class ConfigurationBuilderTest
    @Test
    public void testBuildConfiguration()
    {
-      Configuration config = ConfigurationBuilder.begin().addRule()
-               .setCondition(And.all(Inbound.only(), new True()))
-               .setOperation(operation);
+      Configuration config = ConfigurationBuilder.begin().defineRule()
+               .when(And.all(Inbound.only(), new True()))
+               .perform(operation);
 
       Rule rule = config.getRules().get(0);
       MockInboundRewrite rewrite = new MockInboundRewrite();

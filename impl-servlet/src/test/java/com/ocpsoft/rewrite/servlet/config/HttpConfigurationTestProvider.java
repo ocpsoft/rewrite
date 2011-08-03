@@ -40,10 +40,10 @@ public class HttpConfigurationTestProvider extends HttpConfigurationProvider
    @Override
    public Configuration getConfiguration(final ServletContext context)
    {
-      return ConfigurationBuilder.begin()
-               .addRule()
-               .setCondition(Direction.isInbound().and(Path.matches("/path")))
-               .setOperation(SendStatus.code(200).and(new Operation() {
+      Configuration config = ConfigurationBuilder.begin()
+               .defineRule()
+               .when(Direction.isInbound().and(Path.matches("/path")))
+               .perform(SendStatus.code(200).and(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
                   {
@@ -51,9 +51,11 @@ public class HttpConfigurationTestProvider extends HttpConfigurationProvider
                   }
                }))
 
-               .addRule()
-               .setCondition(Direction.isInbound().and(Path.matches("/redirect")))
-               .setOperation(Redirect.permanent(context.getContextPath() + "/path"));
+               .defineRule()
+               .when(Direction.isInbound().and(Path.matches("/redirect")))
+               .perform(Redirect.permanent(context.getContextPath() + "/path"));
+
+      return config;
    }
 
 }

@@ -45,7 +45,7 @@ public class TuckeyConfigurationProvider extends HttpConfigurationProvider
       ConfigurationBuilder config = ConfigurationBuilder.begin();
       if (urlRewriter != null)
       {
-         config.addRule(new TuckeyRewriteRuleAdaptor(urlRewriter));
+         config.add(new TuckeyRewriteRuleAdaptor(urlRewriter));
       }
       return config;
    }

@@ -46,9 +46,9 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
    public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
-               .addRule()
-               .setCondition(Direction.isInbound().and(Path.matches("/forward")).and(RequestParameter.exists("foo")))
-               .setOperation(Forward.to("/forward2?baz=cab").and(new Operation() {
+               .defineRule()
+               .when(Direction.isInbound().and(Path.matches("/forward")).and(RequestParameter.exists("foo")))
+               .perform(Forward.to("/forward2?baz=cab").and(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
                   {
@@ -56,12 +56,12 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                   }
                }))
 
-               .addRule()
-               .setCondition(Direction.isInbound()
+               .defineRule()
+               .when(Direction.isInbound()
                         .and(Path.matches("/forward2"))
                         .and(RequestParameter.exists("foo"))
                         .and(RequestParameter.exists("baz")))
-               .setOperation(SendStatus.code(200).and(new Operation() {
+               .perform(SendStatus.code(200).and(new Operation() {
                   @Override
                   public void perform(final Rewrite event)
                   {
@@ -69,10 +69,10 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                   }
                }))
 
-               .addRule()
-               .setCondition(Direction.isInbound()
+               .defineRule()
+               .when(Direction.isInbound()
                         .and(Path.matches("/forward-fail"))
                         .and(RequestParameter.exists("foo")))
-               .setOperation(Forward.to("/forward2"));
+               .perform(Forward.to("/forward2"));
    }
 }

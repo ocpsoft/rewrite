@@ -15,42 +15,52 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import java.util.List;
+
 /**
- * Build a {@link Configuration} rule.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class RuleBuilder implements Rule
+public class ConfigurationRuleBuilder extends ConfigurationBuilder
 {
-   private Condition condition;
-   private Operation operation;
 
-   public static RuleBuilder define()
+   private final ConfigurationBuilder wrapped;
+   private final RuleBuilder rule;
+
+   public ConfigurationRuleBuilder(final ConfigurationBuilder config, final RuleBuilder rule)
    {
-      return new RuleBuilder();
+      this.wrapped = config;
+      this.rule = rule;
    }
 
-   public RuleBuilder when(final Condition condition)
+   @Override
+   public ConfigurationRuleBuilder defineRule()
    {
-      this.condition = condition;
+      return wrapped.defineRule();
+   }
+
+   @Override
+   public ConfigurationBuilder add(final Rule rule)
+   {
+      return wrapped.add(rule);
+   }
+
+   public ConfigurationRuleBuilder when(final Condition condition)
+   {
+      rule.when(condition);
       return this;
    }
 
-   public RuleBuilder perform(final Operation operation)
+   public ConfigurationRuleBuilder perform(final Operation operation)
    {
-      this.operation = operation;
+      rule.perform(operation);
       return this;
    }
 
    @Override
-   public Condition getCondition()
+   public List<Rule> getRules()
    {
-      return condition;
+      return wrapped.getRules();
    }
 
-   @Override
-   public Operation getOperation()
-   {
-      return operation;
-   }
 }
