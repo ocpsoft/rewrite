@@ -61,7 +61,7 @@ Get Started
         ---
         com.example.ExampleConfigurationProvider
 
-5. Add rules to your configuration. Condition objects such as 'Direction.isInbound()' and 'Path.matches(�)' can be found in the 'com.ocpsoft.rewrite.config.*' and 'com.ocpsoft.rewrite.servlet.config.*' packages.
+5. Add rules to your configuration. Condition objects such as 'Direction.isInbound()' and 'Path.matches(...)' can be found in the 'com.ocpsoft.rewrite.config.*' and 'com.ocpsoft.rewrite.servlet.config.*' packages.
 
 6. Consider using Rewrite extensions for extra power:
    * [JodaTime Integration](https://github.com/ocpsoft/rewrite/tree/master/config-jodatime)
