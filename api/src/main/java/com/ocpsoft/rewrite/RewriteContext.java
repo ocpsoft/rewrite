@@ -21,9 +21,9 @@ package com.ocpsoft.rewrite;
  */
 public interface RewriteContext
 {
-   Object get(String key);
+   Object get(Object key);
 
-   void put(String key, Object value);
+   void put(Object key, Object value);
 
-   void containsKey(String key);
+   void containsKey(Object key);
 }

@@ -88,19 +88,19 @@ public class RewriteContextImpl implements RewriteLifecycleContext
    }
 
    @Override
-   public Object get(final String key)
+   public Object get(final Object key)
    {
       return map.get(key);
    }
 
    @Override
-   public void put(final String key, final Object value)
+   public void put(final Object key, final Object value)
    {
       map.put(key, value);
    }
 
    @Override
-   public void containsKey(final String key)
+   public void containsKey(final Object key)
    {
       map.containsKey(key);
    }
