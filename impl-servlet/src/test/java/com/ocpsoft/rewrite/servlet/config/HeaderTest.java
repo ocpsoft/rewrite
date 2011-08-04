@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
@@ -60,31 +61,32 @@ public class HeaderTest
    @Test
    public void testHeaderExists()
    {
-      Assert.assertTrue(Header.exists("Accept-.*").evaluate(rewrite));
+      Assert.assertTrue(Header.exists("Accept-.*").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testHeaderExists2()
    {
-      Assert.assertTrue(Header.exists("Content-Length").evaluate(rewrite));
+      Assert.assertTrue(Header.exists("Content-Length").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testHeaderExistsFalse()
    {
-      Assert.assertFalse(Header.exists("Host").evaluate(rewrite));
+      Assert.assertFalse(Header.exists("Host").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testHeaderContains()
    {
-      Assert.assertTrue(Header.valueExists("UTF-.*").evaluate(rewrite));
+      Assert.assertTrue(Header.valueExists("UTF-.*").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testHeaderMatches()
    {
-      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").evaluate(rewrite));
+      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").evaluate(rewrite,
+               new MockEvaluationContext()));
    }
 
    @Test(expected = PatternSyntaxException.class)
@@ -114,6 +116,6 @@ public class HeaderTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Header.exists("Accept-Charset").evaluate(new MockRewrite()));
+      Assert.assertFalse(Header.exists("Accept-Charset").evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

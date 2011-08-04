@@ -17,6 +17,7 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import java.util.regex.Pattern;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -40,7 +41,7 @@ public class Path extends HttpCondition
    }
 
    @Override
-   public boolean evaluateHttp(final HttpServletRewrite event)
+   public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       return pattern.matcher(event.getRequestURL()).matches();
    }

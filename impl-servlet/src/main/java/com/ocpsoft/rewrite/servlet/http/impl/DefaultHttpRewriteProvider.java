@@ -17,10 +17,12 @@ package com.ocpsoft.rewrite.servlet.http.impl;
 
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationLoader;
+import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.servlet.impl.EvaluationContextImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -33,9 +35,19 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider
    {
       Configuration loader = ConfigurationLoader.loadConfiguration(event.getRequest().getServletContext());
       for (Rule rule : loader.getRules()) {
-         if (rule.getCondition().evaluate(event))
+         EvaluationContextImpl context = new EvaluationContextImpl();
+         if (rule.getCondition().evaluate(event, context))
          {
-            rule.getOperation().perform(event);
+            for (Operation operation : context.getPreOperations()) {
+               operation.perform(event, context);
+            }
+
+            rule.getOperation().perform(event, context);
+
+            for (Operation operation : context.getPostOperations()) {
+               operation.perform(event, context);
+            }
+
             if (event.getFlow().is(Flow.HANDLED))
             {
                break;

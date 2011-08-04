@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -30,5 +31,5 @@ public interface Condition
     * Evaluate this condition against the given {@link Rewrite} event. If this condition does not apply to the given
     * event, it must return false. If the condition applies and is satisfied, return true.
     */
-   boolean evaluate(Rewrite event);
+   boolean evaluate(Rewrite event, EvaluationContext context);
 }

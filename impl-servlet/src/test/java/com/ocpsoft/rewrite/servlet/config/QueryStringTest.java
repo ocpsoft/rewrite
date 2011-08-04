@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
@@ -56,19 +57,19 @@ public class QueryStringTest
    @Test
    public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(QueryString.matches("foo=bar&bar=baz").evaluate(rewrite));
+      Assert.assertTrue(QueryString.matches("foo=bar&bar=baz").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringMatchesPattern()
    {
-      Assert.assertTrue(QueryString.matches("foo=bar.*").evaluate(rewrite));
+      Assert.assertTrue(QueryString.matches("foo=bar.*").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertTrue(QueryString.matches(".*bar=baz").evaluate(rewrite));
+      Assert.assertTrue(QueryString.matches(".*bar=baz").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)

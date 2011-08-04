@@ -27,18 +27,18 @@ public class AndTest
    @Test
    public void testTrueAndTrueIsTrue()
    {
-      Assert.assertTrue(And.all(new True(), new True()).evaluate(new MockRewrite()));
+      Assert.assertTrue(And.all(new True(), new True()).evaluate(new MockRewrite(), null));
    }
 
    @Test
    public void testTrueAndFalseIsFalse()
    {
-      Assert.assertFalse(And.all(new True(), new False()).evaluate(new MockRewrite()));
+      Assert.assertFalse(And.all(new True(), new False()).evaluate(new MockRewrite(), null));
    }
 
    @Test
    public void testFalseAndFalseIsFalse()
    {
-      Assert.assertFalse(And.all(new False(), new False()).evaluate(new MockRewrite()));
+      Assert.assertFalse(And.all(new False(), new False()).evaluate(new MockRewrite(), null));
    }
 }

@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -73,7 +74,7 @@ public class Header extends HttpCondition
    }
 
    @Override
-   public boolean evaluateHttp(final HttpServletRewrite event)
+   public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
       for (String header : Collections.list(request.getHeaderNames()))

@@ -17,6 +17,7 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.ServletContext;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
@@ -47,7 +48,7 @@ public class HttpConfigurationTestProviderTwo extends HttpConfigurationProvider
                )
                .perform(SendStatus.code(200).and(new Operation() {
                   @Override
-                  public void perform(final Rewrite event)
+                  public void perform(final Rewrite event, final EvaluationContext context)
                   {
                      performed = true;
                   }

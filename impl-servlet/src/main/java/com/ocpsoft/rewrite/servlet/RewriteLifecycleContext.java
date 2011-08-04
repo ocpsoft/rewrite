@@ -20,7 +20,7 @@ import java.util.List;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.RewriteContext;
+import com.ocpsoft.rewrite.Context;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
@@ -31,7 +31,7 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteLifecycleContext extends RewriteContext
+public interface RewriteLifecycleContext extends Context
 {
    List<RewriteLifecycleListener<Rewrite>> getRewriteLifecycleListeners();
 

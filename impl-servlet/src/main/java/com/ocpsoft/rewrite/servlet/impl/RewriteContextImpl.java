@@ -100,9 +100,9 @@ public class RewriteContextImpl implements RewriteLifecycleContext
    }
 
    @Override
-   public void containsKey(final Object key)
+   public boolean containsKey(final Object key)
    {
-      map.containsKey(key);
+      return map.containsKey(key);
    }
 
 }

@@ -15,15 +15,37 @@
  */
 package com.ocpsoft.rewrite;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 /**
+ * Base {@link Context} abstract class.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RewriteContext
+public abstract class ContextBase implements Context
 {
-   Object get(Object key);
 
-   void put(Object key, Object value);
+   private final Map<Object, Object> map = new HashMap<Object, Object>();
 
-   void containsKey(Object key);
+   @Override
+   public Object get(final Object key)
+   {
+      return map.get(key);
+   }
+
+   @Override
+   public void put(final Object key, final Object value)
+   {
+      map.put(key, value);
+   }
+
+   @Override
+   public boolean containsKey(final Object key)
+   {
+      return map.containsKey(key);
+   }
+
 }

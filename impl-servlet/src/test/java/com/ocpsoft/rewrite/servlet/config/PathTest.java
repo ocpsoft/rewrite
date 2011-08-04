@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
@@ -54,19 +55,19 @@ public class PathTest
    @Test
    public void testPathMatchesLiteral()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite));
+      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testPathMatchesPattern()
    {
-      Assert.assertTrue(Path.matches("/application/.*").evaluate(rewrite));
+      Assert.assertTrue(Path.matches("/application/.*").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite()));
+      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)

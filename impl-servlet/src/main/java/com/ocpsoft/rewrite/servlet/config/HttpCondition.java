@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -26,14 +27,14 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public abstract class HttpCondition extends ConditionBuilder
 {
-   public abstract boolean evaluateHttp(final HttpServletRewrite event);
+   public abstract boolean evaluateHttp(final HttpServletRewrite event, EvaluationContext context);
 
    @Override
-   public boolean evaluate(final Rewrite event)
+   public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       if (event instanceof HttpServletRewrite)
       {
-         return evaluateHttp((HttpServletRewrite) event);
+         return evaluateHttp((HttpServletRewrite) event, context);
       }
       return false;
    }

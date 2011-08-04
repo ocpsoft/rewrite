@@ -20,6 +20,7 @@ import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
 
 /**
@@ -40,7 +41,7 @@ public class JodaTimeTest
          }
       });
 
-      Assert.assertTrue(jodaTime.evaluate(new MockRewrite()));
+      Assert.assertTrue(jodaTime.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test
@@ -54,7 +55,7 @@ public class JodaTimeTest
          }
       });
 
-      Assert.assertFalse(jodaTime.evaluate(new MockRewrite()));
+      Assert.assertFalse(jodaTime.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
 }

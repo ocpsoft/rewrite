@@ -19,7 +19,10 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -37,17 +40,18 @@ public class ConfigurationBuilderTest
                .perform(operation);
 
       Rule rule = config.getRules().get(0);
-      MockInboundRewrite rewrite = new MockInboundRewrite();
-      if (rule.getCondition().evaluate(rewrite))
+      InboundRewrite rewrite = new MockInboundRewrite();
+      EvaluationContext context = new MockEvaluationContext();
+      if (rule.getCondition().evaluate(rewrite, context))
       {
-         rule.getOperation().perform(rewrite);
+         rule.getOperation().perform(rewrite, context);
       }
       Assert.assertTrue(performed);
    }
 
    Operation operation = new Operation() {
       @Override
-      public void perform(final Rewrite event)
+      public void perform(final Rewrite event, final EvaluationContext context)
       {
          performed = true;
       }

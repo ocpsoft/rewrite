@@ -15,36 +15,13 @@
  */
 package com.ocpsoft.rewrite.mock;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.ocpsoft.rewrite.ContextBase;
 
-import com.ocpsoft.rewrite.RewriteContext;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class MockRewriteContext implements RewriteContext
+public class MockRewriteContext extends ContextBase
 {
-
-   private final Map<Object, Object> map = new HashMap<Object, Object>();
-
-   @Override
-   public Object get(final Object key)
-   {
-      return map.get(key);
-   }
-
-   @Override
-   public void put(final Object key, final Object value)
-   {
-      map.put(key, value);
-   }
-
-   @Override
-   public void containsKey(final Object key)
-   {
-      map.containsKey(key);
-   }
-
 }

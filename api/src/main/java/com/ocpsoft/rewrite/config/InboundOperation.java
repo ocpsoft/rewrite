@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 
@@ -28,7 +29,7 @@ public abstract class InboundOperation extends OperationBuilder
 {
 
    @Override
-   public final void perform(final Rewrite event)
+   public final void perform(final Rewrite event, final EvaluationContext context)
    {
       if (event instanceof InboundRewrite)
       {

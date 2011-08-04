@@ -17,6 +17,7 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.DispatcherType;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -32,7 +33,7 @@ public class DispatchType extends HttpCondition
    }
 
    @Override
-   public boolean evaluateHttp(final HttpServletRewrite event)
+   public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       return this.type.equals(event.getRequest().getDispatcherType());
    }

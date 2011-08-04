@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
@@ -67,7 +68,7 @@ public class HeaderAndPathTest
       Assert.assertTrue(
                Path.matches("/application/.*").and(
                         Header.exists("Accept-.*"))
-                        .evaluate(rewrite));
+                        .evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
@@ -76,6 +77,6 @@ public class HeaderAndPathTest
       Assert.assertFalse(
                Path.matches("/wrong-application/.*").and(
                         Header.exists("Accept-.*")
-                        ).evaluate(rewrite));
+                        ).evaluate(rewrite, new MockEvaluationContext()));
    }
 }

@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.rewrite.RewriteContext;
+import com.ocpsoft.rewrite.Context;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 
 /**
@@ -24,7 +24,7 @@ import com.ocpsoft.rewrite.event.OutboundRewrite;
 public class MockOutboundRewrite implements OutboundRewrite
 {
    @Override
-   public RewriteContext getRewriteContext()
+   public Context getRewriteContext()
    {
       return new MockRewriteContext();
    }

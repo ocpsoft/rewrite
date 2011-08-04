@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -25,7 +26,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
 public class True extends ConditionBuilder
 {
    @Override
-   public boolean evaluate(final Rewrite event)
+   public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       return true;
    }

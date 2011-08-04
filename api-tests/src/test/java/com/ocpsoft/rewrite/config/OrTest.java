@@ -18,6 +18,8 @@ package com.ocpsoft.rewrite.config;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -27,18 +29,18 @@ public class OrTest
    @Test
    public void testTrueAndTrueIsTrue()
    {
-      Assert.assertTrue(Or.any(new True(), new True()).evaluate(new MockRewrite()));
+      Assert.assertTrue(Or.any(new True(), new True()).evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test
    public void testTrueAndFalseIsTrue()
    {
-      Assert.assertTrue(Or.any(new True(), new False()).evaluate(new MockRewrite()));
+      Assert.assertTrue(Or.any(new True(), new False()).evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test
    public void testFalseAndFalseIsFalse()
    {
-      Assert.assertFalse(Or.any(new False(), new False()).evaluate(new MockRewrite()));
+      Assert.assertFalse(Or.any(new False(), new False()).evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -24,14 +25,14 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public abstract class HttpOperation extends OperationBuilder
 {
-   public abstract void performHttp(HttpServletRewrite event);
+   public abstract void performHttp(HttpServletRewrite event, EvaluationContext context);
 
    @Override
-   public void perform(final Rewrite event)
+   public void perform(final Rewrite event, final EvaluationContext context)
    {
       if (event instanceof HttpServletRewrite)
       {
-         performHttp((HttpServletRewrite) event);
+         performHttp((HttpServletRewrite) event, context);
       }
       else {
          throw new IllegalArgumentException("Cannot apply " + HttpOperation.class.getName() + " to event of type ["

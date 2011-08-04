@@ -28,84 +28,84 @@ public class ConditionBuilderTest
    @Test
    public void testTrueAndTrueIsTrue()
    {
-      Assert.assertTrue(new True().and(new True()).evaluate(null));
+      Assert.assertTrue(new True().and(new True()).evaluate(null, null));
    }
 
    @Test
    public void testTrueAndFalseIsFalse()
    {
-      Assert.assertFalse(new True().and(new False()).evaluate(null));
+      Assert.assertFalse(new True().and(new False()).evaluate(null, null));
    }
 
    @Test
    public void testFalseAndTrueIsFalse()
    {
-      Assert.assertFalse(new False().and(new True()).evaluate(null));
+      Assert.assertFalse(new False().and(new True()).evaluate(null, null));
    }
 
    @Test
    public void testFalseAndFalseIsFalse()
    {
-      Assert.assertFalse(new False().and(new False()).evaluate(null));
+      Assert.assertFalse(new False().and(new False()).evaluate(null, null));
    }
 
    @Test
    public void testTrueAndNotTrueIsFalse()
    {
-      Assert.assertFalse(new True().andNot(new True()).evaluate(null));
+      Assert.assertFalse(new True().andNot(new True()).evaluate(null, null));
    }
 
    @Test
    public void testTrueAndNotFalseIsTrue()
    {
-      Assert.assertTrue(new True().andNot(new False()).evaluate(null));
+      Assert.assertTrue(new True().andNot(new False()).evaluate(null, null));
    }
 
    @Test
    public void testTrueOrTrueIsTrue()
    {
-      Assert.assertTrue(new True().or(new True()).evaluate(null));
+      Assert.assertTrue(new True().or(new True()).evaluate(null, null));
    }
 
    @Test
    public void testTrueOrFalseIsTrue()
    {
-      Assert.assertTrue(new True().or(new False()).evaluate(null));
+      Assert.assertTrue(new True().or(new False()).evaluate(null, null));
    }
 
    @Test
    public void testFalseOrTrueIsTrue()
    {
-      Assert.assertTrue(new False().or(new True()).evaluate(null));
+      Assert.assertTrue(new False().or(new True()).evaluate(null, null));
    }
 
    @Test
    public void testFalseOrFalseIsFalse()
    {
-      Assert.assertFalse(new False().or(new False()).evaluate(null));
+      Assert.assertFalse(new False().or(new False()).evaluate(null, null));
    }
 
    @Test
    public void testTrueOrNotTrueIsTrue()
    {
-      Assert.assertTrue(new True().orNot(new True()).evaluate(null));
+      Assert.assertTrue(new True().orNot(new True()).evaluate(null, null));
    }
 
    @Test
    public void testTrueOrNotFalseIsTrue()
    {
-      Assert.assertTrue(new True().orNot(new False()).evaluate(null));
+      Assert.assertTrue(new True().orNot(new False()).evaluate(null, null));
    }
 
    @Test
    public void testFalseOrNotTrueIsFalse()
    {
-      Assert.assertFalse(new False().orNot(new True()).evaluate(null));
+      Assert.assertFalse(new False().orNot(new True()).evaluate(null, null));
    }
 
    @Test
    public void testFalseOrNotFalseIsTrue()
    {
-      Assert.assertTrue(new False().orNot(new False()).evaluate(null));
+      Assert.assertTrue(new False().orNot(new False()).evaluate(null, null));
    }
 }

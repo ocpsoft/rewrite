@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
@@ -48,12 +49,12 @@ public class MethodTest
    @Test
    public void testMethod()
    {
-      Assert.assertTrue(Method.isHead().evaluate(rewrite));
+      Assert.assertTrue(Method.isHead().evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testMethodNegative()
    {
-      Assert.assertFalse(Method.isGet().evaluate(rewrite));
+      Assert.assertFalse(Method.isGet().evaluate(rewrite, new MockEvaluationContext()));
    }
 }

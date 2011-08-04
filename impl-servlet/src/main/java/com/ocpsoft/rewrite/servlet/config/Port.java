@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -45,7 +46,7 @@ public class Port extends HttpCondition
    }
 
    @Override
-   public boolean evaluateHttp(final HttpServletRewrite event)
+   public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       int serverPort = event.getRequest().getServerPort();
       for (int port : ports) {

@@ -18,7 +18,7 @@ package com.ocpsoft.rewrite.servlet.event;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.RewriteContext;
+import com.ocpsoft.rewrite.Context;
 import com.ocpsoft.rewrite.exception.RewriteException;
 import com.ocpsoft.rewrite.servlet.RewriteFilter;
 
@@ -173,9 +173,9 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
       return "Rewrite [flow=" + flow + ", dispatchResource=" + dispatchResource + "]";
    }
 
-   public RewriteContext getRewriteContext()
+   public Context getRewriteContext()
    {
-      RewriteContext context = (RewriteContext) request.getAttribute(RewriteFilter.CONTEXT_KEY);
+      Context context = (Context) request.getAttribute(RewriteFilter.CONTEXT_KEY);
       if (context == null)
       {
          throw new RewriteException("RewriteContext was null. Something is seriously wrong, " +

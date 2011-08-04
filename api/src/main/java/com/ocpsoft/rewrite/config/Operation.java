@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -23,5 +24,5 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public interface Operation
 {
-   void perform(Rewrite event);
+   void perform(Rewrite event, EvaluationContext context);
 }

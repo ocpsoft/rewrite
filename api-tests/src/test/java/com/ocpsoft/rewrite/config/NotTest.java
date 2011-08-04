@@ -18,6 +18,8 @@ package com.ocpsoft.rewrite.config;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -28,13 +30,13 @@ public class NotTest
    public void testNotFalseIsTrue()
    {
       Condition condition = Not.any(new False());
-      Assert.assertTrue(condition.evaluate(new MockRewrite()));
+      Assert.assertTrue(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test
    public void testNotTrueIsFalse()
    {
       Condition condition = Not.any(new True());
-      Assert.assertFalse(condition.evaluate(new MockRewrite()));
+      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.mock;
 
-import com.ocpsoft.rewrite.RewriteContext;
+import com.ocpsoft.rewrite.Context;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -24,7 +24,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
 public class MockRewrite implements Rewrite
 {
    @Override
-   public RewriteContext getRewriteContext()
+   public Context getRewriteContext()
    {
       return new MockRewriteContext();
    }

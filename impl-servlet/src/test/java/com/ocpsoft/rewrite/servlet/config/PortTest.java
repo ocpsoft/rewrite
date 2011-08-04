@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
@@ -48,42 +49,42 @@ public class PortTest
    @Test
    public void testPortMatches()
    {
-      Assert.assertTrue(Port.is(8080).evaluate(rewrite));
+      Assert.assertTrue(Port.is(8080).evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testMultiPortMatches()
    {
-      Assert.assertTrue(Port.is(8080, 9090).evaluate(rewrite));
+      Assert.assertTrue(Port.is(8080, 9090).evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testMultiPortDoesNotMatch()
    {
-      Assert.assertFalse(Port.is(9080, 9090).evaluate(rewrite));
+      Assert.assertFalse(Port.is(9080, 9090).evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testOutOfRangePortThrowsException()
    {
-      Port.is(0).evaluate(rewrite);
+      Port.is(0).evaluate(rewrite, new MockEvaluationContext());
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testOutOfRangePortThrowsExceptionWithMultiPort()
    {
-      Port.is(8080, 0).evaluate(rewrite);
+      Port.is(8080, 0).evaluate(rewrite, new MockEvaluationContext());
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testOutOfRangePortThrowsExceptionWithMultiPort2()
    {
-      Port.is(0, 8080).evaluate(rewrite);
+      Port.is(0, 8080).evaluate(rewrite, new MockEvaluationContext());
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Port.is(9090).evaluate(rewrite));
+      Assert.assertFalse(Port.is(9090).evaluate(rewrite, new MockEvaluationContext()));
    }
 }

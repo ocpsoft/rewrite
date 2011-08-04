@@ -18,6 +18,7 @@ package com.ocpsoft.rewrite.config;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -46,11 +47,11 @@ public class And extends ConditionBuilder
       return new And(conditions);
    }
 
-   public boolean evaluate(final Rewrite event)
+   public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       boolean result = true;
       for (Condition c : conditions) {
-         if (!c.evaluate(event))
+         if (!c.evaluate(event, context))
          {
             result = false;
          }

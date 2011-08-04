@@ -13,14 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.config;
-
-import com.ocpsoft.rewrite.ContextBase;
+package com.ocpsoft.rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class MockRewriteContext extends ContextBase
+public interface Context
 {
+   /**
+    * Get the value in the context map defined by the given key. Return null if no such key exists, or if they key maps
+    * to a null value.
+    */
+   Object get(Object key);
+
+   /**
+    * Store a key value pair into the context.
+    */
+   void put(Object key, Object value);
+
+   /**
+    * Return true if this context contains an entry with the given key.
+    */
+   boolean containsKey(Object key);
 }

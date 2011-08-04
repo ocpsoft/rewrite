@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
@@ -66,31 +67,31 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterExists()
    {
-      Assert.assertTrue(RequestParameter.exists("foo").evaluate(rewrite));
+      Assert.assertTrue(RequestParameter.exists("foo").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterExists2()
    {
-      Assert.assertTrue(RequestParameter.exists("baz").evaluate(rewrite));
+      Assert.assertTrue(RequestParameter.exists("baz").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterExistsFalse()
    {
-      Assert.assertFalse(RequestParameter.exists("nope").evaluate(rewrite));
+      Assert.assertFalse(RequestParameter.exists("nope").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterContains()
    {
-      Assert.assertTrue(RequestParameter.valueExists("bar").evaluate(rewrite));
+      Assert.assertTrue(RequestParameter.valueExists("bar").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterMatches()
    {
-      Assert.assertTrue(RequestParameter.matches("foo", "(bar|baz)").evaluate(rewrite));
+      Assert.assertTrue(RequestParameter.matches("foo", "(bar|baz)").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = PatternSyntaxException.class)
@@ -120,6 +121,6 @@ public class RequestParameterTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(RequestParameter.exists("foo").evaluate(new MockRewrite()));
+      Assert.assertFalse(RequestParameter.exists("foo").evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

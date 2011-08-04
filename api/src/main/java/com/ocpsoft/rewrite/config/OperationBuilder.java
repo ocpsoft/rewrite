@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -35,10 +36,10 @@ public abstract class OperationBuilder implements Operation
       }
 
       @Override
-      public void perform(final Rewrite event)
+      public void perform(final Rewrite event, final EvaluationContext context)
       {
-         left.perform(event);
-         right.perform(event);
+         left.perform(event, context);
+         right.perform(event, context);
       }
 
    }

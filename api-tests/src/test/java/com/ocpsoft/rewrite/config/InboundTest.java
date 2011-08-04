@@ -18,6 +18,8 @@ package com.ocpsoft.rewrite.config;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -29,13 +31,13 @@ public class InboundTest
    public void testInboundReturnsTrue()
    {
       Condition condition = Inbound.only();
-      Assert.assertTrue(condition.evaluate(new MockInboundRewrite()));
+      Assert.assertTrue(condition.evaluate(new MockInboundRewrite(), new MockEvaluationContext()));
    }
 
    @Test
    public void testNotInboundReturnsFalse()
    {
       Condition condition = Inbound.only();
-      Assert.assertFalse(condition.evaluate(new MockRewrite()));
+      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

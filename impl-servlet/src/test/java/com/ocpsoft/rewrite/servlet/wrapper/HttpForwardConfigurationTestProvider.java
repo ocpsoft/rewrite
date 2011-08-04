@@ -17,6 +17,7 @@ package com.ocpsoft.rewrite.servlet.wrapper;
 
 import javax.servlet.ServletContext;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
@@ -50,7 +51,7 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                .when(Direction.isInbound().and(Path.matches("/forward")).and(RequestParameter.exists("foo")))
                .perform(Forward.to("/forward2?baz=cab").and(new Operation() {
                   @Override
-                  public void perform(final Rewrite event)
+                  public void perform(final Rewrite event, final EvaluationContext context)
                   {
                      performed = true;
                   }
@@ -63,7 +64,7 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                         .and(RequestParameter.exists("baz")))
                .perform(SendStatus.code(200).and(new Operation() {
                   @Override
-                  public void perform(final Rewrite event)
+                  public void perform(final Rewrite event, final EvaluationContext context)
                   {
                      performed = true;
                   }
