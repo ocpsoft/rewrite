@@ -49,9 +49,9 @@ Get Started
            public Configuration getConfiguration(final ServletContext context)
            {
              return ConfigurationBuilder.begin()
-               .addRule()
-                 .setCondition(Direction.isInbound().and(Path.matches("/some/page/.*/")))
-                 .setOperation(Forward.to("/new-page/"));
+               .defineRule()
+                 .when(Direction.isInbound().and(Path.matches("/some/page/.*/")))
+                 .perform(Forward.to("/new-page/"));
             }
         }
 
