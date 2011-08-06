@@ -13,27 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.util;
+package com.ocpsoft.rewrite.servlet.impl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class Assert
+public class CompileException extends RuntimeException
 {
-   public static void notNull(final Object object, final String message) throws IllegalStateException
+   private static final long serialVersionUID = 5795246117307994195L;
+
+   public CompileException()
+   {}
+
+   public CompileException(final String message)
    {
-      if (object == null)
-      {
-         throw new IllegalArgumentException(message);
-      }
+      super(message);
    }
 
-   public static void assertTrue(final boolean value, final String message)
+   public CompileException(final Throwable e)
    {
-      if (value != true)
-      {
-         throw new IllegalArgumentException(message);
-      }
+      super(e);
    }
+
+   public CompileException(final String message, final Throwable e)
+   {
+      super(message, e);
+   }
+
 }

@@ -13,27 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.util;
+package com.ocpsoft.rewrite.servlet.parse;
+
+import java.util.Arrays;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class Assert
+public class CapturingGroup
 {
-   public static void notNull(final Object object, final String message) throws IllegalStateException
+   private final char[] chars;
+   private final int start;
+   private final int end;
+
+   public CapturingGroup(final char[] chars, final int start, final int end)
    {
-      if (object == null)
-      {
-         throw new IllegalArgumentException(message);
-      }
+      this.chars = chars;
+      this.start = start;
+      this.end = end;
    }
 
-   public static void assertTrue(final boolean value, final String message)
+   public int getStart()
    {
-      if (value != true)
-      {
-         throw new IllegalArgumentException(message);
-      }
+      return start;
+   }
+
+   public int getEnd()
+   {
+      return end;
+   }
+
+   public char[] getCaptured()
+   {
+      return Arrays.copyOfRange(chars, start + 1, end);
+   }
+
+   @Override
+   public String toString()
+   {
+      return "CapturingGroup [start=" + start + ", end=" + end + "]";
    }
 }

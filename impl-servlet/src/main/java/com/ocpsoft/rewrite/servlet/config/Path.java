@@ -15,9 +15,10 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import java.util.regex.Pattern;
-
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.config.parameters.CompiledPath;
+import com.ocpsoft.rewrite.servlet.config.parameters.El;
+import com.ocpsoft.rewrite.servlet.config.parameters.PathParameter;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -26,24 +27,43 @@ import com.ocpsoft.rewrite.util.Assert;
  */
 public class Path extends HttpCondition
 {
-   private final Pattern pattern;
+   private final CompiledPath pattern;
 
    private Path(final String pattern)
    {
       Assert.notNull(pattern, "URL pattern must not be null.");
-      this.pattern = Pattern.compile(pattern);
+      this.pattern = new CompiledPath(this, pattern);
    }
 
    public static Path matches(final String pattern)
    {
-      // TODO Parameter extraction could occur here.
       return new Path(pattern);
    }
 
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      return pattern.matcher(event.getRequestURL()).matches();
+      return pattern.matches(event.getRequestURL());
+   }
+
+   public void withRequestParamBinding()
+   {
+      // TODO go through all parameters and set up request param binding
+   }
+
+   public PathParameter and(final String param)
+   {
+      return pattern.getParameter(param);
+   }
+
+   public PathParameter and(final String param, final String pattern)
+   {
+      return and(param).matches(pattern);
+   }
+
+   public PathParameter and(final String param, final String pattern, final El binding)
+   {
+      return and(param, pattern).bindsTo(binding);
    }
 
 }

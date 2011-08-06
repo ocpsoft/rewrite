@@ -13,27 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.util;
+package com.ocpsoft.rewrite.servlet.config.parameters;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
-public class Assert
+public interface Converter
 {
-   public static void notNull(final Object object, final String message) throws IllegalStateException
-   {
-      if (object == null)
-      {
-         throw new IllegalArgumentException(message);
-      }
-   }
 
-   public static void assertTrue(final boolean value, final String message)
-   {
-      if (value != true)
-      {
-         throw new IllegalArgumentException(message);
-      }
-   }
 }

@@ -25,6 +25,9 @@ import org.junit.Test;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
+import com.ocpsoft.rewrite.servlet.config.parameters.Converter;
+import com.ocpsoft.rewrite.servlet.config.parameters.El;
+import com.ocpsoft.rewrite.servlet.config.parameters.Validator;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
 
 /**
@@ -68,6 +71,28 @@ public class PathTest
    public void testDoesNotMatchNonHttpRewrites()
    {
       Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
+   }
+
+   public void foo()
+   {
+      Path.matches("/path/{id;person.id;profile.id =~ /[0-9]+/}");
+      Path.matches("/path/{id:person.id:profile.id : [0-9]+ ");
+      Path.matches("/path/{id}/{other}").withRequestParamBinding();
+
+      Path.matches("/path/{id}/{other}").and("id");
+      Path.matches("/path/{id}/{other}").and("id", "[0-9]+");
+      Path.matches("/path/{id}/{other}").and("id", "[0-9]+", El.property("person.id"));
+      Path.matches("/path/{id}/{other}").and("id", "[0-9]+", El.property("person.id", Converter.class));
+      Path.matches("/path/{id}/{other}")
+               .and("id", "[0-9]+", El.property("person.id", Converter.class, Validator.class));
+
+      Path.matches("/path/{id}/{other}")
+               .and("id")
+               .matches("[0-9]+")
+               .bindsTo(El.property("person.id").using(Converter.class).validatedBy(Validator.class))
+
+               .and("other")
+               .attemptBindTo(El.property("#{profile.id}"));
    }
 
    @Test(expected = IllegalArgumentException.class)
