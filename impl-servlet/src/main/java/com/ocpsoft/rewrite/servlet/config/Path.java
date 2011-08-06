@@ -43,6 +43,7 @@ public class Path extends HttpCondition
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
+      // TODO need to do conversion and validation for bound parameters here as well
       return pattern.matches(event.getRequestURL());
    }
 

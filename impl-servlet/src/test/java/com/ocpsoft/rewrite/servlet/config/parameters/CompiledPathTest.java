@@ -28,14 +28,24 @@ public class CompiledPathTest
 {
 
    @Test
+   public void testMatchesEmptyPath()
+   {
+      CompiledPath path = new CompiledPath(null, "");
+
+      Assert.assertEquals(0, path.getParameters().size());
+      Assert.assertTrue(path.matches(""));
+      Map<PathParameter, String> results = path.parseEncoded("");
+      Assert.assertNotNull(results);
+   }
+
+   @Test
    public void testMatchesBarePath()
    {
       CompiledPath path = new CompiledPath(null, "/");
 
-      Map<String, PathParameter> parameters = path.getParameters();
-      Assert.assertEquals(0, parameters.size());
-
+      Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches("/"));
+
       Map<PathParameter, String> results = path.parseEncoded("/");
       Assert.assertNotNull(results);
    }
@@ -53,6 +63,27 @@ public class CompiledPathTest
       Map<PathParameter, String> results = path.parseEncoded("/lincoln/orders/24");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer")));
       Assert.assertEquals("24", results.get(path.getParameter("id")));
+   }
+
+   @Test
+   public void testBuildEmpty()
+   {
+      CompiledPath path = new CompiledPath(null, "");
+      Assert.assertEquals("", path.build());
+   }
+
+   @Test
+   public void testBuildBarePath()
+   {
+      CompiledPath path = new CompiledPath(null, "/");
+      Assert.assertEquals("/", path.build());
+   }
+
+   @Test
+   public void testBuildWithParameters()
+   {
+      CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}");
+      Assert.assertEquals("/lincoln/orders/24", path.build("lincoln", "24"));
    }
 
 }

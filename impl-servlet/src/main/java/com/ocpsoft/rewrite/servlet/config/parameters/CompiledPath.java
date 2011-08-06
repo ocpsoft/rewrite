@@ -70,6 +70,48 @@ public class CompiledPath
       return params;
    }
 
+   public String build(final CharSequence... values)
+   {
+      StringBuilder builder = new StringBuilder();
+
+      if ((values == null) || (params.size() != values.length))
+      {
+         throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build path.");
+      }
+
+      CapturingGroup last = null;
+      int i = 0;
+      for (Entry<String, PathParameter> entry : params.entrySet()) {
+         PathParameter param = entry.getValue();
+         CapturingGroup capture = param.getCapture();
+
+         if ((last != null) && (last.getEnd() < capture.getStart()))
+         {
+            builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, capture.getStart()));
+         }
+         else if ((last == null) && (capture.getStart() > 0))
+         {
+            builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
+         }
+
+         builder.append(values[i]);
+
+         last = capture;
+         i++;
+      }
+
+      if ((last != null) && (last.getEnd() < chars.length))
+      {
+         builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, chars.length));
+      }
+      else if (last == null)
+      {
+         builder.append(chars);
+      }
+
+      return builder.toString();
+   }
+
    public boolean matches(final String path)
    {
       if (pattern == null)
