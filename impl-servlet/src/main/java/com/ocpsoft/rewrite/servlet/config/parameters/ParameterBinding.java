@@ -15,6 +15,10 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+
 /**
  * TODO this needs to be generic to support headers and other types
  * 
@@ -23,9 +27,9 @@ package com.ocpsoft.rewrite.servlet.config.parameters;
  */
 public interface ParameterBinding
 {
+   boolean validates(HttpServletRewrite event, EvaluationContext context, Object value);
 
-   ParameterBinding using(Class<? extends Converter> type);
+   Object convert(HttpServletRewrite event, EvaluationContext context, String value);
 
-   ParameterBinding validatedBy(Class<? extends Validator> type);
-
+   Operation getOperation(HttpServletRewrite event, EvaluationContext context, Object value);
 }

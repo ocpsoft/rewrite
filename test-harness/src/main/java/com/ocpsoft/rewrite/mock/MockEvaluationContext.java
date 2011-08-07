@@ -41,7 +41,7 @@ public class MockEvaluationContext extends ContextBase implements EvaluationCont
    @Override
    public void addPostOperation(final Operation operation)
    {
-      this.preOperations.add(operation);
+      this.postOperations.add(operation);
    }
 
    /**

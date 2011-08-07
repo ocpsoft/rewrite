@@ -66,6 +66,21 @@ public class CompiledPathTest
    }
 
    @Test
+   public void testMatchesWithParametersAndTrailingSlash()
+   {
+      CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}/");
+
+      Map<String, PathParameter> parameters = path.getParameters();
+      Assert.assertEquals(2, parameters.size());
+      Assert.assertEquals("customer", parameters.get("customer").getName());
+      Assert.assertEquals("id", parameters.get("id").getName());
+
+      Map<PathParameter, String> results = path.parseEncoded("/lincoln/orders/24/");
+      Assert.assertEquals("lincoln", results.get(path.getParameter("customer")));
+      Assert.assertEquals("24", results.get(path.getParameter("id")));
+   }
+
+   @Test
    public void testBuildEmpty()
    {
       CompiledPath path = new CompiledPath(null, "");

@@ -25,7 +25,7 @@ import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class PathParameter implements Parameter
+public class PathParameter
 {
    private final Path parent;
    private final CapturingGroup capture;
@@ -40,6 +40,10 @@ public class PathParameter implements Parameter
       this.capture = capture;
    }
 
+   /*
+    * Builders
+    */
+
    public PathParameter matches(final String pattern)
    {
       this.pattern = pattern;
@@ -52,7 +56,7 @@ public class PathParameter implements Parameter
       return this;
    }
 
-   public PathParameter and(final String param)
+   public PathParameterBuilder and(final String param)
    {
       return parent.and(param);
    }
@@ -62,6 +66,10 @@ public class PathParameter implements Parameter
       this.optionalBindings.add(binding);
       return this;
    }
+
+   /*
+    * Accessors
+    */
 
    public CapturingGroup getCapture()
    {
@@ -84,4 +92,13 @@ public class PathParameter implements Parameter
       return pattern;
    }
 
+   public List<ParameterBinding> getBindings()
+   {
+      return bindings;
+   }
+
+   public List<ParameterBinding> getOptionalBindings()
+   {
+      return optionalBindings;
+   }
 }

@@ -19,10 +19,18 @@ import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
+ * A no-operation {@link Validator}; this always returns true for any given value.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Validator<T>
+public class DefaultValidator implements Validator<Object>
 {
-   boolean validate(HttpServletRewrite event, EvaluationContext context, T value);
+
+   @Override
+   public boolean validate(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   {
+      return true;
+   }
+
 }

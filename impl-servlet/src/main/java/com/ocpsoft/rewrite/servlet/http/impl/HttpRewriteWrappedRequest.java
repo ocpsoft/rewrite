@@ -34,9 +34,6 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
    /**
     * Create a new request wrapper that will merge additional parameters into the request object without prematurely
     * reading parameters from the original request.
-    * 
-    * @param request
-    * @param additionalParams
     */
    public HttpRewriteWrappedRequest(final HttpServletRequest request, final Map<String, String[]> additionalParams)
    {
@@ -75,5 +72,10 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
    public String[] getParameterValues(final String name)
    {
       return getParameterMap().get(name);
+   }
+
+   public Map<String, String[]> getModifiableParameters()
+   {
+      return modifiableParameters;
    }
 }

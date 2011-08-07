@@ -15,11 +15,14 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
-public interface Converter
+public interface Converter<T>
 {
-
+   T convert(HttpServletRewrite event, EvaluationContext context, String value);
 }

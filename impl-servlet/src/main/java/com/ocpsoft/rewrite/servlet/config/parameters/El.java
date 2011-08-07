@@ -15,15 +15,19 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.servlet.config.HttpOperation;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * TODO arquillian test
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class El implements ParameterBinding
+public class El extends ParameterBindingBuilder
 {
    private final String property;
-   private Converter converter;
-   private Validator validator;
 
    public El(final String property)
    {
@@ -35,38 +39,43 @@ public class El implements ParameterBinding
       return new El(property);
    }
 
-   @Override
-   public ParameterBinding using(final Class<? extends Converter> type)
+   public static El property(final String property, final Class<? extends Converter<?>> type)
    {
-      this.converter = resolveConverter(type);
-      return this;
+      El el = new El(property);
+      el.convertedBy(type);
+      return el;
+   }
+
+   public static El property(final String property, final Class<? extends Converter<?>> converterType,
+            final Class<? extends Validator<?>> validatorType)
+   {
+      El el = new El(property);
+      el.convertedBy(converterType);
+      el.validatedBy(validatorType);
+      return el;
+   }
+
+   private class ElBindingOperation extends HttpOperation
+   {
+      private final String property;
+      private final Object value;
+
+      public ElBindingOperation(final String property, final Object value)
+      {
+         this.property = property;
+         this.value = value;
+      }
+
+      @Override
+      public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+      {
+         // TODO perform EL injection via ServiceLoader lookup for EL Injection Providers
+      }
    }
 
    @Override
-   public ParameterBinding validatedBy(final Class<? extends Validator> type)
+   public Operation getOperation(final HttpServletRewrite event, final EvaluationContext context, final Object value)
    {
-      this.validator = resolveValidator(type);
-      return null;
-   }
-
-   private Validator resolveValidator(final Class<? extends Validator> type)
-   {
-      return null;
-   }
-
-   private Converter resolveConverter(final Class<? extends Converter> type)
-   {
-      return null;
-   }
-
-   public static El property(final String string, final Class<Converter> type)
-   {
-      return null;
-   }
-
-   public static El property(final String string, final Class<Converter> converterType,
-            final Class<Validator> validatorType)
-   {
-      return null;
+      return new ElBindingOperation(property, value);
    }
 }

@@ -15,11 +15,20 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+
 /**
+ * A no-operation {@link Converter}; this always returns the given un-converted value.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
  */
-public interface Parameter
+public class DefaultConverter implements Converter<Object>
 {
+   @Override
+   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final String value)
+   {
+      return value;
+   }
 
 }
