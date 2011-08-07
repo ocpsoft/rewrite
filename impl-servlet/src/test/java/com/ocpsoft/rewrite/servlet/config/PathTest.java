@@ -60,31 +60,13 @@ public class PathTest
    }
 
    @Test
-   public void testPathMatchesLiteral()
-   {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext()));
-   }
-
-   @Test
-   public void testPathMatchesPattern()
-   {
-      Assert.assertTrue(Path.matches("/application/.*").evaluate(rewrite, new MockEvaluationContext()));
-   }
-
-   @Test
-   public void testDoesNotMatchNonHttpRewrites()
-   {
-      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
-   }
-
-   @Test
    public void testPathMatchesWithParameters()
    {
       Assert.assertTrue(Path.matches("/application/{seg}").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
-   public void testPathAttemptsToInjectEl()
+   public void testPathAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
       PathParameterBuilder path = Path.matches("/application/{seg}")
@@ -101,7 +83,7 @@ public class PathTest
       Assert.assertTrue(mockBinding.isPerformed());
    }
 
-   public void foo()
+   public void sandbox()
    {
       // ExtendedPath.matches("/path/{id;person.id;profile.id =~ /[0-9]+/}");
       // Path.matches("/path/{id:person.id:profile.id : [0-9]+ ");
@@ -123,6 +105,24 @@ public class PathTest
 
                .and("other")
                .attemptBindTo(El.property("#{profile.id}"));
+   }
+
+   @Test
+   public void testPathMatchesLiteral()
+   {
+      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testPathMatchesPattern()
+   {
+      Assert.assertTrue(Path.matches("/application/.*").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testDoesNotMatchNonHttpRewrites()
+   {
+      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)
