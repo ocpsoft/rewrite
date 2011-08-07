@@ -25,6 +25,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.SendStatus;
+import com.ocpsoft.rewrite.servlet.config.parameters.binding.Request;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**

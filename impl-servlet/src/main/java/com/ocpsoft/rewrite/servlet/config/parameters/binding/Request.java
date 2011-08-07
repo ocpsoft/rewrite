@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config.parameters;
+package com.ocpsoft.rewrite.servlet.config.parameters.binding;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
+import com.ocpsoft.rewrite.servlet.config.parameters.Converter;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBindingBuilder;
+import com.ocpsoft.rewrite.servlet.config.parameters.Validator;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.impl.HttpRewriteWrappedRequest;
+import com.ocpsoft.rewrite.servlet.util.Maps;
 
 /**
  * // TODO arquillian test
@@ -83,17 +85,7 @@ public class Request extends ParameterBindingBuilder
          HttpRewriteWrappedRequest wrapper = (HttpRewriteWrappedRequest) event.getRequest().getAttribute(
                   HttpRewriteWrappedRequest.class.getName());
          Map<String, String[]> modifiableParameters = wrapper.getModifiableParameters();
-         if (!modifiableParameters.containsKey(parameter))
-         {
-            modifiableParameters.put(parameter, new String[] { value.toString() });
-         }
-         else
-         {
-            String[] values = modifiableParameters.get(parameter);
-            List<String> list = Arrays.asList(values);
-            list.add(value.toString());
-            modifiableParameters.put(parameter, list.toArray(new String[] {}));
-         }
+         Maps.addArrayValue(modifiableParameters, parameter, value.toString());
       }
    }
 

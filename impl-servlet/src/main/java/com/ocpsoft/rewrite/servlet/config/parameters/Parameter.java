@@ -18,25 +18,24 @@ package com.ocpsoft.rewrite.servlet.config.parameters;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ocpsoft.rewrite.servlet.config.Path;
+import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class PathParameter
+public class Parameter
 {
-   private final Path parent;
+   private final Parameterized<?> parent;
    private final CapturingGroup capture;
 
    private String pattern = "[^/]+";
    private final List<ParameterBinding> bindings = new ArrayList<ParameterBinding>();
    private final List<ParameterBinding> optionalBindings = new ArrayList<ParameterBinding>();
 
-   public PathParameter(final Path path, final CapturingGroup capture)
+   public Parameter(final Parameterized<?> parent, final CapturingGroup capture)
    {
-      this.parent = path;
+      this.parent = parent;
       this.capture = capture;
 
       // Set up default binding to evaluation context.
@@ -46,25 +45,24 @@ public class PathParameter
    /*
     * Builders
     */
-
-   public PathParameter matches(final String pattern)
+   public Parameter matches(final String pattern)
    {
       this.pattern = pattern;
       return this;
    }
 
-   public PathParameter bindsTo(final ParameterBinding binding)
+   public Parameter bindsTo(final ParameterBinding binding)
    {
       this.bindings.add(binding);
       return this;
    }
 
-   public PathParameterBuilder and(final String param)
+   public Object and(final String param)
    {
       return parent.where(param);
    }
 
-   public PathParameter attemptBindTo(final ParameterBinding binding)
+   public Parameter attemptBindTo(final ParameterBinding binding)
    {
       this.optionalBindings.add(binding);
       return this;
@@ -82,7 +80,7 @@ public class PathParameter
    @Override
    public String toString()
    {
-      return "PathParameter [capture=" + capture + ", pattern=" + pattern + "]";
+      return "Parameter [capture=" + capture + ", pattern=" + pattern + "]";
    }
 
    public String getName()

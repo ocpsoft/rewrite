@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config.parameters;
+package com.ocpsoft.rewrite.servlet.config.parameters.binding;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
+import com.ocpsoft.rewrite.servlet.config.parameters.Converter;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBindingBuilder;
+import com.ocpsoft.rewrite.servlet.config.parameters.Validator;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**

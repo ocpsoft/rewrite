@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config.parameters;
+package com.ocpsoft.rewrite.servlet.config.parameters.binding;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +21,9 @@ import java.util.List;
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.config.parameters.Converter;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBindingBuilder;
+import com.ocpsoft.rewrite.servlet.config.parameters.Validator;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**

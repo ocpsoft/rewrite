@@ -15,10 +15,15 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.CompiledPath;
+import com.ocpsoft.rewrite.servlet.util.Maps;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -34,7 +39,7 @@ public class CompiledPathTest
 
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches(""));
-      Map<PathParameter, String> results = path.parseEncoded("");
+      Map<Parameter, String> results = path.parseEncoded("");
       Assert.assertNotNull(results);
    }
 
@@ -46,7 +51,7 @@ public class CompiledPathTest
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches("/"));
 
-      Map<PathParameter, String> results = path.parseEncoded("/");
+      Map<Parameter, String> results = path.parseEncoded("/");
       Assert.assertNotNull(results);
    }
 
@@ -55,12 +60,12 @@ public class CompiledPathTest
    {
       CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}");
 
-      Map<String, PathParameter> parameters = path.getParameters();
+      Map<String, Parameter> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<PathParameter, String> results = path.parseEncoded("/lincoln/orders/24");
+      Map<Parameter, String> results = path.parseEncoded("/lincoln/orders/24");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer")));
       Assert.assertEquals("24", results.get(path.getParameter("id")));
    }
@@ -70,12 +75,12 @@ public class CompiledPathTest
    {
       CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}/");
 
-      Map<String, PathParameter> parameters = path.getParameters();
+      Map<String, Parameter> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<PathParameter, String> results = path.parseEncoded("/lincoln/orders/24/");
+      Map<Parameter, String> results = path.parseEncoded("/lincoln/orders/24/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer")));
       Assert.assertEquals("24", results.get(path.getParameter("id")));
    }
@@ -84,21 +89,24 @@ public class CompiledPathTest
    public void testBuildEmpty()
    {
       CompiledPath path = new CompiledPath(null, "");
-      Assert.assertEquals("", path.build());
+      Assert.assertEquals("", path.build(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test
    public void testBuildBarePath()
    {
       CompiledPath path = new CompiledPath(null, "/");
-      Assert.assertEquals("/", path.build());
+      Assert.assertEquals("/", path.build(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test
    public void testBuildWithParameters()
    {
       CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}");
-      Assert.assertEquals("/lincoln/orders/24", path.build("lincoln", "24"));
+      Map<String, List<Object>> map = new LinkedHashMap<String, List<Object>>();
+      Maps.addListValue(map, "customer", "lincoln");
+      Maps.addListValue(map, "id", "24");
+      Assert.assertEquals("/lincoln/orders/24", path.build(map));
    }
 
 }

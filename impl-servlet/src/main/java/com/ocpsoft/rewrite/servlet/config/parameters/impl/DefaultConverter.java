@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config.parameters;
+package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.config.parameters.Converter;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * A no-operation {@link Validator}; this always returns true for any given value.
+ * A no-operation {@link Converter}; this always returns the given un-converted value.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class DefaultValidator implements Validator<Object>
+public class DefaultConverter implements Converter<Object>
 {
-
    @Override
-   public boolean validate(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final String value)
    {
-      return true;
+      return value;
    }
 
 }

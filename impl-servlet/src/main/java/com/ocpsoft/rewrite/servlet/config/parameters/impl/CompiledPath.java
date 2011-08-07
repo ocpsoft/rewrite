@@ -13,31 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config.parameters;
+package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ocpsoft.rewrite.servlet.config.Path;
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
+import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.parse.CaptureType;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
 import com.ocpsoft.rewrite.servlet.parse.ParseTools;
+import com.ocpsoft.rewrite.servlet.util.Maps;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public class CompiledPath
 {
    private Pattern pattern;
    private final char[] chars;
-   private final Map<String, PathParameter> params = new LinkedHashMap<String, PathParameter>();
+   private final Map<String, Parameter> params = new LinkedHashMap<String, Parameter>();
 
-   public CompiledPath(final Path path, final String pattern)
+   public CompiledPath(final Parameterized<?> parent, final String pattern)
    {
       chars = pattern.toCharArray();
 
@@ -53,7 +58,7 @@ public class CompiledPath
                CapturingGroup group = ParseTools.balancedCapture(chars, startPos, chars.length - 1, CaptureType.BRACE);
                cursor = group.getEnd();
 
-               params.put(new String(group.getCaptured()), new PathParameter(path, group));
+               params.put(new String(group.getCaptured()), new Parameter(parent, group));
                break;
 
             default:
@@ -65,24 +70,28 @@ public class CompiledPath
       }
    }
 
-   public Map<String, PathParameter> getParameters()
+   public Map<String, Parameter> getParameters()
    {
       return params;
    }
 
-   public String build(final CharSequence... values)
+   public String build(final HttpServletRewrite event, final EvaluationContext context)
+   {
+      return build(extractBoundValues(event, context));
+   }
+
+   public String build(final Map<String, List<Object>> values)
    {
       StringBuilder builder = new StringBuilder();
 
-      if ((values == null) || (params.size() != values.length))
+      if ((values == null) || (params.size() != values.size()))
       {
          throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build path.");
       }
 
       CapturingGroup last = null;
-      int i = 0;
-      for (Entry<String, PathParameter> entry : params.entrySet()) {
-         PathParameter param = entry.getValue();
+      for (Entry<String, Parameter> entry : params.entrySet()) {
+         Parameter param = entry.getValue();
          CapturingGroup capture = param.getCapture();
 
          if ((last != null) && (last.getEnd() < capture.getStart()))
@@ -94,10 +103,9 @@ public class CompiledPath
             builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
          }
 
-         builder.append(values[i]);
+         builder.append(Maps.popListValue(values, param.getName()));
 
          last = capture;
-         i++;
       }
 
       if ((last != null) && (last.getEnd() < chars.length))
@@ -119,8 +127,8 @@ public class CompiledPath
          StringBuilder patternBuilder = new StringBuilder();
 
          CapturingGroup last = null;
-         for (Entry<String, PathParameter> entry : params.entrySet()) {
-            PathParameter param = entry.getValue();
+         for (Entry<String, Parameter> entry : params.entrySet()) {
+            Parameter param = entry.getValue();
             CapturingGroup capture = param.getCapture();
 
             if ((last != null) && (last.getEnd() < capture.getStart()))
@@ -157,16 +165,16 @@ public class CompiledPath
    /**
     * Matches against the given URLEncoded path
     */
-   public Map<PathParameter, String> parseEncoded(final String path)
+   public Map<Parameter, String> parseEncoded(final String path)
    {
-      Map<PathParameter, String> values = new LinkedHashMap<PathParameter, String>();
+      Map<Parameter, String> values = new LinkedHashMap<Parameter, String>();
 
       String temp = path;
       if (matches(path))
       {
          CapturingGroup last = null;
-         for (Entry<String, PathParameter> entry : params.entrySet()) {
-            PathParameter param = entry.getValue();
+         for (Entry<String, Parameter> entry : params.entrySet()) {
+            Parameter param = entry.getValue();
             CapturingGroup capture = param.getCapture();
 
             if ((last != null) && (last.getEnd() < capture.getStart()))
@@ -200,8 +208,30 @@ public class CompiledPath
       return null;
    }
 
-   public PathParameter getParameter(final String name)
+   public Parameter getParameter(final String name)
    {
       return params.get(name);
+   }
+
+   public Map<String, List<Object>> extractBoundValues(final HttpServletRewrite event, final EvaluationContext context)
+   {
+      Map<String, List<Object>> result = new LinkedHashMap<String, List<Object>>();
+
+      for (Entry<String, Parameter> entry : getParameters().entrySet()) {
+         String name = entry.getKey();
+         Parameter value = entry.getValue();
+
+         // TODO need to do lots of error checking and handling here
+         for (ParameterBinding binding : value.getBindings()) {
+            Object boundValue = binding.extractBoundValue(event, context);
+            Maps.addListValue(result, name, boundValue);
+         }
+
+         for (ParameterBinding binding : value.getOptionalBindings()) {
+            Object boundValue = binding.extractBoundValue(event, context);
+            Maps.addListValue(result, name, boundValue);
+         }
+      }
+      return result;
    }
 }
