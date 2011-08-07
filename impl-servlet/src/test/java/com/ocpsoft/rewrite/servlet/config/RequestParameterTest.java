@@ -21,10 +21,10 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -43,23 +43,21 @@ public class RequestParameterTest
    @Before
    public void before()
    {
-      request = EasyMock.createNiceMock(HttpServletRequest.class);
-      EasyMock.expect(request.getParameterNames())
-               .andReturn(Collections.enumeration(Arrays.asList("foo", "baz"))).anyTimes();
+      request = Mockito.mock(HttpServletRequest.class);
+      Mockito.when(request.getParameterNames())
+               .thenReturn(Collections.enumeration(Arrays.asList("foo", "baz")));
 
-      EasyMock.expect(request.getParameterValues("foo"))
-               .andReturn(new String[] { "bar" }).anyTimes();
+      Mockito.when(request.getParameterValues("foo"))
+               .thenReturn(new String[] { "bar" });
 
-      EasyMock.expect(request.getParameterValues("baz"))
-               .andReturn(new String[] { "cab" }).anyTimes();
+      Mockito.when(request.getParameterValues("baz"))
+               .thenReturn(new String[] { "cab" });
 
-      EasyMock.expect(request.getParameter("foo"))
-               .andReturn("bar").anyTimes();
+      Mockito.when(request.getParameter("foo"))
+               .thenReturn("bar");
 
-      EasyMock.expect(request.getParameter("baz"))
-               .andReturn("cab").anyTimes();
-
-      EasyMock.replay(request);
+      Mockito.when(request.getParameter("baz"))
+               .thenReturn("cab");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }

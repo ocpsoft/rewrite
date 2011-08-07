@@ -20,10 +20,10 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -41,23 +41,21 @@ public class HeaderAndPathTest
    @Before
    public void before()
    {
-      request = EasyMock.createNiceMock(HttpServletRequest.class);
-      EasyMock.expect(request.getHeaderNames())
-               .andReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length"))).anyTimes();
+      request = Mockito.mock(HttpServletRequest.class);
+      Mockito.when(request.getHeaderNames())
+               .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
 
-      EasyMock.expect(request.getHeaders("Content-Length"))
-               .andReturn(Collections.enumeration(Arrays.asList("06091984"))).anyTimes();
+      Mockito.when(request.getHeaders("Content-Length"))
+               .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
 
-      EasyMock.expect(request.getHeaders("Accept-Charset"))
-               .andReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8"))).anyTimes();
+      Mockito.when(request.getHeaders("Accept-Charset"))
+               .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
 
-      EasyMock.expect(request.getRequestURI())
-               .andReturn("/context/application/path").anyTimes();
+      Mockito.when(request.getRequestURI())
+               .thenReturn("/context/application/path");
 
-      EasyMock.expect(request.getContextPath())
-               .andReturn("/context").anyTimes();
-
-      EasyMock.replay(request);
+      Mockito.when(request.getContextPath())
+               .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }

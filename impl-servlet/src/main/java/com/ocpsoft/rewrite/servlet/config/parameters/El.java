@@ -78,4 +78,11 @@ public class El extends ParameterBindingBuilder
    {
       return new ElBindingOperation(property, value);
    }
+
+   @Override
+   public Object extractBoundValue(final HttpServletRewrite event, final EvaluationContext context)
+   {
+      // TODO Extract EL value via ServiceLoader lookup for EL Injection Providers
+      return null;
+   }
 }

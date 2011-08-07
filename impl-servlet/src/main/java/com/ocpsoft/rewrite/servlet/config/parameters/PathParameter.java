@@ -38,6 +38,9 @@ public class PathParameter
    {
       this.parent = path;
       this.capture = capture;
+
+      // Set up default binding to evaluation context.
+      this.bindings.add(Evaluation.property(getName()));
    }
 
    /*
@@ -58,7 +61,7 @@ public class PathParameter
 
    public PathParameterBuilder and(final String param)
    {
-      return parent.and(param);
+      return parent.where(param);
    }
 
    public PathParameter attemptBindTo(final ParameterBinding binding)

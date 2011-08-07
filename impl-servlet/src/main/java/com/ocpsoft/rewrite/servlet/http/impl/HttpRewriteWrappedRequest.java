@@ -40,6 +40,7 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
       super(request);
       modifiableParameters = new TreeMap<String, String[]>();
       modifiableParameters.putAll(additionalParams);
+      request.setAttribute(HttpRewriteWrappedRequest.class.getName(), this);
    }
 
    @Override

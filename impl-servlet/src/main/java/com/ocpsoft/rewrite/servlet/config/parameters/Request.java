@@ -15,6 +15,8 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.ocpsoft.rewrite.EvaluationContext;
@@ -85,7 +87,19 @@ public class Request extends ParameterBindingBuilder
          {
             modifiableParameters.put(parameter, new String[] { value.toString() });
          }
+         else
+         {
+            String[] values = modifiableParameters.get(parameter);
+            List<String> list = Arrays.asList(values);
+            list.add(value.toString());
+            modifiableParameters.put(parameter, list.toArray(new String[] {}));
+         }
       }
    }
 
+   @Override
+   public Object extractBoundValue(final HttpServletRewrite event, final EvaluationContext context)
+   {
+      return event.getRequest().getParameter(parameter);
+   }
 }

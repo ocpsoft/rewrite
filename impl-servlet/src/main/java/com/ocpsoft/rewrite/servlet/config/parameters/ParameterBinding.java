@@ -32,4 +32,6 @@ public interface ParameterBinding
    Object convert(HttpServletRewrite event, EvaluationContext context, String value);
 
    Operation getOperation(HttpServletRewrite event, EvaluationContext context, Object value);
+
+   Object extractBoundValue(HttpServletRewrite event, EvaluationContext context);
 }

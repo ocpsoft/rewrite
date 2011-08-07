@@ -17,10 +17,10 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -38,18 +38,16 @@ public class QueryStringTest
    @Before
    public void before()
    {
-      request = EasyMock.createNiceMock(HttpServletRequest.class);
+      request = Mockito.mock(HttpServletRequest.class);
 
-      EasyMock.expect(request.getRequestURI())
-               .andReturn("/context/application/path").anyTimes();
+      Mockito.when(request.getRequestURI())
+               .thenReturn("/context/application/path");
 
-      EasyMock.expect(request.getQueryString())
-               .andReturn("foo=bar&bar=baz").anyTimes();
+      Mockito.when(request.getQueryString())
+               .thenReturn("foo=bar&bar=baz");
 
-      EasyMock.expect(request.getContextPath())
-               .andReturn("/context").anyTimes();
-
-      EasyMock.replay(request);
+      Mockito.when(request.getContextPath())
+               .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }

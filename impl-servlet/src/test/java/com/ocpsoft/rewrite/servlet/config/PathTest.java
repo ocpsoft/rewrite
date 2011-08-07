@@ -19,10 +19,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
@@ -46,15 +46,13 @@ public class PathTest
    @Before
    public void before()
    {
-      request = EasyMock.createNiceMock(HttpServletRequest.class);
+      request = Mockito.mock(HttpServletRequest.class);
 
-      EasyMock.expect(request.getRequestURI())
-               .andReturn("/context/application/path").anyTimes();
+      Mockito.when(request.getRequestURI())
+               .thenReturn("/context/application/path");
 
-      EasyMock.expect(request.getContextPath())
-               .andReturn("/context").anyTimes();
-
-      EasyMock.replay(request);
+      Mockito.when(request.getContextPath())
+               .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }
@@ -70,17 +68,17 @@ public class PathTest
    {
       MockBinding mockBinding = new MockBinding();
       PathParameterBuilder path = Path.matches("/application/{seg}")
-               .and("seg", mockBinding);
+               .where("seg", mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(path.evaluate(rewrite, context));
 
-      List<Operation> operations = context.getPostOperations();
-      Assert.assertEquals(1, operations.size());
-      operations.get(0).perform(rewrite, context);
+      List<Operation> operations = context.getPreOperations();
+      Assert.assertEquals(2, operations.size());
+      operations.get(1).perform(rewrite, context);
 
       Assert.assertTrue(mockBinding.isConverted());
       Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isPerformed());
+      Assert.assertTrue(mockBinding.isBound());
    }
 
    public void sandbox()
@@ -90,20 +88,20 @@ public class PathTest
 
       Path.matches("/path/{id}/{other}").withRequestParamBinding();
 
-      Path.matches("/path/{id}/{other}").and("id");
-      Path.matches("/path/{id}/{other}").and("id", "[0-9]+");
-      Path.matches("/path/{id}/{other}").and("id", "[0-9]+", El.property("person.id"));
-      Path.matches("/path/{id}/{other}").and("id", "[0-9]+", El.property("person.id", DefaultConverter.class));
+      Path.matches("/path/{id}/{other}").where("id");
+      Path.matches("/path/{id}/{other}").where("id", "[0-9]+");
+      Path.matches("/path/{id}/{other}").where("id", "[0-9]+", El.property("person.id"));
+      Path.matches("/path/{id}/{other}").where("id", "[0-9]+", El.property("person.id", DefaultConverter.class));
       Path.matches("/path/{id}/{other}")
-               .and("id", "[0-9]+", El.property("person.id", DefaultConverter.class, DefaultValidator.class));
+               .where("id", "[0-9]+", El.property("person.id", DefaultConverter.class, DefaultValidator.class));
 
       Path.matches("/path/{id}/{other}")
-               .and("id")
+               .where("id")
                .matches("[0-9]+")
                .bindsTo(El.property("person.id").convertedBy(DefaultConverter.class)
                         .validatedBy(DefaultValidator.class))
 
-               .and("other")
+               .where("other")
                .attemptBindTo(El.property("#{profile.id}"));
    }
 

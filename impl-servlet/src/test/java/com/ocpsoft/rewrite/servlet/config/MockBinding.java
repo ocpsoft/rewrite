@@ -9,9 +9,10 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class MockBinding implements ParameterBinding
 {
 
-   private boolean performed;
+   private boolean bound;
    private boolean validated;
    private boolean converted;
+   private boolean extracted;
 
    @Override
    public boolean validates(final HttpServletRewrite event, final EvaluationContext context, final Object value)
@@ -32,14 +33,19 @@ public class MockBinding implements ParameterBinding
       return converted;
    }
 
-   public boolean isPerformed()
+   public boolean isBound()
    {
-      return performed;
+      return bound;
    }
 
    public boolean isValidated()
    {
       return validated;
+   }
+
+   public boolean isExtracted()
+   {
+      return extracted;
    }
 
    @Override
@@ -49,8 +55,15 @@ public class MockBinding implements ParameterBinding
          @Override
          public void perform(final Rewrite event, final EvaluationContext context)
          {
-            performed = true;
+            bound = true;
          }
       };
+   }
+
+   @Override
+   public Object extractBoundValue(final HttpServletRewrite event, final EvaluationContext context)
+   {
+      extracted = true;
+      return new Object();
    }
 }

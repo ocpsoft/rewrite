@@ -17,10 +17,10 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -37,11 +37,9 @@ public class MethodTest
    @Before
    public void before()
    {
-      request = EasyMock.createNiceMock(HttpServletRequest.class);
-      EasyMock.expect(request.getMethod())
-               .andReturn("HEAD").anyTimes();
-
-      EasyMock.replay(request);
+      request = Mockito.mock(HttpServletRequest.class);
+      Mockito.when((request.getMethod()))
+               .thenReturn("HEAD");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }

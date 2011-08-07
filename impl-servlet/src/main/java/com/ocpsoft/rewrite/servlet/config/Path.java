@@ -60,24 +60,24 @@ public class Path extends HttpCondition
       return new Path(pattern, params);
    }
 
-   public PathParameterBuilder and(final String param)
+   public PathParameterBuilder where(final String param)
    {
       return PathParameterBuilder.create(this, pattern.getParameter(param));
    }
 
-   public PathParameterBuilder and(final String param, final String pattern)
+   public PathParameterBuilder where(final String param, final String pattern)
    {
-      return and(param).matches(pattern);
+      return where(param).matches(pattern);
    }
 
-   public PathParameterBuilder and(final String param, final String pattern, final ParameterBinding binding)
+   public PathParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
    {
-      return and(param, pattern).bindsTo(binding);
+      return where(param, pattern).bindsTo(binding);
    }
 
-   public PathParameterBuilder and(final String param, final ParameterBinding binding)
+   public PathParameterBuilder where(final String param, final ParameterBinding binding)
    {
-      return and(param).bindsTo(binding);
+      return where(param).bindsTo(binding);
    }
 
    @Override
@@ -110,7 +110,7 @@ public class Path extends HttpCondition
          }
 
          for (Operation operation : operations) {
-            context.addPostOperation(operation);
+            context.addPreOperation(operation);
          }
          return true;
       }

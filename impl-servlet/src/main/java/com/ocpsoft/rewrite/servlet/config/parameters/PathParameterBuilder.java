@@ -73,9 +73,24 @@ public class PathParameterBuilder extends HttpCondition
       return wrapped.and(condition);
    }
 
-   public PathParameterBuilder and(final String param)
+   public PathParameterBuilder where(final String param)
    {
-      return wrapped.and(param);
+      return wrapped.where(param);
+   }
+
+   public PathParameterBuilder where(final String param, final String pattern)
+   {
+      return wrapped.where(param, pattern);
+   }
+
+   public PathParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
+   {
+      return wrapped.where(param, pattern, binding);
+   }
+
+   public PathParameterBuilder where(final String param, final ParameterBinding binding)
+   {
+      return wrapped.where(param, binding);
    }
 
    @Override
