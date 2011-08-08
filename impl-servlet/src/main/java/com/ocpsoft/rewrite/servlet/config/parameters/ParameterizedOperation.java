@@ -15,12 +15,25 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.config.OperationBuilder;
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Parameterized<T extends Parameterized<T>>
+public interface ParameterizedOperation
 {
-   public T where(final String param);
+
+   OperationParameterBuilder where(String param);
+
+   OperationParameterBuilder where(String param, String pattern);
+
+   OperationParameterBuilder where(String param, String pattern, ParameterBinding binding);
+
+   OperationParameterBuilder where(String param, ParameterBinding binding);
+
+   OperationBuilder and(Operation other);
+
 }

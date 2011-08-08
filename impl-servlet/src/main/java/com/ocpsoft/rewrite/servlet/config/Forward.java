@@ -17,7 +17,8 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ForwardParameterBuilder;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -26,7 +27,7 @@ import com.ocpsoft.rewrite.util.Assert;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Forward extends HttpOperation
+public class Forward extends HttpOperation implements ParameterizedOperation
 {
    private final ParameterizedExpression location;
 
@@ -51,23 +52,23 @@ public class Forward extends HttpOperation
       }
    }
 
-   public ForwardParameterBuilder where(final String param)
+   public OperationParameterBuilder where(final String param)
    {
-      return ForwardParameterBuilder.create(this, location.getParameter(param));
+      return new OperationParameterBuilder(this, location.getParameter(param));
    }
 
-   public ForwardParameterBuilder where(final String param, final String pattern)
+   public OperationParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
-   public ForwardParameterBuilder where(final String param, final String pattern,
+   public OperationParameterBuilder where(final String param, final String pattern,
             final ParameterBinding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
-   public ForwardParameterBuilder where(final String param, final ParameterBinding binding)
+   public OperationParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return where(param).bindsTo(binding);
    }

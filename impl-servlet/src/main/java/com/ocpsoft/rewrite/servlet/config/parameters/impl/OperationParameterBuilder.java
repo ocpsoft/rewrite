@@ -17,64 +17,58 @@ package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
-import com.ocpsoft.rewrite.servlet.config.Substitute;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class SubstituteParameterBuilder
+public class OperationParameterBuilder
 {
-   private final Substitute parent;
+   private final ParameterizedOperation parent;
    private final Parameter parameter;
 
-   public SubstituteParameterBuilder(final Substitute parent, final Parameter parameter)
+   public OperationParameterBuilder(final ParameterizedOperation parent, final Parameter parameter)
    {
       this.parent = parent;
       this.parameter = parameter;
    }
 
-   /*
-    * ParameterBuilder 
-    */
-   public SubstituteParameterBuilder matches(final String pattern)
+   public OperationParameterBuilder matches(final String pattern)
    {
       parameter.matches(pattern);
       return this;
    }
 
-   public SubstituteParameterBuilder bindsTo(final ParameterBinding binding)
+   public OperationParameterBuilder bindsTo(final ParameterBinding binding)
    {
       parameter.bindsTo(binding);
       return this;
    }
 
-   public SubstituteParameterBuilder attemptBindTo(final ParameterBinding binding)
+   public OperationParameterBuilder attemptBindTo(final ParameterBinding binding)
    {
       parameter.attemptBindTo(binding);
       return this;
    }
 
-   /*
-    * Parameterized<?>
-    */
-   public SubstituteParameterBuilder where(final String param)
+   public OperationParameterBuilder where(final String param)
    {
       return parent.where(param);
    }
 
-   public SubstituteParameterBuilder where(final String param, final String pattern)
+   public OperationParameterBuilder where(final String param, final String pattern)
    {
       return parent.where(param, pattern);
    }
 
-   public SubstituteParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
+   public OperationParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
-   public SubstituteParameterBuilder where(final String param, final ParameterBinding binding)
+   public OperationParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return parent.where(param, binding);
    }

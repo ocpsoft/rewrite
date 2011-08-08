@@ -24,15 +24,16 @@ import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedCondition;
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.PathParameterBuilder;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition
+public class Path extends HttpCondition implements ParameterizedCondition
 {
    private final ParameterizedExpression path;
 
@@ -47,23 +48,23 @@ public class Path extends HttpCondition
       return new Path(pattern);
    }
 
-   public PathParameterBuilder where(final String param)
+   public ConditionParameterBuilder where(final String param)
    {
-      return PathParameterBuilder.create(this, path.getParameter(param));
+      return new ConditionParameterBuilder(this, path.getParameter(param));
    }
 
-   public PathParameterBuilder where(final String param, final String pattern)
+   public ConditionParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
-   public PathParameterBuilder where(final String param, final String pattern,
+   public ConditionParameterBuilder where(final String param, final String pattern,
             final ParameterBinding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
-   public PathParameterBuilder where(final String param, final ParameterBinding binding)
+   public ConditionParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return where(param).bindsTo(binding);
    }
