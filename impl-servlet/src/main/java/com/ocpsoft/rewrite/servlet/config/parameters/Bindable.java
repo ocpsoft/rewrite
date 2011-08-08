@@ -22,7 +22,7 @@ import java.util.List;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Bindable<T extends Bindable<T, B>, B extends Binding>
+public interface Bindable<T extends Bindable<T, B>, B extends ParameterBinding>
 {
    T bindsTo(B binding);
 

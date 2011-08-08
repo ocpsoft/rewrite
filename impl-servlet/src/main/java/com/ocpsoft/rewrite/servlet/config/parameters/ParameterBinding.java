@@ -20,16 +20,14 @@ import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * TODO this needs to be generic to support headers and other types
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface ParameterBinding extends Binding
+public interface ParameterBinding
 {
    boolean validates(HttpServletRewrite event, EvaluationContext context, Object value);
 
-   Object convert(HttpServletRewrite event, EvaluationContext context, String value);
+   Object convert(HttpServletRewrite event, EvaluationContext context, Object value);
 
    Operation getOperation(HttpServletRewrite event, EvaluationContext context, Object value);
 

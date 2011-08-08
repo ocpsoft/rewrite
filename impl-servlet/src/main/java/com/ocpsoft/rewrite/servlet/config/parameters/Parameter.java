@@ -21,8 +21,7 @@ import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Parameter extends DefaultBindable<Parameter, ParameterBinding> implements
-         Bindable<Parameter, ParameterBinding>
+public class Parameter extends DefaultBindable<Parameter, ParameterBinding>
 {
    private final CapturingGroup capture;
 

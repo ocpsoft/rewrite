@@ -164,9 +164,9 @@ public class ParameterizedExpression
    /**
     * Matches against the given URLEncoded path
     */
-   public Map<Parameter, String> parseEncoded(final String path)
+   public Map<Parameter, String[]> parseEncoded(final String path)
    {
-      Map<Parameter, String> values = new LinkedHashMap<Parameter, String>();
+      Map<Parameter, String[]> values = new LinkedHashMap<Parameter, String[]>();
 
       String temp = path;
       if (matches(path))
@@ -196,7 +196,7 @@ public class ParameterizedExpression
             if (segmentMatcher.matches())
             {
                String value = segmentMatcher.group(1);
-               values.put(param, value);
+               Maps.addArrayValue(values, param, value);
                temp = temp.substring(segmentMatcher.end(1));
             }
 

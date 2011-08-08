@@ -85,7 +85,17 @@ public class Request extends ParameterBindingBuilder
          HttpRewriteWrappedRequest wrapper = (HttpRewriteWrappedRequest) event.getRequest().getAttribute(
                   HttpRewriteWrappedRequest.class.getName());
          Map<String, String[]> modifiableParameters = wrapper.getModifiableParameters();
-         Maps.addArrayValue(modifiableParameters, parameter, value.toString());
+         if (value.getClass().isArray())
+         {
+            Object[] values = (Object[]) value;
+            for (Object object : values) {
+               Maps.addArrayValue(modifiableParameters, parameter, object.toString());
+            }
+         }
+         else
+         {
+            Maps.addArrayValue(modifiableParameters, parameter, value.toString());
+         }
       }
    }
 

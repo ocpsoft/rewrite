@@ -22,7 +22,7 @@ import java.util.List;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class DefaultBindable<T extends Bindable<T, B>, B extends Binding> implements Bindable<T, B>
+public class DefaultBindable<T extends Bindable<T, B>, B extends ParameterBinding> implements Bindable<T, B>
 {
    private final List<B> bindings = new ArrayList<B>();
    private final List<B> optionalBindings = new ArrayList<B>();

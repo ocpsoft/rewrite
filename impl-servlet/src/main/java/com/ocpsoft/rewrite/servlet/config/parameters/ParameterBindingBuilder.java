@@ -49,7 +49,7 @@ public abstract class ParameterBindingBuilder implements ParameterBinding
    }
 
    @Override
-   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final String value)
+   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final Object value)
    {
       return getConverter().convert(event, context, value);
    }

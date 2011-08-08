@@ -24,5 +24,5 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public interface Converter<T>
 {
-   T convert(HttpServletRewrite event, EvaluationContext context, String value);
+   T convert(HttpServletRewrite event, EvaluationContext context, Object value);
 }

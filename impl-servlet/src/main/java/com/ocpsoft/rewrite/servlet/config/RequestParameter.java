@@ -15,8 +15,10 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
+import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
@@ -33,24 +36,36 @@ import com.ocpsoft.rewrite.util.Assert;
  */
 public class RequestParameter extends HttpCondition
 {
-   private final Pattern name;
+   private final String name;
+
+   private final Pattern nameRegex;
    private final Pattern value;
 
-   private final DefaultBindable bindable = new DefaultBindable();
+   @SuppressWarnings({ "rawtypes", "unchecked" })
+   private final DefaultBindable<?, ParameterBinding> bindable = new DefaultBindable();
 
-   private RequestParameter(final String nameRegex, final String valueRegex)
+   private RequestParameter(final String name, final String nameRegex, final String valueRegex)
    {
+      // TODO Refactor this to two different objects internally
       Assert.notNull(nameRegex, "Parameter name pattern cannot be null.");
       Assert.notNull(valueRegex, "Parameter value pattern cannot be null.");
-      this.name = Pattern.compile(nameRegex);
+      this.name = name;
+      this.nameRegex = Pattern.compile(nameRegex);
       this.value = Pattern.compile(valueRegex);
 
       this.bindsTo(Evaluation.property(nameRegex));
    }
 
-   private void bindsTo(final ParameterBinding binding)
+   public RequestParameter bindsTo(final ParameterBinding binding)
    {
       this.bindable.bindsTo(binding);
+      return this;
+   }
+
+   public RequestParameter attemptBindTo(final ParameterBinding binding)
+   {
+      this.bindable.attemptBindTo(binding);
+      return this;
    }
 
    /**
@@ -61,7 +76,18 @@ public class RequestParameter extends HttpCondition
     */
    public static RequestParameter matches(final String nameRegex, final String valueRegex)
    {
-      return new RequestParameter(nameRegex, valueRegex);
+      return new RequestParameter(null, nameRegex, valueRegex);
+   }
+
+   /**
+    * Return a {@link RequestParameter} condition that matches only against the existence of a parameter with the given
+    * name. The parameter value is ignored.
+    * 
+    * @param name The parameter name
+    */
+   public static RequestParameter exists(final String name)
+   {
+      return new RequestParameter(name, name, ".*");
    }
 
    /**
@@ -70,9 +96,9 @@ public class RequestParameter extends HttpCondition
     * 
     * @param nameRegex Regular expression matching the parameter name
     */
-   public static RequestParameter exists(final String nameRegex)
+   public static RequestParameter existsMatching(final String nameRegex)
    {
-      return new RequestParameter(nameRegex, ".*");
+      return new RequestParameter(null, nameRegex, ".*");
    }
 
    /**
@@ -83,20 +109,41 @@ public class RequestParameter extends HttpCondition
     */
    public static RequestParameter valueExists(final String valueRegex)
    {
-      return new RequestParameter(".*", valueRegex);
+      return new RequestParameter(null, ".*", valueRegex);
    }
 
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
+      String matchedParameter = null;
+
+      List<String> values = new ArrayList<String>();
+
       HttpServletRequest request = event.getRequest();
       for (String parameter : Collections.list(request.getParameterNames()))
       {
-         if (name.matcher(parameter).matches() && matchesValue(request, parameter))
+         if (name != null)
          {
-            return true;
+            if (name.equals(parameter))
+            {
+               matchedParameter = name;
+               values.addAll(Arrays.asList(request.getParameterValues(matchedParameter)));
+               break;
+            }
+         }
+         else if (nameRegex.matcher(parameter).matches() && matchesValue(request, parameter))
+         {
+            matchedParameter = parameter;
+            values.addAll(Arrays.asList(request.getParameterValues(matchedParameter)));
          }
       }
+
+      if (matchedParameter != null)
+      {
+         Bindings.evaluateCondition(event, context, bindable, values.toArray(new String[] {}));
+         return true;
+      }
+
       return false;
    }
 
@@ -111,5 +158,4 @@ public class RequestParameter extends HttpCondition
       }
       return false;
    }
-
 }

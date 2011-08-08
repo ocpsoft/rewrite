@@ -39,7 +39,7 @@ public class Maps
       }
    }
 
-   public static void addArrayValue(final Map<String, String[]> map, final String key, final String value)
+   public static <T> void addArrayValue(final Map<T, String[]> map, final T key, final String value)
    {
       if (!map.containsKey(key))
       {
