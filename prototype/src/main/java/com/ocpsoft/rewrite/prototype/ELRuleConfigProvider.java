@@ -29,7 +29,7 @@ import com.ocpsoft.rewrite.servlet.config.parameters.binding.El;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class ConfigProviderImpl extends HttpConfigurationProvider
+public class ELRuleConfigProvider extends HttpConfigurationProvider
 {
 
    @Override
