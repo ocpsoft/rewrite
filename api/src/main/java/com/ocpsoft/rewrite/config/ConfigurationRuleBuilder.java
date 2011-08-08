@@ -45,12 +45,18 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
       return wrapped.add(rule);
    }
 
+   /**
+    * Order should not matter.
+    */
    public ConfigurationRuleBuilder when(final Condition condition)
    {
       rule.when(condition);
       return this;
    }
 
+   /**
+    * Order matters.
+    */
    public ConfigurationRuleBuilder perform(final Operation operation)
    {
       rule.perform(operation);

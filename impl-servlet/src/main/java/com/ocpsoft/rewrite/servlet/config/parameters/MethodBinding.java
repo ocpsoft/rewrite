@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.spi;
+package com.ocpsoft.rewrite.servlet.config.parameters;
+
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Defines a service interface to provide EL support.
+ * Defines interface for binding to Methods
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public interface ElSupportProvider
+public interface MethodBinding
 {
    /**
-    * Extract a value from the location specified by the given EL location.
+    * Invoke the method and return the returned value, if any.
     */
-   Object extractValue(String expression);
-
-   /**
-    * Inject a value into location specified by the given EL expression.
-    */
-   void injectValue(String expression, Object value);
-
-   /**
-    * Invoke the method specified by the given EL expression.
-    */
-   Object invokeMethod(String expression);
+   Object invokeMethod(Rewrite event, EvaluationContext context);
 }

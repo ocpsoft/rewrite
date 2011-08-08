@@ -33,6 +33,9 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
     * If the {@link HttpServletResponse} is not already committed, issue a Temporary Redirect (302) and call
     * {@link #abort()}. This location must be include {@link #getContextPath()} if attempting to redirect within the
     * current {@link ServletContext}
+    * <p>
+    * This method commits the response, after which no more information can be written and the response cannot be
+    * modified.
     */
    public void redirectTemporary(final String location);
 
@@ -40,18 +43,27 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
     * If the {@link HttpServletResponse} is not already committed, issue a Permanent Redirect (301) and call
     * {@link #abort()}. This location must be include {@link #getContextPath()} if attempting to redirect within the
     * current {@link ServletContext}
+    * <p>
+    * This method commits the response, after which no more information can be written and the response cannot be
+    * modified.
     */
    public void redirectPermanent(final String location);
 
    /**
     * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
     * {@link #abort()}.
+    * <p>
+    * This method commits the response, after which no more information can be written and the response cannot be
+    * modified.
     */
    public void sendStatusCode(int code);
 
    /**
     * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
     * {@link #abort()}. Provide the given message to the browser.
+    * <p>
+    * This method commits the response, after which no more information can be written and the response cannot be
+    * modified.
     */
    public void sendStatusCode(int code, String message);
 }

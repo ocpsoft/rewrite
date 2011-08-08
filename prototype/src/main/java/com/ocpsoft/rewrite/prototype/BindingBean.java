@@ -13,27 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.spi;
+package com.ocpsoft.rewrite.prototype;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+import com.ocpsoft.rewrite.config.Operation;
 
 /**
- * Defines a service interface to provide EL support.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public interface ElSupportProvider
+@Named
+@RequestScoped
+public class BindingBean
 {
-   /**
-    * Extract a value from the location specified by the given EL location.
-    */
-   Object extractValue(String expression);
+   private String one;
+   private int two;
 
-   /**
-    * Inject a value into location specified by the given EL expression.
-    */
-   void injectValue(String expression, Object value);
+   public Operation action()
+   {
+      System.out.println("Invoked action");
+      return null;
+   }
 
-   /**
-    * Invoke the method specified by the given EL expression.
-    */
-   Object invokeMethod(String expression);
+   public String getOne()
+   {
+      return one;
+   }
+
+   public void setOne(final String one)
+   {
+      this.one = one;
+      System.out.println("Set one = " + one);
+   }
+
+   public int getTwo()
+   {
+      return two;
+   }
+
+   public void setTwo(final int two)
+   {
+      this.two = two;
+      System.out.println("Set two = " + two);
+   }
 }

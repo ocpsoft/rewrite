@@ -26,6 +26,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.RequestParameter;
+import com.ocpsoft.rewrite.servlet.config.Response;
 import com.ocpsoft.rewrite.servlet.config.SendStatus;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Request;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -36,17 +37,6 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class ParameterConfigurationProvider extends HttpConfigurationProvider
 {
-   public static boolean performed = false;
-   public static String userName = null;
-   public static String orderId = null;
-
-   public static void reset()
-   {
-      performed = false;
-      userName = null;
-      orderId = null;
-   }
-
    @Override
    public int priority()
    {
@@ -67,15 +57,14 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                                  .where("user").matches("[a-zA-Z]+").bindsTo(Request.parameter("uname"))
                                  .where("oid").matches("[0-9]+").bindsTo(Request.parameter("oid"))
                         ))
-               .perform(SendStatus.code(200).and(new HttpOperation() {
+               .perform(new HttpOperation() {
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
                   {
-                     userName = event.getRequest().getParameter("uname");
-                     orderId = event.getRequest().getParameter("oid");
-                     performed = true;
+                     Response.addHeader("User-Name", event.getRequest().getParameter("uname")).perform(event, context);
+                     Response.addHeader("Order-ID", event.getRequest().getParameter("oid")).perform(event, context);
                   }
-               }))
+               }.and(SendStatus.code(200)))
 
                /*
                 * Forward a request to another resource
@@ -103,15 +92,14 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                         Path.matches("/{user}/profile")
                                  .where("user").matches("[a-zA-Z]+").bindsTo(new MockFailedBinding())
                         ))
-               .perform(SendStatus.code(200).and(new HttpOperation() {
+               .perform(new HttpOperation() {
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
                   {
-                     userName = event.getRequest().getParameter("uname");
-                     orderId = event.getRequest().getParameter("oid");
-                     performed = true;
+                     Response.addHeader("User-Name", event.getRequest().getParameter("uname")).perform(event, context);
+                     Response.addHeader("Order-ID", event.getRequest().getParameter("oid")).perform(event, context);
                   }
-               }));
+               }.and(SendStatus.code(200)));
 
       return config;
    }

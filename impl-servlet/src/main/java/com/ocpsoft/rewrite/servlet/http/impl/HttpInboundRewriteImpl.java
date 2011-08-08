@@ -68,7 +68,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       HttpServletResponse response = getResponse();
       if (response.isCommitted())
       {
-         throw new IllegalStateException("Response is already committed. Cannot issue redirect.");
+         throw new IllegalStateException("Response is already committed. Cannot send codes.");
       }
 
       try
@@ -76,7 +76,9 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
          if (message == null)
             response.sendError(code);
          else
+         {
             response.sendError(code, message);
+         }
 
          abort();
       }
