@@ -57,10 +57,13 @@ public class UrlMappingConfigurationProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder.begin()
 
+               /*
+                * Set up our rule (This does the work.)
+                */
                .add(UrlMapping.pattern("/p/{project}").resource("/viewProject.xhtml"))
 
                /*
-                * Now verify that we actually did what we said we did.
+                * Now send a verification to our test case that the rule worked correctly.
                 */
                .defineRule().when(Direction.isInbound().and(Path.matches("/viewProject.xhtml"))
                         .and(RequestParameter.exists("project")))
