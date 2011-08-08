@@ -15,23 +15,43 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import com.ocpsoft.rewrite.EvaluationContext;
-import com.ocpsoft.rewrite.config.Operation;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * TODO this needs to be generic to support headers and other types
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface ParameterBinding extends Binding
+public class DefaultBindable<T extends Bindable<T, B>, B extends Binding> implements Bindable<T, B>
 {
-   boolean validates(HttpServletRewrite event, EvaluationContext context, Object value);
+   private final List<B> bindings = new ArrayList<B>();
+   private final List<B> optionalBindings = new ArrayList<B>();
 
-   Object convert(HttpServletRewrite event, EvaluationContext context, String value);
+   @Override
+   @SuppressWarnings("unchecked")
+   public T bindsTo(final B binding)
+   {
+      this.bindings.add(binding);
+      return (T) this;
+   }
 
-   Operation getOperation(HttpServletRewrite event, EvaluationContext context, Object value);
+   @Override
+   @SuppressWarnings("unchecked")
+   public T attemptBindTo(final B binding)
+   {
+      this.optionalBindings.add(binding);
+      return (T) this;
+   }
 
-   Object extractBoundValue(HttpServletRewrite event, EvaluationContext context);
+   @Override
+   public List<B> getBindings()
+   {
+      return bindings;
+   }
+
+   @Override
+   public List<B> getOptionalBindings()
+   {
+      return optionalBindings;
+   }
 }

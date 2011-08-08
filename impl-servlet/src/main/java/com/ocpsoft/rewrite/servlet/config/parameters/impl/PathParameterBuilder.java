@@ -19,48 +19,47 @@ import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.servlet.config.HttpCondition;
-import com.ocpsoft.rewrite.servlet.config.ParameterizedHttpCondition;
+import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ParameterizedHttpConditionBuilder extends HttpCondition implements Parameterized<ParameterizedHttpConditionBuilder>
+public class PathParameterBuilder extends HttpCondition
 {
-   private final ParameterizedHttpCondition<ParameterizedHttpConditionBuilder> parent;
+   private final Path parent;
    private final Parameter parameter;
 
-   private ParameterizedHttpConditionBuilder(final ParameterizedHttpCondition<ParameterizedHttpConditionBuilder> parent, final Parameter parameter)
+   private PathParameterBuilder(final Path parent, final Parameter parameter)
    {
       this.parent = parent;
       this.parameter = parameter;
    }
 
-   public static ParameterizedHttpConditionBuilder create(final ParameterizedHttpCondition<ParameterizedHttpConditionBuilder> parent,
+   public static PathParameterBuilder create(final Path parent,
             final Parameter parameter)
    {
-      return new ParameterizedHttpConditionBuilder(parent, parameter);
+      return new PathParameterBuilder(parent, parameter);
    }
 
    /*
     * ParameterBuilder 
     */
-   public ParameterizedHttpConditionBuilder matches(final String pattern)
+   public PathParameterBuilder matches(final String pattern)
    {
       parameter.matches(pattern);
       return this;
    }
 
-   public ParameterizedHttpConditionBuilder bindsTo(final ParameterBinding binding)
+   public PathParameterBuilder bindsTo(final ParameterBinding binding)
    {
       parameter.bindsTo(binding);
       return this;
    }
 
-   public ParameterizedHttpConditionBuilder attemptBindTo(final ParameterBinding binding)
+   public PathParameterBuilder attemptBindTo(final ParameterBinding binding)
    {
       parameter.attemptBindTo(binding);
       return this;
@@ -69,22 +68,22 @@ public class ParameterizedHttpConditionBuilder extends HttpCondition implements 
    /*
     * Parameterized<?>
     */
-   public ParameterizedHttpConditionBuilder where(final String param)
+   public PathParameterBuilder where(final String param)
    {
       return parent.where(param);
    }
 
-   public ParameterizedHttpConditionBuilder where(final String param, final String pattern)
+   public PathParameterBuilder where(final String param, final String pattern)
    {
       return parent.where(param, pattern);
    }
 
-   public ParameterizedHttpConditionBuilder where(final String param, final String pattern, final ParameterBinding binding)
+   public PathParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
-   public ParameterizedHttpConditionBuilder where(final String param, final ParameterBinding binding)
+   public PathParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return parent.where(param, binding);
    }

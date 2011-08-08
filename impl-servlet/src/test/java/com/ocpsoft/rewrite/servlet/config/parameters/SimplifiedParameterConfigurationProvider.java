@@ -17,22 +17,19 @@ package com.ocpsoft.rewrite.servlet.config.parameters;
 
 import javax.servlet.ServletContext;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
-import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Path;
-import com.ocpsoft.rewrite.servlet.config.SendStatus;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Request;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import com.ocpsoft.rewrite.servlet.config.RequestParameter;
+import com.ocpsoft.rewrite.servlet.config.Substitute;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class PathParameterConfigurationProvider extends HttpConfigurationProvider
+public class SimplifiedParameterConfigurationProvider extends HttpConfigurationProvider
 {
    public static boolean performed = false;
    public static String userName = null;
@@ -55,26 +52,17 @@ public class PathParameterConfigurationProvider extends HttpConfigurationProvide
    public Configuration getConfiguration(final ServletContext context)
    {
       Configuration config = ConfigurationBuilder.begin()
+
                .defineRule()
-               .when(Direction.isInbound().and(
+               .when(Direction.isInbound().and(Path.matches("/p/{project}/story/{id}")))
+               .perform(Substitute.with("/viewProject?project={project}&id={id}"))
 
-                        Path.matches("/{user}/order/{oid}")
-                                 .where("user").matches("[a-zA-Z]+").bindsTo(Request.parameter("uname"))
-                                 .where("oid").matches("[0-9]+").bindsTo(Request.parameter("oid"))
-                        ))
-
-               .perform(SendStatus.code(200).and(new HttpOperation() {
-
-                  @Override
-                  public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
-                  {
-                     userName = event.getRequest().getParameter("uname");
-                     orderId = event.getRequest().getParameter("oid");
-                     performed = true;
-                  }
-               }));
+               .defineRule()
+               .when(Direction.isOutbound().and(Path.matches("/viewProject"))
+                        .and(RequestParameter.exists("project"))
+                        .and(RequestParameter.exists("id")))
+               .perform(Substitute.with("/p/{project}/story/{id}"));
 
       return config;
    }
-
 }

@@ -17,28 +17,29 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ForwardParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.SubstituteParameterBuilder;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Forward extends HttpOperation
+public class Substitute extends HttpOperation
 {
    private final ParameterizedExpression location;
 
-   private Forward(final String location)
+   private Substitute(final String location)
    {
       Assert.notNull(location, "Location must not be null.");
       this.location = new ParameterizedExpression(location);
    }
 
-   public static Forward to(final String location)
+   public static Substitute with(final String location)
    {
-      return new Forward(location);
+      return new Substitute(location);
    }
 
    @Override
@@ -49,25 +50,30 @@ public class Forward extends HttpOperation
          String target = location.build(event, context);
          ((HttpInboundServletRewrite) event).forward(target);
       }
+      else if (event instanceof HttpOutboundServletRewrite)
+      {
+         String target = location.build(event, context);
+         ((HttpOutboundServletRewrite) event).setOutboundURL(event.getContextPath() + target);
+      }
    }
 
-   public ForwardParameterBuilder where(final String param)
+   public SubstituteParameterBuilder where(final String param)
    {
-      return ForwardParameterBuilder.create(this, location.getParameter(param));
+      return new SubstituteParameterBuilder(this, location.getParameter(param));
    }
 
-   public ForwardParameterBuilder where(final String param, final String pattern)
+   public SubstituteParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
-   public ForwardParameterBuilder where(final String param, final String pattern,
+   public SubstituteParameterBuilder where(final String param, final String pattern,
             final ParameterBinding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
-   public ForwardParameterBuilder where(final String param, final ParameterBinding binding)
+   public SubstituteParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return where(param).bindsTo(binding);
    }

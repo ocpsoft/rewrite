@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.parse.CaptureType;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
@@ -36,13 +35,13 @@ import com.ocpsoft.rewrite.servlet.util.Maps;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CompiledPath
+public class ParameterizedExpression
 {
    private Pattern pattern;
    private final char[] chars;
    private final Map<String, Parameter> params = new LinkedHashMap<String, Parameter>();
 
-   public CompiledPath(final Parameterized<?> parent, final String pattern)
+   public ParameterizedExpression(final String pattern)
    {
       chars = pattern.toCharArray();
 
@@ -58,7 +57,7 @@ public class CompiledPath
                CapturingGroup group = ParseTools.balancedCapture(chars, startPos, chars.length - 1, CaptureType.BRACE);
                cursor = group.getEnd();
 
-               params.put(new String(group.getCaptured()), new Parameter(parent, group));
+               params.put(new String(group.getCaptured()), new Parameter(group));
                break;
 
             default:

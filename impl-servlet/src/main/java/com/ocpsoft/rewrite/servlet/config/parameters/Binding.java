@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
-
-import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
+package com.ocpsoft.rewrite.servlet.config.parameters;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterizedHttpOperation<T extends Parameterized<T>> extends HttpOperation implements
-         Parameterized<T>
+public interface Binding
 {
+
 }

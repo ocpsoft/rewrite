@@ -22,6 +22,9 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
+import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -33,12 +36,21 @@ public class RequestParameter extends HttpCondition
    private final Pattern name;
    private final Pattern value;
 
+   private final DefaultBindable bindable = new DefaultBindable();
+
    private RequestParameter(final String nameRegex, final String valueRegex)
    {
       Assert.notNull(nameRegex, "Parameter name pattern cannot be null.");
       Assert.notNull(valueRegex, "Parameter value pattern cannot be null.");
       this.name = Pattern.compile(nameRegex);
       this.value = Pattern.compile(valueRegex);
+
+      this.bindsTo(Evaluation.property(nameRegex));
+   }
+
+   private void bindsTo(final ParameterBinding binding)
+   {
+      this.bindable.bindsTo(binding);
    }
 
    /**
@@ -99,4 +111,5 @@ public class RequestParameter extends HttpCondition
       }
       return false;
    }
+
 }

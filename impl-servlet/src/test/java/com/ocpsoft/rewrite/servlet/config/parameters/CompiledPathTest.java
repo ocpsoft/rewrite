@@ -22,7 +22,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.CompiledPath;
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
 import com.ocpsoft.rewrite.servlet.util.Maps;
 
 /**
@@ -35,7 +35,7 @@ public class CompiledPathTest
    @Test
    public void testMatchesEmptyPath()
    {
-      CompiledPath path = new CompiledPath(null, "");
+      ParameterizedExpression path = new ParameterizedExpression("");
 
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches(""));
@@ -46,7 +46,7 @@ public class CompiledPathTest
    @Test
    public void testMatchesBarePath()
    {
-      CompiledPath path = new CompiledPath(null, "/");
+      ParameterizedExpression path = new ParameterizedExpression("/");
 
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches("/"));
@@ -58,7 +58,7 @@ public class CompiledPathTest
    @Test
    public void testMatchesWithParameters()
    {
-      CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}");
+      ParameterizedExpression path = new ParameterizedExpression("/{customer}/orders/{id}");
 
       Map<String, Parameter> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
@@ -73,7 +73,7 @@ public class CompiledPathTest
    @Test
    public void testMatchesWithParametersAndTrailingSlash()
    {
-      CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}/");
+      ParameterizedExpression path = new ParameterizedExpression("/{customer}/orders/{id}/");
 
       Map<String, Parameter> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
@@ -88,21 +88,21 @@ public class CompiledPathTest
    @Test
    public void testBuildEmpty()
    {
-      CompiledPath path = new CompiledPath(null, "");
+      ParameterizedExpression path = new ParameterizedExpression("");
       Assert.assertEquals("", path.build(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test
    public void testBuildBarePath()
    {
-      CompiledPath path = new CompiledPath(null, "/");
+      ParameterizedExpression path = new ParameterizedExpression("/");
       Assert.assertEquals("/", path.build(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test
    public void testBuildWithParameters()
    {
-      CompiledPath path = new CompiledPath(null, "/{customer}/orders/{id}");
+      ParameterizedExpression path = new ParameterizedExpression("/{customer}/orders/{id}");
       Map<String, List<Object>> map = new LinkedHashMap<String, List<Object>>();
       Maps.addListValue(map, "customer", "lincoln");
       Maps.addListValue(map, "id", "24");

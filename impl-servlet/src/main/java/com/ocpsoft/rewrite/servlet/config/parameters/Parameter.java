@@ -15,31 +15,25 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Parameter
+public class Parameter extends DefaultBindable<Parameter, ParameterBinding> implements
+         Bindable<Parameter, ParameterBinding>
 {
-   private final Parameterized<?> parent;
    private final CapturingGroup capture;
 
    private String pattern = "[^/]+";
-   private final List<ParameterBinding> bindings = new ArrayList<ParameterBinding>();
-   private final List<ParameterBinding> optionalBindings = new ArrayList<ParameterBinding>();
 
-   public Parameter(final Parameterized<?> parent, final CapturingGroup capture)
+   public Parameter(final CapturingGroup capture)
    {
-      this.parent = parent;
       this.capture = capture;
 
       // Set up default binding to evaluation context.
-      this.bindings.add(Evaluation.property(getName()));
+      this.bindsTo(Evaluation.property(getName()));
    }
 
    /*
@@ -48,23 +42,6 @@ public class Parameter
    public Parameter matches(final String pattern)
    {
       this.pattern = pattern;
-      return this;
-   }
-
-   public Parameter bindsTo(final ParameterBinding binding)
-   {
-      this.bindings.add(binding);
-      return this;
-   }
-
-   public Object and(final String param)
-   {
-      return parent.where(param);
-   }
-
-   public Parameter attemptBindTo(final ParameterBinding binding)
-   {
-      this.optionalBindings.add(binding);
       return this;
    }
 
@@ -91,15 +68,5 @@ public class Parameter
    public String getPattern()
    {
       return pattern;
-   }
-
-   public List<ParameterBinding> getBindings()
-   {
-      return bindings;
-   }
-
-   public List<ParameterBinding> getOptionalBindings()
-   {
-      return optionalBindings;
    }
 }

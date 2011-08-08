@@ -33,7 +33,7 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class PathParameterConfigurationTest extends RewriteTestBase
+public class ParameterConfigurationTest extends RewriteTestBase
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
@@ -43,7 +43,7 @@ public class PathParameterConfigurationTest extends RewriteTestBase
                .addPackages(true, ServletRoot.class.getPackage())
                .addAsResource(
                         new StringAsset(
-                                 "com.ocpsoft.rewrite.servlet.config.parameters.PathParameterConfigurationProvider"),
+                                 "com.ocpsoft.rewrite.servlet.config.parameters.ParameterConfigurationProvider"),
                         "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
       return deployment;
    }
@@ -53,10 +53,10 @@ public class PathParameterConfigurationTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/lincoln/order/3");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("lincoln", PathParameterConfigurationProvider.userName);
-      Assert.assertEquals("3", PathParameterConfigurationProvider.orderId);
-      Assert.assertTrue(PathParameterConfigurationProvider.performed);
-      PathParameterConfigurationProvider.reset();
+      Assert.assertEquals("lincoln", ParameterConfigurationProvider.userName);
+      Assert.assertEquals("3", ParameterConfigurationProvider.orderId);
+      Assert.assertTrue(ParameterConfigurationProvider.performed);
+      ParameterConfigurationProvider.reset();
    }
 
    @Test
@@ -64,7 +64,15 @@ public class PathParameterConfigurationTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/lincoln3/order/z42");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertFalse(PathParameterConfigurationProvider.performed);
-      PathParameterConfigurationProvider.reset();
+      Assert.assertFalse(ParameterConfigurationProvider.performed);
+      ParameterConfigurationProvider.reset();
+   }
+
+   @Test
+   public void testTestPathAndForwardUseEvaluationContextByDefault()
+   {
+      HttpAction<HttpGet> action = get("/p/rewrite/story/50");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      ParameterConfigurationProvider.reset();
    }
 }

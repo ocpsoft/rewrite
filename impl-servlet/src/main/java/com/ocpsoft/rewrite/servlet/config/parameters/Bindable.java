@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
+import java.util.List;
 
 /**
- * A {@link Parameterized} {@link HttpCondition}
+ * Represents an object that can be bound to a storage location.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterizedHttpCondition<T extends Parameterized<T>> extends HttpCondition implements
-         Parameterized<T>
+public interface Bindable<T extends Bindable<T, B>, B extends Binding>
 {
+   T bindsTo(B binding);
 
+   T attemptBindTo(B binding);
+
+   List<B> getBindings();
+
+   List<B> getOptionalBindings();
 }

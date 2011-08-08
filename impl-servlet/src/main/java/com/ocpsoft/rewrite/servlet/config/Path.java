@@ -24,22 +24,22 @@ import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.CompiledPath;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedHttpConditionBuilder;
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.PathParameterBuilder;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends ParameterizedHttpCondition<ParameterizedHttpConditionBuilder>
+public class Path extends HttpCondition
 {
-   private final CompiledPath path;
+   private final ParameterizedExpression path;
 
    private Path(final String pattern)
    {
       Assert.notNull(pattern, "Path must not be null.");
-      this.path = new CompiledPath(this, pattern);
+      this.path = new ParameterizedExpression(pattern);
    }
 
    public static Path matches(final String pattern)
@@ -47,24 +47,23 @@ public class Path extends ParameterizedHttpCondition<ParameterizedHttpConditionB
       return new Path(pattern);
    }
 
-   @Override
-   public ParameterizedHttpConditionBuilder where(final String param)
+   public PathParameterBuilder where(final String param)
    {
-      return ParameterizedHttpConditionBuilder.create(this, path.getParameter(param));
+      return PathParameterBuilder.create(this, path.getParameter(param));
    }
 
-   public ParameterizedHttpConditionBuilder where(final String param, final String pattern)
+   public PathParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
-   public ParameterizedHttpConditionBuilder where(final String param, final String pattern,
+   public PathParameterBuilder where(final String param, final String pattern,
             final ParameterBinding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
-   public ParameterizedHttpConditionBuilder where(final String param, final ParameterBinding binding)
+   public PathParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return where(param).bindsTo(binding);
    }

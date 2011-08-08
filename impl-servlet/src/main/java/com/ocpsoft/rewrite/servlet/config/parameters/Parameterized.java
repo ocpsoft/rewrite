@@ -15,17 +15,12 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public interface Parameterized<T extends Parameterized<T>>
 {
-   T where(final String param);
-
-   T where(final String param, final String pattern);
-
-   T where(final String param, final String pattern, final ParameterBinding binding);
-
-   T where(final String param, final ParameterBinding binding);
+   public T where(final String param);
 }
