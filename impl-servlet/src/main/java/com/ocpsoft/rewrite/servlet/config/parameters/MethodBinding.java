@@ -21,6 +21,8 @@ import com.ocpsoft.rewrite.event.Rewrite;
 /**
  * Defines interface for binding to Methods
  * 
+ * TODO it should be possible to bind parameters to methods / the evaluation context
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
