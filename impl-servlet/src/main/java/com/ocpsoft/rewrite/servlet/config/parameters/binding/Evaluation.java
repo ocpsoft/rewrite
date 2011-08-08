@@ -83,13 +83,21 @@ public class Evaluation extends ParameterBindingBuilder
       {
          if (!context.containsKey(parameter))
          {
-            context.put(getParameterName(parameter), new Object[] { value });
+            if (value.getClass().isArray())
+               context.put(getParameterName(parameter), value);
+            else
+               context.put(getParameterName(parameter), new Object[] { value });
          }
          else
          {
             Object[] values = (Object[]) context.get(getParameterName(parameter));
             List<Object> list = Arrays.asList(values);
-            list.add(value);
+
+            if (value.getClass().isArray())
+               list.addAll(Arrays.asList((Object[]) value));
+            else
+               list.add(value);
+
             context.put(getParameterName(parameter), list.toArray());
          }
       }

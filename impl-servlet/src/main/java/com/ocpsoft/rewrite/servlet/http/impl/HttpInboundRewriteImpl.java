@@ -27,7 +27,7 @@ import org.jboss.logging.Logger;
 import com.ocpsoft.rewrite.exception.RewriteException;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
-import com.ocpsoft.rewrite.servlet.util.QueryString;
+import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -120,7 +120,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
 
          if ((urlParts.length > 1) && (urlParts[1] != null) && !"".equals(urlParts[1]))
          {
-            return response.encodeRedirectURL(baseUrlEncoded + QueryString.build(urlParts[1]).toQueryString());
+            return response.encodeRedirectURL(baseUrlEncoded + QueryStringBuilder.build(urlParts[1]).toQueryString());
          }
          else
          {
@@ -167,5 +167,11 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    public String getRequestQueryString()
    {
       return getRequest().getQueryString() == null ? "" : getRequest().getQueryString();
+   }
+
+   @Override
+   public String getURL()
+   {
+      return getRequestURL() + getRequestQueryStringSeparator() + getRequestQueryString();
    }
 }

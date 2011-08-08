@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.config;
-
-import com.ocpsoft.rewrite.EvaluationContext;
-import com.ocpsoft.rewrite.event.OutboundRewrite;
-import com.ocpsoft.rewrite.event.Rewrite;
+package com.ocpsoft.rewrite.servlet.spi;
 
 /**
- * A condition that returns true when operating on an {@link OutboundRewrite}
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class Outbound extends ConditionBuilder
+public interface ElSupportProvider
 {
-   public Outbound()
-   {}
+   Object extractValue(String property);
 
-   @Override
-   public boolean evaluate(final Rewrite event, final EvaluationContext context)
-   {
-      return event instanceof OutboundRewrite;
-   }
-
-   public static Outbound only()
-   {
-      return new Outbound();
-   }
+   void injectValue(String property, Object value);
 }

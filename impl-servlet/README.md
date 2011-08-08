@@ -25,3 +25,6 @@ TODO's
 ======
 
  * Continue simplification of Configuration object APIs and convenience classes
+ * Rule to enable localhost admin/status page
+ * High level pre-prepared rewrite rules
+ * Resource.exists(String fileName) to check file existence

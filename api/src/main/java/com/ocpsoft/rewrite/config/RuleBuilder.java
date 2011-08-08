@@ -15,6 +15,9 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
+
 /**
  * Build a {@link Configuration} rule.
  * 
@@ -43,14 +46,14 @@ public class RuleBuilder implements Rule
    }
 
    @Override
-   public Condition getCondition()
+   public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      return condition;
+      return condition.evaluate(event, context);
    }
 
    @Override
-   public Operation getOperation()
+   public void perform(final Rewrite event, final EvaluationContext context)
    {
-      return operation;
+      operation.perform(event, context);
    }
 }

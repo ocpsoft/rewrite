@@ -24,20 +24,34 @@ import com.ocpsoft.rewrite.mock.MockEvaluationContext;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class OutboundTest
+public class DirectionTest
 {
+
+   @Test
+   public void testInboundReturnsTrue()
+   {
+      Condition condition = Direction.isInbound();
+      Assert.assertTrue(condition.evaluate(new MockInboundRewrite(), new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testNotInboundReturnsFalse()
+   {
+      Condition condition = Direction.isInbound();
+      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+   }
 
    @Test
    public void testOutboundReturnsTrue()
    {
-      Condition condition = new Outbound();
+      Condition condition = Direction.isOutbound();
       Assert.assertTrue(condition.evaluate(new MockOutboundRewrite(), new MockEvaluationContext()));
    }
 
    @Test
    public void testNotOutboundReturnsFalse()
    {
-      Condition condition = new Outbound();
+      Condition condition = Direction.isOutbound();
       Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

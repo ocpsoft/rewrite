@@ -15,18 +15,41 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.event.InboundRewrite;
+import com.ocpsoft.rewrite.event.OutboundRewrite;
+import com.ocpsoft.rewrite.event.Rewrite;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class Direction extends ConditionBuilder
 {
-   public static Inbound isInbound()
+   public static Direction isInbound()
    {
-      return Inbound.only();
+      return new Inbound();
    }
 
-   public static Outbound isOutbound()
+   public static Direction isOutbound()
    {
-      return Outbound.only();
+      return new Outbound();
+   }
+
+   private static class Inbound extends Direction
+   {
+      @Override
+      public boolean evaluate(final Rewrite event, final EvaluationContext context)
+      {
+         return event instanceof InboundRewrite;
+      }
+   }
+
+   private static class Outbound extends Direction
+   {
+      @Override
+      public boolean evaluate(final Rewrite event, final EvaluationContext context)
+      {
+         return event instanceof OutboundRewrite;
+      }
    }
 }

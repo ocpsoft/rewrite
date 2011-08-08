@@ -36,15 +36,15 @@ public class ConfigurationBuilderTest
    public void testBuildConfiguration()
    {
       Configuration config = ConfigurationBuilder.begin().defineRule()
-               .when(And.all(Inbound.only(), new True()))
+               .when(And.all(Direction.isInbound(), new True()))
                .perform(operation);
 
       Rule rule = config.getRules().get(0);
       InboundRewrite rewrite = new MockInboundRewrite();
       EvaluationContext context = new MockEvaluationContext();
-      if (rule.getCondition().evaluate(rewrite, context))
+      if (rule.evaluate(rewrite, context))
       {
-         rule.getOperation().perform(rewrite, context);
+         rule.perform(rewrite, context);
       }
       Assert.assertTrue(performed);
    }

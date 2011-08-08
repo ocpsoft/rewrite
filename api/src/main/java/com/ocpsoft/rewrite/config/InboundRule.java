@@ -15,6 +15,8 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -32,9 +34,9 @@ public abstract class InboundRule implements Rule
    }
 
    @Override
-   public Condition getCondition()
+   public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      return Direction.isInbound().and(condition);
+      return Direction.isInbound().and(condition).evaluate(event, context);
    }
 
    public void setOperation(final InboundOperation operation)
@@ -43,9 +45,9 @@ public abstract class InboundRule implements Rule
    }
 
    @Override
-   public Operation getOperation()
+   public void perform(final Rewrite event, final EvaluationContext context)
    {
-      return operation;
+      operation.perform(event, context);
    }
 
 }

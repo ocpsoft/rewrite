@@ -57,14 +57,16 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
    public Configuration getConfiguration(final ServletContext context)
    {
       Configuration config = ConfigurationBuilder.begin()
+
+               /*
+                * Handle a request with Path parameter binding
+                */
                .defineRule()
                .when(Direction.isInbound().and(
-
                         Path.matches("/{user}/order/{oid}")
                                  .where("user").matches("[a-zA-Z]+").bindsTo(Request.parameter("uname"))
                                  .where("oid").matches("[0-9]+").bindsTo(Request.parameter("oid"))
                         ))
-
                .perform(SendStatus.code(200).and(new HttpOperation() {
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -75,18 +77,41 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                   }
                }))
 
+               /*
+                * Forward a request to another resource
+                */
                .defineRule()
                .when(Direction.isInbound().and(Path.matches("/p/{project}/story/{id}")
                         .where("project").matches("[a-zA-Z]+")
                         .where("id").matches("[0-9]+")))
-
                .perform(Forward.to("/viewProject?project={project}&id={id}"))
 
+               /*
+                * Handle the forwarded request
+                */
                .defineRule()
                .when(Direction.isInbound().and(Path.matches("/viewProject"))
                         .and(RequestParameter.exists("project"))
                         .and(RequestParameter.exists("id")))
-               .perform(SendStatus.code(200));
+               .perform(SendStatus.code(200))
+
+               /*
+                * Handle a request that fails to bind
+                */
+               .defineRule()
+               .when(Direction.isInbound().and(
+                        Path.matches("/{user}/profile")
+                                 .where("user").matches("[a-zA-Z]+").bindsTo(new MockFailedBinding())
+                        ))
+               .perform(SendStatus.code(200).and(new HttpOperation() {
+                  @Override
+                  public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+                  {
+                     userName = event.getRequest().getParameter("uname");
+                     orderId = event.getRequest().getParameter("oid");
+                     performed = true;
+                  }
+               }));
 
       return config;
    }

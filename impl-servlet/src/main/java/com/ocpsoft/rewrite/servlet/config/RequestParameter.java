@@ -62,12 +62,6 @@ public class RequestParameter extends HttpCondition
       return this;
    }
 
-   public RequestParameter attemptBindTo(final ParameterBinding binding)
-   {
-      this.bindable.attemptBindTo(binding);
-      return this;
-   }
-
    /**
     * Return a {@link RequestParameter} condition that matches against both parameter name and values.
     * 
@@ -133,6 +127,7 @@ public class RequestParameter extends HttpCondition
          }
          else if (nameRegex.matcher(parameter).matches() && matchesValue(request, parameter))
          {
+            // TODO this needs to be able to handle multiple different named parameters
             matchedParameter = parameter;
             values.addAll(Arrays.asList(request.getParameterValues(matchedParameter)));
          }

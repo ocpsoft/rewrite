@@ -33,7 +33,7 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class ParameterConfigurationTest extends RewriteTestBase
+public class UrlMappingConfigurationTest extends RewriteTestBase
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
@@ -43,44 +43,20 @@ public class ParameterConfigurationTest extends RewriteTestBase
                .addPackages(true, ServletRoot.class.getPackage())
                .addAsResource(
                         new StringAsset(
-                                 "com.ocpsoft.rewrite.servlet.config.parameters.ParameterConfigurationProvider"),
+                                 "com.ocpsoft.rewrite.servlet.config.parameters.UrlMappingConfigurationProvider"),
                         "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
       return deployment;
    }
 
    @Test
-   public void testPathParameterRequestBinding()
+   public void testUrlMappingConfiguration()
    {
-      HttpAction<HttpGet> action = get("/lincoln/order/3");
+      HttpAction<HttpGet> action = get("/p/rewrite");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("lincoln", ParameterConfigurationProvider.userName);
-      Assert.assertEquals("3", ParameterConfigurationProvider.orderId);
-      Assert.assertTrue(ParameterConfigurationProvider.performed);
-      ParameterConfigurationProvider.reset();
+      Assert.assertEquals("rewrite", UrlMappingConfigurationProvider.projectName);
+      Assert.assertEquals(baseContext() + "/p/rewrite", UrlMappingConfigurationProvider.encodedURL);
+
+      UrlMappingConfigurationProvider.reset();
    }
 
-   @Test
-   public void testTestPathParameterNotMatchingRegexes()
-   {
-      HttpAction<HttpGet> action = get("/lincoln3/order/z42");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertFalse(ParameterConfigurationProvider.performed);
-      ParameterConfigurationProvider.reset();
-   }
-
-   @Test
-   public void testTestPathAndForwardUseEvaluationContextByDefault()
-   {
-      HttpAction<HttpGet> action = get("/p/rewrite/story/50");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      ParameterConfigurationProvider.reset();
-   }
-
-   @Test
-   public void testFailedBindingRaisesException()
-   {
-      HttpAction<HttpGet> action = get("/lincoln/profile");
-      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
-      ParameterConfigurationProvider.reset();
-   }
 }

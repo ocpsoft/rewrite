@@ -15,6 +15,8 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Encapsulates the conditions and outcomes of a Rewrite rule.
@@ -24,7 +26,7 @@ package com.ocpsoft.rewrite.config;
  */
 public interface Rule
 {
-   public Condition getCondition();
+   public boolean evaluate(Rewrite event, EvaluationContext context);
 
-   public Operation getOperation();
+   public void perform(Rewrite event, EvaluationContext context);
 }

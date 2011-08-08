@@ -49,4 +49,12 @@ public interface HttpServletRewrite extends
     * is empty, this too will return an empty string.
     */
    String getRequestQueryStringSeparator();
+
+   /**
+    * Return the full URL including query string. Note that for {@link HttpInboundServletRewrite} events, this method
+    * returns {@link #getRequestURL()} + {@link #getRequestQueryStringSeparator()} + {@link #getRequestQueryString()};
+    * for {@link HttpOutboundServletRewrite} events, this method returns
+    * {@link HttpOutboundServletRewrite#getOutboundURL()}
+    */
+   public String getURL();
 }

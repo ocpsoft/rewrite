@@ -25,7 +25,6 @@ import java.util.List;
 public class DefaultBindable<T extends Bindable<T, B>, B extends ParameterBinding> implements Bindable<T, B>
 {
    private final List<B> bindings = new ArrayList<B>();
-   private final List<B> optionalBindings = new ArrayList<B>();
 
    @Override
    @SuppressWarnings("unchecked")
@@ -36,22 +35,8 @@ public class DefaultBindable<T extends Bindable<T, B>, B extends ParameterBindin
    }
 
    @Override
-   @SuppressWarnings("unchecked")
-   public T attemptBindTo(final B binding)
-   {
-      this.optionalBindings.add(binding);
-      return (T) this;
-   }
-
-   @Override
    public List<B> getBindings()
    {
       return bindings;
-   }
-
-   @Override
-   public List<B> getOptionalBindings()
-   {
-      return optionalBindings;
    }
 }

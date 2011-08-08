@@ -22,6 +22,7 @@ import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedCondition;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
+import com.ocpsoft.rewrite.servlet.config.parameters.binding.Request;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -69,12 +70,29 @@ public class Path extends HttpCondition implements ParameterizedCondition
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      if (path.matches(event.getRequestURL()))
+      String requestURL = event.getRequestURL();
+      if (path.matches(requestURL))
       {
-         Map<Parameter, String[]> parameters = path.parseEncoded(event.getRequestURL());
+         Map<Parameter, String[]> parameters = path.parseEncoded(requestURL);
          Bindings.evaluateCondition(event, context, parameters);
          return true;
       }
       return false;
+   }
+
+   public ParameterizedExpression getPathExpression()
+   {
+      return path;
+   }
+
+   /**
+    * Bind each path parameter to the corresponding request parameter by name.
+    */
+   public Path withRequestBinding()
+   {
+      for (Parameter parameter : path.getParameters().values()) {
+         parameter.bindsTo(Request.parameter(parameter.getName()));
+      }
+      return this;
    }
 }

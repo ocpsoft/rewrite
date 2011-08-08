@@ -27,7 +27,7 @@ import java.util.Map;
 public class Maps
 {
    @SuppressWarnings("unchecked")
-   public static <T> void addListValue(final Map<String, List<T>> map, final String key, final T value)
+   public static <K, T> void addListValue(final Map<K, List<T>> map, final K key, final T value)
    {
       if (!map.containsKey(key))
       {

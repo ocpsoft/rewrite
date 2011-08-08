@@ -52,12 +52,6 @@ public class ConditionParameterBuilder implements Condition
       return this;
    }
 
-   public ConditionParameterBuilder attemptBindTo(final ParameterBinding binding)
-   {
-      parameter.attemptBindTo(binding);
-      return this;
-   }
-
    /*
     * Parameterized<?>
     */

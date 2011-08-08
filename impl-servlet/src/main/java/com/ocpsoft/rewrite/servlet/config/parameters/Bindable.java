@@ -26,9 +26,5 @@ public interface Bindable<T extends Bindable<T, B>, B extends ParameterBinding>
 {
    T bindsTo(B binding);
 
-   T attemptBindTo(B binding);
-
    List<B> getBindings();
-
-   List<B> getOptionalBindings();
 }

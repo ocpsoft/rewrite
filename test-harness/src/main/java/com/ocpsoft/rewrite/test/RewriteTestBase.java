@@ -133,10 +133,15 @@ public class RewriteTestBase
    public URL baseURL()
    {
       try {
-         return new URL("http://localhost:9090/rewrite-test/");
+         return new URL("http://localhost:9090" + baseContext());
       }
       catch (MalformedURLException e) {
          throw new RuntimeException(e);
       }
+   }
+
+   public String baseContext()
+   {
+      return "/rewrite-test";
    }
 }

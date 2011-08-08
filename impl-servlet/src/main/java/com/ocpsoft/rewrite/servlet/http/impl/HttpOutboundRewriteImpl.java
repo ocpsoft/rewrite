@@ -86,4 +86,10 @@ public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, Htt
       return "OutboundRewrite [flow=" + flow + ", outboundURL=" + getOutboundURL() + ", dispatchResource="
                + dispatchResource + "]";
    }
+
+   @Override
+   public String getURL()
+   {
+      return getOutboundURL();
+   }
 }

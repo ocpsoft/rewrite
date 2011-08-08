@@ -1,4 +1,4 @@
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.config.parameters;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;

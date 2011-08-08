@@ -47,12 +47,6 @@ public class OperationParameterBuilder
       return this;
    }
 
-   public OperationParameterBuilder attemptBindTo(final ParameterBinding binding)
-   {
-      parameter.attemptBindTo(binding);
-      return this;
-   }
-
    public OperationParameterBuilder where(final String param)
    {
       return parent.where(param);
