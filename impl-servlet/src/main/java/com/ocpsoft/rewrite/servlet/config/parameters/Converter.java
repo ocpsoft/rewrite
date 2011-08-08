@@ -19,10 +19,15 @@ import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
+ * A converter for {@link ParameterBinding} instances.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public interface Converter<T>
 {
+   /**
+    * Convert the given {@link Object} into the expected type.
+    */
    T convert(HttpServletRewrite event, EvaluationContext context, Object value);
 }

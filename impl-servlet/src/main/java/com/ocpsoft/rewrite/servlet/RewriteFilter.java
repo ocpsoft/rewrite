@@ -43,6 +43,8 @@ import com.ocpsoft.rewrite.util.Iterators;
 import com.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
+ * {@link Filter} responsible for handling all inbound {@link Rewrite} events.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RewriteFilter implements Filter

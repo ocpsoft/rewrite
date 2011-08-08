@@ -15,7 +15,12 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import java.net.URL;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
@@ -25,9 +30,11 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
+ * An {@link Operation} that performs forwards via {@link HttpInboundServletRewrite#forward(String)}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Forward extends HttpOperation implements ParameterizedOperation
+public class Forward extends HttpOperation implements ParameterizedOperation<OperationParameterBuilder>
 {
    private final ParameterizedExpression location;
 
@@ -37,6 +44,23 @@ public class Forward extends HttpOperation implements ParameterizedOperation
       this.location = new ParameterizedExpression(location);
    }
 
+   /**
+    * Forward the current request to the given location within the servlet container. This does not change the browser
+    * {@link URL}, all processing is handled within the current {@link HttpServletRequest}.
+    * <p>
+    * The given location may be parameterized using the following format:
+    * <p>
+    * <code>
+    *    /example/{param} <br>
+    *    /example/{value}/sub/{value2} <br>
+    *    ... and so on
+    * </code>
+    * <p>
+    * Parameters may be bound. By default, matching parameter values are extracted from bindings in the
+    * {@link EvaluationContext}.
+    * <p>
+    * See also {@link #where(String)}
+    */
    public static Forward to(final String location)
    {
       return new Forward(location);
@@ -52,22 +76,26 @@ public class Forward extends HttpOperation implements ParameterizedOperation
       }
    }
 
+   @Override
    public OperationParameterBuilder where(final String param)
    {
       return new OperationParameterBuilder(this, location.getParameter(param));
    }
 
+   @Override
    public OperationParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
+   @Override
    public OperationParameterBuilder where(final String param, final String pattern,
             final ParameterBinding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
+   @Override
    public OperationParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return where(param).bindsTo(binding);

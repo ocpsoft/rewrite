@@ -26,12 +26,13 @@ import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedCondition;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ConditionParameterBuilder implements Condition
+public class ConditionParameterBuilder implements Condition, ParameterizedCondition<ConditionParameterBuilder>
 {
-   private final ParameterizedCondition parent;
+   private final ParameterizedCondition<ConditionParameterBuilder> parent;
    private final Parameter parameter;
 
-   public ConditionParameterBuilder(final ParameterizedCondition parent, final Parameter parameter)
+   public ConditionParameterBuilder(final ParameterizedCondition<ConditionParameterBuilder> parent,
+            final Parameter parameter)
    {
       this.parent = parent;
       this.parameter = parameter;

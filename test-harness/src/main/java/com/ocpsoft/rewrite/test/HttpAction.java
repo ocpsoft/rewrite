@@ -122,7 +122,7 @@ public class HttpAction<T extends HttpRequest>
    public List<String> getResponseHeaderValues(final String name)
    {
       List<String> result = new ArrayList<String>();
-      Header[] headers = getResponse().getHeaders("Encoded-URL");
+      Header[] headers = getResponse().getHeaders(name);
       for (Header header : headers) {
          result.add(header.getValue());
       }

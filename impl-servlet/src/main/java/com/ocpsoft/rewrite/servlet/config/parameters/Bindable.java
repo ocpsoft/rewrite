@@ -24,7 +24,13 @@ import java.util.List;
  */
 public interface Bindable<T extends Bindable<T, B>, B extends ParameterBinding>
 {
+   /**
+    * Store the value of the given {@link ParameterBinding}
+    */
    T bindsTo(B binding);
 
+   /**
+    * Retrieve all values of the given {@link ParameterBinding}
+    */
    List<B> getBindings();
 }

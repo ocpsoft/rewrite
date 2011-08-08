@@ -22,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
@@ -33,6 +36,8 @@ import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
+ * A {@link Condition} that inspects the value of {@link HttpServletRewrite#getRequestQueryString()}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class QueryString extends HttpCondition
@@ -40,12 +45,22 @@ public abstract class QueryString extends HttpCondition
    @SuppressWarnings({ "rawtypes", "unchecked" })
    protected final DefaultBindable<?, ParameterBinding> bindable = new DefaultBindable();
 
+   /**
+    * Bind the values of this {@link QueryString} query to the given {@link ParameterBinding}.
+    */
    public QueryString bindsTo(final ParameterBinding binding)
    {
       this.bindable.bindsTo(binding);
       return this;
    }
 
+   /**
+    * Return a new {@link Condition} matching against the entire {@link HttpServletRequest#getQueryString()}
+    * <p>
+    * This value may be bound.
+    * <p>
+    * See also: {@link #bindsTo(ParameterBinding)}
+    */
    public static QueryString matches(final String pattern)
    {
       Assert.notNull(pattern, "URL pattern must not be null.");
@@ -67,6 +82,15 @@ public abstract class QueryString extends HttpCondition
       };
    }
 
+   /**
+    * Return a new {@link Condition} matching against the existence of specific parameters within
+    * {@link HttpServletRequest#getQueryString()}
+    * <p>
+    * The values of all matching parameters may be bound. By default, matching values are bound to the
+    * {@link EvaluationContext}.
+    * <p>
+    * See also: {@link #bindsTo(ParameterBinding)}
+    */
    public static QueryString parameterExists(final String nameRegex)
    {
       Assert.notNull(nameRegex, "Parameter name pattern must not be null.");
@@ -106,6 +130,15 @@ public abstract class QueryString extends HttpCondition
       };
    }
 
+   /**
+    * Return a new {@link Condition} matching against the existence of a parameter values within
+    * {@link HttpServletRequest#getQueryString()}
+    * <p>
+    * The values of all matching parameter values may be bound. By default, matching values are bound to the
+    * {@link EvaluationContext}.
+    * <p>
+    * See also: {@link #bindsTo(ParameterBinding)}
+    */
    public static QueryString valueExists(final String valueRegex)
    {
       Assert.notNull(valueRegex, "Parameter value pattern must not be null.");

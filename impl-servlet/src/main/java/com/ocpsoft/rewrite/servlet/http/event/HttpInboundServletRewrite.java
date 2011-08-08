@@ -37,7 +37,7 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
    public void redirectTemporary(final String location);
 
    /**
-    * If the {@link HttpServletResponse} is not already committed, issue a Permanent Redirect (302) and call
+    * If the {@link HttpServletResponse} is not already committed, issue a Permanent Redirect (301) and call
     * {@link #abort()}. This location must be include {@link #getContextPath()} if attempting to redirect within the
     * current {@link ServletContext}
     */

@@ -25,8 +25,10 @@ import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * {@link Rule} that creates a bi-directional rewrite rule between an externally facing URL and an internal server
+ * resource URL
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class UrlMapping implements Rule
 {

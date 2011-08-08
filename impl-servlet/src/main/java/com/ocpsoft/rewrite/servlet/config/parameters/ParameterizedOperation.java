@@ -17,23 +17,20 @@ package com.ocpsoft.rewrite.servlet.config.parameters;
 
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
+import com.ocpsoft.rewrite.servlet.config.Forward;
+import com.ocpsoft.rewrite.servlet.config.Path;
 
 /**
+ * Defines the interface for an {@link Operation} that wishes to parameterize portions of its behavior. For instance,
+ * see {@link Path} or {@link Forward}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface ParameterizedOperation
+public interface ParameterizedOperation<T extends ParameterizedOperation<T>> extends Parameterized<T>, Operation
 {
-
-   OperationParameterBuilder where(String param);
-
-   OperationParameterBuilder where(String param, String pattern);
-
-   OperationParameterBuilder where(String param, String pattern, ParameterBinding binding);
-
-   OperationParameterBuilder where(String param, ParameterBinding binding);
-
+   /**
+    * Chain this {@link Operation} with another {@link Operation} to be performed in series.
+    */
    OperationBuilder and(Operation other);
-
 }

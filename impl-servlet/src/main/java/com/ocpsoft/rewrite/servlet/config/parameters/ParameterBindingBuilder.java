@@ -29,12 +29,18 @@ public abstract class ParameterBindingBuilder implements ParameterBinding
    private Converter<?> converter = new DefaultConverter();
    private Validator<?> validator = new DefaultValidator();
 
+   /**
+    * Set the {@link Converter} with which this {@link ParameterBinding} value will be converted.
+    */
    public ParameterBindingBuilder convertedBy(final Class<? extends Converter<?>> type)
    {
       this.converter = resolveConverter(type);
       return this;
    }
 
+   /**
+    * Set the {@link Validator} with which this {@link ParameterBinding} value will be validated.
+    */
    public ParameterBindingBuilder validatedBy(final Class<? extends Validator<?>> type)
    {
       this.validator = resolveValidator(type);
@@ -45,13 +51,14 @@ public abstract class ParameterBindingBuilder implements ParameterBinding
    @SuppressWarnings({ "unchecked", "rawtypes" })
    public boolean validates(final HttpServletRewrite event, final EvaluationContext context, final Object value)
    {
-      return ((Validator) getValidator()).validate(event, context, value);
+      // We must assume the value was properly converted.
+      return ((Validator) validator).validate(event, context, value);
    }
 
    @Override
    public Object convert(final HttpServletRewrite event, final EvaluationContext context, final Object value)
    {
-      return getConverter().convert(event, context, value);
+      return converter.convert(event, context, value);
    }
 
    private Validator<?> resolveValidator(final Class<? extends Validator<?>> type)
@@ -64,15 +71,5 @@ public abstract class ParameterBindingBuilder implements ParameterBinding
    {
       // TODO resolve converter and pass to service enrichers
       return null;
-   }
-
-   public Converter<?> getConverter()
-   {
-      return converter;
-   }
-
-   public Validator<?> getValidator()
-   {
-      return validator;
    }
 }

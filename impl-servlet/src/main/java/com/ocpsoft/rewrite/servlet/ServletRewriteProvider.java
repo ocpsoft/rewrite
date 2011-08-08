@@ -23,6 +23,8 @@ import com.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
+ * Abstract implementation of {@link RewriteProvider} which only handles {@link ServletRewrite} events.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */

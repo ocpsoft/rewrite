@@ -15,8 +15,10 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
+import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
@@ -24,12 +26,13 @@ import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class OperationParameterBuilder
+public class OperationParameterBuilder implements ParameterizedOperation<OperationParameterBuilder>
 {
-   private final ParameterizedOperation parent;
+   private final ParameterizedOperation<OperationParameterBuilder> parent;
    private final Parameter parameter;
 
-   public OperationParameterBuilder(final ParameterizedOperation parent, final Parameter parameter)
+   public OperationParameterBuilder(final ParameterizedOperation<OperationParameterBuilder> parent,
+            final Parameter parameter)
    {
       this.parent = parent;
       this.parameter = parameter;
@@ -47,28 +50,39 @@ public class OperationParameterBuilder
       return this;
    }
 
+   @Override
    public OperationParameterBuilder where(final String param)
    {
       return parent.where(param);
    }
 
+   @Override
    public OperationParameterBuilder where(final String param, final String pattern)
    {
       return parent.where(param, pattern);
    }
 
+   @Override
    public OperationParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
+   @Override
    public OperationParameterBuilder where(final String param, final ParameterBinding binding)
    {
       return parent.where(param, binding);
    }
 
+   @Override
    public OperationBuilder and(final Operation other)
    {
       return parent.and(other);
+   }
+
+   @Override
+   public void perform(final Rewrite event, final EvaluationContext context)
+   {
+      parent.perform(event, context);
    }
 }

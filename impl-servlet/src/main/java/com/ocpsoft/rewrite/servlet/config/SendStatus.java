@@ -15,11 +15,16 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
+ * Responsible for sending status codes via {@link HttpServletResponse#setStatus(int)} and
+ * {@link HttpServletResponse#flushBuffer()}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */

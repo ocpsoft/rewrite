@@ -16,19 +16,25 @@
 package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Responsible for adding various properties such as headers and cookies to the {@link HttpServletResponse}
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class Add extends HttpOperation
+public abstract class Response extends HttpOperation
 {
-   public static Add header(final String name, final String value)
+   /**
+    * Create an {@link Operation} that adds a header to the {@link HttpServletResponse}
+    */
+   public static Response addHeader(final String name, final String value)
    {
-      return new Add() {
+      return new Response() {
          @Override
          public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
@@ -37,9 +43,12 @@ public abstract class Add extends HttpOperation
       };
    }
 
-   public static Add dateHeader(final String name, final long value)
+   /**
+    * Create an {@link Operation} that adds a date header to the {@link HttpServletResponse}
+    */
+   public static Response addDateHeader(final String name, final long value)
    {
-      return new Add() {
+      return new Response() {
          @Override
          public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
@@ -48,9 +57,12 @@ public abstract class Add extends HttpOperation
       };
    }
 
-   public static Add intHeader(final String name, final int value)
+   /**
+    * Create an {@link Operation} that adds an int header to the {@link HttpServletResponse}
+    */
+   public static Response addIntHeader(final String name, final int value)
    {
-      return new Add() {
+      return new Response() {
          @Override
          public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
@@ -59,9 +71,12 @@ public abstract class Add extends HttpOperation
       };
    }
 
-   public static Add cookie(final Cookie cookie)
+   /**
+    * Create an {@link Operation} that adds a {@link Cookie} to the {@link HttpServletResponse}
+    */
+   public static Response addCookie(final Cookie cookie)
    {
-      return new Add() {
+      return new Response() {
          @Override
          public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
          {

@@ -31,9 +31,9 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Bindings
 {
-
    public static void evaluateCondition(final HttpServletRewrite event, final EvaluationContext context,
             final DefaultBindable bindable, final Object value)
    {

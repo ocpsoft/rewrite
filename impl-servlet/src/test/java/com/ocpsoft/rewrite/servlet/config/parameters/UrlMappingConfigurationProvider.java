@@ -21,7 +21,7 @@ import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
-import com.ocpsoft.rewrite.servlet.config.Add;
+import com.ocpsoft.rewrite.servlet.config.Response;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Path;
@@ -72,11 +72,10 @@ public class UrlMappingConfigurationProvider extends HttpConfigurationProvider
                      String projectName = event.getRequest().getParameter("project");
                      String encodedURL = event.getResponse().encodeURL(
                               event.getContextPath() + "/viewProject.xhtml?project=" + projectName);
-                     if ("rewrite".equals(projectName) && "/rewrite-test/p/rewrite".equals(encodedURL))
-                     {
-                        Add.header("Encoded-URL", encodedURL).and(
-                                 SendStatus.code(203)).perform(event, context);
-                     }
+
+                     Response.addHeader("Project", projectName)
+                              .and(Response.addHeader("Encoded-URL", encodedURL))
+                              .and(SendStatus.code(203)).perform(event, context);
                   }
                });
 

@@ -53,8 +53,9 @@ public class UrlMappingConfigurationTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/p/rewrite");
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals(action.getContextPath() + "/p/rewrite",
-               action.getResponseHeaderValues("Encoded-URL").get(0));
+
+      Assert.assertEquals("rewrite", action.getResponseHeaderValues("Project").get(0));
+      Assert.assertEquals(action.getContextPath() + "/p/rewrite", action.getResponseHeaderValues("Encoded-URL").get(0));
    }
 
 }

@@ -15,10 +15,14 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
+import java.net.URL;
+
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
 
 /**
+ * An HTTP {@link URL} specific implementation of {@link Bindable}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Parameter extends DefaultBindable<Parameter, ParameterBinding>
@@ -27,6 +31,9 @@ public class Parameter extends DefaultBindable<Parameter, ParameterBinding>
 
    private String pattern = "[^/]+";
 
+   /**
+    * Create a new instance for the given {@link CapturingGroup}
+    */
    public Parameter(final CapturingGroup capture)
    {
       this.capture = capture;
@@ -35,8 +42,8 @@ public class Parameter extends DefaultBindable<Parameter, ParameterBinding>
       this.bindsTo(Evaluation.property(getName()));
    }
 
-   /*
-    * Builders
+   /**
+    * Set the pattern to which any captured parameter must match in order for evaluation to succeed.
     */
    public Parameter matches(final String pattern)
    {
@@ -44,10 +51,9 @@ public class Parameter extends DefaultBindable<Parameter, ParameterBinding>
       return this;
    }
 
-   /*
-    * Accessors
+   /**
+    * Get the underlying {@link CapturingGroup} represented by this parameter.
     */
-
    public CapturingGroup getCapture()
    {
       return capture;
@@ -59,11 +65,17 @@ public class Parameter extends DefaultBindable<Parameter, ParameterBinding>
       return "Parameter [capture=" + capture + ", pattern=" + pattern + "]";
    }
 
+   /**
+    * Get the name of this parameter.
+    */
    public String getName()
    {
       return new String(capture.getCaptured());
    }
 
+   /**
+    * Get the pattern for this parameter.
+    */
    public String getPattern()
    {
       return pattern;

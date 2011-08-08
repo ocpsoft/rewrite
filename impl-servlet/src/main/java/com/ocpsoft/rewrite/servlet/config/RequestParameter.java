@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
@@ -32,6 +33,8 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
+ * A {@link Condition} that inspects values returned by {@link HttpServletRequest#getParameterMap()}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RequestParameter extends HttpCondition
@@ -46,7 +49,7 @@ public class RequestParameter extends HttpCondition
 
    private RequestParameter(final String name, final String nameRegex, final String valueRegex)
    {
-      // TODO Refactor this to two different objects internally
+      // TODO Refactor this to several different objects internally
       Assert.notNull(nameRegex, "Parameter name pattern cannot be null.");
       Assert.notNull(valueRegex, "Parameter value pattern cannot be null.");
       this.name = name;
@@ -56,6 +59,9 @@ public class RequestParameter extends HttpCondition
       this.bindsTo(Evaluation.property(nameRegex));
    }
 
+   /**
+    * Bind the values of this {@link RequestParameter} query to the given {@link ParameterBinding}.
+    */
    public RequestParameter bindsTo(final ParameterBinding binding)
    {
       this.bindable.bindsTo(binding);
@@ -64,6 +70,10 @@ public class RequestParameter extends HttpCondition
 
    /**
     * Return a {@link RequestParameter} condition that matches against both parameter name and values.
+    * <p>
+    * Matched parameter values may be bound. By default, matching values are bound to the {@link EvaluationContext}.
+    * <p>
+    * See also: {@link #bindsTo(ParameterBinding)}
     * 
     * @param nameRegex Regular expression matching the parameter name
     * @param valueRegex Regular expression matching the parameter value
@@ -76,6 +86,11 @@ public class RequestParameter extends HttpCondition
    /**
     * Return a {@link RequestParameter} condition that matches only against the existence of a parameter with the given
     * name. The parameter value is ignored.
+    * <p>
+    * Values of the matching parameter may be bound. By default, matching values are bound to the
+    * {@link EvaluationContext}.
+    * <p>
+    * See also: {@link #bindsTo(ParameterBinding)}
     * 
     * @param name The parameter name
     */
@@ -87,6 +102,10 @@ public class RequestParameter extends HttpCondition
    /**
     * Return a {@link RequestParameter} condition that matches only against the existence of a parameter with a name
     * matching the given pattern. The parameter value is ignored.
+    * <p>
+    * Values of matching parameters may be bound. By default, matching values are bound to the {@link EvaluationContext}.
+    * <p>
+    * See also: {@link #bindsTo(ParameterBinding)}
     * 
     * @param nameRegex Regular expression matching the parameter name
     */
@@ -98,6 +117,10 @@ public class RequestParameter extends HttpCondition
    /**
     * Return a {@link RequestParameter} condition that matches only against the existence of a parameter with value
     * matching the given pattern. The parameter name is ignored.
+    * <p>
+    * Matching values may be bound. By default, matching values are bound to the {@link EvaluationContext}.
+    * <p>
+    * See also: {@link #bindsTo(ParameterBinding)}
     * 
     * @param valueRegex Regular expression matching the parameter value
     */
