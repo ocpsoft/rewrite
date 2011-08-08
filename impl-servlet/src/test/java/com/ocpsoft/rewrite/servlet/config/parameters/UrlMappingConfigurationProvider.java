@@ -21,6 +21,7 @@ import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
+import com.ocpsoft.rewrite.servlet.config.Add;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Path;
@@ -35,17 +36,6 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class UrlMappingConfigurationProvider extends HttpConfigurationProvider
 {
-   public static boolean performed = false;
-   public static String projectName = null;
-   public static String encodedURL = null;
-
-   public static void reset()
-   {
-      performed = false;
-      projectName = null;
-      encodedURL = null;
-   }
-
    @Override
    public int priority()
    {
@@ -74,16 +64,21 @@ public class UrlMappingConfigurationProvider extends HttpConfigurationProvider
                 */
                .defineRule().when(Direction.isInbound().and(Path.matches("/viewProject.xhtml"))
                         .and(RequestParameter.exists("project")))
-               .perform(SendStatus.code(200).and(new HttpOperation() {
+               .perform(new HttpOperation() {
 
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
                   {
-                     projectName = event.getRequest().getParameter("project");
-                     encodedURL = event.getResponse().encodeURL(
+                     String projectName = event.getRequest().getParameter("project");
+                     String encodedURL = event.getResponse().encodeURL(
                               event.getContextPath() + "/viewProject.xhtml?project=" + projectName);
+                     if ("rewrite".equals(projectName) && "/rewrite-test/p/rewrite".equals(encodedURL))
+                     {
+                        Add.header("Encoded-URL", encodedURL).and(
+                                 SendStatus.code(203)).perform(event, context);
+                     }
                   }
-               }));
+               });
 
       return config;
    }

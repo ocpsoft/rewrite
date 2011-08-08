@@ -73,6 +73,7 @@ public abstract class QueryString extends HttpCondition
 
       return new QueryString() {
          @Override
+         @SuppressWarnings({ "rawtypes", "unchecked" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
             Pattern pattern = Pattern.compile(nameRegex);
@@ -111,6 +112,7 @@ public abstract class QueryString extends HttpCondition
 
       return new QueryString() {
          @Override
+         @SuppressWarnings({ "rawtypes", "unchecked" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
             Pattern pattern = Pattern.compile(valueRegex);

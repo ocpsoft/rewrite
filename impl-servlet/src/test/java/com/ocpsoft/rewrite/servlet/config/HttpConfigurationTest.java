@@ -49,9 +49,7 @@ public class HttpConfigurationTest extends RewriteTestBase
    public void testConfigurationProviderForward()
    {
       HttpAction<HttpGet> action = get("/path");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(HttpConfigurationTestProvider.performed);
-      HttpConfigurationTestProvider.performed = false;
+      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
@@ -59,16 +57,12 @@ public class HttpConfigurationTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/other");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertFalse(HttpConfigurationTestProvider.performed);
-      HttpConfigurationTestProvider.performed = false;
    }
 
    @Test
    public void testConfigurationProviderRedirect()
    {
       HttpAction<HttpGet> action = get("/redirect");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(HttpConfigurationTestProvider.performed);
-      HttpConfigurationTestProvider.performed = false;
+      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
    }
 }

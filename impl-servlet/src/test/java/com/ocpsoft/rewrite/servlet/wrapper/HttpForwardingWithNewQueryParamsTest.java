@@ -52,8 +52,6 @@ public class HttpForwardingWithNewQueryParamsTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/forward?foo=bar");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(HttpForwardConfigurationTestProvider.performed);
-      HttpForwardConfigurationTestProvider.performed = false;
    }
 
    @Test
@@ -61,7 +59,5 @@ public class HttpForwardingWithNewQueryParamsTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/forward-fail?foo=bar");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertFalse(HttpForwardConfigurationTestProvider.performed);
-      HttpForwardConfigurationTestProvider.performed = false;
    }
 }

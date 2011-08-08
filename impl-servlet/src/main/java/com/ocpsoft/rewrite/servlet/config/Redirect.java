@@ -15,13 +15,15 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class Redirect extends HttpInboundOperation
+public class Redirect extends HttpOperation
 {
    private final String location;
    private final RedirectType type;
@@ -33,18 +35,25 @@ public class Redirect extends HttpInboundOperation
    }
 
    @Override
-   public void performInbound(final HttpInboundServletRewrite event)
+   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      switch (type)
+      if (event instanceof HttpInboundServletRewrite)
       {
-      case PERMANENT:
-         event.redirectPermanent(location);
-         break;
-      case TEMPORARY:
-         event.redirectTemporary(location);
-         break;
-      default:
-         break;
+         switch (type)
+         {
+         case PERMANENT:
+            ((HttpInboundServletRewrite) event).redirectPermanent(location);
+            break;
+         case TEMPORARY:
+            ((HttpInboundServletRewrite) event).redirectTemporary(location);
+            break;
+         default:
+            break;
+         }
+      }
+      else
+      {
+         throw new IllegalStateException("Redirect operations may only be performed on inbound rewrite events.");
       }
    }
 

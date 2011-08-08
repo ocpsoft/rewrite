@@ -15,13 +15,15 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class SendStatus extends HttpInboundOperation
+public class SendStatus extends HttpOperation
 {
    private final int code;
 
@@ -31,9 +33,10 @@ public class SendStatus extends HttpInboundOperation
    }
 
    @Override
-   public void performInbound(final HttpInboundServletRewrite event)
+   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      event.sendStatusCode(code);
+      if (event instanceof HttpInboundServletRewrite)
+         ((HttpInboundServletRewrite) event).sendStatusCode(code);
    }
 
    /**

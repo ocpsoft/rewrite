@@ -17,12 +17,9 @@ package com.ocpsoft.rewrite.servlet.wrapper;
 
 import javax.servlet.ServletContext;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
-import com.ocpsoft.rewrite.config.Operation;
-import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.Forward;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Path;
@@ -35,8 +32,6 @@ import com.ocpsoft.rewrite.servlet.config.SendStatus;
  */
 public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvider
 {
-   public static boolean performed = false;
-
    @Override
    public int priority()
    {
@@ -49,26 +44,14 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
       return ConfigurationBuilder.begin()
                .defineRule()
                .when(Direction.isInbound().and(Path.matches("/forward")).and(RequestParameter.exists("foo")))
-               .perform(Forward.to("/forward2?baz=cab").and(new Operation() {
-                  @Override
-                  public void perform(final Rewrite event, final EvaluationContext context)
-                  {
-                     performed = true;
-                  }
-               }))
+               .perform(Forward.to("/forward2?baz=cab"))
 
                .defineRule()
                .when(Direction.isInbound()
                         .and(Path.matches("/forward2"))
                         .and(RequestParameter.exists("foo"))
                         .and(RequestParameter.exists("baz")))
-               .perform(SendStatus.code(200).and(new Operation() {
-                  @Override
-                  public void perform(final Rewrite event, final EvaluationContext context)
-                  {
-                     performed = true;
-                  }
-               }))
+               .perform(SendStatus.code(200))
 
                .defineRule()
                .when(Direction.isInbound()
