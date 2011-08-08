@@ -122,7 +122,7 @@ public class RewriteTestBase
          HttpContext context = new BasicHttpContext();
          HttpResponse response = httpClient.execute(httpGet, context);
 
-         return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString);
+         return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString, baseContext());
       }
       catch (Exception e)
       {
@@ -140,7 +140,7 @@ public class RewriteTestBase
       }
    }
 
-   public String baseContext()
+   protected String baseContext()
    {
       return "/rewrite-test";
    }

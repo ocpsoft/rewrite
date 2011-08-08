@@ -15,6 +15,10 @@
  */
 package com.ocpsoft.rewrite.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -34,15 +38,17 @@ public class HttpAction<T extends HttpRequest>
    private final HttpResponse response;
    private final HttpContext context;
    private final String baseUrl;
+   private final String contextPath;
 
    public HttpAction(final HttpClient httpClient, final T httpGet, final HttpContext context,
-            final HttpResponse response, final String baseUrl)
+            final HttpResponse response, final String baseUrl, final String contextPath)
    {
       this.client = httpClient;
       this.request = httpGet;
       this.context = context;
       this.response = response;
       this.baseUrl = baseUrl;
+      this.contextPath = contextPath;
    }
 
    /**
@@ -106,5 +112,20 @@ public class HttpAction<T extends HttpRequest>
    public HttpResponse getResponse()
    {
       return response;
+   }
+
+   public String getContextPath()
+   {
+      return contextPath;
+   }
+
+   public List<String> getResponseHeaderValues(final String name)
+   {
+      List<String> result = new ArrayList<String>();
+      Header[] headers = getResponse().getHeaders("Encoded-URL");
+      for (Header header : headers) {
+         result.add(header.getValue());
+      }
+      return result;
    }
 }
