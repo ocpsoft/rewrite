@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;

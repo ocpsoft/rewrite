@@ -17,8 +17,8 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import java.util.Map;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Condition;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedCondition;

@@ -17,10 +17,12 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import java.util.List;
 
-import com.ocpsoft.rewrite.EvaluationContext;
+import javax.servlet.http.HttpServletRequest;
+
 import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
@@ -37,6 +39,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
  */
 public class Join implements Rule, Parameterized<LinkParameter>
 {
+   private static final String CURRENT_JOIN = Join.class.getName() + "_current";
    private final String pattern;
    private String resource;
    private final Path path;
@@ -72,7 +75,8 @@ public class Join implements Rule, Parameterized<LinkParameter>
       {
          List<String> parameterNames = path.getPathExpression().getParameterNames();
          ConditionBuilder outbound = Path.matches(resource);
-         for (String name : parameterNames) {
+         for (String name : parameterNames)
+         {
             outbound = outbound.and(QueryString.parameterExists(name));
          }
          return outbound.evaluate(event, context);
@@ -86,6 +90,7 @@ public class Join implements Rule, Parameterized<LinkParameter>
    {
       if (event instanceof InboundRewrite)
       {
+         saveCurrentJoin(((HttpInboundServletRewrite) event).getRequest());
          Forward.to(resource).perform(event, context);
       }
 
@@ -96,6 +101,16 @@ public class Join implements Rule, Parameterized<LinkParameter>
 
       if (operation != null)
          operation.perform(event, context);
+   }
+
+   private void saveCurrentJoin(HttpServletRequest request)
+   {
+      request.setAttribute(CURRENT_JOIN, this);
+   }
+
+   public static Join getCurrentJoin(HttpServletRequest request)
+   {
+      return (Join) request.getAttribute(CURRENT_JOIN);
    }
 
    @Override

@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**

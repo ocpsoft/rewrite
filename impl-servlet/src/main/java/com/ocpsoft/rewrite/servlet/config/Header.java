@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 

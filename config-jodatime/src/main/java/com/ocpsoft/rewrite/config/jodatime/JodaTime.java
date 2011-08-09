@@ -18,9 +18,9 @@ package com.ocpsoft.rewrite.config.jodatime;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**

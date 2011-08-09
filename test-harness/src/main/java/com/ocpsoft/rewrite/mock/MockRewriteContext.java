@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.mock;
 
-import com.ocpsoft.rewrite.ContextBase;
+import com.ocpsoft.rewrite.context.ContextBase;
 
 
 /**

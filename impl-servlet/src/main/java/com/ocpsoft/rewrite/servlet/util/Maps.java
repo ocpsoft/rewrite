@@ -17,8 +17,10 @@ package com.ocpsoft.rewrite.servlet.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -59,8 +61,27 @@ public class Maps
       List<T> list = values.get(name);
       if ((list != null) && !list.isEmpty())
       {
-         return list.remove(0);
+         T item = list.remove(0);
+         if (values.get(name).isEmpty())
+         {
+            values.remove(name);
+         }
+         return item;
       }
       return null;
+   }
+
+   public static Map<String, String[]> toArrayMap(Map<String, List<String>> parameterMap)
+   {
+      Map<String, String[]> result = new LinkedHashMap<String, String[]>();
+
+      for (Entry<String, List<String>> entry : parameterMap.entrySet())
+      {
+         for (String value : entry.getValue())
+         {
+            addArrayValue(result, entry.getKey(), value);
+         }
+      }
+      return result;
    }
 }

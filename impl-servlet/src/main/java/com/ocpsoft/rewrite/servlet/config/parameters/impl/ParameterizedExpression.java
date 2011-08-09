@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -82,15 +82,21 @@ public class ParameterizedExpression
 
    public String build(final Map<String, List<Object>> values)
    {
-      StringBuilder builder = new StringBuilder();
 
       if ((values == null) || (params.size() != values.size()))
       {
          throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build path.");
       }
 
+      return buildUnsafe(values);
+   }
+
+   public String buildUnsafe(Map<String, List<Object>> values)
+   {
+      StringBuilder builder = new StringBuilder();
       CapturingGroup last = null;
-      for (Entry<String, Parameter> entry : params.entrySet()) {
+      for (Entry<String, Parameter> entry : params.entrySet())
+      {
          Parameter param = entry.getValue();
          CapturingGroup capture = param.getCapture();
 
@@ -127,7 +133,8 @@ public class ParameterizedExpression
          StringBuilder patternBuilder = new StringBuilder();
 
          CapturingGroup last = null;
-         for (Entry<String, Parameter> entry : params.entrySet()) {
+         for (Entry<String, Parameter> entry : params.entrySet())
+         {
             Parameter param = entry.getValue();
             CapturingGroup capture = param.getCapture();
 
@@ -173,7 +180,8 @@ public class ParameterizedExpression
       if (matches(path))
       {
          CapturingGroup last = null;
-         for (Entry<String, Parameter> entry : params.entrySet()) {
+         for (Entry<String, Parameter> entry : params.entrySet())
+         {
             Parameter param = entry.getValue();
             CapturingGroup capture = param.getCapture();
 
@@ -217,16 +225,19 @@ public class ParameterizedExpression
    {
       Map<String, List<Object>> result = new LinkedHashMap<String, List<Object>>();
 
-      for (Entry<String, Parameter> entry : getParameters().entrySet()) {
+      for (Entry<String, Parameter> entry : getParameters().entrySet())
+      {
          String name = entry.getKey();
          Parameter value = entry.getValue();
 
          // TODO need to do lots of error checking and handling here
          // TODO move this to Bindings.class
-         for (ParameterBinding binding : value.getBindings()) {
+         for (ParameterBinding binding : value.getBindings())
+         {
             Object boundValue = binding.extractBoundValue(event, context);
             if (boundValue.getClass().isArray())
-               for (Object temp : (Object[]) boundValue) {
+               for (Object temp : (Object[]) boundValue)
+               {
                   Maps.addListValue(result, name, temp);
                }
             else
@@ -247,4 +258,5 @@ public class ParameterizedExpression
    {
       return new String(chars);
    }
+
 }

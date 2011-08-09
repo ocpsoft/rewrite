@@ -20,7 +20,7 @@ import java.util.List;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.Context;
+import com.ocpsoft.rewrite.context.Context;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;

@@ -19,8 +19,8 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
