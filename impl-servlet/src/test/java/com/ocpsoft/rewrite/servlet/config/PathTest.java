@@ -28,6 +28,7 @@ import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
+import com.ocpsoft.rewrite.servlet.config.parameters.MockBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.El;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.DefaultConverter;
@@ -102,7 +103,7 @@ public class PathTest
                         .validatedBy(DefaultValidator.class))
 
                .where("other")
-               .attemptBindTo(El.property("#{profile.id}"));
+               .bindsTo(El.property("#{profile.id}"));
    }
 
    @Test

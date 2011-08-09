@@ -36,13 +36,13 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider
       Configuration loader = ConfigurationLoader.loadConfiguration(event.getRequest().getServletContext());
       for (Rule rule : loader.getRules()) {
          EvaluationContextImpl context = new EvaluationContextImpl();
-         if (rule.getCondition().evaluate(event, context))
+         if (rule.evaluate(event, context))
          {
             for (Operation operation : context.getPreOperations()) {
                operation.perform(event, context);
             }
 
-            rule.getOperation().perform(event, context);
+            rule.perform(event, context);
 
             for (Operation operation : context.getPostOperations()) {
                operation.perform(event, context);

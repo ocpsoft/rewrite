@@ -24,13 +24,13 @@ import javax.servlet.ServletResponse;
 
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 
-import com.ocpsoft.rewrite.config.Condition;
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Direction;
-import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
+import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.servlet.config.HttpInboundOperation;
-import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.config.HttpOperation;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,20 +46,20 @@ public class TuckeyRewriteRuleAdaptor implements Rule
    }
 
    @Override
-   public Condition getCondition()
+   public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      return Direction.isInbound();
+      return Direction.isInbound().evaluate(event, context);
    }
 
    @Override
-   public Operation getOperation()
+   public void perform(final Rewrite event, final EvaluationContext context)
    {
-      return new HttpInboundOperation() {
+      new HttpOperation() {
 
          boolean forwarded = false;
 
          @Override
-         public void performInbound(final HttpInboundServletRewrite event)
+         public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
             try {
                FilterChain filterChainAdaptor = new FilterChain() {
@@ -83,7 +83,7 @@ public class TuckeyRewriteRuleAdaptor implements Rule
                throw new RewriteException("Error processing [" + this.getClass().getName() + "]", e);
             }
          }
-      };
+      }.perform(event, context);
    }
 
 }

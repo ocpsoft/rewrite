@@ -13,30 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.config;
+package com.ocpsoft.rewrite.servlet.config;
 
 import com.ocpsoft.rewrite.EvaluationContext;
-import com.ocpsoft.rewrite.event.OutboundRewrite;
+import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.config.parameters.MethodBinding;
 
 /**
- * A condition that returns true when operating on an {@link OutboundRewrite}
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class Outbound extends ConditionBuilder
+public class Invoke extends OperationBuilder
 {
-   public Outbound()
-   {}
+   private final MethodBinding binding;
+
+   public Invoke(final MethodBinding property)
+   {
+      this.binding = property;
+   }
 
    @Override
-   public boolean evaluate(final Rewrite event, final EvaluationContext context)
+   public void perform(final Rewrite event, final EvaluationContext context)
    {
-      return event instanceof OutboundRewrite;
+      Object result = binding.invokeMethod(event, context);
+      if (result instanceof Operation)
+      {
+         ((Operation) result).perform(event, context);
+      }
+      // TODO interpret string return value here as SPI
    }
 
-   public static Outbound only()
+   public static OperationBuilder method(final MethodBinding property)
    {
-      return new Outbound();
+      return new Invoke(property);
    }
+
 }

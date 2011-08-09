@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -164,9 +165,9 @@ public class ParameterizedExpression
    /**
     * Matches against the given URLEncoded path
     */
-   public Map<Parameter, String> parseEncoded(final String path)
+   public Map<Parameter, String[]> parseEncoded(final String path)
    {
-      Map<Parameter, String> values = new LinkedHashMap<Parameter, String>();
+      Map<Parameter, String[]> values = new LinkedHashMap<Parameter, String[]>();
 
       String temp = path;
       if (matches(path))
@@ -196,7 +197,7 @@ public class ParameterizedExpression
             if (segmentMatcher.matches())
             {
                String value = segmentMatcher.group(1);
-               values.put(param, value);
+               Maps.addArrayValue(values, param, value);
                temp = temp.substring(segmentMatcher.end(1));
             }
 
@@ -221,16 +222,23 @@ public class ParameterizedExpression
          Parameter value = entry.getValue();
 
          // TODO need to do lots of error checking and handling here
+         // TODO move this to Bindings.class
          for (ParameterBinding binding : value.getBindings()) {
             Object boundValue = binding.extractBoundValue(event, context);
-            Maps.addListValue(result, name, boundValue);
-         }
+            if (boundValue.getClass().isArray())
+               for (Object temp : (Object[]) boundValue) {
+                  Maps.addListValue(result, name, temp);
+               }
+            else
+               Maps.addListValue(result, name, boundValue);
 
-         for (ParameterBinding binding : value.getOptionalBindings()) {
-            Object boundValue = binding.extractBoundValue(event, context);
-            Maps.addListValue(result, name, boundValue);
          }
       }
       return result;
+   }
+
+   public List<String> getParameterNames()
+   {
+      return new ArrayList<String>(params.keySet());
    }
 }

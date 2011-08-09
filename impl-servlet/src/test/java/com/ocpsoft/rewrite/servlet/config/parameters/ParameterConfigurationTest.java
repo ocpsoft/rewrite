@@ -53,10 +53,8 @@ public class ParameterConfigurationTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/lincoln/order/3");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("lincoln", ParameterConfigurationProvider.userName);
-      Assert.assertEquals("3", ParameterConfigurationProvider.orderId);
-      Assert.assertTrue(ParameterConfigurationProvider.performed);
-      ParameterConfigurationProvider.reset();
+      Assert.assertEquals("lincoln", action.getResponseHeaderValues("User-Name").get(0));
+      Assert.assertEquals("3", action.getResponseHeaderValues("Order-ID").get(0));
    }
 
    @Test
@@ -64,8 +62,6 @@ public class ParameterConfigurationTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/lincoln3/order/z42");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertFalse(ParameterConfigurationProvider.performed);
-      ParameterConfigurationProvider.reset();
    }
 
    @Test
@@ -73,6 +69,12 @@ public class ParameterConfigurationTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/p/rewrite/story/50");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      ParameterConfigurationProvider.reset();
+   }
+
+   @Test
+   public void testFailedBindingRaisesException()
+   {
+      HttpAction<HttpGet> action = get("/lincoln/profile");
+      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
    }
 }

@@ -16,15 +16,22 @@
 package com.ocpsoft.rewrite.servlet.config;
 
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
+ * An {@link Operation} that is only performed if the current {@link Rewrite} event is an instance of
+ * {@link HttpServletRewrite}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class HttpOperation extends OperationBuilder
 {
+   /**
+    * Perform this operation for the given {@link HttpServletRewrite} event.
+    */
    public abstract void performHttp(HttpServletRewrite event, EvaluationContext context);
 
    @Override

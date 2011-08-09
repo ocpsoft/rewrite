@@ -13,30 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.config;
+package com.ocpsoft.rewrite.prototype;
 
-import com.ocpsoft.rewrite.EvaluationContext;
-import com.ocpsoft.rewrite.event.InboundRewrite;
-import com.ocpsoft.rewrite.event.Rewrite;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
+import com.ocpsoft.rewrite.config.Operation;
 
 /**
- * A condition that returns true when operating on an {@link InboundRewrite}
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class Inbound extends ConditionBuilder
+@Named
+@RequestScoped
+public class BindingBean
 {
-   private Inbound()
-   {}
+   private String one;
+   private int two;
 
-   @Override
-   public boolean evaluate(final Rewrite event, final EvaluationContext context)
+   public Operation action()
    {
-      return event instanceof InboundRewrite;
+      System.out.println("Invoked action");
+      return null;
    }
 
-   public static Inbound only()
+   public String getOne()
    {
-      return new Inbound();
+      return one;
+   }
+
+   public void setOne(final String one)
+   {
+      this.one = one;
+      System.out.println("Set one = " + one);
+   }
+
+   public int getTwo()
+   {
+      return two;
+   }
+
+   public void setTwo(final int two)
+   {
+      this.two = two;
+      System.out.println("Set two = " + two);
    }
 }

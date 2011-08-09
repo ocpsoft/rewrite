@@ -29,17 +29,34 @@ import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
+ * Stores implementations of all Rewrite lifecycle services.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface RewriteLifecycleContext extends Context
 {
+   /**
+    * Get all available {@link RewriteLifecycleListener} instances.
+    */
    List<RewriteLifecycleListener<Rewrite>> getRewriteLifecycleListeners();
 
+   /**
+    * Get all available {@link RequestCycleWrapper} instances.
+    */
    List<RequestCycleWrapper<ServletRequest, ServletResponse>> getRequestCycleWrappers();
 
+   /**
+    * Get all available {@link RewriteProvider} instances.
+    */
    List<RewriteProvider<Rewrite>> getRewriteProviders();
 
+   /**
+    * Get all available {@link InboundRewriteProducer} instances.
+    */
    List<InboundRewriteProducer<ServletRequest, ServletResponse>> getInboundRewriteEventProducers();
 
+   /**
+    * Get all available {@link OutboundRewriteProducer} instances.
+    */
    List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> getOutboundProducers();
 }

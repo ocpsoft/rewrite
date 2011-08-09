@@ -17,12 +17,9 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.ServletContext;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
-import com.ocpsoft.rewrite.config.Operation;
-import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -30,8 +27,6 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public class HttpConfigurationTestProvider extends HttpConfigurationProvider
 {
-   public static boolean performed = false;
-
    @Override
    public int priority()
    {
@@ -44,13 +39,7 @@ public class HttpConfigurationTestProvider extends HttpConfigurationProvider
       Configuration config = ConfigurationBuilder.begin()
                .defineRule()
                .when(Direction.isInbound().and(Path.matches("/path")))
-               .perform(SendStatus.code(200).and(new Operation() {
-                  @Override
-                  public void perform(final Rewrite event, final EvaluationContext context)
-                  {
-                     performed = true;
-                  }
-               }))
+               .perform(SendStatus.code(201))
 
                .defineRule()
                .when(Direction.isInbound().and(Path.matches("/redirect")))

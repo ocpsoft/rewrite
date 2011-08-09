@@ -21,13 +21,13 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.jboss.logging.Logger;
@@ -37,10 +37,10 @@ import com.ocpsoft.rewrite.exception.RewriteException;
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
  */
-public class QueryString
+public class QueryStringBuilder
 {
 
-   private final static Logger log = Logger.getLogger(QueryString.class);
+   private final static Logger log = Logger.getLogger(QueryStringBuilder.class);
 
    private final Map<String, List<String>> parameters = new LinkedHashMap<String, List<String>>();
 
@@ -48,9 +48,9 @@ public class QueryString
     * Build a query string from the given map of name=value pairs. For parameters with more than one value, each value
     * will be appended using the same name.
     */
-   public static QueryString build(final Map<String, String[]> params)
+   public static QueryStringBuilder build(final Map<String, String[]> params)
    {
-      QueryString queryString = new QueryString();
+      QueryStringBuilder queryString = new QueryStringBuilder();
       queryString.addParameters(params);
       return queryString;
    }
@@ -59,9 +59,9 @@ public class QueryString
     * Build a query string from the given URL. If a '?' character is encountered in the URL, the any characters up to
     * and including the first '?' will be ignored.
     */
-   public static QueryString build(final String url)
+   public static QueryStringBuilder build(final String url)
    {
-      QueryString queryString = new QueryString();
+      QueryStringBuilder queryString = new QueryStringBuilder();
       queryString.addParameters(url);
       return queryString;
    }
@@ -119,11 +119,11 @@ public class QueryString
    }
 
    /**
-    * Get the list of parameter names currently stored in this query string..
+    * Get set of parameter names currently stored in this query string.
     */
-   public Enumeration<String> getParameterNames()
+   public Set<String> getParameterNames()
    {
-      return Collections.enumeration(parameters.keySet());
+      return new LinkedHashSet<String>(parameters.keySet());
    }
 
    /**
@@ -241,7 +241,7 @@ public class QueryString
     * automatically URLEncodes query-parameter values
     * <p>
     * 
-    * For example, a {@link QueryString} with the values [key=>value, name=>value1,value2,value3] will become:
+    * For example, a {@link QueryStringBuilder} with the values [key=>value, name=>value1,value2,value3] will become:
     * 
     * <pre>
     * 

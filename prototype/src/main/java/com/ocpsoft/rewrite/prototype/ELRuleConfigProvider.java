@@ -13,50 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.wrapper;
+package com.ocpsoft.rewrite.prototype;
 
 import javax.servlet.ServletContext;
 
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
-import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.servlet.config.Forward;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import com.ocpsoft.rewrite.servlet.config.Invoke;
 import com.ocpsoft.rewrite.servlet.config.Path;
-import com.ocpsoft.rewrite.servlet.config.RequestParameter;
-import com.ocpsoft.rewrite.servlet.config.SendStatus;
+import com.ocpsoft.rewrite.servlet.config.parameters.binding.El;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvider
+public class ELRuleConfigProvider extends HttpConfigurationProvider
 {
-   @Override
-   public int priority()
-   {
-      return 0;
-   }
 
    @Override
    public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
                .defineRule()
-               .when(Direction.isInbound().and(Path.matches("/forward")).and(RequestParameter.exists("foo")))
-               .perform(Forward.to("/forward2?baz=cab"))
-
-               .defineRule()
-               .when(Direction.isInbound()
-                        .and(Path.matches("/forward2"))
-                        .and(RequestParameter.exists("foo"))
-                        .and(RequestParameter.exists("baz")))
-               .perform(SendStatus.code(200))
-
-               .defineRule()
-               .when(Direction.isInbound()
-                        .and(Path.matches("/forward-fail"))
-                        .and(RequestParameter.exists("foo")))
-               .perform(Forward.to("/forward2"));
+               .when(Path.matches("/{one}/{two}")
+                        .where("one").bindsTo(El.property("bindingBean.one"))
+                        .where("two").matches("[0-9]+").bindsTo(El.property("bindingBean.two")))
+               .perform(Invoke.method(El.method("bindingBean.action"))
+                        .and(Forward.to("/index.mvc")));
    }
+
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

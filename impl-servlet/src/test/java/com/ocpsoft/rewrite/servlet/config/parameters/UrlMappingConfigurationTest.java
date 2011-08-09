@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.config.parameters;
 
 import junit.framework.Assert;
 
@@ -33,36 +33,29 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class HttpConfigurationTest extends RewriteTestBase
+public class UrlMappingConfigurationTest extends RewriteTestBase
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase.getDeployment()
+      WebArchive deployment = RewriteTestBase
+               .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
-               .addAsResource(new StringAsset("com.ocpsoft.rewrite.servlet.config.HttpConfigurationTestProvider"),
+               .addAsResource(
+                        new StringAsset(
+                                 "com.ocpsoft.rewrite.servlet.config.parameters.UrlMappingConfigurationProvider"),
                         "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
       return deployment;
    }
 
    @Test
-   public void testConfigurationProviderForward()
+   public void testUrlMappingConfiguration()
    {
-      HttpAction<HttpGet> action = get("/path");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction<HttpGet> action = get("/p/rewrite");
+      Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
+
+      Assert.assertEquals("rewrite", action.getResponseHeaderValues("Project").get(0));
+      Assert.assertEquals(action.getContextPath() + "/p/rewrite", action.getResponseHeaderValues("Encoded-URL").get(0));
    }
 
-   @Test
-   public void testConfigurationIngoresUnconfiguredRequests()
-   {
-      HttpAction<HttpGet> action = get("/other");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-   }
-
-   @Test
-   public void testConfigurationProviderRedirect()
-   {
-      HttpAction<HttpGet> action = get("/redirect");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
-   }
 }

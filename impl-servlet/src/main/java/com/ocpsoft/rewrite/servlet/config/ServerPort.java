@@ -15,18 +15,22 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
+ * Responsible for asserting on the {@link HttpServletRequest#getServerPort()}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Port extends HttpCondition
+public class ServerPort extends HttpCondition
 {
    private final int[] ports;
 
-   private Port(final int... ports)
+   private ServerPort(final int... ports)
    {
       Assert.notNull(ports, "Must specify at least one valid port.");
       for (int port : ports) {
@@ -40,9 +44,12 @@ public class Port extends HttpCondition
       this.ports = ports;
    }
 
-   public static Port is(final int... ports)
+   /**
+    * Assert that the server port matches any of the given ports.
+    */
+   public static ServerPort is(final int... ports)
    {
-      return new Port(ports);
+      return new ServerPort(ports);
    }
 
    @Override

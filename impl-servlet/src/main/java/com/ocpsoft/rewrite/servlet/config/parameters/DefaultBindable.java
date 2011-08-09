@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Base {@link Bindable} implementation.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class DefaultBindable<T extends Bindable<T, B>, B extends Binding> implements Bindable<T, B>
+public class DefaultBindable<T extends Bindable<T, B>, B extends ParameterBinding> implements Bindable<T, B>
 {
    private final List<B> bindings = new ArrayList<B>();
-   private final List<B> optionalBindings = new ArrayList<B>();
 
    @Override
    @SuppressWarnings("unchecked")
@@ -36,22 +37,8 @@ public class DefaultBindable<T extends Bindable<T, B>, B extends Binding> implem
    }
 
    @Override
-   @SuppressWarnings("unchecked")
-   public T attemptBindTo(final B binding)
-   {
-      this.optionalBindings.add(binding);
-      return (T) this;
-   }
-
-   @Override
    public List<B> getBindings()
    {
       return bindings;
-   }
-
-   @Override
-   public List<B> getOptionalBindings()
-   {
-      return optionalBindings;
    }
 }

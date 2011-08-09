@@ -65,6 +65,30 @@ public class QueryStringTest
    }
 
    @Test
+   public void testQueryStringParameterExists()
+   {
+      Assert.assertTrue(QueryString.parameterExists(".oo").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testQueryStringParameterDoesNotExist()
+   {
+      Assert.assertFalse(QueryString.parameterExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testQueryStringValueExists()
+   {
+      Assert.assertTrue(QueryString.valueExists(".ar").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testQueryStringValueDoesNotExist()
+   {
+      Assert.assertFalse(QueryString.valueExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
       Assert.assertTrue(QueryString.matches(".*bar=baz").evaluate(rewrite, new MockEvaluationContext()));

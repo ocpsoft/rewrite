@@ -1,4 +1,4 @@
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.config.parameters;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
@@ -22,7 +22,7 @@ public class MockBinding implements ParameterBinding
    }
 
    @Override
-   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final String value)
+   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final Object value)
    {
       converted = true;
       return value;

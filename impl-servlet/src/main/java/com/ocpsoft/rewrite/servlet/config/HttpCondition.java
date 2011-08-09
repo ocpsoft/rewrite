@@ -27,6 +27,10 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public abstract class HttpCondition extends ConditionBuilder
 {
+   /**
+    * Evaluate this condition against the given {@link HttpServletRewrite} event. If this condition does not apply to
+    * the given event, it must return false. If the condition applies and is satisfied, return true.
+    */
    public abstract boolean evaluateHttp(final HttpServletRewrite event, EvaluationContext context);
 
    @Override

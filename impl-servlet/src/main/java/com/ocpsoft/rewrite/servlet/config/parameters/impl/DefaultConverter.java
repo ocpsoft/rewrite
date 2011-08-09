@@ -27,7 +27,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class DefaultConverter implements Converter<Object>
 {
    @Override
-   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final String value)
+   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final Object value)
    {
       return value;
    }

@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import com.ocpsoft.rewrite.config.OutboundOperation;
-import com.ocpsoft.rewrite.event.OutboundRewrite;
+import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 
 /**
- * An operation that is only performed if the current {@link Rewrite} event is an {@link HttpOutboundServletRewrite}
- * event.
+ * Defines interface for binding to Methods
+ * 
+ * TODO it should be possible to bind parameters to methods / the evaluation context
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class HttpOutboundOperation extends OutboundOperation
+public interface MethodBinding
 {
    /**
-    * Perform the operation.
+    * Invoke the method and return the returned value, if any.
     */
-   public abstract void performOutbound(HttpOutboundServletRewrite event);
-
-   @Override
-   public final void performOutbound(final OutboundRewrite event)
-   {
-      performOutbound((HttpOutboundServletRewrite) event);
-   }
-
+   Object invokeMethod(Rewrite event, EvaluationContext context);
 }

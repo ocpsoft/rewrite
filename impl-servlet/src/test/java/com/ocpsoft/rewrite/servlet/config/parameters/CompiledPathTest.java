@@ -39,7 +39,7 @@ public class CompiledPathTest
 
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches(""));
-      Map<Parameter, String> results = path.parseEncoded("");
+      Map<Parameter, String[]> results = path.parseEncoded("");
       Assert.assertNotNull(results);
    }
 
@@ -51,7 +51,7 @@ public class CompiledPathTest
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches("/"));
 
-      Map<Parameter, String> results = path.parseEncoded("/");
+      Map<Parameter, String[]> results = path.parseEncoded("/");
       Assert.assertNotNull(results);
    }
 
@@ -65,9 +65,9 @@ public class CompiledPathTest
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<Parameter, String> results = path.parseEncoded("/lincoln/orders/24");
-      Assert.assertEquals("lincoln", results.get(path.getParameter("customer")));
-      Assert.assertEquals("24", results.get(path.getParameter("id")));
+      Map<Parameter, String[]> results = path.parseEncoded("/lincoln/orders/24");
+      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
+      Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }
 
    @Test
@@ -80,9 +80,9 @@ public class CompiledPathTest
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<Parameter, String> results = path.parseEncoded("/lincoln/orders/24/");
-      Assert.assertEquals("lincoln", results.get(path.getParameter("customer")));
-      Assert.assertEquals("24", results.get(path.getParameter("id")));
+      Map<Parameter, String[]> results = path.parseEncoded("/lincoln/orders/24/");
+      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
+      Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }
 
    @Test

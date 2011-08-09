@@ -122,7 +122,7 @@ public class RewriteTestBase
          HttpContext context = new BasicHttpContext();
          HttpResponse response = httpClient.execute(httpGet, context);
 
-         return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString);
+         return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString, baseContext());
       }
       catch (Exception e)
       {
@@ -133,10 +133,15 @@ public class RewriteTestBase
    public URL baseURL()
    {
       try {
-         return new URL("http://localhost:9090/rewrite-test/");
+         return new URL("http://localhost:9090" + baseContext());
       }
       catch (MalformedURLException e) {
          throw new RuntimeException(e);
       }
+   }
+
+   protected String baseContext()
+   {
+      return "/rewrite-test";
    }
 }

@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
-
-import com.ocpsoft.rewrite.config.InboundOperation;
-import com.ocpsoft.rewrite.event.InboundRewrite;
-import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+package com.ocpsoft.rewrite.servlet.spi;
 
 /**
- * An operation that is only performed if the current {@link Rewrite} event is an {@link HttpInboundServletRewrite}
- * event.
+ * Defines a service interface to provide EL support.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public abstract class HttpInboundOperation extends InboundOperation
+public interface ElSupportProvider
 {
    /**
-    * Perform the operation.
+    * Extract a value from the location specified by the given EL location.
     */
-   public abstract void performInbound(HttpInboundServletRewrite event);
+   Object extractValue(String expression);
 
-   @Override
-   public final void performInbound(final InboundRewrite event)
-   {
-      performInbound((HttpInboundServletRewrite) event);
-   }
+   /**
+    * Inject a value into location specified by the given EL expression.
+    */
+   void injectValue(String expression, Object value);
+
+   /**
+    * Invoke the method specified by the given EL expression.
+    */
+   Object invokeMethod(String expression);
 }

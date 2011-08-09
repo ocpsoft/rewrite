@@ -16,11 +16,14 @@
 package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
+ * Responsible for asserting on the {@link HttpServletRequest#getDispatcherType()} property.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class DispatchType extends HttpCondition
@@ -39,7 +42,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} if of
+    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#FORWARD}
     */
    public DispatchType isForward()
@@ -48,7 +51,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} if of
+    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#REQUEST}
     */
    public DispatchType isRequest()
@@ -57,7 +60,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} if of
+    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#ERROR}
     */
    public DispatchType isError()
@@ -66,7 +69,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} if of
+    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#ASYNC}
     */
    public DispatchType isAsync()
@@ -75,7 +78,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} if of
+    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#INCLUDE}
     */
    public DispatchType isInclude()

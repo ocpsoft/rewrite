@@ -20,18 +20,30 @@ import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * TODO this needs to be generic to support headers and other types
+ * Interface declaring the common tasks that must be performed when evaluating and binding any {@link Bindable}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface ParameterBinding extends Binding
+public interface ParameterBinding
 {
+   /**
+    * Convert the given value into the expected type.
+    */
+   Object convert(HttpServletRewrite event, EvaluationContext context, Object value);
+
+   /**
+    * Return true if the given value passes all validations.
+    */
    boolean validates(HttpServletRewrite event, EvaluationContext context, Object value);
 
-   Object convert(HttpServletRewrite event, EvaluationContext context, String value);
-
+   /**
+    * Get the operation to be performed if the given value has been successfully converted and validated.
+    */
    Operation getOperation(HttpServletRewrite event, EvaluationContext context, Object value);
 
+   /**
+    * Extract the validated and converted value from its storage location.
+    */
    Object extractBoundValue(HttpServletRewrite event, EvaluationContext context);
 }

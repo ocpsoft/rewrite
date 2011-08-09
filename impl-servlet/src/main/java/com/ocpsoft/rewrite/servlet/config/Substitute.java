@@ -16,6 +16,9 @@
 package com.ocpsoft.rewrite.servlet.config;
 
 import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.event.InboundRewrite;
+import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
@@ -26,9 +29,13 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
+ * Responsible for substituting inbound/outbound URLs with a replacement. For {@link InboundRewrite} events, this
+ * {@link Operation} calls {@link HttpInboundServletRewrite#forward(String)}, and for {@link OutboundRewrite} events,
+ * this method calls {@link HttpOutboundServletRewrite#setOutboundURL(String)}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Substitute extends HttpOperation implements ParameterizedOperation
+public class Substitute extends HttpOperation implements ParameterizedOperation<OperationParameterBuilder>
 {
    private final ParameterizedExpression location;
 
@@ -38,6 +45,22 @@ public class Substitute extends HttpOperation implements ParameterizedOperation
       this.location = new ParameterizedExpression(location);
    }
 
+   /**
+    * Substitute the current URL with the given location.
+    * <p>
+    * The given location may be parameterized using the following format:
+    * <p>
+    * <code>
+    *    /example/{param} <br>
+    *    /example/{value}/sub/{value2} <br>
+    *    ... and so on
+    * </code>
+    * <p>
+    * Parameters may be bound. By default, matching parameter values are extracted from bindings in the
+    * {@link EvaluationContext}.
+    * <p>
+    * See also {@link #where(String)}
+    */
    public static Substitute with(final String location)
    {
       return new Substitute(location);

@@ -25,6 +25,8 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
+ * Responsible for asserting on {@link HttpServletRequest#getHeader(String)} values.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Header extends HttpCondition
@@ -42,6 +44,8 @@ public class Header extends HttpCondition
 
    /**
     * Return a {@link Header} condition that matches against both header name and values.
+    * <p>
+    * See also: {@link HttpServletRequest#getHeader(String)}
     * 
     * @param nameRegex Regular expression matching the header name
     * @param valueRegex Regular expression matching the header value
@@ -54,6 +58,8 @@ public class Header extends HttpCondition
    /**
     * Return a {@link Header} condition that matches only against the existence of a header with a name matching the
     * given pattern. The header value is ignored.
+    * <p>
+    * See also: {@link HttpServletRequest#getHeader(String)}
     * 
     * @param nameRegex Regular expression matching the header name
     */
