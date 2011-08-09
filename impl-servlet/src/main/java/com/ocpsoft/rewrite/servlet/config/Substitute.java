@@ -77,7 +77,13 @@ public class Substitute extends HttpOperation implements ParameterizedOperation<
       else if (event instanceof HttpOutboundServletRewrite)
       {
          String target = location.build(event, context);
-         ((HttpOutboundServletRewrite) event).setOutboundURL(event.getContextPath() + target);
+         if (((HttpOutboundServletRewrite) event).getOutboundURL().startsWith(event.getContextPath())
+                  && target.startsWith("/")
+                  && !target.startsWith(event.getContextPath()))
+         {
+            target = event.getContextPath() + target;
+         }
+         ((HttpOutboundServletRewrite) event).setOutboundURL(target);
       }
    }
 

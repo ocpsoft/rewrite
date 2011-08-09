@@ -19,10 +19,15 @@ import java.util.List;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
+import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
+import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 
 /**
  * {@link Rule} that creates a bi-directional rewrite rule between an externally facing URL and an internal server
@@ -30,22 +35,25 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class UrlMapping implements Rule
+public class Join implements Rule, Parameterized<LinkParameter>
 {
    private final String pattern;
    private String resource;
+   private final Path path;
+   private Operation operation;
 
-   public UrlMapping(final String pattern)
+   protected Join(final String pattern)
    {
       this.pattern = pattern;
+      this.path = Path.matches(pattern);
    }
 
-   public static UrlMapping pattern(final String pattern)
+   public static Join path(final String pattern)
    {
-      return new UrlMapping(pattern);
+      return new Join(pattern);
    }
 
-   public UrlMapping resource(final String resource)
+   public Join to(final String resource)
    {
       this.resource = resource;
       return this;
@@ -54,14 +62,13 @@ public class UrlMapping implements Rule
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      Path path = Path.matches(pattern);
-      if (event instanceof InboundRewrite)
+      if (event instanceof HttpInboundServletRewrite)
       {
          path.withRequestBinding();
          return path.evaluate(event, context);
       }
 
-      else if (event instanceof OutboundRewrite)
+      else if (event instanceof HttpOutboundServletRewrite)
       {
          List<String> parameterNames = path.getPathExpression().getParameterNames();
          ConditionBuilder outbound = Path.matches(resource);
@@ -86,5 +93,38 @@ public class UrlMapping implements Rule
       {
          Substitute.with(pattern).perform(event, context);
       }
+
+      if (operation != null)
+         operation.perform(event, context);
+   }
+
+   @Override
+   public LinkParameter where(final String parameter)
+   {
+      return new LinkParameter(this, path.getPathExpression().getParameter(parameter));
+   }
+
+   @Override
+   public LinkParameter where(final String param, final String pattern)
+   {
+      return where(param).matches(pattern);
+   }
+
+   @Override
+   public LinkParameter where(final String param, final String pattern, final ParameterBinding binding)
+   {
+      return where(param, pattern).bindsTo(binding);
+   }
+
+   @Override
+   public LinkParameter where(final String param, final ParameterBinding binding)
+   {
+      return where(param).bindsTo(binding);
+   }
+
+   public Join and(final Operation operation)
+   {
+      this.operation = operation;
+      return this;
    }
 }

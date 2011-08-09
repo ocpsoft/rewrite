@@ -26,10 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Condition;
+import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
+import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.Maps;
 import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
@@ -69,7 +71,12 @@ public abstract class QueryString extends HttpCondition
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            String queryString = event.getRequestQueryString();
+            String queryString = null;
+            if (event instanceof InboundRewrite)
+               queryString = event.getRequestQueryString();
+            else if (event instanceof HttpOutboundServletRewrite)
+               queryString = QueryStringBuilder.build(event.getURL()).toQueryString();
+
             if (Pattern.compile(pattern).matcher(queryString == null ? "" : queryString).matches())
             {
                List<String> values = new ArrayList<String>();

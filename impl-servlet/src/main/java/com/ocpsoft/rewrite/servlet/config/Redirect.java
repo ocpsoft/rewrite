@@ -64,10 +64,6 @@ public class Redirect extends HttpOperation implements ParameterizedOperation<Op
             break;
          }
       }
-      else
-      {
-         throw new IllegalStateException("Redirect operations may only be performed on inbound rewrite events.");
-      }
    }
 
    /**

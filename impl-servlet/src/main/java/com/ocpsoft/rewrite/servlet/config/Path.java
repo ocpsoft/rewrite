@@ -26,6 +26,7 @@ import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
 import com.ocpsoft.rewrite.servlet.config.parameters.binding.Request;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
+import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -36,12 +37,12 @@ import com.ocpsoft.rewrite.util.Assert;
  */
 public class Path extends HttpCondition implements ParameterizedCondition<ConditionParameterBuilder>
 {
-   private final ParameterizedExpression path;
+   private final ParameterizedExpression expression;
 
    private Path(final String pattern)
    {
       Assert.notNull(pattern, "Path must not be null.");
-      this.path = new ParameterizedExpression(pattern);
+      this.expression = new ParameterizedExpression(pattern);
    }
 
    /**
@@ -70,7 +71,7 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
     */
    public Path withRequestBinding()
    {
-      for (Parameter parameter : path.getParameters().values()) {
+      for (Parameter parameter : expression.getParameters().values()) {
          parameter.bindsTo(Request.parameter(parameter.getName()));
       }
       return this;
@@ -79,7 +80,7 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
    @Override
    public ConditionParameterBuilder where(final String param)
    {
-      return new ConditionParameterBuilder(this, path.getParameter(param));
+      return new ConditionParameterBuilder(this, expression.getParameter(param));
    }
 
    @Override
@@ -104,10 +105,22 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      String requestURL = event.getRequestURL();
-      if (path.matches(requestURL))
+      String requestURL = null;
+
+      if (event instanceof HttpOutboundServletRewrite)
       {
-         Map<Parameter, String[]> parameters = path.parseEncoded(requestURL);
+         requestURL = ((HttpOutboundServletRewrite) event).getOutboundURL().split("\\?")[0];
+         if (requestURL.startsWith(event.getContextPath()))
+         {
+            requestURL = requestURL.substring(event.getContextPath().length());
+         }
+      }
+      else
+         requestURL = event.getRequestURL();
+
+      if (expression.matches(requestURL))
+      {
+         Map<Parameter, String[]> parameters = expression.parseEncoded(requestURL);
          Bindings.evaluateCondition(event, context, parameters);
          return true;
       }
@@ -121,6 +134,12 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
     */
    public ParameterizedExpression getPathExpression()
    {
-      return path;
+      return expression;
+   }
+
+   @Override
+   public String toString()
+   {
+      return expression.toString();
    }
 }

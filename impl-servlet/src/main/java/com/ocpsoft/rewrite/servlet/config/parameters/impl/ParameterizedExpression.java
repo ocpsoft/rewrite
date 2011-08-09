@@ -241,4 +241,10 @@ public class ParameterizedExpression
    {
       return new ArrayList<String>(params.keySet());
    }
+
+   @Override
+   public String toString()
+   {
+      return new String(chars);
+   }
 }

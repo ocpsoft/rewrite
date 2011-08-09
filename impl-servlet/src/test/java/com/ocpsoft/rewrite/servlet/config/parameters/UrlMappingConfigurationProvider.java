@@ -27,7 +27,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.RequestParameter;
 import com.ocpsoft.rewrite.servlet.config.SendStatus;
-import com.ocpsoft.rewrite.servlet.config.UrlMapping;
+import com.ocpsoft.rewrite.servlet.config.Join;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -60,7 +60,7 @@ public class UrlMappingConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Set up our rule (This does the work.)
                 */
-               .add(UrlMapping.pattern("/p/{project}").resource("/viewProject.xhtml"))
+               .add(Join.path("/p/{project}").to("/viewProject.xhtml"))
 
                /*
                 * Now send a verification to our test case that the rule worked correctly.
