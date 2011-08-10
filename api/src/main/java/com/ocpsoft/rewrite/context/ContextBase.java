@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite;
+package com.ocpsoft.rewrite.context;
 
 import java.util.HashMap;
 import java.util.Map;

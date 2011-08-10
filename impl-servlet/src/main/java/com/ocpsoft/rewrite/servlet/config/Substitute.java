@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import com.ocpsoft.rewrite.EvaluationContext;
 import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
@@ -77,7 +77,13 @@ public class Substitute extends HttpOperation implements ParameterizedOperation<
       else if (event instanceof HttpOutboundServletRewrite)
       {
          String target = location.build(event, context);
-         ((HttpOutboundServletRewrite) event).setOutboundURL(event.getContextPath() + target);
+         if (((HttpOutboundServletRewrite) event).getOutboundURL().startsWith(event.getContextPath())
+                  && target.startsWith("/")
+                  && !target.startsWith(event.getContextPath()))
+         {
+            target = event.getContextPath() + target;
+         }
+         ((HttpOutboundServletRewrite) event).setOutboundURL(target);
       }
    }
 

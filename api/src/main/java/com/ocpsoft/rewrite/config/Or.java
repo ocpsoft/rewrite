@@ -18,7 +18,7 @@ package com.ocpsoft.rewrite.config;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**

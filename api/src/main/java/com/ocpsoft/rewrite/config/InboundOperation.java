@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 

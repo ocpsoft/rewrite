@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.rewrite.ContextBase;
+import com.ocpsoft.rewrite.context.ContextBase;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

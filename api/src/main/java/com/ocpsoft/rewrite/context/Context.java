@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite;
-
-import com.ocpsoft.rewrite.config.Condition;
-import com.ocpsoft.rewrite.config.Operation;
+package com.ocpsoft.rewrite.context;
 
 /**
- * Context object spanning the lifecycle of a single rule evaluation. This includes both {@link Condition} evaluation
- * and {@link Operation} invocation.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public interface EvaluationContext extends Context
+public interface Context
 {
    /**
-    * Add a new {@link Operation} to be performed if all conditions of this rule are met. Pre-Operation instances are
-    * performed before the standard {@link Operation}.
+    * Get the value in the context map defined by the given key. Return null if no such key exists, or if they key maps
+    * to a null value.
     */
-   void addPreOperation(Operation operation);
+   Object get(Object key);
 
    /**
-    * Add a new {@link Operation} to be performed if all conditions of this rule are met. Post-Operation instances are
-    * performed after the standard {@link Operation}.
+    * Store a key value pair into the context.
     */
-   void addPostOperation(Operation operation);
+   void put(Object key, Object value);
+
+   /**
+    * Return true if this context contains an entry with the given key.
+    */
+   boolean containsKey(Object key);
 }

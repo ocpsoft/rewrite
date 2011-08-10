@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.mock;
 
-import com.ocpsoft.rewrite.Context;
+import com.ocpsoft.rewrite.context.Context;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**

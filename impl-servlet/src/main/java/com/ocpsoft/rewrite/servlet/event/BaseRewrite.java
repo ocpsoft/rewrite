@@ -18,7 +18,7 @@ package com.ocpsoft.rewrite.servlet.event;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.Context;
+import com.ocpsoft.rewrite.context.Context;
 import com.ocpsoft.rewrite.exception.RewriteException;
 import com.ocpsoft.rewrite.servlet.RewriteFilter;
 

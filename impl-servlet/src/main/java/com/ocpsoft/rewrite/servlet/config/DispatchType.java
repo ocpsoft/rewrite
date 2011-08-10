@@ -18,7 +18,7 @@ package com.ocpsoft.rewrite.servlet.config;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.rewrite.EvaluationContext;
+import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -30,7 +30,7 @@ public class DispatchType extends HttpCondition
 {
    private final DispatcherType type;
 
-   public DispatchType(final DispatcherType type)
+   private DispatchType(final DispatcherType type)
    {
       this.type = type;
    }
@@ -45,7 +45,7 @@ public class DispatchType extends HttpCondition
     * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#FORWARD}
     */
-   public DispatchType isForward()
+   public static DispatchType isForward()
    {
       return new DispatchType(DispatcherType.FORWARD);
    }
@@ -54,7 +54,7 @@ public class DispatchType extends HttpCondition
     * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#REQUEST}
     */
-   public DispatchType isRequest()
+   public static DispatchType isRequest()
    {
       return new DispatchType(DispatcherType.REQUEST);
    }
@@ -63,7 +63,7 @@ public class DispatchType extends HttpCondition
     * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#ERROR}
     */
-   public DispatchType isError()
+   public static DispatchType isError()
    {
       return new DispatchType(DispatcherType.ERROR);
    }
@@ -72,7 +72,7 @@ public class DispatchType extends HttpCondition
     * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#ASYNC}
     */
-   public DispatchType isAsync()
+   public static DispatchType isAsync()
    {
       return new DispatchType(DispatcherType.ASYNC);
    }
@@ -81,7 +81,7 @@ public class DispatchType extends HttpCondition
     * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
     * {@link DispatcherType#INCLUDE}
     */
-   public DispatchType isInclude()
+   public static DispatchType isInclude()
    {
       return new DispatchType(DispatcherType.INCLUDE);
    }

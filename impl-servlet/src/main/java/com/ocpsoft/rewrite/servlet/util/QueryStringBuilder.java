@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.jboss.logging.Logger;
 
@@ -129,22 +128,12 @@ public class QueryStringBuilder
    /**
     * Get the name, values[] map representing this query string.
     */
-   public Map<String, String[]> getParameterMap()
+   public Map<String, List<String>> getParameterMap()
    {
-      Map<String, String[]> map = new TreeMap<String, String[]>();
+      Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
       for (Map.Entry<String, List<String>> entry : parameters.entrySet())
       {
-         List<String> list = entry.getValue();
-         String[] values;
-         if (list == null)
-         {
-            values = null;
-         }
-         else
-         {
-            values = list.toArray(new String[list.size()]);
-         }
-         map.put(entry.getKey(), values);
+         map.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
       }
       return map;
    }
