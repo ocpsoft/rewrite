@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jboss.logging.Logger;
 import org.jboss.seam.conversation.spi.SeamConversationContext;
 
-import com.ocpsoft.rewrite.cdi.events.AfterInboundRewrite;
+import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -51,14 +51,14 @@ public class ConversationSupport
          DispatcherType dispatchType = request.getDispatcherType();
          if (DispatcherType.REQUEST.equals(dispatchType))
          {
-            log.info("Binding conversation to Request.");
             String cid = request.getParameter("cid");
+            log.debug("Binding conversation with id [" + cid + "] to Request.");
             scc.associate(request).activate(cid);
          }
       }
    }
 
-   public void teardown(@Observes AfterInboundRewrite event, SeamConversationContext<HttpServletRequest> scc)
+   public void teardown(@Observes AfterRewriteLifecycle event, SeamConversationContext<HttpServletRequest> scc)
    {
       Rewrite rewrite = event.getRewrite();
       if (rewrite instanceof HttpInboundServletRewrite)
@@ -67,7 +67,7 @@ public class ConversationSupport
          DispatcherType dispatchType = request.getDispatcherType();
          if (DispatcherType.REQUEST.equals(dispatchType))
          {
-            log.info("Unbinding conversation from Request.");
+            log.debug("Unbinding any active conversation from Request.");
             scc.dissociate(request);
          }
       }

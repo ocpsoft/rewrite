@@ -21,6 +21,7 @@
  */
 package com.ocpsoft.rewrite.faces;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleListener;
@@ -38,9 +39,12 @@ public class OriginalURLRewriteLifecycleListener extends HttpRewriteLifecycleLis
    @Override
    public void beforeInboundLifecycle(HttpServletRewrite event)
    {
-      String originalURL = event.getContextPath() + event.getRequestURL() + event.getRequestQueryStringSeparator()
-               + event.getRequestQueryString();
-      event.getRequest().setAttribute(ORIGINAL_URL, originalURL);
+      if (DispatcherType.REQUEST.equals(event.getRequest().getDispatcherType()))
+      {
+         String originalURL = event.getContextPath() + event.getRequestURL() + event.getRequestQueryStringSeparator()
+                  + event.getRequestQueryString();
+         event.getRequest().setAttribute(ORIGINAL_URL, originalURL);
+      }
    }
 
    public static String getOriginalRequestURL(HttpServletRequest request)

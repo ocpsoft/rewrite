@@ -57,7 +57,9 @@ public class ConversationExceptionHandler extends ExceptionHandlerWrapper
          ExceptionQueuedEvent event = i.next();
          ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
          Throwable t = context.getException();
-         if (t instanceof IllegalStateException && t.getMessage().matches("Context is already active"))
+         if (t instanceof IllegalStateException
+                  && (t.getMessage().matches("Context is already active") || t.getMessage().matches(
+                           "Context is not active")))
          {
             i.remove();
          }
