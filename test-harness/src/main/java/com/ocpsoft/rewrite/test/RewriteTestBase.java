@@ -81,7 +81,6 @@ public class RewriteTestBase
                .create(WebArchive.class, "rewrite-test.war")
                .addAsLibraries(rewrite)
                .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.1.Final"))
-               .addAsLibraries(resolveDependencies("org.jboss.logging:jboss-logging:3.0.0.Beta4"))
                .setWebXML("jetty-web.xml")
                .addAsWebResource(new StringAsset("<beans/>"), ArchivePaths.create("WEB-INF/beans.xml"))
                .addAsWebResource("jetty-env.xml", ArchivePaths.create("WEB-INF/jetty-env.xml"))

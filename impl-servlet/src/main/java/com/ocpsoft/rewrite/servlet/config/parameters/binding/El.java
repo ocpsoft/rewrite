@@ -15,12 +15,12 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters.binding;
 
-import org.jboss.logging.Logger;
-
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
+import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.LogFactory;
 import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.parameters.Converter;
@@ -38,7 +38,7 @@ import com.ocpsoft.rewrite.servlet.spi.ElSupportProvider;
 public class El extends ParameterBindingBuilder
 {
    private final String property;
-   private final Logger log = Logger.getLogger(El.class);
+   private final Log log = LogFactory.getLog(El.class);
 
    public El(final String property)
    {

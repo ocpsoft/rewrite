@@ -27,7 +27,6 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <version.jboss.spec>1.0.0.Final</version.jboss.spec>
       <version.junit>4.8.1</version.junit>
-      <version.jboss-logging>3.0.0.Beta4</version.jboss-logging>
    </properties>
 
    <modules>
@@ -96,11 +95,6 @@
             <scope>provided</scope>
          </dependency>
          <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-            <version>${version.jboss-logging}</version>
-         </dependency>
-         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
@@ -123,10 +117,6 @@
    </dependencyManagement>
 
    <dependencies>
-      <dependency>
-         <groupId>org.jboss.logging</groupId>
-         <artifactId>jboss-logging</artifactId>
-      </dependency>
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>

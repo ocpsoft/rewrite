@@ -21,12 +21,13 @@ import java.net.URL;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.logging.Logger;
 import org.tuckey.web.filters.urlrewrite.Conf;
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
+import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.LogFactory;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 
 /**
@@ -35,7 +36,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
  */
 public class TuckeyConfigurationProvider extends HttpConfigurationProvider
 {
-   Logger log = Logger.getLogger(TuckeyConfigurationProvider.class);
+   Log log = LogFactory.getLog(TuckeyConfigurationProvider.class);
    private UrlRewriter urlRewriter;
 
    @Override
@@ -63,7 +64,7 @@ public class TuckeyConfigurationProvider extends HttpConfigurationProvider
          confUrl = context.getResource(confPath);
       }
       catch (MalformedURLException e) {
-         log.debug(e);
+         log.debug("Error", e);
       }
       String confUrlStr = null;
       if (confUrl != null) {

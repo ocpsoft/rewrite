@@ -26,9 +26,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.jboss.logging.Logger;
-
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.LogFactory;
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
@@ -51,7 +51,7 @@ public class RewriteFilter implements Filter
 {
    public static final String CONTEXT_KEY = "_com.ocpsoft.rewrite.RequestContext";
 
-   Logger log = Logger.getLogger(RewriteFilter.class);
+   Log log = LogFactory.getLog(RewriteFilter.class);
 
    private List<RewriteLifecycleListener<Rewrite>> listeners;
    private List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;

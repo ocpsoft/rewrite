@@ -2,9 +2,9 @@ package com.ocpsoft.rewrite.logging;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
-import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.spi.LogAdapterFactory;
 import com.ocpsoft.rewrite.util.Iterators;
 
@@ -73,7 +73,6 @@ public class LogFactory
     * Called one by {@link #getAdapterFactory()} to obtain the
     * {@link LogAdapterFactory} with the highest priority.
     */
-   @SuppressWarnings("unchecked")
    private static LogAdapterFactory createAdapterFactory()
    {
 
