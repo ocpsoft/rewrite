@@ -33,8 +33,8 @@ public class ServiceLoaderTest
    @SuppressWarnings("unchecked")
    public void test()
    {
-      ServiceLoader<TestService> services = ServiceLoader.load(TestService.class);
-      List<TestService> list = Iterators.asList(services);
+      ServiceLoader<DummyService> services = ServiceLoader.load(DummyService.class);
+      List<DummyService> list = Iterators.asList(services);
       Assert.assertFalse(list.isEmpty());
    }
 }
