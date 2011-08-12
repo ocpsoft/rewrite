@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.config;
 
 import com.ocpsoft.rewrite.bind.Binding;
-import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.logging.Logger;
+import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -38,6 +39,7 @@ public class Invoke extends OperationBuilder
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public void perform(final Rewrite event, final EvaluationContext context)
    {
       Object result;
@@ -53,9 +55,17 @@ public class Invoke extends OperationBuilder
 
       log.info("Invoked binding [" + binding + "] returned value [" + result + "]");
 
-      // TODO Create Invoked binding result SPI for integrating navigation?
+      ServiceLoader<InvocationResultHandler> providers = ServiceLoader.load(InvocationResultHandler.class);
+
+      for (InvocationResultHandler handler : providers) {
+         handler.handle(event, context, result);
+      }
    }
 
+   /**
+    * Invoke the given {@link Binding} and process {@link InvocationResultHandler} instances on the result value (if
+    * any.)
+    */
    public static OperationBuilder retrieveFrom(final Binding property)
    {
       return new Invoke(property, null);
@@ -64,7 +74,8 @@ public class Invoke extends OperationBuilder
    /**
     * 
     * Invoke {@link Binding#submit(Rewrite, EvaluationContext, Object)}, use the result of the given
-    * {@link Binding#retrieve(Rewrite, EvaluationContext)} as the value for this submission.
+    * {@link Binding#retrieve(Rewrite, EvaluationContext)} as the value for this submission. Process
+    * {@link InvocationResultHandler} instances on the result value (if any.)
     */
    public static OperationBuilder submitTo(final Binding to, final Binding from)
    {
