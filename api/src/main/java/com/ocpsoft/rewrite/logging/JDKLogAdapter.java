@@ -12,15 +12,20 @@ public class JDKLogAdapter extends Logger
 
    private final java.util.logging.Logger delegate;
 
+   private final String name;
+
    public JDKLogAdapter(String name)
    {
-      delegate = java.util.logging.Logger.getLogger(name);
+      this.name = name;
+      this.delegate = java.util.logging.Logger.getLogger(name);
    }
 
    @Override
    protected void log(Level level, String msg, Throwable t)
    {
       LogRecord r = new LogRecord(getJdkLogLevel(level), msg);
+      r.setSourceClassName(name);
+      r.setSourceMethodName(null);
       r.setThrown(t);
       delegate.log(r);
    }
