@@ -34,6 +34,7 @@
       <module>api</module>
       <module>api-tests</module>
       <module>logging-slf4j</module>
+      <module>logging-jboss</module>
       <module>config-jodatime</module>
       <module>config-tuckey</module>
       <module>impl-servlet</module>

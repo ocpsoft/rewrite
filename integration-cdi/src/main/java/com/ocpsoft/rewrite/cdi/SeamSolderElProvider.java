@@ -29,7 +29,7 @@ import com.ocpsoft.rewrite.servlet.spi.ElSupportProvider;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ElSupport implements ElSupportProvider
+public class SeamSolderElProvider implements ElSupportProvider
 {
    @Inject
    private Expressions expressions;

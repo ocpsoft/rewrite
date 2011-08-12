@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.logging.LoggerFactory;
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.util.Iterators;
@@ -30,7 +29,7 @@ import com.ocpsoft.rewrite.util.Iterators;
  */
 public class ConfigurationLoader
 {
-   public static Logger log = LoggerFactory.getLogger(ConfigurationLoader.class);
+   public static Logger log = Logger.getLogger(ConfigurationLoader.class);
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public static Configuration loadConfiguration(final Object context)

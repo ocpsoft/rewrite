@@ -27,7 +27,6 @@ import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.logging.LoggerFactory;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 
 /**
@@ -36,7 +35,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
  */
 public class TuckeyConfigurationProvider extends HttpConfigurationProvider
 {
-   Logger log = LoggerFactory.getLogger(TuckeyConfigurationProvider.class);
+   Logger log = Logger.getLogger(TuckeyConfigurationProvider.class);
    private UrlRewriter urlRewriter;
 
    @Override

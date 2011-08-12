@@ -1,5 +1,13 @@
 package com.ocpsoft.rewrite.logging;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.ServiceLoader;
+
+import com.ocpsoft.rewrite.pattern.WeightedComparator;
+import com.ocpsoft.rewrite.spi.LogAdapterFactory;
+import com.ocpsoft.rewrite.util.Iterators;
+
 /**
  * Class to create log messages.
  * 
@@ -8,7 +16,8 @@ package com.ocpsoft.rewrite.logging;
 public abstract class Logger
 {
 
-   public enum Level {
+   public enum Level
+   {
       TRACE, DEBUG, INFO, WARN, ERROR
    }
 
@@ -21,27 +30,27 @@ public abstract class Logger
       return isEnabled(Level.TRACE);
    }
 
-   public void trace(String msg)
+   public void trace(final String msg)
    {
       log(Level.TRACE, msg, null);
    }
 
-   public void trace(String msg, Object arg)
+   public void trace(final String msg, final Object arg)
    {
       log(Level.TRACE, format(msg, new Object[] { arg }), null);
    }
 
-   public void trace(String msg, Object arg1, Object arg2)
+   public void trace(final String msg, final Object arg1, final Object arg2)
    {
       log(Level.TRACE, format(msg, new Object[] { arg1, arg2 }), null);
    }
 
-   public void trace(String msg, Object[] argArray)
+   public void trace(final String msg, final Object[] argArray)
    {
       log(Level.TRACE, format(msg, argArray), null);
    }
 
-   public void trace(String msg, Throwable t)
+   public void trace(final String msg, final Throwable t)
    {
       log(Level.TRACE, msg, t);
    }
@@ -51,27 +60,27 @@ public abstract class Logger
       return isEnabled(Level.DEBUG);
    }
 
-   public void debug(String msg)
+   public void debug(final String msg)
    {
       log(Level.DEBUG, msg, null);
    }
 
-   public void debug(String msg, Object arg)
+   public void debug(final String msg, final Object arg)
    {
       log(Level.DEBUG, format(msg, new Object[] { arg }), null);
    }
 
-   public void debug(String msg, Object arg1, Object arg2)
+   public void debug(final String msg, final Object arg1, final Object arg2)
    {
       log(Level.DEBUG, format(msg, new Object[] { arg1, arg2 }), null);
    }
 
-   public void debug(String msg, Object[] argArray)
+   public void debug(final String msg, final Object[] argArray)
    {
       log(Level.DEBUG, format(msg, argArray), null);
    }
 
-   public void debug(String msg, Throwable t)
+   public void debug(final String msg, final Throwable t)
    {
       log(Level.DEBUG, msg, t);
    }
@@ -81,27 +90,27 @@ public abstract class Logger
       return isEnabled(Level.INFO);
    }
 
-   public void info(String msg)
+   public void info(final String msg)
    {
       log(Level.INFO, msg, null);
    }
 
-   public void info(String msg, Object arg)
+   public void info(final String msg, final Object arg)
    {
       log(Level.INFO, format(msg, new Object[] { arg }), null);
    }
 
-   public void info(String msg, Object arg1, Object arg2)
+   public void info(final String msg, final Object arg1, final Object arg2)
    {
       log(Level.INFO, format(msg, new Object[] { arg1, arg2 }), null);
    }
 
-   public void info(String msg, Object[] argArray)
+   public void info(final String msg, final Object[] argArray)
    {
       log(Level.INFO, format(msg, argArray), null);
    }
 
-   public void info(String msg, Throwable t)
+   public void info(final String msg, final Throwable t)
    {
       log(Level.INFO, msg, t);
    }
@@ -111,27 +120,27 @@ public abstract class Logger
       return isEnabled(Level.WARN);
    }
 
-   public void warn(String msg)
+   public void warn(final String msg)
    {
       log(Level.WARN, msg, null);
    }
 
-   public void warn(String msg, Object arg)
+   public void warn(final String msg, final Object arg)
    {
       log(Level.WARN, format(msg, new Object[] { arg }), null);
    }
 
-   public void warn(String msg, Object arg1, Object arg2)
+   public void warn(final String msg, final Object arg1, final Object arg2)
    {
       log(Level.WARN, format(msg, new Object[] { arg1, arg2 }), null);
    }
 
-   public void warn(String msg, Object[] argArray)
+   public void warn(final String msg, final Object[] argArray)
    {
       log(Level.WARN, format(msg, argArray), null);
    }
 
-   public void warn(String msg, Throwable t)
+   public void warn(final String msg, final Throwable t)
    {
       log(Level.WARN, msg, t);
    }
@@ -141,32 +150,32 @@ public abstract class Logger
       return isEnabled(Level.ERROR);
    }
 
-   public void error(String msg)
+   public void error(final String msg)
    {
       log(Level.ERROR, msg, null);
    }
 
-   public void error(String msg, Object arg)
+   public void error(final String msg, final Object arg)
    {
       log(Level.ERROR, format(msg, new Object[] { arg }), null);
    }
 
-   public void error(String msg, Object arg1, Object arg2)
+   public void error(final String msg, final Object arg1, final Object arg2)
    {
       log(Level.ERROR, format(msg, new Object[] { arg1, arg2 }), null);
    }
 
-   public void error(String msg, Object[] argArray)
+   public void error(final String msg, final Object[] argArray)
    {
       log(Level.ERROR, format(msg, argArray), null);
    }
 
-   public void error(String msg, Throwable t)
+   public void error(final String msg, final Throwable t)
    {
       log(Level.ERROR, msg, t);
    }
 
-   protected String format(String msg, Object[] args)
+   protected String format(final String msg, final Object[] args)
    {
 
       StringBuilder builder = new StringBuilder(msg);
@@ -181,6 +190,76 @@ public abstract class Logger
 
       }
       return builder.toString();
+   }
+
+   /**
+    * The LogAdapterFactory to use. Only {@link #getAdapterFactory()} should use this field. It is declared as volatile
+    * so that the double-checked locking implemented in {@link #getAdapterFactory()} works correctly.
+    */
+   private static volatile LogAdapterFactory _adapterFactory = null;
+
+   /**
+    * Create a {@link Logger} instance for a specific class
+    * 
+    * @param clazz The class to create the log for
+    * @return The {@link Logger} instance
+    */
+   public static Logger getLogger(final Class<?> clazz)
+   {
+      return getLogger(clazz.getName());
+   }
+
+   /**
+    * Create a {@link Logger} instance for a specific logger name
+    * 
+    * @param logger the logger name
+    * @return The {@link Logger} instance
+    */
+   public static Logger getLogger(final String logger)
+   {
+      LogAdapterFactory adapterFactory = getAdapterFactory();
+      return adapterFactory.createLogAdapter(logger);
+   }
+
+   /**
+    * This method provides access to the {@link LogAdapterFactory}. It will obtain the {@link LogAdapterFactory} lazily
+    * using {@link #createAdapterFactory()}.
+    */
+   private static LogAdapterFactory getAdapterFactory()
+   {
+      // double-checked locking
+      if (_adapterFactory == null)
+      {
+         synchronized (Logger.class)
+         {
+            if (_adapterFactory == null)
+            {
+               _adapterFactory = createAdapterFactory();
+            }
+         }
+      }
+      return _adapterFactory;
+   }
+
+   /**
+    * Called one by {@link #getAdapterFactory()} to obtain the {@link LogAdapterFactory} with the highest priority.
+    */
+   private static LogAdapterFactory createAdapterFactory()
+   {
+
+      // use the ServiceLoader to get all LogAdapterFactories
+      List<LogAdapterFactory> factories = Iterators.asUniqueList(ServiceLoader.load(LogAdapterFactory.class));
+      if (factories.isEmpty())
+      {
+         throw new IllegalStateException("Log logging implementations found!");
+      }
+
+      // sort by priority
+      Collections.sort(factories, new WeightedComparator());
+
+      // we will use the factory with the highest priority
+      return factories.get(0);
+
    }
 
 }

@@ -17,9 +17,9 @@ package com.ocpsoft.rewrite.cdi;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.logging.Logger;
 import org.jboss.seam.solder.beanManager.BeanManagerAware;
 
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.spi.ServiceEnricher;
 
 /**
