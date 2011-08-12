@@ -19,7 +19,7 @@ package com.ocpsoft.rewrite.services;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  */
-public interface TestService
+public class DummyServiceImpl implements DummyService
 {
 
 }
