@@ -17,13 +17,13 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import java.util.Map;
 
+import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.config.bind.Request;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedCondition;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Request;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
@@ -91,13 +91,13 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
 
    @Override
    public ConditionParameterBuilder where(final String param, final String pattern,
-            final ParameterBinding binding)
+            final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public ConditionParameterBuilder where(final String param, final ParameterBinding binding)
+   public ConditionParameterBuilder where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -121,7 +121,7 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
       if (expression.matches(requestURL))
       {
          Map<Parameter, String[]> parameters = expression.parseEncoded(requestURL);
-         Bindings.evaluateCondition(event, context, parameters);
+         Bindings.performSubmissions(event, context, parameters);
          return true;
       }
       return false;

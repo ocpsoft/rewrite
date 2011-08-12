@@ -1,1 +1,1 @@
-com.ocpsoft.rewrite.servlet.http.impl.DefaultHttpRewriteProvider
+com.ocpsoft.rewrite.servlet.impl.DefaultHttpRewriteProvider

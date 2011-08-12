@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
+import com.ocpsoft.rewrite.servlet.config.bind.Evaluation;
 import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.Maps;
@@ -45,12 +45,12 @@ import com.ocpsoft.rewrite.util.Assert;
 public abstract class QueryString extends HttpCondition
 {
    @SuppressWarnings({ "rawtypes", "unchecked" })
-   protected final DefaultBindable<?, ParameterBinding> bindable = new DefaultBindable();
+   protected final DefaultBindable<?, Binding> bindable = new DefaultBindable();
 
    /**
-    * Bind the values of this {@link QueryString} query to the given {@link ParameterBinding}.
+    * Bind the values of this {@link QueryString} query to the given {@link Binding}.
     */
-   public QueryString bindsTo(final ParameterBinding binding)
+   public QueryString bindsTo(final Binding binding)
    {
       this.bindable.bindsTo(binding);
       return this;
@@ -61,7 +61,7 @@ public abstract class QueryString extends HttpCondition
     * <p>
     * This value may be bound.
     * <p>
-    * See also: {@link #bindsTo(ParameterBinding)}
+    * See also: {@link #bindsTo(Binding)}
     */
    public static QueryString matches(final String pattern)
    {
@@ -81,7 +81,7 @@ public abstract class QueryString extends HttpCondition
             {
                List<String> values = new ArrayList<String>();
                values.add(queryString);
-               Bindings.evaluateCondition(event, context, bindable, values.toArray(new String[] {}));
+               Bindings.performSubmission(event, context, bindable, values.toArray(new String[] {}));
                return true;
             }
             return false;
@@ -96,7 +96,7 @@ public abstract class QueryString extends HttpCondition
     * The values of all matching parameters may be bound. By default, matching values are bound to the
     * {@link EvaluationContext}.
     * <p>
-    * See also: {@link #bindsTo(ParameterBinding)}
+    * See also: {@link #bindsTo(Binding)}
     */
    public static QueryString parameterExists(final String nameRegex)
    {
@@ -130,7 +130,7 @@ public abstract class QueryString extends HttpCondition
             map.put(bindable, values.toArray(new String[] {}));
 
             if (!values.isEmpty())
-               Bindings.evaluateCondition(event, context, map);
+               Bindings.performSubmissions(event, context, map);
 
             return !values.isEmpty();
          }
@@ -144,7 +144,7 @@ public abstract class QueryString extends HttpCondition
     * The values of all matching parameter values may be bound. By default, matching values are bound to the
     * {@link EvaluationContext}.
     * <p>
-    * See also: {@link #bindsTo(ParameterBinding)}
+    * See also: {@link #bindsTo(Binding)}
     */
    public static QueryString valueExists(final String valueRegex)
    {
@@ -176,7 +176,7 @@ public abstract class QueryString extends HttpCondition
             }
 
             if (!values.isEmpty())
-               Bindings.evaluateCondition(event, context, map);
+               Bindings.performSubmissions(event, context, map);
 
             return !values.isEmpty();
          }

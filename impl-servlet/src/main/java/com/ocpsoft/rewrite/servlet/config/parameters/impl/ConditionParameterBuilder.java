@@ -15,12 +15,12 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedCondition;
 
 /**
@@ -47,7 +47,7 @@ public class ConditionParameterBuilder implements Condition, ParameterizedCondit
       return this;
    }
 
-   public ConditionParameterBuilder bindsTo(final ParameterBinding binding)
+   public ConditionParameterBuilder bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);
       return this;
@@ -66,12 +66,12 @@ public class ConditionParameterBuilder implements Condition, ParameterizedCondit
       return parent.where(param, pattern);
    }
 
-   public ConditionParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
+   public ConditionParameterBuilder where(final String param, final String pattern, final Binding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
-   public ConditionParameterBuilder where(final String param, final ParameterBinding binding)
+   public ConditionParameterBuilder where(final String param, final Binding binding)
    {
       return parent.where(param, binding);
    }

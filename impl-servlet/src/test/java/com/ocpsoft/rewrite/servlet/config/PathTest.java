@@ -24,16 +24,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.ocpsoft.rewrite.bind.DefaultConverter;
+import com.ocpsoft.rewrite.bind.DefaultValidator;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
+import com.ocpsoft.rewrite.servlet.config.bind.El;
 import com.ocpsoft.rewrite.servlet.config.parameters.MockBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.El;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.DefaultConverter;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.DefaultValidator;
-import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
+import com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

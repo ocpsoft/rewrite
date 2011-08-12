@@ -86,4 +86,10 @@ public class TuckeyRewriteRuleAdaptor implements Rule
       }.perform(event, context);
    }
 
+   @Override
+   public String getId()
+   {
+      return "tuckey-" + hashCode();
+   }
+
 }

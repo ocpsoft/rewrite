@@ -17,7 +17,9 @@ package com.ocpsoft.rewrite.servlet.config.parameters;
 
 import java.net.URL;
 
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
+import com.ocpsoft.rewrite.bind.Bindable;
+import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.servlet.config.bind.Evaluation;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
 
 /**
@@ -25,7 +27,7 @@ import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Parameter extends DefaultBindable<Parameter, ParameterBinding>
+public class Parameter extends DefaultBindable<Parameter, Binding>
 {
    private final CapturingGroup capture;
 

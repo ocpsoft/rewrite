@@ -25,12 +25,24 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public class RuleBuilder implements Rule
 {
+   private String id = "";
    private Condition condition;
    private Operation operation;
 
    public static RuleBuilder define()
    {
       return new RuleBuilder();
+   }
+
+   public static RuleBuilder define(final String id)
+   {
+      return new RuleBuilder().withId(id);
+   }
+
+   private RuleBuilder withId(final String id)
+   {
+      this.id = id;
+      return this;
    }
 
    public RuleBuilder when(final Condition condition)
@@ -55,5 +67,11 @@ public class RuleBuilder implements Rule
    public void perform(final Rewrite event, final EvaluationContext context)
    {
       operation.perform(event, context);
+   }
+
+   @Override
+   public String getId()
+   {
+      return id;
    }
 }

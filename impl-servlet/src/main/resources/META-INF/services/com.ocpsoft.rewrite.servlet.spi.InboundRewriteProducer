@@ -1,1 +1,1 @@
-com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteProducer
+com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteProducer

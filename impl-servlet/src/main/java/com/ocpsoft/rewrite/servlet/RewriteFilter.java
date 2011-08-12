@@ -48,7 +48,6 @@ import com.ocpsoft.rewrite.util.ServiceLogger;
  */
 public class RewriteFilter implements Filter
 {
-   public static final String CONTEXT_KEY = "_com.ocpsoft.rewrite.RequestContext";
 
    Logger log = Logger.getLogger(RewriteFilter.class);
 
@@ -101,10 +100,10 @@ public class RewriteFilter implements Filter
       }
       else
       {
-         if (request.getAttribute(CONTEXT_KEY) == null)
+         if (request.getAttribute(RewriteLifecycleContext.CONTEXT_KEY) == null)
          {
             RewriteLifecycleContext context = new RewriteContextImpl(inbound, outbound, listeners, wrappers, providers);
-            request.setAttribute(CONTEXT_KEY, context);
+            request.setAttribute(RewriteLifecycleContext.CONTEXT_KEY, context);
          }
 
          for (RewriteLifecycleListener<Rewrite> listener : listeners)

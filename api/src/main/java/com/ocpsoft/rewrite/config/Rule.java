@@ -26,6 +26,8 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public interface Rule
 {
+   public String getId();
+
    public boolean evaluate(Rewrite event, EvaluationContext context);
 
    public void perform(Rewrite event, EvaluationContext context);

@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
@@ -26,7 +27,6 @@ import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
@@ -40,6 +40,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 public class Join implements Rule, Parameterized<LinkParameter>
 {
    private static final String CURRENT_JOIN = Join.class.getName() + "_current";
+   private String id;
    private final String pattern;
    private String resource;
    private final Path path;
@@ -103,12 +104,12 @@ public class Join implements Rule, Parameterized<LinkParameter>
          operation.perform(event, context);
    }
 
-   private void saveCurrentJoin(HttpServletRequest request)
+   private void saveCurrentJoin(final HttpServletRequest request)
    {
       request.setAttribute(CURRENT_JOIN, this);
    }
 
-   public static Join getCurrentJoin(HttpServletRequest request)
+   public static Join getCurrentJoin(final HttpServletRequest request)
    {
       return (Join) request.getAttribute(CURRENT_JOIN);
    }
@@ -126,13 +127,13 @@ public class Join implements Rule, Parameterized<LinkParameter>
    }
 
    @Override
-   public LinkParameter where(final String param, final String pattern, final ParameterBinding binding)
+   public LinkParameter where(final String param, final String pattern, final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public LinkParameter where(final String param, final ParameterBinding binding)
+   public LinkParameter where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -140,6 +141,18 @@ public class Join implements Rule, Parameterized<LinkParameter>
    public Join and(final Operation operation)
    {
       this.operation = operation;
+      return this;
+   }
+
+   @Override
+   public String getId()
+   {
+      return id;
+   }
+
+   public Join withId(final String id)
+   {
+      this.id = id;
       return this;
    }
 }

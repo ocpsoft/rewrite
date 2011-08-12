@@ -27,7 +27,7 @@ import org.mockito.Mockito;
 
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
-import com.ocpsoft.rewrite.servlet.http.impl.HttpInboundRewriteImpl;
+import com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

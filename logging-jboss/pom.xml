@@ -27,6 +27,7 @@
          <groupId>org.jboss.logging</groupId>
          <artifactId>jboss-logging</artifactId>
          <version>3.0.0.GA</version>
+         <scope>provided</scope>
       </dependency>
 
    </dependencies>

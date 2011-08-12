@@ -23,12 +23,12 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.config.bind.Evaluation;
 import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Bindings;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.Evaluation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -45,7 +45,7 @@ public class RequestParameter extends HttpCondition
    private final Pattern value;
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
-   private final DefaultBindable<?, ParameterBinding> bindable = new DefaultBindable();
+   private final DefaultBindable<?, Binding> bindable = new DefaultBindable();
 
    private RequestParameter(final String name, final String nameRegex, final String valueRegex)
    {
@@ -60,9 +60,9 @@ public class RequestParameter extends HttpCondition
    }
 
    /**
-    * Bind the values of this {@link RequestParameter} query to the given {@link ParameterBinding}.
+    * Bind the values of this {@link RequestParameter} query to the given {@link Binding}.
     */
-   public RequestParameter bindsTo(final ParameterBinding binding)
+   public RequestParameter bindsTo(final Binding binding)
    {
       this.bindable.bindsTo(binding);
       return this;
@@ -73,7 +73,7 @@ public class RequestParameter extends HttpCondition
     * <p>
     * Matched parameter values may be bound. By default, matching values are bound to the {@link EvaluationContext}.
     * <p>
-    * See also: {@link #bindsTo(ParameterBinding)}
+    * See also: {@link #bindsTo(Binding)}
     * 
     * @param nameRegex Regular expression matching the parameter name
     * @param valueRegex Regular expression matching the parameter value
@@ -90,7 +90,7 @@ public class RequestParameter extends HttpCondition
     * Values of the matching parameter may be bound. By default, matching values are bound to the
     * {@link EvaluationContext}.
     * <p>
-    * See also: {@link #bindsTo(ParameterBinding)}
+    * See also: {@link #bindsTo(Binding)}
     * 
     * @param name The parameter name
     */
@@ -105,7 +105,7 @@ public class RequestParameter extends HttpCondition
     * <p>
     * Values of matching parameters may be bound. By default, matching values are bound to the {@link EvaluationContext}.
     * <p>
-    * See also: {@link #bindsTo(ParameterBinding)}
+    * See also: {@link #bindsTo(Binding)}
     * 
     * @param nameRegex Regular expression matching the parameter name
     */
@@ -120,7 +120,7 @@ public class RequestParameter extends HttpCondition
     * <p>
     * Matching values may be bound. By default, matching values are bound to the {@link EvaluationContext}.
     * <p>
-    * See also: {@link #bindsTo(ParameterBinding)}
+    * See also: {@link #bindsTo(Binding)}
     * 
     * @param valueRegex Regular expression matching the parameter value
     */
@@ -158,7 +158,7 @@ public class RequestParameter extends HttpCondition
 
       if (matchedParameter != null)
       {
-         Bindings.evaluateCondition(event, context, bindable, values.toArray(new String[] {}));
+         Bindings.performSubmission(event, context, bindable, values.toArray(new String[] {}));
          return true;
       }
 

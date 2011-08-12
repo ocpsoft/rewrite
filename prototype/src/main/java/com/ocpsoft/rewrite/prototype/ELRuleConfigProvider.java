@@ -23,7 +23,7 @@ import com.ocpsoft.rewrite.servlet.config.Forward;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Invoke;
 import com.ocpsoft.rewrite.servlet.config.Path;
-import com.ocpsoft.rewrite.servlet.config.parameters.binding.El;
+import com.ocpsoft.rewrite.servlet.config.bind.El;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -40,7 +40,7 @@ public class ELRuleConfigProvider extends HttpConfigurationProvider
                .when(Path.matches("/{one}/{two}")
                         .where("one").bindsTo(El.property("bindingBean.one"))
                         .where("two").matches("[0-9]+").bindsTo(El.property("bindingBean.two")))
-               .perform(Invoke.method(El.method("bindingBean.action"))
+               .perform(Invoke.retrieveFrom(El.submissionMethod("bindingBean.action()"))
                         .and(Forward.to("/index.mvc")));
    }
 

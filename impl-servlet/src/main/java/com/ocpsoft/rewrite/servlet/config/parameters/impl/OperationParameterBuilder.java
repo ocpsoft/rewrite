@@ -15,12 +15,12 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 
 /**
@@ -44,7 +44,7 @@ public class OperationParameterBuilder implements ParameterizedOperation<Operati
       return this;
    }
 
-   public OperationParameterBuilder bindsTo(final ParameterBinding binding)
+   public OperationParameterBuilder bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);
       return this;
@@ -63,13 +63,13 @@ public class OperationParameterBuilder implements ParameterizedOperation<Operati
    }
 
    @Override
-   public OperationParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
+   public OperationParameterBuilder where(final String param, final String pattern, final Binding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
    @Override
-   public OperationParameterBuilder where(final String param, final ParameterBinding binding)
+   public OperationParameterBuilder where(final String param, final Binding binding)
    {
       return parent.where(param, binding);
    }

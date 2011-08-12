@@ -15,9 +15,9 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
 
 /**
@@ -41,7 +41,7 @@ public class LinkParameter implements Parameterized<LinkParameter>
       return this;
    }
 
-   public LinkParameter bindsTo(final ParameterBinding binding)
+   public LinkParameter bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);
       return this;
@@ -60,13 +60,13 @@ public class LinkParameter implements Parameterized<LinkParameter>
    }
 
    @Override
-   public LinkParameter where(final String param, final String pattern, final ParameterBinding binding)
+   public LinkParameter where(final String param, final String pattern, final Binding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
    @Override
-   public LinkParameter where(final String param, final ParameterBinding binding)
+   public LinkParameter where(final String param, final Binding binding)
    {
       return parent.where(param, binding);
    }

@@ -24,9 +24,9 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.parse.CaptureType;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
@@ -232,9 +232,9 @@ public class ParameterizedExpression
 
          // TODO need to do lots of error checking and handling here
          // TODO move this to Bindings.class
-         for (ParameterBinding binding : value.getBindings())
+         for (Binding binding : value.getBindings())
          {
-            Object boundValue = binding.extractBoundValue(event, context);
+            Object boundValue = binding.retrieve(event, context);
             if (boundValue.getClass().isArray())
                for (Object temp : (Object[]) boundValue)
                {

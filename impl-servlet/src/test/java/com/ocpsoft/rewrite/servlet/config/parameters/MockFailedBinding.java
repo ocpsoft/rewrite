@@ -1,24 +1,23 @@
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-public class MockFailedBinding implements ParameterBinding
+public class MockFailedBinding implements Binding
 {
    private boolean validated;
    private boolean converted;
 
    @Override
-   public boolean validates(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   public boolean validates(final Rewrite event, final EvaluationContext context, final Object value)
    {
       validated = true;
       return true;
    }
 
    @Override
-   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   public Object convert(final Rewrite event, final EvaluationContext context, final Object value)
    {
       converted = true;
       return value;
@@ -35,20 +34,26 @@ public class MockFailedBinding implements ParameterBinding
    }
 
    @Override
-   public Operation getOperation(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
-      return new Operation() {
-         @Override
-         public void perform(final Rewrite event, final EvaluationContext context)
-         {
-            throw new RuntimeException("Binding failed (expected)");
-         }
-      };
+      throw new RuntimeException("Binding extraction failed (expected)");
    }
 
    @Override
-   public Object extractBoundValue(final HttpServletRewrite event, final EvaluationContext context)
+   public boolean supportsRetrieval()
    {
-      throw new RuntimeException("Binding extraction failed (expected)");
+      return true;
+   }
+
+   @Override
+   public boolean supportsSubmission()
+   {
+      return true;
+   }
+
+   @Override
+   public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+   {
+      throw new RuntimeException("Binding failed (expected)");
    }
 }

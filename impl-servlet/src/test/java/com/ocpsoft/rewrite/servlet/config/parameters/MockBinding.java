@@ -1,12 +1,10 @@
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-public class MockBinding implements ParameterBinding
+public class MockBinding implements Binding
 {
 
    private boolean bound;
@@ -15,14 +13,14 @@ public class MockBinding implements ParameterBinding
    private boolean extracted;
 
    @Override
-   public boolean validates(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   public boolean validates(final Rewrite event, final EvaluationContext context, final Object value)
    {
       validated = true;
       return true;
    }
 
    @Override
-   public Object convert(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   public Object convert(final Rewrite event, final EvaluationContext context, final Object value)
    {
       converted = true;
       return value;
@@ -49,21 +47,28 @@ public class MockBinding implements ParameterBinding
    }
 
    @Override
-   public Operation getOperation(final HttpServletRewrite event, final EvaluationContext context, final Object value)
+   public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
    {
-      return new Operation() {
-         @Override
-         public void perform(final Rewrite event, final EvaluationContext context)
-         {
-            bound = true;
-         }
-      };
+      bound = true;
+      return null;
    }
 
    @Override
-   public Object extractBoundValue(final HttpServletRewrite event, final EvaluationContext context)
+   public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
       extracted = true;
       return new Object();
+   }
+
+   @Override
+   public boolean supportsRetrieval()
+   {
+      return true;
+   }
+
+   @Override
+   public boolean supportsSubmission()
+   {
+      return true;
    }
 }

@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
 
 /**
@@ -43,7 +43,7 @@ public class ParameterBuilder implements Parameterized<ParameterBuilder>
       return this;
    }
 
-   public ParameterBuilder bindsTo(final ParameterBinding binding)
+   public ParameterBuilder bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);
       return this;
@@ -62,12 +62,12 @@ public class ParameterBuilder implements Parameterized<ParameterBuilder>
       return parent.where(param, pattern);
    }
 
-   public ParameterBuilder where(final String param, final String pattern, final ParameterBinding binding)
+   public ParameterBuilder where(final String param, final String pattern, final Binding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
-   public ParameterBuilder where(final String param, final ParameterBinding binding)
+   public ParameterBuilder where(final String param, final Binding binding)
    {
       return parent.where(param, binding);
    }

@@ -19,9 +19,9 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
@@ -136,13 +136,13 @@ public class Redirect extends HttpOperation implements ParameterizedOperation<Op
 
    @Override
    public OperationParameterBuilder where(final String param, final String pattern,
-            final ParameterBinding binding)
+            final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public OperationParameterBuilder where(final String param, final ParameterBinding binding)
+   public OperationParameterBuilder where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
