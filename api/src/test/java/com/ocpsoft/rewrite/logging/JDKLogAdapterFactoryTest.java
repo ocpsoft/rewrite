@@ -10,7 +10,7 @@ public class JDKLogAdapterFactoryTest
    @Test
    public void testJDKCreateLogAdapter()
    {
-      Log log = new JDKLogAdapterFactory().createLogAdapter(JDKLogAdapterFactoryTest.class.getName());
+      Logger log = new JDKLogAdapterFactory().createLogAdapter(JDKLogAdapterFactoryTest.class.getName());
       assertEquals(JDKLogAdapter.class, log.getClass());
    }
 

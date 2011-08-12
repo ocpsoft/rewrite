@@ -17,7 +17,7 @@ package com.ocpsoft.rewrite.util;
 
 import java.util.List;
 
-import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
@@ -27,7 +27,7 @@ import com.ocpsoft.rewrite.pattern.Weighted;
 public final class ServiceLogger
 {
 
-   public static <T> void logLoadedServices(final Log log, final Class<T> type, final List<? extends T> services)
+   public static <T> void logLoadedServices(final Logger log, final Class<T> type, final List<? extends T> services)
    {
       log.info("Loaded [" + services.size() + "] " + type.getName() + " ["
                + joinTypeNames(services) + "]");

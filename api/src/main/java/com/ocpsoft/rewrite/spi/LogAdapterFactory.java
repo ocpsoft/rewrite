@@ -1,6 +1,6 @@
 package com.ocpsoft.rewrite.spi;
 
-import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
@@ -16,8 +16,8 @@ public interface LogAdapterFactory extends Weighted
     * 
     * @param logger
     *           The name of the logger
-    * @return A log adapter extending {@link Log}
+    * @return A log adapter extending {@link Logger}
     */
-   Log createLogAdapter(String logger);
+   Logger createLogAdapter(String logger);
 
 }

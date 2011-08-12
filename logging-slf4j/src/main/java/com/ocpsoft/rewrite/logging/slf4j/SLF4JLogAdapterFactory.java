@@ -1,6 +1,6 @@
 package com.ocpsoft.rewrite.logging.slf4j;
 
-import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.spi.LogAdapterFactory;
 
 /**
@@ -19,7 +19,7 @@ public class SLF4JLogAdapterFactory implements LogAdapterFactory
    }
 
    @Override
-   public Log createLogAdapter(String name)
+   public Logger createLogAdapter(String name)
    {
       return new SLF4JLogAdapter(name);
    }

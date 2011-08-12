@@ -66,10 +66,10 @@ public class LogTest
    }
 
    /**
-    * Simple class extending {@link Log} that stores only the last log message
+    * Simple class extending {@link Logger} that stores only the last log message
     * as a string.
     */
-   private static class StringLog extends Log
+   private static class StringLog extends Logger
    {
 
       private String logString;

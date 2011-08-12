@@ -1,23 +1,20 @@
 package com.ocpsoft.rewrite.logging.slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.Logger;
 
 /**
  * Log adapter that delegates log events to SLF4J
  * 
  * @author Christian Kaltepoth <christian@kaltepoth.de>
  */
-public class SLF4JLogAdapter extends Log
+public class SLF4JLogAdapter extends Logger
 {
 
-   private final Logger delegate;
+   private final org.slf4j.Logger delegate;
 
    public SLF4JLogAdapter(String name)
    {
-      delegate = LoggerFactory.getLogger(name);
+      delegate = org.slf4j.LoggerFactory.getLogger(name);
    }
 
    @Override

@@ -9,7 +9,7 @@ import com.ocpsoft.rewrite.spi.LogAdapterFactory;
 import com.ocpsoft.rewrite.util.Iterators;
 
 /**
- * Utility class to create {@link Log} instances.
+ * Utility class to create {@link Logger} instances.
  * 
  * @author Christian Kaltepoth <christian@kaltepoth.de>
  */
@@ -24,25 +24,25 @@ public class LoggerFactory
    private static volatile LogAdapterFactory _adapterFactory = null;
 
    /**
-    * Create a {@link Log} instance for a specific class
+    * Create a {@link Logger} instance for a specific class
     * 
     * @param clazz
     *           The class to create the log for
-    * @return The {@link Log} instance
+    * @return The {@link Logger} instance
     */
-   public static Log getLog(Class<?> clazz)
+   public static Logger getLogger(Class<?> clazz)
    {
-      return getLog(clazz.getName());
+      return getLogger(clazz.getName());
    }
 
    /**
-    * Create a {@link Log} instance for a specific logger name
+    * Create a {@link Logger} instance for a specific logger name
     * 
     * @param logger
     *           the logger name
-    * @return The {@link Log} instance
+    * @return The {@link Logger} instance
     */
-   public static Log getLog(String logger)
+   public static Logger getLogger(String logger)
    {
       LogAdapterFactory adapterFactory = getAdapterFactory();
       return adapterFactory.createLogAdapter(logger);

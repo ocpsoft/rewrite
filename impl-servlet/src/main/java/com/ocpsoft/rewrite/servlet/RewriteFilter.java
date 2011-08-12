@@ -27,7 +27,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.logging.LoggerFactory;
 import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
@@ -51,7 +51,7 @@ public class RewriteFilter implements Filter
 {
    public static final String CONTEXT_KEY = "_com.ocpsoft.rewrite.RequestContext";
 
-   Log log = LoggerFactory.getLog(RewriteFilter.class);
+   Logger log = LoggerFactory.getLogger(RewriteFilter.class);
 
    private List<RewriteLifecycleListener<Rewrite>> listeners;
    private List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;

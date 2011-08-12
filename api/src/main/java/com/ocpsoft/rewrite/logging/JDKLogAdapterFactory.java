@@ -17,7 +17,7 @@ public class JDKLogAdapterFactory implements LogAdapterFactory
    }
 
    @Override
-   public Log createLogAdapter(String logger)
+   public Logger createLogAdapter(String logger)
    {
       return new JDKLogAdapter(logger);
    }

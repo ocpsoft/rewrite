@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.logging.LoggerFactory;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -35,7 +35,7 @@ import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse>
          implements HttpInboundServletRewrite
 {
-   Log log = LoggerFactory.getLog(HttpInboundRewriteImpl.class);
+   Logger log = LoggerFactory.getLogger(HttpInboundRewriteImpl.class);
 
    public HttpInboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response)
    {

@@ -5,7 +5,7 @@ package com.ocpsoft.rewrite.logging;
  * 
  * @author Christian Kaltepoth <christian@kaltepoth.de>
  */
-public abstract class Log
+public abstract class Logger
 {
 
    public enum Level {

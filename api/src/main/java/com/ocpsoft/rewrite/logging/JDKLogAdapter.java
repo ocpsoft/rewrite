@@ -1,21 +1,20 @@
 package com.ocpsoft.rewrite.logging;
 
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 /**
  * Implementation of a log adapter that delegates to the JDK 1.4 logging API.
  * 
  * @author Christian Kaltepoth <christian@kaltepoth.de>
  */
-public class JDKLogAdapter extends Log
+public class JDKLogAdapter extends Logger
 {
 
-   private final Logger delegate;
+   private final java.util.logging.Logger delegate;
 
    public JDKLogAdapter(String name)
    {
-      delegate = Logger.getLogger(name);
+      delegate = java.util.logging.Logger.getLogger(name);
    }
 
    @Override

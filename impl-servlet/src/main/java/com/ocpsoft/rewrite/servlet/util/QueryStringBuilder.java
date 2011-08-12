@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.logging.Log;
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.logging.LoggerFactory;
 
 /**
@@ -39,7 +39,7 @@ import com.ocpsoft.rewrite.logging.LoggerFactory;
 public class QueryStringBuilder
 {
 
-   private final static Log log = LoggerFactory.getLog(QueryStringBuilder.class);
+   private final static Logger log = LoggerFactory.getLogger(QueryStringBuilder.class);
 
    private final Map<String, List<String>> parameters = new LinkedHashMap<String, List<String>>();
 
