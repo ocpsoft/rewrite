@@ -22,9 +22,9 @@ import java.net.URISyntaxException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.logging.Logger;
-
 import com.ocpsoft.rewrite.exception.RewriteException;
+import com.ocpsoft.rewrite.logging.Logger;
+import com.ocpsoft.rewrite.logging.LoggerFactory;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
@@ -35,7 +35,7 @@ import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse>
          implements HttpInboundServletRewrite
 {
-   Logger log = Logger.getLogger(HttpInboundRewriteImpl.class);
+   Logger log = LoggerFactory.getLogger(HttpInboundRewriteImpl.class);
 
    public HttpInboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response)
    {
