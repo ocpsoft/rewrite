@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ocpsoft.rewrite.logging.Log;
-import com.ocpsoft.rewrite.logging.LogFactory;
+import com.ocpsoft.rewrite.logging.LoggerFactory;
 import com.ocpsoft.rewrite.spi.ServiceEnricher;
 import com.ocpsoft.rewrite.util.Iterators;
 import com.ocpsoft.rewrite.util.ServiceLogger;
@@ -55,7 +55,7 @@ public class ServiceLoader<S> implements Iterable<S>
 {
    private static final String SERVICES = "META-INF/services";
 
-   Log log = LogFactory.getLog(ServiceLoader.class);
+   Log log = LoggerFactory.getLog(ServiceLoader.class);
 
    /**
     * Creates a new service loader for the given service type, using the current thread's context class loader.

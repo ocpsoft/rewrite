@@ -13,7 +13,7 @@ import com.ocpsoft.rewrite.util.Iterators;
  * 
  * @author Christian Kaltepoth <christian@kaltepoth.de>
  */
-public class LogFactory
+public class LoggerFactory
 {
 
    /**
@@ -58,7 +58,7 @@ public class LogFactory
       // double-checked locking
       if (_adapterFactory == null)
       {
-         synchronized (LogFactory.class)
+         synchronized (LoggerFactory.class)
          {
             if (_adapterFactory == null)
             {
