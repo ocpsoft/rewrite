@@ -29,9 +29,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.jboss.logging.Logger;
-
 import com.ocpsoft.rewrite.exception.RewriteException;
+import com.ocpsoft.rewrite.logging.Logger;
+import com.ocpsoft.rewrite.logging.LoggerFactory;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -39,7 +39,7 @@ import com.ocpsoft.rewrite.exception.RewriteException;
 public class QueryStringBuilder
 {
 
-   private final static Logger log = Logger.getLogger(QueryStringBuilder.class);
+   private final static Logger log = LoggerFactory.getLogger(QueryStringBuilder.class);
 
    private final Map<String, List<String>> parameters = new LinkedHashMap<String, List<String>>();
 

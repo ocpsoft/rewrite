@@ -17,8 +17,7 @@ package com.ocpsoft.rewrite.util;
 
 import java.util.List;
 
-import org.jboss.logging.Logger;
-
+import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
