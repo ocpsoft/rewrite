@@ -20,7 +20,6 @@ import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
 
 /**

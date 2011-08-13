@@ -16,7 +16,6 @@
 package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
 import com.ocpsoft.rewrite.bind.Binding;
-import com.ocpsoft.rewrite.servlet.config.parameters.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
 
 /**

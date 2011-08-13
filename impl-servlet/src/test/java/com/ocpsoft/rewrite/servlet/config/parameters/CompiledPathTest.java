@@ -22,6 +22,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ocpsoft.rewrite.servlet.config.parameters.impl.Parameter;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
 import com.ocpsoft.rewrite.servlet.util.Maps;
 

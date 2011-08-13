@@ -22,7 +22,6 @@ import com.ocpsoft.rewrite.pattern.Weighted;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public final class ServiceLogger
 {

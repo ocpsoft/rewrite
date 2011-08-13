@@ -1,5 +1,6 @@
 package com.ocpsoft.rewrite.logging;
 
+import com.ocpsoft.rewrite.services.NonEnriching;
 import com.ocpsoft.rewrite.spi.LogAdapterFactory;
 
 /**
@@ -7,7 +8,7 @@ import com.ocpsoft.rewrite.spi.LogAdapterFactory;
  * 
  * @author Christian Kaltepoth <christian@kaltepoth.de>
  */
-public class JDKLogAdapterFactory implements LogAdapterFactory
+public class JDKLogAdapterFactory implements LogAdapterFactory, NonEnriching
 {
 
    @Override
@@ -17,7 +18,7 @@ public class JDKLogAdapterFactory implements LogAdapterFactory
    }
 
    @Override
-   public Logger createLogAdapter(String logger)
+   public Logger createLogAdapter(final String logger)
    {
       return new JDKLogAdapter(logger);
    }

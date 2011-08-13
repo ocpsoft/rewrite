@@ -246,18 +246,20 @@ public abstract class Logger
     */
    private static LogAdapterFactory createAdapterFactory()
    {
-
-      // use the ServiceLoader to get all LogAdapterFactories
       List<LogAdapterFactory> factories = Iterators.asUniqueList(ServiceLoader.load(LogAdapterFactory.class));
       if (factories.isEmpty())
       {
          throw new IllegalStateException("Log logging implementations found!");
       }
 
-      // sort by priority
+      /*
+       * Sort factories by priority.
+       */
       Collections.sort(factories, new WeightedComparator());
 
-      // we will use the factory with the highest priority
+      /*
+       * Use the factory with the highest priority.
+       */
       return factories.get(0);
 
    }

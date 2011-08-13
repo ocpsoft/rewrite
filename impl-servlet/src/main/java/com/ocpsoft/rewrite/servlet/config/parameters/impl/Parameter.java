@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config.parameters;
+package com.ocpsoft.rewrite.servlet.config.parameters.impl;
 
 import java.net.URL;
 
 import com.ocpsoft.rewrite.bind.Bindable;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.servlet.config.bind.Evaluation;
+import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.parse.CapturingGroup;
 
 /**
@@ -31,6 +32,9 @@ public class Parameter extends DefaultBindable<Parameter, Binding>
 {
    private final CapturingGroup capture;
 
+   /*
+    * Default to anything except a forward slash, since this is the typical URL path separator.
+    */
    private String pattern = "[^/]+";
 
    /**

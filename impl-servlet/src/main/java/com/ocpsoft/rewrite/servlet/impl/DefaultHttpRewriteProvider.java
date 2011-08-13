@@ -19,6 +19,7 @@ import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationLoader;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
+import com.ocpsoft.rewrite.services.NonEnriching;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -27,7 +28,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class DefaultHttpRewriteProvider extends HttpRewriteProvider
+public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements NonEnriching
 {
    @Override
    public void rewrite(final HttpServletRewrite event)
