@@ -40,7 +40,7 @@ public class ELRuleConfigProvider extends HttpConfigurationProvider
                .when(Path.matches("/{one}/{two}")
                         .where("one").bindsTo(El.property("bindingBean.one"))
                         .where("two").matches("[0-9]+").bindsTo(El.property("bindingBean.two")))
-               .perform(Invoke.retrieveFrom(El.submissionMethod("bindingBean.action()"))
+               .perform(Invoke.retrieveFrom(El.retrievalMethod("bindingBean.action()"))
                         .and(Forward.to("/index.mvc")));
    }
 

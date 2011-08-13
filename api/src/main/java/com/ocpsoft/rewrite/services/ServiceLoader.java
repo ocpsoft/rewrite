@@ -54,7 +54,7 @@ public class ServiceLoader<S> implements Iterable<S>
 {
    private static final String SERVICES = "META-INF/services";
 
-   Logger log = Logger.getLogger(ServiceLoader.class);
+   private static Logger log = Logger.getLogger(ServiceLoader.class);
 
    /**
     * Creates a new service loader for the given service type, using the current thread's context class loader.
@@ -241,7 +241,7 @@ public class ServiceLoader<S> implements Iterable<S>
       {
          return;
       }
-      S serviceInstance = prepareInstance(serviceClass);
+      S serviceInstance = loadEnriched(serviceClass);
       if (serviceInstance == null)
       {
          return;
@@ -273,15 +273,15 @@ public class ServiceLoader<S> implements Iterable<S>
    private static java.util.ServiceLoader<ServiceEnricher> enricherLoader = null;
 
    /**
-    * Prepare our enriched service instance using any provided {@link ServiceEnricher} classes.
+    * Obtain a {@link Class} instance and attempt enrichment using any provided {@link ServiceEnricher} classes.
     * 
     * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
     */
-   private S prepareInstance(final Class<? extends S> serviceClass)
+   public static <T> T loadEnriched(final Class<T> serviceClass)
    {
       try
       {
-         S service = null;
+         T service = null;
          ServiceEnricher origin = null;
 
          if (!NonEnriching.class.isAssignableFrom(serviceClass))
@@ -306,7 +306,7 @@ public class ServiceLoader<S> implements Iterable<S>
 
          if (service == null)
          {
-            Constructor<? extends S> constructor = serviceClass.getDeclaredConstructor();
+            Constructor<? extends T> constructor = serviceClass.getDeclaredConstructor();
             constructor.setAccessible(true);
             service = constructor.newInstance();
          }

@@ -17,10 +17,11 @@ package com.ocpsoft.rewrite.bind;
 
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.exception.RewriteException;
+import com.ocpsoft.rewrite.services.ServiceLoader;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public abstract class BindingBuilder implements Binding
 {
@@ -28,7 +29,7 @@ public abstract class BindingBuilder implements Binding
    private Validator<?> validator = new DefaultValidator();
 
    /**
-    * Set the {@link Converter} with which this {@link Binding} value will be converted.
+    * Set the {@link Converter} type with which this {@link Binding} value will be converted.
     */
    public BindingBuilder convertedBy(final Class<? extends Converter<?>> type)
    {
@@ -37,11 +38,29 @@ public abstract class BindingBuilder implements Binding
    }
 
    /**
-    * Set the {@link Validator} with which this {@link Binding} value will be validated.
+    * Set the {@link Converter} with which this {@link Binding} value will be converter.
+    */
+   public BindingBuilder convertedBy(final Converter<?> converter)
+   {
+      this.converter = converter;
+      return this;
+   }
+
+   /**
+    * Set the {@link Validator} type with which this {@link Binding} value will be validated.
     */
    public BindingBuilder validatedBy(final Class<? extends Validator<?>> type)
    {
       this.validator = resolveValidator(type);
+      return this;
+   }
+
+   /**
+    * Set the {@link Validator} with which this {@link Binding} value will be validated.
+    */
+   public BindingBuilder validatedBy(final Validator<?> validator)
+   {
+      this.validator = validator;
       return this;
    }
 
@@ -61,13 +80,21 @@ public abstract class BindingBuilder implements Binding
 
    private Validator<?> resolveValidator(final Class<? extends Validator<?>> type)
    {
-      // TODO resolve validator and pass to service enrichers
-      return null;
+      try {
+         return ServiceLoader.loadEnriched(type);
+      }
+      catch (Exception e) {
+         throw new RewriteException("Could not instantiate Validator of type [" + type.getName() + "]", e);
+      }
    }
 
    private Converter<?> resolveConverter(final Class<? extends Converter<?>> type)
    {
-      // TODO resolve converter and pass to service enrichers
-      return null;
+      try {
+         return ServiceLoader.loadEnriched(type);
+      }
+      catch (Exception e) {
+         throw new RewriteException("Could not instantiate Converter of type [" + type.getName() + "]", e);
+      }
    }
 }
