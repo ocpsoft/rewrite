@@ -23,41 +23,33 @@ import com.ocpsoft.rewrite.services.ServiceLoader;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class BindingBuilder implements Binding
+public abstract class BindingBuilder implements Binding, RetrievalBuilder, SubmissionBuilder
 {
    private Converter<?> converter = new DefaultConverter();
    private Validator<?> validator = new DefaultValidator();
 
-   /**
-    * Set the {@link Converter} type with which this {@link Binding} value will be converted.
-    */
+   @Override
    public BindingBuilder convertedBy(final Class<? extends Converter<?>> type)
    {
       this.converter = resolveConverter(type);
       return this;
    }
 
-   /**
-    * Set the {@link Converter} with which this {@link Binding} value will be converter.
-    */
+   @Override
    public BindingBuilder convertedBy(final Converter<?> converter)
    {
       this.converter = converter;
       return this;
    }
 
-   /**
-    * Set the {@link Validator} type with which this {@link Binding} value will be validated.
-    */
+   @Override
    public BindingBuilder validatedBy(final Class<? extends Validator<?>> type)
    {
       this.validator = resolveValidator(type);
       return this;
    }
 
-   /**
-    * Set the {@link Validator} with which this {@link Binding} value will be validated.
-    */
+   @Override
    public BindingBuilder validatedBy(final Validator<?> validator)
    {
       this.validator = validator;

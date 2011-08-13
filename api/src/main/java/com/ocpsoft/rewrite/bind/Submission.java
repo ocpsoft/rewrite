@@ -13,47 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.prototype;
+package com.ocpsoft.rewrite.bind;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * Defines the methods necessary to perform, converted, validated {@link Binding} value submission.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-@Named
-@RequestScoped
-public class BindingBean
+public interface Submission
 {
-   private String one;
-   private int two;
+   /**
+    * Convert the given value into the expected type.
+    */
+   Object convert(Rewrite event, EvaluationContext context, Object value);
 
-   public String action()
-   {
-      System.out.println("Invoked action");
-      return "navigation-string!";
-   }
+   /**
+    * Return true if the given value passes all validations.
+    */
+   boolean validates(Rewrite event, EvaluationContext context, Object value);
 
-   public String getOne()
-   {
-      return one;
-   }
-
-   public void setOne(final String one)
-   {
-      this.one = one;
-      System.out.println("Set one = " + one);
-   }
-
-   public int getTwo()
-   {
-      return two;
-   }
-
-   public void setTwo(final int two)
-   {
-      this.two = two;
-      System.out.println("Set two = " + two);
-   }
+   /**
+    * Store a value into the designated storage location.
+    */
+   Object submit(Rewrite event, EvaluationContext context, Object value);
 }

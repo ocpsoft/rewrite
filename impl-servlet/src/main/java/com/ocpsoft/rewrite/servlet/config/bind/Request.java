@@ -41,24 +41,20 @@ public class Request extends BindingBuilder
       this.parameter = property;
    }
 
-   public static Request parameter(final String property)
+   public static BindingBuilder parameter(final String property)
    {
       return new Request(property);
    }
 
-   public static Request parameter(final String property, final Class<? extends Converter<?>> type)
+   public static BindingBuilder parameter(final String property, final Class<? extends Converter<?>> type)
    {
-      Request request = parameter(property);
-      request.convertedBy(type);
-      return request;
+      return parameter(property).convertedBy(type);
    }
 
-   public static Request parameter(final String property, final Class<Converter<?>> converterType,
+   public static BindingBuilder parameter(final String property, final Class<Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
    {
-      Request request = parameter(property, converterType);
-      request.validatedBy(validatorType);
-      return request;
+      return parameter(property, converterType).validatedBy(validatorType);
    }
 
    @Override

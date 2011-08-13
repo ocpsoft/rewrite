@@ -19,6 +19,8 @@ import java.util.List;
 
 import com.ocpsoft.rewrite.bind.BindingBuilder;
 import com.ocpsoft.rewrite.bind.Converter;
+import com.ocpsoft.rewrite.bind.RetrievalBuilder;
+import com.ocpsoft.rewrite.bind.SubmissionBuilder;
 import com.ocpsoft.rewrite.bind.Validator;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
@@ -42,7 +44,7 @@ public abstract class El extends BindingBuilder
     * Create a new EL Method binding using distinct expressions to submit and retrieve values. The method intended for
     * use in submission must accept a single parameter of the expected type.
     */
-   public static El methodBinding(final String retrieve, final String submit)
+   public static BindingBuilder methodBinding(final String retrieve, final String submit)
    {
       return new ElMethod(retrieve, submit);
    }
@@ -50,7 +52,7 @@ public abstract class El extends BindingBuilder
    /**
     * Create a new EL Method binding to retrieve values. The method must return a value of the expected type.
     */
-   public static ElMethod retrievalMethod(final String expression)
+   public static RetrievalBuilder retrievalMethod(final String expression)
    {
       return new ElMethod(expression, null);
    }
@@ -59,7 +61,8 @@ public abstract class El extends BindingBuilder
     * Create a new EL Method binding to retrieve values. The method must return a value of the expected type. Use the
     * given {@link Converter} when retrieving any values.
     */
-   public static ElMethod retrievalMethod(final String expression, final Class<? extends Converter<?>> converterType)
+   public static RetrievalBuilder retrievalMethod(final String expression,
+            final Class<? extends Converter<?>> converterType)
    {
       ElMethod el = new ElMethod(expression, null);
       el.convertedBy(converterType);
@@ -69,7 +72,7 @@ public abstract class El extends BindingBuilder
    /**
     * Create a new EL Method binding to submit values. The method must accept a single parameter of the expected type.
     */
-   public static ElMethod submissionMethod(final String expression)
+   public static SubmissionBuilder submissionMethod(final String expression)
    {
       return new ElMethod(null, expression);
    }
@@ -78,7 +81,8 @@ public abstract class El extends BindingBuilder
     * Create a new EL Method binding to submit values. The method must accept a single parameter of the expected type.
     * Use the given {@link Converter} before submitting any values.
     */
-   public static ElMethod submissionMethod(final String expression, final Class<? extends Converter<?>> converterType)
+   public static SubmissionBuilder submissionMethod(final String expression,
+            final Class<? extends Converter<?>> converterType)
    {
       ElMethod el = new ElMethod(null, expression);
       el.convertedBy(converterType);
@@ -90,7 +94,8 @@ public abstract class El extends BindingBuilder
     * Use the given {@link Validator} before attempting to submit any values. Use the given {@link Converter} before
     * submitting any values.
     */
-   public static ElMethod submissionMethod(final String expression, final Class<? extends Converter<?>> converterType,
+   public static SubmissionBuilder submissionMethod(final String expression,
+            final Class<? extends Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
    {
       ElMethod el = new ElMethod(null, expression);
@@ -103,7 +108,7 @@ public abstract class El extends BindingBuilder
     * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
     * either be public, or have a publicly defined getter/setter.
     */
-   public static ElProperty property(final String expression)
+   public static BindingBuilder property(final String expression)
    {
       return new ElProperty(expression);
    }
@@ -113,7 +118,7 @@ public abstract class El extends BindingBuilder
     * either be public, or have a publicly defined getter/setter. Use the given {@link Converter} before submitting any
     * values.
     */
-   public static ElProperty property(final String expression, final Class<? extends Converter<?>> type)
+   public static BindingBuilder property(final String expression, final Class<? extends Converter<?>> type)
    {
       ElProperty el = new ElProperty(expression);
       el.convertedBy(type);
@@ -125,7 +130,7 @@ public abstract class El extends BindingBuilder
     * either be public, or have a publicly defined getter/setter. Use the given {@link Validator} before attempting to
     * submit any values. Use the given {@link Converter} when submitting any values.
     */
-   public static ElProperty property(final String expression, final Class<? extends Converter<?>> converterType,
+   public static BindingBuilder property(final String expression, final Class<? extends Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
    {
       ElProperty el = new ElProperty(expression);

@@ -13,47 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.prototype;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+package com.ocpsoft.rewrite.bind;
 
 /**
+ * Defines methods used when building {@link Retrieval} objects.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-@Named
-@RequestScoped
-public class BindingBean
+public interface RetrievalBuilder extends Retrieval
 {
-   private String one;
-   private int two;
-
-   public String action()
-   {
-      System.out.println("Invoked action");
-      return "navigation-string!";
-   }
-
-   public String getOne()
-   {
-      return one;
-   }
-
-   public void setOne(final String one)
-   {
-      this.one = one;
-      System.out.println("Set one = " + one);
-   }
-
-   public int getTwo()
-   {
-      return two;
-   }
-
-   public void setTwo(final int two)
-   {
-      this.two = two;
-      System.out.println("Set two = " + two);
-   }
 }

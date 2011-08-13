@@ -39,24 +39,20 @@ public class Evaluation extends BindingBuilder
       this.property = property;
    }
 
-   public static Evaluation property(final String property)
+   public static BindingBuilder property(final String property)
    {
       return new Evaluation(property);
    }
 
-   public static Evaluation property(final String property, final Class<? extends Converter<?>> type)
+   public static BindingBuilder property(final String property, final Class<? extends Converter<?>> type)
    {
-      Evaluation evaluation = property(property);
-      evaluation.convertedBy(type);
-      return evaluation;
+      return property(property).convertedBy(type);
    }
 
-   public static Evaluation property(final String property, final Class<Converter<?>> converterType,
+   public static BindingBuilder property(final String property, final Class<Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
    {
-      Evaluation evaluation = property(property, converterType);
-      evaluation.validatedBy(validatorType);
-      return evaluation;
+      return property(property, converterType).validatedBy(validatorType);
    }
 
    @Override
@@ -85,7 +81,7 @@ public class Evaluation extends BindingBuilder
       return null;
    }
 
-   public String getParameterName(final String parameter)
+   private String getParameterName(final String parameter)
    {
       return Evaluation.class.getName() + parameter;
    }

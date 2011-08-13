@@ -16,6 +16,8 @@
 package com.ocpsoft.rewrite.config;
 
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Retrieval;
+import com.ocpsoft.rewrite.bind.Submission;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.logging.Logger;
@@ -23,61 +25,75 @@ import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Builds {@link Operation} instances used to directly invoke {@link Binding} submission or retrieval on {@link Rewrite}
+ * events.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Invoke extends OperationBuilder
 {
    private static final Logger log = Logger.getLogger(Invoke.class);
-   private final Binding binding;
-   private final Binding valueBinding;
+   private final Submission submission;
+   private final Retrieval retrieval;
 
-   private Invoke(final Binding property, final Binding valueBinding)
+   private Invoke(final Submission submission, final Retrieval retrieval)
    {
-      this.binding = property;
-      this.valueBinding = valueBinding;
+      this.submission = submission;
+      this.retrieval = retrieval;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public void perform(final Rewrite event, final EvaluationContext context)
    {
-      Object result;
-      if (valueBinding == null)
+      Object result = null;
+      if ((submission == null) && (retrieval != null))
       {
-         result = binding.retrieve(event, context);
+         result = retrieval.retrieve(event, context);
+         log.info("Invoked binding [" + retrieval + "] returned value [" + result + "]");
+      }
+      else if (retrieval != null)
+      {
+         Object converted = submission.convert(event, context, retrieval.retrieve(event, context));
+         result = submission.submit(event, context, converted);
+         log.info("Invoked binding [" + submission + "] returned value [" + result + "]");
       }
       else
       {
-         Object converted = binding.convert(event, context, valueBinding.retrieve(event, context));
-         result = binding.submit(event, context, converted);
+         log.warn("No binding specified for Invocation.");
       }
 
-      log.info("Invoked binding [" + binding + "] returned value [" + result + "]");
+      if (result != null)
+      {
+         ServiceLoader<InvocationResultHandler> providers = ServiceLoader.load(InvocationResultHandler.class);
+         if (!providers.iterator().hasNext())
+         {
+            log.debug("No instances of [" + InvocationResultHandler.class.getName()
+                     + "] were registered to handing binding invocation result [" + result + "]");
+         }
 
-      ServiceLoader<InvocationResultHandler> providers = ServiceLoader.load(InvocationResultHandler.class);
-
-      for (InvocationResultHandler handler : providers) {
-         handler.handle(event, context, result);
+         for (InvocationResultHandler handler : providers) {
+            handler.handle(event, context, result);
+         }
       }
    }
 
    /**
-    * Invoke the given {@link Binding} and process {@link InvocationResultHandler} instances on the result value (if
+    * Invoke the given {@link Retrieval} and process {@link InvocationResultHandler} instances on the result value (if
     * any.)
     */
-   public static OperationBuilder retrieveFrom(final Binding property)
+   public static OperationBuilder retrieveFrom(final Retrieval retrieval)
    {
-      return new Invoke(property, null);
+      return new Invoke(null, retrieval);
    }
 
    /**
     * 
-    * Invoke {@link Binding#submit(Rewrite, EvaluationContext, Object)}, use the result of the given
-    * {@link Binding#retrieve(Rewrite, EvaluationContext)} as the value for this submission. Process
+    * Invoke {@link Submission#submit(Rewrite, EvaluationContext, Object)}, use the result of the given
+    * {@link Retrieval#retrieve(Rewrite, EvaluationContext)} as the value for this submission. Process
     * {@link InvocationResultHandler} instances on the result value (if any.)
     */
-   public static OperationBuilder submitTo(final Binding to, final Binding from)
+   public static OperationBuilder submitTo(final Submission to, final Retrieval from)
    {
       return new Invoke(to, from);
    }

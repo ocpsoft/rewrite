@@ -15,21 +15,18 @@
  */
 package com.ocpsoft.rewrite.bind;
 
+import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
+
 /**
- * Interface declaring the common tasks that must be performed when evaluating any {@link Binding}
+ * Defines the methods necessary to perform {@link Binding} value retrieval.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface Binding extends Retrieval, Submission
+public interface Retrieval
 {
    /**
-    * Return true if this {@link Binding} support retrieval.
+    * Retrieve the value from its storage location.
     */
-   boolean supportsRetrieval();
-
-   /**
-    * Return true if this {@link Binding} supports submission.
-    */
-   boolean supportsSubmission();
+   Object retrieve(Rewrite event, EvaluationContext context);
 }
