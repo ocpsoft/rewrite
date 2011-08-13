@@ -109,6 +109,9 @@ public class Join implements Rule, Parameterized<LinkParameter>
       request.setAttribute(CURRENT_JOIN, this);
    }
 
+   /**
+    * Retrieve the {@link Join} that was invoked on the current request; if no {@link Join} was invoked, return null.
+    */
    public static Join getCurrentJoin(final HttpServletRequest request)
    {
       return (Join) request.getAttribute(CURRENT_JOIN);
@@ -138,18 +141,21 @@ public class Join implements Rule, Parameterized<LinkParameter>
       return where(param).bindsTo(binding);
    }
 
-   public Join and(final Operation operation)
-   {
-      this.operation = operation;
-      return this;
-   }
-
    @Override
    public String getId()
    {
       return id;
    }
 
+   public Join and(final Operation operation)
+   {
+      this.operation = operation;
+      return this;
+   }
+
+   /**
+    * Set the ID of this {@link Join}.
+    */
    public Join withId(final String id)
    {
       this.id = id;

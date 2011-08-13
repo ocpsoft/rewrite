@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * A fluent builder for defining {@link Configuration} objects.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationBuilder implements Configuration
 {
@@ -35,11 +36,17 @@ public class ConfigurationBuilder implements Configuration
       return rules;
    }
 
+   /**
+    * Begin defining a new fluent {@link Configuration}.
+    */
    public static ConfigurationBuilder begin()
    {
       return new ConfigurationBuilder();
    }
 
+   /**
+    * Define a new fluent {@link Rule}
+    */
    public ConfigurationRuleBuilder defineRule()
    {
       RuleBuilder rule = RuleBuilder.define();
@@ -47,6 +54,9 @@ public class ConfigurationBuilder implements Configuration
       return new ConfigurationRuleBuilder(this, rule);
    }
 
+   /**
+    * Add a pre-defined {@link Rule}.
+    */
    public ConfigurationBuilder add(final Rule rule)
    {
       rules.add(rule);

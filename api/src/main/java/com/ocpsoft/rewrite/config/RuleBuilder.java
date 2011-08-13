@@ -19,7 +19,7 @@ import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Build a {@link Configuration} rule.
+ * Builder for fluently defining new composite {@link Rule} instances.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -29,28 +29,43 @@ public class RuleBuilder implements Rule
    private Condition condition;
    private Operation operation;
 
+   /**
+    * Returns a new {@link RuleBuilder} instance.
+    */
    public static RuleBuilder define()
    {
       return new RuleBuilder();
    }
 
+   /**
+    * Returns a new {@link RuleBuilder} instance, set with the given {@link Rule} ID.
+    */
    public static RuleBuilder define(final String id)
    {
       return new RuleBuilder().withId(id);
    }
 
-   private RuleBuilder withId(final String id)
+   /**
+    * Set the ID of this {@link Rule} instance.
+    */
+   public RuleBuilder withId(final String id)
    {
       this.id = id;
       return this;
    }
 
+   /**
+    * Set the {@link Condition} of this {@link Rule} instance.
+    */
    public RuleBuilder when(final Condition condition)
    {
       this.condition = condition;
       return this;
    }
 
+   /**
+    * Perform the given {@link Operation} when this {@link Rule} is executed.
+    */
    public RuleBuilder perform(final Operation operation)
    {
       this.operation = operation;

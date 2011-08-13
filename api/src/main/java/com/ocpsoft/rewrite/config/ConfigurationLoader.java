@@ -24,13 +24,19 @@ import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.util.Iterators;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Responsible for loading all {@link ConfigurationProvider} instances, and building a single unified
+ * {@link Configuration} based on {@link ConfigurationProvider#priority()}
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationLoader
 {
    public static Logger log = Logger.getLogger(ConfigurationLoader.class);
 
+   /**
+    * Load all {@link ConfigurationProvider} instances, sort by {@link ConfigurationProvider#priority()}, and return a
+    * unified, composited {@link Configuration} object.
+    */
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public static Configuration loadConfiguration(final Object context)
    {

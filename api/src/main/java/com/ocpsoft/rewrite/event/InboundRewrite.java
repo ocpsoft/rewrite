@@ -15,8 +15,9 @@
  */
 package com.ocpsoft.rewrite.event;
 
-
 /**
+ * Defines a {@link Rewrite} event that is in the inbound direction.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */

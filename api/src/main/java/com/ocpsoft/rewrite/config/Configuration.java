@@ -24,5 +24,8 @@ import java.util.List;
  */
 public interface Configuration
 {
+   /**
+    * Get the list of {@link Rule} instances defined by this {@link Configuration}
+    */
    public List<Rule> getRules();
 }

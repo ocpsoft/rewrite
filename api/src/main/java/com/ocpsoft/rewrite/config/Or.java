@@ -25,7 +25,6 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * Evaluates all provided conditions. If any return true, this condition returns true.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public class Or extends ConditionBuilder
 {
@@ -46,6 +45,7 @@ public class Or extends ConditionBuilder
       return new Or(conditions);
    }
 
+   @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       boolean result = false;

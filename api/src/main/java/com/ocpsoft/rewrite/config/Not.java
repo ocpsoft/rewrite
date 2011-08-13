@@ -33,11 +33,15 @@ public class Not extends ConditionBuilder
       this.condition = condition;
    }
 
+   /**
+    * Return a new {@link Condition} that negates the given {@link Condition} instance.
+    */
    public static Not any(final Condition condition)
    {
       return new Not(condition);
    }
 
+   @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       return condition.evaluate(event, context) != true;

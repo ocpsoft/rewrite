@@ -26,7 +26,7 @@ import javax.inject.Named;
 @RequestScoped
 public class BindingBean
 {
-   private String one;
+   private Object one;
    private int two;
 
    public String action()
@@ -35,12 +35,12 @@ public class BindingBean
       return "navigation-string!";
    }
 
-   public String getOne()
+   public Object getOne()
    {
       return one;
    }
 
-   public void setOne(final String one)
+   public void setOne(final Object one)
    {
       this.one = one;
       System.out.println("Set one = " + one);

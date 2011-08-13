@@ -21,6 +21,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 /**
+ * Used to perform injection and instantiation for objects of which CDI is aware.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class BeanManagerUtils

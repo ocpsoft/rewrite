@@ -19,16 +19,24 @@ import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Encapsulates the conditions and outcomes of a Rewrite rule.
+ * Encapsulates correlated {@link Condition} and {@link Operation} instances.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public interface Rule
 {
+   /**
+    * Get the ID for this {@link Rule}
+    */
    public String getId();
 
+   /**
+    * Evaluate this {@link Rule} and return true if all configured {@link Condition} objects are satisfied.
+    */
    public boolean evaluate(Rewrite event, EvaluationContext context);
 
+   /**
+    * Perform all configured {@link Operation} objects specified by this {@link Rule}.
+    */
    public void perform(Rewrite event, EvaluationContext context);
 }

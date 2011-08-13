@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.cdi;
 
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.event.Observes;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +30,26 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
+ * Provides support for the CDI 1.0 {@link ConversationScoped} context in a pure servlet environment, which is not
+ * normally accessible outside of the JavaServer Faces lifecycle.
+ * <p>
+ * Please note that this is implemented using <a href="http://github.com/seam/conversation">Seam Conversation</a>, and
+ * you must include the correct additional dependency in order for this to function with your CDI implementation: (see
+ * below)
+ * <p>
+ * <h3>Implementations</h3> <code>
+ * <b>Weld</b> [org.jboss.seam.conversation:seam-conversation-weld]<br/>
+ * <b>CanDI</b> [org.jboss.seam.conversation:seam-conversation-candi]<br/>
+ * <b>OpenWebBeans</b> [org.jboss.seam.conversation:seam-conversation-owb]
+ * </code>
+ * <p>
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class SeamConversationSupport
+public class CdiConversationSupport
 {
-   Logger log = Logger.getLogger(SeamConversationSupport.class);
+   Logger log = Logger.getLogger(CdiConversationSupport.class);
 
    public void setup(@Observes final BeforeRewriteLifecycle event, final SeamConversationContext<HttpServletRequest> scc)
    {

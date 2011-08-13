@@ -38,7 +38,7 @@ public abstract class InboundOperation extends OperationBuilder
    }
 
    /**
-    * Perform the operation.
+    * Perform the {@link Operation}.
     */
    public abstract void performInbound(InboundRewrite event);
 

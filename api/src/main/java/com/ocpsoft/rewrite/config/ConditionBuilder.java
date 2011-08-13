@@ -23,16 +23,28 @@ package com.ocpsoft.rewrite.config;
  */
 public abstract class ConditionBuilder implements Condition
 {
+   /**
+    * Append a new {@link Condition} to this builder, which must evaluate to true in order for this composite
+    * {@link Condition} to evaluate to true.
+    */
    public ConditionBuilder and(final Condition condition)
    {
       return And.all(this, condition);
    }
 
+   /**
+    * Append a new {@link Condition} to this builder, which must not evaluate to true in order for this composite
+    * {@link Condition} to evaluate to true.
+    */
    public ConditionBuilder andNot(final Condition condition)
    {
       return And.all(this, Not.any(condition));
    }
 
+   /**
+    * Append a new {@link Condition} to this builder. If either this or the given {@link Condition} evaluate to true,
+    * the composite {@link Condition} will evaluate to true.
+    */
    public ConditionBuilder or(final Condition condition)
    {
       return Or.any(this, condition);

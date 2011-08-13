@@ -47,6 +47,7 @@ public class And extends ConditionBuilder
       return new And(conditions);
    }
 
+   @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       boolean result = true;

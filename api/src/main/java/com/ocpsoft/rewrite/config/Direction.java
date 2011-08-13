@@ -21,15 +21,24 @@ import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * Responsible for evaluating {@link Rewrite} events on whether they are {@link InboundRewrite} or
+ * {@link OutboundRewrite} events.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class Direction extends ConditionBuilder
 {
+   /**
+    * Returns a new {@link Condition} that returns true when operating on an {@link InboundRewrite} event.
+    */
    public static Direction isInbound()
    {
       return new Inbound();
    }
 
+   /**
+    * Returns a new {@link Condition} that returns true when operating on an {@link OutboundRewrite} event.
+    */
    public static Direction isOutbound()
    {
       return new Outbound();

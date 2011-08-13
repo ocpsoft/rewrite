@@ -19,10 +19,15 @@ import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * Defines an operation to be performed during a {@link Rewrite} event.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public interface Operation
 {
+   /**
+    * Perform the operation.
+    */
    void perform(Rewrite event, EvaluationContext context);
 }

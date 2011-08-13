@@ -23,11 +23,10 @@ import java.util.List;
  */
 public class ConfigurationRuleBuilder extends ConfigurationBuilder
 {
-
    private final ConfigurationBuilder wrapped;
    private final RuleBuilder rule;
 
-   public ConfigurationRuleBuilder(final ConfigurationBuilder config, final RuleBuilder rule)
+   ConfigurationRuleBuilder(final ConfigurationBuilder config, final RuleBuilder rule)
    {
       this.wrapped = config;
       this.rule = rule;
@@ -55,7 +54,8 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    /**
-    * Order matters.
+    * Specify the {@link Operation} to be performed when this {@link Rule} is invoked. (May be a composite
+    * {@link Operation})
     */
    public ConfigurationRuleBuilder perform(final Operation operation)
    {

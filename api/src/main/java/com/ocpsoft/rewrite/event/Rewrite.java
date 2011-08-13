@@ -26,5 +26,9 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
  */
 public interface Rewrite
 {
+   /**
+    * Get the {@link Context} object associated with the current {@link Rewrite} event. This {@link Context} is created
+    * at the start of a {@link Rewrite} event, and is destroyed once the {@link Rewrite} event is complete.
+    */
    public Context getRewriteContext();
 }

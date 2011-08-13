@@ -28,7 +28,7 @@ import com.ocpsoft.rewrite.servlet.spi.ExpressionLanguageProvider;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class SeamSolderElProvider implements ExpressionLanguageProvider
+public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
 {
    @Inject
    private Expressions expressions;
@@ -47,7 +47,7 @@ public class SeamSolderElProvider implements ExpressionLanguageProvider
       if (getExpectedType(expressions.getELContext(), expressions.getExpressionFactory(), el).isArray())
       {
          Object[] toInject = null;
-         if (!value.getClass().isArray())
+         if ((value != null) && !value.getClass().isArray())
          {
             toInject = new Object[] { value };
          }
@@ -59,7 +59,7 @@ public class SeamSolderElProvider implements ExpressionLanguageProvider
       else
       {
          Object toInject = value;
-         if (value.getClass().isArray())
+         if ((value != null) && value.getClass().isArray())
          {
             Object[] array = (Object[]) value;
             if (array.length > 0)
