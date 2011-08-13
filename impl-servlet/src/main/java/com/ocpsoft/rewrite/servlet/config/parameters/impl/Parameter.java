@@ -44,7 +44,9 @@ public class Parameter extends DefaultBindable<Parameter, Binding>
    {
       this.capture = capture;
 
-      // Set up default binding to evaluation context.
+      /*
+       *  Set up default binding to evaluation context.
+       */
       this.bindsTo(Evaluation.property(getName()));
    }
 

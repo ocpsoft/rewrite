@@ -33,6 +33,8 @@ import com.ocpsoft.rewrite.servlet.parse.ParseTools;
 import com.ocpsoft.rewrite.servlet.util.Maps;
 
 /**
+ * An {@link String} expression containing a parameterized pattern.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ParameterizedExpression
@@ -41,6 +43,9 @@ public class ParameterizedExpression
    private final char[] chars;
    private final Map<String, Parameter> params = new LinkedHashMap<String, Parameter>();
 
+   /**
+    * Create a new {@link ParameterizedExpression} instance.
+    */
    public ParameterizedExpression(final String pattern)
    {
       chars = pattern.toCharArray();
@@ -69,16 +74,26 @@ public class ParameterizedExpression
       }
    }
 
+   /**
+    * Get all {@link Parameter} instances detected during expression parsing.
+    */
    public Map<String, Parameter> getParameters()
    {
       return params;
    }
 
+   /**
+    * Use this expression to build a {@link String} from the given pattern and values.
+    */
    public String build(final HttpServletRewrite event, final EvaluationContext context)
    {
       return build(extractBoundValues(event, context));
    }
 
+   /**
+    * Use this expression to build a {@link String} from the given pattern and values. Enforces that the number of keys
+    * passed must equal the number of expression parameters.
+    */
    public String build(final Map<String, List<Object>> values)
    {
 
@@ -90,7 +105,10 @@ public class ParameterizedExpression
       return buildUnsafe(values);
    }
 
-   public String buildUnsafe(Map<String, List<Object>> values)
+   /**
+    * Use this expression to build a {@link String} from the given pattern and values.
+    */
+   public String buildUnsafe(final Map<String, List<Object>> values)
    {
       StringBuilder builder = new StringBuilder();
       CapturingGroup last = null;
@@ -125,7 +143,10 @@ public class ParameterizedExpression
       return builder.toString();
    }
 
-   public boolean matches(final String path)
+   /**
+    * Return true if this expression matches the given {@link String}.
+    */
+   public boolean matches(final String value)
    {
       if (pattern == null)
       {
@@ -165,11 +186,11 @@ public class ParameterizedExpression
          pattern = Pattern.compile(patternBuilder.toString());
       }
 
-      return pattern.matcher(path).matches();
+      return pattern.matcher(value).matches();
    }
 
    /**
-    * Matches against the given URLEncoded path
+    * Parses the given string if it matches this expression. Returns a {@link Parameter}-value map of parsed values.
     */
    public Map<Parameter, String[]> parseEncoded(final String path)
    {
@@ -215,11 +236,18 @@ public class ParameterizedExpression
       return null;
    }
 
+   /**
+    * Get the {@link Parameter} with the given name. Return null if no such {@link Parameter} exists.
+    */
    public Parameter getParameter(final String name)
    {
       return params.get(name);
    }
 
+   /**
+    * Extract bound values from configured {@link Binding} instances. Return a {@link Map} of the extracted key-value
+    * pairs.
+    */
    public Map<String, List<Object>> extractBoundValues(final HttpServletRewrite event, final EvaluationContext context)
    {
       Map<String, List<Object>> result = new LinkedHashMap<String, List<Object>>();
@@ -247,6 +275,9 @@ public class ParameterizedExpression
       return result;
    }
 
+   /**
+    * Get a {@link List} of all defined {@link Parameter} names.
+    */
    public List<String> getParameterNames()
    {
       return new ArrayList<String>(params.keySet());

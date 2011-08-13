@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.servlet.config.parameters;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.ocpsoft.rewrite.bind.Bindable;
@@ -29,13 +29,17 @@ import com.ocpsoft.rewrite.bind.Binding;
  */
 public class DefaultBindable<T extends Bindable<T, B>, B extends Binding> implements Bindable<T, B>
 {
-   private final List<B> bindings = new ArrayList<B>();
+   private final LinkedList<B> bindings = new LinkedList<B>();
 
    @Override
    @SuppressWarnings("unchecked")
    public T bindsTo(final B binding)
    {
-      this.bindings.add(binding);
+      /*
+       * Bindings must be added to the front of the list, since we want the 
+       * ability to override the default binding if necessary.
+       */
+      this.bindings.addFirst(binding);
       return (T) this;
    }
 

@@ -33,8 +33,8 @@ public class ParameterBuilder implements Parameterized<ParameterBuilder>
       this.parameter = parameter;
    }
 
-   /*
-    * ParameterBuilder 
+   /**
+    * The {@link Parameter} must match the given pattern.
     */
    public ParameterBuilder matches(final String pattern)
    {
@@ -42,30 +42,34 @@ public class ParameterBuilder implements Parameterized<ParameterBuilder>
       return this;
    }
 
+   /**
+    * The {@link Parameter} binds to the given {@link Binding}
+    */
    public ParameterBuilder bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);
       return this;
    }
 
-   /*
-    * Parameterized<?>
-    */
+   @Override
    public ParameterBuilder where(final String param)
    {
       return parent.where(param);
    }
 
+   @Override
    public ParameterBuilder where(final String param, final String pattern)
    {
       return parent.where(param, pattern);
    }
 
+   @Override
    public ParameterBuilder where(final String param, final String pattern, final Binding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
+   @Override
    public ParameterBuilder where(final String param, final Binding binding)
    {
       return parent.where(param, binding);

@@ -49,14 +49,14 @@ public class TuckeyConfigurationProviderTest extends RewriteTestBase
    public void testConfigurationIntegratesWithRedirectFlow()
    {
       HttpAction<HttpGet> action = get("/some/olddir/value");
-      Assert.assertEquals("/very/newdir/value", action.getRelativeURL());
+      Assert.assertEquals("/very/newdir/value", action.getCurrentRelativeURL());
    }
 
    @Test
    public void testConfigurationIntegratesWithForwardFlow()
    {
       HttpAction<HttpGet> action = get("/some/fordir/value");
-      Assert.assertEquals("/very/newdir/value", action.getRelativeURL());
+      Assert.assertEquals("/very/newdir/value", action.getCurrentRelativeURL());
    }
 
 }

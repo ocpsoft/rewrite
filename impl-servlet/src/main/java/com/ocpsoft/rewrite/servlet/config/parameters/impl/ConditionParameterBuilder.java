@@ -37,8 +37,8 @@ public class ConditionParameterBuilder implements Condition, ParameterizedCondit
       this.parameter = parameter;
    }
 
-   /*
-    * ParameterBuilder 
+   /**
+    * The {@link Condition} must match the given pattern.
     */
    public ConditionParameterBuilder matches(final String pattern)
    {
@@ -46,50 +46,58 @@ public class ConditionParameterBuilder implements Condition, ParameterizedCondit
       return this;
    }
 
+   /**
+    * The {@link Condition} binds to the given {@link Binding}.
+    */
    public ConditionParameterBuilder bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);
       return this;
    }
 
-   /*
-    * Parameterized<?>
-    */
+   @Override
    public ConditionParameterBuilder where(final String param)
    {
       return parent.where(param);
    }
 
+   @Override
    public ConditionParameterBuilder where(final String param, final String pattern)
    {
       return parent.where(param, pattern);
    }
 
+   @Override
    public ConditionParameterBuilder where(final String param, final String pattern, final Binding binding)
    {
       return parent.where(param, pattern, binding);
    }
 
+   @Override
    public ConditionParameterBuilder where(final String param, final Binding binding)
    {
       return parent.where(param, binding);
    }
 
+   @Override
    public ConditionBuilder and(final Condition condition)
    {
       return parent.and(condition);
    }
 
+   @Override
    public ConditionBuilder andNot(final Condition condition)
    {
       return parent.andNot(condition);
    }
 
+   @Override
    public ConditionBuilder or(final Condition condition)
    {
       return parent.or(condition);
    }
 
+   @Override
    public ConditionBuilder orNot(final Condition condition)
    {
       return parent.orNot(condition);

@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.exception.RewriteException;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -63,7 +64,7 @@ public abstract class Bindings
                }
             }
             catch (Exception e) {
-               return;
+               throw new RewriteException("Failed to bind value [" + value + "] to binding [" + binding + "]", e);
             }
          }
       }

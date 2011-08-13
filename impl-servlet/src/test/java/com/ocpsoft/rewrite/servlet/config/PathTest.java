@@ -24,13 +24,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.ocpsoft.rewrite.bind.DefaultConverter;
-import com.ocpsoft.rewrite.bind.DefaultValidator;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
-import com.ocpsoft.rewrite.servlet.config.bind.El;
 import com.ocpsoft.rewrite.servlet.config.parameters.MockBinding;
 import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
 import com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
@@ -75,35 +72,14 @@ public class PathTest
 
       List<Operation> operations = context.getPreOperations();
       Assert.assertEquals(2, operations.size());
-      operations.get(1).perform(rewrite, context);
+      for (Operation operation : operations) {
+         operation.perform(rewrite, context);
+      }
 
       Assert.assertTrue(mockBinding.isConverted());
       Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isBound());
-   }
-
-   public void sandbox()
-   {
-      // ExtendedPath.matches("/path/{id;person.id;profile.id =~ /[0-9]+/}");
-      // Path.matches("/path/{id:person.id:profile.id : [0-9]+ ");
-
-      Path.matches("/path/{id}/{other}");
-
-      Path.matches("/path/{id}/{other}").where("id");
-      Path.matches("/path/{id}/{other}").where("id", "[0-9]+");
-      Path.matches("/path/{id}/{other}").where("id", "[0-9]+", El.property("person.id"));
-      Path.matches("/path/{id}/{other}").where("id", "[0-9]+", El.property("person.id", DefaultConverter.class));
-      Path.matches("/path/{id}/{other}")
-               .where("id", "[0-9]+", El.property("person.id", DefaultConverter.class, DefaultValidator.class));
-
-      Path.matches("/path/{id}/{other}")
-               .where("id")
-               .matches("[0-9]+")
-               .bindsTo(El.property("person.id").convertedBy(DefaultConverter.class)
-                        .validatedBy(DefaultValidator.class))
-
-               .where("other")
-               .bindsTo(El.property("#{profile.id}"));
+      Assert.assertTrue(mockBinding.isSubmitted());
+      Assert.assertEquals("path", mockBinding.getBoundValue());
    }
 
    @Test

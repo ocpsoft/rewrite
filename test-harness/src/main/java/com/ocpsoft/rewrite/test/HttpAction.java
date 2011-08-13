@@ -73,7 +73,7 @@ public class HttpAction<T extends HttpRequest>
    /**
     * Return the current URL excluding host or context root.
     */
-   public String getRelativeURL()
+   public String getCurrentRelativeURL()
    {
       if (!getCurrentURL().startsWith(getHost()))
       {

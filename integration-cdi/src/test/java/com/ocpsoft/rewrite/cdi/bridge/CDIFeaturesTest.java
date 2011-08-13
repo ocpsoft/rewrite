@@ -20,6 +20,7 @@ import junit.framework.Assert;
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,13 +34,15 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * 
  */
 @RunWith(Arquillian.class)
-public class RewriteProviderBridgeTest extends RewriteTestBase
+public class CDIFeaturesTest extends RewriteTestBase
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
-               .addPackages(true, CDIRoot.class.getPackage());
+               .addPackages(true, CDIRoot.class.getPackage())
+               .addAsResource(new StringAsset("com.ocpsoft.rewrite.cdi.bind.BindingTestConfigProvider"),
+                        "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
 
       return deployment;
    }
@@ -57,5 +60,13 @@ public class RewriteProviderBridgeTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/redirect-301");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertEquals("/outbound-rewritten", action.getCurrentURL());
+   }
+
+   @Test
+   public void testELExpressionBinding()
+   {
+      HttpAction<HttpGet> action = get("/one/2");
+      Assert.assertEquals("/2/one", action.getCurrentRelativeURL());
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 }

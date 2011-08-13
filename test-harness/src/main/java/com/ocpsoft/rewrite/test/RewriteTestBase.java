@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
+import javax.el.ExpressionFactory;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpResponse;
@@ -60,6 +61,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.junit.runner.RunWith;
+
+import com.sun.el.ExpressionFactoryImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -80,7 +83,17 @@ public class RewriteTestBase
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
                .addAsLibraries(rewrite)
-               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.1.Final"))
+               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.2.Final"))
+
+               /*
+                * Set the EL implementation
+                */
+               .addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"))
+               .addAsServiceProvider(ExpressionFactory.class, ExpressionFactoryImpl.class)
+
+               /*
+                * Set up container configuration 
+                */
                .setWebXML("jetty-web.xml")
                .addAsWebResource(new StringAsset("<beans/>"), ArchivePaths.create("WEB-INF/beans.xml"))
                .addAsWebResource("jetty-env.xml", ArchivePaths.create("WEB-INF/jetty-env.xml"))

@@ -37,12 +37,18 @@ public class OperationParameterBuilder implements ParameterizedOperation<Operati
       this.parameter = parameter;
    }
 
+   /**
+    * The {@link Parameter} must match the given pattern.
+    */
    public OperationParameterBuilder matches(final String pattern)
    {
       parameter.matches(pattern);
       return this;
    }
 
+   /**
+    * The {@link Parameter} binds to the given {@link Binding}
+    */
    public OperationParameterBuilder bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);

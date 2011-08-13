@@ -7,10 +7,11 @@ import com.ocpsoft.rewrite.event.Rewrite;
 public class MockBinding implements Binding
 {
 
-   private boolean bound;
+   private boolean submitted;
    private boolean validated;
    private boolean converted;
    private boolean extracted;
+   private Object value;
 
    @Override
    public boolean validates(final Rewrite event, final EvaluationContext context, final Object value)
@@ -31,9 +32,9 @@ public class MockBinding implements Binding
       return converted;
    }
 
-   public boolean isBound()
+   public boolean isSubmitted()
    {
-      return bound;
+      return submitted;
    }
 
    public boolean isValidated()
@@ -49,7 +50,18 @@ public class MockBinding implements Binding
    @Override
    public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
    {
-      bound = true;
+      if (value.getClass().isArray())
+      {
+         Object[] temp = (Object[]) value;
+         if (temp.length > 0)
+         {
+            this.value = temp[0];
+         }
+      }
+      else
+         this.value = value;
+
+      submitted = true;
       return null;
    }
 
@@ -70,5 +82,10 @@ public class MockBinding implements Binding
    public boolean supportsSubmission()
    {
       return true;
+   }
+
+   public Object getBoundValue()
+   {
+      return value;
    }
 }
