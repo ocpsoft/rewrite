@@ -19,13 +19,13 @@ import java.util.Map;
 
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.param.ConditionParameterBuilder;
+import com.ocpsoft.rewrite.param.Parameter;
+import com.ocpsoft.rewrite.param.ParameterizedCondition;
 import com.ocpsoft.rewrite.servlet.config.bind.Request;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedCondition;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.Parameter;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
@@ -35,14 +35,14 @@ import com.ocpsoft.rewrite.util.Assert;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition implements ParameterizedCondition<ConditionParameterBuilder>
+public class Path extends HttpCondition implements ParameterizedCondition<ConditionParameterBuilder<String>, String>
 {
-   private final ParameterizedExpression expression;
+   private final ParameterizedPattern expression;
 
    private Path(final String pattern)
    {
       Assert.notNull(pattern, "Path must not be null.");
-      this.expression = new ParameterizedExpression(pattern);
+      this.expression = new ParameterizedPattern("[^/]+", pattern);
    }
 
    /**
@@ -71,33 +71,33 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
     */
    public Path withRequestBinding()
    {
-      for (Parameter parameter : expression.getParameters().values()) {
+      for (Parameter<String> parameter : expression.getParameters().values()) {
          parameter.bindsTo(Request.parameter(parameter.getName()));
       }
       return this;
    }
 
    @Override
-   public ConditionParameterBuilder where(final String param)
+   public ConditionParameterBuilder<String> where(final String param)
    {
-      return new ConditionParameterBuilder(this, expression.getParameter(param));
+      return new ConditionParameterBuilder<String>(this, expression.getParameter(param));
    }
 
    @Override
-   public ConditionParameterBuilder where(final String param, final String pattern)
+   public ConditionParameterBuilder<String> where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
    @Override
-   public ConditionParameterBuilder where(final String param, final String pattern,
+   public ConditionParameterBuilder<String> where(final String param, final String pattern,
             final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public ConditionParameterBuilder where(final String param, final Binding binding)
+   public ConditionParameterBuilder<String> where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -120,19 +120,19 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
 
       if (expression.matches(requestURL))
       {
-         Map<Parameter, String[]> parameters = expression.parseEncoded(requestURL);
-         Bindings.performSubmissions(event, context, parameters);
+         Map<Parameter<String>, String[]> parameters = expression.parseEncoded(requestURL);
+         Bindings.enqueueSubmissions(event, context, parameters);
          return true;
       }
       return false;
    }
 
    /**
-    * Get the underlying {@link ParameterizedExpression} for this {@link Path}
+    * Get the underlying {@link ParameterizedPattern} for this {@link Path}
     * <p>
     * See also: {@link #where(String)}
     */
-   public ParameterizedExpression getPathExpression()
+   public ParameterizedPattern getPathExpression()
    {
       return expression;
    }

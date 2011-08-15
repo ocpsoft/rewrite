@@ -24,16 +24,17 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.bind.Bindable;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.DefaultBindable;
+import com.ocpsoft.rewrite.bind.Evaluation;
+import com.ocpsoft.rewrite.bind.util.Maps;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
-import com.ocpsoft.rewrite.servlet.config.bind.Evaluation;
-import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.servlet.util.Maps;
 import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -42,18 +43,25 @@ import com.ocpsoft.rewrite.util.Assert;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class QueryString extends HttpCondition
+public abstract class QueryString extends HttpCondition implements Bindable<QueryString>
 {
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-   protected final DefaultBindable<?, Binding> bindable = new DefaultBindable();
+   @SuppressWarnings({ "rawtypes" })
+   protected final DefaultBindable<?> bindable = new DefaultBindable();
 
    /**
     * Bind the values of this {@link QueryString} query to the given {@link Binding}.
     */
+   @Override
    public QueryString bindsTo(final Binding binding)
    {
       this.bindable.bindsTo(binding);
       return this;
+   }
+
+   @Override
+   public List<Binding> getBindings()
+   {
+      return bindable.getBindings();
    }
 
    /**
@@ -81,7 +89,7 @@ public abstract class QueryString extends HttpCondition
             {
                List<String> values = new ArrayList<String>();
                values.add(queryString);
-               Bindings.performSubmission(event, context, bindable, values.toArray(new String[] {}));
+               Bindings.enqueueSubmission(event, context, bindable, values.toArray(new String[] {}));
                return true;
             }
             return false;
@@ -104,7 +112,7 @@ public abstract class QueryString extends HttpCondition
 
       return new QueryString() {
          @Override
-         @SuppressWarnings({ "rawtypes", "unchecked" })
+         @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
             Pattern pattern = Pattern.compile(nameRegex);
@@ -130,7 +138,7 @@ public abstract class QueryString extends HttpCondition
             map.put(bindable, values.toArray(new String[] {}));
 
             if (!values.isEmpty())
-               Bindings.performSubmissions(event, context, map);
+               Bindings.enqueueSubmissions(event, context, map);
 
             return !values.isEmpty();
          }
@@ -152,7 +160,7 @@ public abstract class QueryString extends HttpCondition
 
       return new QueryString() {
          @Override
-         @SuppressWarnings({ "rawtypes", "unchecked" })
+         @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
             Pattern pattern = Pattern.compile(valueRegex);
@@ -176,7 +184,7 @@ public abstract class QueryString extends HttpCondition
             }
 
             if (!values.isEmpty())
-               Bindings.performSubmissions(event, context, map);
+               Bindings.enqueueSubmissions(event, context, map);
 
             return !values.isEmpty();
          }

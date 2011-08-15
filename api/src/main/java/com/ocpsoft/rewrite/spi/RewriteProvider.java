@@ -16,8 +16,8 @@
 package com.ocpsoft.rewrite.spi;
 
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.pattern.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.services.Specialized;
+import com.ocpsoft.rewrite.services.Weighted;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

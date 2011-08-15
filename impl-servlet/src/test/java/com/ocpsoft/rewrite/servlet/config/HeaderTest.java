@@ -90,7 +90,7 @@ public class HeaderTest
    @Test(expected = PatternSyntaxException.class)
    public void testBadRegexThrowsException()
    {
-      Header.matches("*Accept-Charset", "blah");
+      Header.matches("*Accept-Charset", "blah").evaluate(rewrite, new MockEvaluationContext());
    }
 
    @Test(expected = IllegalArgumentException.class)

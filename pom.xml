@@ -33,6 +33,7 @@
       <module>test-harness</module>
       <module>api</module>
       <module>api-tests</module>
+      <module>impl-config</module>
       <module>logging-slf4j</module>
       <module>logging-jboss</module>
       <module>config-jodatime</module>
@@ -60,6 +61,11 @@
          <dependency>
             <groupId>com.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-api</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-impl-config</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>

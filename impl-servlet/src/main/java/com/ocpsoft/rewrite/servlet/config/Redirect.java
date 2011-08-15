@@ -17,14 +17,15 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import java.net.URL;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
+import com.ocpsoft.rewrite.param.OperationParameterBuilder;
+import com.ocpsoft.rewrite.param.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -34,15 +35,16 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Redirect extends HttpOperation implements ParameterizedOperation<OperationParameterBuilder>
+public class Redirect extends HttpOperation implements
+         ParameterizedOperation<OperationParameterBuilder<String>, String>
 {
    private final RedirectType type;
 
-   private final ParameterizedExpression location;
+   private final ParameterizedPattern location;
 
    private Redirect(final String location, final RedirectType type)
    {
-      this.location = new ParameterizedExpression(location);
+      this.location = new ParameterizedPattern("[^/]+", location);
       this.type = type;
    }
 
@@ -69,7 +71,8 @@ public class Redirect extends HttpOperation implements ParameterizedOperation<Op
    /**
     * Issue a permanent redirect ( 301 {@link HttpServletResponse#SC_MOVED_PERMANENTLY} ) to the given location. If the
     * given location is not the same as {@link HttpServletRewrite#getURL()}, this will change the browser {@link URL}
-    * and result in a new request.
+    * and result in a new request. Note that in order to redirect within the {@link ServletContext}, you must prepend
+    * the {@link ServletContext#getContextPath()} manually.
     * <p>
     * The given location may be parameterized using the following format:
     * <p>
@@ -91,7 +94,8 @@ public class Redirect extends HttpOperation implements ParameterizedOperation<Op
    /**
     * Issue a temporary redirect ( 302 {@link HttpServletResponse#SC_MOVED_TEMPORARILY} ) to the given location. If the
     * given location is not the same as {@link HttpServletRewrite#getURL()}, this will change the browser {@link URL}
-    * and result in a new request.
+    * and result in a new request. Note that in order to redirect within the {@link ServletContext}, you must prepend
+    * the {@link ServletContext#getContextPath()} manually.
     * <p>
     * The given location may be parameterized using the following format:
     * <p>
@@ -123,26 +127,26 @@ public class Redirect extends HttpOperation implements ParameterizedOperation<Op
    }
 
    @Override
-   public OperationParameterBuilder where(final String param)
+   public OperationParameterBuilder<String> where(final String param)
    {
-      return new OperationParameterBuilder(this, location.getParameter(param));
+      return new OperationParameterBuilder<String>(this, location.getParameter(param));
    }
 
    @Override
-   public OperationParameterBuilder where(final String param, final String pattern)
+   public OperationParameterBuilder<String> where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
    @Override
-   public OperationParameterBuilder where(final String param, final String pattern,
+   public OperationParameterBuilder<String> where(final String param, final String pattern,
             final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public OperationParameterBuilder where(final String param, final Binding binding)
+   public OperationParameterBuilder<String> where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }

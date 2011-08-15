@@ -61,7 +61,7 @@
               <relocations>
                 <relocation>
                   <pattern>org.tuckey.web.filters.urlrewrite</pattern>
-                  <shadedPattern>com.ocpsoft.rewrite.config.tuckey.shade</shadedPattern>
+                  <shadedPattern>com.ocpsoft.rewrite.bind.tuckey.shade</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>

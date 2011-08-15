@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.rewrite.pattern.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.services.Specialized;
+import com.ocpsoft.rewrite.services.Weighted;
 
 /**
  * Provider configuration to the Rewrite runtime environment.

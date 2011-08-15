@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import org.jboss.seam.solder.el.Expressions;
 
-import com.ocpsoft.rewrite.servlet.spi.ExpressionLanguageProvider;
+import com.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

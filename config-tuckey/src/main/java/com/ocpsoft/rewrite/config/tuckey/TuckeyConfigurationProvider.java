@@ -86,26 +86,19 @@ public class TuckeyConfigurationProvider extends HttpConfigurationProvider
 
    private void checkConfLocal(final Conf conf)
    {
-      if (log.isDebugEnabled()) {
-         if (conf.getRules() != null) {
-            log.debug("inited with " + conf.getRules().size() + " rules");
-         }
-         log.debug("conf is " + (conf.isOk() ? "ok" : "NOT ok"));
-      }
       if (conf.isOk() && conf.isEngineEnabled()) {
          urlRewriter = new UrlRewriter(conf);
-         log.info("loaded (conf ok)");
-
+         log.debug("Tuckey UrlRewriteFilter configuration loaded (Status: OK)");
       }
       else {
          if (!conf.isOk()) {
-            log.error("Conf failed to load");
+            log.error("Tuckey UrlRewriteFilter configuration failed (Status: ERROR)");
          }
          if (!conf.isEngineEnabled()) {
-            log.error("Engine explicitly disabled in conf"); // not really an error but we want ot to show in logs
+            log.warn("Tuckey UrlRewriteFilter engine explicitly disabled in configuration");
          }
          if (urlRewriter != null) {
-            log.error("unloading existing conf");
+            log.debug("Tuckey UrlRewriteFilter configuration unloaded");
             urlRewriter = null;
          }
       }

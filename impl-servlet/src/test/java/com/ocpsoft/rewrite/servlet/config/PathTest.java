@@ -26,10 +26,10 @@ import org.mockito.Mockito;
 
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.mock.MockBinding;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
 import com.ocpsoft.rewrite.mock.MockRewrite;
-import com.ocpsoft.rewrite.servlet.config.parameters.MockBinding;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ConditionParameterBuilder;
+import com.ocpsoft.rewrite.param.ConditionParameterBuilder;
 import com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
@@ -65,7 +65,7 @@ public class PathTest
    public void testPathAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      ConditionParameterBuilder path = Path.matches("/application/{seg}")
+      ConditionParameterBuilder<?> path = Path.matches("/application/{seg}")
                .where("seg", mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(path.evaluate(rewrite, context));

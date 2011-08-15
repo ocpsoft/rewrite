@@ -33,15 +33,15 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    @Override
-   public ConfigurationRuleBuilder defineRule()
-   {
-      return wrapped.defineRule();
-   }
-
-   @Override
    public ConfigurationBuilder add(final Rule rule)
    {
       return wrapped.add(rule);
+   }
+
+   @Override
+   public ConfigurationRuleBuilder defineRule()
+   {
+      return wrapped.defineRule();
    }
 
    /**

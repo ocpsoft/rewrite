@@ -1,7 +1,7 @@
 package com.ocpsoft.rewrite.spi;
 
 import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.services.Weighted;
 
 /**
  * SPI for custom logging adapters

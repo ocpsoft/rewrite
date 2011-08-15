@@ -15,9 +15,15 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import java.util.List;
+
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.bind.Bindable;
+import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.DefaultBindable;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -26,9 +32,12 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class DispatchType extends HttpCondition
+public class DispatchType extends HttpCondition implements Bindable<DispatchType>
 {
    private final DispatcherType type;
+
+   @SuppressWarnings("rawtypes")
+   private final DefaultBindable<?> bindable = new DefaultBindable();
 
    private DispatchType(final DispatcherType type)
    {
@@ -38,7 +47,12 @@ public class DispatchType extends HttpCondition
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      return this.type.equals(event.getRequest().getDispatcherType());
+      if (this.type.equals(event.getRequest().getDispatcherType()))
+      {
+         Bindings.enqueueSubmission(event, context, bindable, type);
+         return true;
+      }
+      return false;
    }
 
    /**
@@ -84,6 +98,19 @@ public class DispatchType extends HttpCondition
    public static DispatchType isInclude()
    {
       return new DispatchType(DispatcherType.INCLUDE);
+   }
+
+   @Override
+   public DispatchType bindsTo(final Binding binding)
+   {
+      bindable.bindsTo(binding);
+      return this;
+   }
+
+   @Override
+   public List<Binding> getBindings()
+   {
+      return bindable.getBindings();
    }
 
 }

@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.DefaultBindable;
+import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.servlet.config.bind.Evaluation;
-import com.ocpsoft.rewrite.servlet.config.parameters.DefaultBindable;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -44,8 +44,8 @@ public class RequestParameter extends HttpCondition
    private final Pattern nameRegex;
    private final Pattern value;
 
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-   private final DefaultBindable<?, Binding> bindable = new DefaultBindable();
+   @SuppressWarnings({ "rawtypes" })
+   private final DefaultBindable<?> bindable = new DefaultBindable();
 
    private RequestParameter(final String name, final String nameRegex, final String valueRegex)
    {
@@ -158,7 +158,7 @@ public class RequestParameter extends HttpCondition
 
       if (matchedParameter != null)
       {
-         Bindings.performSubmission(event, context, bindable, values.toArray(new String[] {}));
+         Bindings.enqueueSubmission(event, context, bindable, values.toArray(new String[] {}));
          return true;
       }
 

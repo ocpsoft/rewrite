@@ -20,11 +20,11 @@ import java.util.Map;
 import com.ocpsoft.rewrite.bind.BindingBuilder;
 import com.ocpsoft.rewrite.bind.Converter;
 import com.ocpsoft.rewrite.bind.Validator;
+import com.ocpsoft.rewrite.bind.util.Maps;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedRequest;
-import com.ocpsoft.rewrite.servlet.util.Maps;
 
 /**
  * // TODO arquillian test

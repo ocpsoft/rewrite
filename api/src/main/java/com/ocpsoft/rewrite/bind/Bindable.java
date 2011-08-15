@@ -22,15 +22,15 @@ import java.util.List;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Bindable<T extends Bindable<T, B>, B extends Binding>
+public interface Bindable<T extends Bindable<T>>
 {
    /**
     * Store the value of the given {@link Binding}
     */
-   T bindsTo(B binding);
+   T bindsTo(Binding binding);
 
    /**
     * Retrieve all values of the given {@link Binding}
     */
-   List<B> getBindings();
+   List<Binding> getBindings();
 }

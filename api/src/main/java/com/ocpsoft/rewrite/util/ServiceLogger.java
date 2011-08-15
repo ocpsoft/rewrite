@@ -18,7 +18,7 @@ package com.ocpsoft.rewrite.util;
 import java.util.List;
 
 import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.services.Weighted;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

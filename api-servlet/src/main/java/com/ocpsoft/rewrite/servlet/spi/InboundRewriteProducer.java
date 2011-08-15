@@ -18,8 +18,8 @@ package com.ocpsoft.rewrite.servlet.spi;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.rewrite.pattern.Specialized;
-import com.ocpsoft.rewrite.pattern.Weighted;
+import com.ocpsoft.rewrite.services.Specialized;
+import com.ocpsoft.rewrite.services.Weighted;
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 
 /**

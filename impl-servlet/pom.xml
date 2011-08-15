@@ -19,6 +19,10 @@
       </dependency>
       <dependency>
          <groupId>com.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl-config</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api-servlet</artifactId>
       </dependency>
       <dependency>

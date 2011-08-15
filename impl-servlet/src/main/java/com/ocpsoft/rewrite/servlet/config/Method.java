@@ -15,8 +15,14 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.bind.Bindable;
+import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.DefaultBindable;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -25,9 +31,12 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Method extends HttpCondition
+public class Method extends HttpCondition implements Bindable<Method>
 {
    private final HttpMethod method;
+
+   @SuppressWarnings("rawtypes")
+   private final DefaultBindable<?> bindable = new DefaultBindable();
 
    private enum HttpMethod
    {
@@ -98,7 +107,25 @@ public class Method extends HttpCondition
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      return this.method.equals(HttpMethod.valueOf(event.getRequest().getMethod()));
+      if (this.method.equals(HttpMethod.valueOf(event.getRequest().getMethod())))
+      {
+         Bindings.enqueueSubmission(event, context, bindable, method.name());
+         return true;
+      }
+      return false;
+   }
+
+   @Override
+   public Method bindsTo(final Binding binding)
+   {
+      bindable.bindsTo(binding);
+      return this;
+   }
+
+   @Override
+   public List<Binding> getBindings()
+   {
+      return bindable.getBindings();
    }
 
 }

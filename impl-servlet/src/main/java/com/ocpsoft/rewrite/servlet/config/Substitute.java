@@ -16,13 +16,13 @@
 package com.ocpsoft.rewrite.servlet.config;
 
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
-import com.ocpsoft.rewrite.servlet.config.parameters.ParameterizedOperation;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.OperationParameterBuilder;
-import com.ocpsoft.rewrite.servlet.config.parameters.impl.ParameterizedExpression;
+import com.ocpsoft.rewrite.param.OperationParameterBuilder;
+import com.ocpsoft.rewrite.param.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -35,14 +35,15 @@ import com.ocpsoft.rewrite.util.Assert;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Substitute extends HttpOperation implements ParameterizedOperation<OperationParameterBuilder>
+public class Substitute extends HttpOperation implements
+         ParameterizedOperation<OperationParameterBuilder<String>, String>
 {
-   private final ParameterizedExpression location;
+   private final ParameterizedPattern location;
 
    private Substitute(final String location)
    {
       Assert.notNull(location, "Location must not be null.");
-      this.location = new ParameterizedExpression(location);
+      this.location = new ParameterizedPattern("[^/]+", location);
    }
 
    /**
@@ -88,23 +89,23 @@ public class Substitute extends HttpOperation implements ParameterizedOperation<
    }
 
    @Override
-   public OperationParameterBuilder where(final String param)
+   public OperationParameterBuilder<String> where(final String param)
    {
-      return new OperationParameterBuilder(this, location.getParameter(param));
+      return new OperationParameterBuilder<String>(this, location.getParameter(param));
    }
 
-   public OperationParameterBuilder where(final String param, final String pattern)
+   public OperationParameterBuilder<String> where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
-   public OperationParameterBuilder where(final String param, final String pattern,
+   public OperationParameterBuilder<String> where(final String param, final String pattern,
             final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
-   public OperationParameterBuilder where(final String param, final Binding binding)
+   public OperationParameterBuilder<String> where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }

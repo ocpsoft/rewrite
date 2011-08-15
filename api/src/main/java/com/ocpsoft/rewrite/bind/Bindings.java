@@ -27,25 +27,33 @@ import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
 
 /**
+ * Utility class for interacting with {@link Bindable} instances.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class Bindings
 {
-   public static void performSubmission(final Rewrite event, final EvaluationContext context,
+   /**
+    * Submit the given value to all registered {@link Binding} instances of the given {@link Bindable}.
+    */
+   public static void enqueueSubmission(final Rewrite event, final EvaluationContext context,
             final Bindable bindable, final Object value)
    {
       Map<Bindable, Object> map = new LinkedHashMap<Bindable, Object>();
       map.put(bindable, value);
-      performSubmissions(event, context, map);
+      enqueueSubmissions(event, context, map);
    }
 
-   public static void performSubmissions(final Rewrite event, final EvaluationContext context,
-            final Map<? extends Bindable, ? extends Object> parameters)
+   /**
+    * Submit the given value to all registered {@link Binding} instances of all given {@link Bindable} instances.
+    */
+   public static void enqueueSubmissions(final Rewrite event, final EvaluationContext context,
+            final Map<? extends Bindable, ? extends Object> map)
    {
       List<Operation> operations = new ArrayList<Operation>();
-      for (Entry<? extends Bindable, ? extends Object> entry : parameters.entrySet()) {
+      for (Entry<? extends Bindable, ? extends Object> entry : map.entrySet()) {
 
          Bindable parameter = entry.getKey();
          Object value = entry.getValue();
@@ -74,9 +82,29 @@ public abstract class Bindings
       }
    }
 
+   /**
+    * Extract bound values from configured {@link Binding} instances. Return a {@link List} of the extracted values.
+    */
+   public static List<Object> performRetrieval(final Rewrite event, final EvaluationContext context,
+            final Bindable<?> bindable)
+   {
+      List<Object> result = new ArrayList<Object>();
+
+      for (Binding binding : bindable.getBindings())
+      {
+         Object boundValue = binding.retrieve(event, context);
+         result.add(boundValue);
+      }
+      return result;
+   }
+
+   /**
+    * Used to store bindings until all conditions have been met.
+    * 
+    * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+    */
    private static class BindingOperation implements Operation
    {
-
       private final Binding binding;
       private final Object value;
 
@@ -91,6 +119,5 @@ public abstract class Bindings
       {
          binding.submit(event, context, value);
       }
-
    }
 }

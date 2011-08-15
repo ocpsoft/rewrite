@@ -28,8 +28,8 @@ import javax.servlet.ServletResponse;
 
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.rewrite.services.WeightedComparator;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.impl.RewriteContextImpl;

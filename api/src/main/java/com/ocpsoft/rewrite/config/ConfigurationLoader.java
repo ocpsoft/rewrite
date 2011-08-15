@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.rewrite.services.WeightedComparator;
 import com.ocpsoft.rewrite.util.Iterators;
 
 /**

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import com.ocpsoft.rewrite.pattern.WeightedComparator;
+import com.ocpsoft.rewrite.services.WeightedComparator;
 import com.ocpsoft.rewrite.spi.LogAdapterFactory;
 import com.ocpsoft.rewrite.util.Iterators;
 

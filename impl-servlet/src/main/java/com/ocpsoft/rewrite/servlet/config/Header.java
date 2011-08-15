@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+* Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,14 @@
 package com.ocpsoft.rewrite.servlet.config;
 
 import java.util.Collections;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
@@ -31,15 +34,15 @@ import com.ocpsoft.rewrite.util.Assert;
  */
 public class Header extends HttpCondition
 {
-   private final Pattern name;
-   private final Pattern value;
+   private final ParameterizedPattern name;
+   private final ParameterizedPattern value;
 
-   private Header(final String nameRegex, final String valueRegex)
+   private Header(final String name, final String value)
    {
-      Assert.notNull(nameRegex, "Header name pattern cannot be null.");
-      Assert.notNull(valueRegex, "Header value pattern cannot be null.");
-      this.name = Pattern.compile(nameRegex);
-      this.value = Pattern.compile(valueRegex);
+      Assert.notNull(name, "Header name pattern cannot be null.");
+      Assert.notNull(value, "Header value pattern cannot be null.");
+      this.name = new ParameterizedPattern(name);
+      this.value = new ParameterizedPattern(value);
    }
 
    /**
@@ -47,12 +50,12 @@ public class Header extends HttpCondition
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
     * 
-    * @param nameRegex Regular expression matching the header name
-    * @param valueRegex Regular expression matching the header value
+    * @param name Regular expression matching the header name
+    * @param value Regular expression matching the header value
     */
-   public static Header matches(final String nameRegex, final String valueRegex)
+   public static Header matches(final String name, final String value)
    {
-      return new Header(nameRegex, valueRegex);
+      return new Header(name, value);
    }
 
    /**
@@ -61,22 +64,22 @@ public class Header extends HttpCondition
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
     * 
-    * @param nameRegex Regular expression matching the header name
+    * @param name Regular expression matching the header name
     */
-   public static Header exists(final String nameRegex)
+   public static Header exists(final String name)
    {
-      return new Header(nameRegex, ".*");
+      return new Header(name, ".*");
    }
 
    /**
     * Return a {@link Header} condition that matches only against the existence of a header with value matching the
     * given pattern. The header name is ignored.
     * 
-    * @param valueRegex Regular expression matching the header value
+    * @param value Regular expression matching the header value
     */
-   public static Header valueExists(final String valueRegex)
+   public static Header valueExists(final String value)
    {
-      return new Header(".*", valueRegex);
+      return new Header(".*", value);
    }
 
    @Override
@@ -85,8 +88,14 @@ public class Header extends HttpCondition
       HttpServletRequest request = event.getRequest();
       for (String header : Collections.list(request.getHeaderNames()))
       {
-         if (name.matcher(header).matches() && matchesValue(request, header))
+         if (name.matches(header) && matchesValue(request, header))
          {
+            Map<Parameter<String>, String[]> parameters = name.parseEncoded(header);
+            Bindings.enqueueSubmissions(event, context, parameters);
+
+            parameters = value.parseEncoded(header);
+            Bindings.enqueueSubmissions(event, context, parameters);
+
             return true;
          }
       }
@@ -97,7 +106,7 @@ public class Header extends HttpCondition
    {
       for (String contents : Collections.list(request.getHeaders(header)))
       {
-         if (value.matcher(contents).matches())
+         if (value.matches(contents))
          {
             return true;
          }

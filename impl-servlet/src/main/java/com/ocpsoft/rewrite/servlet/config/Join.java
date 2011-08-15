@@ -20,6 +20,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
@@ -27,7 +28,9 @@ import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.servlet.config.parameters.Parameterized;
+import com.ocpsoft.rewrite.param.Parameter;
+import com.ocpsoft.rewrite.param.Parameterized;
+import com.ocpsoft.rewrite.servlet.config.Join.JoinParameterBuilder;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 
@@ -37,14 +40,18 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Join implements Rule, Parameterized<LinkParameter>
+public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
 {
    private static final String CURRENT_JOIN = Join.class.getName() + "_current";
+
    private String id;
+
    private final String pattern;
    private String resource;
    private final Path path;
+
    private Operation operation;
+   private Condition condition;
 
    protected Join(final String pattern)
    {
@@ -66,21 +73,23 @@ public class Join implements Rule, Parameterized<LinkParameter>
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      if (event instanceof HttpInboundServletRewrite)
+      if ((condition == null) || condition.evaluate(event, context))
       {
-         path.withRequestBinding();
-         return path.evaluate(event, context);
-      }
-
-      else if (event instanceof HttpOutboundServletRewrite)
-      {
-         List<String> parameterNames = path.getPathExpression().getParameterNames();
-         ConditionBuilder outbound = Path.matches(resource);
-         for (String name : parameterNames)
+         if (event instanceof HttpInboundServletRewrite)
          {
-            outbound = outbound.and(QueryString.parameterExists(name));
+            path.withRequestBinding();
+            return path.evaluate(event, context);
          }
-         return outbound.evaluate(event, context);
+         else if (event instanceof HttpOutboundServletRewrite)
+         {
+            List<String> parameterNames = path.getPathExpression().getParameterNames();
+            ConditionBuilder outbound = Path.matches(resource);
+            for (String name : parameterNames)
+            {
+               outbound = outbound.and(QueryString.parameterExists(name));
+            }
+            return outbound.evaluate(event, context);
+         }
       }
 
       return false;
@@ -118,25 +127,25 @@ public class Join implements Rule, Parameterized<LinkParameter>
    }
 
    @Override
-   public LinkParameter where(final String parameter)
+   public JoinParameterBuilder where(final String parameter)
    {
-      return new LinkParameter(this, path.getPathExpression().getParameter(parameter));
+      return new JoinParameterBuilder(this, path.getPathExpression().getParameter(parameter));
    }
 
    @Override
-   public LinkParameter where(final String param, final String pattern)
+   public JoinParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
    @Override
-   public LinkParameter where(final String param, final String pattern, final Binding binding)
+   public JoinParameterBuilder where(final String param, final String pattern, final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public LinkParameter where(final String param, final Binding binding)
+   public JoinParameterBuilder where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -147,7 +156,13 @@ public class Join implements Rule, Parameterized<LinkParameter>
       return id;
    }
 
-   public Join and(final Operation operation)
+   public Join when(final Condition condition)
+   {
+      this.condition = condition;
+      return this;
+   }
+
+   public Join perform(final Operation operation)
    {
       this.operation = operation;
       return this;
@@ -160,5 +175,69 @@ public class Join implements Rule, Parameterized<LinkParameter>
    {
       this.id = id;
       return this;
+   }
+
+   /**
+    * Builder for {@link Join} specific {@link Parameter}
+    * 
+    * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+    * 
+    */
+   public class JoinParameterBuilder implements Parameterized<JoinParameterBuilder, String>
+   {
+      private final Join parent;
+      private final Parameter<String> parameter;
+
+      public JoinParameterBuilder(final Join link, final Parameter<String> parameter)
+      {
+         this.parent = link;
+         this.parameter = parameter;
+      }
+
+      public JoinParameterBuilder matches(final String pattern)
+      {
+         parameter.matches(pattern);
+         return this;
+      }
+
+      public JoinParameterBuilder bindsTo(final Binding binding)
+      {
+         parameter.bindsTo(binding);
+         return this;
+      }
+
+      @Override
+      public JoinParameterBuilder where(final String param)
+      {
+         return parent.where(param);
+      }
+
+      @Override
+      public JoinParameterBuilder where(final String param, final String pattern)
+      {
+         return parent.where(param, pattern);
+      }
+
+      @Override
+      public JoinParameterBuilder where(final String param, final String pattern, final Binding binding)
+      {
+         return parent.where(param, pattern, binding);
+      }
+
+      @Override
+      public JoinParameterBuilder where(final String param, final Binding binding)
+      {
+         return parent.where(param, binding);
+      }
+
+      public Join when(final Condition condition)
+      {
+         return parent.when(condition);
+      }
+
+      public Join perform(final Operation operation)
+      {
+         return parent.perform(operation);
+      }
    }
 }
