@@ -8,8 +8,18 @@
    </rule>
    
    <rule>
+      <from>^/some/fordir/nonredirect$</from>
+      <to type="forward">/</to>
+   </rule>
+   
+   <rule>
       <from>^/some/fordir/(.*)$</from>
       <to type="forward">/some/olddir/$1</to>
+   </rule>
+   
+   <rule>
+      <from>^/some/404/dir$</from>
+      <to type="forward">/404me</to>
    </rule>
 
    <rule match-type="wildcard">

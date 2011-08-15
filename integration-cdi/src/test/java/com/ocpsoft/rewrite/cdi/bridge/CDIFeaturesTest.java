@@ -59,14 +59,22 @@ public class CDIFeaturesTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/redirect-301");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("/outbound-rewritten", action.getCurrentURL());
+      Assert.assertEquals("/outbound-rewritten", action.getCurrentContextRelativeURL());
    }
 
    @Test
-   public void testELExpressionBinding()
+   public void testParameterExpressionBinding()
    {
       HttpAction<HttpGet> action = get("/one/2");
-      Assert.assertEquals("/2/one", action.getCurrentRelativeURL());
+      Assert.assertEquals("/2/one", action.getCurrentContextRelativeURL());
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testParameterRegexValidationIgnoresInvalidInput()
+   {
+      HttpAction<HttpGet> action = get("/one/two");
+      Assert.assertEquals("/one/two", action.getCurrentContextRelativeURL());
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 }

@@ -38,8 +38,6 @@ package com.ocpsoft.rewrite.test;
  */
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collection;
 
 import javax.el.ExpressionFactory;
@@ -119,22 +117,14 @@ public class RewriteTestBase
     */
    protected HttpAction<HttpGet> get(final String path)
    {
-      DefaultHttpClient httpClient = new DefaultHttpClient();
+      DefaultHttpClient client = new DefaultHttpClient();
       try
       {
-         String url = baseURL().toExternalForm();
-         if (url.endsWith("/"))
-         {
-            url = url.substring(0, url.length() - 1);
-         }
-         String baseUrlString = url;
-         url = url + path;
-
-         HttpGet httpGet = new HttpGet(url);
+         HttpGet request = new HttpGet(getBaseURL() + getContextPath() + path);
          HttpContext context = new BasicHttpContext();
-         HttpResponse response = httpClient.execute(httpGet, context);
+         HttpResponse response = client.execute(request, context);
 
-         return new HttpAction<HttpGet>(httpClient, httpGet, context, response, baseUrlString, baseContext());
+         return new HttpAction<HttpGet>(client, context, request, response, getBaseURL(), getContextPath());
       }
       catch (Exception e)
       {
@@ -142,17 +132,17 @@ public class RewriteTestBase
       }
    }
 
-   public URL baseURL()
+   public String getBaseURL()
    {
-      try {
-         return new URL("http://localhost:9090" + baseContext());
+      String baseUrl = "http://localhost:9090";
+      if (baseUrl.endsWith("/"))
+      {
+         baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
       }
-      catch (MalformedURLException e) {
-         throw new RuntimeException(e);
-      }
+      return baseUrl;
    }
 
-   protected String baseContext()
+   protected String getContextPath()
    {
       return "/rewrite-test";
    }

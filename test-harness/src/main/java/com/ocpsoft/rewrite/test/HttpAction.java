@@ -40,11 +40,11 @@ public class HttpAction<T extends HttpRequest>
    private final String baseUrl;
    private final String contextPath;
 
-   public HttpAction(final HttpClient httpClient, final T httpGet, final HttpContext context,
+   public HttpAction(final HttpClient client, final HttpContext context, final T request,
             final HttpResponse response, final String baseUrl, final String contextPath)
    {
-      this.client = httpClient;
-      this.request = httpGet;
+      this.client = client;
+      this.request = request;
       this.context = context;
       this.response = response;
       this.baseUrl = baseUrl;
@@ -73,14 +73,14 @@ public class HttpAction<T extends HttpRequest>
    /**
     * Return the current URL excluding host or context root.
     */
-   public String getCurrentRelativeURL()
+   public String getCurrentContextRelativeURL()
    {
-      if (!getCurrentURL().startsWith(getHost()))
+      if (!getCurrentURL().startsWith(getContextPath()))
       {
-         throw new IllegalStateException("Cannot get relative URL for address outside context root [" + getHost()
+         throw new IllegalStateException("Cannot get relative URL for address outside context root [" + getCurrentURL()
                   + "]");
       }
-      return getCurrentURL().substring(getHost().length());
+      return getCurrentURL().substring(getContextPath().length());
    }
 
    /**
@@ -127,5 +127,10 @@ public class HttpAction<T extends HttpRequest>
          result.add(header.getValue());
       }
       return result;
+   }
+
+   public int getStatusCode()
+   {
+      return response.getStatusLine().getStatusCode();
    }
 }

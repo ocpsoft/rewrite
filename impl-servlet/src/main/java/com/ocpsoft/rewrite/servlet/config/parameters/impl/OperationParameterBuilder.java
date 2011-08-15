@@ -47,7 +47,7 @@ public class OperationParameterBuilder implements ParameterizedOperation<Operati
    }
 
    /**
-    * The {@link Parameter} binds to the given {@link Binding}
+    * The {@link Parameter} binds to the given {@link Binding}.
     */
    public OperationParameterBuilder bindsTo(final Binding binding)
    {

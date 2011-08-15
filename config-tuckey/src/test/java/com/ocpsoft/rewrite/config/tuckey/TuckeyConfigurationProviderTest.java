@@ -49,14 +49,32 @@ public class TuckeyConfigurationProviderTest extends RewriteTestBase
    public void testConfigurationIntegratesWithRedirectFlow()
    {
       HttpAction<HttpGet> action = get("/some/olddir/value");
-      Assert.assertEquals("/very/newdir/value", action.getCurrentRelativeURL());
+      Assert.assertEquals("/very/newdir/value", action.getCurrentURL());
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testConfigurationIntegratesWithForwardFlow()
    {
       HttpAction<HttpGet> action = get("/some/fordir/value");
-      Assert.assertEquals("/very/newdir/value", action.getCurrentRelativeURL());
+      Assert.assertEquals("/very/newdir/value", action.getCurrentURL());
+      Assert.assertEquals(404, action.getStatusCode());
+   }
+
+   @Test
+   public void testConfigurationIntegratesWithForwardFlowNonRedirecting()
+   {
+      HttpAction<HttpGet> action = get("/some/fordir/nonredirect");
+      Assert.assertEquals("/some/fordir/nonredirect", action.getCurrentContextRelativeURL());
+      Assert.assertEquals(200, action.getStatusCode());
+   }
+
+   @Test
+   public void testConfigurationIntegratesWithForwardFlowNonRedirecting404()
+   {
+      HttpAction<HttpGet> action = get("/some/404/dir");
+      Assert.assertEquals("/some/404/dir", action.getCurrentContextRelativeURL());
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
 }

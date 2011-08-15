@@ -23,6 +23,7 @@ import com.ocpsoft.rewrite.config.Invoke;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.Redirect;
+import com.ocpsoft.rewrite.servlet.config.SendStatus;
 import com.ocpsoft.rewrite.servlet.config.bind.El;
 
 /**
@@ -42,9 +43,13 @@ public class BindingTestConfigProvider extends HttpConfigurationProvider
                         .where("one").bindsTo(El.property("bindingBean.one"))
                         .where("two").matches("[0-9]+").bindsTo(El.property("bindingBean.two")))
                .perform(Invoke.retrieveFrom(El.retrievalMethod("bindingBean.action()"))
-                        .and(Redirect.permanent("/{one}/{two}")
+                        .and(Redirect.permanent(context.getContextPath() + "/{one}/{two}")
                                  .where("one").bindsTo(El.property("bindingBean.two"))
-                                 .where("two").bindsTo(El.property("bindingBean.one"))));
+                                 .where("two").bindsTo(El.property("bindingBean.one"))))
+
+               .defineRule()
+               .when(Path.matches("/2/one"))
+               .perform(SendStatus.code(200));
    }
 
    @Override
