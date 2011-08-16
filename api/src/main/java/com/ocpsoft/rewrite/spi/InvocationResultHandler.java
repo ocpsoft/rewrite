@@ -30,5 +30,5 @@ public interface InvocationResultHandler
    /**
     * Handle return value from {@link Binding} result obtained during an {@link Invoke} operation.
     */
-   void handle(Rewrite event, EvaluationContext context, Object value);
+   void handle(Rewrite event, EvaluationContext context, Object result);
 }

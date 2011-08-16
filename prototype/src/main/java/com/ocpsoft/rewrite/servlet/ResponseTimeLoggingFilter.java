@@ -38,16 +38,14 @@ public class ResponseTimeLoggingFilter implements Filter
       chain.doFilter(request, response);
       timer.stop();
       double time = timer.getElapsedMilliseconds();
-      System.out.println("Request completed in [" + time / 1000.0 + "] seconds: ["
+      System.out.println("Request completed in [" + (time / 1000.0) + "] seconds: ["
                + ((HttpServletRequest) request).getRequestURI() + "]");
 
    }
 
    public void init(final FilterConfig filterConfig)
-   {
-   }
+   {}
 
    public void destroy()
-   {
-   }
+   {}
 }

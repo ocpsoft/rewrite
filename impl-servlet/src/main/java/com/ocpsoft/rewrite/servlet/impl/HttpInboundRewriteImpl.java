@@ -27,6 +27,7 @@ import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
+import com.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -150,6 +151,8 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       {
          url = url.substring(getContextPath().length());
       }
+
+      url = new URLBuilder(url).decode().toURL();
       return url;
    }
 

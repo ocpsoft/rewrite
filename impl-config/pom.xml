@@ -21,6 +21,7 @@
          <groupId>com.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
       </dependency>
+
    </dependencies>
 
 </project>

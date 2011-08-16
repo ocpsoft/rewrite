@@ -20,6 +20,7 @@ import java.util.List;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
+import com.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
 import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
@@ -176,18 +177,19 @@ public abstract class El extends BindingBuilder
 
             try
             {
-               value = provider.evaluateMethodExpression(getExpression);
-               break;
+               return provider.evaluateMethodExpression(getExpression);
             }
-            catch (Exception e) {
+            catch (UnsupportedEvaluationException e) {
                log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not retrieve value from property #{"
-                        + getExpression + "}");
+                        + "] could not invoke method #{"
+                        + getExpression + "}", e);
             }
-
-            if (value != null)
+            catch (Exception e)
             {
-               break;
+               throw new RewriteException("El provider [" + provider.getClass().getName()
+                        + "] could not retrieve value from property #{"
+                        + getExpression + "}", e);
+
             }
          }
 
@@ -206,10 +208,17 @@ public abstract class El extends BindingBuilder
             {
                return provider.evaluateMethodExpression(setExpression, value);
             }
-            catch (Exception e) {
-               throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not submit property #{" + setExpression
+            catch (UnsupportedEvaluationException e) {
+               log.debug("El provider [" + provider.getClass().getName()
+                        + "] could not submit method #{" + setExpression
                         + "} with value [" + value + "]", e);
+            }
+            catch (Exception e)
+            {
+               throw new RewriteException("El provider [" + provider.getClass().getName()
+                        + "] could not submit method #{"
+                        + setExpression + "} with value [" + value + "]", e);
+
             }
          }
          return null;
@@ -261,9 +270,15 @@ public abstract class El extends BindingBuilder
                value = provider.retrieveValue(expression);
                break;
             }
-            catch (Exception e) {
+            catch (UnsupportedEvaluationException e)
+            {
                log.debug("El provider [" + provider.getClass().getName() + "] could not extract value from property #{"
-                        + expression + "}");
+                        + expression + "}", e);
+            }
+            catch (Exception e) {
+               throw new RewriteException("El provider [" + provider.getClass().getName()
+                        + "] could not extract value from property #{"
+                        + expression + "}", e);
             }
 
             if (value != null)
@@ -305,6 +320,12 @@ public abstract class El extends BindingBuilder
             {
                provider.submitValue(expression, value);
                break;
+            }
+            catch (UnsupportedEvaluationException e)
+            {
+               log.debug("El provider [" + provider.getClass().getName()
+                        + "] could not inject property #{" + expression
+                        + "} with value [" + value + "]", e);
             }
             catch (Exception e) {
                throw new RewriteException("El provider [" + provider.getClass().getName()

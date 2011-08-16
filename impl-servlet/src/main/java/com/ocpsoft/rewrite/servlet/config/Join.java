@@ -78,7 +78,12 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          if (event instanceof HttpInboundServletRewrite)
          {
             path.withRequestBinding();
-            return path.evaluate(event, context);
+            if (path.evaluate(event, context))
+            {
+               if (operation != null)
+                  context.addPreOperation(operation);
+               return true;
+            }
          }
          else if (event instanceof HttpOutboundServletRewrite)
          {
@@ -108,9 +113,6 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       {
          Substitute.with(pattern).perform(event, context);
       }
-
-      if (operation != null)
-         operation.perform(event, context);
    }
 
    private void saveCurrentJoin(final HttpServletRequest request)
@@ -162,7 +164,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       return this;
    }
 
-   public Join perform(final Operation operation)
+   public Join performInbound(final Operation operation)
    {
       this.operation = operation;
       return this;
@@ -237,7 +239,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
 
       public Join perform(final Operation operation)
       {
-         return parent.perform(operation);
+         return parent.performInbound(operation);
       }
    }
 }

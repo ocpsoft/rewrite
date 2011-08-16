@@ -50,13 +50,13 @@ public class Invoke extends OperationBuilder
       if ((submission == null) && (retrieval != null))
       {
          result = retrieval.retrieve(event, context);
-         log.info("Invoked binding [" + retrieval + "] returned value [" + result + "]");
+         log.debug("Invoked binding [" + retrieval + "] returned value [" + result + "]");
       }
       else if (retrieval != null)
       {
          Object converted = submission.convert(event, context, retrieval.retrieve(event, context));
          result = submission.submit(event, context, converted);
-         log.info("Invoked binding [" + submission + "] returned value [" + result + "]");
+         log.debug("Invoked binding [" + submission + "] returned value [" + result + "]");
       }
       else
       {
