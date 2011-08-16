@@ -38,7 +38,7 @@ public class ConversationExceptionHandler extends ExceptionHandlerWrapper
 
    private final ExceptionHandler wrapped;
 
-   public ConversationExceptionHandler(ExceptionHandler wrapped)
+   public ConversationExceptionHandler(final ExceptionHandler wrapped)
    {
       this.wrapped = wrapped;
    }
@@ -52,19 +52,24 @@ public class ConversationExceptionHandler extends ExceptionHandlerWrapper
    @Override
    public void handle() throws FacesException
    {
+      boolean handled = false;
       for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();)
       {
          ExceptionQueuedEvent event = i.next();
          ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
          Throwable t = context.getException();
-         if (t instanceof IllegalStateException
+         if ((t instanceof IllegalStateException) && (t.getMessage() != null)
                   && (t.getMessage().matches("Context is already active") || t.getMessage().matches(
                            "Context is not active")))
          {
             i.remove();
+            handled = true;
          }
       }
-      getWrapped().handle();
+      if (!handled)
+      {
+         getWrapped().handle();
+      }
    }
 
 }

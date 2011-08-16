@@ -14,4 +14,8 @@
       <view-handler>com.ocpsoft.rewrite.faces.RewriteViewHandler</view-handler>
    </application>
 
+   <lifecycle>
+      <phase-listener>com.ocpsoft.rewrite.faces.RewritePhaseListener</phase-listener>
+   </lifecycle>
+
 </faces-config>
