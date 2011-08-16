@@ -31,7 +31,7 @@ import com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class QueryStringTest
+public class QueryStringBuilderTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
