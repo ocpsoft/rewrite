@@ -27,17 +27,17 @@ public class URLBuilderTest
    public void testURLBuilderPreservesOriginalURLBuilder() throws Exception
    {
       String value = "/com/ocpsoft/pretty/";
-      URLBuilder URLBuilder = new URLBuilder(value);
-      assertEquals(value, URLBuilder.toURL());
+      URLBuilder builder = new URLBuilder(value);
+      assertEquals(value, builder.toURL());
    }
 
    @Test
    public void testPreservesTrailingSlash() throws Exception
    {
       String value = "/com/ocpsoft/pretty/";
-      URLBuilder URLBuilder = new URLBuilder(value);
-      URLBuilder.setEncoding("UTF-8");
-      assertEquals(value, URLBuilder.decode().toURL());
+      URLBuilder builder = new URLBuilder(value);
+      builder.setEncoding("UTF-8");
+      assertEquals(value, builder.decode().toURL());
    }
 
    @Test
@@ -45,10 +45,10 @@ public class URLBuilderTest
    {
       Metadata metadata = new Metadata();
       metadata.setTrailingSlash(true);
-      URLBuilder URLBuilder = new URLBuilder(new ArrayList<String>(), metadata);
+      URLBuilder builder = new URLBuilder(new ArrayList<String>(), metadata);
 
-      assertEquals("/", URLBuilder.toURL());
-      assertEquals("/", URLBuilder.decode().toURL());
+      assertEquals("/", builder.toURL());
+      assertEquals("/", builder.decode().toURL());
    }
 
    @Test
@@ -64,8 +64,8 @@ public class URLBuilderTest
    public void testEncode() throws Exception
    {
       String value = "/\u010d";
-      URLBuilder URLBuilder = new URLBuilder(value);
-      URLBuilder encoded = URLBuilder.encode();
+      URLBuilder builder = new URLBuilder(value);
+      URLBuilder encoded = builder.encode();
       assertEquals("/%C4%8D", encoded.toURL());
       URLBuilder original = encoded.decode();
       assertEquals("/\u010d", original.toURL());
@@ -75,8 +75,8 @@ public class URLBuilderTest
    public void testEncodeDecodePreservesSlashes() throws Exception
    {
       String value = "/foo/bar";
-      URLBuilder URLBuilder = new URLBuilder(value);
-      URLBuilder encoded = URLBuilder.encode();
+      URLBuilder builder = new URLBuilder(value);
+      URLBuilder encoded = builder.encode();
       assertEquals("/foo/bar", encoded.toURL());
       URLBuilder original = encoded.decode();
       assertEquals("/foo/bar", original.toURL());
@@ -86,8 +86,8 @@ public class URLBuilderTest
    public void testEncodeGermanUmlaut() throws Exception
    {
       String value = "/\u00e4";
-      URLBuilder URLBuilder = new URLBuilder(value);
-      URLBuilder encoded = URLBuilder.encode();
+      URLBuilder builder = new URLBuilder(value);
+      URLBuilder encoded = builder.encode();
       assertEquals("/%C3%A4", encoded.toURL());
       URLBuilder original = encoded.decode();
       assertEquals("/\u00e4", original.toURL());

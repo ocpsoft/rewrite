@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2010 Lincoln Baxter, III
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,89 +15,203 @@
  */
 package com.ocpsoft.rewrite.servlet.util;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
-import org.junit.Before;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.mock.MockEvaluationContext;
-import com.ocpsoft.rewrite.servlet.config.QueryString;
-import com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
-
-/**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
- */
 public class QueryStringBuilderTest
 {
-   private Rewrite rewrite;
-   private HttpServletRequest request;
-
-   @Before
-   public void before()
+   @Test
+   public void testCreateEmptyQueryStringBuilder()
    {
-      request = Mockito.mock(HttpServletRequest.class);
+      Map<String, String[]> params = new TreeMap<String, String[]>();
 
-      Mockito.when(request.getRequestURI())
-               .thenReturn("/context/application/path");
+      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      String queryString = qs.toQueryString();
+      assertEquals("", queryString);
 
-      Mockito.when(request.getQueryString())
-               .thenReturn("foo=bar&bar=baz");
-
-      Mockito.when(request.getContextPath())
-               .thenReturn("/context");
-
-      rewrite = new HttpInboundRewriteImpl(request, null);
+      qs = QueryStringBuilder.build(queryString);
+      assertEquals(queryString, qs.toQueryString());
    }
 
    @Test
-   public void testQueryStringMatchesLiteral()
+   public void testCreateStringQueryStringBuilder() throws Exception
    {
-      Assert.assertTrue(QueryString.matches("foo=bar&bar=baz").evaluate(rewrite, new MockEvaluationContext()));
+      String query = "?bar=555&foo=hello&foo=friend";
+      QueryStringBuilder qs = QueryStringBuilder.build(query);
+
+      String result = qs.toQueryString();
+
+      assertTrue(result.startsWith("?"));
+      assertTrue(result.contains("bar=555"));
+      assertTrue(result.contains("foo=hello"));
+      assertTrue(result.contains("foo=friend"));
    }
 
    @Test
-   public void testQueryStringMatchesPattern()
+   public void testCreateStringQueryStringBuilderWithExtraPreCharacters() throws Exception
    {
-      Assert.assertTrue(QueryString.matches("foo=bar.*").evaluate(rewrite, new MockEvaluationContext()));
+      String query = "?bar=555&foo=hello&foo=friend";
+      QueryStringBuilder qs = QueryStringBuilder.build("www.ocpsoft.com/" + query);
+
+      String result = qs.toQueryString();
+
+      assertTrue(result.startsWith("?"));
+      assertTrue(result.contains("bar=555"));
+      assertTrue(result.contains("foo=hello"));
+      assertTrue(result.contains("foo=friend"));
    }
 
    @Test
-   public void testQueryStringParameterExists()
+   public void testCreateFromQuestionMarkYieldsEmptyQueryStringBuilder() throws Exception
    {
-      Assert.assertTrue(QueryString.parameterExists(".oo").evaluate(rewrite, new MockEvaluationContext()));
+      String query = "?";
+      QueryStringBuilder qs = QueryStringBuilder.build(query);
+
+      String result = qs.toQueryString();
+
+      assertTrue(result.length() == 0);
    }
 
    @Test
-   public void testQueryStringParameterDoesNotExist()
+   public void testCreateQueryStringBuilder()
    {
-      Assert.assertFalse(QueryString.parameterExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+      Map<String, String[]> params = new TreeMap<String, String[]>();
+      params.put("p1", new String[] { "val1" });
+
+      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      String queryString = qs.toQueryString();
+
+      assertEquals("?p1=val1", queryString);
+
+      qs = QueryStringBuilder.build(queryString);
+      assertEquals(queryString, qs.toQueryString());
    }
 
    @Test
-   public void testQueryStringValueExists()
+   public void testCreateUnValuedQueryString()
    {
-      Assert.assertTrue(QueryString.valueExists(".ar").evaluate(rewrite, new MockEvaluationContext()));
+      Map<String, String[]> params = new TreeMap<String, String[]>();
+      params.put("p1", null);
+
+      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      String queryString = qs.toQueryString();
+
+      assertEquals("?p1", queryString);
+
+      qs = QueryStringBuilder.build(queryString);
+      assertEquals(queryString, qs.toQueryString());
    }
 
    @Test
-   public void testQueryStringValueDoesNotExist()
+   public void testCreateBlankValuedQueryStringBuilder()
    {
-      Assert.assertFalse(QueryString.valueExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+      Map<String, String[]> params = new TreeMap<String, String[]>();
+      params.put("p1", new String[] { "" });
+
+      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      String queryString = qs.toQueryString();
+
+      assertEquals("?p1=", queryString);
+
+      qs = QueryStringBuilder.build(queryString);
+      assertEquals(queryString, qs.toQueryString());
    }
 
    @Test
-   public void testDoesNotMatchNonHttpRewrites()
+   public void testCreateMultiValueQueryStringBuilder()
    {
-      Assert.assertTrue(QueryString.matches(".*bar=baz").evaluate(rewrite, new MockEvaluationContext()));
+      Map<String, String[]> params = new TreeMap<String, String[]>();
+      params.put("p1", new String[] { "val1", "val2" });
+
+      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      String queryString = qs.toQueryString();
+
+      assertEquals("?p1=val1&p1=val2", queryString);
+
+      qs = QueryStringBuilder.build(queryString);
+      assertEquals(queryString, qs.toQueryString());
    }
 
-   @Test(expected = IllegalArgumentException.class)
-   public void testNullCausesException()
+   @Test
+   public void testCreateMultiKeyedMultiValueQueryStringBuilder()
    {
-      QueryString.matches(null);
+      Map<String, String[]> params = new TreeMap<String, String[]>();
+      params.put("p1", new String[] { "val1", "val2" });
+      params.put("p2", new String[] { "val3", "val4" });
+
+      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      String queryString = qs.toQueryString();
+
+      assertTrue(queryString.startsWith("?"));
+      assertTrue(queryString.contains("p1=val1"));
+      assertTrue(queryString.contains("p1=val2"));
+      assertTrue(queryString.contains("p2=val3"));
+      assertTrue(queryString.contains("p2=val4"));
+
+      qs = QueryStringBuilder.build(queryString);
+      assertEquals(queryString, qs.toQueryString());
    }
+
+   @Test
+   public void testCreateMultiKeyedMultiValueQueryStringBuilderList()
+   {
+      Map<String, List<String>> paramMap = new LinkedHashMap<String, List<String>>();
+      List<String> params = new ArrayList<String>();
+      params.add("val1");
+      params.add("val2");
+
+      paramMap.put("p1", params);
+
+      params = new ArrayList<String>();
+      params.add("val3");
+      params.add("val4");
+
+      paramMap.put("p2", params);
+
+      QueryStringBuilder qs = QueryStringBuilder.begin().addParameterLists(paramMap);
+      String queryString = qs.toQueryString();
+
+      assertTrue(queryString.startsWith("?"));
+      assertTrue(queryString.contains("p1=val1"));
+      assertTrue(queryString.contains("p1=val2"));
+      assertTrue(queryString.contains("p2=val3"));
+      assertTrue(queryString.contains("p2=val4"));
+
+      qs = QueryStringBuilder.build(queryString);
+      assertEquals(queryString, qs.toQueryString());
+   }
+
+   @Test
+   public void testAddParametersOneSimpleParameter()
+   {
+      QueryStringBuilder qs = new QueryStringBuilder();
+      qs.addParameters("a=b");
+      assertEquals("?a=b", qs.toQueryString());
+   }
+
+   @Test
+   public void testAddParametersMultipleParametersEncoded()
+   {
+      QueryStringBuilder qs = new QueryStringBuilder();
+      qs.addParameters("a=b+c&d=e");
+      assertEquals("?a=b+c&d=e", qs.toQueryString());
+   }
+
+   @Test
+   public void testAddParametersEncodedAmpersand()
+   {
+      // http://code.google.com/p/prettyfaces/issues/detail?id=104
+      QueryStringBuilder qs = new QueryStringBuilder();
+      qs.addParameters("a=b&amp;c=d");
+      assertEquals("?a=b&c=d", qs.toQueryString());
+   }
+
 }

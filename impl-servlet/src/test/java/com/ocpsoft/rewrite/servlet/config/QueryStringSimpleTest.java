@@ -15,8 +15,6 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
@@ -24,18 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.mock.MockBinding;
 import com.ocpsoft.rewrite.mock.MockEvaluationContext;
-import com.ocpsoft.rewrite.mock.MockRewrite;
+import com.ocpsoft.rewrite.servlet.config.QueryString;
 import com.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class QueryStringTest
+public class QueryStringSimpleTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
@@ -45,11 +41,11 @@ public class QueryStringTest
    {
       request = Mockito.mock(HttpServletRequest.class);
 
-      Mockito.when(request.getQueryString())
-               .thenReturn("foo=bar&one=1&my%20cat=alive");
-
       Mockito.when(request.getRequestURI())
                .thenReturn("/context/application/path");
+
+      Mockito.when(request.getQueryString())
+               .thenReturn("foo=bar&bar=baz");
 
       Mockito.when(request.getContextPath())
                .thenReturn("/context");
@@ -58,48 +54,45 @@ public class QueryStringTest
    }
 
    @Test
-   public void testQueryStringMatchesWithParameters()
-   {
-      Assert.assertTrue(QueryString.parameterExists("my cat").evaluate(rewrite, new MockEvaluationContext()));
-   }
-
-   @Test
-   public void testQueryStringAttemptsToBindParameters()
-   {
-      MockBinding mockBinding = new MockBinding();
-      QueryString query = QueryString.valueExists("alive")
-               .bindsTo(mockBinding);
-      MockEvaluationContext context = new MockEvaluationContext();
-      Assert.assertTrue(query.evaluate(rewrite, context));
-
-      List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(2, operations.size());
-      for (Operation operation : operations) {
-         operation.perform(rewrite, context);
-      }
-
-      Assert.assertTrue(mockBinding.isConverted());
-      Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isSubmitted());
-      Assert.assertEquals("alive", mockBinding.getBoundValue());
-   }
-
-   @Test
    public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(QueryString.matches("foo=bar&bar=baz").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringMatchesPattern()
    {
-      Assert.assertTrue(QueryString.matches(".*&one=1.*").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(QueryString.matches("foo=bar.*").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testQueryStringParameterExists()
+   {
+      Assert.assertTrue(QueryString.parameterExists(".oo").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testQueryStringParameterDoesNotExist()
+   {
+      Assert.assertFalse(QueryString.parameterExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testQueryStringValueExists()
+   {
+      Assert.assertTrue(QueryString.valueExists(".ar").evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testQueryStringValueDoesNotExist()
+   {
+      Assert.assertFalse(QueryString.valueExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(QueryString.matches(".*").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      Assert.assertTrue(QueryString.matches(".*bar=baz").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)

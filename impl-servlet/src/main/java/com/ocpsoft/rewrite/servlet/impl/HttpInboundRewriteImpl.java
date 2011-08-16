@@ -16,8 +16,6 @@
 package com.ocpsoft.rewrite.servlet.impl;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -118,20 +116,21 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
          // The base URL and Query String require different encoding rules.
          String[] urlParts = url.split("\\?", 2);
 
-         String baseUrlEncoded = new URI(urlParts[0]).toASCIIString();
+         String baseUrlEncoded = new URLBuilder(urlParts[0]).decode().toURL();
 
          if ((urlParts.length > 1) && (urlParts[1] != null) && !"".equals(urlParts[1]))
          {
-            return response.encodeRedirectURL(baseUrlEncoded + QueryStringBuilder.build(urlParts[1]).toQueryString());
+            return response.encodeRedirectURL(baseUrlEncoded
+                     + QueryStringBuilder.build(urlParts[1]).encode().toQueryString());
          }
          else
          {
             return response.encodeRedirectURL(baseUrlEncoded);
          }
       }
-      catch (URISyntaxException e)
+      catch (Exception e)
       {
-         log.warn("Failed to encode URL '" + url + "': " + e.getMessage());
+         log.warn("Failed to encode URL [" + url + "]", e);
          return response.encodeRedirectURL(url);
       }
    }
@@ -171,7 +170,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    public String getRequestQueryString()
    {
       return getRequest().getQueryString() == null ? "" : QueryStringBuilder.build(getRequest().getQueryString())
-               .toQueryString().substring(1);
+               .decode().toQueryString().substring(1);
    }
 
    @Override
