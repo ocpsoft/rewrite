@@ -72,6 +72,27 @@ public class ParameterizedPatternTest
    }
 
    @Test
+   public void testMatchesWithParametersRespectsTrailingCharsWithWildcardParameter()
+   {
+      ParameterizedPattern path = new ParameterizedPattern(".*", "/{customer}/");
+      Assert.assertTrue(path.matches("/lincoln/"));
+      Assert.assertFalse(path.matches("/lincoln/foo"));
+   }
+
+   @Test
+   public void testParsesWithParametersRespectsTrailingCharsWithWildcardParameter()
+   {
+      ParameterizedPattern path = new ParameterizedPattern(".*", "/{customer}/");
+
+      Map<String, Parameter<String>> parameters = path.getParameters();
+      Assert.assertEquals(1, parameters.size());
+      Assert.assertEquals("customer", parameters.get("customer").getName());
+
+      Map<Parameter<String>, String[]> results = path.parseEncoded("/lincoln/");
+      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
+   }
+
+   @Test
    public void testMatchesWithParametersAndTrailingSlash()
    {
       ParameterizedPattern path = new ParameterizedPattern("[^/]+", "/{customer}/orders/{id}/");

@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -228,8 +229,11 @@ public class ParameterizedPattern
       if (matches(path))
       {
          CapturingGroup last = null;
-         for (Entry<String, RegexParameter> entry : params.entrySet())
+         Set<Entry<String, RegexParameter>> entrySet = params.entrySet();
+         List<Entry<String, RegexParameter>> entries = new ArrayList<Entry<String, RegexParameter>>(entrySet);
+         for (int i = 0; i < entries.size(); i++)
          {
+            Entry<String, RegexParameter> entry = entries.get(i);
             RegexParameter param = entry.getValue();
             CapturingGroup capture = param.getCapture();
 
@@ -246,6 +250,19 @@ public class ParameterizedPattern
             segmentBuilder.append('(');
             segmentBuilder.append(param.getPattern());
             segmentBuilder.append(')');
+
+            if ((i + 1) < entries.size())
+            {
+               Entry<String, RegexParameter> next = entries.get(i + 1);
+               CapturingGroup nextCapture = next.getValue().getCapture();
+               char[] tail = Arrays.copyOfRange(chars, capture.getEnd() + 1, nextCapture.getStart());
+               segmentBuilder.append(tail);
+            }
+            else
+            {
+               char[] tail = Arrays.copyOfRange(chars, capture.getEnd() + 1, chars.length);
+               segmentBuilder.append(tail);
+            }
 
             Pattern segmentPattern = Pattern.compile(segmentBuilder.toString() + ".*");
             Matcher segmentMatcher = segmentPattern.matcher(temp);

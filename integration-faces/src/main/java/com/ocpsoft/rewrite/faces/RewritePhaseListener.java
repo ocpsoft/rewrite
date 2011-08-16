@@ -103,6 +103,8 @@ public class RewritePhaseListener implements PhaseListener
       {
          request.setAttribute(NavigatingInvocationResultHandler.QUEUED_NAVIGATION, null);
          NavigationHandler navigationHandler = facesContext.getApplication().getNavigationHandler();
+         log.debug("Passing queued " + PhaseAction.class.getName() + " result [" + navigationCase
+                  + "] to NavigationHandler.handleNavigation()");
          navigationHandler.handleNavigation(facesContext, "", navigationCase);
       }
    }
