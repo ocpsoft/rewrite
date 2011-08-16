@@ -51,7 +51,6 @@ public class RewritePhaseListener implements PhaseListener
    @Override
    public void afterPhase(final PhaseEvent event)
    {
-      log.info("After:" + event.getPhaseId());
       handleAfterPhaseActions(event);
       if (!PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
          handleNavigation(event);
@@ -60,7 +59,6 @@ public class RewritePhaseListener implements PhaseListener
    @Override
    public void beforePhase(final PhaseEvent event)
    {
-      log.info("Before: " + event.getPhaseId());
       handleBeforePhaseActions(event);
       if (PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
          handleNavigation(event);
