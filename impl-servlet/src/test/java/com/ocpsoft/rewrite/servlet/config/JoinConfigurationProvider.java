@@ -21,13 +21,6 @@ import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.servlet.config.Response;
-import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
-import com.ocpsoft.rewrite.servlet.config.HttpOperation;
-import com.ocpsoft.rewrite.servlet.config.Path;
-import com.ocpsoft.rewrite.servlet.config.RequestParameter;
-import com.ocpsoft.rewrite.servlet.config.SendStatus;
-import com.ocpsoft.rewrite.servlet.config.Join;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -80,7 +73,9 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                               .and(Response.addHeader("Encoded-URL", encodedURL))
                               .and(SendStatus.code(203)).perform(event, context);
                   }
-               });
+               })
+
+               .add(Join.path("/{p1}/{p2}").to("/list.xhtml").withInboundCorrection());
 
       return config;
    }

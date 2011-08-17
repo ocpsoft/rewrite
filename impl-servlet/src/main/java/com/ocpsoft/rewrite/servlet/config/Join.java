@@ -106,12 +106,13 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
             {
                List<String> names = path.getPathExpression().getParameterNames();
                for (String name : names) {
-                  if (QueryString.parameterExists(name).evaluate(event, context))
+                  if (!QueryString.parameterExists(name).evaluate(event, context))
                   {
-                     context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
-                              + pattern));
+                     return false;
                   }
                }
+               context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
+                        + pattern));
                return true;
             }
          }

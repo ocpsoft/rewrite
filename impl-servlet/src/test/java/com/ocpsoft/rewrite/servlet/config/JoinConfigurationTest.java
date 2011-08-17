@@ -58,4 +58,13 @@ public class JoinConfigurationTest extends RewriteTestBase
       Assert.assertEquals(action.getContextPath() + "/p/rewrite", action.getResponseHeaderValues("Encoded-URL").get(0));
    }
 
+   @Test
+   public void testUrlMappingConfigurationWithInboundCorrection()
+   {
+      HttpAction<HttpGet> action = get("/list.xhtml?p1=foo&p2=bar");
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+
+      Assert.assertEquals("/foo/bar", action.getCurrentContextRelativeURL());
+   }
+
 }
