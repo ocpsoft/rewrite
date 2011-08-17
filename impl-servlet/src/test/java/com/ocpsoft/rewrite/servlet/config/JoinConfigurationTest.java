@@ -59,10 +59,19 @@ public class JoinConfigurationTest extends RewriteTestBase
    }
 
    @Test
+   public void testUrlMappingConfigurationWithoutInboundCorrection()
+   {
+      HttpAction<HttpGet> action = get("/viewProject.xhtml");
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+
+      Assert.assertEquals("/viewProject.xhtml", action.getCurrentContextRelativeURL());
+   }
+
+   @Test
    public void testUrlMappingConfigurationWithInboundCorrection()
    {
       HttpAction<HttpGet> action = get("/list.xhtml?p1=foo&p2=bar");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
 
       Assert.assertEquals("/foo/bar", action.getCurrentContextRelativeURL());
    }

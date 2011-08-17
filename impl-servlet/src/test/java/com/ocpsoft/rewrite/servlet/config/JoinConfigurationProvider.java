@@ -75,7 +75,11 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                   }
                })
 
-               .add(Join.path("/{p1}/{p2}").to("/list.xhtml").withInboundCorrection());
+               .add(Join.path("/{p1}/{p2}").to("/list.xhtml").withInboundCorrection())
+
+               .defineRule()
+               .when(Path.matches("/list.xhtml"))
+               .perform(SendStatus.code(204));
 
       return config;
    }
