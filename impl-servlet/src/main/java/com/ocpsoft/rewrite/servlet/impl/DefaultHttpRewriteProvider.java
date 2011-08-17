@@ -42,7 +42,17 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                operation.perform(event, context);
             }
 
+            if (event.getFlow().is(Flow.HANDLED))
+            {
+               break;
+            }
+
             rule.perform(event, context);
+
+            if (event.getFlow().is(Flow.HANDLED))
+            {
+               break;
+            }
 
             for (Operation operation : context.getPostOperations()) {
                operation.perform(event, context);

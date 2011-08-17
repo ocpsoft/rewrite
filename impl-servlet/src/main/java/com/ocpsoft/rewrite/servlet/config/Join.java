@@ -53,20 +53,37 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
    private Operation operation;
    private Condition condition;
 
+   private boolean inboundCorrection = false;
+
    protected Join(final String pattern)
    {
       this.pattern = pattern;
       this.path = Path.matches(pattern);
    }
 
+   /**
+    * The outward facing URL path to which this {@link Join} will apply.
+    */
    public static Join path(final String pattern)
    {
       return new Join(pattern);
    }
 
+   /**
+    * The internal server resource (real or virtual) to be served.
+    */
    public Join to(final String resource)
    {
       this.resource = resource;
+      return this;
+   }
+
+   /**
+    * Redirect inbound requests for the internal resource to the outward facing URL instead.
+    */
+   public Join withInboundCorrection()
+   {
+      this.inboundCorrection = true;
       return this;
    }
 
@@ -82,6 +99,19 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
             {
                if (operation != null)
                   context.addPreOperation(operation);
+               return true;
+            }
+            else if (inboundCorrection
+                     && Path.matches(resource).andNot(DispatchType.isForward()).evaluate(event, context))
+            {
+               List<String> names = path.getPathExpression().getParameterNames();
+               for (String name : names) {
+                  if (QueryString.parameterExists(name).evaluate(event, context))
+                  {
+                     context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
+                              + pattern));
+                  }
+               }
                return true;
             }
          }
@@ -242,4 +272,12 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          return parent.performInbound(operation);
       }
    }
+
+   @Override
+   public String toString()
+   {
+      return "Join [url=" + pattern + ", to=" + resource + ", id=" + id + ", inboundCorrection="
+               + inboundCorrection + "]";
+   }
+
 }
