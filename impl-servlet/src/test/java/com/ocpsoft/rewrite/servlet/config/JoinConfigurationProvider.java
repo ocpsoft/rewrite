@@ -21,6 +21,7 @@ import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.Direction;
 import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.servlet.config.rule.Join;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**

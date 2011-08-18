@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.config.rule;
 
 import java.util.List;
 
@@ -30,7 +30,13 @@ import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.param.Parameterized;
-import com.ocpsoft.rewrite.servlet.config.Join.JoinParameterBuilder;
+import com.ocpsoft.rewrite.servlet.config.DispatchType;
+import com.ocpsoft.rewrite.servlet.config.Forward;
+import com.ocpsoft.rewrite.servlet.config.Path;
+import com.ocpsoft.rewrite.servlet.config.QueryString;
+import com.ocpsoft.rewrite.servlet.config.Redirect;
+import com.ocpsoft.rewrite.servlet.config.Substitute;
+import com.ocpsoft.rewrite.servlet.config.rule.Join.JoinParameterBuilder;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 

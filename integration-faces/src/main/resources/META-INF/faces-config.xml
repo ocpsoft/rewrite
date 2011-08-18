@@ -5,10 +5,6 @@
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
    version="2.0">
    
-   <factory>
-      <exception-handler-factory>com.ocpsoft.rewrite.faces.ConversationExceptionHandlerFactory</exception-handler-factory>
-   </factory>
-   
    <application>
       <navigation-handler>com.ocpsoft.rewrite.faces.RewriteNavigationHandler</navigation-handler>
       <view-handler>com.ocpsoft.rewrite.faces.RewriteViewHandler</view-handler>

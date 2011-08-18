@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.servlet.config;
+package com.ocpsoft.rewrite.servlet.config.rule;
 
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.Direction;
@@ -23,6 +23,9 @@ import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.config.Path;
+import com.ocpsoft.rewrite.servlet.config.Redirect;
+import com.ocpsoft.rewrite.servlet.config.Substitute;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**

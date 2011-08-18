@@ -72,7 +72,8 @@ public class RewritePhaseListener implements PhaseListener
       List<QueuedPhaseAction> actions = PhaseAction.getQueuedPhaseActions(request);
       if (actions != null)
          for (QueuedPhaseAction action : actions) {
-            if (action.getBeforePhases().contains(event.getPhaseId()))
+            if (action.getBeforePhases().contains(event.getPhaseId())
+                     || action.getBeforePhases().contains(PhaseId.ANY_PHASE))
             {
                action.perform();
             }
@@ -87,7 +88,8 @@ public class RewritePhaseListener implements PhaseListener
       List<QueuedPhaseAction> actions = PhaseAction.getQueuedPhaseActions(request);
       if (actions != null)
          for (QueuedPhaseAction action : actions) {
-            if (action.getAfterPhases().contains(event.getPhaseId()))
+            if (action.getAfterPhases().contains(event.getPhaseId())
+                     || action.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
                action.perform();
             }

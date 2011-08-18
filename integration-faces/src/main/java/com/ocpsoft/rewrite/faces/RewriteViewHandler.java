@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.rewrite.servlet.config.Join;
+import com.ocpsoft.rewrite.servlet.config.rule.Join;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -116,7 +116,7 @@ public class RewriteViewHandler extends ViewHandler
           * When rendering a form URL, Faces only provides the bare view-id, sans any bookmarkable parameters from the request. 
           * We need to restore those ourselves. 
           */
-         result = OriginalURLRewriteLifecycleListener.getOriginalRequestURL(request);
+         result = FacesRewriteLifecycleListener.getOriginalRequestURL(request);
       }
       return result;
    }

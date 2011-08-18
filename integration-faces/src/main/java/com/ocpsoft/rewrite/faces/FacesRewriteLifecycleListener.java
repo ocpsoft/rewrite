@@ -31,9 +31,9 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class OriginalURLRewriteLifecycleListener extends HttpRewriteLifecycleListener
+public class FacesRewriteLifecycleListener extends HttpRewriteLifecycleListener
 {
-   private static final String ORIGINAL_URL = OriginalURLRewriteLifecycleListener.class.getName()
+   private static final String ORIGINAL_URL = FacesRewriteLifecycleListener.class.getName()
             + "_originalRequestURL";
 
    @Override

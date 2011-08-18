@@ -10,4 +10,5 @@ target/
 bin/
 /*/src/main/java/META-INF
 .gitignore.swp
+.faces-config.xml.jsfdia
 docs/reference/src/main/docbook/en-US/version_info.xml
