@@ -1,10 +1,5 @@
 package com.ocpsoft.rewrite.showcase.rest;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
@@ -93,6 +88,30 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                })
 
                .defineRule()
+               .when(Path.matches("/store/products").and(Method.isGet()))
+               .perform(new HttpOperation() {
+                  @Override
+                  public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+                  {
+                     /*
+                      * Marshal the Product into XML using JAXB
+                      */
+                     try {
+                        Marshaller marshaller = JAXBContext.newInstance(ProductRegistry.class)
+                                 .createMarshaller();
+                        marshaller.setProperty("jaxb.formatted.output", true);
+                        marshaller.marshal(products, event.getResponse().getOutputStream());
+
+                        event.getResponse().setContentType("application/xml");
+                        ((HttpInboundServletRewrite) event).sendStatusCode(200);
+                     }
+                     catch (Exception e) {
+                        throw new RuntimeException(e);
+                     }
+                  }
+               })
+
+               .defineRule()
                .when(Path.matches("/store/products").and(Method.isPost()))
                .perform(new HttpOperation() {
                   @Override
@@ -108,10 +127,8 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
 
                         product = products.add(product);
 
-                        Map<String, List<Object>> values = new LinkedHashMap<String, List<Object>>();
-                        values.put("pid", (List) Arrays.asList(product.getId()));
                         ((HttpInboundServletRewrite) event).redirectPermanent(event.getContextPath()
-                                 + new ParameterizedPattern("/store/product/{pid}").build(values));
+                                 + new ParameterizedPattern("/store/product/{pid}").build(product.getId()));
                      }
                      catch (Exception e) {
                         throw new RuntimeException(e);

@@ -19,11 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @ApplicationScoped
+@XmlRootElement(name = "products")
 public class ProductRegistry
 {
    private final List<Product> products = new ArrayList<Product>();
@@ -46,6 +49,7 @@ public class ProductRegistry
       return products.get(id);
    }
 
+   @XmlElement(name = "product", type = Product.class)
    public List<Product> getProducts()
    {
       return products;

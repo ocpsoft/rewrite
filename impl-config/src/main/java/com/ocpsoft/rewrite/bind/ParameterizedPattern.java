@@ -112,11 +112,66 @@ public class ParameterizedPattern
    }
 
    /**
-    * Use this expression to build a {@link String} from the given pattern and values.
+    * Use this expression to build a {@link String} from the given pattern. Extract needed values from registered
+    * {@link Binding} instances.
     */
    public String build(final Rewrite event, final EvaluationContext context)
    {
       return build(extractBoundValues(event, context));
+   }
+
+   /**
+    * Use this expression to build a {@link String} from the given pattern and values.
+    */
+   public String build(final Object... values)
+   {
+      if ((values == null) || (params.size() != values.length))
+      {
+         throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build output string.");
+      }
+
+      return buildUnsafe(values);
+   }
+
+   /**
+    * Use this expression to build a {@link String} from the given pattern and values. Enforces that the number of
+    * values passed must equal the number of expression parameters.
+    */
+   public String buildUnsafe(final Object... values)
+   {
+      StringBuilder builder = new StringBuilder();
+      CapturingGroup last = null;
+
+      int index = 0;
+      for (Entry<String, RegexParameter> entry : params.entrySet())
+      {
+         RegexParameter param = entry.getValue();
+         CapturingGroup capture = param.getCapture();
+
+         if ((last != null) && (last.getEnd() < capture.getStart()))
+         {
+            builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, capture.getStart()));
+         }
+         else if ((last == null) && (capture.getStart() > 0))
+         {
+            builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
+         }
+
+         builder.append(values[index]);
+
+         last = capture;
+      }
+
+      if ((last != null) && (last.getEnd() < chars.length))
+      {
+         builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, chars.length));
+      }
+      else if (last == null)
+      {
+         builder.append(chars);
+      }
+
+      return builder.toString();
    }
 
    /**
@@ -128,7 +183,7 @@ public class ParameterizedPattern
 
       if ((values == null) || (params.size() != values.size()))
       {
-         throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build path.");
+         throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build output string.");
       }
 
       return buildUnsafe(values);
