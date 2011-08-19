@@ -121,8 +121,8 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
       if (expression.matches(requestURL))
       {
          Map<Parameter<String>, String[]> parameters = expression.parseEncoded(requestURL);
-         Bindings.enqueueSubmissions(event, context, parameters);
-         return true;
+         if (Bindings.enqueueSubmissions(event, context, parameters))
+            return true;
       }
       return false;
    }

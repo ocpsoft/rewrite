@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.bind;
+package com.ocpsoft.rewrite.showcase.rest;
 
+import com.ocpsoft.rewrite.bind.Validator;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * A converter for {@link Binding} instances.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface Converter<T>
+public class ProductValidator implements Validator<Product>
 {
-   /**
-    * Convert the given {@link Object} into the expected type. Should return null if the object cannot be converted.
-    */
-   T convert(Rewrite event, EvaluationContext context, Object value);
+   @Override
+   public boolean validate(final Rewrite event, final EvaluationContext context, final Product value)
+   {
+      /*
+       * Make sure that we actually have a Product object. If we don't, we can assume that
+       * the value was not successfully converted into a Product.
+       */
+      return value != null;
+   }
 }

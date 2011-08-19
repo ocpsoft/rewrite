@@ -51,8 +51,10 @@ public abstract class Bindings
     * Submit the given value to all registered {@link Binding} instances of all given {@link Bindable} instances.
     * Perform this by adding individual {@link BindingOperation} instances via
     * {@link EvaluationContext#addPreOperation(Operation)}
+    * 
+    * @return false if validation fails.
     */
-   public static void enqueueSubmissions(final Rewrite event, final EvaluationContext context,
+   public static boolean enqueueSubmissions(final Rewrite event, final EvaluationContext context,
             final Map<? extends Bindable, ? extends Object> map)
    {
       List<Operation> operations = new ArrayList<Operation>();
@@ -71,7 +73,7 @@ public abstract class Bindings
                }
                else
                {
-                  return;
+                  return false;
                }
             }
             catch (Exception e) {
@@ -83,6 +85,7 @@ public abstract class Bindings
       for (Operation operation : operations) {
          context.addPreOperation(operation);
       }
+      return true;
    }
 
    /**

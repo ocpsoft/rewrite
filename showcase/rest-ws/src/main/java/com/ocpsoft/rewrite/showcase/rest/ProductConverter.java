@@ -13,21 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ocpsoft.rewrite.bind;
+package com.ocpsoft.rewrite.showcase.rest;
 
+import javax.inject.Inject;
+
+import com.ocpsoft.rewrite.bind.Converter;
 import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.convert.IntegerConverter;
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * A converter for {@link Binding} instances.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Converter<T>
+public class ProductConverter implements Converter<Product>
 {
-   /**
-    * Convert the given {@link Object} into the expected type. Should return null if the object cannot be converted.
-    */
-   T convert(Rewrite event, EvaluationContext context, Object value);
+   @Inject
+   private ProductRegistry products;
+
+   @Override
+   public Product convert(final Rewrite event, final EvaluationContext context, final Object value)
+   {
+      Integer id = new IntegerConverter().convert(event, context, value);
+      if (products.getProducts().size() > id) {
+         return products.getById(id);
+      }
+
+      /*
+       * No product!
+       */
+      return null;
+   }
+
 }

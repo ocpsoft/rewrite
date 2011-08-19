@@ -25,7 +25,6 @@ import com.ocpsoft.rewrite.event.Rewrite;
  */
 public class IntegerConverter implements Converter<Integer>
 {
-
    @Override
    public Integer convert(final Rewrite event, final EvaluationContext context, final Object value)
    {

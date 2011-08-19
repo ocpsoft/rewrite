@@ -91,12 +91,13 @@ public class Header extends HttpCondition
          if (name.matches(header) && matchesValue(request, header))
          {
             Map<Parameter<String>, String[]> parameters = name.parseEncoded(header);
-            Bindings.enqueueSubmissions(event, context, parameters);
-
             parameters = value.parseEncoded(header);
-            Bindings.enqueueSubmissions(event, context, parameters);
 
-            return true;
+            if (Bindings.enqueueSubmissions(event, context, parameters)
+                     && Bindings.enqueueSubmissions(event, context, parameters))
+            {
+               return true;
+            }
          }
       }
       return false;
