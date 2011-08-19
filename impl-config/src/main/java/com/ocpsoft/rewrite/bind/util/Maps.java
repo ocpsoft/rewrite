@@ -56,22 +56,18 @@ public class Maps
       }
    }
 
-   public static <T> T popListValue(final Map<String, List<T>> values, final String name)
+   public static <T> T getListValue(final Map<String, List<T>> values, final String name, final int index)
    {
       List<T> list = values.get(name);
       if ((list != null) && !list.isEmpty())
       {
-         T item = list.remove(0);
-         if (values.get(name).isEmpty())
-         {
-            values.remove(name);
-         }
+         T item = list.get(index);
          return item;
       }
       return null;
    }
 
-   public static Map<String, String[]> toArrayMap(Map<String, List<String>> parameterMap)
+   public static Map<String, String[]> toArrayMap(final Map<String, List<String>> parameterMap)
    {
       Map<String, String[]> result = new LinkedHashMap<String, String[]>();
 

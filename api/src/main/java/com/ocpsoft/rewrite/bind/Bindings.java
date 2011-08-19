@@ -36,7 +36,8 @@ import com.ocpsoft.rewrite.exception.RewriteException;
 public abstract class Bindings
 {
    /**
-    * Submit the given value to all registered {@link Binding} instances of the given {@link Bindable}.
+    * Submit the given value to all registered {@link Binding} instances of the given {@link Bindable}. Perform this by
+    * adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
     */
    public static void enqueueSubmission(final Rewrite event, final EvaluationContext context,
             final Bindable bindable, final Object value)
@@ -48,6 +49,8 @@ public abstract class Bindings
 
    /**
     * Submit the given value to all registered {@link Binding} instances of all given {@link Bindable} instances.
+    * Perform this by adding individual {@link BindingOperation} instances via
+    * {@link EvaluationContext#addPreOperation(Operation)}
     */
    public static void enqueueSubmissions(final Rewrite event, final EvaluationContext context,
             final Map<? extends Bindable, ? extends Object> map)
@@ -83,7 +86,7 @@ public abstract class Bindings
    }
 
    /**
-    * Extract bound values from configured {@link Binding} instances. Return a {@link List} of the extracted values.
+    * Extract bound values from configured {@link Bindable} instances. Return a {@link List} of the extracted values.
     */
    public static List<Object> performRetrieval(final Rewrite event, final EvaluationContext context,
             final Bindable<?> bindable)

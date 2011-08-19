@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Dependencies: com.sun.xml.bind services export

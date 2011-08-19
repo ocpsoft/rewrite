@@ -15,6 +15,8 @@
  */
 package com.ocpsoft.rewrite.servlet.http.event;
 
+import java.io.OutputStream;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,8 +52,8 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
    public void redirectPermanent(final String location);
 
    /**
-    * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
-    * {@link #abort()}.
+    * If the {@link HttpServletResponse} is not already committed, send an HTTP status code, flush the
+    * {@link OutputStream} buffer, and and call {@link #abort()}.
     * <p>
     * This method commits the response, after which no more information can be written and the response cannot be
     * modified.
@@ -59,11 +61,22 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
    public void sendStatusCode(int code);
 
    /**
-    * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
-    * {@link #abort()}. Provide the given message to the browser.
+    * If the {@link HttpServletResponse} is not already committed, send an HTTP status code, flush the
+    * {@link OutputStream} buffer, and and call {@link #abort()}. Provide the given message to the browser as
+    * [text/html].
     * <p>
     * This method commits the response, after which no more information can be written and the response cannot be
     * modified.
     */
    public void sendStatusCode(int code, String message);
+
+   /**
+    * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
+    * {@link #abort()}. Provide the given message to the browser. Provide the given message to the browser as
+    * [text/html].
+    * <p>
+    * This method commits the response, after which no more information can be written and the response cannot be
+    * modified.
+    */
+   public void sendErrorCode(int code, String message);
 }

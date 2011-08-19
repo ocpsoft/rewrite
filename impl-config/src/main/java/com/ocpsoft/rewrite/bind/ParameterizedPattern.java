@@ -141,6 +141,8 @@ public class ParameterizedPattern
    {
       StringBuilder builder = new StringBuilder();
       CapturingGroup last = null;
+      Map<String, Integer> pointers = new LinkedHashMap<String, Integer>();
+
       for (Entry<String, RegexParameter> entry : params.entrySet())
       {
          RegexParameter param = entry.getValue();
@@ -155,7 +157,10 @@ public class ParameterizedPattern
             builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
          }
 
-         builder.append(Maps.popListValue(values, param.getName()));
+         String name = param.getName();
+         int index = pointers.get(name) == null ? 0 : pointers.get(name);
+         builder.append(Maps.getListValue(values, name, index));
+         pointers.put(name, index++);
 
          last = capture;
       }

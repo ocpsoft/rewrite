@@ -57,11 +57,40 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    @Override
    public void sendStatusCode(final int code)
    {
-      sendStatusCode(code, null);
+      HttpServletResponse response = getResponse();
+      if (response.isCommitted())
+      {
+         throw new IllegalStateException("Response is already committed. Cannot send codes.");
+      }
+
+      try
+      {
+         response.setStatus(code);
+         response.flushBuffer();
+         abort();
+      }
+      catch (IOException e)
+      {
+         throw new RewriteException("Could not send HTTP status code.", e);
+      }
    }
 
    @Override
    public void sendStatusCode(final int code, final String message)
+   {
+      try
+      {
+         getResponse().getWriter().write("<h1>" + message + "</h1>");
+         sendStatusCode(code);
+      }
+      catch (IOException e)
+      {
+         throw new RewriteException("Could not send HTTP status code.", e);
+      }
+   }
+
+   @Override
+   public void sendErrorCode(final int code, final String message)
    {
       HttpServletResponse response = getResponse();
       if (response.isCommitted())
@@ -72,7 +101,10 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       try
       {
          if (message == null)
-            response.sendError(code);
+         {
+            response.setStatus(code);
+            response.flushBuffer();
+         }
          else
          {
             response.sendError(code, message);
