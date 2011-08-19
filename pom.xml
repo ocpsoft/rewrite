@@ -42,7 +42,6 @@
       <module>impl-servlet</module>
       <module>integration-cdi</module>
       <module>integration-faces</module>
-      <module>prototype</module>
    </modules>
 
    <repositories>
