@@ -29,6 +29,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Method;
 import com.ocpsoft.rewrite.servlet.config.Path;
+import com.ocpsoft.rewrite.servlet.config.Response;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -49,9 +50,8 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
 
                .defineRule()
 
-               /*
-                * Define the inbound conditions and conversion mechanisms to be used when handling
-                * inbound requests.
+               /**
+                * Define the inbound conditions and conversion mechanisms to be used when handling inbound requests.
                 */
                .when(Method.isGet()
                         .and(Path.matches("/store/product/{pid}")
@@ -65,8 +65,9 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                      /**
                       * Extract the stored {pid} from our Path and load the Product. This is an example of how we can
                       * use a converter to directly bind and store the object we want into a binding. {@link Evaluation}
-                      * binds array values so we must dereference. If using other bindings such as {@link El}, the value
-                      * will be bound directly to the type of the referenced property type.
+                      * is an low-level construct, and binds array values that must be dereferenced. If using other
+                      * bindings such as {@link El}, the value will be bound directly to the type of the referenced
+                      * property type, and this array downcast is not necessary.
                       */
                      Object[] product = (Object[]) Evaluation.property("pid").retrieve(event, context);
 
@@ -74,7 +75,8 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                       * Marshal the Product into XML using JAXB. This has been extracted into a utility class.
                       */
                      try {
-                        XMLUtil.streamFromObject(product[0], event.getResponse().getOutputStream());
+                        XMLUtil.streamFromObject(Product.class, (Product) product[0], event.getResponse()
+                                 .getOutputStream());
                      }
                      catch (IOException e) {
                         throw new RuntimeException(e);
@@ -96,7 +98,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
                   {
                      try {
-                        XMLUtil.streamFromObject(products, event.getResponse().getOutputStream());
+                        XMLUtil.streamFromObject(ProductRegistry.class, products, event.getResponse().getOutputStream());
                         event.getResponse().setContentType("application/xml");
                         ((HttpInboundServletRewrite) event).sendStatusCode(200);
                      }
@@ -117,10 +119,11 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                         product = products.add(product);
 
                         /**
-                         * Return the URL to the newly created Product
+                         * Just for fun, set a response header containing the URL to the newly created Product.
                          */
-                        event.getResponse().getWriter().write(
-                                 new ParameterizedPattern("/store/product/{pid}").build(product.getId()));
+                        String location = new ParameterizedPattern(event.getContextPath() + "/store/product/{pid}")
+                                 .build(product.getId());
+                        Response.addHeader("Location", location).perform(event, context);
 
                         event.getResponse().setContentType("text/html");
                         ((HttpInboundServletRewrite) event).sendStatusCode(200);

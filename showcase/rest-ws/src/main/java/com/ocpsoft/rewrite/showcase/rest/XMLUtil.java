@@ -28,10 +28,10 @@ import javax.xml.bind.Unmarshaller;
 public class XMLUtil
 {
 
-   public static void streamFromObject(final Object object, final ServletOutputStream outputStream)
+   public static <T> void streamFromObject(final Class<T> type, final T object, final ServletOutputStream outputStream)
    {
       try {
-         Marshaller marshaller = JAXBContext.newInstance(object.getClass())
+         Marshaller marshaller = JAXBContext.newInstance(type)
                   .createMarshaller();
          marshaller.setProperty("jaxb.formatted.output", true);
          marshaller.marshal(object, outputStream);
