@@ -18,7 +18,7 @@ A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applicat
 
 Get Help
 ==========
-(http://ocpsoft.com/support/forum/core)
+Support forum: http://ocpsoft.com/support/forum/urlrewrite
 
 Get Started
 ==========
@@ -80,9 +80,9 @@ TODO's
 ======
 
  * Continue simplification of Configuration objects and convenience APIs. 
+ 
+ * Implement file test conditions.
 
  * Implement additional file-based configuration support.
 
  * Implement http://localhost:8080/rewrite-status monitoring tool
-
- * Implement parameter mapping and value injection (like in the PrettyFaces extension)
