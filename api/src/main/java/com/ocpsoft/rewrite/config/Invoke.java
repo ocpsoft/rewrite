@@ -82,7 +82,7 @@ public class Invoke extends OperationBuilder
     * Invoke the given {@link Retrieval} and process {@link InvocationResultHandler} instances on the result value (if
     * any.)
     */
-   public static OperationBuilder retrieveFrom(final Retrieval retrieval)
+   public static OperationBuilder binding(final Retrieval retrieval)
    {
       return new Invoke(null, retrieval);
    }
@@ -93,7 +93,7 @@ public class Invoke extends OperationBuilder
     * {@link Retrieval#retrieve(Rewrite, EvaluationContext)} as the value for this submission. Process
     * {@link InvocationResultHandler} instances on the result value (if any.)
     */
-   public static OperationBuilder submitTo(final Submission to, final Retrieval from)
+   public static OperationBuilder binding(final Submission to, final Retrieval from)
    {
       return new Invoke(to, from);
    }

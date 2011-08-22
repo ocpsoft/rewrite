@@ -42,7 +42,7 @@ public class BindingTestConfigProvider extends HttpConfigurationProvider
                .when(Path.matches("/{one}/{two}")
                         .where("one").bindsTo(El.property("bindingBean.one"))
                         .where("two").matches("[0-9]+").bindsTo(El.property("bindingBean.two")))
-               .perform(Invoke.retrieveFrom(El.retrievalMethod("bindingBean.action()"))
+               .perform(Invoke.binding(El.retrievalMethod("bindingBean.action()"))
                         .and(Redirect.permanent(context.getContextPath() + "/{one}/{two}")
                                  .where("one").bindsTo(El.property("bindingBean.two"))
                                  .where("two").bindsTo(El.property("bindingBean.one"))))
