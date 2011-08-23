@@ -54,7 +54,7 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Set up our rule (This does the work.)
                 */
-               .add(Join.path("/p/{project}").to("/viewProject.xhtml"))
+               .addRule(Join.path("/p/{project}").to("/viewProject.xhtml"))
 
                /*
                 * Now send a verification to our test case that the rule worked correctly.
@@ -76,7 +76,7 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                   }
                })
 
-               .add(Join.path("/{p1}/{p2}").to("/list.xhtml").withInboundCorrection())
+               .addRule(Join.path("/{p1}/{p2}").to("/list.xhtml").withInboundCorrection())
 
                .defineRule()
                .when(Path.matches("/list.xhtml"))

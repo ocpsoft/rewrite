@@ -33,9 +33,9 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    @Override
-   public ConfigurationBuilder add(final Rule rule)
+   public ConfigurationBuilder addRule(final Rule rule)
    {
-      return wrapped.add(rule);
+      return wrapped.addRule(rule);
    }
 
    @Override

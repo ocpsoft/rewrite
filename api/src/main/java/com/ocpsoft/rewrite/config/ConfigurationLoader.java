@@ -60,7 +60,7 @@ public class ConfigurationLoader
                   for (Rule rule : rules) {
                      if (rule != null)
                      {
-                        result.add(rule);
+                        result.addRule(rule);
                      }
                      else {
                         log.debug("Ignoring null Rule from ConfigurationProvider [" + provider.getClass().getName()
