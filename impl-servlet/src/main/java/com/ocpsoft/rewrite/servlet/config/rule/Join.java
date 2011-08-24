@@ -54,6 +54,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
 
    private final String pattern;
    private String resource;
+   private Path resourcePath;
    private final Path path;
 
    private Operation operation;
@@ -81,6 +82,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
    public Join to(final String resource)
    {
       this.resource = resource;
+      this.resourcePath = Path.matches(resource);
       return this;
    }
 
@@ -108,7 +110,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
                return true;
             }
             else if (inboundCorrection
-                     && Path.matches(resource).andNot(DispatchType.isForward()).evaluate(event, context))
+                     && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context))
             {
                List<String> names = path.getPathExpression().getParameterNames();
                for (String name : names) {
@@ -124,9 +126,13 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          }
          else if (event instanceof HttpOutboundServletRewrite)
          {
-            List<String> parameterNames = path.getPathExpression().getParameterNames();
-            ConditionBuilder outbound = Path.matches(resource);
-            for (String name : parameterNames)
+            List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
+
+            List<String> queryParameters = path.getPathExpression().getParameterNames();
+            queryParameters.removeAll(nonQueryParameters);
+
+            ConditionBuilder outbound = resourcePath;
+            for (String name : queryParameters)
             {
                outbound = outbound.and(QueryString.parameterExists(name));
             }
