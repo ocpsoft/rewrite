@@ -233,6 +233,11 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          this.parameter = parameter;
       }
 
+      public Join to(final String resource)
+      {
+         return parent.to(resource);
+      }
+
       public JoinParameterBuilder matches(final String pattern)
       {
          parameter.matches(pattern);
