@@ -195,12 +195,13 @@
    </distributionManagement>
 
    <scm>
-      <developerConnection>scm:git:ssh:git@github.com:ocpsoft/rewrite.git</developerConnection>
-      <url>scm:git:ssh:git@github.com:ocpsoft/rewrite.git</url>
+      <connection>scm:git:git://github.com/ocpsoft/rewrite.git</connection>
+      <developerConnection>scm:git:git@github.com:ocpsoft/rewrite.git</developerConnection>
+      <url>http://github.com/ocpsoft/rewrite</url>
    </scm>
 
    <issueManagement>
-      <system>TBD</system>
-      <url>http://ocpsoft.com/TBD</url>
+      <system>GitHub</system>
+      <url>https://github.com/ocpsoft/rewrite/issues</url>
    </issueManagement>
 </project>
