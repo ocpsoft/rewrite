@@ -327,7 +327,6 @@ public class ParameterizedPattern
             Pattern segmentPattern = Pattern.compile(segmentBuilder.toString() + ".*");
             Matcher segmentMatcher = segmentPattern.matcher(temp);
 
-            // TODO this needs to handle URLDecoding
             if (segmentMatcher.matches())
             {
                String value = segmentMatcher.group(1);

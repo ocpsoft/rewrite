@@ -37,7 +37,8 @@ public interface Submission
    boolean validates(Rewrite event, EvaluationContext context, Object value);
 
    /**
-    * Store a value into the designated storage location.
+    * Store a value into the designated storage location. Return any value that is produces as a result of this
+    * operation.
     */
    Object submit(Rewrite event, EvaluationContext context, Object value);
 }

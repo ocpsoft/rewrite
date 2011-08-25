@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.ocpsoft.rewrite.config.Condition;
+import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
@@ -44,7 +46,7 @@ public abstract class Bindings
    {
       Map<Bindable, Object> map = new LinkedHashMap<Bindable, Object>();
       map.put(bindable, value);
-      enqueueSubmissions(event, context, map);
+      enqueuePreOperationSubmissions(event, context, map);
    }
 
    /**
@@ -54,7 +56,7 @@ public abstract class Bindings
     * 
     * @return false if validation fails.
     */
-   public static boolean enqueueSubmissions(final Rewrite event, final EvaluationContext context,
+   public static boolean enqueuePreOperationSubmissions(final Rewrite event, final EvaluationContext context,
             final Map<? extends Bindable, ? extends Object> map)
    {
       List<Operation> operations = new ArrayList<Operation>();
@@ -102,6 +104,54 @@ public abstract class Bindings
          result.add(boundValue);
       }
       return result;
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
+    * value.
+    */
+   public static ConditionBuilder equals(final Object expected, final Retrieval binding)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            Object actual = binding.retrieve(event, context);
+            return compare(expected, actual);
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
+    * value.
+    */
+   public static ConditionBuilder equals(final Object expected, final Submission binding, final Object submission)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            Object actual = binding.submit(event, context, submission);
+            return compare(expected, actual);
+         }
+      };
+   }
+
+   /**
+    * Return true if the two values are equal.
+    */
+   private static boolean compare(final Object expected, Object actual)
+   {
+      if (expected == actual)
+      {
+         return true;
+      }
+      else if (expected != null && expected.equals(actual))
+      {
+         return true;
+      }
+      return false;
    }
 
    /**
