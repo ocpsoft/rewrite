@@ -93,8 +93,8 @@ public class Header extends HttpCondition
             Map<Parameter<String>, String[]> parameters = name.parseEncoded(header);
             parameters = value.parseEncoded(header);
 
-            if (Bindings.enqueueSubmissions(event, context, parameters)
-                     && Bindings.enqueueSubmissions(event, context, parameters))
+            if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)
+                     && Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             {
                return true;
             }

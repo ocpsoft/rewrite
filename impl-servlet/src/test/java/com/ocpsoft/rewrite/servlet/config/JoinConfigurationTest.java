@@ -76,4 +76,16 @@ public class JoinConfigurationTest extends RewriteTestBase
       Assert.assertEquals("/foo/bar", action.getCurrentContextRelativeURL());
    }
 
+   @Test
+   public void testSubstitutionWithExtraQueryParams()
+   {
+      HttpAction<HttpGet> action = get("/1/querypath/2/?in=out");
+      Assert.assertEquals(207, action.getResponse().getStatusLine().getStatusCode());
+
+      Assert.assertEquals("/1/querypath/2/?in=out", action.getCurrentContextRelativeURL());
+      Assert.assertEquals("/1-query.xhtml?in=out", action.getResponseHeaderValues("InboundURL").get(0));
+      Assert.assertEquals("/12345/querypath/cab/?foo=bar&kitty=meow", action.getResponseHeaderValues("OutboundURL")
+               .get(0));
+   }
+
 }

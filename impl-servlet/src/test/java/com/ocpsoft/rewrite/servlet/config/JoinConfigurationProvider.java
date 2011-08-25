@@ -76,11 +76,33 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                   }
                })
 
+               /*
+                * Test Inbound Correction
+                */
                .addRule(Join.path("/{p1}/{p2}").to("/list.xhtml").withInboundCorrection())
 
                .defineRule()
                .when(Path.matches("/list.xhtml"))
-               .perform(SendStatus.code(204));
+               .perform(SendStatus.code(204))
+
+               /*
+                *  Test Inbound/Outbound Query Handling
+                */
+               .addRule(Join.path("/{id}/querypath/{other}/").to("/{id}-query.xhtml").withInboundCorrection())
+
+               .defineRule().when(Direction.isInbound().and(Path.matches("/{id}-query.xhtml")))
+               .perform(new HttpOperation() {
+
+                  @Override
+                  public void performHttp(HttpServletRewrite event, EvaluationContext context)
+                  {
+                     Response.addHeader("InboundURL", event.getURL())
+                              .and(Response.addHeader("OutboundURL", event.getResponse().encodeURL(
+                                       "/12345-query.xhtml?foo=bar&other=cab&kitty=meow")))
+                              .and(SendStatus.code(207))
+                              .perform(event, context);
+                  }
+               });
 
       return config;
    }
