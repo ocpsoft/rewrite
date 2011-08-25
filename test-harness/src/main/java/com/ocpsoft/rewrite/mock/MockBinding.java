@@ -12,6 +12,8 @@ public class MockBinding extends BindingBuilder
    private boolean extracted;
    private Object value;
 
+   private Object returnOnSubmit = false;
+
    public MockBinding()
    {
       value = new Object();
@@ -19,6 +21,12 @@ public class MockBinding extends BindingBuilder
 
    public MockBinding(Object value)
    {
+      this.value = value;
+   }
+
+   public MockBinding(Object value, Object returnOnSubmit)
+   {
+      this.returnOnSubmit = returnOnSubmit;
       this.value = value;
    }
 
@@ -71,7 +79,8 @@ public class MockBinding extends BindingBuilder
          this.value = value;
 
       submitted = true;
-      return null;
+
+      return returnOnSubmit;
    }
 
    @Override

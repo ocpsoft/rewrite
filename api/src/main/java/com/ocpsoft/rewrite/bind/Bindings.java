@@ -108,7 +108,7 @@ public abstract class Bindings
 
    /**
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
-    * value.
+    * {@link Binding} value. This evaluates to true when the values are equal.
     */
    public static ConditionBuilder equals(final Object expected, final Retrieval binding)
    {
@@ -124,7 +124,7 @@ public abstract class Bindings
 
    /**
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
-    * value.
+    * {@link Binding} value. This evaluates to true when the values are equal.
     */
    public static ConditionBuilder equals(final Object expected, final Submission binding, final Object submission)
    {
@@ -134,6 +134,130 @@ public abstract class Bindings
          {
             Object actual = binding.submit(event, context, submission);
             return compare(expected, actual);
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the value of two {@link Retrieval} {@link Binding} instances. This
+    * evaluates to true when the values are equal.
+    */
+   public static ConditionBuilder equals(final Retrieval left, final Retrieval right)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return compare(left.retrieve(event, context), right.retrieve(event, context));
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the values of each given {@link Retrieval} and {@link Submission}
+    * {@link Binding} instance, respectively. This evaluates to true when the values are equal.
+    */
+   public static ConditionBuilder equals(final Retrieval left, final Submission right, final Object submission)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return compare(left.retrieve(event, context), right.submit(event, context, submission));
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
+    * evaluates to true when the values are equal.
+    */
+   public static ConditionBuilder equals(final Submission left, final Object leftSubmission, final Submission right,
+            final Object rightSubmission)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return compare(left.submit(event, context, leftSubmission), right.submit(event, context, rightSubmission));
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
+    * {@link Binding} value. This evaluates to true when the values are not equal.
+    */
+   public static ConditionBuilder notEquals(final Object expected, final Retrieval binding)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            Object actual = binding.retrieve(event, context);
+            return !compare(expected, actual);
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
+    * {@link Binding} value. This evaluates to true when the values are not equal.
+    */
+   public static ConditionBuilder notEquals(final Object expected, final Submission binding, final Object submission)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            Object actual = binding.submit(event, context, submission);
+            return !compare(expected, actual);
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the value of two {@link Retrieval} {@link Binding} instances. This
+    * evaluates to true when the values are not equal.
+    */
+   public static ConditionBuilder notEquals(final Retrieval left, final Retrieval right)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return !compare(left.retrieve(event, context), right.retrieve(event, context));
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the values of each given {@link Retrieval} and {@link Submission}
+    * {@link Binding} instance, respectively. This evaluates to true when the values are not equal.
+    */
+   public static ConditionBuilder notEquals(final Retrieval left, final Submission right, final Object submission)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return !compare(left.retrieve(event, context), right.submit(event, context, submission));
+         }
+      };
+   }
+
+   /**
+    * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
+    * evaluates to true when the values are not equal.
+    */
+   public static ConditionBuilder notEquals(final Submission left, final Object leftSubmission, final Submission right,
+            final Object rightSubmission)
+   {
+      return new ConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return !compare(left.submit(event, context, leftSubmission), right.submit(event, context, rightSubmission));
          }
       };
    }
