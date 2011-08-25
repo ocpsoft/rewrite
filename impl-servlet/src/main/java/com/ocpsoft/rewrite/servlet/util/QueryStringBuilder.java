@@ -125,6 +125,13 @@ public class QueryStringBuilder
       return this;
    }
 
+   public void addParameter(String name, String... values)
+   {
+      Map<String, String[]> parameter = new LinkedHashMap<String, String[]>();
+      parameter.put(name, values);
+      addParameterArrays(parameter);
+   }
+
    /**
     * Add parameters from the given map of name=value pairs. For parameters with more than one value, each value will be
     * appended using the same name. If a parameter already exists, append new values to the existing list of values for
@@ -351,6 +358,7 @@ public class QueryStringBuilder
 
    private class NullEncodingHandler implements EncodingHandler
    {
+      @Override
       public String encode(final String value)
       {
          return value;
@@ -359,6 +367,7 @@ public class QueryStringBuilder
 
    private class QSDecoder implements EncodingHandler
    {
+      @Override
       public String encode(final String value)
       {
          try {
@@ -377,6 +386,7 @@ public class QueryStringBuilder
 
    private class QSEncoder implements EncodingHandler
    {
+      @Override
       public String encode(final String value)
       {
          try {

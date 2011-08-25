@@ -25,8 +25,6 @@ import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
 import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.event.InboundRewrite;
-import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.param.Parameterized;
@@ -39,6 +37,7 @@ import com.ocpsoft.rewrite.servlet.config.Substitute;
 import com.ocpsoft.rewrite.servlet.config.rule.Join.JoinParameterBuilder;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 
 /**
  * {@link Rule} that creates a bi-directional rewrite rule between an externally facing URL and an internal server
@@ -126,13 +125,10 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          }
          else if (event instanceof HttpOutboundServletRewrite)
          {
-            List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
-
-            List<String> queryParameters = path.getPathExpression().getParameterNames();
-            queryParameters.removeAll(nonQueryParameters);
+            List<String> parameters = getPathRequestParameters();
 
             ConditionBuilder outbound = resourcePath;
-            for (String name : queryParameters)
+            for (String name : parameters)
             {
                outbound = outbound.and(QueryString.parameterExists(name));
             }
@@ -143,18 +139,43 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       return false;
    }
 
+   private List<String> getPathRequestParameters()
+   {
+      List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
+
+      List<String> queryParameters = path.getPathExpression().getParameterNames();
+      queryParameters.removeAll(nonQueryParameters);
+      return queryParameters;
+   }
+
    @Override
    public void perform(final Rewrite event, final EvaluationContext context)
    {
-      if (event instanceof InboundRewrite)
+      if (event instanceof HttpInboundServletRewrite)
       {
          saveCurrentJoin(((HttpInboundServletRewrite) event).getRequest());
          Forward.to(resource).perform(event, context);
       }
 
-      else if (event instanceof OutboundRewrite)
+      else if (event instanceof HttpOutboundServletRewrite)
       {
-         Substitute.with(pattern).perform(event, context);
+         List<String> parameters = getPathRequestParameters();
+
+         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
+         QueryStringBuilder query = QueryStringBuilder.begin();
+         if (outboundURL.contains("?"))
+         {
+            query.addParameters(outboundURL);
+            for (String string : parameters) {
+               List<String> values = query.removeParameter(string);
+               if (values.size() > 1)
+               {
+                  query.addParameter(string, values.subList(1, values.size()).toArray(new String[] {}));
+               }
+            }
+         }
+
+         Substitute.with(pattern + query.toQueryString()).perform(event, context);
       }
    }
 
