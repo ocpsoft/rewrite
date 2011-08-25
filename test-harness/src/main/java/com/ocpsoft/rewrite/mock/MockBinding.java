@@ -1,17 +1,26 @@
 package com.ocpsoft.rewrite.mock;
 
-import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.BindingBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 
-public class MockBinding implements Binding
+public class MockBinding extends BindingBuilder
 {
-
    private boolean submitted;
    private boolean validated;
    private boolean converted;
    private boolean extracted;
    private Object value;
+
+   public MockBinding()
+   {
+      value = new Object();
+   }
+
+   public MockBinding(Object value)
+   {
+      this.value = value;
+   }
 
    @Override
    public boolean validates(final Rewrite event, final EvaluationContext context, final Object value)
@@ -69,7 +78,7 @@ public class MockBinding implements Binding
    public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
       extracted = true;
-      return new Object();
+      return value;
    }
 
    @Override
