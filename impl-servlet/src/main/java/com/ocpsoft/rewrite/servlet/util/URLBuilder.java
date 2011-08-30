@@ -278,4 +278,15 @@ public class URLBuilder
       }
       return result;
    }
+
+   public URI toURI()
+   {
+      try {
+         URI uri = new URI(toURL());
+         return uri;
+      }
+      catch (URISyntaxException e) {
+         throw new IllegalStateException("URL cannot be parsed.", e);
+      }
+   }
 }
