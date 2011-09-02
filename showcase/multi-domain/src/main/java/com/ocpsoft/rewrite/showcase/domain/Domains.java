@@ -40,7 +40,7 @@ import com.ocpsoft.rewrite.servlet.util.URLBuilder;
 public class Domains
 {
    private String currentName;
-   private Domain current;
+   private DomainEntity current;
 
    @PersistenceContext(type = PersistenceContextType.EXTENDED)
    private EntityManager em;
@@ -50,9 +50,9 @@ public class Domains
       if (current == null)
       {
          try {
-            TypedQuery<Domain> query = em.createQuery("from Domain where name = :name", Domain.class);
+            TypedQuery<DomainEntity> query = em.createQuery("from DomainEntity where name = :name", DomainEntity.class);
             query.setParameter("name", currentName);
-            Domain result = query.getSingleResult();
+            DomainEntity result = query.getSingleResult();
 
             current = result;
          }
@@ -78,12 +78,12 @@ public class Domains
       return null;
    }
 
-   public Domain getCurrent()
+   public DomainEntity getCurrent()
    {
       return current;
    }
 
-   public void setCurrent(final Domain currentDomain)
+   public void setCurrent(final DomainEntity currentDomain)
    {
       this.current = currentDomain;
    }

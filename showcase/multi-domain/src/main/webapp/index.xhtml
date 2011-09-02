@@ -6,8 +6,9 @@
 
 <ui:composition template="/resources/forge-template.xhtml">
 
-	<ui:param name="pageTitle" value="Welcome to #{domains.current.name}'s subdomain" />
-	
+	<ui:param name="pageTitle"
+		value="Welcome to #{domains.current.name}'s subdomain" />
+
 	<ui:define name="header">
 		Welcome to #{domains.current.name}'s sub-domain
 	</ui:define>
@@ -16,19 +17,53 @@
 		Your application is running with domain rewriting.
 	</ui:define>
 
-	<ui:define name="main">      
-      <p><a target="_blank" href="http://ocpsoft.com/rewrite/">Documentation</a> | <a target="_blank" href="http://twitter.com/intent/tweet?text=I+just+deployed+a+webapp+using+domain+rewriting+with+@ocpsoft+%23URLRewrite!+(+http://ocpsoft.com/+)">Get Excited!</a><br/>
+	<ui:define name="main">
+		<p>
+			<a target="_blank" href="http://ocpsoft.com/rewrite/">Documentation</a>
+			| <a target="_blank"
+				href="http://twitter.com/intent/tweet?text=I+just+deployed+a+webapp+using+domain+rewriting+with+@ocpsoft+%23URLRewrite!+(+http://ocpsoft.com/rewrite/+)">Get
+				Excited!</a><br />
+		</p>
 
-      <a target="_blank" href="http://ocpsoft.com"><br/>
-      Seam Forge Project</a> | <a target="_blank" href="http://ocpsoft.com/support/forum/rewrite">Support Forums</a> | <a target="_blank" href=
-      "https://github.com/ocpsoft/rewrite/issues">Report an issue</a></p>
+		<p>This example requires that you must edit your /etc/hosts file,
+			adding a new domain alias for "localhost", e.g:</p>
+		<pre>127.0.0.1 localhost foo.example.com</pre>
+
+		<p>
+			Now you must <h:link value="add a domain" outcome="/scaffold/domain/list" />
+			with the same sub-name, in this case: "foo", for example.
+		</p>
+
+			Then access the site using one of the configured sub-domains: (you must have
+			<h:link value="added a domain" outcome="/scaffold/domain/list" /> in the previous step 
+			before this list will be populated.)
+			
+			<ul>
+			<ui:repeat var="domain" value="#{domainBean.list}">
+				<li><a
+					href="http://#{domain.name}.example.com:8080/rewrite-showcase-multi-domain/">#{domain.name}</a>
+				</li>
+			</ui:repeat>
+		</ul>
+		<p>
+			<a target="_blank" href="http://ocpsoft.com"><br /> OCPsoft
+				Website</a> | <a target="_blank"
+				href="http://ocpsoft.com/support/forum/rewrite">Support Forums</a> |
+			<a target="_blank" href="https://github.com/ocpsoft/rewrite/issues">Report
+				an issue</a>
+		</p>
+
 	</ui:define>
 
 	<ui:define name="footer">
-      <p class="logos">
-      	<a target="_blank" href="http://jboss.org"><img src="#{resource['jboss-community.png']}" alt="JBoss and JBoss Community" width="254" height="31" border="0"/></a>
-      </p>
-      <p class="note">To replace this page, edit 'src/main/webapp/index.xhtml', or keep Forging!</p>
+		<p class="logos">
+			<a target="_blank" href="http://jboss.org"><img
+				src="#{resource['jboss-community.png']}"
+				alt="JBoss and JBoss Community" width="254" height="31" border="0" />
+			</a>
+		</p>
+		<p class="note">To replace this page, edit
+			'src/main/webapp/index.xhtml', or keep Forging!</p>
 	</ui:define>
 
 </ui:composition>

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 
 @Entity
-public class Domain implements java.io.Serializable
+public class DomainEntity implements java.io.Serializable
 {
    private static final long serialVersionUID = 1L;
    @Id
@@ -53,32 +53,6 @@ public class Domain implements java.io.Serializable
    }
 
    @Column
-   private int annualRevenue;
-
-   public int getAnnualRevenue()
-   {
-      return this.annualRevenue;
-   }
-
-   public void setAnnualRevenue(final int annualRevenue)
-   {
-      this.annualRevenue = annualRevenue;
-   }
-
-   @Column
-   private String location;
-
-   public String getLocation()
-   {
-      return this.location;
-   }
-
-   public void setLocation(final String location)
-   {
-      this.location = location;
-   }
-
-   @Column
    private String name;
 
    public String getName()
@@ -94,7 +68,6 @@ public class Domain implements java.io.Serializable
    @Override
    public String toString()
    {
-      return "Domain [name=" + name + ", description=" + description + ", location=" + location + ", annualRevenue="
-               + annualRevenue + "]";
+      return "Domain [name=" + name + ", description=" + description + "]";
    }
 }
