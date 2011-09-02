@@ -23,13 +23,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.TypedQuery;
 
-import com.ocpsoft.rewrite.config.Operation;
-import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.servlet.config.HttpOperation;
-import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.servlet.util.URLBuilder;
-
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -45,7 +38,7 @@ public class Domains
    @PersistenceContext(type = PersistenceContextType.EXTENDED)
    private EntityManager em;
 
-   public Operation load()
+   public void load()
    {
       if (current == null)
       {
@@ -57,25 +50,13 @@ public class Domains
             current = result;
          }
          catch (Exception e) {
-
             /*
-             * For the purposes of this example, let's just disable this so we 
+             * For the purposes of this example, let's just keep going so we 
              * can keep working
              */
-            return new HttpOperation() {
-               @Override
-               public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
-               {
-                  URLBuilder url = URLBuilder.begin().addPathSegments(event.getRequestPath())
-                           .addQueryParameters(event.getRequestQueryString())
-                           .addQueryParameters("disableDomainRewrite");
-                  ((HttpInboundServletRewrite) event).redirectTemporary(url.toURL());
-               }
-            };
          }
          System.out.println("Loaded settings for domain [" + current + "]");
       }
-      return null;
    }
 
    public DomainEntity getCurrent()

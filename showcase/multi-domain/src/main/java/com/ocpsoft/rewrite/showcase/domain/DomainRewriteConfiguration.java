@@ -25,6 +25,7 @@ import com.ocpsoft.rewrite.servlet.config.DispatchType;
 import com.ocpsoft.rewrite.servlet.config.Domain;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.QueryString;
+import com.ocpsoft.rewrite.servlet.config.rule.Join;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -38,13 +39,21 @@ public class DomainRewriteConfiguration extends HttpConfigurationProvider
       return ConfigurationBuilder
                .begin()
 
+               /**
+                * When a known sub-domain of example.com is accessed, it will be loaded by the application.
+                */
                .defineRule()
                .when(Domain.matches("{domain}.example.com").where("domain")
                         .bindsTo(El.property("#{domains.currentName}"))
                         .and(DispatchType.isRequest())
                         .andNot(QueryString.parameterExists("disableDomainRewrite")))
-               .perform(Invoke.binding(El.retrievalMethod("#{domains.load}")));
+               .perform(Invoke.binding(El.retrievalMethod("#{domains.load}")))
 
+               /**
+                * Access http://{domain}.example.com:8080/context/literal and you should see a FileNotFoundException or
+                * * 404 for "/{domain}.xhtml", where "{domain}" matches the sub-domain of example.com
+                */
+               .addRule(Join.path("/literal").to("/{domain}.xhtml").when(Domain.matches("{domain}.example.com")));
    }
 
    @Override

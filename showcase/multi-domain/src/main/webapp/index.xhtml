@@ -10,7 +10,12 @@
 		value="Welcome to #{domains.current.name}'s subdomain" />
 
 	<ui:define name="header">
-		Welcome to #{domains.current.name}'s sub-domain
+		<h:panelGroup rendered="#{domains.current != null}">
+			Welcome to #{domains.current.name}'s sub-domain
+		</h:panelGroup>
+		<h:panelGroup rendered="#{domains.current == null}">
+			Let's get started
+		</h:panelGroup>
 	</ui:define>
 
 	<ui:define name="subheader">
