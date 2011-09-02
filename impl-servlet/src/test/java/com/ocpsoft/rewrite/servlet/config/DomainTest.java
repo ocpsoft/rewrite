@@ -67,7 +67,7 @@ public class DomainTest
       context.getPreOperations().get(0).perform(inbound, context);
       context.getPreOperations().get(1).perform(inbound, context);
 
-      Assert.assertEquals("example", ((String[]) Evaluation.property("domain").retrieve(inbound, context))[0]);
+      Assert.assertEquals("example", Evaluation.property("domain").retrieve(inbound, context));
    }
 
    @Test

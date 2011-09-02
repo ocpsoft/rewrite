@@ -41,7 +41,7 @@ public class FacesRewriteLifecycleListener extends HttpRewriteLifecycleListener
    {
       if (DispatcherType.REQUEST.equals(event.getRequest().getDispatcherType()))
       {
-         String originalURL = event.getContextPath() + event.getRequestURL() + event.getRequestQueryStringSeparator()
+         String originalURL = event.getContextPath() + event.getRequestPath() + event.getRequestQueryStringSeparator()
                   + event.getRequestQueryString();
          event.getRequest().setAttribute(ORIGINAL_URL, originalURL);
       }

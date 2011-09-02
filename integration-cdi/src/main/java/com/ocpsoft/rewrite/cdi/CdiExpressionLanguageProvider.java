@@ -37,13 +37,13 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
    public Object retrieveValue(final String expression)
    {
       return getValue(expressions.getELContext(), expressions.getExpressionFactory(),
-               expressions.toExpression(expression));
+               groomExpression(expression));
    }
 
    @Override
    public void submitValue(final String expression, final Object value)
    {
-      String el = expressions.toExpression(expression);
+      String el = groomExpression(expression);
       if (getExpectedType(expressions.getELContext(), expressions.getExpressionFactory(), el).isArray())
       {
          Object[] toInject = null;
@@ -75,17 +75,26 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
       }
    }
 
+   public String groomExpression(String expression)
+   {
+      expression = expression.trim();
+      if (!expression.startsWith("#{"))
+         return expressions.toExpression(expression);
+
+      return expression;
+   }
+
    @Override
    public Object evaluateMethodExpression(final String expression)
    {
-      String el = expressions.toExpression(expression);
+      String el = groomExpression(expression);
       return expressions.evaluateMethodExpression(el);
    }
 
    @Override
    public Object evaluateMethodExpression(final String expression, final Object... values)
    {
-      String el = expressions.toExpression(expression);
+      String el = groomExpression(expression);
       return expressions.evaluateMethodExpression(el, values);
    }
 

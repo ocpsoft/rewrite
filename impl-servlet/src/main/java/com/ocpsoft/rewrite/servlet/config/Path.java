@@ -31,7 +31,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.util.Assert;
 
 /**
- * A {@link Condition} that inspects the value of {@link HttpServletRewrite#getRequestURL()}
+ * A {@link Condition} that inspects the value of {@link HttpServletRewrite#getRequestPath()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -116,7 +116,7 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
          }
       }
       else
-         requestURL = event.getRequestURL();
+         requestURL = event.getRequestPath();
 
       if (expression.matches(requestURL))
       {

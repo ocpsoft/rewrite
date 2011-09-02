@@ -181,14 +181,14 @@ public abstract class El extends BindingBuilder
             }
             catch (UnsupportedEvaluationException e) {
                log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not invoke method #{"
-                        + getExpression + "}", e);
+                        + "] could not invoke method ["
+                        + getExpression + "]", e);
             }
             catch (Exception e)
             {
                throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not retrieve value from property #{"
-                        + getExpression + "}", e);
+                        + "] could not retrieve value from property ["
+                        + getExpression + "]", e);
 
             }
          }
@@ -210,13 +210,13 @@ public abstract class El extends BindingBuilder
             }
             catch (UnsupportedEvaluationException e) {
                log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not submit method #{" + setExpression
+                        + "] could not submit method [" + setExpression
                         + "} with value [" + value + "]", e);
             }
             catch (Exception e)
             {
                throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not submit method #{"
+                        + "] could not submit method ["
                         + setExpression + "} with value [" + value + "]", e);
 
             }
@@ -239,7 +239,7 @@ public abstract class El extends BindingBuilder
       @Override
       public String toString()
       {
-         return "ElMethod [retrieve= #{ " + getExpression + " }, submit= #{ " + setExpression + " }";
+         return "ElMethod [retrieve= [ " + getExpression + " }, submit= [ " + setExpression + " ]";
       }
 
    }
@@ -272,13 +272,13 @@ public abstract class El extends BindingBuilder
             }
             catch (UnsupportedEvaluationException e)
             {
-               log.debug("El provider [" + provider.getClass().getName() + "] could not extract value from property #{"
-                        + expression + "}", e);
+               log.debug("El provider [" + provider.getClass().getName() + "] could not extract value from property ["
+                        + expression + "]", e);
             }
             catch (Exception e) {
                throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not extract value from property #{"
-                        + expression + "}", e);
+                        + "] could not extract value from property ["
+                        + expression + "]", e);
             }
 
             if (value != null)
@@ -324,12 +324,12 @@ public abstract class El extends BindingBuilder
             catch (UnsupportedEvaluationException e)
             {
                log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not inject property #{" + expression
+                        + "] could not inject property [" + expression
                         + "} with value [" + value + "]", e);
             }
             catch (Exception e) {
                throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not inject property #{" + expression
+                        + "] could not inject property [" + expression
                         + "} with value [" + value + "]", e);
             }
          }
@@ -340,7 +340,7 @@ public abstract class El extends BindingBuilder
       @Override
       public String toString()
       {
-         return "ElProperty #{ " + expression + " }";
+         return "ElProperty [ " + expression + " ]";
       }
 
    }

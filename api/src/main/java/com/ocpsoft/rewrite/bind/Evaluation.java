@@ -86,7 +86,16 @@ public class Evaluation extends BindingBuilder
    @Override
    public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
-      return context.get(getParameterName(property));
+      Object object = context.get(getParameterName(property));
+      if (object.getClass().isArray())
+      {
+         Object[] array = (Object[]) object;
+         if (array.length == 1)
+         {
+            return array[0];
+         }
+      }
+      return object;
    }
 
    @Override

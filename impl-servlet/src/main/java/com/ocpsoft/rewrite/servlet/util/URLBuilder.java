@@ -20,117 +20,113 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import com.ocpsoft.rewrite.util.Strings;
 
 public class URLBuilder
 {
-   private Metadata metadata = new Metadata();
-   private String originalURL = "";
-   private List<String> segments;
 
-   private final Map<String, List<String>> decodedSegments = new HashMap<String, List<String>>();
+   private Metadata metadata = new Metadata();
+
+   private final List<String> segments = new ArrayList<String>();
+
+   private QueryStringBuilder query = QueryStringBuilder.begin();
 
    /**
-    * Create a URL object for the given url String. The input string must not yet have been decoded.
-    * 
-    * @param url The raw, un-decoded url String
+    * Return a new instance of {@link URLBuilder}
     */
-   public URLBuilder(final String url)
+   public static URLBuilder begin()
    {
-      if (url != null)
+      return new URLBuilder();
+   }
+
+   public static URLBuilder build(final List<String> segments, final Metadata metadata)
+   {
+      return URLBuilder.begin().addPathSegments(segments).setMetadata(metadata);
+   }
+
+   public static URLBuilder build(final String url)
+   {
+      if (url == null)
       {
-         originalURL = url.trim();
-         if (originalURL.endsWith("/"))
+         throw new IllegalArgumentException("URL cannot be null.");
+      }
+      if (url.contains("?"))
+      {
+         String[] parts = url.split("\\?");
+         String path = parts[0];
+         String query = parts[1];
+         if (parts.length > 2)
+         {
+            query = Strings.join(Arrays.asList(Arrays.copyOfRange(parts, 1, parts.length)), "?");
+         }
+         return new URLBuilder().addPathSegments(path).addQueryParameters(query);
+      }
+      return new URLBuilder().addPathSegments(url);
+   }
+
+   /*
+    * Constructors
+    */
+   private URLBuilder()
+   {}
+
+   public URLBuilder(final List<String> encodedSegments, final Metadata metadata, final QueryStringBuilder query)
+   {
+      this.segments.addAll(encodedSegments);
+      this.metadata = metadata.copy();
+      this.query = query;
+   }
+
+   /*
+    * End Constructors
+    */
+
+   public URLBuilder addPathSegments(final List<String> segments)
+   {
+      this.segments.addAll(segments);
+      return this;
+   }
+
+   public URLBuilder addPathSegments(final String path)
+   {
+      if (path != null)
+      {
+         String temp = path.trim();
+         if (temp.endsWith("/"))
          {
             metadata.setTrailingSlash(true);
          }
-         if (originalURL.startsWith("/"))
+         if (temp.startsWith("/") && segments.isEmpty())
          {
             metadata.setLeadingSlash(true);
          }
 
-         String trimmedUrl = trimSurroundingSlashes(url);
-         String[] segments = trimmedUrl.split("/");
+         String trimmedUrl = trimSurroundingSlashes(path);
+         String[] newSegments = trimmedUrl.split("/");
 
-         this.segments = Arrays.asList(segments);
+         this.segments.addAll(Arrays.asList(newSegments));
       }
       else
       {
          throw new IllegalArgumentException("URL cannot be null.");
       }
+      return this;
    }
 
-   public static URLBuilder build(final String url)
+   public URLBuilder addQueryParameters(final String query)
    {
-      return new URLBuilder(url);
-   }
-
-   /**
-    * Create a URL object for the given url segments (separated by '/' from the original url string), using the given
-    * metadata object to represent the encoding and leading/trailing slash information about this URL.
-    */
-   public URLBuilder(final List<String> segments, final Metadata metadata)
-   {
-      this.metadata = metadata;
-      this.segments = segments;
-      this.originalURL = metadata.buildURLFromSegments(segments);
-   }
-
-   public static URLBuilder build(final List<String> segments, final Metadata metadata)
-   {
-      return new URLBuilder(segments, metadata);
+      this.query.addParameters(query);
+      return this;
    }
 
    /**
-    * Get a list of all decoded segments (separated by '/') in this URL.
+    * Return a decoded form of this URL.
     */
-   public List<String> getDecodedSegments()
+   public URLBuilder decode()
    {
-      String encoding = metadata.getEncoding();
-      if (!decodedSegments.containsKey(encoding))
-      {
-         List<String> result = new ArrayList<String>();
-         for (String segment : segments)
-         {
-            result.add(decodeSegment(segment));
-         }
-         decodedSegments.put(encoding, Collections.unmodifiableList(result));
-      }
-      return decodedSegments.get(encoding);
-   }
-
-   /**
-    * Get a list of all encoded segments (separated by '/') in this URL.
-    */
-   public List<String> getEncodedSegments()
-   {
-      List<String> resultSegments = new ArrayList<String>();
-      for (String segment : segments)
-      {
-         resultSegments.add(encodeSegment(segment));
-      }
-      return resultSegments;
-   }
-
-   /**
-    * Encodes a segment using the {@link URI} class.
-    * 
-    * @param segment The segment to encode
-    * @return the encoded segment
-    */
-   private static String encodeSegment(final String segment)
-   {
-      try
-      {
-         final URI uri = new URI("http", "localhost", "/" + segment, null);
-         return uri.toASCIIString().substring(17);
-      }
-      catch (URISyntaxException e)
-      {
-         throw new IllegalArgumentException(e);
-      }
+      return new URLBuilder(getDecodedSegments(), metadata, query.decode());
    }
 
    /**
@@ -139,7 +135,7 @@ public class URLBuilder
     * @param segment The segment to decode
     * @return the decoded segment
     */
-   private static String decodeSegment(final String segment)
+   private String decodeSegment(final String segment)
    {
       try
       {
@@ -156,36 +152,58 @@ public class URLBuilder
    }
 
    /**
-    * Return a decoded form of this URL.
-    */
-   public URLBuilder decode()
-   {
-      return new URLBuilder(getDecodedSegments(), metadata);
-   }
-
-   /**
     * Return an encoded form of this URL.
     */
    public URLBuilder encode()
    {
-      return new URLBuilder(getEncodedSegments(), metadata);
+      return new URLBuilder(getEncodedSegments(), metadata, query.encode());
    }
 
    /**
-    * Get the number of segments (separated by '/') in this URL
+    * Encodes a segment using the {@link URI} class.
+    * 
+    * @param segment The segment to encode
+    * @return the encoded segment
     */
-   public int numSegments()
+   private String encodeSegment(final String segment)
    {
-      return segments.size();
+      try
+      {
+         final URI uri = new URI("http", "localhost", "/" + segment, null);
+         return uri.toASCIIString().substring(17);
+      }
+      catch (URISyntaxException e)
+      {
+         throw new IllegalArgumentException(e);
+      }
+   }
+
+   private List<String> getDecodedSegments()
+   {
+      List<String> result = new ArrayList<String>();
+      for (String segment : segments)
+      {
+         result.add(decodeSegment(segment));
+      }
+      return result;
+   }
+
+   private List<String> getEncodedSegments()
+   {
+      List<String> resultSegments = new ArrayList<String>();
+      for (String segment : segments)
+      {
+         resultSegments.add(encodeSegment(segment));
+      }
+      return resultSegments;
    }
 
    /**
-    * Return a String representation of this URL
+    * Get the character encoding of this URL (default UTF-8)
     */
-   @Override
-   public String toString()
+   public String getEncoding()
    {
-      return toURL();
+      return metadata.getEncoding();
    }
 
    /*
@@ -193,11 +211,16 @@ public class URLBuilder
     */
 
    /**
-    * Return a String representation of this URL
+    * Get the {@link Metadata} object for this URL
     */
-   public String toURL()
+   public Metadata getMetadata()
    {
-      return originalURL;
+      return metadata;
+   }
+
+   public QueryStringBuilder getQueryStringBuilder()
+   {
+      return query;
    }
 
    /**
@@ -227,11 +250,11 @@ public class URLBuilder
    }
 
    /**
-    * Get the character encoding of this URL (default UTF-8)
+    * Get the number of segments (separated by '/') in this URL
     */
-   public String getEncoding()
+   public int numSegments()
    {
-      return metadata.getEncoding();
+      return segments.size();
    }
 
    /**
@@ -243,19 +266,47 @@ public class URLBuilder
    }
 
    /**
-    * Get the {@link Metadata} object for this URL
+    * Set the {@link Metadata} object for this URL
+    * 
+    * @return
     */
-   public Metadata getMetadata()
+   public URLBuilder setMetadata(final Metadata metadata)
    {
-      return metadata;
+      this.metadata = metadata;
+      return this;
+   }
+
+   public String toPath()
+   {
+      return metadata.buildURLFromSegments(segments);
    }
 
    /**
-    * Set the {@link Metadata} object for this URL
+    * Return a String representation of this URL
     */
-   public void setMetadata(final Metadata metadata)
+   @Override
+   public String toString()
    {
-      this.metadata = metadata;
+      return toURL();
+   }
+
+   public URI toURI()
+   {
+      try {
+         URI uri = new URI(toURL());
+         return uri;
+      }
+      catch (URISyntaxException e) {
+         throw new IllegalStateException("URL cannot be parsed.", e);
+      }
+   }
+
+   /**
+    * Return a String representation of this URL
+    */
+   public String toURL()
+   {
+      return toPath() + query.toQueryString();
    }
 
    /*
@@ -277,16 +328,5 @@ public class URLBuilder
          }
       }
       return result;
-   }
-
-   public URI toURI()
-   {
-      try {
-         URI uri = new URI(toURL());
-         return uri;
-      }
-      catch (URISyntaxException e) {
-         throw new IllegalStateException("URL cannot be parsed.", e);
-      }
    }
 }

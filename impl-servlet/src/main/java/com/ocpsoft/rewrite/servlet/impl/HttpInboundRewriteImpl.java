@@ -145,20 +145,11 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    {
       try
       {
-         // The base URL and Query String require different encoding rules.
-         String[] urlParts = url.split("\\?", 2);
+         URLBuilder builder = URLBuilder.build(url);
+         String path = builder.decode().toPath();
 
-         String baseUrlEncoded = new URLBuilder(urlParts[0]).decode().toURL();
-
-         if ((urlParts.length > 1) && (urlParts[1] != null) && !"".equals(urlParts[1]))
-         {
-            return response.encodeRedirectURL(baseUrlEncoded
-                     + QueryStringBuilder.build(urlParts[1]).encode().toQueryString());
-         }
-         else
-         {
-            return response.encodeRedirectURL(baseUrlEncoded);
-         }
+         return response.encodeRedirectURL(path
+                  + builder.getQueryStringBuilder().encode().toQueryString());
       }
       catch (Exception e)
       {
@@ -175,7 +166,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    }
 
    @Override
-   public String getRequestURL()
+   public String getRequestPath()
    {
       String url = getRequest().getRequestURI();
       if (url.startsWith(getContextPath()))
@@ -183,7 +174,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
          url = url.substring(getContextPath().length());
       }
 
-      url = new URLBuilder(url).decode().toURL();
+      url = URLBuilder.build(url).decode().toURL();
       return url;
    }
 
@@ -208,6 +199,13 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    @Override
    public String getURL()
    {
-      return getRequestURL() + getRequestQueryStringSeparator() + getRequestQueryString();
+      return getRequestPath() + getRequestQueryStringSeparator() + getRequestQueryString();
+   }
+
+   @Override
+   public String toString()
+   {
+      return "InboundRewrite [url=" + getURL() + ", flow=" + getFlow() + ", dispatchResource=" + getDispatchResource()
+               + "]";
    }
 }

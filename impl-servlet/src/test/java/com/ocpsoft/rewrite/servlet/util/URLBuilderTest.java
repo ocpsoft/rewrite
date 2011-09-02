@@ -23,11 +23,17 @@ import org.junit.Test;
 
 public class URLBuilderTest
 {
+   @Test(expected = IllegalArgumentException.class)
+   public void testNullURL() throws Exception
+   {
+      URLBuilder.build(null);
+   }
+
    @Test
    public void testURLBuilderPreservesOriginalURLBuilder() throws Exception
    {
       String value = "/com/ocpsoft/pretty/";
-      URLBuilder builder = new URLBuilder(value);
+      URLBuilder builder = URLBuilder.build(value);
       assertEquals(value, builder.toURL());
    }
 
@@ -35,7 +41,7 @@ public class URLBuilderTest
    public void testPreservesTrailingSlash() throws Exception
    {
       String value = "/com/ocpsoft/pretty/";
-      URLBuilder builder = new URLBuilder(value);
+      URLBuilder builder = URLBuilder.build(value);
       builder.setEncoding("UTF-8");
       assertEquals(value, builder.decode().toURL());
    }
@@ -45,7 +51,7 @@ public class URLBuilderTest
    {
       Metadata metadata = new Metadata();
       metadata.setTrailingSlash(true);
-      URLBuilder builder = new URLBuilder(new ArrayList<String>(), metadata);
+      URLBuilder builder = new URLBuilder(new ArrayList<String>(), metadata, QueryStringBuilder.begin());
 
       assertEquals("/", builder.toURL());
       assertEquals("/", builder.decode().toURL());
@@ -55,8 +61,8 @@ public class URLBuilderTest
    public void testDecode() throws Exception
    {
       String value = "/\u010d";
-      URLBuilder URLBuilder = new URLBuilder(value);
-      URLBuilder encoded = URLBuilder.encode();
+      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
+      URLBuilder encoded = builder.encode();
       assertEquals("/%C4%8D", encoded.toURL());
    }
 
@@ -64,7 +70,7 @@ public class URLBuilderTest
    public void testEncode() throws Exception
    {
       String value = "/\u010d";
-      URLBuilder builder = new URLBuilder(value);
+      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
       URLBuilder encoded = builder.encode();
       assertEquals("/%C4%8D", encoded.toURL());
       URLBuilder original = encoded.decode();
@@ -75,7 +81,7 @@ public class URLBuilderTest
    public void testEncodeDecodePreservesSlashes() throws Exception
    {
       String value = "/foo/bar";
-      URLBuilder builder = new URLBuilder(value);
+      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
       URLBuilder encoded = builder.encode();
       assertEquals("/foo/bar", encoded.toURL());
       URLBuilder original = encoded.decode();
@@ -86,7 +92,7 @@ public class URLBuilderTest
    public void testEncodeGermanUmlaut() throws Exception
    {
       String value = "/\u00e4";
-      URLBuilder builder = new URLBuilder(value);
+      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
       URLBuilder encoded = builder.encode();
       assertEquals("/%C3%A4", encoded.toURL());
       URLBuilder original = encoded.decode();
@@ -97,31 +103,31 @@ public class URLBuilderTest
    public void testCommaEncodingAndDecoding() throws Exception
    {
       // the comma is allowed and should not be encoded/decoded
-      assertEquals("/a,b", new URLBuilder("/a,b").encode().toURL());
-      assertEquals("/a,b", new URLBuilder("/a,b").decode().toURL());
+      assertEquals("/a,b", URLBuilder.begin().addPathSegments("/a,b").encode().toURL());
+      assertEquals("/a,b", URLBuilder.begin().addPathSegments("/a,b").decode().toURL());
    }
 
    @Test
    public void testSpaceEncodingAndDecoding() throws Exception
    {
       // encode
-      assertEquals("/a%20b", new URLBuilder("/a b").encode().toURL());
+      assertEquals("/a%20b", URLBuilder.begin().addPathSegments("/a b").encode().toURL());
 
       // decode
-      assertEquals("/a b", new URLBuilder("/a%20b").decode().toURL());
+      assertEquals("/a b", URLBuilder.begin().addPathSegments("/a%20b").decode().toURL());
 
       // decode plus
-      assertEquals("/a b c", new URLBuilder("/a+b+c").decode().toURL());
+      assertEquals("/a b c", URLBuilder.begin().addPathSegments("/a+b+c").decode().toURL());
    }
 
    @Test
    public void testQuestionMarkEncodingAndDecoding() throws Exception
    {
       // encode
-      assertEquals("/a%3Fb", new URLBuilder("/a?b").encode().toURL());
+      assertEquals("/a%3Fb", URLBuilder.begin().addPathSegments("/a?b").encode().toURL());
 
       // decode
-      assertEquals("/a?b", new URLBuilder("/a%3Fb").decode().toURL());
+      assertEquals("/a?b", URLBuilder.begin().addPathSegments("/a%3Fb").decode().toURL());
    }
 
 }

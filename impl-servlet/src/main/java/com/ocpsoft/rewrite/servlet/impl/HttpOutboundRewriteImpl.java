@@ -58,7 +58,7 @@ public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, Htt
    }
 
    @Override
-   public String getRequestURL()
+   public String getRequestPath()
    {
       return getRequest().getRequestURI().substring(getContextPath().length());
    }

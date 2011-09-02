@@ -36,7 +36,7 @@ public interface HttpServletRewrite extends
     * Portion of the request URL representing request path within the application. The context path is not included, and
     * should be retrieved using {@link #getContextPath()}
     */
-   public String getRequestURL();
+   public String getRequestPath();
 
    /**
     * Portion of the request URL representing the query string.
@@ -44,16 +44,17 @@ public interface HttpServletRewrite extends
    public String getRequestQueryString();
 
    /**
-    * Portion of the request URL joining the {@link #getRequestURL()} and {@link #getRequestQueryString()}. If
+    * Portion of the request URL joining the {@link #getRequestPath()} and {@link #getRequestQueryString()}. If
     * {@link #getRequestQueryString()} is valued, this will return "?"; otherwise, if {@link #getRequestQueryString()}
     * is empty, this too will return an empty string.
     */
    String getRequestQueryStringSeparator();
 
    /**
-    * Return the full URL including query string. Note that for {@link HttpInboundServletRewrite} events, this method
-    * returns {@link #getRequestURL()} + {@link #getRequestQueryStringSeparator()} + {@link #getRequestQueryString()};
-    * for {@link HttpOutboundServletRewrite} events, this method returns
+    * For {@link HttpInboundServletRewrite} events, return the request URL excluding context path, but including query
+    * string: {@link #getRequestPath()} + {@link #getRequestQueryStringSeparator()} + {@link #getRequestQueryString()}
+    * <p>
+    * For {@link HttpOutboundServletRewrite} events, this method returns
     * {@link HttpOutboundServletRewrite#getOutboundURL()}
     */
    public String getURL();
