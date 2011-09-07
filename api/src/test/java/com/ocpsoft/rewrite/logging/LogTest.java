@@ -6,6 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ocpsoft.logging.Logger;
+
 public class LogTest
 {
 
@@ -66,8 +68,7 @@ public class LogTest
    }
 
    /**
-    * Simple class extending {@link Logger} that stores only the last log message
-    * as a string.
+    * Simple class extending {@link Logger} that stores only the last log message as a string.
     */
    private static class StringLog extends Logger
    {
@@ -75,13 +76,13 @@ public class LogTest
       private String logString;
 
       @Override
-      protected void log(Level level, String msg, Throwable t)
+      protected void log(final Level level, final String msg, final Throwable t)
       {
          logString = level.name() + " - " + msg;
       }
 
       @Override
-      protected boolean isEnabled(Level level)
+      protected boolean isEnabled(final Level level)
       {
          return true;
       }

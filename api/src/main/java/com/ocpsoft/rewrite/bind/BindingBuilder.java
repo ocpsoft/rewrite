@@ -15,10 +15,10 @@
  */
 package com.ocpsoft.rewrite.bind;
 
+import com.ocpsoft.common.services.ServiceLoader;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.services.ServiceLoader;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

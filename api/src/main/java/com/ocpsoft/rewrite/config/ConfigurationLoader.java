@@ -18,10 +18,10 @@ package com.ocpsoft.rewrite.config;
 import java.util.Collections;
 import java.util.List;
 
-import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.services.ServiceLoader;
-import com.ocpsoft.rewrite.services.WeightedComparator;
-import com.ocpsoft.rewrite.util.Iterators;
+import com.ocpsoft.common.pattern.WeightedComparator;
+import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.common.util.Iterators;
+import com.ocpsoft.logging.Logger;
 
 /**
  * Responsible for loading all {@link ConfigurationProvider} instances, and building a single unified

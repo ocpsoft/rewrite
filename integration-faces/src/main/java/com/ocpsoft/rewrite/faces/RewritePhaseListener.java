@@ -30,9 +30,9 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.faces.config.PhaseAction;
 import com.ocpsoft.rewrite.faces.config.QueuedPhaseAction;
-import com.ocpsoft.rewrite.logging.Logger;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

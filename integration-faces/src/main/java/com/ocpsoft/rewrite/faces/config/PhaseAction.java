@@ -28,14 +28,14 @@ import java.util.List;
 import javax.faces.event.PhaseId;
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.bind.Retrieval;
 import com.ocpsoft.rewrite.bind.Submission;
 import com.ocpsoft.rewrite.config.Invoke;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.spi.InvocationResultHandler;

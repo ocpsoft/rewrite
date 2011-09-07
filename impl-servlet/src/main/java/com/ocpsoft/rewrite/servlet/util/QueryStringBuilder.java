@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.logging.Logger;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -125,7 +125,7 @@ public class QueryStringBuilder
       return this;
    }
 
-   public void addParameter(String name, String... values)
+   public void addParameter(final String name, final String... values)
    {
       Map<String, String[]> parameter = new LinkedHashMap<String, String[]>();
       parameter.put(name, values);

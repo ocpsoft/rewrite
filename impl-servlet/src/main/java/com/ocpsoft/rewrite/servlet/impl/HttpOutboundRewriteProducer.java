@@ -20,7 +20,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.services.NonEnriching;
+import com.ocpsoft.common.services.NonEnriching;
 import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 

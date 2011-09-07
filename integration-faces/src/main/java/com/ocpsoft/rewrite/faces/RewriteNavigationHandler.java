@@ -55,12 +55,12 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
 
    }
 
-   private void setInNavigation(HttpServletRequest request, boolean inNavigation)
+   private void setInNavigation(final HttpServletRequest request, final boolean inNavigation)
    {
       request.setAttribute(IN_NAVIGATION, inNavigation);
    }
 
-   public static boolean isInNavigation(HttpServletRequest request)
+   public static boolean isInNavigation(final HttpServletRequest request)
    {
       Boolean inNavigation = (Boolean) request.getAttribute(IN_NAVIGATION);
       return inNavigation == null ? false : inNavigation;
@@ -70,7 +70,7 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
    public NavigationCase getNavigationCase(final FacesContext context, final String fromAction, final String outcome)
    {
       // TODO integrate rewrite with navigation (See PrettyNavigationHandler)
-      if (outcome != null && outcome.equals("rewrite:refresh"))
+      if ((outcome != null) && outcome.equals("rewrite:refresh"))
       {
          String viewId = context.getViewRoot().getViewId();
          NavigationCase navigationCase = parent.getNavigationCase(context, fromAction, viewId);

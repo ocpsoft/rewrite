@@ -20,9 +20,9 @@ import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.common.util.Iterators;
 import com.ocpsoft.rewrite.servlet.spi.ContextListener;
-import com.ocpsoft.rewrite.util.Iterators;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

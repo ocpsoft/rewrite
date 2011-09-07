@@ -17,9 +17,9 @@ package com.ocpsoft.rewrite.servlet.spi;
 
 import javax.servlet.FilterChain;
 
+import com.ocpsoft.common.pattern.Specialized;
+import com.ocpsoft.common.pattern.Weighted;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.services.Specialized;
-import com.ocpsoft.rewrite.services.Weighted;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**

@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.spi;
 
-import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.common.services.ServiceLoader;
 
 /**
  * Provides enriching for services loaded with {@link ServiceLoader}

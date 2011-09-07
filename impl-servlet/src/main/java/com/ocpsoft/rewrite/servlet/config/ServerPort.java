@@ -17,9 +17,9 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * Responsible for asserting on the {@link HttpServletRequest#getServerPort()}

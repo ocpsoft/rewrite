@@ -18,8 +18,8 @@ package com.ocpsoft.rewrite.cdi.bridge;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.AfterRewrite;
+import com.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewrite;
 import com.ocpsoft.rewrite.cdi.events.BeforeRewriteLifecycle;
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleListener;

@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.ocpsoft.rewrite.util.Strings;
+import com.ocpsoft.common.util.Strings;
 
 public class URLBuilder
 {

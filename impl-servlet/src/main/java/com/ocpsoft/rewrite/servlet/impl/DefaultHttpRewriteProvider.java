@@ -15,11 +15,11 @@
  */
 package com.ocpsoft.rewrite.servlet.impl;
 
+import com.ocpsoft.common.services.NonEnriching;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationLoader;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
-import com.ocpsoft.rewrite.services.NonEnriching;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;

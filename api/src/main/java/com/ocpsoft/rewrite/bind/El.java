@@ -17,14 +17,14 @@ package com.ocpsoft.rewrite.bind;
 
 import java.util.List;
 
+import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.common.util.Iterators;
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
 import com.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
-import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
-import com.ocpsoft.rewrite.util.Iterators;
 
 /**
  * Responsible for binding to EL expressions.

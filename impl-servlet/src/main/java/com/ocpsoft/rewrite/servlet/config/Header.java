@@ -20,12 +20,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * Responsible for asserting on {@link HttpServletRequest#getHeader(String)} values.

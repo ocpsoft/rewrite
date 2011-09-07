@@ -21,13 +21,17 @@
  */
 package com.ocpsoft.rewrite.faces;
 
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.logging.Logger;
+import com.ocpsoft.rewrite.faces.config.PhaseAction;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**
+ * (Priority: 100) Implementation of {@link InvocationResultHandler} which handles JavaServer Faces action result and
+ * navigation strings. Together with {@link RewritePhaseListener}, integrates {@link PhaseAction} into Faces navigation.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class NavigatingInvocationResultHandler implements InvocationResultHandler
@@ -36,6 +40,18 @@ public class NavigatingInvocationResultHandler implements InvocationResultHandle
             + "_QUEUED_NAVIGATION";
 
    private static Logger log = Logger.getLogger(NavigatingInvocationResultHandler.class);
+
+   @Override
+   public int priority()
+   {
+      return 100;
+   }
+
+   @Override
+   public boolean handles(final Object payload)
+   {
+      return payload instanceof String;
+   }
 
    @Override
    public void handle(final Rewrite event, final EvaluationContext context, final Object result)

@@ -20,8 +20,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;

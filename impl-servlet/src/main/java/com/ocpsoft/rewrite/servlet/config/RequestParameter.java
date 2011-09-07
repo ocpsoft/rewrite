@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.DefaultBindable;
@@ -30,7 +31,6 @@ import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * A {@link Condition} that inspects values returned by {@link HttpServletRequest#getParameterMap()}

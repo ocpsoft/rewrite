@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.rewrite.bind.parse;
 
-import com.ocpsoft.rewrite.util.Assert;
+import com.ocpsoft.common.util.Assert;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

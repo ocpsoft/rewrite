@@ -15,13 +15,13 @@
  */
 package com.ocpsoft.rewrite.config;
 
+import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Retrieval;
 import com.ocpsoft.rewrite.bind.Submission;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.services.ServiceLoader;
 import com.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**

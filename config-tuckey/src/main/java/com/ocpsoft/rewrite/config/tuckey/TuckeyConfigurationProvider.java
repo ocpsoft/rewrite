@@ -24,9 +24,9 @@ import javax.servlet.ServletContext;
 import org.tuckey.web.filters.urlrewrite.Conf;
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
-import com.ocpsoft.rewrite.logging.Logger;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 
 /**

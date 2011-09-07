@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
@@ -30,7 +31,6 @@ import com.ocpsoft.rewrite.param.ParameterizedCondition;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.URLBuilder;
-import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * A {@link Condition} that inspects the value of {@link HttpServletRequest#getServerName()}

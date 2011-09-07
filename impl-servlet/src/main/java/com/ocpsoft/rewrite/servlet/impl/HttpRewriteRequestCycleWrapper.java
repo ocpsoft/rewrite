@@ -21,8 +21,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.rewrite.services.NonEnriching;
-import com.ocpsoft.rewrite.services.ServiceLoader;
+import com.ocpsoft.common.services.NonEnriching;
+import com.ocpsoft.common.services.ServiceLoader;
 import com.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
 import com.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 

@@ -19,6 +19,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.bind.parse.CaptureType;
@@ -28,7 +29,6 @@ import com.ocpsoft.rewrite.param.OperationParameterBuilder;
 import com.ocpsoft.rewrite.param.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import com.ocpsoft.rewrite.util.Assert;
 
 /**
  * An {@link Operation} that performs forwards via {@link HttpInboundServletRewrite#forward(String)}

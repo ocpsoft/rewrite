@@ -26,10 +26,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import com.ocpsoft.common.pattern.WeightedComparator;
+import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.common.util.Iterators;
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.event.Rewrite;
-import com.ocpsoft.rewrite.logging.Logger;
-import com.ocpsoft.rewrite.services.ServiceLoader;
-import com.ocpsoft.rewrite.services.WeightedComparator;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.impl.RewriteContextImpl;
@@ -38,7 +39,6 @@ import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
-import com.ocpsoft.rewrite.util.Iterators;
 import com.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
