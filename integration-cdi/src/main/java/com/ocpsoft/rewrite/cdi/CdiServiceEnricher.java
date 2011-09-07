@@ -19,8 +19,8 @@ import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.seam.solder.beanManager.BeanManagerAware;
 
+import com.ocpsoft.common.spi.ServiceEnricher;
 import com.ocpsoft.logging.Logger;
-import com.ocpsoft.rewrite.spi.ServiceEnricher;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
