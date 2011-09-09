@@ -30,6 +30,7 @@ import com.ocpsoft.common.pattern.WeightedComparator;
 import com.ocpsoft.common.services.ServiceLoader;
 import com.ocpsoft.common.util.Iterators;
 import com.ocpsoft.logging.Logger;
+import com.ocpsoft.rewrite.config.ConfigurationProvider;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
@@ -61,7 +62,6 @@ public class RewriteFilter implements Filter
    @SuppressWarnings("unchecked")
    public void init(final FilterConfig filterConfig) throws ServletException
    {
-      // TODO SPI pre filter init?
       log.info("RewriteFilter starting up...");
 
       listeners = Iterators.asUniqueList(ServiceLoader.load(RewriteLifecycleListener.class));
@@ -69,6 +69,12 @@ public class RewriteFilter implements Filter
       providers = Iterators.asUniqueList(ServiceLoader.load(RewriteProvider.class));
       inbound = Iterators.asUniqueList(ServiceLoader.load(InboundRewriteProducer.class));
       outbound = Iterators.asUniqueList(ServiceLoader.load(OutboundRewriteProducer.class));
+
+      /*
+       * Load ConfigurationProviders here solely so that we may log all known implementations at boot time.
+       */
+      List<ConfigurationProvider<?>> configurations = Iterators.asUniqueList(ServiceLoader
+               .load(ConfigurationProvider.class));
 
       Collections.sort(listeners, new WeightedComparator());
       Collections.sort(wrappers, new WeightedComparator());
@@ -81,9 +87,17 @@ public class RewriteFilter implements Filter
       ServiceLogger.logLoadedServices(log, RewriteProvider.class, providers);
       ServiceLogger.logLoadedServices(log, InboundRewriteProducer.class, inbound);
       ServiceLogger.logLoadedServices(log, OutboundRewriteProducer.class, outbound);
+      ServiceLogger.logLoadedServices(log, ConfigurationProvider.class, configurations);
+
+      if ((configurations == null) || configurations.isEmpty())
+      {
+         log.warn("No ConfigurationProviders were registered: " +
+                  "Rewrite will not be enabled on this application. " +
+                  "Did you forget to create a '/META-INF/services/" + ConfigurationProvider.class.getName() +
+                  " file containing the fully qualified name of your provider implementation?");
+      }
 
       log.info("RewriteFilter initialized.");
-      // TODO SPI post filter init?
    }
 
    @Override
@@ -196,7 +210,8 @@ public class RewriteFilter implements Filter
    @Override
    public void destroy()
    {
-      // TODO SPI filter destroy?
+      log.info("RewriteFilter shutting down...");
+      log.info("RewriteFilter deactivated.");
    }
 
 }
