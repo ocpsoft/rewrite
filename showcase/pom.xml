@@ -15,6 +15,7 @@
   <modules>
 	<module>rest-ws</module>
 	<module>multi-domain</module>
+	<module>access-control</module>
   </modules>
 
   <build>

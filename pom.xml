@@ -77,6 +77,16 @@
          </dependency>
          <dependency>
             <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-jodatime</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-tuckey</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-api-servlet</artifactId>
             <version>${project.version}</version>
          </dependency>
