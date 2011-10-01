@@ -74,6 +74,24 @@ public class EncodeQuery implements Rule
       return this;
    }
 
+   public EncodeQuery usingEncoder()
+   {
+      // TODO implement
+      return this;
+   }
+
+   public EncodeQuery usingDecoder()
+   {
+      // TODO implement
+      return this;
+   }
+
+   public EncodeQuery usingChecksumStrategy()
+   {
+      // TODO implement
+      return this;
+   }
+
    public EncodeQuery to(final String param)
    {
       this.name = param;
