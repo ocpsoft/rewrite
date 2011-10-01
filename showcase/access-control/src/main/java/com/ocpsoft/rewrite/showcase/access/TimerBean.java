@@ -44,28 +44,20 @@ public class TimerBean implements Serializable
    public String getSecondsUntilGranted()
    {
       DateTime time = new DateTime();
-      if (time.getSecondOfMinute() > 30)
-      {
-         int secondsRemain = 60 - time.getSecondOfMinute();
-         DateTime deniedTime = time.plusSeconds(secondsRemain);
-         PrettyTime prettyTime = new PrettyTime();
-         prettyTime.setUnits(new Second(prettyTime.getLocale()));
-         return prettyTime.format(deniedTime.toDate());
-      }
-      return "";
+      int secondsRemain = 60 - time.getSecondOfMinute();
+      DateTime deniedTime = time.plusSeconds(secondsRemain);
+      PrettyTime prettyTime = new PrettyTime();
+      prettyTime.setUnits(new Second(prettyTime.getLocale()));
+      return prettyTime.format(deniedTime.toDate());
    }
 
    public String getSecondsUntilDenied()
    {
       DateTime time = new DateTime();
-      if (time.getSecondOfMinute() < 30)
-      {
-         int secondsRemain = 30 - time.getSecondOfMinute();
-         DateTime grantedTime = time.plusSeconds(secondsRemain);
-         PrettyTime prettyTime = new PrettyTime();
-         prettyTime.setUnits(new Second(prettyTime.getLocale()));
-         return prettyTime.format(grantedTime.toDate());
-      }
-      return "";
+      int secondsRemain = 30 - time.getSecondOfMinute();
+      DateTime grantedTime = time.plusSeconds(secondsRemain);
+      PrettyTime prettyTime = new PrettyTime();
+      prettyTime.setUnits(new Second(prettyTime.getLocale()));
+      return prettyTime.format(grantedTime.toDate());
    }
 }
