@@ -31,6 +31,7 @@ import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.config.jodatime.JodaTime;
 import com.ocpsoft.rewrite.config.jodatime.TimeCondition;
 import com.ocpsoft.rewrite.servlet.config.DispatchType;
+import com.ocpsoft.rewrite.servlet.config.Domain;
 import com.ocpsoft.rewrite.servlet.config.Forward;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Path;
@@ -62,6 +63,12 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                .addRule(Join.path("/timer").to("/timer.xhtml")
                         .when(JodaTime.matches(timeGranted))
                         .withInboundCorrection())
+
+               /*
+                * Domain based access control (only grants access to specific domains)
+                */
+               .addRule(Join.path("/domain").to("/domain.xhtml")
+                        .when(Domain.matches(".*rhcloud.*").or(Domain.matches("localhost"))))
 
                /*
                 * Deny access to anything except the index unless we matched one of the rules above. 

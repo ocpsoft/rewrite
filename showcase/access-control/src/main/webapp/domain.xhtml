@@ -7,27 +7,37 @@
 <ui:composition template="/resources/forge-template.xhtml">
 
 	<ui:param name="pageTitle"
-		value="Timer Demo: Welcome, you have access!" />
+		value="Domain Demo: Welcome, you have access!" />
 
 	<ui:define name="header">
-		Timer demo: you have access!
+		Domain demo: you have access!
 	</ui:define>
 
 	<ui:define name="subheader">
-		But access will be denied #{timerBean.secondsUntilDenied}
+		You accessed this page at the domain: #{facesContext.externalContext.requestServerName}
 	</ui:define>
 
 	<ui:define name="main">
 	
 		<p>
-		This is a time-based access control demo. Access is granted for the first 30 seconds
-		of each minute (1-30); subsequently, access is denied for the final 30 seconds of each minute (31-60).
+		This is a domain-based access control demo. Access is granted when this page is requested by the domain "localhost"
+		or by any domain deployed to Red Hat's <a href="http://openshift.com/">Openshift Express</a> cloud. (See 
+		<a href="http://vimeo.com/29755371">the demo below</a>) for info on how to get started deploying apps to the cloud in 
+		about 10 minutes.)
 		</p>
+		
 		<p>
-		Time-based access control can be useful for providing scheduled down-time or maintenance
-		windows. Or for crazy things like limiting a user's session for a set period of time,
-		then pulling the plugin on them. Crazy!
+		If you want to see the Access Denied page. Try accessing this page locally at 127.0.0.1, or use the IP address
+		of the cloud server instead of the qualified DNS name.
 		</p>
+		
+		<p>
+		Domain-based access control can be useful providing different types of access for different
+		domain users, like what <a href="https://github.com/blog/272-github-pages">github does</a>. Crazy!
+		</p>
+		
+		<iframe src="http://player.vimeo.com/video/29755371?title=0&amp;byline=0&amp;portrait=0" width="600" height="400" 
+		frameborder="0" webkitAllowFullScreen="true" allowFullScreen="true"></iframe>
 		
 		<p>
 			<a target="_blank" href="http://ocpsoft.com"><br /> OCPsoft
