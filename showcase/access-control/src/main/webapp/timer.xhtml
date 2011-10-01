@@ -7,7 +7,7 @@
 <ui:composition template="/resources/forge-template.xhtml">
 
 	<ui:param name="pageTitle"
-		value="Welcome, you have access!" />
+		value="Timer Demo: Welcome, you have access!" />
 
 	<ui:define name="header">
 		Welcome, you have access!
@@ -19,6 +19,16 @@
 
 	<ui:define name="main">
 	
+		<p>
+		This is a time-based access control demo. Access is granted for the first 30 seconds
+		of each minute (1-30); subsequently, access is denied for the final 30 seconds of each minute (31-60).
+		</p>
+		<p>
+		Time-based access control can be useful for providing scheduled down-time or maintenance
+		windows. Or for crazy things like limiting a user's session for a set period of time,
+		then pulling the plugin on them. Crazy!
+		</p>
+		
 		<p>
 			<a target="_blank" href="http://ocpsoft.com"><br /> OCPsoft
 				Website</a> | <a target="_blank"
