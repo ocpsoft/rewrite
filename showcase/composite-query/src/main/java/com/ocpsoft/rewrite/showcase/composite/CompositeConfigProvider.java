@@ -14,7 +14,7 @@ public class CompositeConfigProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder.begin()
 
-               .addRule(EncodeQuery.params().to("c"))
+               .defineRule().perform(EncodeQuery.params().to("c"))
 
                .addRule(Join.path("/").to("/index.xhtml"))
 

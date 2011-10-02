@@ -26,7 +26,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
 public class RuleBuilder implements Rule
 {
    private String id = "";
-   private Condition condition;
+   private Condition condition = new True();
    private Operation operation;
 
    /**

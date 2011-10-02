@@ -21,14 +21,13 @@
  */
 package com.ocpsoft.rewrite.showcase.composite;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.ocpsoft.rewrite.config.Condition;
-import com.ocpsoft.rewrite.config.Rule;
+import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.config.True;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.DispatchType;
@@ -41,20 +40,23 @@ import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class EncodeQuery implements Rule
+public class EncodeQuery implements Operation
 {
    private static final String STATE = EncodeQuery.class.getName();
    private String name;
+   private ChecksumStrategy checksumStrategy = new HashCodeChecksumStrategy();
+   private EncodingStrategy encodingStrategy = new Base64EncodingStrategy();
+   private Condition condition = new True();
+   private final List<String> params = new ArrayList<String>();
+   private final List<String> excludedParams = new ArrayList<String>();
 
    public EncodeQuery()
    {}
 
    public EncodeQuery(final String[] params)
-   {}
-
-   public static EncodeQuery all()
    {
-      return new EncodeQuery();
+      if ((params != null) && (params.length > 0))
+         this.params.addAll(Arrays.asList(params));
    }
 
    public static EncodeQuery params(final String... params)
@@ -64,31 +66,26 @@ public class EncodeQuery implements Rule
 
    public EncodeQuery excluding(final String... params)
    {
-      // TODO implement
+      if ((params != null) && (params.length > 0))
+         this.excludedParams.addAll(Arrays.asList(params));
       return this;
    }
 
    public EncodeQuery when(final Condition condition)
    {
-      // TODO implement
+      this.condition = condition;
       return this;
    }
 
-   public EncodeQuery usingEncoder()
+   public EncodeQuery withEncodingStrategy(final EncodingStrategy strategy)
    {
-      // TODO implement
+      this.encodingStrategy = strategy;
       return this;
    }
 
-   public EncodeQuery usingDecoder()
+   public EncodeQuery withChecksumStrategy(final ChecksumStrategy strategy)
    {
-      // TODO implement
-      return this;
-   }
-
-   public EncodeQuery usingChecksumStrategy()
-   {
-      // TODO implement
+      this.checksumStrategy = strategy;
       return this;
    }
 
@@ -96,18 +93,6 @@ public class EncodeQuery implements Rule
    {
       this.name = param;
       return this;
-   }
-
-   @Override
-   public String getId()
-   {
-      return EncodeQuery.class.getName() + this.hashCode();
-   }
-
-   @Override
-   public boolean evaluate(final Rewrite event, final EvaluationContext context)
-   {
-      return true;
    }
 
    @Override
@@ -123,7 +108,7 @@ public class EncodeQuery implements Rule
          String value = query.decode().getParameter(name);
          if (value != null)
          {
-            String decoded = decode(value);
+            String decoded = encodingStrategy.decode(value);
             String newUrl = in.getRequestPath() + "?" + decoded;
             setProcessed(event);
             in.forward(newUrl);
@@ -132,7 +117,7 @@ public class EncodeQuery implements Rule
          // TODO enable inbound correction
          else if (!query.isEmpty() && DispatchType.isRequest().evaluate(event, context))
          {
-            String encoded = encode(in.getRequestQueryString());
+            String encoded = encodingStrategy.encode(in.getRequestQueryString());
             setProcessed(event);
             in.redirectTemporary(in.getContextPath() + in.getRequestPath()
                      + "?" + name + "=" + encoded);
@@ -150,7 +135,7 @@ public class EncodeQuery implements Rule
 
             if (!query.isEmpty())
             {
-               String encoded = encode(out.getRequestQueryString());
+               String encoded = encodingStrategy.encode(out.getRequestQueryString());
                setProcessed(event);
 
                String outboundURL = out.getOutboundURL();
@@ -175,43 +160,6 @@ public class EncodeQuery implements Rule
    public void setProcessed(final Rewrite event)
    {
       ((HttpServletRewrite) event).getRequest().setAttribute(STATE, EncodeQuery.class.getName());
-   }
-
-   private String encode(final String query)
-   {
-      return Base64.encodeBytes(query.getBytes());
-   }
-
-   private String decode(final String value)
-   {
-      return new String(Base64.decode(value));
-   }
-
-   /**
-    * Return a {@link String} containing the contents of the given {@link InputStream}
-    */
-   public static String streamToString(final InputStream stream)
-   {
-      StringBuilder out = new StringBuilder();
-      try {
-         final char[] buffer = new char[0x10000];
-         Reader in = new InputStreamReader(stream, "UTF-8");
-         int read;
-         do {
-            read = in.read(buffer, 0, buffer.length);
-            if (read > 0) {
-               out.append(buffer, 0, read);
-            }
-         }
-         while (read >= 0);
-      }
-      catch (UnsupportedEncodingException e) {
-         throw new RuntimeException(e);
-      }
-      catch (IOException e) {
-         throw new RuntimeException(e);
-      }
-      return out.toString();
    }
 
 }
