@@ -30,6 +30,13 @@
          <scope>compile</scope>
       </dependency>
    </dependencies>
+   
+  <repositories>
+    <repository>
+      <id>ocpsoft</id>
+      <url>http://ocpsoft.com/repository/</url>
+    </repository>
+  </repositories>
 
    <build>
       <finalName>rest-ws</finalName>
