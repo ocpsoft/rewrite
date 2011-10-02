@@ -154,7 +154,7 @@ public class EncodeQuery implements Operation
                String newUrl = in.getRequestPath() + "?" + decoded;
                in.forward(newUrl);
             }
-            else
+            else if (onfailure != null)
             {
                onfailure.perform(event, context);
             }

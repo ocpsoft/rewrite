@@ -57,7 +57,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                 */
                .when(Method.isGet()
                         .and(Path.matches("/store/product/{pid}")
-                                 .where("pid")
+                                 .where("pid").matches("\\d+")
                                  .bindsTo(Evaluation.property("pid").convertedBy(ProductConverter.class)
                                           .validatedBy(ProductValidator.class))))
                .perform(new HttpOperation() {
