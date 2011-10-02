@@ -19,21 +19,26 @@
 	</ui:define>
 
 	<ui:define name="main">
-	
-		#{facesContext.externalContext.request.queryString}
+		<p>This demo is designed to show how any or many query-parameters may be 
+		encoded into a single parameter, and translated back to the application 
+		parameters at request-time.</p>
+		<p>Try adding some query-parameters to the URL, or click the sample links,
+		 and watch the results below!</p>
+		<b>#{facesContext.externalContext.request.queryString}</b>
 		<br/>
 		<br/>
-		<h:link outcome="/index" value="Example link">
+		<h:link outcome="/index" value="Single parameter">
 			<f:param name="foo" value="bar" />
 		</h:link>
 		<br/>
-		<h:link outcome="/index" value="Example link">
+		<h:link outcome="/index" value="Many parameters">
 			<f:param name="foo" value="1" />
 			<f:param name="bar" value="2" />
 			<f:param name="baz" value="3" />
 			<f:param name="cab" value="4" />
 		</h:link>
-
+		<p>We recommend implementing your own EncodingStrategy in order to provide
+		features like encryption or session storage of checksum keys.</p>
 		<p>
 			<a target="_blank" href="http://ocpsoft.com"><br /> OCPsoft
 				Website</a> | <a target="_blank"
