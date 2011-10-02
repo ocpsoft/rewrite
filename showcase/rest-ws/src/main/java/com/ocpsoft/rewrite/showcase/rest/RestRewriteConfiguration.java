@@ -16,6 +16,7 @@
 package com.ocpsoft.rewrite.showcase.rest;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -30,6 +31,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.config.Method;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.Response;
+import com.ocpsoft.rewrite.servlet.config.SendStatus;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -130,6 +132,48 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                      }
                      catch (Exception e) {
                         throw new RuntimeException(e);
+                     }
+                  }
+               })
+
+               .defineRule().when(Path.matches("/")).perform(new HttpOperation() {
+
+                  @Override
+                  public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+                  {
+                     try {
+                        PrintWriter writer = event.getResponse().getWriter();
+                        writer.write("<html>"
+                                 +
+                                 "<body>"
+                                 +
+                                 "<h1>Rewrite Rest Demo</h1>"
+                                 +
+                                 "Sorry for the boring page, there are no HTML pages in this demo! Try some of the following operations:"
+                                 + ""
+                                 +
+                                 "<ul>"
+                                 +
+                                 "<li>GET <a href=\""
+                                 + event.getContextPath()
+                                 + "/store/product/0\">/store/product/0</a></li>"
+                                 +
+                                 "<li>GET <a href=\""
+                                 + event.getContextPath()
+                                 + "/store/products\">/store/products</a></li>"
+                                 +
+                                 "<li>POST "
+                                 + event.getContextPath()
+                                 + "/store/products - This requires a rest client, or you can use `curl`<br/>"
+                                 +
+                                 "curl --data \"&lt;product&gt;&lt;name&gt;James&lt;/name&gt;&lt;description&gt;yay&lt;/description&gt;&lt;price&gt;12.9&lt;/price&gt;&lt;/product&gt;\" http://localhost:8080/rewrite-showcase-rest/store/products</li>"
+                                 +
+                                 "</ul>" +
+                                 "</body></html>");
+                        SendStatus.code(200).perform(event, context);
+                     }
+                     catch (IOException e) {
+                        throw new RuntimeException();
                      }
                   }
                });
