@@ -14,11 +14,15 @@ public class CompositeConfigProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder.begin()
 
+               /*
+                * Combine all query parameters into one encoded parameter.
+                */
                .defineRule().perform(EncodeQuery.params().to("c"))
 
-               .addRule(Join.path("/").to("/index.xhtml"))
-
-      ;
+               /*
+                * Show the index page at '/'
+                */
+               .addRule(Join.path("/").to("/index.xhtml"));
    }
 
    @Override

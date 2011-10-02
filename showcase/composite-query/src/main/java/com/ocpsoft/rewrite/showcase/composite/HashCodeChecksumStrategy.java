@@ -23,9 +23,36 @@ package com.ocpsoft.rewrite.showcase.composite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class HashCodeChecksumStrategy implements ChecksumStrategy
 {
+   private static final String CHECKSUM_DELIM = "#";
+
+   @Override
+   public boolean checksumValid(final String token)
+   {
+      if (token.contains(CHECKSUM_DELIM))
+      {
+         int hashCode = token.substring(token.indexOf(CHECKSUM_DELIM) + 1).hashCode();
+         Integer storedHashCode = Integer.valueOf(token.substring(0, token.indexOf(CHECKSUM_DELIM)));
+         return hashCode == storedHashCode;
+      }
+      return false;
+   }
+
+   @Override
+   public String embedChecksum(final String token)
+   {
+      String result = token.hashCode() + CHECKSUM_DELIM + token;
+      return result;
+   }
+
+   @Override
+   public String removeChecksum(final String token)
+   {
+      String result = token.substring(token.indexOf(CHECKSUM_DELIM) + 1);
+      return result;
+   }
 
 }

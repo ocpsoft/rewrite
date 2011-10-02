@@ -23,9 +23,23 @@ package com.ocpsoft.rewrite.showcase.composite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public interface ChecksumStrategy
 {
+   /**
+    * Return true if the given token contains a valid checksum.
+    */
+   boolean checksumValid(String token);
+
+   /**
+    * Return the given token with an additional added checksum.
+    */
+   String embedChecksum(String token);
+
+   /**
+    * Extract the token from the given string with checksum.
+    */
+   String removeChecksum(String token);
 
 }

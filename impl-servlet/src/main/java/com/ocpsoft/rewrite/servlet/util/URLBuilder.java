@@ -290,6 +290,9 @@ public class URLBuilder
       return toURL();
    }
 
+   /**
+    * Return a URI representation of this URL including path and query string
+    */
    public URI toURI()
    {
       try {
@@ -302,7 +305,7 @@ public class URLBuilder
    }
 
    /**
-    * Return a String representation of this URL
+    * Return a String representation of this URL including path and query string
     */
    public String toURL()
    {

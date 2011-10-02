@@ -25,16 +25,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.Operation;
-import com.ocpsoft.rewrite.config.True;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.DispatchType;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
-import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
+import com.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -42,13 +40,12 @@ import com.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
  */
 public class EncodeQuery implements Operation
 {
-   private static final String STATE = EncodeQuery.class.getName();
-   private String name;
+   private String tokenName;
    private ChecksumStrategy checksumStrategy = new HashCodeChecksumStrategy();
    private EncodingStrategy encodingStrategy = new Base64EncodingStrategy();
-   private Condition condition = new True();
    private final List<String> params = new ArrayList<String>();
    private final List<String> excludedParams = new ArrayList<String>();
+   private boolean inboundCorrection = true;
 
    public EncodeQuery()
    {}
@@ -71,12 +68,6 @@ public class EncodeQuery implements Operation
       return this;
    }
 
-   public EncodeQuery when(final Condition condition)
-   {
-      this.condition = condition;
-      return this;
-   }
-
    public EncodeQuery withEncodingStrategy(final EncodingStrategy strategy)
    {
       this.encodingStrategy = strategy;
@@ -89,38 +80,46 @@ public class EncodeQuery implements Operation
       return this;
    }
 
+   public EncodeQuery withInboundCorrection(final boolean enable)
+   {
+      inboundCorrection = enable;
+      return this;
+   }
+
    public EncodeQuery to(final String param)
    {
-      this.name = param;
+      this.tokenName = param;
       return this;
    }
 
    @Override
    public void perform(final Rewrite event, final EvaluationContext context)
    {
-      if ((event instanceof HttpInboundServletRewrite) && !isProcessed(event))
+      if ((event instanceof HttpInboundServletRewrite) && DispatchType.isRequest().evaluate(event, context))
       {
          HttpInboundServletRewrite in = (HttpInboundServletRewrite) event;
 
          QueryStringBuilder query = QueryStringBuilder.begin();
          query.addParameters(in.getRequestQueryString());
 
-         String value = query.decode().getParameter(name);
-         if (value != null)
+         String token = query.decode().getParameter(tokenName);
+         if (token != null)
          {
-            String decoded = encodingStrategy.decode(value);
-            String newUrl = in.getRequestPath() + "?" + decoded;
-            setProcessed(event);
-            in.forward(newUrl);
-         }
+            String decoded = encodingStrategy.decode(token);
 
-         // TODO enable inbound correction
-         else if (!query.isEmpty() && DispatchType.isRequest().evaluate(event, context))
+            if (checksumStrategy.checksumValid(decoded))
+            {
+               decoded = checksumStrategy.removeChecksum(decoded);
+               query.removeParameter(tokenName);
+               String newUrl = in.getRequestPath() + "?" + decoded;
+               in.forward(newUrl);
+            }
+         }
+         else if (!query.isEmpty() && inboundCorrection)
          {
-            String encoded = encodingStrategy.encode(in.getRequestQueryString());
-            setProcessed(event);
-            in.redirectTemporary(in.getContextPath() + in.getRequestPath()
-                     + "?" + name + "=" + encoded);
+            String encoded = checksumStrategy.embedChecksum(in.getRequestQueryString());
+            encoded = encodingStrategy.encode(encoded);
+            in.redirectTemporary(in.getContextPath() + in.getURL());
          }
       }
 
@@ -128,38 +127,23 @@ public class EncodeQuery implements Operation
       {
          HttpOutboundServletRewrite out = (HttpOutboundServletRewrite) event;
 
-         if (out.getURL().startsWith(out.getContextPath()) || out.getURL().startsWith("/"))
+         String outboundURL = out.getOutboundURL();
+         URLBuilder url = URLBuilder.build(outboundURL);
+
+         url.getQueryStringBuilder().removeParameter(tokenName);
+
+         if (outboundURL.contains("?") && (outboundURL.startsWith(out.getContextPath()) || outboundURL.startsWith("/")))
          {
-            QueryStringBuilder query = QueryStringBuilder.begin();
-            query.addParameters(out.getRequestQueryString());
-
-            if (!query.isEmpty())
+            if (!url.getQueryStringBuilder().isEmpty())
             {
-               String encoded = encodingStrategy.encode(out.getRequestQueryString());
-               setProcessed(event);
+               String encoded = checksumStrategy.embedChecksum(url.getQueryStringBuilder().toQueryString());
+               encoded = encodingStrategy.encode(encoded);
 
-               String outboundURL = out.getOutboundURL();
-               if (outboundURL.contains("?"))
-               {
-                  outboundURL = outboundURL.split("\\?")[0];
-               }
-
-               out.setOutboundURL(outboundURL + out.getRequestQueryStringSeparator() + name + "=" + encoded);
+               out.setOutboundURL(url.toPath() + "?" + tokenName + "=" + encoded);
             }
          }
 
       }
 
    }
-
-   public boolean isProcessed(final Rewrite event)
-   {
-      return ((HttpServletRewrite) event).getRequest().getAttribute(STATE) != null;
-   }
-
-   public void setProcessed(final Rewrite event)
-   {
-      ((HttpServletRewrite) event).getRequest().setAttribute(STATE, EncodeQuery.class.getName());
-   }
-
 }
