@@ -69,13 +69,13 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                       * bindings such as {@link El}, the value will be bound directly to the type of the referenced
                       * property type, and this array downcast is not necessary.
                       */
-                     Object[] product = (Object[]) Evaluation.property("pid").retrieve(event, context);
+                     Product product = (Product) Evaluation.property("pid").retrieve(event, context);
 
                      /**
                       * Marshal the Product into XML using JAXB. This has been extracted into a utility class.
                       */
                      try {
-                        XMLUtil.streamFromObject(Product.class, (Product) product[0], event.getResponse()
+                        XMLUtil.streamFromObject(Product.class, product, event.getResponse()
                                  .getOutputStream());
                      }
                      catch (IOException e) {

@@ -33,11 +33,11 @@ public class ProductRegistry
 
    public ProductRegistry()
    {
-      products.add(new Product("Football Ticket", "Tickets to see your favorite football team. We know your favorite.",
+      add(new Product("Football Ticket", "Tickets to see your favorite football team. We know your favorite.",
                65.99));
-      products.add(new Product("Baseball Cap", "Always stylish, sometimes practical; forward use only.", 15.99));
-      products.add(new Product("Snug-fit Swim Trunks", "Somehow not as interesting as the female counterpart.", 20.99));
-      products.add(new Product("Purple 2-Piece Bikini", "Who doesn't like purple?", 30.99));
+      add(new Product("Baseball Cap", "Always stylish, sometimes practical; forward use only.", 15.99));
+      add(new Product("Snug-fit Swim Trunks", "Somehow not as interesting as the female counterpart.", 20.99));
+      add(new Product("Purple 2-Piece Bikini", "Who doesn't like purple?", 30.99));
    }
 
    public Product getById(final int id)

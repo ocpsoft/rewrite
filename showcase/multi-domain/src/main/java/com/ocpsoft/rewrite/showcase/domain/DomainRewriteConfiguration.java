@@ -49,11 +49,14 @@ public class DomainRewriteConfiguration extends HttpConfigurationProvider
                         .andNot(QueryString.parameterExists("disableDomainRewrite")))
                .perform(Invoke.binding(El.retrievalMethod("#{domains.load}")))
 
+               .addRule(Join.path("/").to("/index.xhtml").withInboundCorrection())
+
                /**
                 * Access http://{domain}.example.com:8080/context/literal and you should see a FileNotFoundException or
                 * * 404 for "/{domain}.xhtml", where "{domain}" matches the sub-domain of example.com
                 */
-               .addRule(Join.path("/literal").to("/{domain}.xhtml").when(Domain.matches("{domain}.example.com")));
+               .addRule(Join.path("/literal").to("/{domain}.xhtml")
+                        .when(Domain.matches("{domain}.example.com")));
    }
 
    @Override
