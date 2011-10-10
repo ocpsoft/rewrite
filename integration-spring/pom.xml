@@ -35,6 +35,11 @@
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       </dependency>
 
+      <dependency>
+         <groupId>com.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-test-harness</artifactId>
+      </dependency>
+
    </dependencies>
 
 </project>

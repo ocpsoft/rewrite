@@ -15,7 +15,11 @@
    <logger name="org.apache">
       <level value="info" />
    </logger>
-   
+
+   <logger name="org.springframework">
+      <level value="warn" />
+   </logger>
+
    <logger name="com.ocpsoft">
       <level value="debug" />
    </logger>
