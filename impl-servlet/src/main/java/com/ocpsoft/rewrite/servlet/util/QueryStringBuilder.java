@@ -234,7 +234,9 @@ public class QueryStringBuilder
          String key = handler.encode(entry.getKey());
          List<String> values = new ArrayList<String>();
          for (String value : entry.getValue()) {
-            values.add(handler.encode(value));
+            if (value != null) {
+               values.add(handler.encode(value));
+            }
          }
          map.put(key, new ArrayList<String>(values));
       }
