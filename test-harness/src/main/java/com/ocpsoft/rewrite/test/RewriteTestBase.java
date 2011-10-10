@@ -72,15 +72,10 @@ public class RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      JavaArchive rewrite = ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
-               .addAsResource(new File("../api/target/classes/com"))
-               .addAsResource(new File("../api/target/classes/META-INF"))
-               .addAsResource(new File("../impl-servlet/target/classes/com"))
-               .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
 
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
-               .addAsLibraries(rewrite)
+               .addAsLibraries(getRewriteArchive())
                .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.2.Final"))
 
                /*
@@ -98,6 +93,15 @@ public class RewriteTestBase
                .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"));
    }
 
+   protected static JavaArchive getRewriteArchive() 
+   {
+       return ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
+               .addAsResource(new File("../api/target/classes/com"))
+               .addAsResource(new File("../api/target/classes/META-INF"))
+               .addAsResource(new File("../impl-servlet/target/classes/com"))
+               .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
+   }
+   
    protected static Collection<GenericArchive> resolveDependencies(final String coords)
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
