@@ -106,7 +106,8 @@ public class SpringExpressionLanguageProvider implements ExpressionLanguageProvi
             }
 
             // the AutowireCapableBeanFactory usually implements ConfigurableListableBeanFactory
-            if (beanFactory == null && applicationContext.getAutowireCapableBeanFactory() instanceof ConfigurableBeanFactory) {
+            if (beanFactory == null && applicationContext != null
+                    && applicationContext.getAutowireCapableBeanFactory() instanceof ConfigurableBeanFactory) {
                 beanFactory = (ConfigurableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
             }
 
