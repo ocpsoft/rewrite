@@ -37,7 +37,7 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * TODO for some reason only the first CDI test run functions. look in to this
  */
 @RunWith(Arquillian.class)
-public class CdiFeaturesTest extends RewriteTestBase
+public class CdiMultipleFeaturesTest extends RewriteTestBase
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
