@@ -33,20 +33,27 @@ import com.ocpsoft.rewrite.test.RewriteTestBase;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
+/*
+ * TODO for some reason only the first CDI test run functions. look in to this
+ */
 @RunWith(Arquillian.class)
-public class CDIFeaturesTest extends RewriteTestBase
+public class CdiFeaturesTest extends RewriteTestBase
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
                .addPackages(true, CDIRoot.class.getPackage())
-               .addAsResource(new StringAsset("com.ocpsoft.rewrite.cdi.bind.BindingTestConfigProvider"),
+               .addAsResource(new StringAsset("com.ocpsoft.rewrite.cdi.bridge.ServiceEnricherTestConfigProvider\n" +
+                        "com.ocpsoft.rewrite.cdi.bind.ExpressionLanguageTestConfigurationProvider"),
                         "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
 
       return deployment;
    }
 
+   /*
+    * RewriteProviderBridge
+    */
    @Test
    public void testRewriteProviderBridgeAcceptsChanges()
    {
@@ -62,6 +69,19 @@ public class CDIFeaturesTest extends RewriteTestBase
       Assert.assertEquals("/outbound-rewritten", action.getCurrentContextRelativeURL());
    }
 
+   /*
+    * CdiServiceEnricher
+    */
+   @Test
+   public void testCdiServiceEnricherProvidesEnrichment()
+   {
+      HttpAction<HttpGet> action = get("/cdi/inject");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   /*
+    * CdiExpressionLanguageProvider
+    */
    @Test
    public void testParameterExpressionBinding()
    {

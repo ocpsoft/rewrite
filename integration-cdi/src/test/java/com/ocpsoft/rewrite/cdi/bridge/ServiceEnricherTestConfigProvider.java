@@ -15,23 +15,26 @@
  */
 package com.ocpsoft.rewrite.cdi.bridge;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
-import com.ocpsoft.rewrite.bind.El;
+import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
-import com.ocpsoft.rewrite.config.Invoke;
+import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Path;
-import com.ocpsoft.rewrite.servlet.config.Redirect;
 import com.ocpsoft.rewrite.servlet.config.SendStatus;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class CdiServiceEnricherTestConfigProvider extends HttpConfigurationProvider
+public class ServiceEnricherTestConfigProvider extends HttpConfigurationProvider
 {
+   @Inject
+   private MockBean bean;
 
    @Override
    public Configuration getConfiguration(final ServletContext context)
@@ -39,16 +42,13 @@ public class CdiServiceEnricherTestConfigProvider extends HttpConfigurationProvi
       return ConfigurationBuilder
                .begin()
                .defineRule()
-               .when(Path.matches("/{one}/{two}")
-                        .where("one").bindsTo(El.property("bindingBean.one"))
-                        .where("two").matches("[0-9]+").bindsTo(El.property("bindingBean.two")))
-               .perform(Invoke.binding(El.retrievalMethod("bindingBean.action()"))
-                        .and(Redirect.permanent(context.getContextPath() + "/{one}/{two}")
-                                 .where("one").bindsTo(El.property("bindingBean.two"))
-                                 .where("two").bindsTo(El.property("bindingBean.one"))))
-
-               .defineRule()
-               .when(Path.matches("/2/one"))
+               .when(Path.matches("/cdi/inject").and(new Condition() {
+                  @Override
+                  public boolean evaluate(final Rewrite event, final EvaluationContext context)
+                  {
+                     return bean != null;
+                  }
+               }))
                .perform(SendStatus.code(200));
    }
 

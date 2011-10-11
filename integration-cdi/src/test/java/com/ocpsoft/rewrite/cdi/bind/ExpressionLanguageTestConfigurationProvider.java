@@ -30,7 +30,7 @@ import com.ocpsoft.rewrite.servlet.config.SendStatus;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class BindingTestConfigProvider extends HttpConfigurationProvider
+public class ExpressionLanguageTestConfigurationProvider extends HttpConfigurationProvider
 {
 
    @Override

@@ -15,7 +15,14 @@
  */
 package com.ocpsoft.rewrite.cdi;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.seam.solder.beanManager.BeanManagerAware;
 
@@ -30,26 +37,51 @@ public class CdiServiceEnricher extends BeanManagerAware implements ServiceEnric
 {
    Logger log = Logger.getLogger(CdiServiceEnricher.class);
 
+   @SuppressWarnings("unchecked")
    @Override
-   public <T> T produce(final Class<T> type)
+   public <T> Collection<T> produce(final Class<T> type)
    {
-      T instance = BeanManagerUtils.getContextualInstance(getBeanManager(), type);
-      if (instance != null)
-      {
-         log.debug("Created CDI enriched service [" + type.getName() + "]");
+      Collection<T> result = new ArrayList<T>();
+
+      BeanManager manager = getBeanManager();
+      Set<Bean<?>> beans = manager.getBeans(type);
+      for (Bean<?> bean : beans) {
+         if (bean != null)
+         {
+            CreationalContext<T> context = (CreationalContext<T>) manager.createCreationalContext(bean);
+
+            if (context != null)
+            {
+               result.add((T) manager.getReference(bean, type, context));
+               if (log.isDebugEnabled())
+               {
+                  log.debug("Created CDI enriched service [" + bean.toString() + "]");
+               }
+            }
+         }
       }
-      return instance;
+
+      return result;
    }
 
    @Override
-   public <T> T enrich(final T service)
+   @SuppressWarnings("unchecked")
+   public <T> void enrich(final T service)
    {
-      CreationalContext<Object> context = BeanManagerUtils.injectNonContextualInstance(getBeanManager(), service);
-      if (context != null)
+      if (service != null)
       {
-         log.debug("Enriched non-contextual intance of service [" + service.getClass().getName() + "]");
+         BeanManager manager = getBeanManager();
+         CreationalContext<Object> context = manager.createCreationalContext(null);
+         InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) manager
+                  .createInjectionTarget(manager.createAnnotatedType(service.getClass()));
+
+         injectionTarget.inject(service, context);
+
+         if ((context != null) && log.isDebugEnabled())
+         {
+            log.debug("Enriched non-contextual intance of service [" + service.getClass().getName() + "]");
+         }
       }
-      return service;
    }
 
 }

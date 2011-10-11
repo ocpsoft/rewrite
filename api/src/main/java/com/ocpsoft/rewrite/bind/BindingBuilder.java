@@ -15,7 +15,10 @@
  */
 package com.ocpsoft.rewrite.bind;
 
+import java.util.Collection;
+
 import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
@@ -27,6 +30,7 @@ public abstract class BindingBuilder implements Binding, RetrievalBuilder, Submi
 {
    private Converter<?> converter = new DefaultConverter();
    private Validator<?> validator = new DefaultValidator();
+   private final Logger log = Logger.getLogger(BindingBuilder.class);
 
    @Override
    public BindingBuilder convertedBy(final Class<? extends Converter<?>> type)
@@ -73,7 +77,22 @@ public abstract class BindingBuilder implements Binding, RetrievalBuilder, Submi
    private Validator<?> resolveValidator(final Class<? extends Validator<?>> type)
    {
       try {
-         return ServiceLoader.loadEnriched(type);
+         Collection<? extends Validator<?>> enriched = ServiceLoader.loadEnriched(type);
+         if (enriched != null)
+         {
+            if ((enriched.size() > 1) && log.isWarnEnabled())
+            {
+               log.warn("Multiple Validator instances available for type [" + type.getName() + "], using first of "
+                        + enriched + "");
+            }
+            for (Validator<?> validator : enriched) {
+               if (validator != null)
+               {
+                  return validator;
+               }
+            }
+         }
+         return null;
       }
       catch (Exception e) {
          throw new RewriteException("Could not instantiate Validator of type [" + type.getName() + "]", e);
@@ -83,7 +102,22 @@ public abstract class BindingBuilder implements Binding, RetrievalBuilder, Submi
    private Converter<?> resolveConverter(final Class<? extends Converter<?>> type)
    {
       try {
-         return ServiceLoader.loadEnriched(type);
+         Collection<? extends Converter<?>> enriched = ServiceLoader.loadEnriched(type);
+         if (enriched != null)
+         {
+            if ((enriched.size() > 1) && log.isWarnEnabled())
+            {
+               log.warn("Multiple Converter instances available for type [" + type.getName() + "], using first of "
+                        + enriched + "");
+            }
+            for (Converter<?> converter : enriched) {
+               if (converter != null)
+               {
+                  return converter;
+               }
+            }
+         }
+         return null;
       }
       catch (Exception e) {
          throw new RewriteException("Could not instantiate Converter of type [" + type.getName() + "]", e);
