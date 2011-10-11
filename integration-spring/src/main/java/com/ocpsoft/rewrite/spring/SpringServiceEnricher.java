@@ -15,6 +15,9 @@
  */
 package com.ocpsoft.rewrite.spring;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.ocpsoft.common.spi.ServiceEnricher;
@@ -25,24 +28,25 @@ import com.ocpsoft.logging.Logger;
  * 
  * @author Christian Kaltepoth
  */
-public class SpringServiceEnricher implements ServiceEnricher {
+public class SpringServiceEnricher implements ServiceEnricher
+{
 
-    private final Logger log = Logger.getLogger(SpringServiceEnricher.class);
+   private final Logger log = Logger.getLogger(SpringServiceEnricher.class);
 
-    @Override
-    public <T> T enrich(T service) {
+   @Override
+   public <T> void enrich(final T service)
+   {
+      SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(service);
+      if (log.isDebugEnabled())
+         log.debug("Enriched instance of service [" + service.getClass().getName() + "]");
 
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(service);
+   }
 
-        log.debug("Enriched instance of service [" + service.getClass().getName() + "]");
-
-        return service;
-
-    }
-
-    @Override
-    public <T> T produce(Class<T> service) {
-        return null;
-    }
+   @Override
+   public <T> Collection<T> produce(final Class<T> type)
+   {
+      // TODO implement
+      return new ArrayList<T>();
+   }
 
 }
