@@ -28,6 +28,7 @@ import javax.servlet.ServletResponse;
 
 import com.ocpsoft.common.pattern.WeightedComparator;
 import com.ocpsoft.common.services.ServiceLoader;
+import com.ocpsoft.common.spi.ServiceEnricher;
 import com.ocpsoft.common.util.Iterators;
 import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -35,10 +36,15 @@ import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.impl.RewriteContextImpl;
+import com.ocpsoft.rewrite.servlet.spi.ContextListener;
 import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import com.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
+import com.ocpsoft.rewrite.servlet.spi.RequestListener;
+import com.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 import com.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
+import com.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
+import com.ocpsoft.rewrite.spi.InvocationResultHandler;
 import com.ocpsoft.rewrite.spi.RewriteProvider;
 import com.ocpsoft.rewrite.util.ServiceLogger;
 
@@ -70,12 +76,6 @@ public class RewriteFilter implements Filter
       inbound = Iterators.asUniqueList(ServiceLoader.load(InboundRewriteProducer.class));
       outbound = Iterators.asUniqueList(ServiceLoader.load(OutboundRewriteProducer.class));
 
-      /*
-       * Load ConfigurationProviders here solely so that we may log all known implementations at boot time.
-       */
-      List<ConfigurationProvider<?>> configurations = Iterators.asUniqueList(ServiceLoader
-               .load(ConfigurationProvider.class));
-
       Collections.sort(listeners, new WeightedComparator());
       Collections.sort(wrappers, new WeightedComparator());
       Collections.sort(providers, new WeightedComparator());
@@ -87,6 +87,33 @@ public class RewriteFilter implements Filter
       ServiceLogger.logLoadedServices(log, RewriteProvider.class, providers);
       ServiceLogger.logLoadedServices(log, InboundRewriteProducer.class, inbound);
       ServiceLogger.logLoadedServices(log, OutboundRewriteProducer.class, outbound);
+
+      /*
+       * Log more services for debug purposes only.
+       */
+      ServiceLogger.logLoadedServices(log, ContextListener.class,
+               Iterators.asUniqueList(ServiceLoader.load(ContextListener.class)));
+
+      ServiceLogger.logLoadedServices(log, RequestListener.class,
+               Iterators.asUniqueList(ServiceLoader.load(RequestListener.class)));
+
+      ServiceLogger.logLoadedServices(log, RequestParameterProvider.class,
+               Iterators.asUniqueList(ServiceLoader.load(RequestParameterProvider.class)));
+
+      ServiceLogger.logLoadedServices(log, ExpressionLanguageProvider.class,
+               Iterators.asUniqueList(ServiceLoader.load(ExpressionLanguageProvider.class)));
+
+      ServiceLogger.logLoadedServices(log, InvocationResultHandler.class,
+               Iterators.asUniqueList(ServiceLoader.load(InvocationResultHandler.class)));
+
+      ServiceLogger.logLoadedServices(log, ServiceEnricher.class,
+               Iterators.asUniqueList(ServiceLoader.load(ServiceEnricher.class)));
+
+      /*
+       * Load ConfigurationProviders here solely so that we may log all known implementations at boot time.
+       */
+      List<ConfigurationProvider<?>> configurations = Iterators.asUniqueList(ServiceLoader
+               .load(ConfigurationProvider.class));
       ServiceLogger.logLoadedServices(log, ConfigurationProvider.class, configurations);
 
       if ((configurations == null) || configurations.isEmpty())
