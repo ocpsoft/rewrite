@@ -22,15 +22,11 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.ocpsoft.common.spi.ServiceEnricher;
-import com.ocpsoft.common.spi.ServiceLocator;
-import com.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 import com.ocpsoft.rewrite.test.HttpAction;
 import com.ocpsoft.rewrite.test.RewriteTestBase;
 
