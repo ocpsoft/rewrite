@@ -26,18 +26,30 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.ocpsoft.common.spi.ServiceEnricher;
-import com.ocpsoft.rewrite.config.ConfigurationProvider;
+import com.ocpsoft.common.spi.ServiceLocator;
 import com.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 import com.ocpsoft.rewrite.test.HttpAction;
 import com.ocpsoft.rewrite.test.RewriteTestBase;
 
 /**
+ * <p>
+ * This tests the basic features of the Spring integration module:
+ * </p>
+ * 
+ * <ul>
+ * <li>SpringExpressionLanguageProvider: Binding parameters to Spring beans</li>
+ * <li>SpringServiceEnricher: {@link SpringExpressionLanguageProvider} requires {@link WebApplicationContext}</li>
+ * <li>SpringServiceLocator: Automatic discovery of {@link SpringFeaturesConfigProvider}</li>
+ * </ul>
+ * 
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
 public class SpringFeaturesTest extends RewriteTestBase {
+
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
         return ShrinkWrap
@@ -46,13 +58,7 @@ public class SpringFeaturesTest extends RewriteTestBase {
                 .setWebXML("jetty-web-spring.xml")
                 .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"))
                 .addAsWebInfResource("applicationContext.xml")
-                .addPackages(true, SpringRoot.class.getPackage())
-                .addAsResource(new StringAsset(SpringFeaturesConfigProvider.class.getName()),
-                        "/META-INF/services/" + ConfigurationProvider.class.getName())
-                .addAsResource(new StringAsset(SpringServiceEnricher.class.getName()),
-                        "/META-INF/services/" + ServiceEnricher.class.getName())
-                .addAsResource(new StringAsset(SpringExpressionLanguageProvider.class.getName()),
-                        "/META-INF/services/" + ExpressionLanguageProvider.class.getName());
+                .addPackages(true, SpringRoot.class.getPackage());
     }
 
     @Test
