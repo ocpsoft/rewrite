@@ -4,7 +4,7 @@
   <parent>
     <artifactId>rewrite-parent</artifactId>
     <groupId>com.ocpsoft.rewrite</groupId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Alpha7</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>rewrite-config-tuckey</artifactId>
