@@ -249,7 +249,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
     * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
     * 
     */
-   public class JoinParameterBuilder implements Parameterized<JoinParameterBuilder, String>
+   public class JoinParameterBuilder implements Parameterized<JoinParameterBuilder, String>, Rule
    {
       private final Join parent;
       private final Parameter<String> parameter;
@@ -309,6 +309,24 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       public Join perform(final Operation operation)
       {
          return parent.performInbound(operation);
+      }
+
+      @Override
+      public String getId()
+      {
+         return parent.getId();
+      }
+
+      @Override
+      public boolean evaluate(Rewrite event, EvaluationContext context)
+      {
+         return parent.evaluate(event, context);
+      }
+
+      @Override
+      public void perform(Rewrite event, EvaluationContext context)
+      {
+         parent.perform(event, context);
       }
    }
 
