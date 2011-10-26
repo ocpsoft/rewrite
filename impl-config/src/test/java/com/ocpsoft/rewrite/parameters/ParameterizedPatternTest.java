@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,6 +27,8 @@ import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.bind.RegexParameter;
 import com.ocpsoft.rewrite.bind.parse.CaptureType;
 import com.ocpsoft.rewrite.bind.util.Maps;
+import com.ocpsoft.rewrite.mock.MockEvaluationContext;
+import com.ocpsoft.rewrite.mock.MockRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -33,14 +36,24 @@ import com.ocpsoft.rewrite.bind.util.Maps;
  */
 public class ParameterizedPatternTest
 {
+   private MockEvaluationContext context = new MockEvaluationContext();
+   private MockRewrite rewrite = new MockRewrite();
+
+   @After
+   public void after()
+   {
+      context = new MockEvaluationContext();
+      rewrite = new MockRewrite();
+   }
+
    @Test
    public void testMatchesEmptyPath()
    {
       ParameterizedPattern path = new ParameterizedPattern(CaptureType.BRACE, "");
 
       Assert.assertEquals(0, path.getParameters().size());
-      Assert.assertTrue(path.matches(""));
-      Map<RegexParameter, String[]> results = path.parse("");
+      Assert.assertTrue(path.matches(rewrite, context, ""));
+      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "");
       Assert.assertNotNull(results);
    }
 
@@ -50,9 +63,9 @@ public class ParameterizedPatternTest
       ParameterizedPattern path = new ParameterizedPattern("/");
 
       Assert.assertEquals(0, path.getParameters().size());
-      Assert.assertTrue(path.matches("/"));
+      Assert.assertTrue(path.matches(rewrite, context, "/"));
 
-      Map<RegexParameter, String[]> results = path.parse("/");
+      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/");
       Assert.assertNotNull(results);
    }
 
@@ -66,7 +79,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<RegexParameter, String[]> results = path.parse("/lincoln/orders/24");
+      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }
@@ -75,8 +88,8 @@ public class ParameterizedPatternTest
    public void testMatchesWithParametersRespectsTrailingCharsWithWildcardParameter()
    {
       ParameterizedPattern path = new ParameterizedPattern(".*", "/{customer}/");
-      Assert.assertTrue(path.matches("/lincoln/"));
-      Assert.assertFalse(path.matches("/lincoln/foo"));
+      Assert.assertTrue(path.matches(rewrite, context, "/lincoln/"));
+      Assert.assertFalse(path.matches(rewrite, context, "/lincoln/foo"));
    }
 
    @Test
@@ -88,7 +101,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals(1, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
 
-      Map<RegexParameter, String[]> results = path.parse("/lincoln/");
+      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/lincoln/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
    }
 
@@ -102,7 +115,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<RegexParameter, String[]> results = path.parse("/lincoln/orders/24/");
+      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }

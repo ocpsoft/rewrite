@@ -22,6 +22,8 @@
 package com.ocpsoft.rewrite.param;
 
 import com.ocpsoft.rewrite.bind.Converter;
+import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Used to perform operations on values (Cannot be used to change the type of the value, for that, see the
@@ -35,5 +37,5 @@ public interface Transform<S>
    /**
     * Perform an operation on the given value.
     */
-   S transform(S value);
+   S transform(Rewrite event, EvaluationContext context, S value);
 }

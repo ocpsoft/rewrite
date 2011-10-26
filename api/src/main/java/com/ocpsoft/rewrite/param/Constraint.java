@@ -21,6 +21,9 @@
  */
 package com.ocpsoft.rewrite.param;
 
+import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -30,5 +33,5 @@ public interface Constraint<T>
    /**
     * Return true if this {@link Constraint} is satisfied by the given value; otherwise, return false.
     */
-   public boolean isSatisfiedBy(T value);
+   boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value);
 }

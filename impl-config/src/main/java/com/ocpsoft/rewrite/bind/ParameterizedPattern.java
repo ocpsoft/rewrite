@@ -239,7 +239,7 @@ public class ParameterizedPattern
    /**
     * Return true if this expression matches the given {@link String}.
     */
-   public boolean matches(final String value)
+   public boolean matches(final Rewrite event, final EvaluationContext context, final String value)
    {
       if (pattern == null)
       {
@@ -289,7 +289,7 @@ public class ParameterizedPattern
             RegexParameter param = entry.getValue();
             String matched = matcher.group(group++);
             for (Constraint<String> c : param.getConstraints()) {
-               if (!c.isSatisfiedBy(matched))
+               if (!c.isSatisfiedBy(event, context, matched))
                {
                   result = false;
                   break PARAMS;
@@ -304,12 +304,12 @@ public class ParameterizedPattern
    /**
     * Parses the given string if it matches this expression. Returns a {@link Parameter}-value map of parsed values.
     */
-   public Map<RegexParameter, String[]> parse(final String path)
+   public Map<RegexParameter, String[]> parse(final Rewrite event, final EvaluationContext context, final String path)
    {
       Map<RegexParameter, String[]> values = new LinkedHashMap<RegexParameter, String[]>();
 
       String temp = path;
-      if (matches(path))
+      if (matches(event, context, path))
       {
          CapturingGroup last = null;
          Set<Entry<String, RegexParameter>> entrySet = params.entrySet();
@@ -353,7 +353,7 @@ public class ParameterizedPattern
             if (segmentMatcher.matches())
             {
                String value = segmentMatcher.group(1);
-               value = applyTransforms(param, value);
+               value = applyTransforms(event, context, param, value);
                Maps.addArrayValue(values, param, value);
                temp = temp.substring(segmentMatcher.end(1));
             }
@@ -364,11 +364,12 @@ public class ParameterizedPattern
       return values;
    }
 
-   private String applyTransforms(RegexParameter param, String value)
+   private String applyTransforms(final Rewrite event, final EvaluationContext context, RegexParameter param,
+            String value)
    {
       String result = value;
       for (Transform<String> t : param.getTransforms()) {
-         result = t.transform(value);
+         result = t.transform(event, context, value);
       }
       return result;
    }

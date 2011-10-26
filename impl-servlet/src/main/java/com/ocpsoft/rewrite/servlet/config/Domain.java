@@ -115,9 +115,9 @@ public class Domain extends HttpCondition implements
       else
          hostName = event.getRequest().getServerName();
 
-      if (expression.matches(hostName))
+      if (expression.matches(event, context, hostName))
       {
-         Map<RegexParameter, String[]> parameters = expression.parse(hostName);
+         Map<RegexParameter, String[]> parameters = expression.parse(event, context, hostName);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }

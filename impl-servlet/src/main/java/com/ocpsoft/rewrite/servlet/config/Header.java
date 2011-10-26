@@ -25,6 +25,7 @@ import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.bind.RegexParameter;
 import com.ocpsoft.rewrite.context.EvaluationContext;
+import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -88,10 +89,10 @@ public class Header extends HttpCondition
       HttpServletRequest request = event.getRequest();
       for (String header : Collections.list(request.getHeaderNames()))
       {
-         if (name.matches(header) && matchesValue(request, header))
+         if (name.matches(event, context, header) && matchesValue(event, context, request, header))
          {
-            Map<RegexParameter, String[]> parameters = name.parse(header);
-            parameters = value.parse(header);
+            Map<RegexParameter, String[]> parameters = name.parse(event, context, header);
+            parameters = value.parse(event, context, header);
 
             if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)
                      && Bindings.enqueuePreOperationSubmissions(event, context, parameters))
@@ -103,11 +104,12 @@ public class Header extends HttpCondition
       return false;
    }
 
-   private boolean matchesValue(final HttpServletRequest request, final String header)
+   private boolean matchesValue(Rewrite event, EvaluationContext context, final HttpServletRequest request,
+            final String header)
    {
       for (String contents : Collections.list(request.getHeaders(header)))
       {
-         if (value.matches(contents))
+         if (value.matches(event, context, contents))
          {
             return true;
          }

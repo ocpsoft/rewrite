@@ -126,9 +126,9 @@ public class Path extends HttpCondition implements
       else
          requestURL = event.getRequestPath();
 
-      if (expression.matches(requestURL))
+      if (expression.matches(event, context, requestURL))
       {
-         Map<RegexParameter, String[]> parameters = expression.parse(requestURL);
+         Map<RegexParameter, String[]> parameters = expression.parse(event, context, requestURL);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }
