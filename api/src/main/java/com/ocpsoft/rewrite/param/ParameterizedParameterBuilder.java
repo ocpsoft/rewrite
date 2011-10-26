@@ -25,21 +25,31 @@ import com.ocpsoft.rewrite.bind.Binding;
 public class ParameterizedParameterBuilder<T> implements Parameterized<ParameterizedParameterBuilder<T>, T>
 {
    private final Parameterized<ParameterizedParameterBuilder<T>, T> parent;
-   private final Parameter<String> parameter;
+   private final Parameter<T> parameter;
 
    public ParameterizedParameterBuilder(final Parameterized<ParameterizedParameterBuilder<T>, T> parent,
-            final Parameter<String> parameter)
+            final Parameter<T> parameter)
    {
       this.parent = parent;
       this.parameter = parameter;
    }
 
    /**
-    * The {@link Parameter} must match the given pattern.
+    * The {@link Parameter} must meet the given {@link Constraint}.
     */
-   public ParameterizedParameterBuilder<T> matches(final String pattern)
+   public ParameterizedParameterBuilder<T> constrainedBy(final Constraint<T> constraint)
    {
-      parameter.matches(pattern);
+      parameter.constrainedBy(constraint);
+      return this;
+   }
+
+   /**
+    * Apply the given {@link Transform} to this {@link Parameter}; it will be applied in the order in which it was
+    * added. All transforms are applied before {@link Binding} occurs.
+    */
+   public ParameterizedParameterBuilder<T> transformedBy(final Transform<T> constraint)
+   {
+      parameter.transformedBy(constraint);
       return this;
    }
 

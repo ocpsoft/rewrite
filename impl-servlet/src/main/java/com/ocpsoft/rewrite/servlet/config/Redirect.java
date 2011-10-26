@@ -21,10 +21,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.param.OperationParameterBuilder;
+import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.param.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -45,6 +47,10 @@ public class Redirect extends HttpOperation implements
    private Redirect(final String location, final RedirectType type)
    {
       this.location = new ParameterizedPattern("[^/]+", location);
+
+      for (Parameter<String> parameter : this.location.getParameters().values()) {
+         parameter.bindsTo(Evaluation.property(parameter.getName()));
+      }
       this.type = type;
    }
 

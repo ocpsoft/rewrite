@@ -77,11 +77,11 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
 
    public String groomExpression(String expression)
    {
-      expression = expression.trim();
-      if (!expression.startsWith("#{"))
-         return expressions.toExpression(expression);
+      String result = expression.trim();
+      if (!result.startsWith("#{"))
+         return expressions.toExpression(result);
 
-      return expression;
+      return result;
    }
 
    @Override

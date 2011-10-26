@@ -19,13 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.cdi.bridge;
+package com.ocpsoft.rewrite.param;
+
+import com.ocpsoft.rewrite.bind.Converter;
 
 /**
+ * Used to perform operations on values (Cannot be used to change the type of the value, for that, see the
+ * {@link Converter} API.)
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class MockBean
+public interface Transform<S>
 {
-   // Intentionally empty
+   /**
+    * Perform an operation on the given value.
+    */
+   S transform(S value);
 }

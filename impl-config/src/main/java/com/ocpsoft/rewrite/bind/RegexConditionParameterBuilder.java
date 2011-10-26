@@ -19,13 +19,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ocpsoft.rewrite.cdi.bridge;
+package com.ocpsoft.rewrite.bind;
+
+import com.ocpsoft.rewrite.param.ConditionParameterBuilder;
+import com.ocpsoft.rewrite.param.ParameterizedCondition;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class MockBean
+public class RegexConditionParameterBuilder extends ConditionParameterBuilder<String>
 {
-   // Intentionally empty
+   private final RegexParameter parameter;
+
+   public RegexConditionParameterBuilder(ParameterizedCondition<ConditionParameterBuilder<String>, String> parent,
+            RegexParameter parameter)
+   {
+      super(parent, parameter);
+      this.parameter = parameter;
+   }
+
+   public RegexConditionParameterBuilder matches(String pattern)
+   {
+      parameter.matches(pattern);
+      return this;
+   }
+
 }

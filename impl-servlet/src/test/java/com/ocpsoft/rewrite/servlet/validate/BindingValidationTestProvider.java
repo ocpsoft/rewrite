@@ -54,8 +54,7 @@ public class BindingValidationTestProvider extends HttpConfigurationProvider
                                     public boolean validate(final Rewrite event, final EvaluationContext context,
                                              final Object value)
                                     {
-                                       return (value != null) && (((Object[]) value)[0] != null)
-                                                && "valid".equals(((Object[]) value)[0].toString());
+                                       return "valid".equals(value);
                                     }
                                  }))))
                .perform(SendStatus.code(205))

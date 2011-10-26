@@ -47,8 +47,9 @@ public class CdiServiceLocator extends BeanManagerAware implements ServiceLocato
 
       BeanManager manager = getBeanManager();
 
-      @SuppressWarnings("serial")
-      Set<Bean<?>> beans = manager.getBeans(type, new Annotation[] { new AnnotationLiteral<Any>() {} });
+      Set<Bean<?>> beans = manager.getBeans(type, new Annotation[] { new AnnotationLiteral<Any>() {
+         private static final long serialVersionUID = -1896831901770051851L;
+      } });
 
       for (Bean<?> bean : beans) {
          result.add((Class<T>) bean.getBeanClass());

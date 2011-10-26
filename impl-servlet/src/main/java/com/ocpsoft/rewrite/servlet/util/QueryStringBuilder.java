@@ -87,15 +87,15 @@ public class QueryStringBuilder
    {
       if ((url != null) && !"".equals(url))
       {
-         url = url.trim();
-         if (url.length() > 1)
+         String temp = url.trim();
+         if (temp.length() > 1)
          {
-            if (url.contains("?"))
+            if (temp.contains("?"))
             {
-               url = url.substring(url.indexOf('?') + 1);
+               temp = temp.substring(temp.indexOf('?') + 1);
             }
 
-            String pairs[] = url.split("&(amp;)?");
+            String pairs[] = temp.split("&(amp;)?");
             for (String pair : pairs)
             {
                String name;

@@ -20,7 +20,10 @@ import java.util.Map;
 import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
+import com.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
+import com.ocpsoft.rewrite.bind.RegexParameter;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.param.ConditionParameterBuilder;
@@ -43,6 +46,10 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
    {
       Assert.notNull(pattern, "Path must not be null.");
       this.expression = new ParameterizedPattern("[^/]+", pattern);
+
+      for (Parameter<String> parameter : expression.getParameters().values()) {
+         parameter.bindsTo(Evaluation.property(parameter.getName()));
+      }
    }
 
    /**
@@ -78,28 +85,28 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param)
+   public RegexConditionParameterBuilder where(final String param)
    {
-      return new ConditionParameterBuilder<String>(this, expression.getParameter(param));
+      return new RegexConditionParameterBuilder(this, expression.getParameter(param));
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param, final String pattern)
+   public RegexConditionParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param, final String pattern,
+   public RegexConditionParameterBuilder where(final String param, final String pattern,
             final Binding binding)
    {
-      return where(param, pattern).bindsTo(binding);
+      return (RegexConditionParameterBuilder) where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param, final Binding binding)
+   public RegexConditionParameterBuilder where(final String param, final Binding binding)
    {
-      return where(param).bindsTo(binding);
+      return (RegexConditionParameterBuilder) where(param).bindsTo(binding);
    }
 
    @Override
@@ -120,7 +127,7 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
 
       if (expression.matches(requestURL))
       {
-         Map<Parameter<String>, String[]> parameters = expression.parseEncoded(requestURL);
+         Map<RegexParameter, String[]> parameters = expression.parse(requestURL);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }

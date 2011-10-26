@@ -24,7 +24,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ConditionParameterBuilder<T> implements Condition, ParameterizedCondition<ConditionParameterBuilder<T>, T>
+public class ConditionParameterBuilder<T> implements ParameterizedCondition<ConditionParameterBuilder<T>, T>
 {
    private final ParameterizedCondition<ConditionParameterBuilder<T>, T> parent;
    private final Parameter<T> parameter;
@@ -37,11 +37,21 @@ public class ConditionParameterBuilder<T> implements Condition, ParameterizedCon
    }
 
    /**
-    * The {@link Parameter} must match the given pattern.
+    * The {@link Parameter} must meet the given {@link Constraint}.
     */
-   public ConditionParameterBuilder<T> matches(final T pattern)
+   public ConditionParameterBuilder<T> constrainedBy(final Constraint<T> constraint)
    {
-      parameter.matches(pattern);
+      parameter.constrainedBy(constraint);
+      return this;
+   }
+
+   /**
+    * Apply the given {@link Transform} to this {@link Parameter}; it will be applied in the order in which it was
+    * added. All transforms are applied before {@link Binding} occurs.
+    */
+   public ConditionParameterBuilder<T> transformedBy(final Transform<T> constraint)
+   {
+      parameter.transformedBy(constraint);
       return this;
    }
 

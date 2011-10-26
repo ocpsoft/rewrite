@@ -37,11 +37,21 @@ public class OperationParameterBuilder<T> implements ParameterizedOperation<Oper
    }
 
    /**
-    * The {@link Parameter} must match the given pattern.
+    * The {@link Parameter} must meet the given {@link Constraint}.
     */
-   public OperationParameterBuilder<T> matches(final T pattern)
+   public OperationParameterBuilder<T> constrainedBy(final Constraint<T> constraint)
    {
-      parameter.matches(pattern);
+      parameter.constrainedBy(constraint);
+      return this;
+   }
+
+   /**
+    * Apply the given {@link Transform} to this {@link Parameter}; it will be applied in the order in which it was
+    * added. All transforms are applied before {@link Binding} occurs.
+    */
+   public OperationParameterBuilder<T> transformedBy(final Transform<T> constraint)
+   {
+      parameter.transformedBy(constraint);
       return this;
    }
 

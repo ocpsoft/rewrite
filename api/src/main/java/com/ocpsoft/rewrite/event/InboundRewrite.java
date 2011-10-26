@@ -23,4 +23,7 @@ package com.ocpsoft.rewrite.event;
  */
 public interface InboundRewrite extends Rewrite
 {
+   /*
+    * Marker interface.
+    */
 }

@@ -129,9 +129,9 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       try
       {
          dispatchResource = location;
-         location = encodeRedirectUrl(response, location);
+         String target = encodeRedirectUrl(response, location);
          response.setStatus(code);
-         response.setHeader("Location", location);
+         response.setHeader("Location", target);
          response.flushBuffer();
          abort();
       }

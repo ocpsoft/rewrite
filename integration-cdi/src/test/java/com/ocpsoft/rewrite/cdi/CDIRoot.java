@@ -20,4 +20,5 @@ package com.ocpsoft.rewrite.cdi;
  */
 public interface CDIRoot
 {
+   // Intentionally empty
 }

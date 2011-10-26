@@ -15,8 +15,10 @@
  */
 package com.ocpsoft.rewrite.param;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ocpsoft.rewrite.bind.DefaultBindable;
-import com.ocpsoft.rewrite.bind.Evaluation;
 
 /**
  * An base implementation of {@link Parameter}
@@ -24,73 +26,49 @@ import com.ocpsoft.rewrite.bind.Evaluation;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class ParameterBuilder<P extends ParameterBuilder<P, T>, T> extends DefaultBindable<Parameter<T>>
-         implements
-         Parameter<T>
+         implements Parameter<T>
 {
-   private T pattern;
+   private final List<Transform<T>> transforms = new ArrayList<Transform<T>>();
+   private final List<Constraint<T>> constraints = new ArrayList<Constraint<T>>();
 
    /**
     * Create a new instance for the given pattern.
     */
-   public ParameterBuilder(final T pattern)
+   public ParameterBuilder()
+   {}
+
+   @Override
+   @SuppressWarnings("unchecked")
+   public P constrainedBy(Constraint<T> constraint)
    {
-      this.pattern = pattern;
+      this.constraints.add(constraint);
+      return (P) this;
+   }
 
-      /*
-       *  Set up default binding to evaluation context. Use deferred name resolution so 
-       *  that we don't need to have a name at construction time.
-       */
-      this.bindsTo(Evaluation.property(new CharSequence() {
-
-         @Override
-         public CharSequence subSequence(final int begin, final int end)
-         {
-            return getName().subSequence(begin, end);
-         }
-
-         @Override
-         public int length()
-         {
-            return getName().length();
-         }
-
-         @Override
-         public char charAt(final int index)
-         {
-            return getName().charAt(index);
-         }
-
-         @Override
-         public String toString()
-         {
-            return getName();
-         }
-
-         @Override
-         public boolean equals(final Object obj)
-         {
-            return getName().equals(obj);
-         }
-
-         @Override
-         public int hashCode()
-         {
-            return getName().hashCode();
-         }
-      }));
+   @Override
+   public List<Constraint<T>> getConstraints()
+   {
+      return constraints;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public P matches(final T pattern)
+   public P transformedBy(Transform<T> transform)
    {
-      this.pattern = pattern;
+      this.transforms.add(transform);
       return (P) this;
    }
 
-   public T getPattern()
+   @Override
+   public List<Transform<T>> getTransforms()
    {
-      return pattern;
+      return transforms;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "ParameterBuilder [transforms=" + transforms + ", constraints=" + constraints + "]";
    }
 
 }

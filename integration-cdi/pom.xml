@@ -25,7 +25,6 @@
       <dependency>
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
-         <version>${version.cdi-api}</version>
          <scope>provided</scope>
       </dependency>
       

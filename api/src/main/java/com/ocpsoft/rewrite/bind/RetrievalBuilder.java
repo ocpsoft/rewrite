@@ -23,4 +23,7 @@ package com.ocpsoft.rewrite.bind;
  */
 public interface RetrievalBuilder extends Retrieval
 {
+   /**
+    * TODO implement? {@link SubmissionBuilder}
+    */
 }

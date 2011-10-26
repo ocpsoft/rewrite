@@ -15,6 +15,7 @@
  */
 package com.ocpsoft.rewrite.bind;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 
 import com.ocpsoft.common.services.ServiceLoader;
@@ -64,13 +65,44 @@ public abstract class BindingBuilder implements Binding, RetrievalBuilder, Submi
    @SuppressWarnings({ "unchecked", "rawtypes" })
    public boolean validates(final Rewrite event, final EvaluationContext context, final Object value)
    {
-      // We must assume the value was properly converted.
+      if (value != null && value.getClass().isArray())
+      {
+         Object[] values = (Object[]) value;
+         for (int i = 0; i < values.length; i++) {
+            if (!((Validator) validator).validate(event, context, values[i]))
+            {
+               return false;
+            }
+         }
+         return true;
+      }
       return ((Validator) validator).validate(event, context, value);
    }
 
    @Override
    public Object convert(final Rewrite event, final EvaluationContext context, final Object value)
    {
+      if (value != null && value.getClass().isArray())
+      {
+         Object[] values = (Object[]) value;
+         Object[] convertedValues = new Object[values.length];
+         for (int i = 0; i < convertedValues.length; i++) {
+            convertedValues[i] = converter.convert(event, context, values[i]);
+         }
+
+         Class<?> type = Object.class;
+         for (Object object : convertedValues) {
+            if (object != null)
+            {
+               type = object.getClass();
+               break;
+            }
+         }
+
+         Object[] result = (Object[]) Array.newInstance(type, convertedValues.length);
+         System.arraycopy(convertedValues, 0, result, 0, result.length);
+         return result;
+      }
       return converter.convert(event, context, value);
    }
 

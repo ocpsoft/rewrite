@@ -17,12 +17,14 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
 import com.ocpsoft.rewrite.event.OutboundRewrite;
 import com.ocpsoft.rewrite.param.OperationParameterBuilder;
+import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.param.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
@@ -44,6 +46,10 @@ public class Substitute extends HttpOperation implements
    {
       Assert.notNull(location, "Location must not be null.");
       this.location = new ParameterizedPattern("[^/]+", location);
+
+      for (Parameter<String> parameter : this.location.getParameters().values()) {
+         parameter.bindsTo(Evaluation.property(parameter.getName()));
+      }
    }
 
    /**
@@ -94,17 +100,20 @@ public class Substitute extends HttpOperation implements
       return new OperationParameterBuilder<String>(this, location.getParameter(param));
    }
 
+   @Override
    public OperationParameterBuilder<String> where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
+   @Override
    public OperationParameterBuilder<String> where(final String param, final String pattern,
             final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
+   @Override
    public OperationParameterBuilder<String> where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);

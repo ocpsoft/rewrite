@@ -21,11 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.bind.parse.CaptureType;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.param.OperationParameterBuilder;
+import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.param.ParameterizedOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -43,6 +45,10 @@ public class Forward extends HttpOperation implements ParameterizedOperation<Ope
    {
       Assert.notNull(location, "Location must not be null.");
       this.location = new ParameterizedPattern(CaptureType.BRACE, "[^/]+", location);
+
+      for (Parameter<String> parameter : this.location.getParameters().values()) {
+         parameter.bindsTo(Evaluation.property(parameter.getName()));
+      }
    }
 
    /**

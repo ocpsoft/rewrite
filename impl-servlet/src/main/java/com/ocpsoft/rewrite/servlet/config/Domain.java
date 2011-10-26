@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
+import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
@@ -45,6 +46,10 @@ public class Domain extends HttpCondition implements ParameterizedCondition<Cond
    {
       Assert.notNull(pattern, "Domain must not be null.");
       this.expression = new ParameterizedPattern(pattern);
+
+      for (Parameter<String> parameter : this.expression.getParameters().values()) {
+         parameter.bindsTo(Evaluation.property(parameter.getName()));
+      }
    }
 
    /**
@@ -109,7 +114,7 @@ public class Domain extends HttpCondition implements ParameterizedCondition<Cond
 
       if (expression.matches(hostName))
       {
-         Map<Parameter<String>, String[]> parameters = expression.parseEncoded(hostName);
+         Map<Parameter<String>, String[]> parameters = expression.parse(hostName);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }

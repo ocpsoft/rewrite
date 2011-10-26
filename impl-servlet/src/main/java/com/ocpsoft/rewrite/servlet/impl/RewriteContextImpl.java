@@ -36,7 +36,7 @@ import com.ocpsoft.rewrite.spi.RewriteProvider;
  */
 public class RewriteContextImpl implements RewriteLifecycleContext
 {
-   private final Map<Object, Object> map = new HashMap<Object, Object>();;
+   private final Map<Object, Object> map = new HashMap<Object, Object>();
 
    private final List<RewriteProvider<Rewrite>> providers;
    private final List<RewriteLifecycleListener<Rewrite>> listeners;

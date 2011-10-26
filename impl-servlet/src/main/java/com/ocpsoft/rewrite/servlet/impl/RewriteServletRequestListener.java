@@ -38,6 +38,7 @@ public class RewriteServletRequestListener implements ServletRequestListener
       this.listeners = Iterators.asList(listeners.iterator());
    }
 
+   @Override
    public void requestInitialized(final ServletRequestEvent event)
    {
       for (RequestListener listener : listeners) {
@@ -45,6 +46,7 @@ public class RewriteServletRequestListener implements ServletRequestListener
       }
    }
 
+   @Override
    public void requestDestroyed(final ServletRequestEvent event)
    {
       for (RequestListener listener : listeners) {

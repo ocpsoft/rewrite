@@ -59,4 +59,11 @@ public class EvaluationContextImpl extends ContextBase implements EvaluationCont
    {
       return Collections.unmodifiableList(postOperations);
    }
+
+   @Override
+   public String toString()
+   {
+      return "EvaluationContextImpl [preOperations=" + preOperations + ", postOperations=" + postOperations + "]";
+   }
+
 }

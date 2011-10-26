@@ -299,5 +299,12 @@ public abstract class Bindings
       {
          binding.submit(event, context, value);
       }
+
+      @Override
+      public String toString()
+      {
+         return "BindingOperation [binding=" + binding + ", value=" + value + "]";
+      }
+
    }
 }

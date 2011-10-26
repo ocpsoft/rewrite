@@ -31,8 +31,10 @@ import com.ocpsoft.rewrite.bind.parse.ParseTools;
 import com.ocpsoft.rewrite.bind.util.Maps;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.param.Constraint;
 import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.param.Parameterized;
+import com.ocpsoft.rewrite.param.Transform;
 
 /**
  * An {@link Parameterized} regular expression {@link Pattern}.
@@ -90,7 +92,10 @@ public class ParameterizedPattern
                CapturingGroup group = ParseTools.balancedCapture(chars, startPos, chars.length - 1, type);
                cursor = group.getEnd();
 
-               params.put(new String(group.getCaptured()), new RegexParameter(group).matches(parameterPattern));
+               String parameterName = new String(group.getCaptured());
+               RegexParameter parameter = new RegexParameter(group);
+               params.put(parameterName, parameter.matches(parameterPattern));
+
                break;
 
             default:
@@ -105,10 +110,9 @@ public class ParameterizedPattern
    /**
     * Get all {@link Parameter} instances detected during expression parsing.
     */
-   @SuppressWarnings({ "unchecked", "rawtypes" })
-   public Map<String, Parameter<String>> getParameters()
+   public Map<String, RegexParameter> getParameters()
    {
-      return (Map) params;
+      return params;
    }
 
    /**
@@ -275,15 +279,34 @@ public class ParameterizedPattern
          pattern = Pattern.compile(patternBuilder.toString());
       }
 
-      return pattern.matcher(value).matches();
+      Matcher matcher = pattern.matcher(value);
+      boolean result = matcher.matches();
+      if (result == true)
+      {
+         int group = 1;
+         PARAMS: for (Entry<String, RegexParameter> entry : params.entrySet())
+         {
+            RegexParameter param = entry.getValue();
+            String matched = matcher.group(group++);
+            for (Constraint<String> c : param.getConstraints()) {
+               if (!c.isSatisfiedBy(matched))
+               {
+                  result = false;
+                  break PARAMS;
+               }
+            }
+         }
+      }
+
+      return result;
    }
 
    /**
     * Parses the given string if it matches this expression. Returns a {@link Parameter}-value map of parsed values.
     */
-   public Map<Parameter<String>, String[]> parseEncoded(final String path)
+   public Map<RegexParameter, String[]> parse(final String path)
    {
-      Map<Parameter<String>, String[]> values = new LinkedHashMap<Parameter<String>, String[]>();
+      Map<RegexParameter, String[]> values = new LinkedHashMap<RegexParameter, String[]>();
 
       String temp = path;
       if (matches(path))
@@ -330,6 +353,7 @@ public class ParameterizedPattern
             if (segmentMatcher.matches())
             {
                String value = segmentMatcher.group(1);
+               value = applyTransforms(param, value);
                Maps.addArrayValue(values, param, value);
                temp = temp.substring(segmentMatcher.end(1));
             }
@@ -340,10 +364,19 @@ public class ParameterizedPattern
       return values;
    }
 
+   private String applyTransforms(RegexParameter param, String value)
+   {
+      String result = value;
+      for (Transform<String> t : param.getTransforms()) {
+         result = t.transform(value);
+      }
+      return result;
+   }
+
    /**
     * Get the {@link Parameter} with the given name. Return null if no such {@link Parameter} exists.
     */
-   public Parameter<String> getParameter(final String name)
+   public RegexParameter getParameter(final String name)
    {
       return params.get(name);
    }

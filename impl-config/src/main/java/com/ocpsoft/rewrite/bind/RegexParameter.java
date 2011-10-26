@@ -25,6 +25,7 @@ import com.ocpsoft.rewrite.param.ParameterBuilder;
  */
 public class RegexParameter extends ParameterBuilder<RegexParameter, String>
 {
+   private String pattern;
    private final CapturingGroup capture;
 
    /**
@@ -32,8 +33,18 @@ public class RegexParameter extends ParameterBuilder<RegexParameter, String>
     */
    public RegexParameter(final CapturingGroup capture)
    {
-      super(".*");
       this.capture = capture;
+   }
+
+   public RegexParameter matches(final String pattern)
+   {
+      this.pattern = pattern;
+      return this;
+   }
+
+   public String getPattern()
+   {
+      return pattern;
    }
 
    @Override
@@ -45,5 +56,11 @@ public class RegexParameter extends ParameterBuilder<RegexParameter, String>
    public CapturingGroup getCapture()
    {
       return capture;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "RegexParameter [capture=" + capture + "]";
    }
 }

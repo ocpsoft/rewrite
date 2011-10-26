@@ -32,17 +32,6 @@ public class IntegerConverter implements Converter<Integer>
       {
          throw new IllegalArgumentException("Value to convert cannot be null.");
       }
-      else if (value.getClass().isArray())
-      {
-         if (((Object[]) value).length > 0)
-         {
-            return Integer.valueOf(((Object[]) value)[0].toString());
-         }
-         else
-         {
-            throw new IllegalArgumentException("Value to convert was empty array.");
-         }
-      }
       return Integer.valueOf(value.toString());
    }
 

@@ -40,7 +40,7 @@ public class ParameterizedPatternTest
 
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches(""));
-      Map<Parameter<String>, String[]> results = path.parseEncoded("");
+      Map<Parameter<String>, String[]> results = path.parse("");
       Assert.assertNotNull(results);
    }
 
@@ -52,7 +52,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches("/"));
 
-      Map<Parameter<String>, String[]> results = path.parseEncoded("/");
+      Map<Parameter<String>, String[]> results = path.parse("/");
       Assert.assertNotNull(results);
    }
 
@@ -66,7 +66,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<Parameter<String>, String[]> results = path.parseEncoded("/lincoln/orders/24");
+      Map<Parameter<String>, String[]> results = path.parse("/lincoln/orders/24");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }
@@ -88,7 +88,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals(1, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
 
-      Map<Parameter<String>, String[]> results = path.parseEncoded("/lincoln/");
+      Map<Parameter<String>, String[]> results = path.parse("/lincoln/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
    }
 
@@ -102,7 +102,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<Parameter<String>, String[]> results = path.parseEncoded("/lincoln/orders/24/");
+      Map<Parameter<String>, String[]> results = path.parse("/lincoln/orders/24/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }

@@ -110,4 +110,10 @@ public class Evaluation extends BindingBuilder
       return true;
    }
 
+   @Override
+   public String toString()
+   {
+      return "Evaluation [property=" + property + "]";
+   }
+
 }

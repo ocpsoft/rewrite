@@ -18,7 +18,6 @@ package com.ocpsoft.rewrite.context;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Base {@link Context} abstract class.
  * 
@@ -46,6 +45,12 @@ public abstract class ContextBase implements Context
    public boolean containsKey(final Object key)
    {
       return map.containsKey(key);
+   }
+
+   @Override
+   public String toString()
+   {
+      return "ContextBase [map=" + map + "]";
    }
 
 }
