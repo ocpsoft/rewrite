@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
+import com.ocpsoft.rewrite.bind.RegexParameter;
 import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -90,7 +90,7 @@ public class Header extends HttpCondition
       {
          if (name.matches(header) && matchesValue(request, header))
          {
-            Map<Parameter<String>, String[]> parameters = name.parse(header);
+            Map<RegexParameter, String[]> parameters = name.parse(header);
             parameters = value.parse(header);
 
             if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)

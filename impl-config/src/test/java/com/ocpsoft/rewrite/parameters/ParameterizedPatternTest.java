@@ -23,9 +23,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
+import com.ocpsoft.rewrite.bind.RegexParameter;
 import com.ocpsoft.rewrite.bind.parse.CaptureType;
 import com.ocpsoft.rewrite.bind.util.Maps;
-import com.ocpsoft.rewrite.param.Parameter;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -40,7 +40,7 @@ public class ParameterizedPatternTest
 
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches(""));
-      Map<Parameter<String>, String[]> results = path.parse("");
+      Map<RegexParameter, String[]> results = path.parse("");
       Assert.assertNotNull(results);
    }
 
@@ -52,7 +52,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches("/"));
 
-      Map<Parameter<String>, String[]> results = path.parse("/");
+      Map<RegexParameter, String[]> results = path.parse("/");
       Assert.assertNotNull(results);
    }
 
@@ -61,12 +61,12 @@ public class ParameterizedPatternTest
    {
       ParameterizedPattern path = new ParameterizedPattern("[^/]+", "/{customer}/orders/{id}");
 
-      Map<String, Parameter<String>> parameters = path.getParameters();
+      Map<String, RegexParameter> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<Parameter<String>, String[]> results = path.parse("/lincoln/orders/24");
+      Map<RegexParameter, String[]> results = path.parse("/lincoln/orders/24");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }
@@ -84,11 +84,11 @@ public class ParameterizedPatternTest
    {
       ParameterizedPattern path = new ParameterizedPattern(".*", "/{customer}/");
 
-      Map<String, Parameter<String>> parameters = path.getParameters();
+      Map<String, RegexParameter> parameters = path.getParameters();
       Assert.assertEquals(1, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
 
-      Map<Parameter<String>, String[]> results = path.parse("/lincoln/");
+      Map<RegexParameter, String[]> results = path.parse("/lincoln/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
    }
 
@@ -97,12 +97,12 @@ public class ParameterizedPatternTest
    {
       ParameterizedPattern path = new ParameterizedPattern("[^/]+", "/{customer}/orders/{id}/");
 
-      Map<String, Parameter<String>> parameters = path.getParameters();
+      Map<String, RegexParameter> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<Parameter<String>, String[]> results = path.parse("/lincoln/orders/24/");
+      Map<RegexParameter, String[]> results = path.parse("/lincoln/orders/24/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }

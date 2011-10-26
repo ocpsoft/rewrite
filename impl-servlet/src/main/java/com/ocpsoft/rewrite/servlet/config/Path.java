@@ -38,7 +38,8 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition implements ParameterizedCondition<ConditionParameterBuilder<String>, String>
+public class Path extends HttpCondition implements
+         ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 
@@ -100,13 +101,13 @@ public class Path extends HttpCondition implements ParameterizedCondition<Condit
    public RegexConditionParameterBuilder where(final String param, final String pattern,
             final Binding binding)
    {
-      return (RegexConditionParameterBuilder) where(param, pattern).bindsTo(binding);
+      return where(param, pattern).bindsTo(binding);
    }
 
    @Override
    public RegexConditionParameterBuilder where(final String param, final Binding binding)
    {
-      return (RegexConditionParameterBuilder) where(param).bindsTo(binding);
+      return where(param).bindsTo(binding);
    }
 
    @Override

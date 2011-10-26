@@ -21,26 +21,26 @@
  */
 package com.ocpsoft.rewrite.bind;
 
-import com.ocpsoft.rewrite.param.ConditionParameterBuilder;
-import com.ocpsoft.rewrite.param.ParameterizedCondition;
+import com.ocpsoft.rewrite.param.OperationParameterBuilder;
+import com.ocpsoft.rewrite.param.ParameterizedOperation;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class RegexConditionParameterBuilder extends ConditionParameterBuilder<RegexConditionParameterBuilder, String>
+public class RegexOperationParameterBuilder extends OperationParameterBuilder<RegexOperationParameterBuilder, String>
 {
    private final RegexParameter parameter;
 
-   public RegexConditionParameterBuilder(
-            ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String> parent,
+   public RegexOperationParameterBuilder(
+            ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String> parent,
             RegexParameter parameter)
    {
       super(parent, parameter);
       this.parameter = parameter;
    }
 
-   public RegexConditionParameterBuilder matches(String pattern)
+   public RegexOperationParameterBuilder matches(String pattern)
    {
       parameter.matches(pattern);
       return this;

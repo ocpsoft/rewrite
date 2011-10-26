@@ -65,7 +65,7 @@ public class PathTest
    public void testPathAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      ConditionParameterBuilder<?> path = Path.matches("/application/{seg}")
+      ConditionParameterBuilder<?, ?> path = Path.matches("/application/{seg}")
                .where("seg", mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(path.evaluate(rewrite, context));

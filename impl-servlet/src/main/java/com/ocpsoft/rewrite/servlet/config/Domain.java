@@ -24,6 +24,8 @@ import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
+import com.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
+import com.ocpsoft.rewrite.bind.RegexParameter;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.param.ConditionParameterBuilder;
@@ -38,7 +40,8 @@ import com.ocpsoft.rewrite.servlet.util.URLBuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Domain extends HttpCondition implements ParameterizedCondition<ConditionParameterBuilder<String>, String>
+public class Domain extends HttpCondition implements
+         ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 
@@ -72,26 +75,26 @@ public class Domain extends HttpCondition implements ParameterizedCondition<Cond
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param)
+   public RegexConditionParameterBuilder where(final String param)
    {
-      return new ConditionParameterBuilder<String>(this, expression.getParameter(param));
+      return new RegexConditionParameterBuilder(this, expression.getParameter(param));
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param, final String pattern)
+   public RegexConditionParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param, final String pattern,
+   public RegexConditionParameterBuilder where(final String param, final String pattern,
             final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public ConditionParameterBuilder<String> where(final String param, final Binding binding)
+   public RegexConditionParameterBuilder where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -114,7 +117,7 @@ public class Domain extends HttpCondition implements ParameterizedCondition<Cond
 
       if (expression.matches(hostName))
       {
-         Map<Parameter<String>, String[]> parameters = expression.parse(hostName);
+         Map<RegexParameter, String[]> parameters = expression.parse(hostName);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }

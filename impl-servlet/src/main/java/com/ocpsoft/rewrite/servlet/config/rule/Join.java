@@ -20,6 +20,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.rewrite.bind.Binding;
+import com.ocpsoft.rewrite.bind.RegexParameter;
 import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.config.ConditionBuilder;
 import com.ocpsoft.rewrite.config.Operation;
@@ -252,9 +253,9 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
    public class JoinParameterBuilder implements Parameterized<JoinParameterBuilder, String>, Rule
    {
       private final Join parent;
-      private final Parameter<String> parameter;
+      private final RegexParameter parameter;
 
-      public JoinParameterBuilder(final Join link, final Parameter<String> parameter)
+      public JoinParameterBuilder(final Join link, final RegexParameter parameter)
       {
          this.parent = link;
          this.parameter = parameter;

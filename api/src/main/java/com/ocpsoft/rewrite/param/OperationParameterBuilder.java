@@ -24,12 +24,13 @@ import com.ocpsoft.rewrite.event.Rewrite;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class OperationParameterBuilder<T> implements ParameterizedOperation<OperationParameterBuilder<T>, T>
+public class OperationParameterBuilder<P extends OperationParameterBuilder<P, T>, T> implements
+         ParameterizedOperation<OperationParameterBuilder<P, T>, T>
 {
-   private final ParameterizedOperation<OperationParameterBuilder<T>, T> parent;
+   private final ParameterizedOperation<OperationParameterBuilder<P, T>, T> parent;
    private final Parameter<T> parameter;
 
-   public OperationParameterBuilder(final ParameterizedOperation<OperationParameterBuilder<T>, T> parent,
+   public OperationParameterBuilder(final ParameterizedOperation<OperationParameterBuilder<P, T>, T> parent,
             final Parameter<T> parameter)
    {
       this.parent = parent;
@@ -39,53 +40,60 @@ public class OperationParameterBuilder<T> implements ParameterizedOperation<Oper
    /**
     * The {@link Parameter} must meet the given {@link Constraint}.
     */
-   public OperationParameterBuilder<T> constrainedBy(final Constraint<T> constraint)
+   @SuppressWarnings("unchecked")
+   public P constrainedBy(final Constraint<T> constraint)
    {
       parameter.constrainedBy(constraint);
-      return this;
+      return (P) this;
    }
 
    /**
     * Apply the given {@link Transform} to this {@link Parameter}; it will be applied in the order in which it was
     * added. All transforms are applied before {@link Binding} occurs.
     */
-   public OperationParameterBuilder<T> transformedBy(final Transform<T> constraint)
+   @SuppressWarnings("unchecked")
+   public P transformedBy(final Transform<T> constraint)
    {
       parameter.transformedBy(constraint);
-      return this;
+      return (P) this;
    }
 
    /**
     * The {@link Parameter} binds to the given {@link Binding}.
     */
-   public OperationParameterBuilder<T> bindsTo(final Binding binding)
+   @SuppressWarnings("unchecked")
+   public P bindsTo(final Binding binding)
    {
       parameter.bindsTo(binding);
-      return this;
+      return (P) this;
    }
 
    @Override
-   public OperationParameterBuilder<T> where(final String param)
+   @SuppressWarnings("unchecked")
+   public P where(final String param)
    {
-      return parent.where(param);
+      return (P) parent.where(param);
    }
 
    @Override
-   public OperationParameterBuilder<T> where(final String param, final T pattern)
+   @SuppressWarnings("unchecked")
+   public P where(final String param, final T pattern)
    {
-      return parent.where(param, pattern);
+      return (P) parent.where(param, pattern);
    }
 
    @Override
-   public OperationParameterBuilder<T> where(final String param, final T pattern, final Binding binding)
+   @SuppressWarnings("unchecked")
+   public P where(final String param, final T pattern, final Binding binding)
    {
-      return parent.where(param, pattern, binding);
+      return (P) parent.where(param, pattern, binding);
    }
 
    @Override
-   public OperationParameterBuilder<T> where(final String param, final Binding binding)
+   @SuppressWarnings("unchecked")
+   public P where(final String param, final Binding binding)
    {
-      return parent.where(param, binding);
+      return (P) parent.where(param, binding);
    }
 
    @Override

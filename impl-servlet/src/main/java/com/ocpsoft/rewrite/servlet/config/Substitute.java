@@ -19,6 +19,7 @@ import com.ocpsoft.common.util.Assert;
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
+import com.ocpsoft.rewrite.bind.RegexOperationParameterBuilder;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.InboundRewrite;
@@ -38,7 +39,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Substitute extends HttpOperation implements
-         ParameterizedOperation<OperationParameterBuilder<String>, String>
+         ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String>
 {
    private final ParameterizedPattern location;
 
@@ -95,26 +96,26 @@ public class Substitute extends HttpOperation implements
    }
 
    @Override
-   public OperationParameterBuilder<String> where(final String param)
+   public RegexOperationParameterBuilder where(final String param)
    {
-      return new OperationParameterBuilder<String>(this, location.getParameter(param));
+      return new RegexOperationParameterBuilder(this, location.getParameter(param));
    }
 
    @Override
-   public OperationParameterBuilder<String> where(final String param, final String pattern)
+   public RegexOperationParameterBuilder where(final String param, final String pattern)
    {
       return where(param).matches(pattern);
    }
 
    @Override
-   public OperationParameterBuilder<String> where(final String param, final String pattern,
+   public RegexOperationParameterBuilder where(final String param, final String pattern,
             final Binding binding)
    {
       return where(param, pattern).bindsTo(binding);
    }
 
    @Override
-   public OperationParameterBuilder<String> where(final String param, final Binding binding)
+   public RegexOperationParameterBuilder where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
