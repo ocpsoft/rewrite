@@ -17,6 +17,8 @@ package com.ocpsoft.rewrite.spring;
 
 import javax.servlet.ServletContext;
 
+import org.springframework.stereotype.Component;
+
 import com.ocpsoft.rewrite.bind.El;
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
@@ -29,6 +31,7 @@ import com.ocpsoft.rewrite.servlet.config.SendStatus;
 /**
  * @author Christian Kaltepoth
  */
+@Component
 public class SpringFeaturesConfigProvider extends HttpConfigurationProvider
 {
 
