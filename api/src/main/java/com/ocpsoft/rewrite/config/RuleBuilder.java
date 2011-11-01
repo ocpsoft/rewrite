@@ -81,7 +81,8 @@ public class RuleBuilder implements Rule
    @Override
    public void perform(final Rewrite event, final EvaluationContext context)
    {
-      operation.perform(event, context);
+      if(operation != null)
+         operation.perform(event, context);
    }
 
    @Override
