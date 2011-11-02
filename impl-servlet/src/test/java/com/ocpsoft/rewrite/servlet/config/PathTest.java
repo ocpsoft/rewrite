@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.mock.MockBinding;
@@ -71,7 +72,7 @@ public class PathTest
       Assert.assertTrue(path.evaluate(rewrite, context));
 
       List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(2, operations.size());
+      Assert.assertEquals(1, operations.size());
       for (Operation operation : operations) {
          operation.perform(rewrite, context);
       }
@@ -80,6 +81,7 @@ public class PathTest
       Assert.assertTrue(mockBinding.isValidated());
       Assert.assertTrue(mockBinding.isSubmitted());
       Assert.assertEquals("path", mockBinding.getBoundValue());
+      Assert.assertEquals("path", Evaluation.property("seg").retrieve(rewrite, context));
    }
 
    @Test

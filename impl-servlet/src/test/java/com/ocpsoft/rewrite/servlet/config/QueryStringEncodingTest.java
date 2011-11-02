@@ -73,7 +73,7 @@ public class QueryStringEncodingTest
       Assert.assertTrue(query.evaluate(rewrite, context));
 
       List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(2, operations.size());
+      Assert.assertEquals(1, operations.size());
       for (Operation operation : operations) {
          operation.perform(rewrite, context);
       }
