@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="/resources/forge-template.xhtml">
+
+	<ui:param name="pageTitle"
+		value="Welcome, you are encoded!" />
+
+	<ui:define name="header">
+		<span style="color:red;">HACKER ALERT!</span>
+	</ui:define>
+
+	<ui:define name="subheader">
+		Go pick on somebody your own size.
+	</ui:define>
+
+	<ui:define name="main">
+		<p>You are seeing this page because you attempted to tamper with one of my query-strings.
+		This demonstrates the opportunity to intercept and handle hacking attempts when using
+		a query-encoding strategy.</p>
+		<br/>
+		<br/>
+		<h:link outcome="/index" value="Go back to the demo." />
+		<p>We recommend implementing your own EncodingStrategy in order to provide
+		features like encryption or session storage of checksum keys.</p>
+		<p>
+			<a target="_blank" href="http://ocpsoft.com"><br /> OCPsoft
+				Website</a> | <a target="_blank"
+				href="http://ocpsoft.com/support/forum/rewrite">Support Forums</a> |
+			<a target="_blank" href="https://github.com/ocpsoft/rewrite/issues">Report
+				an issue</a>
+		</p>
+
+	</ui:define>
+
+	<ui:define name="footer">
+		<p class="logos">
+			<a target="_blank" href="http://jboss.org"><img
+				src="#{resource['jboss-community.png']}"
+				alt="JBoss and JBoss Community" width="254" height="31" border="0" />
+			</a>
+		</p>
+		<p class="note">To replace this page, edit
+			'src/main/webapp/index.xhtml', or keep Forging!</p>
+	</ui:define>
+
+</ui:composition>
+</html>
+
