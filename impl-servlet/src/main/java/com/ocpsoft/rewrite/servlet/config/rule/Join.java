@@ -98,43 +98,42 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      if ((condition == null) || condition.evaluate(event, context))
+      if (event instanceof HttpInboundServletRewrite)
       {
-         if (event instanceof HttpInboundServletRewrite)
-         {
-            path.withRequestBinding();
-            if (path.evaluate(event, context))
-            {
-               if (operation != null)
-                  context.addPreOperation(operation);
-               return true;
-            }
-            else if (inboundCorrection
-                     && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context))
-            {
-               List<String> names = path.getPathExpression().getParameterNames();
-               for (String name : names) {
-                  if (!QueryString.parameterExists(name).evaluate(event, context))
-                  {
-                     return false;
-                  }
-               }
-               context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
-                        + pattern));
-               return true;
-            }
-         }
-         else if (event instanceof HttpOutboundServletRewrite)
-         {
-            List<String> parameters = getPathRequestParameters();
+         path.withRequestBinding();
 
-            ConditionBuilder outbound = resourcePath;
-            for (String name : parameters)
-            {
-               outbound = outbound.and(QueryString.parameterExists(name));
-            }
-            return outbound.evaluate(event, context);
+         if (path.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
+         {
+            if (operation != null)
+               context.addPreOperation(operation);
+            return true;
          }
+         else if (inboundCorrection
+                  && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context)
+                  && ((condition == null) || condition.evaluate(event, context)))
+         {
+            List<String> names = path.getPathExpression().getParameterNames();
+            for (String name : names) {
+               if (!QueryString.parameterExists(name).evaluate(event, context))
+               {
+                  return false;
+               }
+            }
+            context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
+                     + pattern));
+            return true;
+         }
+      }
+      else if ((event instanceof HttpOutboundServletRewrite))
+      {
+         List<String> parameters = getPathRequestParameters();
+
+         ConditionBuilder outbound = resourcePath;
+         for (String name : parameters)
+         {
+            outbound = outbound.and(QueryString.parameterExists(name));
+         }
+         return outbound.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context));
       }
 
       return false;
@@ -319,13 +318,13 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       }
 
       @Override
-      public boolean evaluate(Rewrite event, EvaluationContext context)
+      public boolean evaluate(final Rewrite event, final EvaluationContext context)
       {
          return parent.evaluate(event, context);
       }
 
       @Override
-      public void perform(Rewrite event, EvaluationContext context)
+      public void perform(final Rewrite event, final EvaluationContext context)
       {
          parent.perform(event, context);
       }

@@ -71,7 +71,17 @@ public abstract class Bindings
                value = binding.convert(event, context, value);
                if (binding.validates(event, context, value))
                {
-                  operations.add(new BindingOperation(binding, value));
+                  if (binding instanceof Evaluation)
+                  {
+                     /*
+                      * Binding to the EvaluationContext is available immediately.
+                      */
+                     binding.submit(event, context, value);
+                  }
+                  else
+                  {
+                     operations.add(new BindingOperation(binding, value));
+                  }
                }
                else
                {
@@ -114,7 +124,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             Object actual = binding.retrieve(event, context);
             return compare(expected, actual);
@@ -130,7 +140,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             Object actual = binding.submit(event, context, submission);
             return compare(expected, actual);
@@ -146,7 +156,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             return compare(left.retrieve(event, context), right.retrieve(event, context));
          }
@@ -161,7 +171,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             return compare(left.retrieve(event, context), right.submit(event, context, submission));
          }
@@ -177,7 +187,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             return compare(left.submit(event, context, leftSubmission), right.submit(event, context, rightSubmission));
          }
@@ -192,7 +202,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             Object actual = binding.retrieve(event, context);
             return !compare(expected, actual);
@@ -208,7 +218,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             Object actual = binding.submit(event, context, submission);
             return !compare(expected, actual);
@@ -224,7 +234,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             return !compare(left.retrieve(event, context), right.retrieve(event, context));
          }
@@ -239,7 +249,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             return !compare(left.retrieve(event, context), right.submit(event, context, submission));
          }
@@ -255,7 +265,7 @@ public abstract class Bindings
    {
       return new ConditionBuilder() {
          @Override
-         public boolean evaluate(Rewrite event, EvaluationContext context)
+         public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
             return !compare(left.submit(event, context, leftSubmission), right.submit(event, context, rightSubmission));
          }
@@ -265,13 +275,13 @@ public abstract class Bindings
    /**
     * Return true if the two values are equal.
     */
-   private static boolean compare(final Object expected, Object actual)
+   private static boolean compare(final Object expected, final Object actual)
    {
       if (expected == actual)
       {
          return true;
       }
-      else if (expected != null && expected.equals(actual))
+      else if ((expected != null) && expected.equals(actual))
       {
          return true;
       }
