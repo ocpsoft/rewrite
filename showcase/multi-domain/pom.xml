@@ -3,13 +3,11 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
-   <parent>
-      <artifactId>rewrite-showcase</artifactId>
-      <groupId>com.ocpsoft.rewrite.showcase</groupId>
-      <version>1.0.0-SNAPSHOT</version>
-      <relativePath>../</relativePath>
-   </parent>
+
+   <groupId>com.ocpsoft.rewrite.showcase</groupId>
+   <version>1.0.0-SNAPSHOT</version>
    <artifactId>rewrite-showcase-multi-domain</artifactId>
+
    <packaging>war</packaging>
    <dependencies>
       <dependency>
@@ -20,43 +18,19 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>com.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl-servlet</artifactId>
-         <scope>compile</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-integration-cdi</artifactId>
-         <scope>compile</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.metawidget.forge</groupId>
-         <artifactId>metawidget-forge-scaffold</artifactId>
+         <groupId>org.jboss.forge</groupId>
+         <artifactId>forge-scaffold-metawidget-lib</artifactId>
          <version>1.0.0-SNAPSHOT</version>
-         <exclusions>
-            <exclusion>
-               <groupId>com.ocpsoft.rewrite</groupId>
-               <artifactId>rewrite-servlet-impl</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.ocpsoft.rewrite</groupId>
-               <artifactId>rewrite-integration-cdi</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.ocpsoft.rewrite</groupId>
-               <artifactId>rewrite-integration-faces</artifactId>
-            </exclusion>
-         </exclusions>
       </dependency>
    </dependencies>
-   
-  <repositories>
-    <repository>
-      <id>ocpsoft</id>
-      <url>http://ocpsoft.com/repository/</url>
-    </repository>
-  </repositories>
-  
+
+   <repositories>
+      <repository>
+         <id>ocpsoft</id>
+         <url>http://ocpsoft.com/repository/</url>
+      </repository>
+   </repositories>
+
    <build>
       <finalName>multi-domain</finalName>
       <plugins>
