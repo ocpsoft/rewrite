@@ -27,8 +27,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.rewrite.servlet.config.rule.Join;
-
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
  */
@@ -106,9 +104,8 @@ public class RewriteViewHandler extends ViewHandler
        */
       String result = parent.getActionURL(context, viewId);
       HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-      Join currentJoin = Join.getCurrentJoin(request);
 
-      if (!isBookmarkable() && currentJoin != null && !RewriteNavigationHandler.isInNavigation(request)
+      if (!isBookmarkable() && !RewriteNavigationHandler.isInNavigation(request)
                && (viewId != null)
                && viewId.equals(context.getViewRoot().getViewId()))
       {

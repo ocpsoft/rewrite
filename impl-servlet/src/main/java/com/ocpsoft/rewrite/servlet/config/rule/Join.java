@@ -133,7 +133,13 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          {
             outbound = outbound.and(QueryString.parameterExists(name));
          }
-         return outbound.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context));
+         if (outbound.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
+         {
+            if (operation != null)
+               context.addPreOperation(operation);
+
+            return true;
+         }
       }
 
       return false;
@@ -228,7 +234,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       return this;
    }
 
-   public Join performInbound(final Operation operation)
+   public Join perform(final Operation operation)
    {
       this.operation = operation;
       return this;
@@ -308,7 +314,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
 
       public Join perform(final Operation operation)
       {
-         return parent.performInbound(operation);
+         return parent.perform(operation);
       }
 
       @Override

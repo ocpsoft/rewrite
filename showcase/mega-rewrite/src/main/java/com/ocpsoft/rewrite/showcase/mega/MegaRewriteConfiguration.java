@@ -11,7 +11,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.rule.Join;
 
-public class CompositeConfigProvider extends HttpConfigurationProvider
+public class MegaRewriteConfiguration extends HttpConfigurationProvider
 {
    @Override
    public Configuration getConfiguration(final ServletContext context)

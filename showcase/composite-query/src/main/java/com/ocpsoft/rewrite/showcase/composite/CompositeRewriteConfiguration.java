@@ -9,7 +9,7 @@ import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Redirect;
 import com.ocpsoft.rewrite.servlet.config.rule.Join;
 
-public class CompositeConfigProvider extends HttpConfigurationProvider
+public class CompositeRewriteConfiguration extends HttpConfigurationProvider
 {
    @Override
    public Configuration getConfiguration(final ServletContext context)
