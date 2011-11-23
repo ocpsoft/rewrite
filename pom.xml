@@ -41,6 +41,7 @@
       <module>integration-cdi</module>
       <module>integration-faces</module>
       <module>integration-spring</module>
+      <module>rewrite-servlet</module>
    </modules>
 
    <repositories>
@@ -142,7 +143,6 @@
    </dependencies>
 
    <build>
-      <finalName>rewrite-parent</finalName>
       <plugins>
          <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
