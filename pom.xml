@@ -128,17 +128,9 @@
 
    <dependencies>
       <dependency>
-         <groupId>com.ocpsoft.common</groupId>
-         <artifactId>common-api</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>com.ocpsoft.logging</groupId>
-         <artifactId>logging-api</artifactId>
-      </dependency>
-
-      <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
+         <scope>test</scope>
       </dependency>
    </dependencies>
 
