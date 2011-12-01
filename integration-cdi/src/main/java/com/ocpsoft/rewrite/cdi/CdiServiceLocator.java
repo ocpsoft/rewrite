@@ -29,15 +29,13 @@ import javax.enterprise.util.AnnotationLiteral;
 import org.jboss.solder.beanManager.BeanManagerAware;
 
 import com.ocpsoft.common.spi.ServiceLocator;
-import com.ocpsoft.logging.Logger;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ * @author <a href="mailto:christian@kaltepoth.de">Christian Kaltepoth</a>
  */
 public class CdiServiceLocator extends BeanManagerAware implements ServiceLocator
 {
-   Logger log = Logger.getLogger(CdiServiceLocator.class);
 
    @Override
    @SuppressWarnings("unchecked")
@@ -45,17 +43,23 @@ public class CdiServiceLocator extends BeanManagerAware implements ServiceLocato
    {
       List<Class<T>> result = new ArrayList<Class<T>>();
 
-      BeanManager manager = getBeanManager();
+      // the BeanManager may be not available during Rewrite startup
+      if (isBeanManagerAvailable()) {
 
-      Set<Bean<?>> beans = manager.getBeans(type, new Annotation[] { new AnnotationLiteral<Any>() {
-         private static final long serialVersionUID = -1896831901770051851L;
-      } });
+         BeanManager manager = getBeanManager();
 
-      for (Bean<?> bean : beans) {
-         result.add((Class<T>) bean.getBeanClass());
+         Set<Bean<?>> beans = manager.getBeans(type, new Annotation[] { new AnnotationLiteral<Any>() {
+            private static final long serialVersionUID = -1896831901770051851L;
+         } });
+
+         for (Bean<?> bean : beans) {
+            result.add((Class<T>) bean.getBeanClass());
+         }
+
       }
 
       return result;
+
    }
 
 }
