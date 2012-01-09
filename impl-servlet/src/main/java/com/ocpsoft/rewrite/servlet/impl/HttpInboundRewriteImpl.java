@@ -145,7 +145,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    {
       try
       {
-         URLBuilder builder = URLBuilder.build(url);
+         URLBuilder builder = URLBuilder.createFrom(url);
          String path = builder.decode().toPath();
 
          return response.encodeRedirectURL(path
@@ -174,7 +174,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
          url = url.substring(getContextPath().length());
       }
 
-      url = URLBuilder.build(url).decode().toURL();
+      url = URLBuilder.createFrom(url).decode().toURL();
       return url;
    }
 
@@ -192,7 +192,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    @Override
    public String getRequestQueryString()
    {
-      return getRequest().getQueryString() == null ? "" : QueryStringBuilder.build(getRequest().getQueryString())
+      return getRequest().getQueryString() == null ? "" : QueryStringBuilder.createFrom(getRequest().getQueryString())
                .decode().toQueryString().substring(1);
    }
 

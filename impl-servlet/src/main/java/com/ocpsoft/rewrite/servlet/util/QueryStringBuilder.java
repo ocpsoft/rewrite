@@ -33,6 +33,8 @@ import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.exception.RewriteException;
 
 /**
+ * Utility for building URL query strings.
+ * 
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
  */
 public class QueryStringBuilder
@@ -44,7 +46,7 @@ public class QueryStringBuilder
    /**
     * Return a new empty instance of {@link QueryStringBuilder}
     */
-   public static QueryStringBuilder begin()
+   public static QueryStringBuilder createNew()
    {
       return new QueryStringBuilder();
    }
@@ -53,10 +55,10 @@ public class QueryStringBuilder
     * Build a query string from the given URL. If a '?' character is encountered in the URL, the any characters up to
     * and including the first '?' will be ignored.
     */
-   public static QueryStringBuilder build(final String url)
+   public static QueryStringBuilder createFrom(final String parameters)
    {
       QueryStringBuilder queryString = new QueryStringBuilder();
-      queryString.addParameters(url);
+      queryString.addParameters(parameters);
       return queryString;
    }
 
@@ -64,18 +66,18 @@ public class QueryStringBuilder
     * Build a query string from the given map of name=value pairs. For parameters with more than one value, each value
     * will be appended using the same name.
     */
-   public static QueryStringBuilder buildFromArrays(final Map<String, String[]> params)
+   public static QueryStringBuilder createFromArrays(final Map<String, String[]> params)
    {
-      return QueryStringBuilder.begin().addParameterArrays(params);
+      return QueryStringBuilder.createNew().addParameterArrays(params);
    }
 
    /**
     * Build a query string from the given map of name=value pairs. For parameters with more than one value, each value
     * will be appended using the same name.
     */
-   public static QueryStringBuilder buildFromLists(final Map<String, List<String>> params)
+   public static QueryStringBuilder createFromLists(final Map<String, List<String>> params)
    {
-      return QueryStringBuilder.begin().addParameterLists(params);
+      return QueryStringBuilder.createNew().addParameterLists(params);
    }
 
    /**
@@ -83,7 +85,7 @@ public class QueryStringBuilder
     * including the first '?' will be ignored. If a parameter already exists, append new values to the existing list of
     * values for that parameter.
     */
-   public QueryStringBuilder addParameters(String url)
+   public QueryStringBuilder addParameters(final String url)
    {
       if ((url != null) && !"".equals(url))
       {
@@ -125,6 +127,9 @@ public class QueryStringBuilder
       return this;
    }
 
+   /**
+    * Add a single parameter with the given values.
+    */
    public void addParameter(final String name, final String... values)
    {
       Map<String, String[]> parameter = new LinkedHashMap<String, String[]>();
@@ -158,8 +163,6 @@ public class QueryStringBuilder
     * Add parameters from the given map of name=value pairs. For parameters with more than one value, each value will be
     * appended using the same name. If a parameter already exists, append new values to the existing list of values for
     * that parameter.
-    * 
-    * @return
     */
    public QueryStringBuilder addParameterLists(final Map<String, List<String>> params)
    {

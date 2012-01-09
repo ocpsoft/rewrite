@@ -26,14 +26,14 @@ public class URLBuilderTest
    @Test(expected = IllegalArgumentException.class)
    public void testNullURL() throws Exception
    {
-      URLBuilder.build(null);
+      URLBuilder.createFrom(null);
    }
 
    @Test
    public void testURLBuilderPreservesOriginalURLBuilder() throws Exception
    {
       String value = "/com/ocpsoft/pretty/";
-      URLBuilder builder = URLBuilder.build(value);
+      URLBuilder builder = URLBuilder.createFrom(value);
       assertEquals(value, builder.toURL());
    }
 
@@ -41,9 +41,53 @@ public class URLBuilderTest
    public void testPreservesTrailingSlash() throws Exception
    {
       String value = "/com/ocpsoft/pretty/";
-      URLBuilder builder = URLBuilder.build(value);
+      URLBuilder builder = URLBuilder.createFrom(value);
       builder.setEncoding("UTF-8");
       assertEquals(value, builder.decode().toURL());
+   }
+
+   @Test
+   // http://code.google.com/p/prettyfaces/issues/detail?id=123
+   public void testEmptySegmentsPreserved() throws Exception
+   {
+      // middle segment is empty
+      assertEquals("/test//test/", URLBuilder.createFrom("/test//test/").toURL());
+      assertEquals("/test//test/", URLBuilder.createFrom("/test//test/").decode().toURL());
+      assertEquals("/test//test/", URLBuilder.createFrom("/test//test/").encode().toURL());
+
+      // last segment is empty
+      assertEquals("/test//", URLBuilder.createFrom("/test//").toURL());
+      assertEquals("/test//", URLBuilder.createFrom("/test//").decode().toURL());
+      assertEquals("/test//", URLBuilder.createFrom("/test//").encode().toURL());
+
+      // first segment is empty
+      assertEquals("//test/", URLBuilder.createFrom("//test/").toURL());
+      assertEquals("//test/", URLBuilder.createFrom("//test/").decode().toURL());
+      assertEquals("//test/", URLBuilder.createFrom("//test/").encode().toURL());
+
+      // only segment is empty
+      assertEquals("//", URLBuilder.createFrom("//").toURL());
+      assertEquals("//", URLBuilder.createFrom("//").decode().toURL());
+      assertEquals("//", URLBuilder.createFrom("//").encode().toURL());
+
+      // multiple segments are empty
+      assertEquals("///", URLBuilder.createFrom("///").toURL());
+      assertEquals("///", URLBuilder.createFrom("///").decode().toURL());
+      assertEquals("///", URLBuilder.createFrom("///").encode().toURL());
+      assertEquals("////", URLBuilder.createFrom("////").toURL());
+      assertEquals("////", URLBuilder.createFrom("////").decode().toURL());
+      assertEquals("////", URLBuilder.createFrom("////").encode().toURL());
+      assertEquals("/////", URLBuilder.createFrom("/////").toURL());
+      assertEquals("/////", URLBuilder.createFrom("/////").decode().toURL());
+      assertEquals("/////", URLBuilder.createFrom("/////").encode().toURL());
+   }
+
+   @Test
+   public void testSingleSlashPreserved() throws Exception
+   {
+      assertEquals("/", URLBuilder.createFrom("/").toURL());
+      assertEquals("/", URLBuilder.createFrom("/").encode().toURL());
+      assertEquals("/", URLBuilder.createFrom("/").decode().toURL());
    }
 
    @Test
@@ -51,7 +95,7 @@ public class URLBuilderTest
    {
       Metadata metadata = new Metadata();
       metadata.setTrailingSlash(true);
-      URLBuilder builder = new URLBuilder(new ArrayList<String>(), metadata, QueryStringBuilder.begin());
+      URLBuilder builder = URLBuilder.createFrom(new ArrayList<String>(), metadata, QueryStringBuilder.createNew());
 
       assertEquals("/", builder.toURL());
       assertEquals("/", builder.decode().toURL());
@@ -61,7 +105,7 @@ public class URLBuilderTest
    public void testDecode() throws Exception
    {
       String value = "/\u010d";
-      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
+      URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
       assertEquals("/%C4%8D", encoded.toURL());
    }
@@ -70,7 +114,7 @@ public class URLBuilderTest
    public void testEncode() throws Exception
    {
       String value = "/\u010d";
-      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
+      URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
       assertEquals("/%C4%8D", encoded.toURL());
       URLBuilder original = encoded.decode();
@@ -81,7 +125,7 @@ public class URLBuilderTest
    public void testEncodeDecodePreservesSlashes() throws Exception
    {
       String value = "/foo/bar";
-      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
+      URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
       assertEquals("/foo/bar", encoded.toURL());
       URLBuilder original = encoded.decode();
@@ -92,7 +136,7 @@ public class URLBuilderTest
    public void testEncodeGermanUmlaut() throws Exception
    {
       String value = "/\u00e4";
-      URLBuilder builder = URLBuilder.begin().addPathSegments(value);
+      URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
       assertEquals("/%C3%A4", encoded.toURL());
       URLBuilder original = encoded.decode();
@@ -103,31 +147,31 @@ public class URLBuilderTest
    public void testCommaEncodingAndDecoding() throws Exception
    {
       // the comma is allowed and should not be encoded/decoded
-      assertEquals("/a,b", URLBuilder.begin().addPathSegments("/a,b").encode().toURL());
-      assertEquals("/a,b", URLBuilder.begin().addPathSegments("/a,b").decode().toURL());
+      assertEquals("/a,b", URLBuilder.createNew().appendPathSegments("/a,b").encode().toURL());
+      assertEquals("/a,b", URLBuilder.createNew().appendPathSegments("/a,b").decode().toURL());
    }
 
    @Test
    public void testSpaceEncodingAndDecoding() throws Exception
    {
       // encode
-      assertEquals("/a%20b", URLBuilder.begin().addPathSegments("/a b").encode().toURL());
+      assertEquals("/a%20b", URLBuilder.createNew().appendPathSegments("/a b").encode().toURL());
 
       // decode
-      assertEquals("/a b", URLBuilder.begin().addPathSegments("/a%20b").decode().toURL());
+      assertEquals("/a b", URLBuilder.createNew().appendPathSegments("/a%20b").decode().toURL());
 
       // decode plus
-      assertEquals("/a b c", URLBuilder.begin().addPathSegments("/a+b+c").decode().toURL());
+      assertEquals("/a b c", URLBuilder.createNew().appendPathSegments("/a+b+c").decode().toURL());
    }
 
    @Test
    public void testQuestionMarkEncodingAndDecoding() throws Exception
    {
       // encode
-      assertEquals("/a%3Fb", URLBuilder.begin().addPathSegments("/a?b").encode().toURL());
+      assertEquals("/a%3Fb", URLBuilder.createNew().appendPathSegments("/a?b").encode().toURL());
 
       // decode
-      assertEquals("/a?b", URLBuilder.begin().addPathSegments("/a%3Fb").decode().toURL());
+      assertEquals("/a?b", URLBuilder.createNew().appendPathSegments("/a%3Fb").decode().toURL());
    }
 
 }

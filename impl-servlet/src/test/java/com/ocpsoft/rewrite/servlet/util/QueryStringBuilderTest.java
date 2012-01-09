@@ -33,11 +33,11 @@ public class QueryStringBuilderTest
    {
       Map<String, String[]> params = new TreeMap<String, String[]>();
 
-      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
       assertEquals("", queryString);
 
-      qs = QueryStringBuilder.build(queryString);
+      qs = QueryStringBuilder.createFrom(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -45,7 +45,7 @@ public class QueryStringBuilderTest
    public void testCreateStringQueryStringBuilder() throws Exception
    {
       String query = "?bar=555&foo=hello&foo=friend";
-      QueryStringBuilder qs = QueryStringBuilder.build(query);
+      QueryStringBuilder qs = QueryStringBuilder.createFrom(query);
 
       String result = qs.toQueryString();
 
@@ -59,7 +59,7 @@ public class QueryStringBuilderTest
    public void testCreateStringQueryStringBuilderWithExtraPreCharacters() throws Exception
    {
       String query = "?bar=555&foo=hello&foo=friend";
-      QueryStringBuilder qs = QueryStringBuilder.build("www.ocpsoft.com/" + query);
+      QueryStringBuilder qs = QueryStringBuilder.createFrom("www.ocpsoft.com/" + query);
 
       String result = qs.toQueryString();
 
@@ -73,7 +73,7 @@ public class QueryStringBuilderTest
    public void testCreateFromQuestionMarkYieldsEmptyQueryStringBuilder() throws Exception
    {
       String query = "?";
-      QueryStringBuilder qs = QueryStringBuilder.build(query);
+      QueryStringBuilder qs = QueryStringBuilder.createFrom(query);
 
       String result = qs.toQueryString();
 
@@ -86,12 +86,12 @@ public class QueryStringBuilderTest
       Map<String, String[]> params = new TreeMap<String, String[]>();
       params.put("p1", new String[] { "val1" });
 
-      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
       assertEquals("?p1=val1", queryString);
 
-      qs = QueryStringBuilder.build(queryString);
+      qs = QueryStringBuilder.createFrom(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -101,12 +101,12 @@ public class QueryStringBuilderTest
       Map<String, String[]> params = new TreeMap<String, String[]>();
       params.put("p1", null);
 
-      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
       assertEquals("?p1", queryString);
 
-      qs = QueryStringBuilder.build(queryString);
+      qs = QueryStringBuilder.createFrom(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -116,12 +116,12 @@ public class QueryStringBuilderTest
       Map<String, String[]> params = new TreeMap<String, String[]>();
       params.put("p1", new String[] { "" });
 
-      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
       assertEquals("?p1=", queryString);
 
-      qs = QueryStringBuilder.build(queryString);
+      qs = QueryStringBuilder.createFrom(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -131,12 +131,12 @@ public class QueryStringBuilderTest
       Map<String, String[]> params = new TreeMap<String, String[]>();
       params.put("p1", new String[] { "val1", "val2" });
 
-      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
       assertEquals("?p1=val1&p1=val2", queryString);
 
-      qs = QueryStringBuilder.build(queryString);
+      qs = QueryStringBuilder.createFrom(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -147,7 +147,7 @@ public class QueryStringBuilderTest
       params.put("p1", new String[] { "val1", "val2" });
       params.put("p2", new String[] { "val3", "val4" });
 
-      QueryStringBuilder qs = QueryStringBuilder.buildFromArrays(params);
+      QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
       assertTrue(queryString.startsWith("?"));
@@ -156,7 +156,7 @@ public class QueryStringBuilderTest
       assertTrue(queryString.contains("p2=val3"));
       assertTrue(queryString.contains("p2=val4"));
 
-      qs = QueryStringBuilder.build(queryString);
+      qs = QueryStringBuilder.createFrom(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -176,7 +176,7 @@ public class QueryStringBuilderTest
 
       paramMap.put("p2", params);
 
-      QueryStringBuilder qs = QueryStringBuilder.begin().addParameterLists(paramMap);
+      QueryStringBuilder qs = QueryStringBuilder.createNew().addParameterLists(paramMap);
       String queryString = qs.toQueryString();
 
       assertTrue(queryString.startsWith("?"));
@@ -185,7 +185,7 @@ public class QueryStringBuilderTest
       assertTrue(queryString.contains("p2=val3"));
       assertTrue(queryString.contains("p2=val4"));
 
-      qs = QueryStringBuilder.build(queryString);
+      qs = QueryStringBuilder.createFrom(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 

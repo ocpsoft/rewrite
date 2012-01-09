@@ -55,7 +55,7 @@ public class Metadata
          }
       }
 
-      if (hasTrailingSlash() && !result.toString().endsWith("/"))
+      if (hasTrailingSlash() && (!segments.isEmpty() || (result.indexOf("/") < 0)))
       {
          result.append("/");
       }

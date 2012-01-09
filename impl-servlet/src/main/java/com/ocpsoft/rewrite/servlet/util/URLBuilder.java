@@ -24,6 +24,12 @@ import java.util.List;
 
 import com.ocpsoft.common.util.Strings;
 
+/**
+ * Utility for building URL strings. Also manages the URL query string with the help of {@link QueryStringBuilder}.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ */
 public class URLBuilder
 {
 
@@ -31,39 +37,55 @@ public class URLBuilder
 
    private final List<String> segments = new ArrayList<String>();
 
-   private QueryStringBuilder query = QueryStringBuilder.begin();
+   private QueryStringBuilder query = QueryStringBuilder.createNew();
 
    /**
-    * Return a new instance of {@link URLBuilder}
+    * Return a new instance of {@link URLBuilder}. Until modified. This URL will be blank.
     */
-   public static URLBuilder begin()
+   public static URLBuilder createNew()
    {
       return new URLBuilder();
    }
 
-   public static URLBuilder build(final List<String> segments, final Metadata metadata)
+   /**
+    * Create a new instance of {@link URLBuilder} from the given URL segments, {@link Metadata}, and
+    * {@link QueryStringBuilder}.
+    */
+   public static URLBuilder createFrom(final List<String> segments, final Metadata metadata,
+            final QueryStringBuilder query)
    {
-      return URLBuilder.begin().addPathSegments(segments).setMetadata(metadata);
+      return URLBuilder.createNew().appendPathSegments(segments).setMetadata(metadata).setQueryString(query);
    }
 
-   public static URLBuilder build(final String url)
+   /**
+    * Create a new instance of {@link URLBuilder} from the given URL path segments and {@link Metadata}.
+    */
+   public static URLBuilder createFrom(final List<String> segments, final Metadata metadata)
    {
-      if (url == null)
+      return URLBuilder.createNew().appendPathSegments(segments).setMetadata(metadata);
+   }
+
+   /**
+    * Create a new instance of {@link URLBuilder} from the given URL path segments.
+    */
+   public static URLBuilder createFrom(final String segments)
+   {
+      if (segments == null)
       {
          throw new IllegalArgumentException("URL cannot be null.");
       }
-      if (url.contains("?"))
+      if (segments.contains("?"))
       {
-         String[] parts = url.split("\\?");
+         String[] parts = segments.split("\\?", -1);
          String path = parts[0];
          String query = parts[1];
          if (parts.length > 2)
          {
             query = Strings.join(Arrays.asList(Arrays.copyOfRange(parts, 1, parts.length)), "?");
          }
-         return new URLBuilder().addPathSegments(path).addQueryParameters(query);
+         return new URLBuilder().appendPathSegments(path).addQueryParameters(query);
       }
-      return new URLBuilder().addPathSegments(url);
+      return new URLBuilder().appendPathSegments(segments);
    }
 
    /*
@@ -72,9 +94,9 @@ public class URLBuilder
    private URLBuilder()
    {}
 
-   public URLBuilder(final List<String> encodedSegments, final Metadata metadata, final QueryStringBuilder query)
+   private URLBuilder(final List<String> segments, final Metadata metadata, final QueryStringBuilder query)
    {
-      this.segments.addAll(encodedSegments);
+      this.segments.addAll(segments);
       this.metadata = metadata.copy();
       this.query = query;
    }
@@ -83,30 +105,44 @@ public class URLBuilder
     * End Constructors
     */
 
-   public URLBuilder addPathSegments(final List<String> segments)
+   /**
+    * Append additional path segments to the end of this URL. When called the first time, this method will also
+    * initialize the {@link Metadata} for this {@link URLBuilder} based on the parsed segments given.
+    */
+   public URLBuilder appendPathSegments(final List<String> segments)
    {
       this.segments.addAll(segments);
       return this;
    }
 
-   public URLBuilder addPathSegments(final String path)
+   /**
+    * Append additional path segments to the end of this URL. When called the first time, this method will also
+    * initialize the {@link Metadata} for this {@link URLBuilder} based on the parsed segments given.
+    */
+   public URLBuilder appendPathSegments(final String segments)
    {
-      if (path != null)
+      if (segments != null)
       {
-         String temp = path.trim();
+         String temp = segments.trim();
+
+         // Only initialize the leading slash when adding the first path segments
+         if (temp.startsWith("/") && this.segments.isEmpty())
+         {
+            metadata.setLeadingSlash(true);
+         }
          if (temp.endsWith("/"))
          {
             metadata.setTrailingSlash(true);
          }
-         if (temp.startsWith("/") && segments.isEmpty())
+
+         String trimmedUrl = trimSurroundingSlashes(segments);
+
+         // We reproduce this when building the URL by storing a single empty segment
+         if (!trimmedUrl.isEmpty() || "//".equals(segments))
          {
-            metadata.setLeadingSlash(true);
+            String[] newSegments = trimmedUrl.split("/", -1);
+            this.segments.addAll(Arrays.asList(newSegments));
          }
-
-         String trimmedUrl = trimSurroundingSlashes(path);
-         String[] newSegments = trimmedUrl.split("/");
-
-         this.segments.addAll(Arrays.asList(newSegments));
       }
       else
       {
@@ -115,14 +151,17 @@ public class URLBuilder
       return this;
    }
 
-   public URLBuilder addQueryParameters(final String query)
+   /**
+    * Parse and add more query parameters to this {@link URLBuilder}
+    */
+   public URLBuilder addQueryParameters(final String parameters)
    {
-      this.query.addParameters(query);
+      this.query.addParameters(parameters);
       return this;
    }
 
    /**
-    * Return a decoded form of this URL.
+    * Return this {@link URLBuilder} after path segments and query parameters have been decoded.
     */
    public URLBuilder decode()
    {
@@ -152,7 +191,7 @@ public class URLBuilder
    }
 
    /**
-    * Return an encoded form of this URL.
+    * Return this {@link URLBuilder} after path segments and query parameters have been encoded.
     */
    public URLBuilder encode()
    {
@@ -218,15 +257,25 @@ public class URLBuilder
       return metadata;
    }
 
+   /**
+    * Get the {@link QueryStringBuilder} object for this URL
+    */
    public QueryStringBuilder getQueryStringBuilder()
    {
       return query;
    }
 
    /**
+    * Set the {@link QueryStringBuilder} object for this URL
+    */
+   public URLBuilder setQueryString(final QueryStringBuilder query)
+   {
+      this.query = query;
+      return this;
+   }
+
+   /**
     * Return all segments (separated by '/') in this URL
-    * 
-    * @return
     */
    public List<String> getSegments()
    {

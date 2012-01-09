@@ -168,7 +168,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          List<String> parameters = getPathRequestParameters();
 
          String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
-         QueryStringBuilder query = QueryStringBuilder.begin();
+         QueryStringBuilder query = QueryStringBuilder.createNew();
          if (outboundURL.contains("?"))
          {
             query.addParameters(outboundURL);

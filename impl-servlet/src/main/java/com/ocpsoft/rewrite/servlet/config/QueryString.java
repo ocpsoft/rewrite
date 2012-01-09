@@ -83,7 +83,7 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
             if (event instanceof InboundRewrite)
                queryString = event.getRequestQueryString();
             else if (event instanceof HttpOutboundServletRewrite)
-               queryString = QueryStringBuilder.build(event.getURL()).toQueryString();
+               queryString = QueryStringBuilder.createFrom(event.getURL()).toQueryString();
 
             if (Pattern.compile(pattern).matcher(queryString == null ? "" : queryString).matches())
             {
@@ -119,7 +119,7 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
 
             QueryStringBuilder queryString = null;
 
-            queryString = QueryStringBuilder.build(event.getURL());
+            queryString = QueryStringBuilder.createFrom(event.getURL());
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();
@@ -164,7 +164,7 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
             Pattern pattern = Pattern.compile(valueRegex);
-            QueryStringBuilder queryString = QueryStringBuilder.build(event.getRequestQueryString());
+            QueryStringBuilder queryString = QueryStringBuilder.createFrom(event.getRequestQueryString());
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();

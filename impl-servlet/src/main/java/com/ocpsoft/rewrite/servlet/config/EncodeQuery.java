@@ -139,7 +139,7 @@ public class EncodeQuery implements Operation
       {
          HttpInboundServletRewrite in = (HttpInboundServletRewrite) event;
 
-         QueryStringBuilder query = QueryStringBuilder.begin();
+         QueryStringBuilder query = QueryStringBuilder.createNew();
          query.addParameters(in.getRequestQueryString());
 
          String token = query.decode().getParameter(tokenName);
@@ -172,7 +172,7 @@ public class EncodeQuery implements Operation
          HttpOutboundServletRewrite out = (HttpOutboundServletRewrite) event;
 
          String outboundURL = out.getOutboundURL();
-         URLBuilder url = URLBuilder.build(outboundURL);
+         URLBuilder url = URLBuilder.createFrom(outboundURL);
 
          url.getQueryStringBuilder().removeParameter(tokenName);
 

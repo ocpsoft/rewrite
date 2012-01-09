@@ -107,7 +107,7 @@ public class Domain extends HttpCondition implements
       if (event instanceof HttpOutboundServletRewrite)
       {
          String url = event.getURL();
-         URLBuilder builder = URLBuilder.build(url);
+         URLBuilder builder = URLBuilder.createFrom(url);
          hostName = builder.toURI().getHost();
          if (hostName == null)
             hostName = event.getRequest().getServerName();
