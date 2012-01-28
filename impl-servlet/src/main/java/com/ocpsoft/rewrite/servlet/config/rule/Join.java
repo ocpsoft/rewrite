@@ -27,8 +27,10 @@ import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.Rule;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.param.Constraint;
 import com.ocpsoft.rewrite.param.Parameter;
 import com.ocpsoft.rewrite.param.Parameterized;
+import com.ocpsoft.rewrite.param.Transform;
 import com.ocpsoft.rewrite.servlet.config.DispatchType;
 import com.ocpsoft.rewrite.servlet.config.Forward;
 import com.ocpsoft.rewrite.servlet.config.Path;
@@ -255,7 +257,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
     * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
     * 
     */
-   public class JoinParameterBuilder implements Parameterized<JoinParameterBuilder, String>, Rule
+   public class JoinParameterBuilder implements Parameter<String>, Parameterized<JoinParameterBuilder, String>, Rule
    {
       private final Join parent;
       private final RegexParameter parameter;
@@ -281,6 +283,44 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       {
          parameter.bindsTo(binding);
          return this;
+      }
+
+      @Override
+      public JoinParameterBuilder constrainedBy(final Constraint<String> constraint)
+      {
+         parameter.constrainedBy(constraint);
+         return this;
+      }
+
+      @Override
+      public JoinParameterBuilder transformedBy(final Transform<String> constraint)
+      {
+         parameter.transformedBy(constraint);
+         return this;
+      }
+
+      @Override
+      public List<Binding> getBindings()
+      {
+         return parameter.getBindings();
+      }
+
+      @Override
+      public String getName()
+      {
+         return parameter.getName();
+      }
+
+      @Override
+      public List<Constraint<String>> getConstraints()
+      {
+         return parameter.getConstraints();
+      }
+
+      @Override
+      public List<Transform<String>> getTransforms()
+      {
+         return parameter.getTransforms();
       }
 
       @Override
