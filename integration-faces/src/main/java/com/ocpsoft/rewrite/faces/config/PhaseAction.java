@@ -36,7 +36,10 @@ import com.ocpsoft.rewrite.config.Invoke;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.exception.RewriteException;
 import com.ocpsoft.rewrite.servlet.config.HttpOperation;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.spi.InvocationResultHandler;
 
@@ -113,6 +116,26 @@ public class PhaseAction extends HttpOperation
 
          for (InvocationResultHandler handler : providers) {
             handler.handle(event, context, result);
+         }
+
+         try {
+            if (event.getFlow().is(Flow.ABORT_REQUEST))
+            {
+               if (event.getFlow().is(Flow.FORWARD))
+               {
+                  event.getRequest().getRequestDispatcher(((HttpInboundServletRewrite) event).getDispatchResource())
+                           .forward(event.getRequest(), event.getResponse());
+               }
+            }
+            else if (event.getFlow().is(Flow.INCLUDE))
+            {
+               event.getRequest().getRequestDispatcher(((HttpInboundServletRewrite) event).getDispatchResource())
+                        .include(event.getRequest(), event.getResponse());
+            }
+
+         }
+         catch (Exception e) {
+            throw new RewriteException(e);
          }
       }
    }

@@ -85,4 +85,15 @@ public abstract class Response extends HttpOperation
       };
    }
 
+   public static Response setCode(final int code)
+   {
+      return new Response() {
+         @Override
+         public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+         {
+            event.getResponse().setStatus(code);
+         }
+      };
+   }
+
 }
