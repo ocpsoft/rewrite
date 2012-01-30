@@ -72,8 +72,16 @@ public interface HttpInboundServletRewrite extends InboundServletRewrite<HttpSer
 
    /**
     * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
-    * {@link #abort()}. Provide the given message to the browser. Provide the given message to the browser as
-    * [text/html].
+    * {@link #abort()}.
+    * <p>
+    * This method commits the response, after which no more information can be written and the response cannot be
+    * modified.
+    */
+   public void sendErrorCode(int code);
+
+   /**
+    * If the {@link HttpServletResponse} is not already committed, send an HTTP status code and and call
+    * {@link #abort()}. Provide the given message to the browser.
     * <p>
     * This method commits the response, after which no more information can be written and the response cannot be
     * modified.

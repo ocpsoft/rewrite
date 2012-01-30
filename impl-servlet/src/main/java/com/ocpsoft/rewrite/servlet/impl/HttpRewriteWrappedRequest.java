@@ -79,4 +79,10 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
    {
       return modifiableParameters;
    }
+
+   @Override
+   public String toString()
+   {
+      return super.getRequestURL().toString();
+   }
 }

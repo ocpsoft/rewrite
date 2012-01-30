@@ -57,4 +57,9 @@ public interface ServletRewrite<IN extends ServletRequest, OUT extends ServletRe
     * Get the current {@link Flow} state.
     */
    public Flow getFlow();
+
+   /**
+    * Set the current {@link Flow} state.
+    */
+   public void setFlow(Flow unHandled);
 }

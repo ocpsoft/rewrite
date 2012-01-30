@@ -82,6 +82,11 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
       return flow;
    }
 
+   public void setFlow(final Flow flow)
+   {
+      this.flow = flow;
+   }
+
    public String getDispatchResource()
    {
       return dispatchResource;

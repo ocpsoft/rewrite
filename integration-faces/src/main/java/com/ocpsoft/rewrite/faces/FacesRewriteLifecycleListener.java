@@ -37,7 +37,7 @@ public class FacesRewriteLifecycleListener extends HttpRewriteLifecycleListener
             + "_originalRequestURL";
 
    @Override
-   public void beforeInboundLifecycle(HttpServletRewrite event)
+   public void beforeInboundLifecycle(final HttpServletRewrite event)
    {
       if (DispatcherType.REQUEST.equals(event.getRequest().getDispatcherType()))
       {
@@ -47,29 +47,29 @@ public class FacesRewriteLifecycleListener extends HttpRewriteLifecycleListener
       }
    }
 
-   public static String getOriginalRequestURL(HttpServletRequest request)
+   public static String getOriginalRequestURL(final HttpServletRequest request)
    {
       return (String) request.getAttribute(ORIGINAL_URL);
    }
 
    @Override
-   public void beforeInboundRewrite(HttpServletRewrite event)
+   public void beforeInboundRewrite(final HttpServletRewrite event)
    {}
 
    @Override
-   public void afterInboundRewrite(HttpServletRewrite event)
+   public void afterInboundRewrite(final HttpServletRewrite event)
    {}
 
    @Override
-   public void beforeOutboundRewrite(HttpServletRewrite event)
+   public void beforeOutboundRewrite(final HttpServletRewrite event)
    {}
 
    @Override
-   public void afterOutboundRewrite(HttpServletRewrite event)
+   public void afterOutboundRewrite(final HttpServletRewrite event)
    {}
 
    @Override
-   public void afterInboundLifecycle(HttpServletRewrite event)
+   public void afterInboundLifecycle(final HttpServletRewrite event)
    {}
 
    @Override

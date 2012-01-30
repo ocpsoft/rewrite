@@ -109,4 +109,10 @@ public class Forward extends HttpOperation implements
    {
       return where(param).bindsTo(binding);
    }
+
+   @Override
+   public String toString()
+   {
+      return location.toString();
+   }
 }

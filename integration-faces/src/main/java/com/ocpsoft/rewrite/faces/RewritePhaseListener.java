@@ -110,4 +110,5 @@ public class RewritePhaseListener implements PhaseListener
          navigationHandler.handleNavigation(facesContext, "", navigationCase);
       }
    }
+
 }

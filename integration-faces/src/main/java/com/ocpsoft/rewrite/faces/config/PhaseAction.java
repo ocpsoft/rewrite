@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,6 +34,7 @@ import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.bind.Retrieval;
 import com.ocpsoft.rewrite.bind.Submission;
 import com.ocpsoft.rewrite.config.Invoke;
+import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
@@ -85,6 +87,11 @@ public class PhaseAction extends HttpOperation
       return actions;
    }
 
+   public static void removeQueuedPhaseActions(final HttpServletRequest request)
+   {
+      request.removeAttribute(QUEUED_ACTIONS);
+   }
+
    @SuppressWarnings("unchecked")
    public void invokeAction(final HttpServletRewrite event, final EvaluationContext context)
    {
@@ -105,38 +112,59 @@ public class PhaseAction extends HttpOperation
          log.warn("No binding specified for Invocation.");
       }
 
-      if (result != null)
+      Flow savedState = event.getFlow();
+      event.setFlow(Flow.UN_HANDLED);
+
+      try
       {
-         ServiceLoader<InvocationResultHandler> providers = ServiceLoader.load(InvocationResultHandler.class);
-         if (!providers.iterator().hasNext())
+         if (result instanceof Operation)
          {
-            log.debug("No instances of [" + InvocationResultHandler.class.getName()
-                     + "] were registered to handing binding invocation result [" + result + "]");
+            ((Operation) result).perform(event, context);
          }
-
-         for (InvocationResultHandler handler : providers) {
-            handler.handle(event, context, result);
-         }
-
-         try {
-            if (event.getFlow().is(Flow.ABORT_REQUEST))
+         else if (result != null)
+         {
+            ServiceLoader<InvocationResultHandler> providers = ServiceLoader.load(InvocationResultHandler.class);
+            if (!providers.iterator().hasNext())
             {
-               if (event.getFlow().is(Flow.FORWARD))
+               log.debug("No instances of [" + InvocationResultHandler.class.getName()
+                        + "] were registered to handing binding invocation result [" + result + "]");
+            }
+
+            for (InvocationResultHandler handler : providers) {
+               handler.handle(event, context, result);
+            }
+         }
+
+         if (result != null)
+         {
+            try {
+               if (event.getFlow().is(Flow.ABORT_REQUEST))
                {
-                  event.getRequest().getRequestDispatcher(((HttpInboundServletRewrite) event).getDispatchResource())
-                           .forward(event.getRequest(), event.getResponse());
+                  FacesContext facesContext = FacesContext.getCurrentInstance();
+                  if (event.getFlow().is(Flow.FORWARD))
+                  {
+                     /*
+                      * We don't want to carry queued phase actions through more than one lifecycle.
+                      */
+                     PhaseAction.removeQueuedPhaseActions(event.getRequest());
+                     String dispatchResource = ((HttpInboundServletRewrite) event).getDispatchResource();
+                     facesContext.getExternalContext().dispatch(dispatchResource);
+                  }
+                  facesContext.responseComplete();
+               }
+               else if (event.getFlow().is(Flow.INCLUDE))
+               {
+                  throw new IllegalStateException("Cannot issue INCLUDE directive within JSF lifecycle. Not supported.");
                }
             }
-            else if (event.getFlow().is(Flow.INCLUDE))
-            {
-               event.getRequest().getRequestDispatcher(((HttpInboundServletRewrite) event).getDispatchResource())
-                        .include(event.getRequest(), event.getResponse());
+            catch (Exception e) {
+               throw new RewriteException(e);
             }
-
          }
-         catch (Exception e) {
-            throw new RewriteException(e);
-         }
+      }
+      finally
+      {
+         event.setFlow(savedState);
       }
    }
 

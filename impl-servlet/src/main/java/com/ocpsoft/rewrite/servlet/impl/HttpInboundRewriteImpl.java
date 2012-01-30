@@ -90,6 +90,12 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    }
 
    @Override
+   public void sendErrorCode(final int code)
+   {
+      sendErrorCode(code, null);
+   }
+
+   @Override
    public void sendErrorCode(final int code, final String message)
    {
       HttpServletResponse response = getResponse();
@@ -118,7 +124,7 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       }
    }
 
-   private void redirect(String location, final int code)
+   private void redirect(final String location, final int code)
    {
       HttpServletResponse response = getResponse();
       if (response.isCommitted())

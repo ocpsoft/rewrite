@@ -44,12 +44,37 @@ public class SendStatus extends HttpOperation
          ((HttpInboundServletRewrite) event).sendStatusCode(code);
    }
 
+   protected int getCode()
+   {
+      return code;
+   }
+
    /**
     * Send an HTTP status code to the browser, then call {@link HttpInboundServletRewrite#abort()}
     */
    public static SendStatus code(final int code)
    {
       return new SendStatus(code);
+   }
+
+   public static SendStatus error(final int code)
+   {
+      return new SendError(code);
+   }
+
+   public static class SendError extends SendStatus
+   {
+      public SendError(final int code)
+      {
+         super(code);
+      }
+
+      @Override
+      public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+      {
+         if (event instanceof HttpInboundServletRewrite)
+            ((HttpInboundServletRewrite) event).sendErrorCode(this.getCode());
+      }
    }
 
 }
