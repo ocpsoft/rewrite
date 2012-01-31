@@ -70,6 +70,23 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       this.flow = Flow.REDIRECT_PERMANENT;
    }
 
+   private String encodeRedirectUrl(final HttpServletResponse response, final String url)
+   {
+      try
+      {
+         URLBuilder builder = URLBuilder.createFrom(url);
+         String path = builder.decode().toPath();
+
+         return response.encodeRedirectURL(path
+                  + builder.getQueryStringBuilder().encode().toQueryString());
+      }
+      catch (Exception e)
+      {
+         log.warn("Failed to encode URL [" + url + "]", e);
+         return response.encodeRedirectURL(url);
+      }
+   }
+
    @Override
    public void sendStatusCode(final int code)
    {
@@ -137,23 +154,6 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       catch (IOException e)
       {
          throw new RewriteException("Could not send HTTP error code.", e);
-      }
-   }
-
-   private String encodeRedirectUrl(final HttpServletResponse response, final String url)
-   {
-      try
-      {
-         URLBuilder builder = URLBuilder.createFrom(url);
-         String path = builder.decode().toPath();
-
-         return response.encodeRedirectURL(path
-                  + builder.getQueryStringBuilder().encode().toQueryString());
-      }
-      catch (Exception e)
-      {
-         log.warn("Failed to encode URL [" + url + "]", e);
-         return response.encodeRedirectURL(url);
       }
    }
 
