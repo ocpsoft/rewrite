@@ -25,6 +25,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.common.pattern.WeightedComparator;
 import com.ocpsoft.common.services.ServiceLoader;
@@ -225,6 +226,20 @@ public class RewriteFilter implements Filter
          {
             event.getRequest().getRequestDispatcher(event.getDispatchResource())
                      .forward(event.getRequest(), event.getResponse());
+         }
+         else if (event.getFlow().is(Flow.REDIRECT_PERMANENT))
+         {
+            HttpServletResponse response = (HttpServletResponse) event.getResponse();
+            response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+            response.setHeader("Location", event.getDispatchResource());
+            response.flushBuffer();
+         }
+         else if (event.getFlow().is(Flow.REDIRECT_TEMPORARY))
+         {
+            HttpServletResponse response = (HttpServletResponse) event.getResponse();
+            response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+            response.setHeader("Location", event.getDispatchResource());
+            response.flushBuffer();
          }
       }
       else if (event.getFlow().is(Flow.INCLUDE))

@@ -44,14 +44,30 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    public void redirectTemporary(final String location)
    {
       log.debug("Temporary Redirect (302) requested: [" + location + "]");
-      redirect(location, HttpServletResponse.SC_MOVED_TEMPORARILY);
+
+      HttpServletResponse response = getResponse();
+      if (response.isCommitted())
+      {
+         throw new IllegalStateException("Response is already committed. Cannot issue redirect.");
+      }
+
+      dispatchResource = encodeRedirectUrl(response, location);
+      this.flow = Flow.REDIRECT_TEMPORARY;
    }
 
    @Override
    public void redirectPermanent(final String location)
    {
       log.debug("Permanent Redirect (301) requested: [" + location + "]");
-      redirect(location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+
+      HttpServletResponse response = getResponse();
+      if (response.isCommitted())
+      {
+         throw new IllegalStateException("Response is already committed. Cannot issue redirect.");
+      }
+
+      dispatchResource = encodeRedirectUrl(response, location);
+      this.flow = Flow.REDIRECT_PERMANENT;
    }
 
    @Override
@@ -121,29 +137,6 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
       catch (IOException e)
       {
          throw new RewriteException("Could not send HTTP error code.", e);
-      }
-   }
-
-   private void redirect(final String location, final int code)
-   {
-      HttpServletResponse response = getResponse();
-      if (response.isCommitted())
-      {
-         throw new IllegalStateException("Response is already committed. Cannot issue redirect.");
-      }
-
-      try
-      {
-         dispatchResource = location;
-         String target = encodeRedirectUrl(response, location);
-         response.setStatus(code);
-         response.setHeader("Location", target);
-         response.flushBuffer();
-         abort();
-      }
-      catch (IOException e)
-      {
-         throw new RewriteException();
       }
    }
 
