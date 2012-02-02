@@ -18,7 +18,7 @@
    <parent>
       <groupId>com.ocpsoft</groupId>
       <artifactId>ocpsoft-parent</artifactId>
-      <version>1</version>
+      <version>2</version>
    </parent>
 
    <properties>
@@ -45,10 +45,6 @@
    </modules>
 
    <repositories>
-      <repository>
-         <id>OCPSoft</id>
-         <url>http://ocpsoft.com/repository/</url>
-      </repository>
       <repository>
          <id>JBOSS_NEXUS</id>
          <url>http://repository.jboss.org/nexus/content/groups/public</url>
@@ -174,8 +170,7 @@
       </developer>
    </developers>
 
-   <url>http://ocpsoft.com/prettyfaces/</url>
-
+   <url>http://ocpsoft.com/rewrite/</url>
 
    <licenses>
       <license>
@@ -184,13 +179,6 @@
          <distribution>repo</distribution>
       </license>
    </licenses>
-
-   <distributionManagement>
-      <repository>
-         <id>ocpsoft.ftp.public</id>
-         <url>ftp://ocpsoft.com/ocpsoft.com/repository</url>
-      </repository>
-   </distributionManagement>
 
    <scm>
       <connection>scm:git:git://github.com/ocpsoft/rewrite.git</connection>
