@@ -40,6 +40,7 @@
       <module>impl-servlet</module>
       <module>integration-cdi</module>
       <module>integration-faces</module>
+      <module>integration-gwt</module>
       <module>integration-spring</module>
       <module>rewrite-servlet</module>
    </modules>
@@ -91,6 +92,11 @@
          <dependency>
             <groupId>com.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-impl-servlet</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>com.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-servlet</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>
