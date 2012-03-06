@@ -31,20 +31,21 @@
  * Optionally, Customers may choose a Commercial License. For additional
  * details, contact an OCPsoft representative (sales@ocpsoft.com)
  */
-package com.ocpsoft.rewrite.gwt.server.history;
+package com.ocpsoft.rewrite.servlet.config;
 
 import java.net.MalformedURLException;
 
 import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
+import com.ocpsoft.rewrite.config.Condition;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.param.Parameter;
-import com.ocpsoft.rewrite.servlet.config.HttpCondition;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * TODO move to rewrite proper
+ * A {@link Condition} responsible for determining existence of resources within the web root of the servlet container.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Resource extends HttpCondition
@@ -78,6 +79,10 @@ public class Resource extends HttpCondition
       return false;
    }
 
+   /**
+    * Create a new {@link Condition} that returns true if the given resource exists relative to the web root of the
+    * current application.
+    */
    public static Resource exists(final String resource)
    {
       return new Resource(resource);

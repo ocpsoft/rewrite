@@ -28,7 +28,11 @@
 			<artifactId>rewrite-impl-servlet</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-test-harness</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
@@ -40,10 +44,12 @@
 	<build>
 		<plugins>
 			<plugin>
+				<!-- Attach sources for GWT compiler -->
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
 				<executions>
 					<execution>
+						<id>attach-sources</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>

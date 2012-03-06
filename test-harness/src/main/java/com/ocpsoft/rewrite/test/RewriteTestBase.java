@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -85,7 +86,7 @@ public class RewriteTestBase
                .addAsServiceProvider(ExpressionFactory.class, ExpressionFactoryImpl.class)
 
                /*
-                * Set up container configuration 
+                * Set up container configuration
                 */
                .setWebXML("jetty-web.xml")
                .addAsWebResource(new StringAsset("<beans/>"), ArchivePaths.create("WEB-INF/beans.xml"))
@@ -93,15 +94,15 @@ public class RewriteTestBase
                .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"));
    }
 
-   protected static JavaArchive getRewriteArchive() 
+   protected static JavaArchive getRewriteArchive()
    {
-       return ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
+      return ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
                .addAsResource(new File("../api/target/classes/com"))
                .addAsResource(new File("../api/target/classes/META-INF"))
                .addAsResource(new File("../impl-servlet/target/classes/com"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
    }
-   
+
    protected static Collection<GenericArchive> resolveDependencies(final String coords)
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
@@ -129,6 +130,29 @@ public class RewriteTestBase
          HttpResponse response = client.execute(request, context);
 
          return new HttpAction<HttpGet>(client, context, request, response, getBaseURL(), getContextPath());
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   /**
+    * Request a resource from the deployed test-application. The {@link HttpServletRequest#getContextPath()} will be
+    * automatically prepended to the given path.
+    * <p>
+    * E.g: A path of '/example' will be sent as '/rewrite-test/example'
+    */
+   protected HttpAction<HttpHead> head(final String path)
+   {
+      DefaultHttpClient client = new DefaultHttpClient();
+      try
+      {
+         HttpHead request = new HttpHead(getBaseURL() + getContextPath() + path);
+         HttpContext context = new BasicHttpContext();
+         HttpResponse response = client.execute(request, context);
+
+         return new HttpAction<HttpHead>(client, context, request, response, getBaseURL(), getContextPath());
       }
       catch (Exception e)
       {
