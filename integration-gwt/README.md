@@ -14,7 +14,7 @@ Get Started
             <version>${rewrite.version}</version>
         </dependency>
 
-3. Enable bookmarking by routing some or all URLs back to your host application file. Below is a recommended rule format (replace */index.jsp* with the path to your application):
+2. Enable bookmarking by routing some or all URLs back to your host application file. Below is a recommended rule format (replace */index.jsp* with the path to your application):
 
         public class HistoryRewriteConfiguration extends HttpConfigurationProvider
         {
@@ -41,7 +41,7 @@ Get Started
            }
         }
 
-4. Run your application!
+3. Run your application!
 
 FEEDBACK
 ========
