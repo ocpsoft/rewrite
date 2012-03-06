@@ -1,6 +1,8 @@
 Rewrite GWT Integration
 =================================================
 
+This enables the HTML5 History.pushState(...) support in your application, which will now use pretty/URLs whenever possible instead of the '#' anchor tag with 'name=value' pairs. Note that you must modify your place tokenization to process the new information.
+
 Get Started
 ===========
 
@@ -11,8 +13,6 @@ Get Started
             <artifactId>rewrite-integation-gwt</artifactId>
             <version>${rewrite.version}</version>
         </dependency>
-
-2. This enables the HTML5 History.pushState(...) support in your application, which will now use pretty/URLs whenever possible instead of the '#' anchor tag with 'name=value' pairs. Note that you must modify your place tokenization to process the new information.
 
 3. Enable bookmarking by routing some or all URLs back to your host application file. Below is a recommended rule format (replace */index.jsp* with the path to your application):
 
