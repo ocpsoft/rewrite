@@ -16,30 +16,30 @@ Get Started
 
 3. Enable bookmarking by routing some or all URLs back to your host application file. Below is a recommended rule format (replace */index.jsp* with the path to your application):
 
-    public class HistoryRewriteConfiguration extends HttpConfigurationProvider
-    {
-       public static Logger log = Logger.getLogger(HistoryRewriteConfiguration.class);
-
-       @Override
-       public Configuration getConfiguration(ServletContext context)
-       {
-          return ConfigurationBuilder
-               .begin()
-
-               .defineRule()
-               .when(DispatchType.isRequest()
+        public class HistoryRewriteConfiguration extends HttpConfigurationProvider
+        {
+           public static Logger log = Logger.getLogger(HistoryRewriteConfiguration.class);
+        
+           @Override
+           public Configuration getConfiguration(ServletContext context)
+           {
+              return ConfigurationBuilder
+                   .begin()
+            
+                   .defineRule()
+                   .when(DispatchType.isRequest()
                         .and(Path.matches("{path}").where("path").matches(".*"))
                         .andNot(Resource.exists("{path}"))
                         .andNot(ServletMapping.includes("{path}")))
-               .perform(Forward.to("/index.jsp"));
-       }
-
-       @Override
-       public int priority()
-       {
-          return 0;
-       }
-    }
+                   .perform(Forward.to("/index.jsp"));
+           }
+            
+           @Override
+           public int priority()
+           {
+              return 0;
+           }
+        }
 
 4. Run your application!
 
