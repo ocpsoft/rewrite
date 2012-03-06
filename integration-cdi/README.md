@@ -1,6 +1,8 @@
 Rewrite CDI Integration
 =================================================
 
+This enables CDI support in your service implementations, such as configuration providers, listeners, and more.
+
 Get Started
 ==========
 
@@ -12,9 +14,7 @@ Get Started
            <version>${rewrite.version}</version>
         </dependency>
 
-2. This enables CDI support in your service implementations, such as configuration providers, listeners, and more.
-
-3. Use CDI in your configuration providers or listeners:
+2. Use CDI in your configuration providers or listeners:
 
 	    package com.example;
     
@@ -39,7 +39,7 @@ Get Started
 		    }
 	    }
     
-4. Run your application!
+3. Run your application!
 
 FEEDBACK
 ========
