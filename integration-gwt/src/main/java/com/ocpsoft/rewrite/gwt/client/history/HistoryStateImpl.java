@@ -11,11 +11,11 @@ import com.google.gwt.user.client.impl.HistoryImpl;
  */
 public class HistoryStateImpl extends HistoryImpl
 {
-   private static List<ContextPathProvider> providers = Arrays.asList((ContextPathProvider) new CookieContextPathProvider(),
+   private static List<ContextPathProvider> providers = Arrays.asList(new CookieContextPathProvider(),
             new RequestContextPathProvider());
 
    static String contextPath = null;
-   
+
    private static List<ContextPathListener> listeners = new ArrayList<ContextPathListener>();
 
    @Override
@@ -41,14 +41,30 @@ public class HistoryStateImpl extends HistoryImpl
       }
    }
 
+   public static ListenerRegistration addContextPathListener(final ContextPathListener listener)
+   {
+      listeners.add(listener);
+      return new ListenerRegistration() {
+         @Override
+         public void removeListener()
+         {
+            listeners.remove(listener);
+         }
+      };
+   }
+
    public static String getContextPath()
    {
       if (contextPath != null && !contextPath.endsWith("/"))
       {
          contextPath += "/";
       }
-      System.out.println("Context path: " + contextPath);
       return contextPath;
+   }
+
+   public static boolean isInitialized()
+   {
+      return contextPath != null;
    }
 
    public native boolean initNative() /*-{
