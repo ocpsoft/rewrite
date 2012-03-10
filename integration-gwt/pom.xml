@@ -42,21 +42,14 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<!-- Attach sources for GWT compiler -->
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+      <resources>
+         <resource>
+            <directory>${basedir}/src/main/resources</directory>
+         </resource>
+         <resource>
+            <directory>${basedir}/src/main/java</directory>
+         </resource>
+      </resources>
+   </build>
 
 </project>
