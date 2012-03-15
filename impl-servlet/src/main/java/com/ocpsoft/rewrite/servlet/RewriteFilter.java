@@ -163,17 +163,13 @@ public class RewriteFilter implements Filter
             }
          }
 
-         for (RewriteLifecycleListener<Rewrite> listener : listeners)
-         {
-            if (listener.handles(event))
-               listener.beforeInboundRewrite(event);
-         }
-
          rewrite(event);
 
          if (!event.getFlow().is(Flow.ABORT_REQUEST))
          {
+            log.debug("RewriteFilter passing control of request to underlying application.");
             chain.doFilter(event.getRequest(), event.getResponse());
+            log.debug("Control of request returned to RewriteFilter.");
          }
 
          for (RewriteLifecycleListener<Rewrite> listener : listeners)
@@ -201,6 +197,12 @@ public class RewriteFilter implements Filter
             throws ServletException,
             IOException
    {
+      for (RewriteLifecycleListener<Rewrite> listener : listeners)
+      {
+         if (listener.handles(event))
+            listener.beforeInboundRewrite(event);
+      }
+
       for (RewriteProvider<Rewrite> provider : providers)
       {
          if (provider.handles(event))
@@ -209,6 +211,7 @@ public class RewriteFilter implements Filter
 
             if (event.getFlow().is(Flow.HANDLED))
             {
+               log.debug("Event flow marked as HANDLED. No further processing will occur.");
                break;
             }
          }
@@ -224,11 +227,13 @@ public class RewriteFilter implements Filter
       {
          if (event.getFlow().is(Flow.FORWARD))
          {
+            log.debug("Issuing internal FORWARD to [{}].", event.getDispatchResource());
             event.getRequest().getRequestDispatcher(event.getDispatchResource())
                      .forward(event.getRequest(), event.getResponse());
          }
          else if (event.getFlow().is(Flow.REDIRECT_PERMANENT))
          {
+            log.debug("Issuing 301 permanent REDIRECT to [{}].", event.getDispatchResource());
             HttpServletResponse response = (HttpServletResponse) event.getResponse();
             response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
             response.setHeader("Location", event.getDispatchResource());
@@ -236,14 +241,20 @@ public class RewriteFilter implements Filter
          }
          else if (event.getFlow().is(Flow.REDIRECT_TEMPORARY))
          {
+            log.debug("Issuing 302 temporary REDIRECT to [{}].", event.getDispatchResource());
             HttpServletResponse response = (HttpServletResponse) event.getResponse();
             response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
             response.setHeader("Location", event.getDispatchResource());
             response.flushBuffer();
          }
+         else
+         {
+            log.debug("ABORT requested. Terminating request NOW.");
+         }
       }
       else if (event.getFlow().is(Flow.INCLUDE))
       {
+         log.debug("Issuing internal INCLUDE to [{}].", event.getDispatchResource());
          event.getRequest().getRequestDispatcher(event.getDispatchResource())
                   .include(event.getRequest(), event.getResponse());
       }

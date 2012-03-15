@@ -12,6 +12,10 @@
       <appender-ref ref="console" />
    </root>
 
+   <logger name="org.eclipse">
+      <level value="info" />
+   </logger>
+
    <logger name="org.apache">
       <level value="info" />
    </logger>

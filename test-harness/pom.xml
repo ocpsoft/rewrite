@@ -21,7 +21,11 @@
          <groupId>com.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api</artifactId>
       </dependency>
-
+      <dependency>
+         <groupId>com.ocpsoft.logging</groupId>
+         <artifactId>logging-adapter-slf4j</artifactId>
+      </dependency>
+      
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>

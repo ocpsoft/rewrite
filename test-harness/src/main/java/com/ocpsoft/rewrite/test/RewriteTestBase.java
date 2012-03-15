@@ -91,7 +91,7 @@ public class RewriteTestBase
                .setWebXML("jetty-web.xml")
                .addAsWebResource(new StringAsset("<beans/>"), ArchivePaths.create("WEB-INF/beans.xml"))
                .addAsWebResource("jetty-env.xml", ArchivePaths.create("WEB-INF/jetty-env.xml"))
-               .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"));
+               .addAsResource("jetty-log4j.xml", ArchivePaths.create("WEB-INF/classes/log4j.xml"));
    }
 
    protected static JavaArchive getRewriteArchive()

@@ -120,14 +120,16 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    {
       UN_HANDLED(null),
       HANDLED(null),
+
       CONTINUE(HANDLED),
       PROCEED(CONTINUE),
+
       INCLUDE(HANDLED),
+
       ABORT_REQUEST(HANDLED),
       FORWARD(ABORT_REQUEST),
       REDIRECT_TEMPORARY(ABORT_REQUEST),
-      REDIRECT_PERMANENT(ABORT_REQUEST),
-      CHAIN(HANDLED);
+      REDIRECT_PERMANENT(ABORT_REQUEST);
 
       private Flow parent;
 

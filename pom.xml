@@ -65,6 +65,11 @@
             <version>${version.logging}</version>
          </dependency>
          <dependency>
+            <groupId>com.ocpsoft.logging</groupId>
+            <artifactId>logging-adapter-slf4j</artifactId>
+            <version>${version.logging}</version>
+         </dependency>
+         <dependency>
             <groupId>com.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-api</artifactId>
             <version>${project.version}</version>
