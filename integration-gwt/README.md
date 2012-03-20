@@ -14,7 +14,11 @@ Get Started
             <version>${rewrite.version}</version>
         </dependency>
 
-2. Enable bookmarking by routing some or all URLs back to your host application file. Below is a recommended rule format (replace */index.jsp* with the path to your application):
+2. Include Rewrite GWT in your App.gwt.xml file:
+
+        <inherits name="com.ocpsoft.rewrite.gwt.Rewrite" />
+
+3. Enable bookmarking by routing some or all URLs back to your host application file. Below is a recommended rule format (replace */index.jsp* with the path to your application):
 
         public class HistoryRewriteConfiguration extends HttpConfigurationProvider
         {
@@ -41,7 +45,7 @@ Get Started
            }
         }
 
-3. Run your application!
+4. Run your application!
 
 FEEDBACK
 ========
