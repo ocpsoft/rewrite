@@ -131,7 +131,7 @@ public class RewriteFilter implements Filter
    @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
             throws IOException, ServletException
-   {
+            {
       InboundServletRewrite<ServletRequest, ServletResponse> event = createRewriteEvent(request,
                response);
 
@@ -178,11 +178,11 @@ public class RewriteFilter implements Filter
                listener.afterInboundLifecycle(event);
          }
       }
-   }
+            }
 
    public InboundServletRewrite<ServletRequest, ServletResponse> createRewriteEvent(final ServletRequest request,
             final ServletResponse response)
-   {
+            {
       for (InboundRewriteProducer<ServletRequest, ServletResponse> producer : inbound)
       {
          InboundServletRewrite<ServletRequest, ServletResponse> event = producer
@@ -191,12 +191,12 @@ public class RewriteFilter implements Filter
             return event;
       }
       return null;
-   }
+            }
 
    private void rewrite(final InboundServletRewrite<ServletRequest, ServletResponse> event)
             throws ServletException,
             IOException
-   {
+            {
       for (RewriteLifecycleListener<Rewrite> listener : listeners)
       {
          if (listener.handles(event))
@@ -229,7 +229,7 @@ public class RewriteFilter implements Filter
          {
             log.debug("Issuing internal FORWARD to [{}].", event.getDispatchResource());
             event.getRequest().getRequestDispatcher(event.getDispatchResource())
-                     .forward(event.getRequest(), event.getResponse());
+            .forward(event.getRequest(), event.getResponse());
          }
          else if (event.getFlow().is(Flow.REDIRECT_PERMANENT))
          {
@@ -256,9 +256,9 @@ public class RewriteFilter implements Filter
       {
          log.debug("Issuing internal INCLUDE to [{}].", event.getDispatchResource());
          event.getRequest().getRequestDispatcher(event.getDispatchResource())
-                  .include(event.getRequest(), event.getResponse());
+         .include(event.getRequest(), event.getResponse());
       }
-   }
+            }
 
    @Override
    public void destroy()

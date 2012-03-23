@@ -41,7 +41,10 @@ public class LifecycleControlConfigurationProvider extends HttpConfigurationProv
                .defineRule().when(Path.matches("/abort.*")).perform(SendStatus.code(400))
 
                .defineRule().when(Path.matches("/handle")).perform(Lifecycle.handled())
-               .defineRule().when(Path.matches("/handle.*")).perform(SendStatus.code(401));
+               .defineRule().when(Path.matches("/handle.*")).perform(SendStatus.code(401))
+
+               .defineRule().when(Path.matches("/proceed")).perform(Lifecycle.proceed())
+               .defineRule().when(Path.matches("/proceed.*")).perform(SendStatus.code(402));
 
       return config;
    }

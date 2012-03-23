@@ -67,4 +67,14 @@ public class LifecycleControlTest extends RewriteTestBase
       action = get("/handle");
       Assert.assertEquals(404, action.getStatusCode());
    }
+
+   @Test
+   public void testProceed()
+   {
+      HttpAction<HttpGet> action = get("/proceedy");
+      Assert.assertEquals(402, action.getStatusCode());
+
+      action = get("/proceed");
+      Assert.assertEquals(402, action.getStatusCode());
+   }
 }
