@@ -31,7 +31,7 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.logging.Logger;
-import com.ocpsoft.rewrite.faces.config.DeferredOperation;
+import com.ocpsoft.rewrite.faces.config.PhaseOperation;
 import com.ocpsoft.rewrite.faces.config.PhaseAction;
 import com.ocpsoft.rewrite.faces.config.PhaseBinding;
 import com.ocpsoft.rewrite.faces.config.QueuedPhaseAction;
@@ -53,10 +53,10 @@ public class RewritePhaseListener implements PhaseListener
    @Override
    public void afterPhase(final PhaseEvent event)
    {
-      handleAfterPhaseActions(event);
       if (!PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
       {
          handleAfterPhaseInjections(event);
+         handleAfterPhaseActions(event);
          handleNavigation(event);
       }
       else
@@ -70,9 +70,12 @@ public class RewritePhaseListener implements PhaseListener
    @Override
    public void beforePhase(final PhaseEvent event)
    {
-      handleBeforePhaseActions(event);
       if (!PhaseId.RESTORE_VIEW.equals(event.getPhaseId()))
+      {
          handleBeforePhaseInjections(event);
+         handleBeforePhaseActions(event);
+      }
+
       if (PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
          handleNavigation(event);
    }
@@ -114,9 +117,9 @@ public class RewritePhaseListener implements PhaseListener
       FacesContext facesContext = event.getFacesContext();
       HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
 
-      List<DeferredOperation> operations = PhaseBinding.getDeferredOperations(request);
+      List<PhaseOperation> operations = PhaseBinding.getDeferredOperations(request);
       if (operations != null)
-         for (DeferredOperation operation : operations) {
+         for (PhaseOperation operation : operations) {
             if (!operation.isConsumed()
                      && (event.getPhaseId().equals(operation.getBeforePhase())
                               || PhaseId.ANY_PHASE.equals(operation.getBeforePhase())))
@@ -131,9 +134,9 @@ public class RewritePhaseListener implements PhaseListener
       FacesContext facesContext = event.getFacesContext();
       HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
 
-      List<DeferredOperation> operations = PhaseBinding.getDeferredOperations(request);
+      List<PhaseOperation> operations = PhaseBinding.getDeferredOperations(request);
       if (operations != null)
-         for (DeferredOperation operation : operations) {
+         for (PhaseOperation operation : operations) {
             if (!operation.isConsumed()
                      && (event.getPhaseId().equals(operation.getAfterPhase())
                               || PhaseId.ANY_PHASE.equals(operation.getAfterPhase())))

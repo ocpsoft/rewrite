@@ -129,12 +129,12 @@ public class PhaseBinding implements Binding
    }
    
    @SuppressWarnings("unchecked")
-   public static List<DeferredOperation> getDeferredOperations(final HttpServletRequest request)
+   public static List<PhaseOperation> getDeferredOperations(final HttpServletRequest request)
    {
-      List<DeferredOperation> operations = (List<DeferredOperation>) request.getAttribute(DEFERRED_OPERATIONS);
+      List<PhaseOperation> operations = (List<PhaseOperation>) request.getAttribute(DEFERRED_OPERATIONS);
       if (operations == null)
       {
-         operations = new ArrayList<DeferredOperation>();
+         operations = new ArrayList<PhaseOperation>();
          request.setAttribute(DEFERRED_OPERATIONS, operations);
       }
       return operations;

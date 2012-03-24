@@ -16,6 +16,11 @@
          <artifactId>rewrite-impl-servlet</artifactId>
          <scope>provided</scope>
       </dependency>
+      <dependency>
+         <groupId>com.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api-servlet</artifactId>
+         <scope>provided</scope>
+      </dependency>
       
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
