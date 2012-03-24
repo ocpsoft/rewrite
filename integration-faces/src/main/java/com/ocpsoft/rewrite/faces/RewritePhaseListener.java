@@ -21,7 +21,7 @@
  */
 package com.ocpsoft.rewrite.faces;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
@@ -31,10 +31,8 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ocpsoft.logging.Logger;
-import com.ocpsoft.rewrite.faces.config.PhaseOperation;
 import com.ocpsoft.rewrite.faces.config.PhaseAction;
-import com.ocpsoft.rewrite.faces.config.PhaseBinding;
-import com.ocpsoft.rewrite.faces.config.QueuedPhaseAction;
+import com.ocpsoft.rewrite.faces.config.PhaseOperation;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -55,15 +53,8 @@ public class RewritePhaseListener implements PhaseListener
    {
       if (!PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
       {
-         handleAfterPhaseInjections(event);
-         handleAfterPhaseActions(event);
+         handleAfterPhaseOperations(event);
          handleNavigation(event);
-      }
-      else
-      {
-         FacesContext facesContext = event.getFacesContext();
-         HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
-         PhaseBinding.removeDefferredOperations(request);
       }
    }
 
@@ -72,78 +63,47 @@ public class RewritePhaseListener implements PhaseListener
    {
       if (!PhaseId.RESTORE_VIEW.equals(event.getPhaseId()))
       {
-         handleBeforePhaseInjections(event);
-         handleBeforePhaseActions(event);
+         handleBeforePhaseOperations(event);
       }
 
       if (PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
          handleNavigation(event);
    }
 
-   private void handleBeforePhaseActions(final PhaseEvent event)
+   private void handleBeforePhaseOperations(final PhaseEvent event)
    {
       FacesContext facesContext = event.getFacesContext();
       HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
 
-      List<QueuedPhaseAction> actions = PhaseAction.getQueuedPhaseActions(request);
-      if (actions != null)
-         for (QueuedPhaseAction action : actions) {
-            if (action.getBeforePhases().contains(event.getPhaseId())
-                     || action.getBeforePhases().contains(PhaseId.ANY_PHASE))
-            {
-               action.perform();
-            }
-         }
-   }
-
-   private void handleAfterPhaseActions(final PhaseEvent event)
-   {
-      FacesContext facesContext = event.getFacesContext();
-      HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
-
-      List<QueuedPhaseAction> actions = PhaseAction.getQueuedPhaseActions(request);
-      if (actions != null)
-         for (QueuedPhaseAction action : actions) {
-            if (action.getAfterPhases().contains(event.getPhaseId())
-                     || action.getAfterPhases().contains(PhaseId.ANY_PHASE))
-            {
-               action.perform();
-            }
-         }
-   }
-
-   private void handleBeforePhaseInjections(final PhaseEvent event)
-   {
-      FacesContext facesContext = event.getFacesContext();
-      HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
-
-      List<PhaseOperation> operations = PhaseBinding.getDeferredOperations(request);
+      ArrayList<PhaseOperation<?>> operations = PhaseOperation.getSortedPhaseOperations(request);
       if (operations != null)
-         for (PhaseOperation operation : operations) {
-            if (!operation.isConsumed()
-                     && (event.getPhaseId().equals(operation.getBeforePhase())
-                              || PhaseId.ANY_PHASE.equals(operation.getBeforePhase())))
+      {
+         for (PhaseOperation<?> operation : operations) {
+            if (operation.getBeforePhases().contains(event.getPhaseId())
+                     || operation.getBeforePhases().contains(PhaseId.ANY_PHASE))
             {
-               operation.performDeferredOperation();
+               operation.performOperation(operation.getEvent(), operation.getContext());
             }
          }
+      }
    }
 
-   private void handleAfterPhaseInjections(final PhaseEvent event)
+   private void handleAfterPhaseOperations(final PhaseEvent event)
    {
       FacesContext facesContext = event.getFacesContext();
       HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
 
-      List<PhaseOperation> operations = PhaseBinding.getDeferredOperations(request);
+      ArrayList<PhaseOperation<?>> operations = PhaseOperation.getSortedPhaseOperations(request);
       if (operations != null)
-         for (PhaseOperation operation : operations) {
-            if (!operation.isConsumed()
-                     && (event.getPhaseId().equals(operation.getAfterPhase())
-                              || PhaseId.ANY_PHASE.equals(operation.getAfterPhase())))
+      {
+         for (PhaseOperation<?> operation : operations) {
+            if (operation.getAfterPhases().contains(event.getPhaseId())
+                     || operation.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
-               operation.performDeferredOperation();
+               operation.performOperation(operation.getEvent(), operation.getContext());
             }
          }
+      }
    }
 
    public void handleNavigation(final PhaseEvent event)

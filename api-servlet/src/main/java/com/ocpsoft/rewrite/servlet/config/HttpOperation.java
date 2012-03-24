@@ -35,7 +35,7 @@ public abstract class HttpOperation extends OperationBuilder
    public abstract void performHttp(HttpServletRewrite event, EvaluationContext context);
 
    @Override
-   public void perform(final Rewrite event, final EvaluationContext context)
+   public final void perform(final Rewrite event, final EvaluationContext context)
    {
       if (event instanceof HttpServletRewrite)
       {

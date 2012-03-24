@@ -21,11 +21,21 @@
  */
 package com.ocpsoft.rewrite.faces.config;
 
-import javax.faces.event.PhaseId;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.faces.event.PhaseId;
+import javax.servlet.http.HttpServletRequest;
+
+import com.ocpsoft.common.pattern.Weighted;
+import com.ocpsoft.common.pattern.WeightedComparator;
 import com.ocpsoft.rewrite.config.Operation;
+import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
-import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -34,70 +44,98 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class PhaseOperation implements HttpOperation
+public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOperation implements Weighted
 {
-   private final Rewrite event;
-   private final EvaluationContext context;
-   private final Operation pendingOperation;
-   private final PhaseId beforePhase;
-   private final PhaseId afterPhase;
-   private boolean consumed;
+   private static final String REQUEST_KEY = PhaseOperation.class.getName() + "_DEFERRED";
+   private HttpServletRewrite event;
+   private EvaluationContext context;
 
-   public PhaseOperation(final Operation operation)
+   private Set<PhaseId> beforePhases = new HashSet<PhaseId>();
+   private Set<PhaseId> afterPhases = new HashSet<PhaseId>();
+
+   public abstract void performOperation(final HttpServletRewrite event, final EvaluationContext context);
+
+   public Set<PhaseId> getBeforePhases()
    {
-      this.pendingOperation = operation;
-
-      if (pendingOperation instanceof PhaseBinding) {
-         PhaseBinding phaseBinding = (PhaseBinding) pendingOperation;
-         this.beforePhase = phaseBinding.getBeforePhase();
-         this.afterPhase = phaseBinding.getAfterPhase();
-      }
-      else
-      {
-         this.beforePhase = null;
-         this.afterPhase = PhaseId.RESTORE_VIEW;
-      }
+      return beforePhases;
    }
 
-   public Operation getPendingOperation()
+   public Set<PhaseId> getAfterPhases()
    {
-      return pendingOperation;
+      return afterPhases;
    }
 
-   public PhaseId getBeforePhase()
+   public OperationBuilder before(final PhaseId... phases)
    {
-      return beforePhase;
+      if (phases != null)
+         this.beforePhases.addAll(Arrays.asList(phases));
+      return this;
    }
 
-   public PhaseId getAfterPhase()
+   public OperationBuilder after(final PhaseId... phases)
    {
-      return afterPhase;
-   }
-
-   public boolean isConsumed()
-   {
-      return consumed;
+      if (phases != null)
+         this.afterPhases.addAll(Arrays.asList(phases));
+      return this;
    }
 
    /**
     * Invoked during the rewrite process, just add "this" to a queue of deferred bindings in the request
     */
    @Override
-   public void performHttp(HttpServletRewrite event, EvaluationContext context)
+   public final void performHttp(HttpServletRewrite event, EvaluationContext context)
    {
       this.event = event;
       this.context = context;
-      PhaseBinding.getDeferredOperations(this.event.getRequest()).add(this);
+      getSortedPhaseOperations(event.getRequest()).add(this);
    }
 
-   /**
-    * Invokes the nested pending operation
-    */
-   public void performDeferredOperation()
+   @SuppressWarnings("unchecked")
+   public static ArrayList<PhaseOperation<?>> getSortedPhaseOperations(HttpServletRequest request)
    {
-      consumed = true;
-      pendingOperation.perform(event, context);
+      ArrayList<PhaseOperation<?>> operations = (ArrayList<PhaseOperation<?>>) request.getAttribute(REQUEST_KEY);
+      if (operations == null)
+      {
+         operations = new ArrayList<PhaseOperation<?>>();
+         request.setAttribute(REQUEST_KEY, operations);
+      }
+
+      Collections.sort(operations, new WeightedComparator());
+
+      return operations;
+   }
+
+   public HttpServletRewrite getEvent()
+   {
+      return event;
+   }
+
+   public EvaluationContext getContext()
+   {
+      return context;
+   }
+
+   public static PhaseOperation<?> enqueue(final Operation operation)
+   {
+      return enqueue(operation, 0);
+   }
+
+   @SuppressWarnings("rawtypes")
+   public static PhaseOperation<?> enqueue(final Operation operation, final int priority)
+   {
+      return new PhaseOperation() {
+
+         @Override
+         public int priority()
+         {
+            return priority;
+         }
+
+         @Override
+         public void performOperation(HttpServletRewrite event, EvaluationContext context)
+         {
+            operation.perform(event, context);
+         }
+      };
    }
 }
-
-

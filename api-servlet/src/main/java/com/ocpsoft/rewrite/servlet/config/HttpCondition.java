@@ -34,7 +34,7 @@ public abstract class HttpCondition extends ConditionBuilder
    public abstract boolean evaluateHttp(final HttpServletRewrite event, EvaluationContext context);
 
    @Override
-   public boolean evaluate(final Rewrite event, final EvaluationContext context)
+   public final boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       if (event instanceof HttpServletRewrite)
       {

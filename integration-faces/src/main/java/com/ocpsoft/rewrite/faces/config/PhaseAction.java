@@ -21,70 +21,47 @@
  */
 package com.ocpsoft.rewrite.faces.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.servlet.http.HttpServletRequest;
 
+import com.ocpsoft.common.pattern.Weighted;
 import com.ocpsoft.common.services.ServiceLoader;
 import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.bind.Retrieval;
 import com.ocpsoft.rewrite.bind.Submission;
 import com.ocpsoft.rewrite.config.Invoke;
 import com.ocpsoft.rewrite.config.Operation;
-import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.exception.RewriteException;
-import com.ocpsoft.rewrite.servlet.config.HttpOperation;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import com.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import com.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**
- * Invoke an action before or after a given JavaServer Faces {@link PhaseId}
+ * Invoke an action before or after a given JavaServer Faces {@link PhaseId}. Has a {@link Weighted#priority()} of 0.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class PhaseAction extends HttpOperation
+public class PhaseAction extends PhaseOperation<PhaseAction>
 {
    private static final String QUEUED_ACTIONS = PhaseAction.class + "_QUEUED";
    private static final Logger log = Logger.getLogger(Invoke.class);
    private final Submission submission;
    private final Retrieval retrieval;
-   private List<PhaseId> beforePhases = new ArrayList<PhaseId>();
-   private List<PhaseId> afterPhases = new ArrayList<PhaseId>();
+
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
 
    private PhaseAction(final Submission submission, final Retrieval retrieval)
    {
       this.submission = submission;
       this.retrieval = retrieval;
-   }
-
-   @Override
-   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
-   {
-      HttpServletRequest request = event.getRequest();
-      List<QueuedPhaseAction> actions = getQueuedPhaseActions(request);
-
-      if (actions == null)
-      {
-         actions = new ArrayList<QueuedPhaseAction>();
-         request.setAttribute(QUEUED_ACTIONS, actions);
-      }
-
-      actions.add(new QueuedPhaseAction(event, context, this));
-   }
-
-   @SuppressWarnings("unchecked")
-   public static List<QueuedPhaseAction> getQueuedPhaseActions(final HttpServletRequest request)
-   {
-      List<QueuedPhaseAction> actions = (List<QueuedPhaseAction>) request.getAttribute(QUEUED_ACTIONS);
-      return actions;
    }
 
    public static void removeQueuedPhaseActions(final HttpServletRequest request)
@@ -93,7 +70,7 @@ public class PhaseAction extends HttpOperation
    }
 
    @SuppressWarnings("unchecked")
-   public void invokeAction(final HttpServletRewrite event, final EvaluationContext context)
+   public void performOperation(final HttpServletRewrite event, final EvaluationContext context)
    {
       Object result = null;
       if ((submission == null) && (retrieval != null))
@@ -168,16 +145,6 @@ public class PhaseAction extends HttpOperation
       }
    }
 
-   public List<PhaseId> getBeforePhases()
-   {
-      return beforePhases;
-   }
-
-   public List<PhaseId> getAfterPhases()
-   {
-      return afterPhases;
-   }
-
    /**
     * Invoke the given {@link Retrieval} and process {@link InvocationResultHandler} instances on the result value (if
     * any.)
@@ -199,26 +166,6 @@ public class PhaseAction extends HttpOperation
    public static PhaseAction submitTo(final Submission to, final Retrieval from)
    {
       return (PhaseAction) new PhaseAction(to, from).after(PhaseId.RESTORE_VIEW);
-   }
-
-   public OperationBuilder before(final PhaseId... phases)
-   {
-      if (phases == null)
-         this.beforePhases = new ArrayList<PhaseId>();
-      else
-         this.beforePhases = Arrays.asList(phases);
-
-      return this;
-   }
-
-   public OperationBuilder after(final PhaseId... phases)
-   {
-      if (phases == null)
-         this.afterPhases = new ArrayList<PhaseId>();
-      else
-         this.afterPhases = Arrays.asList(phases);
-
-      return this;
    }
 
 }
