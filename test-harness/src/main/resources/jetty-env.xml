@@ -2,8 +2,8 @@
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN"
 "http://www.eclipse.org/jetty/configure.dtd">
 <Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
-   <!-- Third argument to EnvEntry constructor (overrideWebXml) required for Jetty <= 6.1.14 -->
-   <!-- EnvEntry scope not implemented until Jetty 6.1.12 -->
+
+   <Set class="org.eclipse.jetty.util.resource.Resource" name="defaultUseCaches">false</Set>
    <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
       <Arg><Ref id="webAppCtx"/></Arg>
       <Arg>type</Arg>

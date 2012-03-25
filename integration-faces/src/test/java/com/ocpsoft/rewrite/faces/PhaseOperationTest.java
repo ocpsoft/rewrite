@@ -39,18 +39,27 @@ public class PhaseOperationTest extends RewriteTestBase
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTestBase
-               .getDeployment()
+               .getDeploymentNoWebXml()
+               .setWebXML("faces-web.xml")
                .addPackages(true, ADFRoot.class.getPackage())
+               .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))
+               .addAsWebInfResource("META-INF/faces-config.xml","faces-config.xml")
+               .addAsWebResource("empty-view.xhtml","empty.xhtml")
                .addAsResource(
-                        new StringAsset("com.ocpsoft.rewrite.faces.OperationTestConfigurationProvider"),
+                        new StringAsset("com.ocpsoft.rewrite.faces.PhaseOperationTestConfigurationProvider"),
                         "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
+      
+      System.out.println(deployment.toString(true));
+      
       return deployment;
    }
 
    @Test
    public void testUrlMappingConfiguration()
    {
-      HttpAction<HttpGet> action = get("/?adf=blah");
+      HttpAction<HttpGet> action = get("/faces/empty.xhtml?adf=blah");
+      String content = action.getResponseContent();
+      Assert.assertTrue(content.contains(">Empty"));
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
    }
 

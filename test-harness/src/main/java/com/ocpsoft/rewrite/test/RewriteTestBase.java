@@ -73,11 +73,17 @@ public class RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
+      return getDeploymentNoWebXml()
+               .setWebXML("jetty-web.xml");
+   }
+
+   public static WebArchive getDeploymentNoWebXml()
+   {
 
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
                .addAsLibraries(getRewriteArchive())
-               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.2.Final"))
+               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.6.Final"))
 
                /*
                 * Set the EL implementation
@@ -88,7 +94,6 @@ public class RewriteTestBase
                /*
                 * Set up container configuration
                 */
-               .setWebXML("jetty-web.xml")
                .addAsWebResource(new StringAsset("<beans/>"), ArchivePaths.create("WEB-INF/beans.xml"))
                .addAsWebResource("jetty-env.xml", ArchivePaths.create("WEB-INF/jetty-env.xml"))
                .addAsResource("jetty-log4j.xml", ArchivePaths.create("WEB-INF/classes/log4j.xml"));
