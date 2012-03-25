@@ -49,15 +49,13 @@ public class PhaseOperationTest extends RewriteTestBase
                         new StringAsset("com.ocpsoft.rewrite.faces.PhaseOperationTestConfigurationProvider"),
                         "/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider");
       
-      System.out.println(deployment.toString(true));
-      
       return deployment;
    }
 
    @Test
    public void testUrlMappingConfiguration()
    {
-      HttpAction<HttpGet> action = get("/faces/empty.xhtml?adf=blah");
+      HttpAction<HttpGet> action = get("/empty.xhtml?adf=blah");
       String content = action.getResponseContent();
       Assert.assertTrue(content.contains(">Empty"));
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());

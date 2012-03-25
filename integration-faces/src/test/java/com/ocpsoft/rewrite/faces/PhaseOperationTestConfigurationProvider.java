@@ -22,7 +22,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
       return ConfigurationBuilder.begin()
 
                .defineRule()
-               .when(Path.matches("/operation"))
+               .when(Path.matches("/empty.xhtml"))
                .perform(PhaseOperation.enqueue(new Operation() {
                   @Override
                   public void perform(Rewrite event, EvaluationContext context)
