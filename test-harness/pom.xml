@@ -77,7 +77,7 @@
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
                <artifactId>weld-servlet</artifactId>
-               <version>1.1.6.Final</version>
+               <version>1.1.4.Final</version>
             </dependency>
             <dependency>
                <groupId>javax.enterprise</groupId>

@@ -120,6 +120,9 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
       return enqueue(operation, 0);
    }
 
+   /**
+    * Enqueue an {@link Operation} to be performed before or after one or many JavaServer Faces life-cycle phases, specified via invoking {@link #before(PhaseId...)} or {@link #after(PhaseId...)}.
+    */
    @SuppressWarnings("rawtypes")
    public static PhaseOperation<?> enqueue(final Operation operation, final int priority)
    {

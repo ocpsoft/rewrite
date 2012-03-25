@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -145,11 +146,16 @@ public class HttpAction<T extends HttpRequest>
    public String getResponseContent()
    {
       try {
-         return toString(getResponse().getEntity().getContent());
+         HttpEntity entity = getResponse().getEntity();
+         if(entity != null)
+         {
+            return toString(entity.getContent());
+         }
       }
       catch (Exception e) {
          throw new RewriteException("Could not stringify response InputStream", e);
       }
+      return null;
    }
 
    /**

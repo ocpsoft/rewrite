@@ -10,6 +10,8 @@ import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.faces.config.PhaseOperation;
+import com.ocpsoft.rewrite.servlet.config.DispatchType;
+import com.ocpsoft.rewrite.servlet.config.Forward;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.SendStatus;
@@ -22,8 +24,9 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
       return ConfigurationBuilder.begin()
 
                .defineRule()
-               .when(Path.matches("/empty.xhtml"))
+               .when(Path.matches("/empty.xhtml").and(DispatchType.isRequest()))
                .perform(PhaseOperation.enqueue(new Operation() {
+                  
                   @Override
                   public void perform(Rewrite event, EvaluationContext context)
                   {
@@ -32,7 +35,20 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                      else
                         SendStatus.code(503).perform(event, context);
                   }
-               }).after(PhaseId.RESTORE_VIEW));
+               }).after(PhaseId.RESTORE_VIEW))
+
+               .defineRule()
+               .when(Path.matches("/render_response").and(DispatchType.isRequest()))
+               .perform(Forward.to("/empty.xhtml").and(PhaseOperation.enqueue(new Operation() {
+                  @Override
+                  public void perform(Rewrite event, EvaluationContext context)
+                  {
+                     if (PhaseId.RENDER_RESPONSE.equals(FacesContext.getCurrentInstance().getCurrentPhaseId()))
+                        SendStatus.code(204).perform(event, context);
+                     else
+                        SendStatus.code(504).perform(event, context);
+                  }
+               }).before(PhaseId.RENDER_RESPONSE)));
    }
 
    @Override

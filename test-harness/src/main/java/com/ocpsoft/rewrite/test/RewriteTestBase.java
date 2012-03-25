@@ -83,7 +83,7 @@ public class RewriteTestBase
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
                .addAsLibraries(getRewriteArchive())
-               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.6.Final"))
+               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"))
 
                /*
                 * Set the EL implementation

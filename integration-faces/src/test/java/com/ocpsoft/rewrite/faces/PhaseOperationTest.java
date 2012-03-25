@@ -23,6 +23,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.descriptor.impl.base.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +44,7 @@ public class PhaseOperationTest extends RewriteTestBase
                .setWebXML("faces-web.xml")
                .addPackages(true, ADFRoot.class.getPackage())
                .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))
-               .addAsWebInfResource("META-INF/faces-config.xml","faces-config.xml")
+               .addAsWebInfResource("faces-config.xml","faces-config.xml")
                .addAsWebResource("empty-view.xhtml","empty.xhtml")
                .addAsResource(
                         new StringAsset("com.ocpsoft.rewrite.faces.PhaseOperationTestConfigurationProvider"),
@@ -53,12 +54,23 @@ public class PhaseOperationTest extends RewriteTestBase
    }
 
    @Test
-   public void testUrlMappingConfiguration()
+   public void testDeferOperationRestoreView()
    {
       HttpAction<HttpGet> action = get("/empty.xhtml?adf=blah");
       String content = action.getResponseContent();
-      Assert.assertTrue(content.contains(">Empty"));
+      Assert.assertTrue(Strings.isNullOrEmpty(content));
+      // TODO why is content empty here, but null in below test?
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testDeferOperationRenderResponse()
+   {
+      HttpAction<HttpGet> action = get("/render_response");
+      String content = action.getResponseContent();
+      Assert.assertTrue(Strings.isNullOrEmpty(content));
+      // TODO why is content null here, but not in above test?
+      Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
    }
 
 }

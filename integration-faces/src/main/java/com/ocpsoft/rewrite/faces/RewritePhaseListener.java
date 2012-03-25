@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ocpsoft.logging.Logger;
 import com.ocpsoft.rewrite.faces.config.PhaseAction;
 import com.ocpsoft.rewrite.faces.config.PhaseOperation;
+import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -83,6 +84,14 @@ public class RewritePhaseListener implements PhaseListener
                      || operation.getBeforePhases().contains(PhaseId.ANY_PHASE))
             {
                operation.performOperation(operation.getEvent(), operation.getContext());
+               if (operation.getEvent().getFlow().is(Flow.ABORT_REQUEST))
+               {
+                  event.getFacesContext().responseComplete();
+               }
+               if (operation.getEvent().getFlow().is(Flow.HANDLED))
+               {
+                  break;
+               }
             }
          }
       }
@@ -101,6 +110,14 @@ public class RewritePhaseListener implements PhaseListener
                      || operation.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
                operation.performOperation(operation.getEvent(), operation.getContext());
+               if (operation.getEvent().getFlow().is(Flow.ABORT_REQUEST))
+               {
+                  event.getFacesContext().responseComplete();
+               }
+               if (operation.getEvent().getFlow().is(Flow.HANDLED))
+               {
+                  break;
+               }
             }
          }
       }

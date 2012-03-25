@@ -12,7 +12,7 @@
 
    <properties>
       <version.cdi-api>1.0-SP4</version.cdi-api>
-      <version.solder>3.1.0.Beta3</version.solder>
+      <version.solder>3.1.0.Final</version.solder>
    </properties>
 
    <dependencies>
