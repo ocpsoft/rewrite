@@ -25,9 +25,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.common.pattern.Weighted;
-import com.ocpsoft.common.services.ServiceLoader;
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.bind.Retrieval;
 import com.ocpsoft.rewrite.bind.Submission;
 import com.ocpsoft.rewrite.config.Invoke;
@@ -69,6 +70,7 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
       request.removeAttribute(QUEUED_ACTIONS);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public void performOperation(final HttpServletRewrite event, final EvaluationContext context)
    {

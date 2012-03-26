@@ -29,7 +29,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.exception.RewriteException;
 
 /**

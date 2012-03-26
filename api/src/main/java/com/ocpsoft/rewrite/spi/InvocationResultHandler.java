@@ -15,8 +15,9 @@
  */
 package com.ocpsoft.rewrite.spi;
 
-import com.ocpsoft.common.pattern.Specialized;
-import com.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.common.pattern.Specialized;
+import org.ocpsoft.common.pattern.Weighted;
+
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.config.Invoke;
 import com.ocpsoft.rewrite.context.EvaluationContext;

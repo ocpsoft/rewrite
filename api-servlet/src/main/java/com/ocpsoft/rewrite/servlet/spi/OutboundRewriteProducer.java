@@ -18,8 +18,9 @@ package com.ocpsoft.rewrite.servlet.spi;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.ocpsoft.common.pattern.Specialized;
-import com.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.common.pattern.Specialized;
+import org.ocpsoft.common.pattern.Weighted;
+
 import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 
 /**
@@ -27,7 +28,7 @@ import com.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
  * 
  */
 public interface OutboundRewriteProducer<IN extends ServletRequest, OUT extends ServletResponse, P> extends
-         Specialized<ServletResponse>, Weighted
+Specialized<ServletResponse>, Weighted
 {
    OutboundServletRewrite<IN, OUT> createOutboundRewrite(ServletRequest request, ServletResponse response, P payload);
 }

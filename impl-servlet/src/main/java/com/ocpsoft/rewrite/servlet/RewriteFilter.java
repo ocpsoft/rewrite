@@ -27,11 +27,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.common.pattern.WeightedComparator;
-import com.ocpsoft.common.services.ServiceLoader;
-import com.ocpsoft.common.spi.ServiceEnricher;
-import com.ocpsoft.common.util.Iterators;
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.common.pattern.WeightedComparator;
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.common.spi.ServiceEnricher;
+import org.ocpsoft.common.util.Iterators;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.config.ConfigurationProvider;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;

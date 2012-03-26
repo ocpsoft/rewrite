@@ -2,7 +2,7 @@ package com.ocpsoft.rewrite.servlet.util;
 
 import javax.servlet.ServletContext;
 
-import com.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Assert;
 
 /**
  * Utility method for easily interacting with the {@link ServletContext}
@@ -21,7 +21,7 @@ public class ContextUtil
    {
       boolean result = false;
       String value = getInitParam(context, name, null);
-      if("true".equalsIgnoreCase(value))
+      if ("true".equalsIgnoreCase(value))
       {
          result = true;
       }

@@ -18,10 +18,9 @@ package com.ocpsoft.rewrite.spring;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.ocpsoft.common.spi.ServiceEnricher;
+import org.ocpsoft.logging.Logger;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-
-import com.ocpsoft.common.spi.ServiceEnricher;
-import com.ocpsoft.logging.Logger;
 
 /**
  * {@link ServiceEnricher} implementation for Spring.

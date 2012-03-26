@@ -20,8 +20,9 @@ import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.ocpsoft.common.services.ServiceLoader;
-import com.ocpsoft.common.util.Iterators;
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.common.util.Iterators;
+
 import com.ocpsoft.rewrite.servlet.spi.ContextListener;
 
 /**

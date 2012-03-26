@@ -21,34 +21,28 @@
  */
 package com.ocpsoft.rewrite.faces.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.faces.event.PhaseId;
-import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.El.ElProperty;
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
+import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * Wraps & holds a param binding till before or after a given JavaServer Faces {@link PhaseId}
  * 
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  */
-public class PhaseBinding implements Binding
+public class PhaseInjection extends PhaseOperation<PhaseInjection> implements Binding
 {
-   private static final String DEFERRED_OPERATIONS = PhaseBinding.class + "_QUEUED";
-   private static final Logger log = Logger.getLogger(PhaseBinding.class);
-   
+   private static final Logger log = Logger.getLogger(PhaseInjection.class);
+
    private final Binding binding;
-   private PhaseId beforePhase; //it's wrong to perform the binding before PhaseId.RESTORE_VIEW
-   private PhaseId afterPhase; //it's useless to perform the binding after PhaseId.RENDER_RESPONSE
 
-
-   private PhaseBinding(Binding binding)
+   private PhaseInjection(Binding binding)
    {
       if (binding == null)
       {
@@ -60,36 +54,26 @@ public class PhaseBinding implements Binding
       }
       this.binding = binding;
    }
-   
+
+   @Override
+   public int priority()
+   {
+      return -5;
+   }
+
+   @Override
+   public void performOperation(HttpServletRewrite event, EvaluationContext context)
+   {
+      // TODO implement
+   }
+
    /**
-    * Wraps the Binding into a new PhaseInjection, so as to have it performed duriung the JSF lifecycle 
-    * By default, the original binding will be performed after {@link PhaseId#RESTORE_VIEW}
+    * Wraps the Binding into a new PhaseInjection, so as to have it performed duriung the JSF lifecycle By default, the
+    * original binding will be performed after {@link PhaseId#RESTORE_VIEW}
     */
-   public static PhaseBinding withhold(final Binding binding)
+   public static PhaseInjection withhold(final Binding binding)
    {
-      return (PhaseBinding) new PhaseBinding(binding).tillAfter(PhaseId.RESTORE_VIEW);
-   }
-
-   public PhaseId getBeforePhase()
-   {
-      return beforePhase;
-   }
-
-   public PhaseId getAfterPhase()
-   {
-      return afterPhase;
-   }
-
-   public Binding tillBefore(final PhaseId phase)
-   {
-      this.beforePhase = phase;
-      return this;
-   }
-
-   public Binding tillAfter(final PhaseId phase)
-   {
-      this.afterPhase = phase;
-      return this;
+      return (PhaseInjection) new PhaseInjection(binding).after(PhaseId.RESTORE_VIEW);
    }
 
    @Override
@@ -126,22 +110,5 @@ public class PhaseBinding implements Binding
    public boolean supportsSubmission()
    {
       return true;
-   }
-   
-   @SuppressWarnings("unchecked")
-   public static List<PhaseOperation> getDeferredOperations(final HttpServletRequest request)
-   {
-      List<PhaseOperation> operations = (List<PhaseOperation>) request.getAttribute(DEFERRED_OPERATIONS);
-      if (operations == null)
-      {
-         operations = new ArrayList<PhaseOperation>();
-         request.setAttribute(DEFERRED_OPERATIONS, operations);
-      }
-      return operations;
-   }
-
-   public static void removeDefferredOperations(final HttpServletRequest request)
-   {
-      request.removeAttribute(DEFERRED_OPERATIONS);
    }
 }

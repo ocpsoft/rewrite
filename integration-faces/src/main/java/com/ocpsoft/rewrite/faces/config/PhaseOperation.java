@@ -30,8 +30,9 @@ import java.util.Set;
 import javax.faces.event.PhaseId;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.common.pattern.Weighted;
-import com.ocpsoft.common.pattern.WeightedComparator;
+import org.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.common.pattern.WeightedComparator;
+
 import com.ocpsoft.rewrite.config.Operation;
 import com.ocpsoft.rewrite.config.OperationBuilder;
 import com.ocpsoft.rewrite.context.EvaluationContext;
@@ -50,8 +51,8 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
    private HttpServletRewrite event;
    private EvaluationContext context;
 
-   private Set<PhaseId> beforePhases = new HashSet<PhaseId>();
-   private Set<PhaseId> afterPhases = new HashSet<PhaseId>();
+   private final Set<PhaseId> beforePhases = new HashSet<PhaseId>();
+   private final Set<PhaseId> afterPhases = new HashSet<PhaseId>();
 
    public abstract void performOperation(final HttpServletRewrite event, final EvaluationContext context);
 

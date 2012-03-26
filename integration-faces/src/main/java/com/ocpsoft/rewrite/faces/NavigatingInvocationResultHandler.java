@@ -21,7 +21,8 @@
  */
 package com.ocpsoft.rewrite.faces;
 
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.event.Rewrite;
 import com.ocpsoft.rewrite.faces.config.PhaseAction;

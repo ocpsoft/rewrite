@@ -23,7 +23,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Assert;
+
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.DefaultBindable;

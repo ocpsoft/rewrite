@@ -30,7 +30,8 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.faces.config.PhaseAction;
 import com.ocpsoft.rewrite.faces.config.PhaseOperation;
 import com.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;

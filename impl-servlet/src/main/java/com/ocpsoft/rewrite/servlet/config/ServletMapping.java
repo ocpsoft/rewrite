@@ -7,7 +7,8 @@ import java.util.Map.Entry;
 import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
 
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
 import com.ocpsoft.rewrite.config.Condition;

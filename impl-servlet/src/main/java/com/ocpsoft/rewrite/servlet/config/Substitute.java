@@ -15,7 +15,8 @@
  */
 package com.ocpsoft.rewrite.servlet.config;
 
-import com.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Assert;
+
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Evaluation;
 import com.ocpsoft.rewrite.bind.ParameterizedPattern;
@@ -39,7 +40,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Substitute extends HttpOperation implements
-         ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String>
+ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String>
 {
    private final ParameterizedPattern location;
 

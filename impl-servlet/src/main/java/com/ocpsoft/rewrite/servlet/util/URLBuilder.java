@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.ocpsoft.common.util.Strings;
+import org.ocpsoft.common.util.Strings;
 
 /**
  * Utility for building URL strings. Also manages the URL query string with the help of {@link QueryStringBuilder}.

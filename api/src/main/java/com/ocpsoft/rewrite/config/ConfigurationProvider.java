@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.common.pattern.Specialized;
-import com.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.common.pattern.Specialized;
+import org.ocpsoft.common.pattern.Weighted;
 
 /**
  * Provider configuration to the Rewrite runtime environment.
@@ -24,7 +24,7 @@ import com.ocpsoft.common.pattern.Weighted;
  * Additional configuration providers my be specified by providing a service activator file containing the name of your
  * implementations:
  * <p>
- * <code> /META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider<br> 
+ * <code> /META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider<br>
  * 
  * --------------<br>
  * com.example.ConfigurationProviderImpl</code>

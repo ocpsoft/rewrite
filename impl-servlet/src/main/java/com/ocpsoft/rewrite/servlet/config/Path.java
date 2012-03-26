@@ -17,7 +17,8 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import java.util.Map;
 
-import com.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Assert;
+
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.Evaluation;
@@ -39,7 +40,7 @@ import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Path extends HttpCondition implements
-         ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 

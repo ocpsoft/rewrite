@@ -17,7 +17,8 @@ package com.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Assert;
+
 import com.ocpsoft.rewrite.context.EvaluationContext;
 import com.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 

@@ -4,7 +4,7 @@
    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
 
-   <groupId>com.ocpsoft.rewrite.showcase</groupId>
+   <groupId>org.ocpsoft.rewrite.showcase</groupId>
    <version>1.0.0-SNAPSHOT</version>
    <artifactId>rewrite-showcase-multi-domain</artifactId>
 
@@ -27,7 +27,7 @@
    <repositories>
       <repository>
          <id>ocpsoft</id>
-         <url>http://ocpsoft.com/repository/</url>
+         <url>http://ocpsoft.org/repository/</url>
       </repository>
    </repositories>
 

@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <artifactId>rewrite-parent</artifactId>
-      <groupId>com.ocpsoft.rewrite</groupId>
+      <groupId>org.ocpsoft.rewrite</groupId>
       <version>1.0.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
    </parent>
@@ -17,11 +17,11 @@
    <dependencies>
    
       <dependency>
-         <groupId>com.ocpsoft.rewrite</groupId>
+         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api</artifactId>
       </dependency>
       <dependency>
-         <groupId>com.ocpsoft.rewrite</groupId>
+         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
       </dependency>
       
@@ -35,15 +35,5 @@
    
    <build>
       <finalName>config-jodatime</finalName>
-      <plugins>
-         <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
-            <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
-            </configuration>
-         </plugin>
-      </plugins>
    </build>
 </project>

@@ -15,8 +15,9 @@
  */
 package com.ocpsoft.rewrite.config;
 
-import com.ocpsoft.common.services.ServiceLoader;
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Retrieval;
 import com.ocpsoft.rewrite.bind.Submission;

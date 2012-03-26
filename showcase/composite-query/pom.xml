@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>rewrite-showcase</artifactId>
-    <groupId>com.ocpsoft.rewrite.showcase</groupId>
+    <groupId>org.ocpsoft.rewrite.showcase</groupId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -19,7 +19,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.ocpsoft.rewrite</groupId>
+      <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-impl-servlet</artifactId>
     </dependency>
   </dependencies>
@@ -30,7 +30,7 @@
     </repository>
     <repository>
       <id>ocpsoft</id>
-      <url>http://ocpsoft.com/repository</url>
+      <url>http://ocpsoft.org/repository</url>
     </repository>
   </repositories>
   <build>

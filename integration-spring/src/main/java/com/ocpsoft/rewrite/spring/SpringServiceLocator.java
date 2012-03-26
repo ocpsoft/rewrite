@@ -20,10 +20,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.ocpsoft.common.spi.ServiceLocator;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
-
-import com.ocpsoft.common.spi.ServiceLocator;
 
 /**
  * {@link ServiceLocator} implementation for Spring.
@@ -32,29 +31,29 @@ import com.ocpsoft.common.spi.ServiceLocator;
  */
 public class SpringServiceLocator implements ServiceLocator {
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> Collection<Class<T>> locate(Class<T> clazz) {
+   @Override
+   @SuppressWarnings("unchecked")
+   public <T> Collection<Class<T>> locate(Class<T> clazz) {
 
-        Set<Class<T>> result = new HashSet<Class<T>>();
+      Set<Class<T>> result = new HashSet<Class<T>>();
 
-        // use the Spring API to obtain the WebApplicationContext
-        WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+      // use the Spring API to obtain the WebApplicationContext
+      WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
 
-        // may be null if Spring hasn't started yet
-        if (context != null) {
+      // may be null if Spring hasn't started yet
+      if (context != null) {
 
-            // ask spring about SPI implementations
-            Map<String, T> beans = context.getBeansOfType(clazz);
+         // ask spring about SPI implementations
+         Map<String, T> beans = context.getBeansOfType(clazz);
 
-            // add the implementations Class objects to the result set
-            for (T type : beans.values()) {
-                result.add((Class<T>) type.getClass());
-            }
+         // add the implementations Class objects to the result set
+         for (T type : beans.values()) {
+            result.add((Class<T>) type.getClass());
+         }
 
-        }
+      }
 
-        return result;
-    }
+      return result;
+   }
 
 }

@@ -19,7 +19,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Assert;
+
 import com.ocpsoft.rewrite.bind.Binding;
 import com.ocpsoft.rewrite.bind.Bindings;
 import com.ocpsoft.rewrite.bind.Evaluation;
@@ -41,7 +42,7 @@ import com.ocpsoft.rewrite.servlet.util.URLBuilder;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Domain extends HttpCondition implements
-         ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 

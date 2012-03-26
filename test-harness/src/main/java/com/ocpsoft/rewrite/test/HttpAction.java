@@ -33,7 +33,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 
-import com.ocpsoft.common.util.Streams;
 import com.ocpsoft.rewrite.exception.RewriteException;
 
 /**

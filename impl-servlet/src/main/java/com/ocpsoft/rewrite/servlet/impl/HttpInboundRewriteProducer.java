@@ -20,7 +20,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.common.services.NonEnriching;
+import org.ocpsoft.common.services.NonEnriching;
+
 import com.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 
@@ -29,8 +30,8 @@ import com.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
  * 
  */
 public class HttpInboundRewriteProducer implements
-         InboundRewriteProducer<HttpServletRequest, HttpServletResponse>,
-         NonEnriching
+InboundRewriteProducer<HttpServletRequest, HttpServletResponse>,
+NonEnriching
 {
    @Override
    public int priority()
@@ -47,8 +48,8 @@ public class HttpInboundRewriteProducer implements
    @Override
    public InboundServletRewrite<HttpServletRequest, HttpServletResponse> createInboundRewrite(final ServletRequest request,
             final ServletResponse response)
-   {
+            {
       return new HttpInboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response);
-   }
+            }
 
 }

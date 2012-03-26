@@ -25,9 +25,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.solder.beanManager.BeanManagerAware;
-
-import com.ocpsoft.common.spi.ServiceEnricher;
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.common.spi.ServiceEnricher;
+import org.ocpsoft.logging.Logger;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

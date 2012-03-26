@@ -3,12 +3,12 @@ package com.ocpsoft.rewrite.gwt.server.history;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 
-import com.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationBuilder;
 import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import com.ocpsoft.rewrite.servlet.config.Method;
-import com.ocpsoft.rewrite.servlet.config.Path;
 import com.ocpsoft.rewrite.servlet.config.QueryString;
 import com.ocpsoft.rewrite.servlet.config.Response;
 import com.ocpsoft.rewrite.servlet.util.ContextUtil;

@@ -12,8 +12,7 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.ocpsoft.logging.JDKLogAdapter;
+import org.ocpsoft.logging.JDKLogAdapter;
 
 public class JDKLogAdapterTest
 {
@@ -84,16 +83,19 @@ public class JDKLogAdapterTest
    {
       private LogRecord logRecord;
 
+      @Override
       public void publish(LogRecord logRecord)
       {
          this.logRecord = logRecord;
       }
 
+      @Override
       public void flush()
       {
          // NOP
       }
 
+      @Override
       public void close() throws SecurityException
       {
          // NOP

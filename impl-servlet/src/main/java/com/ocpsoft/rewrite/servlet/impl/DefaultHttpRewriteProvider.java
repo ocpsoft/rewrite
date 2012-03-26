@@ -15,7 +15,8 @@
  */
 package com.ocpsoft.rewrite.servlet.impl;
 
-import com.ocpsoft.common.services.NonEnriching;
+import org.ocpsoft.common.services.NonEnriching;
+
 import com.ocpsoft.rewrite.config.Configuration;
 import com.ocpsoft.rewrite.config.ConfigurationLoader;
 import com.ocpsoft.rewrite.config.Operation;

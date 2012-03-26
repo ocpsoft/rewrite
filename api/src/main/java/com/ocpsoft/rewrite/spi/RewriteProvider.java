@@ -15,8 +15,9 @@
  */
 package com.ocpsoft.rewrite.spi;
 
-import com.ocpsoft.common.pattern.Specialized;
-import com.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.common.pattern.Specialized;
+import org.ocpsoft.common.pattern.Weighted;
+
 import com.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -24,7 +25,7 @@ import com.ocpsoft.rewrite.event.Rewrite;
  * 
  */
 public interface RewriteProvider<T extends Rewrite>
-         extends Weighted, Specialized<Rewrite>
+extends Weighted, Specialized<Rewrite>
 {
    void rewrite(T event);
 }

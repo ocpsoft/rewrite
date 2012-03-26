@@ -27,8 +27,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.jboss.solder.beanManager.BeanManagerAware;
-
-import com.ocpsoft.common.spi.ServiceLocator;
+import org.ocpsoft.common.spi.ServiceLocator;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
