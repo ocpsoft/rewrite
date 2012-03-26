@@ -1,1 +1,1 @@
-com.ocpsoft.rewrite.cdi.CdiServiceEnricher
+org.ocpsoft.rewrite.cdi.CdiServiceEnricher

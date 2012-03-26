@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6//EN"
+        "http://google-web-toolkit.googlecode.com/svn/releases/1.6/distro-source/core/src/gwt-module.dtd">
+<module rename-to="Rewrite">
+    <source path="client" />
+
+	<inherits name='com.google.gwt.user.User' />
+	
+	<!-- History Push State Implementation -->
+	<define-property name="history.push.state" values="supported, notsupported" />
+
+	<property-provider name="history.push.state">
+        <![CDATA[
+            if (typeof(window.history.pushState) == "function") {
+                return "supported";
+            } else {
+                return "notsupported";
+            }
+        ]]>
+	</property-provider>
+
+	<replace-with class="org.ocpsoft.rewrite.gwt.client.history.HistoryStateImpl">
+		<when-type-is class="com.google.gwt.user.client.impl.HistoryImpl" />
+		<all>
+			<when-property-is name="history.push.state" value="supported" />
+		</all>
+	</replace-with>
+</module>

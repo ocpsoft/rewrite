@@ -6,6 +6,7 @@ dependency-reduced-pom.xml
 target/
 *.iml
 *.ipr
+*.idea
 *.iws
 *.*~
 bin/

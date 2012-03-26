@@ -8,12 +8,12 @@
 	<name>rewrite_integration_faces</name>
 
 	<application>
-		<navigation-handler>com.ocpsoft.rewrite.faces.RewriteNavigationHandler</navigation-handler>
-		<view-handler>com.ocpsoft.rewrite.faces.RewriteViewHandler</view-handler>
+		<navigation-handler>org.ocpsoft.rewrite.faces.RewriteNavigationHandler</navigation-handler>
+		<view-handler>org.ocpsoft.rewrite.faces.RewriteViewHandler</view-handler>
 	</application>
 
 	<lifecycle>
-		<phase-listener>com.ocpsoft.rewrite.faces.RewritePhaseListener</phase-listener>
+		<phase-listener>org.ocpsoft.rewrite.faces.RewritePhaseListener</phase-listener>
 	</lifecycle>
 
 </faces-config>

@@ -28,12 +28,12 @@ Get Started
 2. Include OCPSoft Rewrite in your application's POM file:
 
         <dependency>
-           <groupId>com.ocpsoft.rewrite</groupId>
+           <groupId>org.ocpsoft.rewrite</groupId>
            <artifactId>rewrite-impl-servlet</artifactId>
            <version>${rewrite.version}</version>
         </dependency>
 
-3. Add a configuration provider implementing the 'com.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
+3. Add a configuration provider implementing the 'org.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
 
         package com.example;
         public class ExampleConfigurationProvider extends HttpConfigurationProvider
@@ -55,13 +55,13 @@ Get Started
             }
         }
 
-4. Create a file named: '/META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider' which contains the fully qualified name of your ConfigurationProvider implementation:
+4. Create a file named: '/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider' which contains the fully qualified name of your ConfigurationProvider implementation:
 
-        /META-INF/services/com.ocpsoft.rewrite.config.ConfigurationProvider
+        /META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider
         ---
         com.example.ExampleConfigurationProvider
 
-5. Add rules to your configuration. Condition objects such as 'Direction.isInbound()' and 'Path.matches(...)' can be found in the 'com.ocpsoft.rewrite.config.*' and 'com.ocpsoft.rewrite.servlet.config.*' packages.
+5. Add rules to your configuration. Condition objects such as 'Direction.isInbound()' and 'Path.matches(...)' can be found in the 'org.ocpsoft.rewrite.config.*' and 'org.ocpsoft.rewrite.servlet.config.*' packages.
 
 6. Consider using Rewrite extensions for extra power:
    * [JodaTime Integration](https://github.com/ocpsoft/rewrite/tree/master/config-jodatime)

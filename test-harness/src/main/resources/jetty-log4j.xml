@@ -24,7 +24,7 @@
       <level value="warn" />
    </logger>
 
-   <logger name="com.ocpsoft">
+   <logger name="org.ocpsoft">
       <level value="debug" />
    </logger>
 

@@ -7,7 +7,7 @@ Get Started
 1. Include OCPSoft Rewrite in your application's POM file:
 
         <dependency>
-           <groupId>com.ocpsoft.rewrite</groupId>
+           <groupId>org.ocpsoft.rewrite</groupId>
            <artifactId>rewrite-impl-servlet</artifactId>
            <version>${rewrite.version}</version>
         </dependency>

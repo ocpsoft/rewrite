@@ -9,14 +9,14 @@ Get Started
 1. Include Rewrite GWT in your application's POM file:
 
         <dependency>
-            <groupId>com.ocpsoft.rewrite</groupId>
+            <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-integation-gwt</artifactId>
             <version>${rewrite.version}</version>
         </dependency>
 
 2. Include Rewrite GWT in your App.gwt.xml file:
 
-        <inherits name="com.ocpsoft.rewrite.gwt.Rewrite" />
+        <inherits name="org.ocpsoft.rewrite.gwt.Rewrite" />
 
 3. Enable bookmarking by routing some or all URLs back to your host application file. Below is a recommended rule format (replace */index.jsp* with the path to your application):
 
