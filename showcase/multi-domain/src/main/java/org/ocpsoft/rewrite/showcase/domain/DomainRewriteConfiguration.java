@@ -17,15 +17,15 @@ package org.ocpsoft.rewrite.showcase.domain;
 
 import javax.servlet.ServletContext;
 
-import org.ocpsoft.rewrite.bind.El;
-import org.ocpsoft.rewrite.config.Configuration;
-import org.ocpsoft.rewrite.config.ConfigurationBuilder;
-import org.ocpsoft.rewrite.config.Invoke;
-import org.ocpsoft.rewrite.servlet.config.DispatchType;
-import org.ocpsoft.rewrite.servlet.config.Domain;
-import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
-import org.ocpsoft.rewrite.servlet.config.QueryString;
-import org.ocpsoft.rewrite.servlet.config.rule.Join;
+import com.ocpsoft.rewrite.bind.El;
+import com.ocpsoft.rewrite.config.Configuration;
+import com.ocpsoft.rewrite.config.ConfigurationBuilder;
+import com.ocpsoft.rewrite.config.Invoke;
+import com.ocpsoft.rewrite.servlet.config.DispatchType;
+import com.ocpsoft.rewrite.servlet.config.Domain;
+import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import com.ocpsoft.rewrite.servlet.config.QueryString;
+import com.ocpsoft.rewrite.servlet.config.rule.Join;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

@@ -6,7 +6,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.joda.time.DateTime;
-
 import org.ocpsoft.pretty.time.PrettyTime;
 import org.ocpsoft.pretty.time.units.Second;
 

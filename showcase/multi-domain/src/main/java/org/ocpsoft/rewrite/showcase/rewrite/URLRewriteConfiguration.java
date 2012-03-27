@@ -2,15 +2,15 @@ package org.ocpsoft.rewrite.showcase.rewrite;
 
 import javax.servlet.ServletContext;
 
-import org.ocpsoft.rewrite.config.Configuration;
-import org.ocpsoft.rewrite.config.ConfigurationBuilder;
-import org.ocpsoft.rewrite.config.Direction;
-import org.ocpsoft.rewrite.servlet.config.DispatchType;
-import org.ocpsoft.rewrite.servlet.config.Forward;
-import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
-import org.ocpsoft.rewrite.servlet.config.Path;
-import org.ocpsoft.rewrite.servlet.config.rule.Join;
-import org.ocpsoft.rewrite.servlet.config.rule.TrailingSlash;
+import com.ocpsoft.rewrite.config.Configuration;
+import com.ocpsoft.rewrite.config.ConfigurationBuilder;
+import com.ocpsoft.rewrite.config.Direction;
+import com.ocpsoft.rewrite.servlet.config.DispatchType;
+import com.ocpsoft.rewrite.servlet.config.Forward;
+import com.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import com.ocpsoft.rewrite.servlet.config.Path;
+import com.ocpsoft.rewrite.servlet.config.rule.Join;
+import com.ocpsoft.rewrite.servlet.config.rule.TrailingSlash;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

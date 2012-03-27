@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.joda.time.DateTime;
-
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.jodatime.JodaTime;
