@@ -74,7 +74,7 @@ public class HistoryStateImpl extends HistoryImpl
 		var path = $wnd.location.pathname;
 		if (path.length > 0) {
 			token = historyImpl.@com.google.gwt.user.client.impl.HistoryImpl::decodeFragment(Ljava/lang/String;)(path);
-			token = historyImpl.@HistoryStateImpl::cleanToken(Ljava/lang/String;)(token);
+			token = historyImpl.@org.ocpsoft.rewrite.gwt.client.history.HistoryStateImpl::cleanToken(Ljava/lang/String;)(token);
 		}
 
 		@com.google.gwt.user.client.impl.HistoryImpl::setToken(Ljava/lang/String;)(token);
@@ -86,7 +86,7 @@ public class HistoryStateImpl extends HistoryImpl
 			var path = $wnd.location.pathname;
 			if (path.length > 0) {
 				token = historyImpl.@com.google.gwt.user.client.impl.HistoryImpl::decodeFragment(Ljava/lang/String;)(path);
-				token = historyImpl.@HistoryStateImpl::cleanToken(Ljava/lang/String;)(token);
+				token = historyImpl.@org.ocpsoft.rewrite.gwt.client.history.HistoryStateImpl::cleanToken(Ljava/lang/String;)(token);
 			}
 
 			historyImpl.@com.google.gwt.user.client.impl.HistoryImpl::newItemOnEvent(Ljava/lang/String;)(token);
