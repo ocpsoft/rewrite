@@ -21,8 +21,7 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.inject.Inject;
 
-import org.jboss.solder.el.Expressions;
-
+import org.ocpsoft.rewrite.cdi.expressions.Expressions;
 import org.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 
 /**

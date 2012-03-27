@@ -24,9 +24,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.solder.beanManager.BeanManagerAware;
 import org.ocpsoft.common.spi.ServiceEnricher;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.cdi.manager.BeanManagerAware;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

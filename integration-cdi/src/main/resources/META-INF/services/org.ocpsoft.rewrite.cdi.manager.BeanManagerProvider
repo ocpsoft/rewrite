@@ -1,0 +1,2 @@
+org.ocpsoft.rewrite.cdi.manager.DefaultJndiBeanManagerProvider
+org.ocpsoft.rewrite.cdi.manager.ServletContainerJndiBeanManagerProvider
