@@ -70,6 +70,13 @@ public class Path extends HttpCondition implements
    {
       return new Path(pattern);
    }
+   
+   public static Path captureIn(final String param)
+   {
+      Path path = new Path("{"+param+"}");
+      path.where(param).matches(".*");
+      return path;
+   }
 
    /**
     * Bind each path parameter to the corresponding request parameter by name. By default, matching values are bound to

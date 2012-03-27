@@ -67,7 +67,7 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
    /**
     * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the entire {@link HttpServletRequest#getQueryString()}
     * <p>
-    * This value may be bound.
+    * This value may be bound using <code>{param}</code> statements.
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
@@ -102,7 +102,7 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
     * {@link HttpServletRequest#getQueryString()}
     * <p>
     * The values of all matching parameters may be bound. By default, matching values are bound to the
-    * {@link org.ocpsoft.rewrite.context.EvaluationContext}.
+    * {@link org.ocpsoft.rewrite.context.EvaluationContext}, and are stored by parameter name.
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */

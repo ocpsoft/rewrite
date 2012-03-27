@@ -36,18 +36,18 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getServerName()}
+ * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getScheme()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Domain extends HttpCondition implements
+public class Scheme extends HttpCondition implements
         ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 
-   private Domain(final String pattern)
+   private Scheme(final String pattern)
    {
-      Assert.notNull(pattern, "Domain must not be null.");
+      Assert.notNull(pattern, "Scheme must not be null.");
       this.expression = new ParameterizedPattern(pattern);
 
       for (Parameter<String> parameter : this.expression.getParameters().values()) {
@@ -56,22 +56,22 @@ public class Domain extends HttpCondition implements
    }
 
    /**
-    * Inspect the current request domain, comparing against the given pattern.
+    * Inspect the current request scheme, comparing against the given pattern.
     * <p>
     * The given pattern may be parameterized using the following format:
     * <p>
     * <code>
-    *    example.com
-    *    {domain}.com <br>
-    *    www.{domain}.{suffix} <br>
+    *    https
+    *    {scheme}
+    *    {scheme}-custom <br>
     *    ... and so on
     * </code>
     * <p>
     * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See also {@link #where(String)}
     */
-   public static Domain matches(final String pattern)
+   public static Scheme matches(final String pattern)
    {
-      return new Domain(pattern);
+      return new Scheme(pattern);
    }
 
    @Override
@@ -102,22 +102,22 @@ public class Domain extends HttpCondition implements
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      String hostName = null;
+      String scheme = null;
 
       if (event instanceof HttpOutboundServletRewrite)
       {
          String url = event.getURL();
          URLBuilder builder = URLBuilder.createFrom(url);
-         hostName = builder.toURI().getHost();
-         if (hostName == null)
-            hostName = event.getRequest().getServerName();
+         scheme = builder.toURI().getScheme();
+         if (scheme == null)
+            scheme = event.getRequest().getScheme();
       }
       else
-         hostName = event.getRequest().getServerName();
+         scheme = event.getRequest().getScheme();
 
-      if (hostName != null && expression.matches(event, context, hostName))
+      if (scheme != null && expression.matches(event, context, scheme))
       {
-         Map<RegexParameter, String[]> parameters = expression.parse(event, context, hostName);
+         Map<RegexParameter, String[]> parameters = expression.parse(event, context, scheme);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }
@@ -125,7 +125,7 @@ public class Domain extends HttpCondition implements
    }
 
    /**
-    * Get the underlying {@link ParameterizedPattern} for this {@link Domain}
+    * Get the underlying {@link ParameterizedPattern} for this {@link Scheme}
     * <p>
     * See also: {@link #where(String)}
     */
