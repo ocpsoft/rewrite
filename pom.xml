@@ -23,7 +23,7 @@
 
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <version.jboss.spec>2.0.0.CR1</version.jboss.spec>
+      <version.jboss.spec>3.0.0.Final</version.jboss.spec>
       <version.junit>4.8.1</version.junit>
       <version.common>1.0.4.Final</version.common>
       <version.logging>1.0.1.Final</version.logging>
@@ -112,7 +112,7 @@
          
          <dependency>
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee6-specs-bom</artifactId>
+            <artifactId>jboss-javaee-6.0</artifactId>
             <version>${version.jboss.spec}</version>
             <type>pom</type>
             <scope>import</scope>
