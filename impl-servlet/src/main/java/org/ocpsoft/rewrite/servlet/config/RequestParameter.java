@@ -40,8 +40,9 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RequestParameter extends HttpCondition implements
-         ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
+
    private final ParameterizedPattern name;
    private final ParameterizedPattern value;
 
@@ -64,6 +65,11 @@ public class RequestParameter extends HttpCondition implements
    public static RequestParameter matches(final String name, final String value)
    {
       return new RequestParameter(name, value);
+   }
+
+   public static RequestParameter matchesAll(final String name, final String value)
+   {
+      return new AllRequestParameters(name, value);
    }
 
    /**
@@ -94,12 +100,12 @@ public class RequestParameter extends HttpCondition implements
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
-      for (String header : Collections.list(request.getParameterNames()))
+      for (String parameter : Collections.list(request.getParameterNames()))
       {
-         if (name.matches(event, context, header) && matchesValue(event, context, request, header))
+         if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
-            Map<RegexParameter, String[]> parameters = name.parse(event, context, header);
-            parameters = value.parse(event, context, header);
+            Map<RegexParameter, String[]> parameters = name.parse(event, context, parameter);
+            parameters = value.parse(event, context, parameter);
 
             if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)
                      && Bindings.enqueuePreOperationSubmissions(event, context, parameters))
@@ -147,5 +153,65 @@ public class RequestParameter extends HttpCondition implements
    public RegexConditionParameterBuilder where(String param, Binding binding)
    {
       return where(param, binding);
+   }
+
+   ParameterizedPattern getName()
+   {
+      return name;
+   }
+
+   ParameterizedPattern getValue()
+   {
+      return value;
+   }
+
+   public static class AllRequestParameters extends RequestParameter
+   {
+      public AllRequestParameters(String name, String value)
+      {
+         super(name, value);
+      }
+
+      @Override
+      public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
+      {
+         boolean result = false;
+         HttpServletRequest request = event.getRequest();
+         for (String name : Collections.list(request.getParameterNames()))
+         {
+            if (getName().matches(event, context, name))
+            {
+               if (matchesValues(event, context, request, name))
+               {
+                  Map<RegexParameter, String[]> parameters = getName().parse(event, context, name);
+                  parameters = getValue().parse(event, context, name);
+
+                  result = true;
+
+                  if (!(Bindings.enqueuePreOperationSubmissions(event, context, parameters)
+                           && Bindings.enqueuePreOperationSubmissions(event, context, parameters)))
+                  {
+                     return false;
+                  }
+               }
+               else
+                  return false;
+            }
+         }
+         return result;
+      }
+
+      private boolean matchesValues(Rewrite event, EvaluationContext context, final HttpServletRequest request,
+               final String name)
+      {
+         for (String contents : Arrays.asList(request.getParameterValues(name)))
+         {
+            if (!getValue().matches(event, context, contents))
+            {
+               return false;
+            }
+         }
+         return true;
+      }
    }
 }

@@ -49,7 +49,7 @@ public class RequestParameterTest
       .thenReturn(new String[] { "bar" });
 
       Mockito.when(request.getParameterValues("baz"))
-      .thenReturn(new String[] { "cab" });
+      .thenReturn(new String[] { "cab", "caz" });
 
       Mockito.when(request.getParameter("foo"))
       .thenReturn("bar");
@@ -88,6 +88,41 @@ public class RequestParameterTest
    public void testRequestParameterMatches()
    {
       Assert.assertTrue(RequestParameter.matches("foo", "{value}").where("value").matches("(bar|baz)")
+               .evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testRequestParameterMatchesAll()
+   {
+      Assert.assertTrue(RequestParameter.matchesAll("baz", "{value}").where("value").matches("(cab|caz)")
+               .evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testRequestParameterMatchesAllNamesAllValues()
+   {
+      Assert.assertTrue(RequestParameter.matchesAll("{name}", "{value}")
+               .evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testRequestParameterMatchesAllNamesNotValues()
+   {
+      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").where("value").matches("nothing")
+               .evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testRequestParameterMatchesAllNotName()
+   {
+      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").where("name").matches("nothing")
+               .evaluate(rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testRequestParameterMatchesAllInvalid()
+   {
+      Assert.assertFalse(RequestParameter.matchesAll("baz", "{value}").where("value").matches("(cab|xxx)")
                .evaluate(rewrite, new MockEvaluationContext()));
    }
 
