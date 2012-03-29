@@ -25,21 +25,21 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.DefaultBindable;
+import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.util.Maps;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
-import org.ocpsoft.rewrite.bind.Evaluation;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestQueryString()}
+ * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
+ * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestQueryString()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -65,7 +65,8 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
    }
 
    /**
-    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the entire {@link HttpServletRequest#getQueryString()}
+    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the entire
+    * {@link HttpServletRequest#getQueryString()}
     * <p>
     * This value may be bound using <code>{param}</code> statements.
     * <p>
@@ -98,8 +99,8 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
    }
 
    /**
-    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the existence of specific parameters within
-    * {@link HttpServletRequest#getQueryString()}
+    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the existence of specific parameters
+    * within {@link HttpServletRequest#getQueryString()}
     * <p>
     * The values of all matching parameters may be bound. By default, matching values are bound to the
     * {@link org.ocpsoft.rewrite.context.EvaluationContext}, and are stored by parameter name.
@@ -146,8 +147,8 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
    }
 
    /**
-    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the existence of a parameter values within
-    * {@link HttpServletRequest#getQueryString()}
+    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the existence of a parameter values
+    * within {@link HttpServletRequest#getQueryString()}
     * <p>
     * The values of all matching parameter values may be bound. By default, matching values are bound to the
     * {@link EvaluationContext}.

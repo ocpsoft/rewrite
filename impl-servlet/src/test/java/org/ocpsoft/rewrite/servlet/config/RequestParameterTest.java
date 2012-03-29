@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
@@ -45,19 +43,19 @@ public class RequestParameterTest
    {
       request = Mockito.mock(HttpServletRequest.class);
       Mockito.when(request.getParameterNames())
-               .thenReturn(Collections.enumeration(Arrays.asList("foo", "baz")));
+      .thenReturn(Collections.enumeration(Arrays.asList("foo", "baz")));
 
       Mockito.when(request.getParameterValues("foo"))
-               .thenReturn(new String[] { "bar" });
+      .thenReturn(new String[] { "bar" });
 
       Mockito.when(request.getParameterValues("baz"))
-               .thenReturn(new String[] { "cab" });
+      .thenReturn(new String[] { "cab" });
 
       Mockito.when(request.getParameter("foo"))
-               .thenReturn("bar");
+      .thenReturn("bar");
 
       Mockito.when(request.getParameter("baz"))
-               .thenReturn("cab");
+      .thenReturn("cab");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }
@@ -89,13 +87,14 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterMatches()
    {
-      Assert.assertTrue(RequestParameter.matches("foo", "(bar|baz)").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(RequestParameter.matches("foo", "{value}").where("value").matches("(bar|baz)")
+               .evaluate(rewrite, new MockEvaluationContext()));
    }
 
-   @Test(expected = PatternSyntaxException.class)
+   @Test
    public void testBadRegexThrowsException()
    {
-      RequestParameter.matches("*whee", "blah");
+      Assert.assertFalse(RequestParameter.matches(".*", "bar").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)

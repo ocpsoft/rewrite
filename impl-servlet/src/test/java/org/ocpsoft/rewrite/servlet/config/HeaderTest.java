@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
@@ -45,13 +43,13 @@ public class HeaderTest
    {
       request = Mockito.mock(HttpServletRequest.class);
       Mockito.when(request.getHeaderNames())
-               .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
+      .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
 
       Mockito.when(request.getHeaders("Content-Length"))
-               .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
+      .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
 
       Mockito.when(request.getHeaders("Accept-Charset"))
-               .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
+      .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }
@@ -59,7 +57,7 @@ public class HeaderTest
    @Test
    public void testHeaderExists()
    {
-      Assert.assertTrue(Header.exists("Accept-.*").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Header.exists("Accept-{head}").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
@@ -77,20 +75,21 @@ public class HeaderTest
    @Test
    public void testHeaderContains()
    {
-      Assert.assertTrue(Header.valueExists("UTF-.*").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Header.valueExists("UTF-{enc}").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testHeaderMatches()
    {
-      Assert.assertTrue(Header.matches("Accept-Charset", "(ISO|UTF)-\\d+").evaluate(rewrite,
-               new MockEvaluationContext()));
+      Assert.assertTrue(Header.matches("Accept-Charset", "{enc}").where("enc").matches("(ISO|UTF)-\\d+")
+               .evaluate(rewrite,
+                        new MockEvaluationContext()));
    }
 
-   @Test(expected = PatternSyntaxException.class)
-   public void testBadRegexThrowsException()
+   @Test
+   public void testCannotUseRegexes()
    {
-      Header.matches("*Accept-Charset", "blah").evaluate(rewrite, new MockEvaluationContext());
+      Assert.assertFalse(Header.matches(".*Accept-Charset", "blah").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)

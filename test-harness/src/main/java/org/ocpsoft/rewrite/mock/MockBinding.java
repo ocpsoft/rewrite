@@ -106,4 +106,12 @@ public class MockBinding extends BindingBuilder
    {
       return value;
    }
+
+   @Override
+   public String toString()
+   {
+      return "MockBinding [submitted=" + submitted + ", validated=" + validated + ", converted=" + converted
+               + ", extracted=" + extracted + ", value=" + value + ", returnOnSubmit=" + returnOnSubmit + "]";
+   }
+
 }

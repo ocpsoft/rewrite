@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.rewrite.param;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.OperationBuilder;
@@ -25,16 +28,22 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class OperationParameterBuilder<P extends OperationParameterBuilder<P, T>, T> implements
-         ParameterizedOperation<OperationParameterBuilder<P, T>, T>
+ParameterizedOperation<OperationParameterBuilder<P, T>, T>
 {
    private final ParameterizedOperation<OperationParameterBuilder<P, T>, T> parent;
-   private final Parameter<T> parameter;
+   private final List<Parameter<T>> parameters;
 
    public OperationParameterBuilder(final ParameterizedOperation<OperationParameterBuilder<P, T>, T> parent,
-            final Parameter<T> parameter)
+            final Parameter<T>... parameters)
    {
       this.parent = parent;
-      this.parameter = parameter;
+      this.parameters = new ArrayList<Parameter<T>>();
+      for (Parameter<T> parameter : parameters) {
+         if (parameter != null)
+         {
+            this.parameters.add(parameter);
+         }
+      }
    }
 
    /**
@@ -43,7 +52,9 @@ public class OperationParameterBuilder<P extends OperationParameterBuilder<P, T>
    @SuppressWarnings("unchecked")
    public P constrainedBy(final Constraint<T> constraint)
    {
-      parameter.constrainedBy(constraint);
+      for (Parameter<T> parameter : parameters) {
+         parameter.constrainedBy(constraint);
+      }
       return (P) this;
    }
 
@@ -52,9 +63,11 @@ public class OperationParameterBuilder<P extends OperationParameterBuilder<P, T>
     * added. All transforms are applied before {@link Binding} occurs.
     */
    @SuppressWarnings("unchecked")
-   public P transformedBy(final Transform<T> constraint)
+   public P transformedBy(final Transform<T> transform)
    {
-      parameter.transformedBy(constraint);
+      for (Parameter<T> parameter : parameters) {
+         parameter.transformedBy(transform);
+      }
       return (P) this;
    }
 
@@ -64,7 +77,9 @@ public class OperationParameterBuilder<P extends OperationParameterBuilder<P, T>
    @SuppressWarnings("unchecked")
    public P bindsTo(final Binding binding)
    {
-      parameter.bindsTo(binding);
+      for (Parameter<T> parameter : parameters) {
+         parameter.bindsTo(binding);
+      }
       return (P) this;
    }
 

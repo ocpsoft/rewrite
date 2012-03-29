@@ -30,47 +30,72 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterizedCondition;
+import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getServerName()}
+ * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
+ * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestPath()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Domain extends HttpCondition implements
+public class URL extends HttpCondition implements
 ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 
-   private Domain(final String pattern)
+   private URL(final String pattern)
    {
-      Assert.notNull(pattern, "Domain must not be null.");
-      this.expression = new ParameterizedPattern(pattern);
+      Assert.notNull(pattern, "URL must not be null.");
+      this.expression = new ParameterizedPattern(".*", pattern);
 
-      for (Parameter<String> parameter : this.expression.getParameters().values()) {
+      for (Parameter<String> parameter : expression.getParameters().values()) {
          parameter.bindsTo(Evaluation.property(parameter.getName()));
       }
    }
 
    /**
-    * Inspect the current request domain, comparing against the given pattern.
+    * Inspect the current request URL, comparing against the given pattern.
     * <p>
     * The given pattern may be parameterized using the following format:
     * <p>
+    * <b>INBOUND:</b><br>
     * <code>
-    *    example.com
-    *    {domain}.com <br>
-    *    www.{domain}.{suffix} <br>
+    *    /context-path/{param}?foo={bar} <br>
+    *    /context-path/{param}/{param2}?foo={bar}&cab={caz} <br>
     *    ... and so on
-    * </code>
+    * </code> <b>OUTBOUND:</b><br>
+    * http://domain.com/context-path/{param}?foo={bar} <br>
+    * /context-path/{param}/{param2}?foo={bar}&cab={caz} <br>
+    * ... and so on
     * <p>
-    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See also {@link #where(String)}
+    * By default, matching parameter values are bound only to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
+    * See also {@link #where(String)}
     */
-   public static Domain matches(final String pattern)
+   public static URL matches(final String pattern)
    {
-      return new Domain(pattern);
+      return new URL(pattern);
+   }
+
+   public static URL captureIn(final String param)
+   {
+      URL path = new URL("{" + param + "}");
+      return path;
+   }
+
+   /**
+    * Bind each URL parameter to the corresponding request parameter by name. By default, matching values are bound only
+    * to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
+    * <p>
+    * See also {@link #where(String)}
+    */
+   public URL withRequestBinding()
+   {
+      for (Parameter<String> parameter : expression.getParameters().values()) {
+         parameter.bindsTo(Request.parameter(parameter.getName()));
+      }
+      return this;
    }
 
    @Override
@@ -101,22 +126,27 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      String hostName = null;
+      String requestURL = null;
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         String url = event.getURL();
-         URLBuilder builder = URLBuilder.createFrom(url);
-         hostName = builder.toURI().getHost();
-         if (hostName == null)
-            hostName = event.getRequest().getServerName();
+         requestURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
+         if (requestURL.startsWith(event.getContextPath()))
+         {
+            requestURL = requestURL.substring(event.getContextPath().length());
+         }
       }
       else
-         hostName = event.getRequest().getServerName();
-
-      if (hostName != null && expression.matches(event, context, hostName))
       {
-         Map<RegexParameter, String[]> parameters = expression.parse(event, context, hostName);
+         HttpServletRequest request = event.getRequest();
+         requestURL = event.getContextPath() + event.getURL();
+         requestURL = request.getScheme() + "://" + request.getServerName()
+                  + (request.getServerPort() != 80 ? ":" + request.getServerPort() : "") + requestURL;
+      }
+
+      if (expression.matches(event, context, requestURL))
+      {
+         Map<RegexParameter, String[]> parameters = expression.parse(event, context, requestURL);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }
@@ -124,11 +154,11 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
    }
 
    /**
-    * Get the underlying {@link ParameterizedPattern} for this {@link Domain}
+    * Get the underlying {@link ParameterizedPattern} for this {@link URL}
     * <p>
     * See also: {@link #where(String)}
     */
-   public ParameterizedPattern getExpression()
+   public ParameterizedPattern getPathExpression()
    {
       return expression;
    }

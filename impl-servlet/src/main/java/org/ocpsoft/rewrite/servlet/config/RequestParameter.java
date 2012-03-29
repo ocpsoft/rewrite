@@ -15,166 +15,137 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-
-import org.ocpsoft.rewrite.bind.*;
-import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
+import org.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedCondition;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * A {@link Condition} that inspects values returned by {@link HttpServletRequest#getParameterMap()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RequestParameter extends HttpCondition
+public class RequestParameter extends HttpCondition implements
+         ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
-   private final String name;
+   private final ParameterizedPattern name;
+   private final ParameterizedPattern value;
 
-   private final Pattern nameRegex;
-   private final Pattern value;
-
-   @SuppressWarnings({ "rawtypes" })
-   private final DefaultBindable<?> bindable = new DefaultBindable();
-
-   private RequestParameter(final String name, final String nameRegex, final String valueRegex)
+   private RequestParameter(final String name, final String value)
    {
-      // TODO Refactor this to several different objects internally
-      Assert.notNull(nameRegex, "Parameter name pattern cannot be null.");
-      Assert.notNull(valueRegex, "Parameter value pattern cannot be null.");
-      this.name = name;
-      this.nameRegex = Pattern.compile(nameRegex);
-      this.value = Pattern.compile(valueRegex);
-
-      this.bindsTo(Evaluation.property(nameRegex));
+      Assert.notNull(name, "Header name pattern cannot be null.");
+      Assert.notNull(value, "Header value pattern cannot be null.");
+      this.name = new ParameterizedPattern(name);
+      this.value = new ParameterizedPattern(value);
    }
 
    /**
-    * Bind the values of this {@link RequestParameter} query to the given {@link org.ocpsoft.rewrite.bind.Binding}.
-    */
-   public RequestParameter bindsTo(final Binding binding)
-   {
-      this.bindable.bindsTo(binding);
-      return this;
-   }
-
-   /**
-    * Return a {@link RequestParameter} condition that matches against both parameter name and values.
+    * Return a {@link Header} condition that matches against both header name and values.
     * <p>
-    * Matched parameter values may be bound. By default, matching values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * <p>
-    * See also: {@link #bindsTo(Binding)}
+    * See also: {@link HttpServletRequest#getHeader(String)}
     * 
-    * @param nameRegex Regular expression matching the parameter name
-    * @param valueRegex Regular expression matching the parameter value
+    * @param name Regular expression matching the header name
+    * @param value Regular expression matching the header value
     */
-   public static RequestParameter matches(final String nameRegex, final String valueRegex)
+   public static RequestParameter matches(final String name, final String value)
    {
-      return new RequestParameter(null, nameRegex, valueRegex);
+      return new RequestParameter(name, value);
    }
 
    /**
-    * Return a {@link RequestParameter} condition that matches only against the existence of a parameter with the given
-    * name. The parameter value is ignored.
+    * Return a {@link Header} condition that matches only against the existence of a header with a name matching the
+    * given pattern. The header value is ignored.
     * <p>
-    * Values of the matching parameter may be bound. By default, matching values are bound to the
-    * {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * <p>
-    * See also: {@link #bindsTo(Binding)}
+    * See also: {@link HttpServletRequest#getHeader(String)}
     * 
-    * @param name The parameter name
+    * @param name Regular expression matching the header name
     */
    public static RequestParameter exists(final String name)
    {
-      return new RequestParameter(name, name, ".*");
+      return new RequestParameter(name, "{" + RequestParameter.class.getName() + "_value}");
    }
 
    /**
-    * Return a {@link RequestParameter} condition that matches only against the existence of a parameter with a name
-    * matching the given pattern. The parameter value is ignored.
-    * <p>
-    * Values of matching parameters may be bound. By default, matching values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * <p>
-    * See also: {@link #bindsTo(Binding)}
+    * Return a {@link Header} condition that matches only against the existence of a header with value matching the
+    * given pattern. The header name is ignored.
     * 
-    * @param nameRegex Regular expression matching the parameter name
+    * @param value Regular expression matching the header value
     */
-   public static RequestParameter existsMatching(final String nameRegex)
+   public static RequestParameter valueExists(final String value)
    {
-      return new RequestParameter(null, nameRegex, ".*");
-   }
-
-   /**
-    * Return a {@link RequestParameter} condition that matches only against the existence of a parameter with value
-    * matching the given pattern. The parameter name is ignored.
-    * <p>
-    * Matching values may be bound. By default, matching values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * <p>
-    * See also: {@link #bindsTo(Binding)}
-    * 
-    * @param valueRegex Regular expression matching the parameter value
-    */
-   public static RequestParameter valueExists(final String valueRegex)
-   {
-      return new RequestParameter(null, ".*", valueRegex);
+      return new RequestParameter("{" + RequestParameter.class.getName() + "_name}", value);
    }
 
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      String matchedParameter = null;
-
-      List<String> values = new ArrayList<String>();
-
       HttpServletRequest request = event.getRequest();
-      for (String parameter : Collections.list(request.getParameterNames()))
+      for (String header : Collections.list(request.getParameterNames()))
       {
-         if (name != null)
+         if (name.matches(event, context, header) && matchesValue(event, context, request, header))
          {
-            if (name.equals(parameter))
+            Map<RegexParameter, String[]> parameters = name.parse(event, context, header);
+            parameters = value.parse(event, context, header);
+
+            if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)
+                     && Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             {
-               matchedParameter = name;
-               values.addAll(Arrays.asList(request.getParameterValues(matchedParameter)));
-               break;
+               return true;
             }
          }
-         else if (nameRegex.matcher(parameter).matches() && matchesValue(request, parameter))
-         {
-            // TODO this needs to be able to handle multiple different named parameters
-            matchedParameter = parameter;
-            values.addAll(Arrays.asList(request.getParameterValues(matchedParameter)));
-         }
       }
-
-      if (matchedParameter != null)
-      {
-         Bindings.enqueueSubmission(event, context, bindable, values.toArray(new String[]{}));
-         return true;
-      }
-
       return false;
    }
 
-   private boolean matchesValue(final HttpServletRequest request, final String parameter)
+   private boolean matchesValue(Rewrite event, EvaluationContext context, final HttpServletRequest request,
+            final String header)
    {
-      for (String contents : Arrays.asList(request.getParameterValues(parameter)))
+      for (String contents : Arrays.asList(request.getParameterValues(header)))
       {
-         if (value.matcher(contents).matches())
+         if (value.matches(event, context, contents))
          {
             return true;
          }
       }
       return false;
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param)
+   {
+      return new RegexConditionParameterBuilder(this, name.getParameter(param), value.getParameter(param));
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param, String pattern)
+   {
+      return where(param).matches(pattern);
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param, String pattern,
+            Binding binding)
+   {
+      return where(param, pattern).bindsTo(binding);
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param, Binding binding)
+   {
+      return where(param, binding);
    }
 }

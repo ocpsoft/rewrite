@@ -18,13 +18,13 @@ package org.ocpsoft.rewrite.parameters;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexParameter;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
 import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.bind.util.Maps;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -44,6 +44,38 @@ public class ParameterizedPatternTest
    {
       context = new MockEvaluationContext();
       rewrite = new MockRewrite();
+   }
+
+   @Test
+   public void testComplexMatchingWithMutipleAdjacentParameters() throws Exception
+   {
+      String url = "http://domain.com:8080/context/application/pathy?foo=bar&baz=bazaar";
+
+      ParameterizedPattern parameterizedPattern = new ParameterizedPattern("{prefix}/application/{seg}{suffix}");
+      parameterizedPattern.getParameter("prefix").matches(".*");
+      parameterizedPattern.getParameter("seg").matches("[^/]+");
+      parameterizedPattern.getParameter("suffix").matches("\\?.*");
+
+      Assert.assertTrue(parameterizedPattern.matches(rewrite, new MockEvaluationContext(), url));
+
+      int index = 0;
+      String[] expected = new String[] { "http://domain.com:8080/context", "pathy", "?foo=bar&baz=bazaar" };
+      Map<RegexParameter, String[]> parsed = parameterizedPattern.parse(rewrite, new MockEvaluationContext(), url);
+      for (Entry<RegexParameter, String[]> entry : parsed.entrySet()) {
+         String[] value = entry.getValue();
+         for (int i = 0; i < value.length; i++) {
+            Assert.assertEquals(expected[index++], value[0]);
+         }
+      }
+   }
+
+   @Test
+   public void testCannotUseRegularExpressionsWithoutParameter()
+   {
+      ParameterizedPattern path = new ParameterizedPattern(CaptureType.BRACE, ".*");
+
+      Assert.assertEquals(0, path.getParameters().size());
+      Assert.assertFalse(path.matches(rewrite, context, "/omg/doesnt/matter"));
    }
 
    @Test
@@ -93,6 +125,14 @@ public class ParameterizedPatternTest
    }
 
    @Test
+   public void testRegularExpressionsAreDisabled()
+   {
+      ParameterizedPattern path = new ParameterizedPattern("[^/]+", ".*/{customer}/");
+      Assert.assertTrue(path.matches(rewrite, context, ".*/lincoln/"));
+      Assert.assertFalse(path.matches(rewrite, context, "foobar/lincoln/"));
+   }
+
+   @Test
    public void testParsesWithParametersRespectsTrailingCharsWithWildcardParameter()
    {
       ParameterizedPattern path = new ParameterizedPattern(".*", "/{customer}/");
@@ -118,6 +158,13 @@ public class ParameterizedPatternTest
       Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testBuildNull()
+   {
+      ParameterizedPattern path = new ParameterizedPattern(null);
+      Assert.assertEquals("", path.build(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test

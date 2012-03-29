@@ -20,7 +20,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.RegexParameter;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
@@ -32,15 +32,15 @@ import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
-import org.ocpsoft.rewrite.servlet.config.*;
+import org.ocpsoft.rewrite.servlet.config.Forward;
+import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.QueryString;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.rule.Join.JoinParameterBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
-import org.ocpsoft.rewrite.servlet.config.Path;
-import org.ocpsoft.rewrite.servlet.config.QueryString;
 
 /**
  * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL and an internal server
@@ -122,7 +122,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
                }
             }
             context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
-                    + pattern));
+                     + pattern));
             return true;
          }
       }
@@ -279,6 +279,7 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
          return this;
       }
 
+      @Override
       public JoinParameterBuilder bindsTo(final Binding binding)
       {
          parameter.bindsTo(binding);

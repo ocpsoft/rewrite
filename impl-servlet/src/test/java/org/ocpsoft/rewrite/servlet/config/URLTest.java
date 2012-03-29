@@ -36,7 +36,7 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class PathTest
+public class URLTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
@@ -52,23 +52,38 @@ public class PathTest
       Mockito.when(request.getContextPath())
       .thenReturn("/context");
 
+      Mockito.when(request.getQueryString())
+      .thenReturn("foo=bar&baz=bazaar");
+
+      Mockito.when(request.getScheme())
+      .thenReturn("http");
+
+      Mockito.when(request.getServerName())
+      .thenReturn("domain.com");
+
+      Mockito.when(request.getServerPort())
+      .thenReturn(8080);
+
       rewrite = new HttpInboundRewriteImpl(request, null);
    }
 
    @Test
    public void testMatchesWithParameters()
    {
-      Assert.assertTrue(Path.matches("/application/{seg}").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(URL.matches("http://domain.com:8080/context/application/{seg}?foo=bar&baz=bazaar").evaluate(
+               rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      ConditionParameterBuilder<?, ?> path = Path.matches("/application/{seg}")
+      ConditionParameterBuilder<?, ?> url = URL.matches("{prefix}/application/{seg}{suffix}")
+               .where("prefix").matches(".*")
+               .where("suffix").matches("\\?.*")
                .where("seg", mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
-      Assert.assertTrue(path.evaluate(rewrite, context));
+      Assert.assertTrue(url.evaluate(rewrite, context));
 
       List<Operation> operations = context.getPreOperations();
       Assert.assertEquals(1, operations.size());
@@ -84,21 +99,47 @@ public class PathTest
    }
 
    @Test
-   public void testMatchesLiteral()
+   public void testCaptureInBindsParameters()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext()));
+      MockBinding mockBinding = new MockBinding();
+      ConditionParameterBuilder<?, ?> url = URL.captureIn("foo")
+               .where("foo", mockBinding);
+      MockEvaluationContext context = new MockEvaluationContext();
+      Assert.assertTrue(url.evaluate(rewrite, context));
+
+      List<Operation> operations = context.getPreOperations();
+      Assert.assertEquals(1, operations.size());
+      for (Operation operation : operations) {
+         operation.perform(rewrite, context);
+      }
+
+      Assert.assertTrue(mockBinding.isConverted());
+      Assert.assertTrue(mockBinding.isValidated());
+      Assert.assertTrue(mockBinding.isSubmitted());
+      Assert.assertEquals("http://domain.com:8080/context/application/path?foo=bar&baz=bazaar",
+               mockBinding.getBoundValue());
+      Assert.assertEquals("http://domain.com:8080/context/application/path?foo=bar&baz=bazaar",
+               Evaluation.property("foo").retrieve(rewrite, context));
    }
 
    @Test
-   public void testMatchesPattern()
+   public void testMatchesLiteral()
    {
-      Assert.assertTrue(Path.matches("/application/{param}").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(URL.matches("http://domain.com:8080/context/application/path?foo=bar&baz=bazaar").evaluate(
+               rewrite, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testCannotUseRegexWithoutParam()
+   {
+      Assert.assertFalse(URL.matches(".*/context/application/pa.*").evaluate(rewrite,
+               new MockEvaluationContext()));
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      Assert.assertFalse(URL.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)

@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
@@ -43,19 +42,19 @@ public class HeaderAndPathTest
    {
       request = Mockito.mock(HttpServletRequest.class);
       Mockito.when(request.getHeaderNames())
-               .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
+      .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
 
       Mockito.when(request.getHeaders("Content-Length"))
-               .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
+      .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
 
       Mockito.when(request.getHeaders("Accept-Charset"))
-               .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
+      .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
 
       Mockito.when(request.getRequestURI())
-               .thenReturn("/context/application/path");
+      .thenReturn("/context/application/path");
 
       Mockito.when(request.getContextPath())
-               .thenReturn("/context");
+      .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }
@@ -64,8 +63,8 @@ public class HeaderAndPathTest
    public void testHeaderAndPath()
    {
       Assert.assertTrue(
-               Path.matches("/application/.*").and(
-                        Header.exists("Accept-.*"))
+               Path.matches("/application/{seg}").and(
+                        Header.exists("Accept-{charset}"))
                         .evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -73,8 +72,8 @@ public class HeaderAndPathTest
    public void testHeaderAndPathDoNotMatch()
    {
       Assert.assertFalse(
-               Path.matches("/wrong-application/.*").and(
-                        Header.exists("Accept-.*")
+               Path.matches("/wrong-application/{path}").and(
+                        Header.exists("Accept-{charset}")
                         ).evaluate(rewrite, new MockEvaluationContext()));
    }
 }

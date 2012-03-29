@@ -1,5 +1,9 @@
 package org.ocpsoft.rewrite.bind;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
 import org.ocpsoft.rewrite.param.OperationParameterBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedOperation;
 
@@ -9,19 +13,27 @@ import org.ocpsoft.rewrite.param.ParameterizedOperation;
  */
 public class RegexOperationParameterBuilder extends OperationParameterBuilder<RegexOperationParameterBuilder, String>
 {
-   private final RegexParameter parameter;
+   private final List<RegexParameter> parameters;
 
    public RegexOperationParameterBuilder(
             ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String> parent,
-            RegexParameter parameter)
+            RegexParameter... parameters)
    {
-      super(parent, parameter);
-      this.parameter = parameter;
+      super(parent, parameters);
+      this.parameters = new ArrayList<RegexParameter>();
+      for (RegexParameter regexParameter : parameters) {
+         if (regexParameter != null)
+         {
+            this.parameters.add(regexParameter);
+         }
+      }
    }
 
    public RegexOperationParameterBuilder matches(String pattern)
    {
-      parameter.matches(pattern);
+      for (RegexParameter parameter : parameters) {
+         parameter.matches(pattern);
+      }
       return this;
    }
 

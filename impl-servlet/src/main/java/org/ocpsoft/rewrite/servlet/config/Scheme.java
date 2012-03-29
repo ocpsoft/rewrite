@@ -20,13 +20,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
 import org.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
-import org.ocpsoft.rewrite.bind.RegexParameter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameter;
@@ -41,7 +40,7 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Scheme extends HttpCondition implements
-        ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 

@@ -21,12 +21,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexParameter;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
+import org.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedCondition;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -34,7 +37,8 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Header extends HttpCondition
+public class Header extends HttpCondition implements
+ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern name;
    private final ParameterizedPattern value;
@@ -70,7 +74,7 @@ public class Header extends HttpCondition
     */
    public static Header exists(final String name)
    {
-      return new Header(name, ".*");
+      return new Header(name, "{" + Header.class.getName() + "_value}");
    }
 
    /**
@@ -81,7 +85,7 @@ public class Header extends HttpCondition
     */
    public static Header valueExists(final String value)
    {
-      return new Header(".*", value);
+      return new Header("{" + Header.class.getName() + "_name}", value);
    }
 
    @Override
@@ -116,5 +120,30 @@ public class Header extends HttpCondition
          }
       }
       return false;
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param)
+   {
+      return new RegexConditionParameterBuilder(this, name.getParameter(param), value.getParameter(param));
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param, String pattern)
+   {
+      return where(param).matches(pattern);
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param, String pattern,
+            Binding binding)
+   {
+      return where(param, pattern).bindsTo(binding);
+   }
+
+   @Override
+   public RegexConditionParameterBuilder where(String param, Binding binding)
+   {
+      return where(param, binding);
    }
 }

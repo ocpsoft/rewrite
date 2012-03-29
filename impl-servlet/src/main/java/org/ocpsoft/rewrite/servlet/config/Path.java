@@ -18,13 +18,12 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.util.Map;
 
 import org.ocpsoft.common.util.Assert;
-
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
 import org.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
-import org.ocpsoft.rewrite.bind.RegexParameter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameter;
@@ -39,7 +38,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Path extends HttpCondition implements
-        ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
 {
    private final ParameterizedPattern expression;
 
@@ -64,13 +63,14 @@ public class Path extends HttpCondition implements
     *    ... and so on
     * </code>
     * <p>
-    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See also {@link #where(String)}
+    * By default, matching parameter values are bound only to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
+    * See also {@link #where(String)}
     */
    public static Path matches(final String pattern)
    {
       return new Path(pattern);
    }
-   
+
    public static Path captureIn(final String param)
    {
       Path path = new Path("{"+param+"}");
@@ -79,8 +79,8 @@ public class Path extends HttpCondition implements
    }
 
    /**
-    * Bind each path parameter to the corresponding request parameter by name. By default, matching values are bound to
-    * the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
+    * Bind each path parameter to the corresponding request parameter by name. By default, matching values are bound
+    * only to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
     * <p>
     * See also {@link #where(String)}
     */
