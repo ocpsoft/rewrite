@@ -29,6 +29,8 @@ Get Started
            {
               return ConfigurationBuilder
                    .begin()
+               
+                   .addRule(Join.path("/").to("/index.jsp").withInboundCorrection())
             
                    .defineRule()
                    .when(DispatchType.isRequest()
