@@ -15,8 +15,12 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
@@ -43,9 +47,9 @@ public class ConfigurationLoader
       ServiceLoader<ConfigurationProvider> loader = ServiceLoader.load(ConfigurationProvider.class);
       List<ConfigurationProvider> providers = Iterators.asList(loader.iterator());
 
+      Map<Integer, List<Rule>> priorityMap = new HashMap<Integer, List<Rule>>();
+      
       Collections.sort(providers, new WeightedComparator());
-
-      ConfigurationBuilder result = ConfigurationBuilder.begin();
 
       for (ConfigurationProvider provider : providers) {
          if (provider.handles(context))
@@ -60,7 +64,10 @@ public class ConfigurationLoader
                   for (Rule rule : rules) {
                      if (rule != null)
                      {
-                        result.addRule(rule);
+                        if(rule instanceof RelocatableRule)
+                           addListValue(priorityMap, ((RelocatableRule) rule).priority(), rule);
+                        else
+                           addListValue(priorityMap, provider.priority(), rule);
                      }
                      else {
                         log.debug("Ignoring null Rule from ConfigurationProvider [" + provider.getClass().getName()
@@ -80,6 +87,32 @@ public class ConfigurationLoader
          }
       }
 
+      ConfigurationBuilder result = ConfigurationBuilder.begin();
+      
+      ArrayList<Integer> sortedKeys = new ArrayList<Integer>(priorityMap.keySet());
+      Collections.sort(sortedKeys);
+      
+      for (Integer integer : sortedKeys) {
+         List<Rule> list = priorityMap.get(integer);
+         for (Rule rule : list) {
+            result.addRule(rule);
+         }
+      }
+      
       return result;
    }
+   
+   @SuppressWarnings("unchecked")
+   public static <K, T> void addListValue(final Map<K, List<T>> map, final K key, final T value)
+   {
+      if (!map.containsKey(key))
+      {
+         map.put(key, new ArrayList<T>(Arrays.asList(value)));
+      }
+      else
+      {
+         map.get(key).add(value);
+      }
+   }
+
 }

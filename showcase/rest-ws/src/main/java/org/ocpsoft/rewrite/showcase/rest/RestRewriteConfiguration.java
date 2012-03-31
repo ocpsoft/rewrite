@@ -26,6 +26,8 @@ import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Method;
@@ -58,6 +60,14 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                .when(Method.isGet()
                         .and(Path.matches("/store/product/{pid}")
                                  .where("pid").matches("\\d+")
+                                 .constrainedBy(new Constraint<String>() {
+                                    @Override
+                                    public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
+                                    {
+                                       Integer valueOf = Integer.valueOf(value);
+                                       return false;
+                                    }
+                                 })
                                  .bindsTo(Evaluation.property("pid").convertedBy(ProductConverter.class)
                                           .validatedBy(ProductValidator.class))))
                .perform(new HttpOperation() {

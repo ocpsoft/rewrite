@@ -45,7 +45,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    /**
-    * Order should not matter.
+    * Set the {@link Condition} of this {@link Rule} instance.
     */
    public ConfigurationRuleBuilder when(final Condition condition)
    {
@@ -60,6 +60,17 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    public ConfigurationRuleBuilder perform(final Operation operation)
    {
       rule.perform(operation);
+      return this;
+   }
+
+   /**
+    * Set the priority of this {@link Rule} instance. If {@link #priority()} differs from the priority of the
+    * {@link ConfigurationProvider} from which this rule was returned, then relocate this rule to its new priority
+    * position in the compiled rule set.
+    */
+   public ConfigurationRuleBuilder withPriority(int priority)
+   {
+      rule.withPriority(priority);
       return this;
    }
 

@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.config;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.ocpsoft.common.pattern.Weighted;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -24,11 +25,20 @@ import org.junit.Test;
  */
 public class RuleBuilderTest
 {
-
    @Test
    public void testRuleBuilderDefaultsToAlwaysPerform()
    {
       Assert.assertTrue(new RuleBuilder().evaluate(null, null));
+   }
+   
+   @Test
+   public void testRuleBuilderIsRelocatable()
+   {
+      RuleBuilder ruleBuilder = new RuleBuilder();
+      Assert.assertTrue(ruleBuilder instanceof Weighted);
+      Assert.assertTrue(ruleBuilder instanceof Rule);
+      Assert.assertTrue(ruleBuilder instanceof Relocatable);
+      Assert.assertTrue(ruleBuilder instanceof RelocatableRule);
    }
 
 }

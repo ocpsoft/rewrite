@@ -23,8 +23,9 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RuleBuilder implements Rule
+public class RuleBuilder implements RelocatableRule
 {
+   private Integer priority = null;
    private String id = "";
    private Condition condition = new True();
    private Operation operation;
@@ -55,6 +56,17 @@ public class RuleBuilder implements Rule
    }
 
    /**
+    * Set the priority of this {@link Rule} instance. If {@link #priority()} differs from the priority of the
+    * {@link ConfigurationProvider} from which this rule was returned, then relocate this rule to its new priority
+    * position in the compiled rule set.
+    */
+   public RuleBuilder withPriority(int priority)
+   {
+      this.priority = priority;
+      return this;
+   }
+
+   /**
     * Set the {@link Condition} of this {@link Rule} instance.
     */
    public RuleBuilder when(final Condition condition)
@@ -81,7 +93,7 @@ public class RuleBuilder implements Rule
    @Override
    public void perform(final Rewrite event, final EvaluationContext context)
    {
-      if(operation != null)
+      if (operation != null)
          operation.perform(event, context);
    }
 
@@ -89,5 +101,17 @@ public class RuleBuilder implements Rule
    public String getId()
    {
       return id;
+   }
+
+   @Override
+   public int priority()
+   {
+      return priority == null ? 0 : priority;
+   }
+
+   @Override
+   public boolean isRelocated()
+   {
+      return priority != null;
    }
 }

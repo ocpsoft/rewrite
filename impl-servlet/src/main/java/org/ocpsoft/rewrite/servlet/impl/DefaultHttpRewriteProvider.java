@@ -34,8 +34,8 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
    @Override
    public void rewrite(final HttpServletRewrite event)
    {
-      Configuration loader = ConfigurationLoader.loadConfiguration(event.getRequest().getServletContext());
-      for (Rule rule : loader.getRules()) {
+      Configuration compiledConfiguration = ConfigurationLoader.loadConfiguration(event.getRequest().getServletContext());
+      for (Rule rule : compiledConfiguration.getRules()) {
          EvaluationContextImpl context = new EvaluationContextImpl();
          if (rule.evaluate(event, context))
          {

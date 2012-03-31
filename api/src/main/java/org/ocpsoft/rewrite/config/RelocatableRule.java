@@ -15,26 +15,14 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
 
 /**
- * Provider configuration to the Rewrite runtime environment.
- * 
- * Additional configuration providers my be specified by providing a service activator file containing the name of your
- * implementations:
- * <p>
- * <code> /META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider<br>
- * 
- * --------------<br>
- * com.example.ConfigurationProviderImpl</code>
+ * Defines a {@link Relocatable} {@link Rule}, which can be moved to a priority position in the compiled rule set that
+ * differs from the {@link ConfigurationProvider} in which it was created.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationProvider<T> extends Weighted, Specialized<Object>
+public interface RelocatableRule extends Weighted, Relocatable, Rule
 {
-   /**
-    * Return the additional configuration.
-    */
-   public Configuration getConfiguration(T context);
 }

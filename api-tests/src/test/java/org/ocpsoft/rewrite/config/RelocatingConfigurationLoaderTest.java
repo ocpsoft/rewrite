@@ -29,7 +29,7 @@ import org.ocpsoft.rewrite.test.RewriteTestBase;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class ConfigurationLoaderTest extends RewriteTestBase
+public class RelocatingConfigurationLoaderTest extends RewriteTestBase
 {
 
    @Deployment(testable = true)
@@ -37,16 +37,39 @@ public class ConfigurationLoaderTest extends RewriteTestBase
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
                .addPackages(true, Root.class.getPackage())
-               .addAsResource(new StringAsset("org.ocpsoft.rewrite.config.NullValueConfigurationProvider"),
+               .addAsResource(new StringAsset("org.ocpsoft.rewrite.config.RelocatingConfigurationProvider1\n" +
+                        "org.ocpsoft.rewrite.config.RelocatingConfigurationProvider2\n" +
+                        "org.ocpsoft.rewrite.config.RelocatingConfigurationProvider3"),
                         "/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider");
       return deployment;
    }
 
    @Test
-   public void test()
+   public void testRelocatedRuleExecutesInNewOrderUp()
    {
-      HttpAction<HttpGet> action = get("/");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction<HttpGet> action = get("/priority");
+      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testRelocatedRuleExecutesInNewOrderDown()
+   {
+      HttpAction<HttpGet> action = get("/priority2");
+      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testRelocatedRuleExecutesInNewOrderUpUp()
+   {
+      HttpAction<HttpGet> action = get("/priority3");
+      Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testRelocatedRulePriorityOverlapFollowsProviderPriorityOrder()
+   {
+      HttpAction<HttpGet> action = get("/priority4");
+      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
    }
 
 }

@@ -17,8 +17,8 @@ package org.ocpsoft.rewrite.config;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
-
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -31,6 +31,23 @@ import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 public class ConfigurationBuilderTest
 {
    private boolean performed = false;
+   private Operation operation;
+   private InboundRewrite rewrite;
+   private EvaluationContext context;
+   
+   @Before
+   public void before()
+   {
+      rewrite = new MockInboundRewrite();
+      context = new MockEvaluationContext();
+      operation = new Operation() {
+         @Override
+         public void perform(final Rewrite event, final EvaluationContext context)
+         {
+            performed = true;
+         }
+      };
+   }
 
    @Test
    public void testBuildConfiguration()
@@ -40,20 +57,11 @@ public class ConfigurationBuilderTest
                .perform(operation);
 
       Rule rule = config.getRules().get(0);
-      InboundRewrite rewrite = new MockInboundRewrite();
-      EvaluationContext context = new MockEvaluationContext();
       if (rule.evaluate(rewrite, context))
       {
          rule.perform(rewrite, context);
       }
       Assert.assertTrue(performed);
    }
-
-   Operation operation = new Operation() {
-      @Override
-      public void perform(final Rewrite event, final EvaluationContext context)
-      {
-         performed = true;
-      }
-   };
+   
 }

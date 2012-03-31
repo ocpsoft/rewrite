@@ -13,40 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.config;
+package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
-import org.ocpsoft.rewrite.Root;
-import org.ocpsoft.rewrite.test.HttpAction;
+import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public class ConfigurationLoaderTest extends RewriteTestBase
+@RunWith(Arquillian.class)
+public class ConfigurationDeploymentTest extends RewriteTestBase
 {
-
    @Deployment(testable = true)
+   @ShouldThrowException(Exception.class)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
-               .addPackages(true, Root.class.getPackage())
-               .addAsResource(new StringAsset("org.ocpsoft.rewrite.config.NullValueConfigurationProvider"),
+               .addPackages(true, ServletRoot.class.getPackage())
+               .addAsResource(new StringAsset("org.ocpsoft.rewrite.servlet.config.NonExistentConfigProvider"),
                         "/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider");
       return deployment;
    }
 
    @Test
-   public void test()
-   {
-      HttpAction<HttpGet> action = get("/");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-   }
+   public void testInvalidConfigProviderServiceFileFailsDeployment()
+   {}
 
 }
