@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2010 Lincoln Baxter, III
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.config;
+package org.ocpsoft.rewrite.annotation.spi;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 
 /**
- * Defines an operation to be performed during a {@link org.ocpsoft.rewrite.event.Rewrite} event.
+ * Common interface for implementations that scan for classes on the classpath.
  * 
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ * @author Christian Kaltepoth
  */
-public interface Operation extends ConfigurationElement
+public interface ClassFinder
 {
    /**
-    * Perform the operation.
+    * Starting to search for classes. The supplied {@link ClassVisitor} must be called for every class found.
+    * 
+    * @param visitor The visitor to call on classes found
     */
-   void perform(Rewrite event, EvaluationContext context);
+   public void findClasses(ClassVisitor visitor);
 }

@@ -15,19 +15,12 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-
 /**
- * Defines an operation to be performed during a {@link org.ocpsoft.rewrite.event.Rewrite} event.
+ * Marker interface for types used to build {@link Configuration} sets.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Operation extends ConfigurationElement
+public interface ConfigurationElement
 {
-   /**
-    * Perform the operation.
-    */
-   void perform(Rewrite event, EvaluationContext context);
 }

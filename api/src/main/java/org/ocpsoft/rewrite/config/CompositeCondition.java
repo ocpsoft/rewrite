@@ -15,19 +15,18 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
+import java.util.List;
 
 /**
- * Defines an operation to be performed during a {@link org.ocpsoft.rewrite.event.Rewrite} event.
+ * A {@link Condition} that aggregates one or more conditions.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Operation extends ConfigurationElement
+public interface CompositeCondition extends Condition
 {
    /**
-    * Perform the operation.
+    * Return all {@link Condition} objects contained within this {@link CompositeCondition}.
     */
-   void perform(Rewrite event, EvaluationContext context);
+   public List<Condition> getConditions();
 }

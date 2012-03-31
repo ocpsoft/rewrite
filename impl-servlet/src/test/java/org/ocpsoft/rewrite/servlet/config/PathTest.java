@@ -30,6 +30,7 @@ import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
@@ -53,6 +54,12 @@ public class PathTest
       .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null);
+   }
+
+   @Test
+   public void testPathImplementsParameterized() throws Exception
+   {
+      Assert.assertTrue(Path.matches("") instanceof Parameterized);
    }
 
    @Test

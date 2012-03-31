@@ -28,13 +28,13 @@ public class RuleBuilderTest
    @Test
    public void testRuleBuilderDefaultsToAlwaysPerform()
    {
-      Assert.assertTrue(new RuleBuilder().evaluate(null, null));
+      Assert.assertTrue(RuleBuilder.define().evaluate(null, null));
    }
-   
+
    @Test
    public void testRuleBuilderIsRelocatable()
    {
-      RuleBuilder ruleBuilder = new RuleBuilder();
+      RuleBuilder ruleBuilder = RuleBuilder.define();
       Assert.assertTrue(ruleBuilder instanceof Weighted);
       Assert.assertTrue(ruleBuilder instanceof Rule);
       Assert.assertTrue(ruleBuilder instanceof Relocatable);

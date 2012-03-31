@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Condition
+public interface Condition extends ConfigurationElement
 {
    /**
     * Evaluate this condition against the given {@link org.ocpsoft.rewrite.event.Rewrite} event. If this condition does not apply to the given

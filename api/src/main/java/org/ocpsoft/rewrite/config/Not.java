@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -24,7 +27,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class Not extends ConditionBuilder
+public class Not extends ConditionBuilder implements CompositeCondition
 {
    private final Condition condition;
 
@@ -45,5 +48,11 @@ public class Not extends ConditionBuilder
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       return condition.evaluate(event, context) != true;
+   }
+
+   @Override
+   public List<Condition> getConditions()
+   {
+      return Arrays.asList(condition);
    }
 }

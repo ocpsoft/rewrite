@@ -30,6 +30,9 @@ public class RuleBuilder implements RelocatableRule
    private Condition condition = new True();
    private Operation operation;
 
+   protected RuleBuilder()
+   {}
+
    /**
     * Returns a new {@link RuleBuilder} instance.
     */
@@ -43,7 +46,7 @@ public class RuleBuilder implements RelocatableRule
     */
    public static RuleBuilder define(final String id)
    {
-      return new RuleBuilder().withId(id);
+      return define().withId(id);
    }
 
    /**
@@ -113,5 +116,25 @@ public class RuleBuilder implements RelocatableRule
    public boolean isRelocated()
    {
       return priority != null;
+   }
+
+   public ConditionBuilder getConditionBuilder()
+   {
+      if (condition == null)
+         condition = ConditionBuilder.create();
+      else if (!(condition instanceof ConditionBuilder))
+         condition = ConditionBuilder.wrap(condition);
+
+      return (ConditionBuilder) condition;
+   }
+
+   public OperationBuilder getOperationBuilder()
+   {
+      if (operation == null)
+         operation = OperationBuilder.create();
+      else if (!(operation instanceof OperationBuilder))
+         operation = OperationBuilder.wrap(operation);
+
+      return (OperationBuilder) operation;
    }
 }

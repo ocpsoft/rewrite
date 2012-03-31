@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.config;
+package org.ocpsoft.rewrite.annotation.api;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.RuleBuilder;
+import org.ocpsoft.rewrite.context.Context;
 
-/**
- * Defines an operation to be performed during a {@link org.ocpsoft.rewrite.event.Rewrite} event.
- * 
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
- */
-public interface Operation extends ConfigurationElement
+public interface ClassContext extends Context
 {
-   /**
-    * Perform the operation.
-    */
-   void perform(Rewrite event, EvaluationContext context);
+   ConfigurationBuilder getConfigurationBuilder();
+
+   RuleBuilder getRuleBuilder();
 }

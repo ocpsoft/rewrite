@@ -33,7 +33,8 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestPath()}
+ * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
+ * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestPath()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -73,7 +74,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
 
    public static Path captureIn(final String param)
    {
-      Path path = new Path("{"+param+"}");
+      Path path = new Path("{" + param + "}");
       path.where(param).matches(".*");
       return path;
    }

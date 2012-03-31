@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
+
 /**
  * Used as a base class to create fluent relationships between {@link Condition} objects; this class adds logical
  * operators to any class extending it.
@@ -23,6 +26,24 @@ package org.ocpsoft.rewrite.config;
  */
 public abstract class ConditionBuilder implements Condition
 {
+
+   /**
+    * Return a new {@link ConditionBuilder} that evaluates to {@link True} when
+    * {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
+    */
+   public static Condition create()
+   {
+      return new True();
+   }
+
+   /**
+    * Wrap a given {@link Condition} as a new {@link ConditionBuilder} that evaluates the the original {@link Condition}
+    * when {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
+    */
+   public static Condition wrap(Condition condition)
+   {
+      return And.all(condition);
+   }
    /**
     * Append a new {@link Condition} to this builder, which must evaluate to true in order for this composite
     * {@link Condition} to evaluate to true.

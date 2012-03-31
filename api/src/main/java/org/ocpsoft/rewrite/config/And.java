@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class And extends ConditionBuilder
+public class And extends ConditionBuilder implements CompositeCondition
 {
    private final List<Condition> conditions;
 
@@ -58,5 +58,11 @@ public class And extends ConditionBuilder
          }
       }
       return result;
+   }
+
+   @Override
+   public List<Condition> getConditions()
+   {
+      return conditions;
    }
 }

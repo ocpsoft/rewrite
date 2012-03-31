@@ -34,6 +34,8 @@
       <module>api</module>
       <module>api-tests</module>
       <module>impl-config</module>
+      <module>config-annotations-api</module>
+      <module>config-annotations-impl</module>
       <module>config-jodatime</module>
       <module>config-tuckey</module>
       <module>api-servlet</module>
@@ -71,6 +73,16 @@
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-impl-config</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-annotations-api</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-annotations-impl</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>

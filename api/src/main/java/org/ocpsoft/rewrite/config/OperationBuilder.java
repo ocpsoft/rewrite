@@ -25,7 +25,39 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public abstract class OperationBuilder implements Operation
 {
-   private class CompositeOperation extends OperationBuilder
+
+   /**
+    * Return a new {@link OperationBuilder} that takes no action when {@link #perform(Rewrite, EvaluationContext)} is
+    * invoked.
+    */
+   public static OperationBuilder create()
+   {
+      return new OperationBuilder() {
+         @Override
+         public void perform(Rewrite event, EvaluationContext context)
+         {}
+      };
+   }
+
+   /**
+    * Wrap a given {@link Operation} as a new {@link OperationBuilder} that performs the action of the original
+    * {@link Operation} when {@link #perform(Rewrite, EvaluationContext)} is invoked.
+    */
+   public static OperationBuilder wrap(Operation operation)
+   {
+      return new CompositeOperation(OperationBuilder.create(), operation);
+   }
+
+   /**
+    * Join this instance with another {@link Operation} to be performed. All joined operations are guaranteed to be
+    * evaluated. Operations are evaluated in the order in which they are added.
+    */
+   public OperationBuilder and(final Operation other)
+   {
+      return new CompositeOperation(this, other);
+   }
+
+   private static class CompositeOperation extends OperationBuilder
    {
       private final Operation left;
       private final Operation right;
@@ -44,13 +76,4 @@ public abstract class OperationBuilder implements Operation
       }
 
    }
-
-   /**
-    * Join this instance with another {@link Operation} to be performed.
-    */
-   public OperationBuilder and(final Operation other)
-   {
-      return new CompositeOperation(this, other);
-   }
-
 }
