@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class HttpCondition extends ConditionBuilder
+public abstract class HttpCondition extends DefaultConditionBuilder
 {
    /**
     * Evaluate this condition against the given {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite} event. If this condition does not apply to

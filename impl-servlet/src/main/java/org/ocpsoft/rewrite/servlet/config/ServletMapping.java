@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.net.MalformedURLException;
@@ -8,11 +23,11 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
 
 import org.ocpsoft.logging.Logger;
-
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -20,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ServletMapping extends HttpCondition
+public class ServletMapping extends HttpCondition implements IServletMapping
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
@@ -30,7 +45,7 @@ public class ServletMapping extends HttpCondition
    {
       this.resource = new ParameterizedPattern(resource);
 
-      for (Parameter<String> parameter : this.resource.getParameters().values()) {
+      for (RegexCapture parameter : this.resource.getParameters().values()) {
          parameter.bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -83,5 +98,23 @@ public class ServletMapping extends HttpCondition
    public static ServletMapping includes(final String resource)
    {
       return new ServletMapping(resource);
+   }
+
+   @Override
+   public ServletMappingParameter where(String param)
+   {
+      return new ServletMappingParameter(this, resource.getParameter(param));
+   }
+
+   @Override
+   public ServletMappingParameter where(String param, Binding binding)
+   {
+      return where(param).bindsTo(binding);
+   }
+
+   @Override
+   public ParameterizedPattern getResourceExpression()
+   {
+      return resource;
    }
 }

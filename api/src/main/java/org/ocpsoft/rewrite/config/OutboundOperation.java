@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class OutboundOperation extends OperationBuilder
+public abstract class OutboundOperation extends DefaultOperationBuilder
 {
 
    @Override

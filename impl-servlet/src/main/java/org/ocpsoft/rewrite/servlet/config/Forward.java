@@ -20,26 +20,22 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexOperationParameterBuilder;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.param.OperationParameterBuilder;
-import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterizedOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via {@link org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite#forward(String)}
+ * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via
+ * {@link org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite#forward(String)}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Forward extends HttpOperation implements
-        ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String>
+public class Forward extends HttpOperation implements IForward
 {
    private final ParameterizedPattern location;
 
@@ -48,7 +44,7 @@ public class Forward extends HttpOperation implements
       Assert.notNull(location, "Location must not be null.");
       this.location = new ParameterizedPattern(CaptureType.BRACE, "[^/]+", location);
 
-      for (Parameter<String> parameter : this.location.getParameters().values()) {
+      for (RegexCapture parameter : this.location.getParameters().values()) {
          parameter.bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -86,26 +82,13 @@ public class Forward extends HttpOperation implements
    }
 
    @Override
-   public RegexOperationParameterBuilder where(final String param)
+   public ForwardParameter where(final String param)
    {
-      return new RegexOperationParameterBuilder(this, location.getParameter(param));
+      return new ForwardParameter(this, location.getParameter(param));
    }
 
    @Override
-   public RegexOperationParameterBuilder where(final String param, final String pattern)
-   {
-      return where(param).matches(pattern);
-   }
-
-   @Override
-   public RegexOperationParameterBuilder where(final String param, final String pattern,
-            final Binding binding)
-   {
-      return where(param, pattern).bindsTo(binding);
-   }
-
-   @Override
-   public RegexOperationParameterBuilder where(final String param, final Binding binding)
+   public ForwardParameter where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -114,5 +97,11 @@ public class Forward extends HttpOperation implements
    public String toString()
    {
       return location.toString();
+   }
+
+   @Override
+   public ParameterizedPattern getTargetExpression()
+   {
+      return location;
    }
 }

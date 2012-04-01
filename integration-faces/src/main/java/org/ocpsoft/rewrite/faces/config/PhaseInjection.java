@@ -3,12 +3,11 @@ package org.ocpsoft.rewrite.faces.config;
 import javax.faces.event.PhaseId;
 
 import org.ocpsoft.logging.Logger;
-
 import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.bind.El;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.bind.El;
 
 /**
  * Wraps & holds a param binding till before or after a given JavaServer Faces {@link PhaseId}
@@ -43,7 +42,7 @@ public class PhaseInjection extends PhaseOperation<PhaseInjection> implements Bi
    @Override
    public void performOperation(HttpServletRewrite event, EvaluationContext context)
    {
-      // TODO implement
+      // TODO retrieve value from evalcontext and submit
    }
 
    /**
@@ -58,7 +57,8 @@ public class PhaseInjection extends PhaseOperation<PhaseInjection> implements Bi
    @Override
    public Object retrieve(Rewrite event, EvaluationContext context)
    {
-      return null;
+      throw new IllegalStateException(
+               "Attempted to retrieve value from PhaseInjection, which does not support retrieval.");
    }
 
    @Override

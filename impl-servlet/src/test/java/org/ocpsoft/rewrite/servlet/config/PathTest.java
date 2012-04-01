@@ -29,7 +29,6 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
-import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
@@ -72,8 +71,8 @@ public class PathTest
    public void testAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      ConditionParameterBuilder<?, ?> path = Path.matches("/application/{seg}")
-               .where("seg", mockBinding);
+      IPath path = Path.matches("/application/{seg}").where("seg", mockBinding);
+
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(path.evaluate(rewrite, context));
 

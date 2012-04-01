@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.config.Operation;
-import org.ocpsoft.rewrite.config.OperationBuilder;
+import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class HttpOperation extends OperationBuilder
+public abstract class HttpOperation extends DefaultOperationBuilder
 {
    /**
     * Perform this operation for the given {@link HttpServletRewrite} event.

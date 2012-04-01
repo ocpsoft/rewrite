@@ -24,7 +24,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.bind.util.Maps;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -60,8 +60,8 @@ public class ParameterizedPatternTest
 
       int index = 0;
       String[] expected = new String[] { "http://domain.com:8080/context", "pathy", "?foo=bar&baz=bazaar" };
-      Map<RegexParameter, String[]> parsed = parameterizedPattern.parse(rewrite, new MockEvaluationContext(), url);
-      for (Entry<RegexParameter, String[]> entry : parsed.entrySet()) {
+      Map<RegexCapture, String[]> parsed = parameterizedPattern.parse(rewrite, new MockEvaluationContext(), url);
+      for (Entry<RegexCapture, String[]> entry : parsed.entrySet()) {
          String[] value = entry.getValue();
          for (int i = 0; i < value.length; i++) {
             Assert.assertEquals(expected[index++], value[0]);
@@ -85,7 +85,7 @@ public class ParameterizedPatternTest
 
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches(rewrite, context, ""));
-      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "");
+      Map<RegexCapture, String[]> results = path.parse(rewrite, context, "");
       Assert.assertNotNull(results);
    }
 
@@ -97,7 +97,7 @@ public class ParameterizedPatternTest
       Assert.assertEquals(0, path.getParameters().size());
       Assert.assertTrue(path.matches(rewrite, context, "/"));
 
-      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/");
+      Map<RegexCapture, String[]> results = path.parse(rewrite, context, "/");
       Assert.assertNotNull(results);
    }
 
@@ -106,12 +106,12 @@ public class ParameterizedPatternTest
    {
       ParameterizedPattern path = new ParameterizedPattern("[^/]+", "/{customer}/orders/{id}");
 
-      Map<String, RegexParameter> parameters = path.getParameters();
+      Map<String, RegexCapture> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24");
+      Map<RegexCapture, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }
@@ -137,11 +137,11 @@ public class ParameterizedPatternTest
    {
       ParameterizedPattern path = new ParameterizedPattern(".*", "/{customer}/");
 
-      Map<String, RegexParameter> parameters = path.getParameters();
+      Map<String, RegexCapture> parameters = path.getParameters();
       Assert.assertEquals(1, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
 
-      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/lincoln/");
+      Map<RegexCapture, String[]> results = path.parse(rewrite, context, "/lincoln/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
    }
 
@@ -150,12 +150,12 @@ public class ParameterizedPatternTest
    {
       ParameterizedPattern path = new ParameterizedPattern("[^/]+", "/{customer}/orders/{id}/");
 
-      Map<String, RegexParameter> parameters = path.getParameters();
+      Map<String, RegexCapture> parameters = path.getParameters();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<RegexParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24/");
+      Map<RegexCapture, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24/");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }

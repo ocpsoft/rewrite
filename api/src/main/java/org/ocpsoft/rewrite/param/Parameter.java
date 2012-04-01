@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.param;
 
-import java.util.List;
-
 import org.ocpsoft.rewrite.bind.Bindable;
 
 /**
@@ -24,30 +22,10 @@ import org.ocpsoft.rewrite.bind.Bindable;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Parameter<T> extends Bindable<Parameter<T>>
+public interface Parameter<C extends Parameter<C, T>, T> extends Bindable<C>, Constrainable<C, T>, Transformable<C, T>
 {
    /**
     * Get the name of this {@link Parameter}
     */
    public String getName();
-
-   /**
-    * Add a constraint to which this {@link Parameter} must match.
-    */
-   public Parameter<T> constrainedBy(Constraint<T> pattern);
-
-   /**
-    * Get the underlying {@link List} of all {@link Constraint} objects currently registered to this {@link Parameter}
-    */
-   List<Constraint<T>> getConstraints();
-
-   /**
-    * Add a {@link Transform} to this {@link Parameter}; it will executed in the order in which it was added.
-    */
-   public Parameter<T> transformedBy(Transform<T> transform);
-
-   /**
-    * Get the underlying {@link List} of all {@link Transform} objects currently registered to this {@link Parameter}
-    */
-   List<Transform<T>> getTransforms();
 }

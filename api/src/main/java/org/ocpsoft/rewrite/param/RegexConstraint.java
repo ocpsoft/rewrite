@@ -13,21 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.config;
+package org.ocpsoft.rewrite.param;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Condition that always returns true.
+ * Defines a {@link Constraint} using a regular expression.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public class True extends DefaultConditionBuilder
+public class RegexConstraint implements Constraint<String>
 {
-   @Override
-   public boolean evaluate(final Rewrite event, final EvaluationContext context)
+
+   private final String pattern;
+
+   /**
+    * Create a new {@link RegexConstraint} using the given pattern.
+    */
+   public RegexConstraint(String pattern)
    {
-      return true;
+      this.pattern = pattern;
    }
+
+   @Override
+   public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
+   {
+      return value != null && value.matches(pattern);
+   }
+
+   @Override
+   public String toString()
+   {
+      return pattern;
+   }
+
 }

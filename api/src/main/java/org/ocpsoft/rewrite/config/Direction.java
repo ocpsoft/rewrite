@@ -26,7 +26,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class Direction extends ConditionBuilder
+public abstract class Direction extends DefaultConditionBuilder
 {
    /**
     * Returns a new {@link Condition} that returns true when operating on an {@link org.ocpsoft.rewrite.event.InboundRewrite} event.

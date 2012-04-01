@@ -15,64 +15,36 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-
 /**
- * Used as a base class to create fluent relationships between {@link Condition} objects; this class adds logical
- * operators to any class extending it.
+ * A {@link Condition} capable of logical operations with other {@link Condition} objects.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
  */
-public abstract class ConditionBuilder implements Condition
+public interface ConditionBuilder extends Condition
 {
 
-   /**
-    * Return a new {@link ConditionBuilder} that evaluates to {@link True} when
-    * {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
-    */
-   public static Condition create()
-   {
-      return new True();
-   }
-
-   /**
-    * Wrap a given {@link Condition} as a new {@link ConditionBuilder} that evaluates the the original {@link Condition}
-    * when {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
-    */
-   public static Condition wrap(Condition condition)
-   {
-      return And.all(condition);
-   }
    /**
     * Append a new {@link Condition} to this builder, which must evaluate to true in order for this composite
     * {@link Condition} to evaluate to true.
     */
-   public ConditionBuilder and(final Condition condition)
-   {
-      return And.all(this, condition);
-   }
+   public ConditionBuilder and(final Condition condition);
 
    /**
     * Append a new {@link Condition} to this builder, which must not evaluate to true in order for this composite
     * {@link Condition} to evaluate to true.
     */
-   public ConditionBuilder andNot(final Condition condition)
-   {
-      return And.all(this, Not.any(condition));
-   }
+   public ConditionBuilder andNot(final Condition condition);
 
    /**
     * Append a new {@link Condition} to this builder. If either this or the given {@link Condition} evaluate to true,
     * the composite {@link Condition} will evaluate to true.
     */
-   public ConditionBuilder or(final Condition condition)
-   {
-      return Or.any(this, condition);
-   }
+   public ConditionBuilder or(final Condition condition);
 
-   public ConditionBuilder orNot(final Condition condition)
-   {
-      return Or.any(this, Not.any(condition));
-   }
+   /**
+    * Append a new {@link Condition} to this builder. If either this evaluates to true or the given {@link Condition}
+    * evaluates to false, the composite {@link Condition} will evaluate to true.
+    */
+   public ConditionBuilder orNot(final Condition condition);
 }

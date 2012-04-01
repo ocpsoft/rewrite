@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class And extends ConditionBuilder implements CompositeCondition
+public class And extends DefaultConditionBuilder implements CompositeCondition
 {
    private final List<Condition> conditions;
 

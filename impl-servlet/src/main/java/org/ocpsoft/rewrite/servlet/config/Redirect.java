@@ -20,17 +20,14 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexOperationParameterBuilder;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.param.OperationParameterBuilder;
-import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterizedOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.bind.Binding;
 
 /**
  * An {@link Operation} that performs redirects via {@link HttpInboundServletRewrite#redirectPermanent(String)} and
@@ -38,8 +35,7 @@ import org.ocpsoft.rewrite.bind.Binding;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Redirect extends HttpOperation implements
-        ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String>
+public class Redirect extends HttpOperation implements IRedirect
 {
    private final RedirectType type;
 
@@ -49,7 +45,7 @@ public class Redirect extends HttpOperation implements
    {
       this.location = new ParameterizedPattern("[^/]+", location);
 
-      for (Parameter<String> parameter : this.location.getParameters().values()) {
+      for (RegexCapture parameter : this.location.getParameters().values()) {
          parameter.bindsTo(Evaluation.property(parameter.getName()));
       }
       this.type = type;
@@ -134,28 +130,21 @@ public class Redirect extends HttpOperation implements
    }
 
    @Override
-   public RegexOperationParameterBuilder where(final String param)
+   public RedirectParameter where(final String param)
    {
-      return new RegexOperationParameterBuilder(this, location.getParameter(param));
+      return new RedirectParameter(this, location.getParameter(param));
    }
 
    @Override
-   public RegexOperationParameterBuilder where(final String param, final String pattern)
-   {
-      return where(param).matches(pattern);
-   }
-
-   @Override
-   public RegexOperationParameterBuilder where(final String param, final String pattern,
-            final Binding binding)
-   {
-      return where(param, pattern).bindsTo(binding);
-   }
-
-   @Override
-   public RegexOperationParameterBuilder where(final String param, final Binding binding)
+   public RedirectParameter where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
+   }
+
+   @Override
+   public ParameterizedPattern getTargetExpression()
+   {
+      return location;
    }
 
 }

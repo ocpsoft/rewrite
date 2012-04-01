@@ -15,20 +15,24 @@
  */
 package org.ocpsoft.rewrite.param;
 
-import org.ocpsoft.rewrite.config.Operation;
-import org.ocpsoft.rewrite.config.OperationBuilder;
+import java.util.List;
 
 /**
- * Defines the interface for an {@link Operation} that wishes to parameterize portions of its behavior.
+ * Defines a class which can be transformed by a {@link Transform}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ * @param <C> The type containing the value to be transformed.
+ * @param <T> The type of the value to be transformed.
  */
-public interface ParameterizedOperation<P extends ParameterizedOperation<P, T>, T> extends Parameterized<P, T>,
-         Operation
+public interface Transformable<C extends Transformable<C, T>, T>
 {
    /**
-    * Chain this {@link Operation} with another {@link Operation} to be performed in series.
+    * Add a {@link Transform} to this {@link C}; it will executed in the order in which it was added.
     */
-   OperationBuilder and(Operation other);
+   public C transformedBy(Transform<T> transform);
+
+   /**
+    * Get the underlying {@link List} of all {@link Transform} objects currently registered to this {@link C}
+    */
+   List<Transform<T>> getTransforms();
 }

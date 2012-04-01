@@ -25,13 +25,10 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
-import org.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
-import org.ocpsoft.rewrite.param.ParameterizedCondition;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -39,8 +36,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RequestParameter extends HttpCondition implements
-ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+public class RequestParameter extends HttpCondition implements IRequestParameter
 {
 
    private final ParameterizedPattern name;
@@ -104,7 +100,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
       {
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
-            Map<RegexParameter, String[]> parameters = name.parse(event, context, parameter);
+            Map<RegexCapture, String[]> parameters = name.parse(event, context, parameter);
             parameters = value.parse(event, context, parameter);
 
             if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)
@@ -131,36 +127,23 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
    }
 
    @Override
-   public RegexConditionParameterBuilder where(String param)
+   public RequestParameterParameter where(String param)
    {
-      return new RegexConditionParameterBuilder(this, name.getParameter(param), value.getParameter(param));
+      return new RequestParameterParameter(this, name.getParameter(param), value.getParameter(param));
    }
 
    @Override
-   public RegexConditionParameterBuilder where(String param, String pattern)
-   {
-      return where(param).matches(pattern);
-   }
-
-   @Override
-   public RegexConditionParameterBuilder where(String param, String pattern,
-            Binding binding)
-   {
-      return where(param, pattern).bindsTo(binding);
-   }
-
-   @Override
-   public RegexConditionParameterBuilder where(String param, Binding binding)
+   public RequestParameterParameter where(String param, Binding binding)
    {
       return where(param, binding);
    }
 
-   ParameterizedPattern getName()
+   public ParameterizedPattern getNameExpression()
    {
       return name;
    }
 
-   ParameterizedPattern getValue()
+   public ParameterizedPattern getValueExpression()
    {
       return value;
    }
@@ -179,12 +162,12 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
          HttpServletRequest request = event.getRequest();
          for (String name : Collections.list(request.getParameterNames()))
          {
-            if (getName().matches(event, context, name))
+            if (getNameExpression().matches(event, context, name))
             {
                if (matchesValues(event, context, request, name))
                {
-                  Map<RegexParameter, String[]> parameters = getName().parse(event, context, name);
-                  parameters = getValue().parse(event, context, name);
+                  Map<RegexCapture, String[]> parameters = getNameExpression().parse(event, context, name);
+                  parameters = getValueExpression().parse(event, context, name);
 
                   result = true;
 
@@ -206,7 +189,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
       {
          for (String contents : Arrays.asList(request.getParameterValues(name)))
          {
-            if (!getValue().matches(event, context, contents))
+            if (!getValueExpression().matches(event, context, contents))
             {
                return false;
             }

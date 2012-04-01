@@ -1,21 +1,36 @@
+/*
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
 import org.ocpsoft.rewrite.config.Operation;
-import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.encodequery.Base64EncodingStrategy;
-import org.ocpsoft.rewrite.servlet.config.encodequery.EncodingStrategy;
 import org.ocpsoft.rewrite.servlet.config.encodequery.ChecksumStrategy;
+import org.ocpsoft.rewrite.servlet.config.encodequery.EncodingStrategy;
+import org.ocpsoft.rewrite.servlet.config.encodequery.HashCodeChecksumStrategy;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
-import org.ocpsoft.rewrite.servlet.config.encodequery.HashCodeChecksumStrategy;
 
 /**
  * Encodes any or many query-parameters into a single parameter using the given {@link ChecksumStrategy} and
@@ -89,9 +104,9 @@ public class EncodeQuery implements Operation
    /**
     * {@link Operation} to be performed when the current {@link ChecksumStrategy} detects an inbound checksum failure.
     */
-   public OperationBuilder onChecksumFailure(final Operation operation)
+   public DefaultOperationBuilder onChecksumFailure(final Operation operation)
    {
-      OperationBuilder builder = new OperationBuilder() {
+      DefaultOperationBuilder builder = new DefaultOperationBuilder() {
          @Override
          public void perform(final Rewrite event, final EvaluationContext context)
          {

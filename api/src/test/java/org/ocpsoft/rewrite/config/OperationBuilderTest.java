@@ -45,7 +45,7 @@ public class OperationBuilderTest
       Assert.assertTrue(four.isPerformed());
    }
 
-   private class MockOperation extends OperationBuilder
+   private class MockOperation extends DefaultOperationBuilder
    {
       private boolean performed = false;
 

@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.bind.Binding;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Parameterized<P extends Parameterized<P, T>, T>
+public interface Parameterized<C extends Parameterized<C, P, T>, P extends Parameter<P, T>, T>
 {
    /**
     * Select the parameter with the given name.
@@ -31,22 +31,6 @@ public interface Parameterized<P extends Parameterized<P, T>, T>
     * See also: {@link #where(String, String)}, {@link #where(String, String, org.ocpsoft.rewrite.bind.Binding)}, {@link #where(String, org.ocpsoft.rewrite.bind.Binding)}
     */
    P where(String param);
-
-   /**
-    * Select the parameter with the given name. Assign a pattern to which the parameter must match in order to be
-    * considered valid.
-    * <p>
-    * See also: {@link #where(String, T)}, {@link #where(String, T, org.ocpsoft.rewrite.bind.Binding)}, {@link #where(String, org.ocpsoft.rewrite.bind.Binding)}
-    */
-   P where(String param, T pattern);
-
-   /**
-    * Select the parameter with the given name. Assign a pattern to which the parameter must match in order to be
-    * considered valid. Bind the result of a successful parameter match to the given {@link org.ocpsoft.rewrite.bind.Binding}
-    * <p>
-    * See also: {@link #where(String, String)}, {@link #where(String, String, org.ocpsoft.rewrite.bind.Binding)}, {@link #where(String, org.ocpsoft.rewrite.bind.Binding)}
-    */
-   P where(String param, T pattern, Binding binding);
 
    /**
     * Select the parameter with the given name. Bind the result of a successful parameter match to the given

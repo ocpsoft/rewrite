@@ -118,23 +118,31 @@ public class RuleBuilder implements RelocatableRule
       return priority != null;
    }
 
-   public ConditionBuilder getConditionBuilder()
+   /**
+    * Return the underlying {@link ConditionBuilder}
+    */
+   public DefaultConditionBuilder getConditionBuilder()
    {
       if (condition == null)
-         condition = ConditionBuilder.create();
-      else if (!(condition instanceof ConditionBuilder))
-         condition = ConditionBuilder.wrap(condition);
+         condition = DefaultConditionBuilder.create();
+      else if (!(condition instanceof DefaultConditionBuilder))
+         condition = DefaultConditionBuilder.wrap(condition);
 
-      return (ConditionBuilder) condition;
+      return (DefaultConditionBuilder) condition;
    }
 
-   public OperationBuilder getOperationBuilder()
+   /**
+    * Return the underlying {@link OperationBuilder}
+    * 
+    * @return
+    */
+   public DefaultOperationBuilder getOperationBuilder()
    {
       if (operation == null)
-         operation = OperationBuilder.create();
-      else if (!(operation instanceof OperationBuilder))
-         operation = OperationBuilder.wrap(operation);
+         operation = DefaultOperationBuilder.create();
+      else if (!(operation instanceof DefaultOperationBuilder))
+         operation = DefaultOperationBuilder.wrap(operation);
 
-      return (OperationBuilder) operation;
+      return (DefaultOperationBuilder) operation;
    }
 }

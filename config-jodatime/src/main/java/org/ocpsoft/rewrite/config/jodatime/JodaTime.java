@@ -19,7 +19,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class JodaTime extends ConditionBuilder
+public class JodaTime extends DefaultConditionBuilder
 {
    private final TimeCondition condition;
    private DateTimeZone zone;

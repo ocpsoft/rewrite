@@ -16,19 +16,15 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.common.util.Assert;
-
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexOperationParameterBuilder;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.param.OperationParameterBuilder;
-import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterizedOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.bind.Binding;
 
 /**
  * Responsible for substituting inbound/outbound URLs with a replacement. For {@link org.ocpsoft.rewrite.event.InboundRewrite} events, this
@@ -37,8 +33,7 @@ import org.ocpsoft.rewrite.bind.Binding;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Substitute extends HttpOperation implements
-ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder, String>, String>
+public class Substitute extends HttpOperation implements ISubstitute
 {
    private final ParameterizedPattern location;
 
@@ -47,7 +42,7 @@ ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder,
       Assert.notNull(location, "Location must not be null.");
       this.location = new ParameterizedPattern("[^/]+", location);
 
-      for (Parameter<String> parameter : this.location.getParameters().values()) {
+      for (RegexCapture parameter : this.location.getParameters().values()) {
          parameter.bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -95,27 +90,20 @@ ParameterizedOperation<OperationParameterBuilder<RegexOperationParameterBuilder,
    }
 
    @Override
-   public RegexOperationParameterBuilder where(final String param)
+   public SubstituteParameter where(final String param)
    {
-      return new RegexOperationParameterBuilder(this, location.getParameter(param));
+      return new SubstituteParameter(this, location.getParameter(param));
    }
 
    @Override
-   public RegexOperationParameterBuilder where(final String param, final String pattern)
-   {
-      return where(param).matches(pattern);
-   }
-
-   @Override
-   public RegexOperationParameterBuilder where(final String param, final String pattern,
-            final Binding binding)
-   {
-      return where(param, pattern).bindsTo(binding);
-   }
-
-   @Override
-   public RegexOperationParameterBuilder where(final String param, final Binding binding)
+   public SubstituteParameter where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
+   }
+
+   @Override
+   public ParameterizedPattern getTargetExpression()
+   {
+      return location;
    }
 }

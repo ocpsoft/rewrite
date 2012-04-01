@@ -25,8 +25,8 @@ import org.ocpsoft.rewrite.bind.DefaultBindable;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterBuilder<P extends ParameterBuilder<P, T>, T> extends DefaultBindable<Parameter<T>>
-         implements Parameter<T>
+public abstract class ParameterBuilder<P extends ParameterBuilder<P, T>, T> extends DefaultBindable<P>
+implements Parameter<P, T>
 {
    private final List<Transform<T>> transforms = new ArrayList<Transform<T>>();
    private final List<Constraint<T>> constraints = new ArrayList<Constraint<T>>();

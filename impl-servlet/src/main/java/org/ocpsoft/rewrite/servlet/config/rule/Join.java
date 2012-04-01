@@ -20,24 +20,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
+import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
-import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Constraint;
-import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
+import org.ocpsoft.rewrite.servlet.config.IPath;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.QueryString;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
-import org.ocpsoft.rewrite.servlet.config.rule.Join.JoinParameterBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
@@ -48,7 +44,7 @@ import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
+public class Join implements IJoin
 {
    private static final String CURRENT_JOIN = Join.class.getName() + "_current";
 
@@ -56,8 +52,8 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
 
    private final String pattern;
    private String resource;
-   private Path resourcePath;
-   private final Path path;
+   private IPath resourcePath;
+   private final IPath path;
 
    private Operation operation;
    private Condition condition;
@@ -201,25 +197,13 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
    }
 
    @Override
-   public JoinParameterBuilder where(final String parameter)
+   public JoinParameter where(final String parameter)
    {
-      return new JoinParameterBuilder(this, path.getPathExpression().getParameter(parameter));
+      return new JoinParameter(this, path.getPathExpression().getParameter(parameter));
    }
 
    @Override
-   public JoinParameterBuilder where(final String param, final String pattern)
-   {
-      return where(param).matches(pattern);
-   }
-
-   @Override
-   public JoinParameterBuilder where(final String param, final String pattern, final Binding binding)
-   {
-      return where(param, pattern).bindsTo(binding);
-   }
-
-   @Override
-   public JoinParameterBuilder where(final String param, final Binding binding)
+   public JoinParameter where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -251,137 +235,54 @@ public class Join implements Rule, Parameterized<JoinParameterBuilder, String>
       return this;
    }
 
-   /**
-    * Builder for {@link Join} specific {@link Parameter}
-    * 
-    * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
-    * 
-    */
-   public class JoinParameterBuilder implements Parameter<String>, Parameterized<JoinParameterBuilder, String>, Rule
-   {
-      private final Join parent;
-      private final RegexParameter parameter;
-
-      public JoinParameterBuilder(final Join link, final RegexParameter parameter)
-      {
-         this.parent = link;
-         this.parameter = parameter;
-      }
-
-      public Join to(final String resource)
-      {
-         return parent.to(resource);
-      }
-
-      public JoinParameterBuilder matches(final String pattern)
-      {
-         parameter.matches(pattern);
-         return this;
-      }
-
-      @Override
-      public JoinParameterBuilder bindsTo(final Binding binding)
-      {
-         parameter.bindsTo(binding);
-         return this;
-      }
-
-      @Override
-      public JoinParameterBuilder constrainedBy(final Constraint<String> constraint)
-      {
-         parameter.constrainedBy(constraint);
-         return this;
-      }
-
-      @Override
-      public JoinParameterBuilder transformedBy(final Transform<String> constraint)
-      {
-         parameter.transformedBy(constraint);
-         return this;
-      }
-
-      @Override
-      public List<Binding> getBindings()
-      {
-         return parameter.getBindings();
-      }
-
-      @Override
-      public String getName()
-      {
-         return parameter.getName();
-      }
-
-      @Override
-      public List<Constraint<String>> getConstraints()
-      {
-         return parameter.getConstraints();
-      }
-
-      @Override
-      public List<Transform<String>> getTransforms()
-      {
-         return parameter.getTransforms();
-      }
-
-      @Override
-      public JoinParameterBuilder where(final String param)
-      {
-         return parent.where(param);
-      }
-
-      @Override
-      public JoinParameterBuilder where(final String param, final String pattern)
-      {
-         return parent.where(param, pattern);
-      }
-
-      @Override
-      public JoinParameterBuilder where(final String param, final String pattern, final Binding binding)
-      {
-         return parent.where(param, pattern, binding);
-      }
-
-      @Override
-      public JoinParameterBuilder where(final String param, final Binding binding)
-      {
-         return parent.where(param, binding);
-      }
-
-      public Join when(final Condition condition)
-      {
-         return parent.when(condition);
-      }
-
-      public Join perform(final Operation operation)
-      {
-         return parent.perform(operation);
-      }
-
-      @Override
-      public String getId()
-      {
-         return parent.getId();
-      }
-
-      @Override
-      public boolean evaluate(final Rewrite event, final EvaluationContext context)
-      {
-         return parent.evaluate(event, context);
-      }
-
-      @Override
-      public void perform(final Rewrite event, final EvaluationContext context)
-      {
-         parent.perform(event, context);
-      }
-   }
-
    @Override
    public String toString()
    {
       return "Join [url=" + pattern + ", to=" + resource + ", id=" + id + ", inboundCorrection="
                + inboundCorrection + "]";
+   }
+
+   @Override
+   public ConditionBuilder and(Condition condition)
+   {
+      return DefaultConditionBuilder.wrap(this.condition).and(condition);
+   }
+
+   @Override
+   public ConditionBuilder andNot(Condition condition)
+   {
+      return DefaultConditionBuilder.wrap(this.condition).andNot(condition);
+   }
+
+   @Override
+   public ConditionBuilder or(Condition condition)
+   {
+      return DefaultConditionBuilder.wrap(this.condition).or(condition);
+   }
+
+   @Override
+   public ConditionBuilder orNot(Condition condition)
+   {
+      return DefaultConditionBuilder.wrap(this.condition).orNot(condition);
+   }
+
+   @Override
+   public IJoin withRequestBinding()
+   {
+      path.withRequestBinding();
+      return this;
+   }
+
+   @Override
+   public ParameterizedPattern getPathExpression()
+   {
+      return path.getPathExpression();
+   }
+
+   @Override
+   public ParameterizedPattern getResourcexpression()
+   {
+      return resourcePath.getPathExpression();
    }
 
 }

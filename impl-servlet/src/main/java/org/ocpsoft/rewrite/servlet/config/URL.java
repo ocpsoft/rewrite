@@ -24,12 +24,8 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
-import org.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
-import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterizedCondition;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -40,8 +36,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class URL extends HttpCondition implements
-ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+public class URL extends HttpCondition implements IURL
 {
    private final ParameterizedPattern expression;
 
@@ -50,7 +45,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
       Assert.notNull(pattern, "URL must not be null.");
       this.expression = new ParameterizedPattern(".*", pattern);
 
-      for (Parameter<String> parameter : expression.getParameters().values()) {
+      for (RegexCapture parameter : expression.getParameters().values()) {
          parameter.bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -90,35 +85,23 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
     * <p>
     * See also {@link #where(String)}
     */
+   @Override
    public URL withRequestBinding()
    {
-      for (Parameter<String> parameter : expression.getParameters().values()) {
+      for (RegexCapture parameter : expression.getParameters().values()) {
          parameter.bindsTo(Request.parameter(parameter.getName()));
       }
       return this;
    }
 
    @Override
-   public RegexConditionParameterBuilder where(final String param)
+   public URLParameter where(final String param)
    {
-      return new RegexConditionParameterBuilder(this, expression.getParameter(param));
+      return new URLParameter(this, expression.getParameter(param));
    }
 
    @Override
-   public RegexConditionParameterBuilder where(final String param, final String pattern)
-   {
-      return where(param).matches(pattern);
-   }
-
-   @Override
-   public RegexConditionParameterBuilder where(final String param, final String pattern,
-            final Binding binding)
-   {
-      return where(param, pattern).bindsTo(binding);
-   }
-
-   @Override
-   public RegexConditionParameterBuilder where(final String param, final Binding binding)
+   public URLParameter where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -146,7 +129,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
 
       if (expression.matches(event, context, requestURL))
       {
-         Map<RegexParameter, String[]> parameters = expression.parse(event, context, requestURL);
+         Map<RegexCapture, String[]> parameters = expression.parse(event, context, requestURL);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }
@@ -158,7 +141,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
     * <p>
     * See also: {@link #where(String)}
     */
-   public ParameterizedPattern getPathExpression()
+   public ParameterizedPattern getSchemeExpression()
    {
       return expression;
    }
@@ -167,5 +150,11 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
    public String toString()
    {
       return expression.toString();
+   }
+
+   @Override
+   public ParameterizedPattern getPathExpression()
+   {
+      return expression;
    }
 }

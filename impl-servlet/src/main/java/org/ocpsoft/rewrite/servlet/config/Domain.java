@@ -24,12 +24,9 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern.RegexParameter;
-import org.ocpsoft.rewrite.bind.RegexConditionParameterBuilder;
+import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
-import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterizedCondition;
+import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
@@ -39,8 +36,7 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Domain extends HttpCondition implements
-ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder, String>, String>
+public class Domain extends HttpCondition implements IDomain
 {
    private final ParameterizedPattern expression;
 
@@ -49,7 +45,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
       Assert.notNull(pattern, "Domain must not be null.");
       this.expression = new ParameterizedPattern(pattern);
 
-      for (Parameter<String> parameter : this.expression.getParameters().values()) {
+      for (RegexCapture parameter : this.expression.getParameters().values()) {
          parameter.bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -66,7 +62,8 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
     *    ... and so on
     * </code>
     * <p>
-    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See also {@link #where(String)}
+    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See
+    * also {@link #where(String)}
     */
    public static Domain matches(final String pattern)
    {
@@ -74,26 +71,13 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
    }
 
    @Override
-   public RegexConditionParameterBuilder where(final String param)
+   public DomainParameter where(final String param)
    {
-      return new RegexConditionParameterBuilder(this, expression.getParameter(param));
+      return new DomainParameter(this, expression.getParameter(param));
    }
 
    @Override
-   public RegexConditionParameterBuilder where(final String param, final String pattern)
-   {
-      return where(param).matches(pattern);
-   }
-
-   @Override
-   public RegexConditionParameterBuilder where(final String param, final String pattern,
-            final Binding binding)
-   {
-      return where(param, pattern).bindsTo(binding);
-   }
-
-   @Override
-   public RegexConditionParameterBuilder where(final String param, final Binding binding)
+   public DomainParameter where(final String param, final Binding binding)
    {
       return where(param).bindsTo(binding);
    }
@@ -116,7 +100,7 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
 
       if (hostName != null && expression.matches(event, context, hostName))
       {
-         Map<RegexParameter, String[]> parameters = expression.parse(event, context, hostName);
+         Map<RegexCapture, String[]> parameters = expression.parse(event, context, hostName);
          if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
             return true;
       }
@@ -137,5 +121,20 @@ ParameterizedCondition<ConditionParameterBuilder<RegexConditionParameterBuilder,
    public String toString()
    {
       return expression.toString();
+   }
+
+   @Override
+   public IDomain withRequestBinding()
+   {
+      for (RegexCapture parameter : expression.getParameters().values()) {
+         parameter.bindsTo(Request.parameter(parameter.getName()));
+      }
+      return this;
+   }
+
+   @Override
+   public ParameterizedPattern getDomainExpression()
+   {
+      return expression;
    }
 }

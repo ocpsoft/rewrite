@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.rewrite.faces.config;
 
 import java.util.ArrayList;
@@ -11,9 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.common.pattern.WeightedComparator;
-
+import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
 import org.ocpsoft.rewrite.config.Operation;
-import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -33,6 +47,9 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
    private final Set<PhaseId> beforePhases = new HashSet<PhaseId>();
    private final Set<PhaseId> afterPhases = new HashSet<PhaseId>();
 
+   /**
+    * Perform operation before or after the specified phases.
+    */
    public abstract void performOperation(final HttpServletRewrite event, final EvaluationContext context);
 
    public Set<PhaseId> getBeforePhases()
@@ -45,14 +62,14 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
       return afterPhases;
    }
 
-   public OperationBuilder before(final PhaseId... phases)
+   public DefaultOperationBuilder before(final PhaseId... phases)
    {
       if (phases != null)
          this.beforePhases.addAll(Arrays.asList(phases));
       return this;
    }
 
-   public OperationBuilder after(final PhaseId... phases)
+   public DefaultOperationBuilder after(final PhaseId... phases)
    {
       if (phases != null)
          this.afterPhases.addAll(Arrays.asList(phases));
@@ -101,7 +118,8 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
    }
 
    /**
-    * Enqueue an {@link org.ocpsoft.rewrite.config.Operation} to be performed before or after one or many JavaServer Faces life-cycle phases, specified via invoking {@link #before(PhaseId...)} or {@link #after(PhaseId...)}.
+    * Enqueue an {@link org.ocpsoft.rewrite.config.Operation} to be performed before or after one or many JavaServer
+    * Faces life-cycle phases, specified via invoking {@link #before(PhaseId...)} or {@link #after(PhaseId...)}.
     */
    @SuppressWarnings("rawtypes")
    public static PhaseOperation<?> enqueue(final Operation operation, final int priority)

@@ -29,7 +29,6 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
-import org.ocpsoft.rewrite.param.ConditionParameterBuilder;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
@@ -78,7 +77,7 @@ public class URLTest
    public void testAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      ConditionParameterBuilder<?, ?> url = URL.matches("{prefix}/application/{seg}{suffix}")
+      IURL url = URL.matches("{prefix}/application/{seg}{suffix}")
                .where("prefix").matches(".*")
                .where("suffix").matches("\\?.*")
                .where("seg", mockBinding);
@@ -102,7 +101,7 @@ public class URLTest
    public void testCaptureInBindsParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      ConditionParameterBuilder<?, ?> url = URL.captureIn("foo")
+      IURL url = URL.captureIn("foo")
                .where("foo", mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));

@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.spi.InvocationResultHandler;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Invoke extends OperationBuilder
+public class Invoke extends DefaultOperationBuilder
 {
    private static final Logger log = Logger.getLogger(Invoke.class);
    private final Submission submission;
@@ -82,7 +82,7 @@ public class Invoke extends OperationBuilder
     * Invoke the given {@link Retrieval} and process {@link InvocationResultHandler} instances on the result value (if
     * any.)
     */
-   public static OperationBuilder binding(final Retrieval retrieval)
+   public static DefaultOperationBuilder binding(final Retrieval retrieval)
    {
       return new Invoke(null, retrieval);
    }
@@ -93,7 +93,7 @@ public class Invoke extends OperationBuilder
     * {@link Retrieval#retrieve(Rewrite, EvaluationContext)} as the value for this submission. Process
     * {@link InvocationResultHandler} instances on the result value (if any.)
     */
-   public static OperationBuilder binding(final Submission to, final Retrieval from)
+   public static DefaultOperationBuilder binding(final Submission to, final Retrieval from)
    {
       return new Invoke(to, from);
    }

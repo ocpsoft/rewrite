@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -120,9 +120,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
     * {@link Binding} value. This evaluates to true when the values are equal.
     */
-   public static ConditionBuilder equals(final Object expected, final Retrieval binding)
+   public static DefaultConditionBuilder equals(final Object expected, final Retrieval binding)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -136,9 +136,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
     * {@link Binding} value. This evaluates to true when the values are equal.
     */
-   public static ConditionBuilder equals(final Object expected, final Submission binding, final Object submission)
+   public static DefaultConditionBuilder equals(final Object expected, final Submission binding, final Object submission)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -152,9 +152,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the value of two {@link Retrieval} {@link Binding} instances. This
     * evaluates to true when the values are equal.
     */
-   public static ConditionBuilder equals(final Retrieval left, final Retrieval right)
+   public static DefaultConditionBuilder equals(final Retrieval left, final Retrieval right)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -167,9 +167,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the values of each given {@link Retrieval} and {@link Submission}
     * {@link Binding} instance, respectively. This evaluates to true when the values are equal.
     */
-   public static ConditionBuilder equals(final Retrieval left, final Submission right, final Object submission)
+   public static DefaultConditionBuilder equals(final Retrieval left, final Submission right, final Object submission)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -182,10 +182,10 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
     * evaluates to true when the values are equal.
     */
-   public static ConditionBuilder equals(final Submission left, final Object leftSubmission, final Submission right,
+   public static DefaultConditionBuilder equals(final Submission left, final Object leftSubmission, final Submission right,
             final Object rightSubmission)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -198,9 +198,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
     * {@link Binding} value. This evaluates to true when the values are not equal.
     */
-   public static ConditionBuilder notEquals(final Object expected, final Retrieval binding)
+   public static DefaultConditionBuilder notEquals(final Object expected, final Retrieval binding)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -214,9 +214,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
     * {@link Binding} value. This evaluates to true when the values are not equal.
     */
-   public static ConditionBuilder notEquals(final Object expected, final Submission binding, final Object submission)
+   public static DefaultConditionBuilder notEquals(final Object expected, final Submission binding, final Object submission)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -230,9 +230,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the value of two {@link Retrieval} {@link Binding} instances. This
     * evaluates to true when the values are not equal.
     */
-   public static ConditionBuilder notEquals(final Retrieval left, final Retrieval right)
+   public static DefaultConditionBuilder notEquals(final Retrieval left, final Retrieval right)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -245,9 +245,9 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the values of each given {@link Retrieval} and {@link Submission}
     * {@link Binding} instance, respectively. This evaluates to true when the values are not equal.
     */
-   public static ConditionBuilder notEquals(final Retrieval left, final Submission right, final Object submission)
+   public static DefaultConditionBuilder notEquals(final Retrieval left, final Submission right, final Object submission)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
@@ -260,10 +260,10 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
     * evaluates to true when the values are not equal.
     */
-   public static ConditionBuilder notEquals(final Submission left, final Object leftSubmission, final Submission right,
+   public static DefaultConditionBuilder notEquals(final Submission left, final Object leftSubmission, final Submission right,
             final Object rightSubmission)
    {
-      return new ConditionBuilder() {
+      return new DefaultConditionBuilder() {
          @Override
          public boolean evaluate(final Rewrite event, final EvaluationContext context)
          {
