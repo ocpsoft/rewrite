@@ -10,7 +10,7 @@ Get Started
 
         <dependency>
            <groupId>org.ocpsoft.rewrite</groupId>
-           <artifactId>rewrite-integation-cdi</artifactId>
+           <artifactId>rewrite-integration-cdi</artifactId>
            <version>${rewrite.version}</version>
         </dependency>
 
