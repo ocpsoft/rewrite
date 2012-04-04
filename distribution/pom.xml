@@ -48,6 +48,19 @@
 		<dependency>
 			<groupId>org.ocpsoft.rewrite</groupId>
 			<artifactId>rewrite-servlet</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Config -->
+		<dependency>
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-config-jodatime</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-config-tuckey</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Integration -->

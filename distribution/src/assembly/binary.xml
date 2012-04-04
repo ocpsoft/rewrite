@@ -25,7 +25,15 @@
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>org.ocpsoft.rewrite:rewrite-servlet:*</include>
+				<include>org.ocpsoft.rewrite:rewrite-servlet:jar</include>
+			</includes>
+		</dependencySet>
+
+		<!-- config modules -->
+		<dependencySet>
+			<outputDirectory>/config</outputDirectory>
+			<includes>
+				<include>org.ocpsoft.rewrite:rewrite-config-*:jar</include>
 			</includes>
 		</dependencySet>
 
@@ -33,7 +41,7 @@
 		<dependencySet>
 			<outputDirectory>/integration</outputDirectory>
 			<includes>
-				<include>org.ocpsoft.rewrite:rewrite-integration-*:*</include>
+				<include>org.ocpsoft.rewrite:rewrite-integration-*:jar</include>
 			</includes>
 		</dependencySet>
 
