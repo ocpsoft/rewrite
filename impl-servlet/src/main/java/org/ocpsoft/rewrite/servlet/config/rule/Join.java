@@ -87,7 +87,8 @@ public class Join implements IJoin
    /**
     * Redirect inbound requests for the internal resource to the outward facing URL instead.
     */
-   public Join withInboundCorrection()
+   @Override
+   public IJoin withInboundCorrection()
    {
       this.inboundCorrection = true;
       return this;
