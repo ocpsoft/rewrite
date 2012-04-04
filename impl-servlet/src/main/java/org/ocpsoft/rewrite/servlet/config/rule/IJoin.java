@@ -39,6 +39,8 @@ import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
  */
 public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule, ConditionBuilder
 {
+   public IJoin withInboundCorrection();
+
    public IJoin withRequestBinding();
 
    public ParameterizedPattern getPathExpression();
@@ -165,6 +167,12 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public void perform(Rewrite event, EvaluationContext context)
       {
          parent.perform(event, context);
+      }
+
+      @Override
+      public IJoin withInboundCorrection()
+      {
+         return parent.withInboundCorrection();
       }
    }
 }
