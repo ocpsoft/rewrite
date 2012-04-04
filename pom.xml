@@ -46,6 +46,7 @@
       <module>integration-gwt</module>
       <module>integration-spring</module>
       <module>rewrite-servlet</module>
+      <module>distribution</module>
    </modules>
 
    <dependencyManagement>
