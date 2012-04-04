@@ -39,8 +39,8 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 
 /**
- * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL and an internal server
- * resource URL
+ * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
+ * and an internal server resource URL
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -69,24 +69,27 @@ public class Join implements IJoin
    /**
     * The outward facing URL path to which this {@link Join} will apply.
     */
-   public static Join path(final String pattern)
+   public static IJoin path(final String pattern)
    {
       return new Join(pattern);
    }
 
    /**
-    * The internal server resource (real or virtual) to be served.
+    * Retrieve the {@link Join} that was invoked on the current request; if no {@link Join} was invoked, return null.
     */
-   public Join to(final String resource)
+   public static Join getCurrentJoin(final HttpServletRequest request)
+   {
+      return (Join) request.getAttribute(CURRENT_JOIN);
+   }
+
+   @Override
+   public IJoin to(final String resource)
    {
       this.resource = resource;
       this.resourcePath = Path.matches(resource);
       return this;
    }
 
-   /**
-    * Redirect inbound requests for the internal resource to the outward facing URL instead.
-    */
    @Override
    public IJoin withInboundCorrection()
    {
@@ -189,14 +192,6 @@ public class Join implements IJoin
       request.setAttribute(CURRENT_JOIN, this);
    }
 
-   /**
-    * Retrieve the {@link Join} that was invoked on the current request; if no {@link Join} was invoked, return null.
-    */
-   public static Join getCurrentJoin(final HttpServletRequest request)
-   {
-      return (Join) request.getAttribute(CURRENT_JOIN);
-   }
-
    @Override
    public JoinParameter where(final String parameter)
    {
@@ -215,22 +210,22 @@ public class Join implements IJoin
       return id;
    }
 
-   public Join when(final Condition condition)
+   @Override
+   public IJoin when(final Condition condition)
    {
       this.condition = condition;
       return this;
    }
 
-   public Join perform(final Operation operation)
+   @Override
+   public IJoin perform(final Operation operation)
    {
       this.operation = operation;
       return this;
    }
 
-   /**
-    * Set the ID of this {@link Join}.
-    */
-   public Join withId(final String id)
+   @Override
+   public IJoin withId(final String id)
    {
       this.id = id;
       return this;

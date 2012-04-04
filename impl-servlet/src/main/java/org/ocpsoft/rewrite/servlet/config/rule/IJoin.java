@@ -15,12 +15,15 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import javax.servlet.ServletRequest;
+
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -39,16 +42,46 @@ import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
  */
 public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule, ConditionBuilder
 {
-   public IJoin withInboundCorrection();
-
-   public IJoin withRequestBinding();
+   /**
+    * The internal server resource (real or virtual) to be served.
+    */
+   public IJoin to(String resource);
 
    public ParameterizedPattern getPathExpression();
 
    public ParameterizedPattern getResourcexpression();
 
+   /**
+    * Define additional {@link Operation} instances to be performed when this rule matches successfully.
+    */
+   public IJoin perform(Operation operation);
+
+   /**
+    * Define additional {@link Condition} instances that must be satisfied in order for this rule to matche
+    * successfully.
+    */
+   public IJoin when(Condition condition);
+
+   /**
+    * Set the ID of this {@link Join}.
+    */
+   public IJoin withId(String id);
+
+   /**
+    * Redirect inbound requests for the internal resource to the outward facing URL instead.
+    */
+   public IJoin withInboundCorrection();
+
+   /**
+    * Bind inbound {parameter} values to the {@link ServletRequest#getParameterMap()}, by name.
+    */
+   public IJoin withRequestBinding();
+
    public interface IJoinParameter extends IJoin, Bindable<JoinParameter>, Parameter<JoinParameter, String>
    {
+      /**
+       * Specify the pattern to which this Parameter must match.
+       */
       IJoinParameter matches(String string);
    }
 
@@ -173,6 +206,30 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public IJoin withInboundCorrection()
       {
          return parent.withInboundCorrection();
+      }
+
+      @Override
+      public IJoin to(String resource)
+      {
+         return parent.to(resource);
+      }
+
+      @Override
+      public IJoin perform(Operation operation)
+      {
+         return parent.perform(operation);
+      }
+
+      @Override
+      public IJoin when(Condition condition)
+      {
+         return parent.when(condition);
+      }
+
+      @Override
+      public IJoin withId(String id)
+      {
+         return parent.withId(id);
       }
    }
 }
