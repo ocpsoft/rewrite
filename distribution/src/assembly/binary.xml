@@ -24,6 +24,7 @@
 		<!-- servlet module -->
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
 			<includes>
 				<include>org.ocpsoft.rewrite:rewrite-servlet:jar</include>
 			</includes>
@@ -32,6 +33,7 @@
 		<!-- config modules -->
 		<dependencySet>
 			<outputDirectory>/config</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
 			<includes>
 				<include>org.ocpsoft.rewrite:rewrite-config-*:jar</include>
 			</includes>
@@ -40,6 +42,7 @@
 		<!-- integration modules -->
 		<dependencySet>
 			<outputDirectory>/integration</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
 			<includes>
 				<include>org.ocpsoft.rewrite:rewrite-integration-*:jar</include>
 			</includes>
