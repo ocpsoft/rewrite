@@ -81,7 +81,6 @@ public class RewriteTestBase
    {
       return ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
                .addAsResource(new File("../api/target/classes/org"))
-               .addAsResource(new File("../api/target/classes/META-INF"))
                .addAsResource(new File("../impl-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
    }

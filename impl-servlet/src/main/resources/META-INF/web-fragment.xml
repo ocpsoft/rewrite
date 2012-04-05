@@ -23,15 +23,16 @@
    </listener>
 
    <filter>
-      <filter-name>OCPSoft Rewrite Filter</filter-name>
+      <filter-name>OCPsoft Rewrite Filter</filter-name>
       <filter-class>org.ocpsoft.rewrite.servlet.RewriteFilter</filter-class>
       <async-supported>true</async-supported>
    </filter>
    <filter-mapping>
-      <filter-name>OCPSoft Rewrite Filter</filter-name>
+      <filter-name>OCPsoft Rewrite Filter</filter-name>
       <url-pattern>/*</url-pattern>
       <dispatcher>FORWARD</dispatcher>
       <dispatcher>REQUEST</dispatcher>
+      <dispatcher>INCLUDE</dispatcher>
       <dispatcher>ASYNC</dispatcher>
       <dispatcher>ERROR</dispatcher>
    </filter-mapping>
