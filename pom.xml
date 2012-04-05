@@ -45,22 +45,8 @@
       <module>integration-gwt</module>
       <module>integration-spring</module>
       <module>rewrite-servlet</module>
+      <module>distribution</module>
    </modules>
-
-   <profiles>
-      <profile>
-         <id>performRelease</id>
-         <activation>
-            <property>
-               <name>performRelease</name>
-               <value>true</value>
-            </property>
-         </activation>
-         <modules>
-            <module>distribution</module>
-         </modules>
-      </profile>
-   </profiles>
 
    <dependencyManagement>
       <dependencies>
@@ -197,5 +183,5 @@
       <system>GitHub</system>
       <url>https://github.com/ocpsoft/rewrite/issues</url>
    </issueManagement>
-   
+
 </project>
