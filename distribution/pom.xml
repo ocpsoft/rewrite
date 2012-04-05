@@ -60,6 +60,28 @@
       <!-- Config -->
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-annotations-api</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-annotations-api</artifactId>
+         <version>${project.version}</version>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-annotations-impl</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-annotations-impl</artifactId>
+         <version>${project.version}</version>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-config-jodatime</artifactId>
          <version>${project.version}</version>
       </dependency>
