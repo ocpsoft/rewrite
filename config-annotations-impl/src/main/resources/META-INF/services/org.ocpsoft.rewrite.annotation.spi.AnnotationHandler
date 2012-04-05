@@ -1,4 +1,0 @@
-org.ocpsoft.prettyfaces.annotation.handlers.ForwardToHandler
-org.ocpsoft.prettyfaces.annotation.handlers.JSFValidatorHandler
-org.ocpsoft.prettyfaces.annotation.handlers.NamedParameterHandler
-org.ocpsoft.prettyfaces.annotation.handlers.URLPatternHandler
