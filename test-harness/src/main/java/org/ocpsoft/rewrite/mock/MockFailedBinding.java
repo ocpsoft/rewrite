@@ -10,7 +10,7 @@ public class MockFailedBinding implements Binding
    private boolean converted;
 
    @Override
-   public boolean validates(final Rewrite event, final EvaluationContext context, final Object value)
+   public boolean validate(final Rewrite event, final EvaluationContext context, final Object value)
    {
       validated = true;
       return true;

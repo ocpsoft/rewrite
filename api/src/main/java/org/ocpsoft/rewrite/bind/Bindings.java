@@ -74,7 +74,7 @@ public abstract class Bindings
                    * Binding to the EvaluationContext is available immediately.
                    */
                   Object convertedValue = binding.convert(event, context, value);
-                  if (binding.validates(event, context, convertedValue))
+                  if (binding.validate(event, context, convertedValue))
                   {
                      binding.submit(event, context, value);
                   }
@@ -84,7 +84,7 @@ public abstract class Bindings
                else
                {
                   Object convertedValue = binding.convert(event, context, value);
-                  if (binding.validates(event, context, convertedValue))
+                  if (binding.validate(event, context, convertedValue))
                   {
                      convertedValue = binding.convert(event, context, convertedValue);
                      operations.add(new BindingOperation(binding, convertedValue));

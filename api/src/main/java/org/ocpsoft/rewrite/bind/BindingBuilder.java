@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class BindingBuilder<C extends BindingBuilder<C, T>, T> implements Binding, Retrieval,
-         Submission, HasValidator<C>, HasConverter<C>
+Submission, HasValidator<C>, HasConverter<C>
 {
    private Converter<?> converter = new DefaultConverter();
    private Validator<?> validator = new DefaultValidator();
@@ -79,7 +79,7 @@ public abstract class BindingBuilder<C extends BindingBuilder<C, T>, T> implemen
    }
 
    @Override
-   public boolean validates(Rewrite event, EvaluationContext context, Object value)
+   public boolean validate(Rewrite event, EvaluationContext context, Object value)
    {
       return ValueHolderUtil.validates(event, context, validator, value);
    }

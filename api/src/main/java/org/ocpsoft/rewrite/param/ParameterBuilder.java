@@ -67,7 +67,7 @@ implements Parameter<P, T>
    }
 
    @Override
-   public boolean validates(Rewrite event, EvaluationContext context, Object value)
+   public boolean validate(Rewrite event, EvaluationContext context, Object value)
    {
       return ValueHolderUtil.validates(event, context, validator, value);
    }

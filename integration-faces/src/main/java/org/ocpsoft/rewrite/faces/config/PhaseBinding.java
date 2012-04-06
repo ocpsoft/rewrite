@@ -82,9 +82,9 @@ public class PhaseBinding extends HttpOperation implements Binding
    }
 
    @Override
-   public boolean validates(Rewrite event, EvaluationContext context, Object value)
+   public boolean validate(Rewrite event, EvaluationContext context, Object value)
    {
-      return deferred.validates(event, context, value);
+      return deferred.validate(event, context, value);
    }
 
    @Override

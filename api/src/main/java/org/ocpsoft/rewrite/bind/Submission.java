@@ -24,7 +24,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Submission extends Validates, Converts
+public interface Submission extends Validator<Object>, Converter<Object>
 {
    /**
     * Store a value into the designated storage location. Return any value that is produces as a result of this

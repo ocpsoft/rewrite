@@ -41,7 +41,7 @@ public class ParameterBuilderTest
       Parameter<?, ?> parameter = new MockParameter("foo").validatedBy(validator).convertedBy(converter);
 
       Object value = parameter.convert(new MockRewrite(), new MockEvaluationContext(), new Object());
-      boolean valid = parameter.validates(new MockRewrite(), new MockEvaluationContext(), value);
+      boolean valid = parameter.validate(new MockRewrite(), new MockEvaluationContext(), value);
 
       Assert.assertTrue(validated);
       Assert.assertFalse(valid);
