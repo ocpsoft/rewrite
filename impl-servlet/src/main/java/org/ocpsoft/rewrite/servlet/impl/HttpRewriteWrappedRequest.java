@@ -21,6 +21,7 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -84,5 +85,12 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
    public String toString()
    {
       return super.getRequestURL().toString();
+   }
+
+   public static HttpRewriteWrappedRequest getFromRequest(ServletRequest request)
+   {
+      HttpRewriteWrappedRequest wrapper = (HttpRewriteWrappedRequest) request
+               .getAttribute(HttpRewriteWrappedRequest.class.getName());
+      return wrapper;
    }
 }

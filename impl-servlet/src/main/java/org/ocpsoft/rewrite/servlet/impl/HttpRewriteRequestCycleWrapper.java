@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.services.NonEnriching;
 import org.ocpsoft.common.services.ServiceLoader;
-
 import org.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
 import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 
@@ -37,19 +36,23 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
    @SuppressWarnings("unchecked")
    public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
    {
-      Map<String, String[]> additionalParams = new HashMap<String, String[]>();
+      HttpRewriteWrappedRequest wrappedRequest = HttpRewriteWrappedRequest.getFromRequest(request);
+      if (wrappedRequest == null)
+      {
+         Map<String, String[]> additionalParams = new HashMap<String, String[]>();
 
-      ServiceLoader<RequestParameterProvider> providers = ServiceLoader.load(RequestParameterProvider.class);
+         ServiceLoader<RequestParameterProvider> providers = ServiceLoader.load(RequestParameterProvider.class);
 
-      for (RequestParameterProvider provider : providers) {
-         Map<String, String[]> m = provider.getParameters(request, response);
-         if (m != null)
-         {
-            additionalParams.putAll(m);
+         for (RequestParameterProvider provider : providers) {
+            Map<String, String[]> m = provider.getParameters(request, response);
+            if (m != null)
+            {
+               additionalParams.putAll(m);
+            }
          }
+         wrappedRequest = new HttpRewriteWrappedRequest(request, additionalParams);
       }
-
-      return new HttpRewriteWrappedRequest(request, additionalParams);
+      return wrappedRequest;
    }
 
    @Override

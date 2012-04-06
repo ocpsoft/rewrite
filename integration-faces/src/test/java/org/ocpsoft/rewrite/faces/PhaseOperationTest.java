@@ -41,10 +41,10 @@ public class PhaseOperationTest extends RewriteTestBase
       WebArchive deployment = RewriteTestBase
                .getDeploymentNoWebXml()
                .setWebXML("faces-web.xml")
-               .addPackages(true, ADFRoot.class.getPackage())
+               .addPackages(true, FacesRoot.class.getPackage())
                .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))
                .addAsWebInfResource("faces-config.xml","faces-config.xml")
-               .addAsWebResource("empty-view.xhtml","empty.xhtml")
+               .addAsWebResource("empty.xhtml", "empty.xhtml")
                .addAsResource(
                         new StringAsset("org.ocpsoft.rewrite.faces.PhaseOperationTestConfigurationProvider"),
                         "/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider");
@@ -70,6 +70,17 @@ public class PhaseOperationTest extends RewriteTestBase
       Assert.assertTrue(Strings.isNullOrEmpty(content));
       // TODO why is content null here, but not in above test?
       Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testPhaseBindingDefersValue()
+   {
+      HttpAction<HttpGet> action = get("/binding/lincoln");
+      String content = action.getResponseContent();
+      Assert.assertTrue(Strings.isNullOrEmpty(content));
+      // TODO why is content null here, but not in above test?
+      Assert.assertEquals(205, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals("lincoln", action.getResponseHeaderValues("Value").get(0));
    }
 
 }

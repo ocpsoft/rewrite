@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.common.pattern.WeightedComparator;
-import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
@@ -62,18 +61,20 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
       return afterPhases;
    }
 
-   public DefaultOperationBuilder before(final PhaseId... phases)
+   @SuppressWarnings("unchecked")
+   public T before(final PhaseId... phases)
    {
       if (phases != null)
          this.beforePhases.addAll(Arrays.asList(phases));
-      return this;
+      return (T) this;
    }
 
-   public DefaultOperationBuilder after(final PhaseId... phases)
+   @SuppressWarnings("unchecked")
+   public T after(final PhaseId... phases)
    {
       if (phases != null)
          this.afterPhases.addAll(Arrays.asList(phases));
-      return this;
+      return (T) this;
    }
 
    /**

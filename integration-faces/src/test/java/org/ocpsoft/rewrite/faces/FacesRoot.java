@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.faces;
 
-public interface ADFRoot
+public interface FacesRoot
 {
 
 }

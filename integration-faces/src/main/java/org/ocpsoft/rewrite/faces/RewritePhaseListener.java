@@ -10,9 +10,9 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.logging.Logger;
-
 import org.ocpsoft.rewrite.faces.config.PhaseAction;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
+import org.ocpsoft.rewrite.servlet.config.Lifecycle;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 
 /**
@@ -30,16 +30,6 @@ public class RewritePhaseListener implements PhaseListener
    }
 
    @Override
-   public void afterPhase(final PhaseEvent event)
-   {
-      if (!PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
-      {
-         handleAfterPhaseOperations(event);
-         handleNavigation(event);
-      }
-   }
-
-   @Override
    public void beforePhase(final PhaseEvent event)
    {
       if (!PhaseId.RESTORE_VIEW.equals(event.getPhaseId()))
@@ -49,6 +39,16 @@ public class RewritePhaseListener implements PhaseListener
 
       if (PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
          handleNavigation(event);
+   }
+
+   @Override
+   public void afterPhase(final PhaseEvent event)
+   {
+      if (!PhaseId.RENDER_RESPONSE.equals(event.getPhaseId()))
+      {
+         handleAfterPhaseOperations(event);
+         handleNavigation(event);
+      }
    }
 
    private void handleBeforePhaseOperations(final PhaseEvent event)
@@ -63,6 +63,7 @@ public class RewritePhaseListener implements PhaseListener
             if (operation.getBeforePhases().contains(event.getPhaseId())
                      || operation.getBeforePhases().contains(PhaseId.ANY_PHASE))
             {
+               Lifecycle.proceed().perform(operation.getEvent(), operation.getContext());
                operation.performOperation(operation.getEvent(), operation.getContext());
                if (operation.getEvent().getFlow().is(Flow.ABORT_REQUEST))
                {
@@ -89,6 +90,7 @@ public class RewritePhaseListener implements PhaseListener
             if (operation.getAfterPhases().contains(event.getPhaseId())
                      || operation.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
+               Lifecycle.proceed().perform(operation.getEvent(), operation.getContext());
                operation.performOperation(operation.getEvent(), operation.getContext());
                if (operation.getEvent().getFlow().is(Flow.ABORT_REQUEST))
                {

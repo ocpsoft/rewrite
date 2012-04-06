@@ -47,8 +47,8 @@ public abstract class Request extends BindingBuilder
    }
 
    /**
-    * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map. Use the given {@link org.ocpsoft.rewrite.bind.Converter} when
-    * retrieving any values.
+    * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map. Use the given
+    * {@link org.ocpsoft.rewrite.bind.Converter} when retrieving any values.
     */
    public static BindingBuilder attribute(final String property, final Class<? extends Converter<?>> type)
    {
@@ -56,8 +56,9 @@ public abstract class Request extends BindingBuilder
    }
 
    /**
-    * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map. Use the given {@link org.ocpsoft.rewrite.bind.Validator}
-    * before attempting to submit any values. Use the given {@link Converter} when retrieving any values.
+    * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map. Use the given
+    * {@link org.ocpsoft.rewrite.bind.Validator} before attempting to submit any values. Use the given {@link Converter}
+    * when retrieving any values.
     */
    public static BindingBuilder attribute(final String property, final Class<Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
@@ -83,8 +84,9 @@ public abstract class Request extends BindingBuilder
    }
 
    /**
-    * Bind a value to the {@link ServletRequest#getParameterMap()} map. Use the given {@link org.ocpsoft.rewrite.bind.Validator} before
-    * attempting to submit any values. Use the given {@link Converter} when retrieving any values.
+    * Bind a value to the {@link ServletRequest#getParameterMap()} map. Use the given
+    * {@link org.ocpsoft.rewrite.bind.Validator} before attempting to submit any values. Use the given {@link Converter}
+    * when retrieving any values.
     */
    public static BindingBuilder parameter(final String property, final Class<Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
@@ -116,8 +118,7 @@ public abstract class Request extends BindingBuilder
       @Override
       public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
-         HttpRewriteWrappedRequest wrapper = (HttpRewriteWrappedRequest) ((HttpServletRewrite) event).getRequest()
-                  .getAttribute(HttpRewriteWrappedRequest.class.getName());
+         HttpRewriteWrappedRequest wrapper = HttpRewriteWrappedRequest.getFromRequest(((ServletRewrite<?,?>) event).getRequest());
 
          Map<String, String[]> modifiableParameters = wrapper.getModifiableParameters();
          if (value.getClass().isArray())
@@ -138,10 +139,7 @@ public abstract class Request extends BindingBuilder
       @Override
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
-         if (event instanceof ServletRewrite)
-            return ((HttpServletRewrite) event).getRequest().getParameter(parameter);
-         else
-            return null;
+         return ((HttpServletRewrite) event).getRequest().getParameter(parameter);
       }
    }
 
