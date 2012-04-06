@@ -145,4 +145,15 @@ public class RuleBuilder implements RelocatableRule
 
       return (DefaultOperationBuilder) operation;
    }
+
+   /**
+    * This method will call the supplied visitor for all conditions attached to the rule builder.
+    * 
+    * @param visitor visitor to process
+    */
+   public void accept(Visitor<Condition> visitor)
+   {
+      new ConditionVisit(condition).accept(visitor);
+   }
+
 }
