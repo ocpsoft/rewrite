@@ -72,18 +72,18 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
          log.trace("Scanning class: {}", clazz.getName());
       }
 
-      // first process fields
+      // first process the class
+      visit(clazz, context);
+
+      // then process the fields
       for (Field field : clazz.getDeclaredFields()) {
          visit(field, context);
       }
 
-      // the methods
+      // finally the methods
       for (Method method : clazz.getDeclaredMethods()) {
          visit(method, context);
       }
-
-      // the class itself is last
-      visit(clazz, context);
 
    }
 
