@@ -21,7 +21,11 @@
          <outputDirectory>/</outputDirectory>
          <useProjectArtifact>false</useProjectArtifact>
          <unpack>true</unpack>
-         <scope>runtime</scope>
+         <scope>provided</scope>
+
+         <excludes>
+            <exclude>*:*:*:sources</exclude>
+         </excludes>
       </dependencySet>
    </dependencySets>
 
