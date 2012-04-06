@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via
@@ -38,6 +39,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class Forward extends HttpOperation implements IForward
 {
    private final ParameterizedPattern location;
+   private final ParameterStore<ForwardParameter> parameters = new ParameterStore<ForwardParameter>();
 
    private Forward(final String location)
    {
@@ -45,7 +47,7 @@ public class Forward extends HttpOperation implements IForward
       this.location = new ParameterizedPattern(CaptureType.BRACE, "[^/]+", location);
 
       for (RegexCapture parameter : this.location.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
 
@@ -76,7 +78,7 @@ public class Forward extends HttpOperation implements IForward
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context);
+         String target = location.build(event, context, parameters.getParameters());
          ((HttpInboundServletRewrite) event).forward(target);
       }
    }
@@ -84,7 +86,7 @@ public class Forward extends HttpOperation implements IForward
    @Override
    public ForwardParameter where(final String param)
    {
-      return new ForwardParameter(this, location.getParameter(param));
+      return parameters.where(param, new ForwardParameter(this, location.getParameter(param)));
    }
 
    @Override

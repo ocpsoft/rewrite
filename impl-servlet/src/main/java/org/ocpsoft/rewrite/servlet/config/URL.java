@@ -29,6 +29,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
@@ -39,6 +40,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class URL extends HttpCondition implements IURL
 {
    private final ParameterizedPattern expression;
+   private final ParameterStore<URLParameter> parameters = new ParameterStore<URLParameter>();
 
    private URL(final String pattern)
    {
@@ -46,7 +48,7 @@ public class URL extends HttpCondition implements IURL
       this.expression = new ParameterizedPattern(".*", pattern);
 
       for (RegexCapture parameter : expression.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
 
@@ -88,8 +90,8 @@ public class URL extends HttpCondition implements IURL
    @Override
    public URL withRequestBinding()
    {
-      for (RegexCapture parameter : expression.getParameters().values()) {
-         parameter.bindsTo(Request.parameter(parameter.getName()));
+      for (RegexCapture capture : expression.getParameters().values()) {
+         where(capture.getName()).bindsTo(Request.parameter(capture.getName()));
       }
       return this;
    }
@@ -97,7 +99,7 @@ public class URL extends HttpCondition implements IURL
    @Override
    public URLParameter where(final String param)
    {
-      return new URLParameter(this, expression.getParameter(param));
+      return parameters.where(param, new URLParameter(this, expression.getParameter(param)));
    }
 
    @Override
@@ -130,8 +132,12 @@ public class URL extends HttpCondition implements IURL
       if (expression.matches(event, context, requestURL))
       {
          Map<RegexCapture, String[]> parameters = expression.parse(event, context, requestURL);
-         if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
-            return true;
+
+         for (RegexCapture capture : parameters.keySet()) {
+            if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+               return false;
+         }
+         return true;
       }
       return false;
    }

@@ -23,11 +23,9 @@ import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.config.IResource.ResourceParameter;
 
 /**
@@ -49,43 +47,11 @@ public interface IResource extends Parameterized<IResource, ResourceParameter, S
       private final IResource parent;
       private final RegexCapture parameter;
 
-      public ResourceParameter(IResource path, RegexCapture parameter)
+      public ResourceParameter(IResource path, RegexCapture capture)
       {
+         super(capture);
          this.parent = path;
-         this.parameter = parameter;
-      }
-
-      @Override
-      public ResourceParameter constrainedBy(Constraint<String> constraint)
-      {
-         parameter.constrainedBy(constraint);
-         return this;
-      }
-
-      @Override
-      public ResourceParameter transformedBy(Transform<String> transform)
-      {
-         parameter.transformedBy(transform);
-         return this;
-      }
-
-      @Override
-      public ResourceParameter bindsTo(Binding binding)
-      {
-         parameter.bindsTo(binding);
-         return this;
-      }
-
-      @Override
-      public ResourceParameter where(String param)
-      {
-         return parent.where(param);
-      }
-
-      @Override
-      public ResourceParameter where(String param, Binding binding)
-      {
-         return parent.where(param, binding);
+         this.parameter = capture;
       }
 
       @Override
@@ -99,6 +65,18 @@ public interface IResource extends Parameterized<IResource, ResourceParameter, S
       public String getName()
       {
          return parameter.getName();
+      }
+
+      @Override
+      public ResourceParameter where(String param)
+      {
+         return parent.where(param);
+      }
+
+      @Override
+      public ResourceParameter where(String param, Binding binding)
+      {
+         return parent.where(param, binding);
       }
 
       @Override

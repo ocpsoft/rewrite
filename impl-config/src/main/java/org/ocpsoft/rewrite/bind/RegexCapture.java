@@ -30,8 +30,7 @@ import org.ocpsoft.rewrite.param.Transformable;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class RegexCapture extends DefaultBindable<RegexCapture> implements Constrainable<RegexCapture, String>,
-Transformable<RegexCapture, String>
+public class RegexCapture implements Constrainable<RegexCapture, String>, Transformable<RegexCapture, String>
 {
    private String pattern;
    private final CapturingGroup capture;

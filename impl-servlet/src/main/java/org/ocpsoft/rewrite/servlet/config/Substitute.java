@@ -25,6 +25,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * Responsible for substituting inbound/outbound URLs with a replacement. For {@link org.ocpsoft.rewrite.event.InboundRewrite} events, this
@@ -36,6 +37,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class Substitute extends HttpOperation implements ISubstitute
 {
    private final ParameterizedPattern location;
+   private final ParameterStore<SubstituteParameter> parameters = new ParameterStore<SubstituteParameter>();
 
    private Substitute(final String location)
    {
@@ -43,7 +45,7 @@ public class Substitute extends HttpOperation implements ISubstitute
       this.location = new ParameterizedPattern("[^/]+", location);
 
       for (RegexCapture parameter : this.location.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
 
@@ -73,12 +75,12 @@ public class Substitute extends HttpOperation implements ISubstitute
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context);
+         String target = location.build(event, context, parameters.getParameters());
          ((HttpInboundServletRewrite) event).forward(target);
       }
       else if (event instanceof HttpOutboundServletRewrite)
       {
-         String target = location.build(event, context);
+         String target = location.build(event, context, parameters.getParameters());
          if (((HttpOutboundServletRewrite) event).getOutboundURL().startsWith(event.getContextPath())
                   && target.startsWith("/")
                   && !target.startsWith(event.getContextPath()))
@@ -92,7 +94,7 @@ public class Substitute extends HttpOperation implements ISubstitute
    @Override
    public SubstituteParameter where(final String param)
    {
-      return new SubstituteParameter(this, location.getParameter(param));
+      return parameters.where(param, new SubstituteParameter(this, location.getParameter(param)));
    }
 
    @Override

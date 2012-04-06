@@ -16,17 +16,21 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.net.MalformedURLException;
+import java.util.Map;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} responsible for determining existence of resources within the web root of the servlet container.
+ * A {@link org.ocpsoft.rewrite.config.Condition} responsible for determining existence of resources within the web root
+ * of the servlet container.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -35,13 +39,14 @@ public class Resource extends HttpCondition implements IResource
    private static final Logger log = Logger.getLogger(Resource.class);
 
    private final ParameterizedPattern resource;
+   private final ParameterStore<ResourceParameter> parameters = new ParameterStore<ResourceParameter>();
 
    private Resource(final String resource)
    {
       this.resource = new ParameterizedPattern(resource);
 
       for (RegexCapture parameter : this.resource.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
 
@@ -50,9 +55,17 @@ public class Resource extends HttpCondition implements IResource
    {
       if (resource != null)
       {
-         String file = resource.build(event, context);
+         String file = resource.build(event, context, parameters.getParameters());
          try {
-            return event.getRequest().getServletContext().getResource(file) != null;
+            if (event.getRequest().getServletContext().getResource(file) != null)
+            {
+               Map<RegexCapture, String[]> parameters = resource.parse(event, context, file);
+               for (RegexCapture capture : parameters.keySet()) {
+                  if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+                     return false;
+               }
+               return true;
+            }
          }
          catch (MalformedURLException e) {
             log.debug("Invalid file format [{}]", file);
@@ -62,8 +75,8 @@ public class Resource extends HttpCondition implements IResource
    }
 
    /**
-    * Create a new {@link org.ocpsoft.rewrite.config.Condition} that returns true if the given resource exists relative to the web root of the
-    * current application.
+    * Create a new {@link org.ocpsoft.rewrite.config.Condition} that returns true if the given resource exists relative
+    * to the web root of the current application.
     */
    public static Resource exists(final String resource)
    {
@@ -73,7 +86,7 @@ public class Resource extends HttpCondition implements IResource
    @Override
    public ResourceParameter where(String param)
    {
-      return new ResourceParameter(this, resource.getParameter(param));
+      return parameters.where(param, new ResourceParameter(this, resource.getParameter(param)));
    }
 
    @Override

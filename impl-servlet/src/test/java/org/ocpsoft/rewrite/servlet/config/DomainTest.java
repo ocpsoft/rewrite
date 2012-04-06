@@ -21,7 +21,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -44,7 +43,7 @@ public class DomainTest
    {
       request = Mockito.mock(HttpServletRequest.class);
       Mockito.when(request.getServerName())
-               .thenReturn("example.com");
+      .thenReturn("example.com");
 
       inbound = new HttpInboundRewriteImpl(request, null);
       outbound = new HttpOutboundRewriteImpl(request, null, "http://example.com:8080/path?query=value");
@@ -54,6 +53,17 @@ public class DomainTest
    public void testDomainMatchesInbound()
    {
       Assert.assertTrue(Domain.matches("example.com").evaluate(inbound, new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testCanConvertAndValidateDomain() throws Exception
+   {
+      MockEvaluationContext context = new MockEvaluationContext();
+      Domain.matches("{p}.com").where("p").convertedBy(new DomainConverter()).evaluate(inbound, context);
+
+      Assert.assertEquals("example", Evaluation.property("p").retrieve(inbound, context));
+      Assert.assertEquals(new DomainConvertedType("example"),
+               Evaluation.property("p").retrieveConverted(inbound, context));
    }
 
    @Test

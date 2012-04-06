@@ -23,11 +23,9 @@ import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 
 /**
@@ -51,31 +49,24 @@ public interface IPath extends Parameterized<IPath, PathParameter, String>, Cond
       private final IPath parent;
       private final RegexCapture parameter;
 
-      public PathParameter(IPath path, RegexCapture parameter)
+      public PathParameter(IPath path, RegexCapture capture)
       {
+         super(capture);
          this.parent = path;
-         this.parameter = parameter;
+         this.parameter = capture;
       }
 
       @Override
-      public PathParameter constrainedBy(Constraint<String> constraint)
+      public PathParameter matches(String string)
       {
-         parameter.constrainedBy(constraint);
+         parameter.matches(string);
          return this;
       }
 
       @Override
-      public PathParameter transformedBy(Transform<String> transform)
+      public String getName()
       {
-         parameter.transformedBy(transform);
-         return this;
-      }
-
-      @Override
-      public PathParameter bindsTo(Binding binding)
-      {
-         parameter.bindsTo(binding);
-         return this;
+         return parameter.getName();
       }
 
       @Override
@@ -94,19 +85,6 @@ public interface IPath extends Parameterized<IPath, PathParameter, String>, Cond
       public PathParameter where(String param, Binding binding)
       {
          return parent.where(param, binding);
-      }
-
-      @Override
-      public IPathParameter matches(String string)
-      {
-         parameter.matches(string);
-         return this;
-      }
-
-      @Override
-      public String getName()
-      {
-         return parameter.getName();
       }
 
       @Override

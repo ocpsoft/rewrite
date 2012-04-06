@@ -29,6 +29,7 @@ import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for comparing URLs to Servlet Mappings.
@@ -40,13 +41,14 @@ public class ServletMapping extends HttpCondition implements IServletMapping
    private static final Logger log = Logger.getLogger(Resource.class);
 
    private final ParameterizedPattern resource;
+   private final ParameterStore<ServletMappingParameter> parameters = new ParameterStore<ServletMappingParameter>();
 
    private ServletMapping(final String resource)
    {
       this.resource = new ParameterizedPattern(resource);
 
       for (RegexCapture parameter : this.resource.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
 
@@ -55,7 +57,7 @@ public class ServletMapping extends HttpCondition implements IServletMapping
    {
       if (resource != null)
       {
-         String path = resource.build(event, context);
+         String path = resource.build(event, context, parameters.getParameters());
          try {
 
             for (Entry<String, ? extends ServletRegistration> entry : event.getRequest().getServletContext()
@@ -103,7 +105,7 @@ public class ServletMapping extends HttpCondition implements IServletMapping
    @Override
    public ServletMappingParameter where(String param)
    {
-      return new ServletMappingParameter(this, resource.getParameter(param));
+      return parameters.where(param, new ServletMappingParameter(this, resource.getParameter(param)));
    }
 
    @Override

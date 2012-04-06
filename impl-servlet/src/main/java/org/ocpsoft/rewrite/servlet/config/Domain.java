@@ -29,6 +29,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
@@ -39,15 +40,12 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 public class Domain extends HttpCondition implements IDomain
 {
    private final ParameterizedPattern expression;
+   private final ParameterStore<DomainParameter> parameters = new ParameterStore<DomainParameter>();
 
    private Domain(final String pattern)
    {
       Assert.notNull(pattern, "Domain must not be null.");
       this.expression = new ParameterizedPattern(pattern);
-
-      for (RegexCapture parameter : this.expression.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
-      }
    }
 
    /**
@@ -73,7 +71,7 @@ public class Domain extends HttpCondition implements IDomain
    @Override
    public DomainParameter where(final String param)
    {
-      return new DomainParameter(this, expression.getParameter(param));
+      return parameters.where(param, new DomainParameter(this, expression.getParameter(param)));
    }
 
    @Override
@@ -101,8 +99,16 @@ public class Domain extends HttpCondition implements IDomain
       if (hostName != null && expression.matches(event, context, hostName))
       {
          Map<RegexCapture, String[]> parameters = expression.parse(event, context, hostName);
-         if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
-            return true;
+
+         for (RegexCapture parameter : this.expression.getParameters().values()) {
+            where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
+         }
+
+         for (RegexCapture capture : parameters.keySet()) {
+            if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+               return false;
+         }
+         return true;
       }
       return false;
    }
@@ -127,7 +133,7 @@ public class Domain extends HttpCondition implements IDomain
    public IDomain withRequestBinding()
    {
       for (RegexCapture parameter : expression.getParameters().values()) {
-         parameter.bindsTo(Request.parameter(parameter.getName()));
+         where(parameter.getName()).bindsTo(Request.parameter(parameter.getName()));
       }
       return this;
    }

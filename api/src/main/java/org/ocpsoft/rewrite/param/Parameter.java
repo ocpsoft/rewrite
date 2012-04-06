@@ -16,13 +16,18 @@
 package org.ocpsoft.rewrite.param;
 
 import org.ocpsoft.rewrite.bind.Bindable;
+import org.ocpsoft.rewrite.bind.Converts;
+import org.ocpsoft.rewrite.bind.HasConverter;
+import org.ocpsoft.rewrite.bind.HasValidator;
+import org.ocpsoft.rewrite.bind.Validates;
 
 /**
- * An {@link String} specific {@link org.ocpsoft.rewrite.bind.Bindable}.
+ * An type specific {@link org.ocpsoft.rewrite.bind.Bindable}.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Parameter<C extends Parameter<C, T>, T> extends Bindable<C>, Constrainable<C, T>, Transformable<C, T>
+public interface Parameter<P extends Parameter<P, T>, T> extends Bindable<P>, Constrainable<P, T>, Transformable<P, T>,
+Converts, Validates, HasValidator<P>, HasConverter<P>
 {
    /**
     * Get the name of this {@link Parameter}

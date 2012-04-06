@@ -41,12 +41,12 @@ public abstract class Bindings
     * Submit the given value to all registered {@link Binding} instances of the given {@link Bindable}. Perform this by
     * adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
     */
-   public static void enqueueSubmission(final Rewrite event, final EvaluationContext context,
+   public static boolean enqueueSubmission(final Rewrite event, final EvaluationContext context,
             final Bindable bindable, final Object value)
    {
       Map<Bindable, Object> map = new LinkedHashMap<Bindable, Object>();
       map.put(bindable, value);
-      enqueuePreOperationSubmissions(event, context, map);
+      return enqueuePreOperationSubmissions(event, context, map);
    }
 
    /**
@@ -68,24 +68,29 @@ public abstract class Bindings
          List<Binding> bindings = parameter.getBindings();
          for (Binding binding : bindings) {
             try {
-               value = binding.convert(event, context, value);
-               if (binding.validates(event, context, value))
+               if (binding instanceof Evaluation)
                {
-                  if (binding instanceof Evaluation)
+                  /*
+                   * Binding to the EvaluationContext is available immediately.
+                   */
+                  Object convertedValue = binding.convert(event, context, value);
+                  if (binding.validates(event, context, convertedValue))
                   {
-                     /*
-                      * Binding to the EvaluationContext is available immediately.
-                      */
                      binding.submit(event, context, value);
                   }
                   else
-                  {
-                     operations.add(new BindingOperation(binding, value));
-                  }
+                     return false;
                }
                else
                {
-                  return false;
+                  Object convertedValue = binding.convert(event, context, value);
+                  if (binding.validates(event, context, convertedValue))
+                  {
+                     convertedValue = binding.convert(event, context, convertedValue);
+                     operations.add(new BindingOperation(binding, convertedValue));
+                  }
+                  else
+                     return false;
                }
             }
             catch (Exception e) {
@@ -105,7 +110,7 @@ public abstract class Bindings
     */
    public static List<Object> performRetrieval(final Rewrite event, final EvaluationContext context,
             final Bindable<?> bindable)
-   {
+            {
       List<Object> result = new ArrayList<Object>();
 
       for (Binding binding : bindable.getBindings())
@@ -114,7 +119,7 @@ public abstract class Bindings
          result.add(boundValue);
       }
       return result;
-   }
+            }
 
    /**
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
@@ -182,7 +187,8 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
     * evaluates to true when the values are equal.
     */
-   public static DefaultConditionBuilder equals(final Submission left, final Object leftSubmission, final Submission right,
+   public static DefaultConditionBuilder equals(final Submission left, final Object leftSubmission,
+            final Submission right,
             final Object rightSubmission)
    {
       return new DefaultConditionBuilder() {
@@ -214,7 +220,8 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
     * {@link Binding} value. This evaluates to true when the values are not equal.
     */
-   public static DefaultConditionBuilder notEquals(final Object expected, final Submission binding, final Object submission)
+   public static DefaultConditionBuilder notEquals(final Object expected, final Submission binding,
+            final Object submission)
    {
       return new DefaultConditionBuilder() {
          @Override
@@ -260,7 +267,8 @@ public abstract class Bindings
     * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
     * evaluates to true when the values are not equal.
     */
-   public static DefaultConditionBuilder notEquals(final Submission left, final Object leftSubmission, final Submission right,
+   public static DefaultConditionBuilder notEquals(final Submission left, final Object leftSubmission,
+            final Submission right,
             final Object rightSubmission)
    {
       return new DefaultConditionBuilder() {

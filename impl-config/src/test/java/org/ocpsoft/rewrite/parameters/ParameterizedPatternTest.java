@@ -164,21 +164,21 @@ public class ParameterizedPatternTest
    public void testBuildNull()
    {
       ParameterizedPattern path = new ParameterizedPattern(null);
-      Assert.assertEquals("", path.build(new LinkedHashMap<String, List<Object>>()));
+      Assert.assertEquals("", path.buildUnsafe(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test
    public void testBuildEmpty()
    {
       ParameterizedPattern path = new ParameterizedPattern("");
-      Assert.assertEquals("", path.build(new LinkedHashMap<String, List<Object>>()));
+      Assert.assertEquals("", path.buildUnsafe(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test
    public void testBuildBarePath()
    {
       ParameterizedPattern path = new ParameterizedPattern("/");
-      Assert.assertEquals("/", path.build(new LinkedHashMap<String, List<Object>>()));
+      Assert.assertEquals("/", path.buildUnsafe(new LinkedHashMap<String, List<Object>>()));
    }
 
    @Test
@@ -188,7 +188,7 @@ public class ParameterizedPatternTest
       Map<String, List<Object>> map = new LinkedHashMap<String, List<Object>>();
       Maps.addListValue(map, "customer", "lincoln");
       Maps.addListValue(map, "id", "24");
-      Assert.assertEquals("/lincoln/orders/24", path.build(map));
+      Assert.assertEquals("/lincoln/orders/24", path.buildUnsafe(map));
    }
 
 }

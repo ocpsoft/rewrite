@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * Responsible for asserting on {@link HttpServletRequest#getHeader(String)} values.
@@ -38,6 +39,8 @@ public class Header extends HttpCondition implements IHeader
 {
    private final ParameterizedPattern name;
    private final ParameterizedPattern value;
+
+   private final ParameterStore<HeaderParameter> parameters = new ParameterStore<HeaderParameter>();
 
    private Header(final String name, final String value)
    {
@@ -93,13 +96,13 @@ public class Header extends HttpCondition implements IHeader
          if (name.matches(event, context, header) && matchesValue(event, context, request, header))
          {
             Map<RegexCapture, String[]> parameters = name.parse(event, context, header);
-            parameters = value.parse(event, context, header);
+            parameters.putAll(value.parse(event, context, header));
 
-            if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)
-                     && Bindings.enqueuePreOperationSubmissions(event, context, parameters))
-            {
-               return true;
+            for (RegexCapture capture : parameters.keySet()) {
+               if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+                  return false;
             }
+            return true;
          }
       }
       return false;
@@ -121,7 +124,7 @@ public class Header extends HttpCondition implements IHeader
    @Override
    public HeaderParameter where(String param)
    {
-      return new HeaderParameter(this, name.getParameter(param), value.getParameter(param));
+      return parameters.where(param, new HeaderParameter(this, name.getParameter(param), value.getParameter(param)));
    }
 
    @Override

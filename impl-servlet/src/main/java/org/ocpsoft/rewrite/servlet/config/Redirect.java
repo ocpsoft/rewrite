@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * An {@link Operation} that performs redirects via {@link HttpInboundServletRewrite#redirectPermanent(String)} and
@@ -40,15 +41,16 @@ public class Redirect extends HttpOperation implements IRedirect
    private final RedirectType type;
 
    private final ParameterizedPattern location;
+   private final ParameterStore<RedirectParameter> parameters = new ParameterStore<RedirectParameter>();
 
    private Redirect(final String location, final RedirectType type)
    {
       this.location = new ParameterizedPattern("[^/]+", location);
+      this.type = type;
 
       for (RegexCapture parameter : this.location.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
-      this.type = type;
    }
 
    @Override
@@ -56,7 +58,7 @@ public class Redirect extends HttpOperation implements IRedirect
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context);
+         String target = location.build(event, context, parameters.getParameters());
          switch (type)
          {
          case PERMANENT:
@@ -132,7 +134,7 @@ public class Redirect extends HttpOperation implements IRedirect
    @Override
    public RedirectParameter where(final String param)
    {
-      return new RedirectParameter(this, location.getParameter(param));
+      return parameters.where(param, new RedirectParameter(this, location.getParameter(param)));
    }
 
    @Override

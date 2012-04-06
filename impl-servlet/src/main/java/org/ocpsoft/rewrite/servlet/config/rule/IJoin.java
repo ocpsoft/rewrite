@@ -27,12 +27,10 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.RegexConstraint;
-import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
 
 /**
@@ -90,31 +88,24 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       private final IJoin parent;
       private final RegexCapture parameter;
 
-      public JoinParameter(IJoin path, RegexCapture parameter)
+      public JoinParameter(IJoin path, RegexCapture capture)
       {
+         super(capture);
          this.parent = path;
-         this.parameter = parameter;
+         this.parameter = capture;
       }
 
       @Override
-      public JoinParameter constrainedBy(Constraint<String> constraint)
+      public IJoinParameter matches(String string)
       {
-         parameter.constrainedBy(constraint);
+         parameter.constrainedBy(new RegexConstraint(string));
          return this;
       }
 
       @Override
-      public JoinParameter transformedBy(Transform<String> transform)
+      public String getName()
       {
-         parameter.transformedBy(transform);
-         return this;
-      }
-
-      @Override
-      public JoinParameter bindsTo(Binding binding)
-      {
-         parameter.bindsTo(binding);
-         return this;
+         return parameter.getName();
       }
 
       @Override
@@ -133,19 +124,6 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public JoinParameter where(String param, Binding binding)
       {
          return parent.where(param, binding);
-      }
-
-      @Override
-      public IJoinParameter matches(String string)
-      {
-         parameter.constrainedBy(new RegexConstraint(string));
-         return this;
-      }
-
-      @Override
-      public String getName()
-      {
-         return parameter.getName();
       }
 
       @Override

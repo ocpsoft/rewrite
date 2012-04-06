@@ -20,9 +20,11 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public interface Validator<T>
 {
+   /**
+    * Validate a single value.
+    */
    boolean validate(Rewrite event, EvaluationContext context, T value);
 }

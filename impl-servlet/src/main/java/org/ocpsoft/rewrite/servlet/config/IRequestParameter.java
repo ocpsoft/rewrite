@@ -17,7 +17,7 @@
  import java.util.Arrays;
  import java.util.List;
 
- import org.ocpsoft.rewrite.bind.Bindable;
+import org.ocpsoft.rewrite.bind.Bindable;
  import org.ocpsoft.rewrite.bind.Binding;
  import org.ocpsoft.rewrite.bind.RegexCapture;
  import org.ocpsoft.rewrite.config.Condition;
@@ -35,24 +35,27 @@
   * 
   * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
   * 
- */
+  */
  public interface IRequestParameter extends Parameterized<IRequestParameter, RequestParameterParameter, String>,
  ConditionBuilder
  {
-    public interface IRequestParameterParameter extends IRequestParameter, Bindable<RequestParameterParameter>, Parameter<RequestParameterParameter, String>
+    public interface IRequestParameterParameter extends IRequestParameter, Bindable<RequestParameterParameter>,
+    Parameter<RequestParameterParameter, String>
     {
        IRequestParameterParameter matches(String string);
     }
 
-    public class RequestParameterParameter extends ParameterBuilder<RequestParameterParameter, String> implements IRequestParameterParameter
+    public class RequestParameterParameter extends ParameterBuilder<RequestParameterParameter, String> implements
+    IRequestParameterParameter
     {
        private final IRequestParameter parent;
        private final List<RegexCapture> parameters;
 
-       public RequestParameterParameter(IRequestParameter path, RegexCapture... parameters)
+       public RequestParameterParameter(IRequestParameter path, RegexCapture... captures)
        {
+          super((Object[]) captures);
           this.parent = path;
-          this.parameters = Arrays.asList(parameters);
+          this.parameters = Arrays.asList(captures);
        }
 
        @Override
@@ -71,16 +74,6 @@
           for (RegexCapture parameter : parameters) {
              if (parameter != null)
                 parameter.transformedBy(transform);
-          }
-          return this;
-       }
-
-       @Override
-       public RequestParameterParameter bindsTo(Binding binding)
-       {
-          for (RegexCapture parameter : parameters) {
-             if (parameter != null)
-                parameter.bindsTo(binding);
           }
           return this;
        }

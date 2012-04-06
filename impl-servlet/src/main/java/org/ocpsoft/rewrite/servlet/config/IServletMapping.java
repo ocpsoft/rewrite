@@ -23,11 +23,9 @@ import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.config.IServletMapping.ServletMappingParameter;
 
 /**
@@ -50,43 +48,11 @@ ConditionBuilder
       private final IServletMapping parent;
       private final RegexCapture parameter;
 
-      public ServletMappingParameter(IServletMapping path, RegexCapture parameter)
+      public ServletMappingParameter(IServletMapping path, RegexCapture capture)
       {
+         super(capture);
          this.parent = path;
-         this.parameter = parameter;
-      }
-
-      @Override
-      public ServletMappingParameter constrainedBy(Constraint<String> constraint)
-      {
-         parameter.constrainedBy(constraint);
-         return this;
-      }
-
-      @Override
-      public ServletMappingParameter transformedBy(Transform<String> transform)
-      {
-         parameter.transformedBy(transform);
-         return this;
-      }
-
-      @Override
-      public ServletMappingParameter bindsTo(Binding binding)
-      {
-         parameter.bindsTo(binding);
-         return this;
-      }
-
-      @Override
-      public ServletMappingParameter where(String param)
-      {
-         return parent.where(param);
-      }
-
-      @Override
-      public ServletMappingParameter where(String param, Binding binding)
-      {
-         return parent.where(param, binding);
+         this.parameter = capture;
       }
 
       @Override
@@ -100,6 +66,18 @@ ConditionBuilder
       public String getName()
       {
          return parameter.getName();
+      }
+
+      @Override
+      public ServletMappingParameter where(String param)
+      {
+         return parent.where(param);
+      }
+
+      @Override
+      public ServletMappingParameter where(String param, Binding binding)
+      {
+         return parent.where(param, binding);
       }
 
       @Override

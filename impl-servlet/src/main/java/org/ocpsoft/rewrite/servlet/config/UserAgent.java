@@ -27,6 +27,7 @@ import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getScheme()}
@@ -108,6 +109,7 @@ public abstract class UserAgent extends HttpCondition
    private static class PatternUserAgent extends UserAgent implements IUserAgent
    {
       private final ParameterizedPattern expression;
+      private final ParameterStore<UserAgentParameter> parameters = new ParameterStore<UserAgentParameter>();
 
       private PatternUserAgent(final String pattern)
       {
@@ -115,7 +117,7 @@ public abstract class UserAgent extends HttpCondition
          this.expression = new ParameterizedPattern(pattern);
 
          for (RegexCapture parameter : this.expression.getParameters().values()) {
-            parameter.bindsTo(Evaluation.property(parameter.getName()));
+            where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
          }
       }
 
@@ -127,8 +129,12 @@ public abstract class UserAgent extends HttpCondition
          if (agent != null && expression.matches(event, context, agent))
          {
             Map<RegexCapture, String[]> parameters = expression.parse(event, context, agent);
-            if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
-               return true;
+
+            for (RegexCapture capture : parameters.keySet()) {
+               if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+                  return false;
+            }
+            return true;
          }
          return false;
       }
@@ -136,7 +142,7 @@ public abstract class UserAgent extends HttpCondition
       @Override
       public UserAgentParameter where(final String param)
       {
-         return new UserAgentParameter(this, expression.getParameter(param));
+         return parameters.where(param, new UserAgentParameter(this, expression.getParameter(param)));
       }
 
       @Override

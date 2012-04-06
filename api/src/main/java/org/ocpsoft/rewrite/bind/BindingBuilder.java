@@ -15,145 +15,73 @@
  */
 package org.ocpsoft.rewrite.bind;
 
-import java.lang.reflect.Array;
-import java.util.Collection;
-
-import org.ocpsoft.common.services.ServiceLoader;
-import org.ocpsoft.logging.Logger;
-
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.rewrite.util.ValueHolderUtil;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class BindingBuilder implements Binding, RetrievalBuilder, SubmissionBuilder
+public abstract class BindingBuilder<C extends BindingBuilder<C, T>, T> implements Binding, Retrieval,
+         Submission, HasValidator<C>, HasConverter<C>
 {
    private Converter<?> converter = new DefaultConverter();
    private Validator<?> validator = new DefaultValidator();
-   private final Logger log = Logger.getLogger(BindingBuilder.class);
 
    @Override
-   public BindingBuilder convertedBy(final Class<? extends Converter<?>> type)
+   @SuppressWarnings("unchecked")
+   public <X extends Converter<?>> C convertedBy(Class<X> type)
    {
-      this.converter = resolveConverter(type);
-      return this;
+      this.converter = ValueHolderUtil.resolveConverter(type);
+      return (C) this;
    }
 
    @Override
-   public BindingBuilder convertedBy(final Converter<?> converter)
+   @SuppressWarnings("unchecked")
+   public C convertedBy(Converter<?> converter)
    {
       this.converter = converter;
-      return this;
+      return (C) this;
    }
 
    @Override
-   public BindingBuilder validatedBy(final Class<? extends Validator<?>> type)
+   public Converter<?> getConverter()
    {
-      this.validator = resolveValidator(type);
-      return this;
+      return converter;
    }
 
    @Override
-   public BindingBuilder validatedBy(final Validator<?> validator)
+   @SuppressWarnings("unchecked")
+   public <X extends Validator<?>> C validatedBy(Class<X> type)
+   {
+      this.validator = ValueHolderUtil.resolveValidator(type);
+      return (C) this;
+   }
+
+   @Override
+   @SuppressWarnings("unchecked")
+   public C validatedBy(Validator<?> validator)
    {
       this.validator = validator;
-      return this;
+      return (C) this;
    }
 
    @Override
-   @SuppressWarnings({ "unchecked", "rawtypes" })
-   public boolean validates(final Rewrite event, final EvaluationContext context, final Object value)
+   public Validator<?> getValidator()
    {
-      if (value != null && value.getClass().isArray())
-      {
-         Object[] values = (Object[]) value;
-         for (int i = 0; i < values.length; i++) {
-            if (!((Validator) validator).validate(event, context, values[i]))
-            {
-               return false;
-            }
-         }
-         return true;
-      }
-      return ((Validator) validator).validate(event, context, value);
+      return validator;
    }
 
    @Override
-   public Object convert(final Rewrite event, final EvaluationContext context, final Object value)
+   public Object convert(Rewrite event, EvaluationContext context, Object value)
    {
-      if (value != null && value.getClass().isArray())
-      {
-         Object[] values = (Object[]) value;
-         Object[] convertedValues = new Object[values.length];
-         for (int i = 0; i < convertedValues.length; i++) {
-            convertedValues[i] = converter.convert(event, context, values[i]);
-         }
-
-         Class<?> type = Object.class;
-         for (Object object : convertedValues) {
-            if (object != null)
-            {
-               type = object.getClass();
-               break;
-            }
-         }
-
-         Object[] result = (Object[]) Array.newInstance(type, convertedValues.length);
-         System.arraycopy(convertedValues, 0, result, 0, result.length);
-         return result;
-      }
-      return converter.convert(event, context, value);
+      return ValueHolderUtil.convert(event, context, converter, value);
    }
 
-   private Validator<?> resolveValidator(final Class<? extends Validator<?>> type)
+   @Override
+   public boolean validates(Rewrite event, EvaluationContext context, Object value)
    {
-      try {
-         Collection<? extends Validator<?>> enriched = ServiceLoader.loadEnriched(type);
-         if (enriched != null)
-         {
-            if ((enriched.size() > 1) && log.isWarnEnabled())
-            {
-               log.warn("Multiple Validator instances available for type [" + type.getName() + "], using first of "
-                        + enriched + "");
-            }
-            for (Validator<?> validator : enriched) {
-               if (validator != null)
-               {
-                  return validator;
-               }
-            }
-         }
-         return null;
-      }
-      catch (Exception e) {
-         throw new RewriteException("Could not instantiate Validator of type [" + type.getName() + "]", e);
-      }
+      return ValueHolderUtil.validates(event, context, validator, value);
    }
 
-   private Converter<?> resolveConverter(final Class<? extends Converter<?>> type)
-   {
-      try {
-         Collection<? extends Converter<?>> enriched = ServiceLoader.loadEnriched(type);
-         if (enriched != null)
-         {
-            if ((enriched.size() > 1) && log.isWarnEnabled())
-            {
-               log.warn("Multiple Converter instances available for type [" + type.getName() + "], using first of "
-                        + enriched + "");
-            }
-            for (Converter<?> converter : enriched) {
-               if (converter != null)
-               {
-                  return converter;
-               }
-            }
-         }
-         return null;
-      }
-      catch (Exception e) {
-         throw new RewriteException("Could not instantiate Converter of type [" + type.getName() + "]", e);
-      }
-   }
 }

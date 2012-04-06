@@ -47,10 +47,11 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
       private final IHeader parent;
       private final List<RegexCapture> parameters;
 
-      public HeaderParameter(IHeader path, RegexCapture... parameters)
+      public HeaderParameter(IHeader path, RegexCapture... captures)
       {
+         super((Object[]) captures);
          this.parent = path;
-         this.parameters = Arrays.asList(parameters);
+         this.parameters = Arrays.asList(captures);
       }
 
       @Override
@@ -69,16 +70,6 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
          for (RegexCapture parameter : parameters) {
             if (parameter != null)
                parameter.transformedBy(transform);
-         }
-         return this;
-      }
-
-      @Override
-      public HeaderParameter bindsTo(Binding binding)
-      {
-         for (RegexCapture parameter : parameters) {
-            if (parameter != null)
-               parameter.bindsTo(binding);
          }
          return this;
       }

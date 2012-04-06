@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class Evaluation extends BindingBuilder
+public class Evaluation extends BindingBuilder<Evaluation, Object>
 {
    private final CharSequence property;
 
@@ -36,18 +36,18 @@ public class Evaluation extends BindingBuilder
       this.property = property;
    }
 
-   public static BindingBuilder property(final CharSequence property)
+   public static Evaluation property(final CharSequence property)
    {
       return new Evaluation(property);
    }
 
-   public static BindingBuilder property(final CharSequence property, final Class<? extends Converter<?>> type)
+   public static Evaluation property(final CharSequence property, final Class<? extends Converter<Object>> type)
    {
       return property(property).convertedBy(type);
    }
 
-   public static BindingBuilder property(final CharSequence property, final Class<Converter<?>> converterType,
-            final Class<? extends Validator<?>> validatorType)
+   public static Evaluation property(final CharSequence property, final Class<Converter<Object>> converterType,
+            final Class<? extends Validator<Object>> validatorType)
    {
       return property(property, converterType).validatedBy(validatorType);
    }
@@ -58,13 +58,13 @@ public class Evaluation extends BindingBuilder
       if (!context.containsKey(property))
       {
          if (value.getClass().isArray())
-            context.put(getParameterName(property), value);
+            storeValue(event, context, value);
          else
-            context.put(getParameterName(property), new Object[] { value });
+            storeValue(event, context, new Object[] { value });
       }
       else
       {
-         Object[] values = (Object[]) context.get(getParameterName(property));
+         Object[] values = (Object[]) context.get(getParameterUnconvertedName(property));
          List<Object> list = Arrays.asList(values);
 
          if (value.getClass().isArray())
@@ -72,30 +72,78 @@ public class Evaluation extends BindingBuilder
          else
             list.add(value);
 
-         context.put(getParameterName(property), list.toArray());
+         storeValue(event, context, list.toArray());
       }
 
       return null;
    }
 
-   private String getParameterName(final CharSequence parameter)
+   private void storeValue(final Rewrite event, final EvaluationContext context, final Object value)
    {
-      return Evaluation.class.getName() + parameter;
+      context.put(getParameterUnconvertedName(property), value);
+      context.put(getParameterConvertedName(property), convert(event, context, value));
+   }
+
+   private String getParameterUnconvertedName(final CharSequence parameter)
+   {
+      return Evaluation.class.getName() + "_" + parameter;
+   }
+
+   private String getParameterConvertedName(final CharSequence parameter)
+   {
+      return getParameterUnconvertedName(parameter) + "_converted";
    }
 
    @Override
    public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
-      Object object = context.get(getParameterName(property));
+      return retrieveFromProperty(context, getParameterUnconvertedName(property));
+   }
+
+   public Object retrieveConverted(Rewrite inbound, EvaluationContext context)
+   {
+      return retrieveFromProperty(context, getParameterConvertedName(property));
+   }
+
+   private Object retrieveFromProperty(final EvaluationContext context, String propertyName)
+   {
+      Object object = context.get(propertyName);
+
+      if (object == null)
+      {
+         throw new IllegalArgumentException("Attempted to access the non-existent " + converted(propertyName)
+                  + " EvaluationContext property \"{"
+                  + removePropertyNamespace(propertyName) + "}\"");
+      }
+
       if (object.getClass().isArray())
       {
-         Object[] array = (Object[]) object;
-         if (array.length == 1)
+         Object[] values = (Object[]) object;
+         if (values.length == 1)
          {
-            return array[0];
+            return values[0];
          }
       }
       return object;
+   }
+
+   private String converted(String propertyName)
+   {
+      return propertyName.endsWith("_converted") ? "converted" : "";
+   }
+
+   private String removePropertyNamespace(String propertyName)
+   {
+      String result = propertyName;
+      if (propertyName.startsWith(getClass().getName()))
+      {
+         result = result.substring(getClass().getName().length() + 1);
+      }
+      if (result.endsWith("_converted"))
+      {
+         result = result.substring(0, result.length() - "_converted".length() - 1);
+      }
+      return result;
    }
 
    @Override

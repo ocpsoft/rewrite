@@ -4,7 +4,7 @@ import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
-public class MockBinding extends BindingBuilder
+public class MockBinding extends BindingBuilder<MockBinding, Object>
 {
    private boolean submitted;
    private boolean validated;

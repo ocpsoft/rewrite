@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
@@ -38,6 +39,7 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 public class Scheme extends HttpCondition implements IScheme
 {
    private final ParameterizedPattern expression;
+   private final ParameterStore<SchemeParameter> parameters = new ParameterStore<SchemeParameter>();
 
    private Scheme(final String pattern)
    {
@@ -45,7 +47,7 @@ public class Scheme extends HttpCondition implements IScheme
       this.expression = new ParameterizedPattern(pattern);
 
       for (RegexCapture parameter : this.expression.getParameters().values()) {
-         parameter.bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
 
@@ -71,7 +73,7 @@ public class Scheme extends HttpCondition implements IScheme
    @Override
    public SchemeParameter where(final String param)
    {
-      return new SchemeParameter(this, expression.getParameter(param));
+      return parameters.where(param, new SchemeParameter(this, expression.getParameter(param)));
    }
 
    @Override
@@ -99,8 +101,12 @@ public class Scheme extends HttpCondition implements IScheme
       if (scheme != null && expression.matches(event, context, scheme))
       {
          Map<RegexCapture, String[]> parameters = expression.parse(event, context, scheme);
-         if (Bindings.enqueuePreOperationSubmissions(event, context, parameters))
-            return true;
+
+         for (RegexCapture capture : parameters.keySet()) {
+            if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+               return false;
+         }
+         return true;
       }
       return false;
    }

@@ -42,6 +42,11 @@ import org.ocpsoft.rewrite.param.Transform;
  */
 public class ParameterizedPattern
 {
+   public interface Transposition
+   {
+      public Bindable<?> getBindable(RegexCapture capture);
+   }
+
    private static final String DEFAULT_PARAMETER_PATTERN = ".*";
    private Pattern pattern;
    private final char[] chars;
@@ -123,30 +128,50 @@ public class ParameterizedPattern
     * Use this expression to build a {@link String} from the given pattern. Extract needed values from registered
     * {@link Binding} instances.
     */
-   public String build(final Rewrite event, final EvaluationContext context)
+   public String build(final Rewrite event, final EvaluationContext context,
+            final Map<String, ? extends Bindable<?>> parameters)
    {
-      return build(extractBoundValues(event, context));
+      return buildUnsafe(extractBoundValues(event, context, new Transposition() {
+         @Override
+         @SuppressWarnings("rawtypes")
+         public Bindable<?> getBindable(RegexCapture capture)
+         {
+            Bindable<?> bindable = parameters.get(capture.getName());
+            if (bindable != null) {
+               return bindable;
+            }
+            return new DefaultBindable().bindsTo(Evaluation.property(capture.getName()));
+         }
+      }));
    }
 
    /**
-    * Use this expression to build a {@link String} from the given pattern and values.
+    * Use this expression to build a {@link String} from the given pattern. Extract needed values from the
+    * {@link EvaluationContext}.
     */
-   public String build(final Object... values)
+   public String build(final Rewrite event, final EvaluationContext context)
+   {
+      return buildUnsafe(extractBoundValues(event, context, new Transposition() {
+         @Override
+         @SuppressWarnings("rawtypes")
+         public Bindable<?> getBindable(RegexCapture capture)
+         {
+            return new DefaultBindable().bindsTo(Evaluation.property(capture.getName()));
+         }
+      }));
+   }
+
+   /**
+    * Use this expression's pattern to build a {@link String} from the given values. Enforces that the number of values
+    * passed must equal the number of expression parameters.
+    */
+   public String buildUnsafe(final Object... values)
    {
       if ((values == null) || (params.size() != values.length))
       {
          throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build output string.");
       }
 
-      return buildUnsafe(values);
-   }
-
-   /**
-    * Use this expression to build a {@link String} from the given pattern and values. Enforces that the number of
-    * values passed must equal the number of expression parameters.
-    */
-   public String buildUnsafe(final Object... values)
-   {
       StringBuilder builder = new StringBuilder();
       CapturingGroup last = null;
 
@@ -183,25 +208,15 @@ public class ParameterizedPattern
    }
 
    /**
-    * Use this expression to build a {@link String} from the given pattern and values. Enforces that the number of keys
-    * passed must equal the number of expression parameters.
+    * Use this expression to build a {@link String} from the given pattern and values.
     */
-   public String build(final Map<String, List<Object>> values)
+   public String buildUnsafe(final Map<String, List<Object>> values)
    {
-
       if ((values == null) || (params.size() != values.size()))
       {
          throw new IllegalArgumentException("Must supply [" + params.size() + "] values to build output string.");
       }
 
-      return buildUnsafe(values);
-   }
-
-   /**
-    * Use this expression to build a {@link String} from the given pattern and values.
-    */
-   public String buildUnsafe(final Map<String, List<Object>> values)
-   {
       StringBuilder builder = new StringBuilder();
       CapturingGroup last = null;
       Map<String, Integer> pointers = new LinkedHashMap<String, Integer>();
@@ -323,7 +338,7 @@ public class ParameterizedPattern
     */
    public Map<RegexCapture, String[]> parse(final Rewrite event, final EvaluationContext context,
             final String path)
-            {
+   {
       Map<RegexCapture, String[]> values = new LinkedHashMap<RegexCapture, String[]>();
 
       Matcher matcher = getMatcher(path);
@@ -335,7 +350,7 @@ public class ParameterizedPattern
          }
       }
       return values;
-            }
+   }
 
    private String applyTransforms(final Rewrite event, final EvaluationContext context,
             RegexCapture param,
@@ -361,16 +376,17 @@ public class ParameterizedPattern
     * Extract bound values from configured {@link Binding} instances. Return a {@link Map} of the extracted key-value
     * pairs.
     */
-   private Map<String, List<Object>> extractBoundValues(final Rewrite event, final EvaluationContext context)
+   private Map<String, List<Object>> extractBoundValues(final Rewrite event, final EvaluationContext context,
+            final Transposition transpose)
    {
       Map<String, List<Object>> result = new LinkedHashMap<String, List<Object>>();
 
       for (Entry<String, RegexCapture> entry : params.entrySet())
       {
          String name = entry.getKey();
-         RegexCapture parameter = entry.getValue();
+         RegexCapture capture = entry.getValue();
 
-         List<Object> values = Bindings.performRetrieval(event, context, parameter);
+         List<Object> values = Bindings.performRetrieval(event, context, transpose.getBindable(capture));
 
          for (Object boundValue : values) {
 

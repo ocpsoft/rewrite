@@ -24,18 +24,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Submission
+public interface Submission extends Validates, Converts
 {
-   /**
-    * Convert the given value into the expected type.
-    */
-   Object convert(Rewrite event, EvaluationContext context, Object value);
-
-   /**
-    * Return true if the given value passes all validations.
-    */
-   boolean validates(Rewrite event, EvaluationContext context, Object value);
-
    /**
     * Store a value into the designated storage location. Return any value that is produces as a result of this
     * operation.

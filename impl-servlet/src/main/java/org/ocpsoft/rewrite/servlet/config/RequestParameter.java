@@ -30,6 +30,7 @@ import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * A {@link Condition} that inspects values returned by {@link HttpServletRequest#getParameterMap()}
@@ -41,6 +42,7 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
 
    private final ParameterizedPattern name;
    private final ParameterizedPattern value;
+   private final ParameterStore<RequestParameterParameter> parameters = new ParameterStore<RequestParameterParameter>();
 
    private RequestParameter(final String name, final String value)
    {
@@ -103,11 +105,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
             Map<RegexCapture, String[]> parameters = name.parse(event, context, parameter);
             parameters = value.parse(event, context, parameter);
 
-            if (Bindings.enqueuePreOperationSubmissions(event, context, parameters)
-                     && Bindings.enqueuePreOperationSubmissions(event, context, parameters))
-            {
-               return true;
+            for (RegexCapture capture : parameters.keySet()) {
+               if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+                  return false;
             }
+            return true;
          }
       }
       return false;
@@ -129,7 +131,8 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    @Override
    public RequestParameterParameter where(String param)
    {
-      return new RequestParameterParameter(this, name.getParameter(param), value.getParameter(param));
+      return parameters.where(param,
+               new RequestParameterParameter(this, name.getParameter(param), value.getParameter(param)));
    }
 
    @Override
@@ -158,7 +161,6 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
       @Override
       public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
       {
-         boolean result = false;
          HttpServletRequest request = event.getRequest();
          for (String name : Collections.list(request.getParameterNames()))
          {
@@ -167,21 +169,17 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
                if (matchesValues(event, context, request, name))
                {
                   Map<RegexCapture, String[]> parameters = getNameExpression().parse(event, context, name);
-                  parameters = getValueExpression().parse(event, context, name);
+                  parameters.putAll(getValueExpression().parse(event, context, name));
 
-                  result = true;
-
-                  if (!(Bindings.enqueuePreOperationSubmissions(event, context, parameters)
-                           && Bindings.enqueuePreOperationSubmissions(event, context, parameters)))
-                  {
-                     return false;
+                  for (RegexCapture capture : parameters.keySet()) {
+                     if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+                        return false;
                   }
+                  return true;
                }
-               else
-                  return false;
             }
          }
-         return result;
+         return false;
       }
 
       private boolean matchesValues(Rewrite event, EvaluationContext context, final HttpServletRequest request,

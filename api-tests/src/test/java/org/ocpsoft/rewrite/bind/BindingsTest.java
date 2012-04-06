@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.bind;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -37,6 +37,34 @@ public class BindingsTest
    public void before()
    {
       rewrite = new MockRewrite();
+   }
+
+   @Test
+   @SuppressWarnings("rawtypes")
+   public void testEnqueueSubmissionsExecutesEvaluationEagerly() throws Exception
+   {
+      MockEvaluationContext context = new MockEvaluationContext();
+
+      Assert.assertTrue(Bindings.enqueueSubmission(rewrite, context,
+               new DefaultBindable().bindsTo(Evaluation.property("lincoln")), "baxter"));
+      Assert.assertEquals("baxter", Evaluation.property("lincoln").retrieve(rewrite, context));
+   }
+
+   @Test
+   @SuppressWarnings("rawtypes")
+   public void testEnqueueEvaluationProcessesConversionAndValidation() throws Exception
+   {
+      MockEvaluationContext context = new MockEvaluationContext();
+      Validator validator = new Validator() {
+         @Override
+         public boolean validate(Rewrite event, EvaluationContext context, Object value)
+         {
+            return "baxter III".equals(value);
+         }
+      };
+
+      Assert.assertFalse(Bindings.enqueueSubmission(rewrite, context,
+               new DefaultBindable().bindsTo(Evaluation.property("lincoln").validatedBy(validator)), "baxter"));
    }
 
    /*

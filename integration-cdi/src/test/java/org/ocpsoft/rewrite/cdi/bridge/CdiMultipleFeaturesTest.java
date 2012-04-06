@@ -23,7 +23,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.ocpsoft.rewrite.cdi.CDIRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
@@ -85,7 +84,15 @@ public class CdiMultipleFeaturesTest extends RewriteTestBase
    }
 
    @Test
-   public void testParameterRegexValidationIgnoresInvalidInput()
+   public void testParameterRegexValidationIgnoresInvalidInput1()
+   {
+      HttpAction<HttpGet> action = get("/one/44");
+      Assert.assertEquals("/one/44", action.getCurrentContextRelativeURL());
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testParameterRegexValidationIgnoresInvalidInput2()
    {
       HttpAction<HttpGet> action = get("/one/two");
       Assert.assertEquals("/one/two", action.getCurrentContextRelativeURL());
