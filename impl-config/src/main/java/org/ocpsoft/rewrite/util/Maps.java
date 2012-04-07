@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.bind.util;
+package org.ocpsoft.rewrite.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class Maps
       else
       {
          String[] values = map.get(key);
-         List<String> list = Arrays.asList(values);
+         List<String> list = new ArrayList<String>(Arrays.asList(values));
          list.add(value);
          map.put(key, list.toArray(new String[] {}));
       }

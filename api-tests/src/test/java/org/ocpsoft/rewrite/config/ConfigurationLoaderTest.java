@@ -43,7 +43,7 @@ public class ConfigurationLoaderTest extends RewriteTestBase
    }
 
    @Test
-   public void test()
+   public void testNullConfiguration()
    {
       HttpAction<HttpGet> action = get("/");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());

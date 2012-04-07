@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import org.ocpsoft.logging.Logger;
 /**
  * Responsible for loading all {@link ConfigurationProvider} instances, and building a single unified
  * {@link Configuration} based on {@link ConfigurationProvider#priority()}
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationLoader
@@ -39,18 +39,78 @@ public class ConfigurationLoader
 
    /**
     * Load all {@link ConfigurationProvider} instances, sort by {@link ConfigurationProvider#priority()}, and return a
-    * unified, composited {@link Configuration} object.
+    * unified, composite {@link Configuration} object.
     */
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public static Configuration loadConfiguration(final Object context)
    {
-      ServiceLoader<ConfigurationProvider> loader = ServiceLoader.load(ConfigurationProvider.class);
-      List<ConfigurationProvider> providers = Iterators.asList(loader.iterator());
+      List<ConfigurationCacheProvider> caches = Iterators.asList(ServiceLoader
+               .load(ConfigurationCacheProvider.class)
+               .iterator());
+      Collections.sort(caches, new WeightedComparator());
 
-      Map<Integer, List<Rule>> priorityMap = new HashMap<Integer, List<Rule>>();
-      
+      if (caches.isEmpty())
+      {
+         return build(context);
+      }
+      return buildCached(caches, context);
+   }
+
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   private static Configuration buildCached(List<ConfigurationCacheProvider> caches, Object context)
+   {
+      Configuration result = null;
+      /*
+       * Do not force synchronization if a configuration is primed.
+       */
+      for (ConfigurationCacheProvider cache : caches) {
+         Configuration cachedConfig = cache.getConfiguration(context);
+         if (cachedConfig != null)
+         {
+            result = cachedConfig;
+            break;
+         }
+      }
+
+      if (result == null)
+      {
+         synchronized (context) {
+            /*
+             * Double check in order to ensure that a configuration wasn't built after our first cache check.
+             */
+            for (ConfigurationCacheProvider cache : caches) {
+               Configuration cachedConfig = cache.getConfiguration(context);
+               if (cachedConfig != null)
+               {
+                  result = cachedConfig;
+                  break;
+               }
+            }
+
+            /*
+             * Triple check just in case we got a cache hit
+             */
+            if (result == null)
+            {
+               result = build(context);
+               for (ConfigurationCacheProvider cache : caches) {
+                  cache.setConfiguration(context, result);
+               }
+            }
+         }
+      }
+
+      return result;
+   }
+
+   @SuppressWarnings({ "rawtypes", "unchecked" })
+   private static Configuration build(Object context)
+   {
+      List<ConfigurationProvider> providers = Iterators.asList(ServiceLoader.load(ConfigurationProvider.class)
+               .iterator());
       Collections.sort(providers, new WeightedComparator());
 
+      Map<Integer, List<Rule>> priorityMap = new HashMap<Integer, List<Rule>>();
       for (ConfigurationProvider provider : providers) {
          if (provider.handles(context))
          {
@@ -64,44 +124,46 @@ public class ConfigurationLoader
                   for (Rule rule : rules) {
                      if (rule != null)
                      {
-                        if(rule instanceof RelocatableRule)
+                        if (rule instanceof RelocatableRule)
                            addListValue(priorityMap, ((RelocatableRule) rule).priority(), rule);
                         else
                            addListValue(priorityMap, provider.priority(), rule);
                      }
                      else {
-                        log.debug("Ignoring null Rule from ConfigurationProvider [" + provider.getClass().getName()
+                        log.debug("Ignoring null Rule from ConfigurationProvider ["
+                                 + provider.getClass().getName()
                                  + "]");
                      }
                   }
                }
                else {
-                  log.debug("Ignoring null List<Rule> from ConfigurationProvider [" + provider.getClass().getName()
+                  log.debug("Ignoring null List<Rule> from ConfigurationProvider ["
+                           + provider.getClass().getName()
                            + "]");
                }
             }
             else {
-               log.debug("Ignoring null Configuration from ConfigurationProvider [" + provider.getClass().getName()
+               log.debug("Ignoring null Configuration from ConfigurationProvider ["
+                        + provider.getClass().getName()
                         + "].");
             }
          }
       }
 
-      ConfigurationBuilder result = ConfigurationBuilder.begin();
-      
+      Configuration result = ConfigurationBuilder.begin();
       ArrayList<Integer> sortedKeys = new ArrayList<Integer>(priorityMap.keySet());
       Collections.sort(sortedKeys);
-      
+
       for (Integer integer : sortedKeys) {
          List<Rule> list = priorityMap.get(integer);
          for (Rule rule : list) {
-            result.addRule(rule);
+            ((ConfigurationBuilder) result).addRule(rule);
          }
       }
-      
+
       return result;
    }
-   
+
    @SuppressWarnings("unchecked")
    public static <K, T> void addListValue(final Map<K, List<T>> map, final K key, final T value)
    {

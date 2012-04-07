@@ -26,9 +26,9 @@ import org.junit.Test;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.bind.parse.CaptureType;
-import org.ocpsoft.rewrite.bind.util.Maps;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.util.Maps;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

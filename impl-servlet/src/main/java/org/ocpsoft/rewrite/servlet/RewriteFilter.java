@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,9 +32,10 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.spi.ServiceEnricher;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
-
+import org.ocpsoft.rewrite.config.ConfigurationCacheProvider;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.impl.RewriteContextImpl;
 import org.ocpsoft.rewrite.servlet.spi.ContextListener;
@@ -48,11 +49,10 @@ import org.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.spi.InvocationResultHandler;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
 import org.ocpsoft.rewrite.util.ServiceLogger;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 
 /**
  * {@link Filter} responsible for handling all inbound {@link org.ocpsoft.rewrite.event.Rewrite} events.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RewriteFilter implements Filter
@@ -93,6 +93,9 @@ public class RewriteFilter implements Filter
       /*
        * Log more services for debug purposes only.
        */
+      ServiceLogger.logLoadedServices(log, ConfigurationCacheProvider.class,
+               Iterators.asUniqueList(ServiceLoader.load(ConfigurationCacheProvider.class)));
+
       ServiceLogger.logLoadedServices(log, ContextListener.class,
                Iterators.asUniqueList(ServiceLoader.load(ContextListener.class)));
 
@@ -132,7 +135,7 @@ public class RewriteFilter implements Filter
    @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
             throws IOException, ServletException
-            {
+   {
       InboundServletRewrite<ServletRequest, ServletResponse> event = createRewriteEvent(request,
                response);
 
@@ -179,11 +182,11 @@ public class RewriteFilter implements Filter
                listener.afterInboundLifecycle(event);
          }
       }
-            }
+   }
 
    public InboundServletRewrite<ServletRequest, ServletResponse> createRewriteEvent(final ServletRequest request,
             final ServletResponse response)
-            {
+   {
       for (InboundRewriteProducer<ServletRequest, ServletResponse> producer : inbound)
       {
          InboundServletRewrite<ServletRequest, ServletResponse> event = producer
@@ -192,12 +195,12 @@ public class RewriteFilter implements Filter
             return event;
       }
       return null;
-            }
+   }
 
    private void rewrite(final InboundServletRewrite<ServletRequest, ServletResponse> event)
             throws ServletException,
             IOException
-            {
+   {
       for (RewriteLifecycleListener<Rewrite> listener : listeners)
       {
          if (listener.handles(event))
@@ -230,7 +233,7 @@ public class RewriteFilter implements Filter
          {
             log.debug("Issuing internal FORWARD to [{}].", event.getDispatchResource());
             event.getRequest().getRequestDispatcher(event.getDispatchResource())
-            .forward(event.getRequest(), event.getResponse());
+                     .forward(event.getRequest(), event.getResponse());
          }
          else if (event.getFlow().is(BaseRewrite.Flow.REDIRECT_PERMANENT))
          {
@@ -257,9 +260,9 @@ public class RewriteFilter implements Filter
       {
          log.debug("Issuing internal INCLUDE to [{}].", event.getDispatchResource());
          event.getRequest().getRequestDispatcher(event.getDispatchResource())
-         .include(event.getRequest(), event.getResponse());
+                  .include(event.getRequest(), event.getResponse());
       }
-            }
+   }
 
    @Override
    public void destroy()

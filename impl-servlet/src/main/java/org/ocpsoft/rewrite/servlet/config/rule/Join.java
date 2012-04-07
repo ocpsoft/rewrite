@@ -52,8 +52,8 @@ public class Join implements IJoin
 
    private final String pattern;
    private String resource;
+   private final IPath requestPath;
    private IPath resourcePath;
-   private final IPath path;
 
    private Operation operation;
    private Condition condition;
@@ -63,7 +63,7 @@ public class Join implements IJoin
    protected Join(final String pattern)
    {
       this.pattern = pattern;
-      this.path = Path.matches(pattern);
+      this.requestPath = Path.matches(pattern);
    }
 
    /**
@@ -102,9 +102,9 @@ public class Join implements IJoin
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         path.withRequestBinding();
+         requestPath.withRequestBinding();
 
-         if (path.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
+         if (requestPath.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
          {
             if (operation != null)
                context.addPreOperation(operation);
@@ -114,7 +114,7 @@ public class Join implements IJoin
                   && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context)
                   && ((condition == null) || condition.evaluate(event, context)))
          {
-            List<String> names = path.getPathExpression().getParameterNames();
+            List<String> names = requestPath.getPathExpression().getParameterNames();
             for (String name : names) {
                if (!QueryString.parameterExists(name).evaluate(event, context))
                {
@@ -151,7 +151,7 @@ public class Join implements IJoin
    {
       List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
 
-      List<String> queryParameters = path.getPathExpression().getParameterNames();
+      List<String> queryParameters = requestPath.getPathExpression().getParameterNames();
       queryParameters.removeAll(nonQueryParameters);
       return queryParameters;
    }
@@ -195,7 +195,7 @@ public class Join implements IJoin
    @Override
    public JoinParameter where(final String parameter)
    {
-      return new JoinParameter(this, path.getPathExpression().getParameter(parameter));
+      return new JoinParameter(this, requestPath.getPathExpression().getParameter(parameter));
    }
 
    @Override
@@ -265,14 +265,14 @@ public class Join implements IJoin
    @Override
    public IJoin withRequestBinding()
    {
-      path.withRequestBinding();
+      requestPath.withRequestBinding();
       return this;
    }
 
    @Override
    public ParameterizedPattern getPathExpression()
    {
-      return path.getPathExpression();
+      return requestPath.getPathExpression();
    }
 
    @Override

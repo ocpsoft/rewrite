@@ -22,12 +22,12 @@ import javax.servlet.ServletRequest;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Validator;
-import org.ocpsoft.rewrite.bind.util.Maps;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedRequest;
+import org.ocpsoft.rewrite.util.Maps;
 
 /**
  * Responsible for binding to {@link ServletRequest#setAttribute(String, Object)} and

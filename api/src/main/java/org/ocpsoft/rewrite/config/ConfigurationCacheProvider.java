@@ -19,22 +19,27 @@ import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
 
 /**
- * Provides {@link Configuration} to the Rewrite runtime environment.
+ * Provides {@link Configuration} caching strategies for the Rewrite runtime environment.
  * 
- * Additional configuration providers may be specified by providing a service activator file containing the name of your
+ * Additional cache providers may be specified by providing a service activator file containing the name of your
  * implementations:
  * <p>
- * <code> /META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider<br>
+ * <code> /META-INF/services/org.ocpsoft.rewrite.config.ConfigurationCacheProvider<br>
  * 
  * --------------<br>
- * com.example.ConfigurationProviderImpl</code>
+ * com.example.ConfigurationCacheProviderImpl</code>
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationProvider<T> extends Weighted, Specialized<Object>
+public interface ConfigurationCacheProvider<T> extends Weighted, Specialized<Object>
 {
    /**
-    * Return the additional configuration.
+    * Return the cached {@link Configuration}, or null of the cache is empty or unprimed.
     */
    public Configuration getConfiguration(T context);
+
+   /**
+    * Store the given {@link Configuration} into the cache for later retrieval.
+    */
+   public void setConfiguration(T context, Configuration configuration);
 }

@@ -15,21 +15,19 @@
  */package org.ocpsoft.rewrite.servlet.config;
 
  import java.util.Arrays;
- import java.util.List;
+import java.util.List;
 
-import org.ocpsoft.rewrite.bind.Bindable;
- import org.ocpsoft.rewrite.bind.Binding;
- import org.ocpsoft.rewrite.bind.RegexCapture;
- import org.ocpsoft.rewrite.config.Condition;
- import org.ocpsoft.rewrite.config.ConditionBuilder;
- import org.ocpsoft.rewrite.context.EvaluationContext;
- import org.ocpsoft.rewrite.event.Rewrite;
- import org.ocpsoft.rewrite.param.Constraint;
- import org.ocpsoft.rewrite.param.Parameter;
- import org.ocpsoft.rewrite.param.ParameterBuilder;
- import org.ocpsoft.rewrite.param.Parameterized;
- import org.ocpsoft.rewrite.param.Transform;
- import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterParameter;
+ import org.ocpsoft.rewrite.bind.Bindable;
+import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterBuilder;
+import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterParameter;
 
  /**
   * 
@@ -49,33 +47,13 @@ import org.ocpsoft.rewrite.bind.Bindable;
     IRequestParameterParameter
     {
        private final IRequestParameter parent;
-       private final List<RegexCapture> parameters;
+       private final List<RegexCapture> captures;
 
-       public RequestParameterParameter(IRequestParameter path, RegexCapture... captures)
+       public RequestParameterParameter(IRequestParameter condition, RegexCapture... captures)
        {
           super((Object[]) captures);
-          this.parent = path;
-          this.parameters = Arrays.asList(captures);
-       }
-
-       @Override
-       public RequestParameterParameter constrainedBy(Constraint<String> constraint)
-       {
-          for (RegexCapture parameter : parameters) {
-             if (parameter != null)
-                parameter.constrainedBy(constraint);
-          }
-          return this;
-       }
-
-       @Override
-       public RequestParameterParameter transformedBy(Transform<String> transform)
-       {
-          for (RegexCapture parameter : parameters) {
-             if (parameter != null)
-                parameter.transformedBy(transform);
-          }
-          return this;
+          this.parent = condition;
+          this.captures = Arrays.asList(captures);
        }
 
        @Override
@@ -93,9 +71,9 @@ import org.ocpsoft.rewrite.bind.Bindable;
        @Override
        public IRequestParameterParameter matches(String string)
        {
-          for (RegexCapture parameter : parameters) {
-             if (parameter != null)
-                parameter.matches(string);
+          for (RegexCapture capture : captures) {
+             if (capture != null)
+                capture.matches(string);
           }
           return this;
        }
@@ -103,9 +81,9 @@ import org.ocpsoft.rewrite.bind.Bindable;
        @Override
        public String getName()
        {
-          for (RegexCapture parameter : parameters) {
-             if (parameter != null)
-                return parameter.getName();
+          for (RegexCapture capture : captures) {
+             if (capture != null)
+                return capture.getName();
           }
           return null;
        }

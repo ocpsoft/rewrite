@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.ServletRequest;
 
 import org.ocpsoft.rewrite.bind.Bindable;
@@ -30,7 +33,6 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
 
 /**
@@ -86,26 +88,33 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
    public class JoinParameter extends ParameterBuilder<JoinParameter, String> implements IJoinParameter
    {
       private final IJoin parent;
-      private final RegexCapture parameter;
+      private final List<RegexCapture> captures;
 
-      public JoinParameter(IJoin path, RegexCapture capture)
+      public JoinParameter(IJoin join, RegexCapture... captures)
       {
-         super(capture);
-         this.parent = path;
-         this.parameter = capture;
+         super((Object[]) captures);
+         this.parent = join;
+         this.captures = Arrays.asList(captures);
       }
 
       @Override
       public IJoinParameter matches(String string)
       {
-         parameter.constrainedBy(new RegexConstraint(string));
+         for (RegexCapture capture : captures) {
+            if (capture != null)
+               capture.matches(string);
+         }
          return this;
       }
 
       @Override
       public String getName()
       {
-         return parameter.getName();
+         for (RegexCapture capture : captures) {
+            if (capture != null)
+               return capture.getName();
+         }
+         return null;
       }
 
       @Override

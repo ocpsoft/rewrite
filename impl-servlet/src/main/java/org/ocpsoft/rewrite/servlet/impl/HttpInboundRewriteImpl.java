@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.logging.Logger;
-
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -205,7 +204,7 @@ implements HttpInboundServletRewrite
    @Override
    public String toString()
    {
-      return "InboundRewrite [url=" + getURL() + ", flow=" + getFlow() + ", dispatchResource=" + getDispatchResource()
+      return "InboundRewrite ["+getRequest().getMethod()+" url=" + getURL() + ", flow=" + getFlow() + ", dispatchResource=" + getDispatchResource()
                + "]";
    }
 }

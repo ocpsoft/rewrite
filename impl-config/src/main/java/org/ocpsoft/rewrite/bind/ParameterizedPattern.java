@@ -28,12 +28,12 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.bind.parse.CapturingGroup;
 import org.ocpsoft.rewrite.bind.parse.ParseTools;
-import org.ocpsoft.rewrite.bind.util.Maps;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.Transform;
+import org.ocpsoft.rewrite.util.Maps;
 
 /**
  * An {@link org.ocpsoft.rewrite.param.Parameterized} regular expression {@link Pattern}.
