@@ -46,6 +46,7 @@ public class ConfigurationCacheProviderTest extends RewriteTestBase
    }
 
    volatile int votes = 0;
+   volatile int configBuildCount = 0;
 
    @Test
    public void testCachingConfiguration()
@@ -68,6 +69,10 @@ public class ConfigurationCacheProviderTest extends RewriteTestBase
       {
          try {
             Thread.sleep(10);
+            if (configBuildCount > 1)
+            {
+               Assert.fail();
+            }
          }
          catch (InterruptedException e) {}
       }
@@ -81,7 +86,8 @@ public class ConfigurationCacheProviderTest extends RewriteTestBase
       @Override
       public void run()
       {
-         get("/cache1");
+         HttpAction<HttpGet> action = get("/cache1");
+         configBuildCount = action.getResponse().getStatusLine().getStatusCode() - 200;
          vote();
       }
    };
