@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.config.Rule;
  */
 public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements NonEnriching
 {
-   private ConfigurationLoader loader;
+   private volatile ConfigurationLoader loader;
 
    @Override
    public void rewrite(final HttpServletRewrite event)

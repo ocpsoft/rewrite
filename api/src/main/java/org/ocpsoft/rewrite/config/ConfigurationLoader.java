@@ -107,6 +107,7 @@ public class ConfigurationLoader
             if (result == null)
             {
                result = build(context);
+               
                for (ConfigurationCacheProvider cache : caches) {
                   cache.setConfiguration(context, result);
                }

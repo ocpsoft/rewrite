@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.services.NonEnriching;
 import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
 import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 
@@ -32,6 +34,8 @@ import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
  */
 public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper implements NonEnriching
 {
+   private volatile List<RequestParameterProvider> providers;
+
    @Override
    @SuppressWarnings("unchecked")
    public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
@@ -41,7 +45,11 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
       {
          Map<String, String[]> additionalParams = new HashMap<String, String[]>();
 
-         ServiceLoader<RequestParameterProvider> providers = ServiceLoader.load(RequestParameterProvider.class);
+         if (providers == null)
+            synchronized (this) {
+               if (providers == null)
+                  providers = Iterators.asList(ServiceLoader.load(RequestParameterProvider.class));
+            }
 
          for (RequestParameterProvider provider : providers) {
             Map<String, String[]> m = provider.getParameters(request, response);
