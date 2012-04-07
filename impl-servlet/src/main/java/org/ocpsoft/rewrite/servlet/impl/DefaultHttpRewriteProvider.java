@@ -15,13 +15,15 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
+import javax.servlet.ServletContext;
+
 import org.ocpsoft.common.services.NonEnriching;
 
-import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.*;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.config.ConfigurationLoader;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 
@@ -31,10 +33,19 @@ import org.ocpsoft.rewrite.config.Rule;
  */
 public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements NonEnriching
 {
+   private ConfigurationLoader loader;
+
    @Override
    public void rewrite(final HttpServletRewrite event)
    {
-      Configuration compiledConfiguration = ConfigurationLoader.loadConfiguration(event.getRequest().getServletContext());
+      ServletContext servletContext = event.getRequest().getServletContext();
+      if (loader == null)
+         synchronized (servletContext) {
+            if (loader == null)
+               loader = ConfigurationLoader.create(servletContext);
+         }
+
+      Configuration compiledConfiguration = loader.loadConfiguration(servletContext);
       for (Rule rule : compiledConfiguration.getRules()) {
          EvaluationContextImpl context = new EvaluationContextImpl();
          if (rule.evaluate(event, context))

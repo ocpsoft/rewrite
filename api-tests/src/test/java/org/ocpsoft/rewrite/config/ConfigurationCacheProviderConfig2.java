@@ -28,6 +28,12 @@ public class ConfigurationCacheProviderConfig2 implements ConfigurationProvider<
    {
       accessCount++;
 
+      try {
+         Thread.sleep(1000);
+      }
+      catch (InterruptedException e) {
+      }
+
       return ConfigurationBuilder.begin().defineRule()
                .when(Path.matches("/cache2"))
                .perform(SendStatus.code(accessCount));

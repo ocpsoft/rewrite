@@ -30,34 +30,48 @@ import org.ocpsoft.logging.Logger;
 /**
  * Responsible for loading all {@link ConfigurationProvider} instances, and building a single unified
  * {@link Configuration} based on {@link ConfigurationProvider#priority()}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationLoader
 {
    public static Logger log = Logger.getLogger(ConfigurationLoader.class);
+   private List<ConfigurationCacheProvider<?>> caches;
+
+   @SuppressWarnings({ "unchecked"})
+   public ConfigurationLoader(Object context)
+   {
+      List<ConfigurationCacheProvider<?>> caches = Iterators.asList(ServiceLoader
+               .load(ConfigurationCacheProvider.class)
+               .iterator());
+      Collections.sort(caches, new WeightedComparator());
+      this.caches = caches;
+   }
+   
+   /**
+    * Get a new {@link ConfigurationLoader} instance.
+    */
+   public static ConfigurationLoader create(final Object context)
+   {
+      return new ConfigurationLoader(context);
+   }
+
 
    /**
     * Load all {@link ConfigurationProvider} instances, sort by {@link ConfigurationProvider#priority()}, and return a
     * unified, composite {@link Configuration} object.
     */
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-   public static Configuration loadConfiguration(final Object context)
+   public Configuration loadConfiguration(Object context)
    {
-      List<ConfigurationCacheProvider> caches = Iterators.asList(ServiceLoader
-               .load(ConfigurationCacheProvider.class)
-               .iterator());
-      Collections.sort(caches, new WeightedComparator());
-
       if (caches.isEmpty())
       {
          return build(context);
       }
-      return buildCached(caches, context);
+      return buildCached(context);
    }
 
-   @SuppressWarnings({ "unchecked", "rawtypes" })
-   private static Configuration buildCached(List<ConfigurationCacheProvider> caches, Object context)
+   @SuppressWarnings({ "rawtypes", "unchecked" })
+   private Configuration buildCached(Object context)
    {
       Configuration result = null;
       /*
@@ -104,7 +118,7 @@ public class ConfigurationLoader
    }
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
-   private static Configuration build(Object context)
+   private Configuration build(Object context)
    {
       List<ConfigurationProvider> providers = Iterators.asList(ServiceLoader.load(ConfigurationProvider.class)
                .iterator());
