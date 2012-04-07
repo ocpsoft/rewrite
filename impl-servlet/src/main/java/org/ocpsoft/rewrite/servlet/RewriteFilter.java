@@ -93,9 +93,6 @@ public class RewriteFilter implements Filter
       /*
        * Log more services for debug purposes only.
        */
-      ServiceLogger.logLoadedServices(log, ConfigurationCacheProvider.class,
-               Iterators.asUniqueList(ServiceLoader.load(ConfigurationCacheProvider.class)));
-
       ServiceLogger.logLoadedServices(log, ContextListener.class,
                Iterators.asUniqueList(ServiceLoader.load(ContextListener.class)));
 
@@ -115,8 +112,12 @@ public class RewriteFilter implements Filter
                Iterators.asUniqueList(ServiceLoader.load(ServiceEnricher.class)));
 
       /*
-       * Load ConfigurationProviders here solely so that we may log all known implementations at boot time.
+       * Load ConfigurationProviders and ConfigurationCacheProviders here solely so that we
+       * can see registered implementations at boot time.
        */
+      ServiceLogger.logLoadedServices(log, ConfigurationCacheProvider.class,
+               Iterators.asUniqueList(ServiceLoader.load(ConfigurationCacheProvider.class)));
+
       List<ConfigurationProvider<?>> configurations = Iterators.asUniqueList(ServiceLoader
                .load(ConfigurationProvider.class));
       ServiceLogger.logLoadedServices(log, ConfigurationProvider.class, configurations);
