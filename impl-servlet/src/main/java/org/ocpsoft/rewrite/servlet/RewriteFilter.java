@@ -22,6 +22,7 @@ import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -37,7 +38,7 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
-import org.ocpsoft.rewrite.servlet.impl.RewriteContextImpl;
+import org.ocpsoft.rewrite.servlet.impl.HttpRewriteContextImpl;
 import org.ocpsoft.rewrite.servlet.spi.ContextListener;
 import org.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
@@ -62,7 +63,7 @@ public class RewriteFilter implements Filter
 
    private List<RewriteLifecycleListener<Rewrite>> listeners;
    private List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;
-   private List<RewriteProvider<Rewrite>> providers;
+   private List<RewriteProvider<ServletContext, Rewrite>> providers;
    private List<InboundRewriteProducer<ServletRequest, ServletResponse>> inbound;
    private List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> outbound;
 
@@ -122,6 +123,11 @@ public class RewriteFilter implements Filter
                .load(ConfigurationProvider.class));
       ServiceLogger.logLoadedServices(log, ConfigurationProvider.class, configurations);
 
+      for (RewriteProvider<?, ?> provider : providers) {
+         if (provider instanceof ServletRewriteProvider)
+            ((ServletRewriteProvider<?>) provider).init(filterConfig.getServletContext());
+      }
+
       if ((configurations == null) || configurations.isEmpty())
       {
          log.warn("No ConfigurationProviders were registered: " +
@@ -149,7 +155,8 @@ public class RewriteFilter implements Filter
       {
          if (request.getAttribute(RewriteLifecycleContext.CONTEXT_KEY) == null)
          {
-            RewriteLifecycleContext context = new RewriteContextImpl(inbound, outbound, listeners, wrappers, providers);
+            RewriteLifecycleContext<ServletContext> context = new HttpRewriteContextImpl(inbound, outbound, listeners,
+                     wrappers, providers);
             request.setAttribute(RewriteLifecycleContext.CONTEXT_KEY, context);
          }
 
@@ -208,7 +215,7 @@ public class RewriteFilter implements Filter
             listener.beforeInboundRewrite(event);
       }
 
-      for (RewriteProvider<Rewrite> provider : providers)
+      for (RewriteProvider<?, Rewrite> provider : providers)
       {
          if (provider.handles(event))
          {
