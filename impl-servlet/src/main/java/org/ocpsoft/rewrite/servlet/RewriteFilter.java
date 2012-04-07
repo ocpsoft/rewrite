@@ -123,7 +123,7 @@ public class RewriteFilter implements Filter
                .load(ConfigurationProvider.class));
       ServiceLogger.logLoadedServices(log, ConfigurationProvider.class, configurations);
 
-      for (RewriteProvider<?, ?> provider : providers) {
+      for (RewriteProvider<ServletContext, Rewrite> provider : providers) {
          if (provider instanceof ServletRewriteProvider)
             ((ServletRewriteProvider<?>) provider).init(filterConfig.getServletContext());
       }
