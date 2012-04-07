@@ -30,24 +30,25 @@ import org.ocpsoft.logging.Logger;
 /**
  * Responsible for loading all {@link ConfigurationProvider} instances, and building a single unified
  * {@link Configuration} based on {@link ConfigurationProvider#priority()}
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationLoader
 {
    public static Logger log = Logger.getLogger(ConfigurationLoader.class);
-   private List<ConfigurationCacheProvider<?>> caches;
+   private final List<ConfigurationCacheProvider<?>> caches;
+   private final List<ConfigurationProvider<?>> providers;
 
-   @SuppressWarnings({ "unchecked"})
+   @SuppressWarnings({ "unchecked" })
    public ConfigurationLoader(Object context)
    {
-      List<ConfigurationCacheProvider<?>> caches = Iterators.asList(ServiceLoader
-               .load(ConfigurationCacheProvider.class)
-               .iterator());
+      caches = Iterators.asList(ServiceLoader.load(ConfigurationCacheProvider.class));
       Collections.sort(caches, new WeightedComparator());
-      this.caches = caches;
+
+      providers = Iterators.asList(ServiceLoader.load(ConfigurationProvider.class));
+      Collections.sort(providers, new WeightedComparator());
    }
-   
+
    /**
     * Get a new {@link ConfigurationLoader} instance.
     */
@@ -55,7 +56,6 @@ public class ConfigurationLoader
    {
       return new ConfigurationLoader(context);
    }
-
 
    /**
     * Load all {@link ConfigurationProvider} instances, sort by {@link ConfigurationProvider#priority()}, and return a
@@ -88,7 +88,8 @@ public class ConfigurationLoader
 
       if (result == null)
       {
-         synchronized (context) {
+         synchronized (this) {
+
             /*
              * Double check in order to ensure that a configuration wasn't built after our first cache check.
              */
@@ -101,13 +102,10 @@ public class ConfigurationLoader
                }
             }
 
-            /*
-             * Triple check just in case we got a cache hit
-             */
             if (result == null)
             {
                result = build(context);
-               
+
                for (ConfigurationCacheProvider cache : caches) {
                   cache.setConfiguration(context, result);
                }
@@ -121,9 +119,6 @@ public class ConfigurationLoader
    @SuppressWarnings({ "rawtypes", "unchecked" })
    private Configuration build(Object context)
    {
-      List<ConfigurationProvider> providers = Iterators.asList(ServiceLoader.load(ConfigurationProvider.class)
-               .iterator());
-      Collections.sort(providers, new WeightedComparator());
 
       Map<Integer, List<Rule>> priorityMap = new HashMap<Integer, List<Rule>>();
       for (ConfigurationProvider provider : providers) {
