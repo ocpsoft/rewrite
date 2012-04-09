@@ -34,7 +34,11 @@
 			<version>2.0.0.Beta1</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.jboss.spec.javax.el</groupId>
+			<artifactId>jboss-el-api_2.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.faces</artifactId>
