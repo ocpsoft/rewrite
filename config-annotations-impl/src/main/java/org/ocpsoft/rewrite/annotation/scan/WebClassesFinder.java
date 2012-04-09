@@ -118,6 +118,12 @@ public class WebClassesFinder extends AbstractClassFinder
             // get full URL for this entry
             URL entryUrl = servletContext.getResource(relativePath.toString());
 
+            // Embedded Jetty bug?
+            if (entryUrl == null) {
+               log.warn("Unable to obtain URL for relative path: " + relativePath.toString());
+               continue;
+            }
+
             // if this URL ends with .class it is a Java class
             if (entryUrl.getPath().endsWith(".class"))
             {
