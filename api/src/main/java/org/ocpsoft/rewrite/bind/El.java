@@ -58,7 +58,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     * given {@link Converter} when retrieving any values.
     */
    public static El retrievalMethod(final String expression,
-            final Class<? extends Converter<Object>> converterType)
+            final Class<? extends Converter<?>> converterType)
    {
       ElMethod el = new ElMethod(expression, null);
       el.convertedBy(converterType);
@@ -78,7 +78,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     * Use the given {@link Converter} before submitting any values.
     */
    public static El submissionMethod(final String expression,
-            final Class<? extends Converter<Object>> converterType)
+            final Class<? extends Converter<?>> converterType)
    {
       ElMethod el = new ElMethod(null, expression);
       el.convertedBy(converterType);
@@ -91,8 +91,8 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     * submitting any values.
     */
    public static El submissionMethod(final String expression,
-            final Class<? extends Converter<Object>> converterType,
-                     final Class<? extends Validator<Object>> validatorType)
+            final Class<? extends Converter<?>> converterType,
+                     final Class<? extends Validator<?>> validatorType)
    {
       ElMethod el = new ElMethod(null, expression);
       el.convertedBy(converterType);
@@ -114,7 +114,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     * either be public, or have a publicly defined getter/setter. Use the given {@link Converter} before submitting any
     * values.
     */
-   public static El property(final String expression, final Class<? extends Converter<Object>> type)
+   public static El property(final String expression, final Class<? extends Converter<?>> type)
    {
       ElProperty el = new ElProperty(expression);
       el.convertedBy(type);
@@ -126,8 +126,8 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     * either be public, or have a publicly defined getter/setter. Use the given {@link Validator} before attempting to
     * submit any values. Use the given {@link Converter} when submitting any values.
     */
-   public static El property(final String expression, final Class<? extends Converter<Object>> converterType,
-            final Class<? extends Validator<Object>> validatorType)
+   public static El property(final String expression, final Class<? extends Converter<?>> converterType,
+            final Class<? extends Validator<?>> validatorType)
    {
       ElProperty el = new ElProperty(expression);
       el.convertedBy(converterType);
