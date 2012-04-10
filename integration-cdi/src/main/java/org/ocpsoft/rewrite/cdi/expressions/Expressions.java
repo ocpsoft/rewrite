@@ -71,7 +71,7 @@ public class Expressions
     */
    @Inject
    public Expressions(
-            @Composite ELContext context, ExpressionFactory expressionFactory)
+            @Composite ELContext context, @Composite ExpressionFactory expressionFactory)
    {
       if (context == null) {
          throw new IllegalArgumentException("context must not be null");

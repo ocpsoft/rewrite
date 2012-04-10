@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.BeanManager;
 class ExpressionFactoryProducer {
 
     @Produces
+    @Composite
     @ApplicationScoped
     ExpressionFactory createExpressionFactory(BeanManager beanManager) {
         return beanManager.wrapExpressionFactory(ExpressionFactory.newInstance());
