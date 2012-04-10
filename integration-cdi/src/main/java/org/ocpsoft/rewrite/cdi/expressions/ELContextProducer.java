@@ -44,7 +44,8 @@ class ELContextProducer {
     @Composite
     private ELResolver resolver;
 
-    @Produces
+   @Produces
+   @Composite
     ELContext createELContext() {
         return createELContext(resolver, functionMapper.get(), variableMapper.get());
     }
