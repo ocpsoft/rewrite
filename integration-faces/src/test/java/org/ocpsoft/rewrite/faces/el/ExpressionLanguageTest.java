@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.faces.el;
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,9 +36,8 @@ public class ExpressionLanguageTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return ShrinkWrap
-               .create(WebArchive.class, "rewrite-test.war")
-               .addAsLibraries(getRewriteArchive())
+      return RewriteTestBase
+               .getDeploymentNoWebXml()
                .setWebXML("faces-web.xml")
                .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))
                .addAsWebInfResource("faces-config.xml", "faces-config.xml")
@@ -49,7 +47,7 @@ public class ExpressionLanguageTest extends RewriteTestBase
    }
 
    @Test
-   public void testSpringFeatures()
+   public void testExpressionLanguageFromJSF()
    {
       HttpAction<HttpGet> action = get("/name/christian");
       String content = action.getResponseContent();

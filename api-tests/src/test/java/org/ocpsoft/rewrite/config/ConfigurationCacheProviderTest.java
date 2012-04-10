@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.config;
 
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,13 +34,12 @@ public class ConfigurationCacheProviderTest extends RewriteTestBase
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase.getDeployment()
+      WebArchive deployment = RewriteTestBase
+               .getDeployment()
                .addPackages(true, Root.class.getPackage())
-               .addAsResource(new StringAsset("org.ocpsoft.rewrite.config.ConfigurationCacheProviderConfig1\n" +
-                        "org.ocpsoft.rewrite.config.ConfigurationCacheProviderConfig2"),
-                        "/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider")
-               .addAsResource(new StringAsset("org.ocpsoft.rewrite.config.ConfigurationCacheProviderMock"),
-                        "/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationCacheProvider");
+               .addAsServiceProvider(ConfigurationProvider.class, ConfigurationCacheProviderConfig1.class,
+                        ConfigurationCacheProviderConfig2.class)
+               .addAsServiceProvider(ConfigurationCacheProvider.class, ConfigurationCacheProviderMock.class);
       return deployment;
    }
 

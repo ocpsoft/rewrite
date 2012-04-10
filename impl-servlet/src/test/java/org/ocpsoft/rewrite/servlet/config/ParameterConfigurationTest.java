@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,10 +20,10 @@ import junit.framework.Assert;
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
@@ -40,10 +40,7 @@ public class ParameterConfigurationTest extends RewriteTestBase
       WebArchive deployment = RewriteTestBase
                .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
-               .addAsResource(
-                        new StringAsset(
-                                 "org.ocpsoft.rewrite.servlet.config.ParameterConfigurationProvider"),
-                        "/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider");
+               .addAsServiceProvider(ConfigurationProvider.class, ParameterConfigurationProvider.class);
       return deployment;
    }
 

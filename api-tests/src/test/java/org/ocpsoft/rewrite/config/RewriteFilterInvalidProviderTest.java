@@ -17,11 +17,11 @@ package org.ocpsoft.rewrite.config;
 
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
+import org.ocpsoft.rewrite.spi.RewriteProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 
@@ -37,8 +37,8 @@ public class RewriteFilterInvalidProviderTest extends RewriteTestBase
    {
       WebArchive deployment = RewriteTestBase.getDeployment()
                .addPackages(true, Root.class.getPackage())
-               .addAsResource(new StringAsset("org.ocpsoft.rewrite.config.RewriteFilterInvalidRewriteProvider"),
-                        "/META-INF/services/org.ocpsoft.rewrite.spi.RewriteProvider");
+               .addAsServiceProvider(RewriteProvider.class,
+                        RewriteFilterInvalidRewriteProvider.class);
       return deployment;
    }
 
