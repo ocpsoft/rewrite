@@ -16,26 +16,26 @@
 package org.ocpsoft.rewrite.annotation.scan;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
-import org.ocpsoft.rewrite.annotation.api.FieldContext;
+import org.ocpsoft.rewrite.annotation.api.MethodContext;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.context.ContextBase;
 
 /**
- * Default implementation of {@link FieldContext}
+ * Default implementation of {@link MethodContext}
  *
  * @author Christian Kaltepoth
  */
 @SuppressWarnings("rawtypes")
-public class FieldContextImpl extends ContextBase implements FieldContext
+public class MethodContextImpl extends ContextBase implements MethodContext
 {
 
    private final ClassContext classContext;
 
    private BindingBuilder bindingBuilder;
 
-   public FieldContextImpl(ClassContext classContext)
+   public MethodContextImpl(ClassContext classContext)
    {
       this.classContext = classContext;
    }

@@ -14,6 +14,7 @@ import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.scan.ClassContextImpl;
 import org.ocpsoft.rewrite.annotation.scan.FieldContextImpl;
+import org.ocpsoft.rewrite.annotation.scan.MethodContextImpl;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
@@ -83,7 +84,7 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
 
       // finally the methods
       for (Method method : clazz.getDeclaredMethods()) {
-         visit(method, context);
+         visit(method, new MethodContextImpl(context));
       }
 
    }
