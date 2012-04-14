@@ -12,8 +12,9 @@
    <artifactId>rewrite-test-harness</artifactId>
 
    <properties>
-      <version.arquillian>1.0.0.CR1</version.arquillian>
-      <version.jetty>8.0.0.RC0</version.jetty>
+      <version.arquillian>1.0.0.Final</version.arquillian>
+      <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
+      <version.jetty>8.1.2.v20120308</version.jetty>
    </properties>
 
    <dependencies>
@@ -60,7 +61,19 @@
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
                <artifactId>arquillian-jetty-embedded-7</artifactId>
-               <version>${version.arquillian}</version>
+               <version>${version.arquillian.jetty}</version>
+               <exclusions>
+                  <!-- Don't include the old version of arquillian-container-spi -->
+                  <exclusion>
+                     <groupId>org.jboss.arquillian.container</groupId>
+                     <artifactId>arquillian-container-spi</artifactId>
+                  </exclusion>
+               </exclusions>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.shrinkwrap.resolver</groupId>
+               <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+               <version>1.0.0-beta-6</version>
             </dependency>
             <dependency>
                <groupId>org.eclipse.jetty</groupId>
@@ -72,13 +85,25 @@
                <artifactId>jetty-plus</artifactId>
                <version>${version.jetty}</version>
             </dependency>
+            <dependency>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-simple</artifactId>
+               <version>1.5.10</version>
+            </dependency>
 
             <!-- Weld servlet, EL and JSP required for testing CDI injections -->
+            <!-- Don't use 'org.jboss.weld.servlet:weld-servlet' as it has an incompatible slf4j version shaded in -->
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
+               <artifactId>weld-servlet-core</artifactId>
                <version>1.1.4.Final</version>
             </dependency>
+            <dependency>
+               <groupId>org.jboss.weld</groupId>
+               <artifactId>weld-core</artifactId>
+               <version>1.1.4.Final</version>
+            </dependency>
+
             <dependency>
                <groupId>javax.enterprise</groupId>
                <artifactId>cdi-api</artifactId>
