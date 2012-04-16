@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Lincoln Baxter, III
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,9 +26,9 @@ import org.ocpsoft.common.util.Strings;
 
 /**
  * Utility for building URL strings. Also manages the URL query string with the help of {@link QueryStringBuilder}.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class URLBuilder
 {
@@ -170,7 +170,7 @@ public class URLBuilder
 
    /**
     * Decodes a segment using the {@link URI} class.
-    * 
+    *
     * @param segment The segment to decode
     * @return the decoded segment
     */
@@ -178,9 +178,7 @@ public class URLBuilder
    {
       try
       {
-         String prepared = ("http://localhost/" + segment)
-                  .replaceAll(" ", "%20")
-                  .replaceAll("\\+", "%20");
+         String prepared = ("http://localhost/" + segment);
          final URI uri = new URI(prepared);
          return uri.getPath().substring(1);
       }
@@ -200,7 +198,7 @@ public class URLBuilder
 
    /**
     * Encodes a segment using the {@link URI} class.
-    * 
+    *
     * @param segment The segment to encode
     * @return the encoded segment
     */
@@ -316,7 +314,7 @@ public class URLBuilder
 
    /**
     * Set the {@link Metadata} object for this URL
-    * 
+    *
     * @return
     */
    public URLBuilder setMetadata(final Metadata metadata)
