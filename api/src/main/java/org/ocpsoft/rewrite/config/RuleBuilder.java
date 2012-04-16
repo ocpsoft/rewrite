@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Builder for fluently defining new composite {@link Rule} instances.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RuleBuilder implements RelocatableRule
@@ -90,7 +90,7 @@ public class RuleBuilder implements RelocatableRule
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      return condition.evaluate(event, context);
+      return condition == null || condition.evaluate(event, context);
    }
 
    @Override
@@ -133,7 +133,7 @@ public class RuleBuilder implements RelocatableRule
 
    /**
     * Return the underlying {@link OperationBuilder}
-    * 
+    *
     * @return
     */
    public DefaultOperationBuilder getOperationBuilder()
@@ -148,7 +148,7 @@ public class RuleBuilder implements RelocatableRule
 
    /**
     * This method will call the supplied visitor for all conditions attached to the rule builder.
-    * 
+    *
     * @param visitor visitor to process
     */
    public void accept(Visitor<Condition> visitor)

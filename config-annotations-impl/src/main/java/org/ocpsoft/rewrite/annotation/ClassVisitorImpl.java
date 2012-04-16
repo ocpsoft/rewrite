@@ -68,7 +68,8 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    public void visit(Class<?> clazz)
    {
 
-      ClassContext context = new ClassContextImpl(builder, RuleBuilder.define());
+      RuleBuilder ruleBuilder = RuleBuilder.define();
+      ClassContext context = new ClassContextImpl(builder, ruleBuilder);
 
       if (log.isTraceEnabled()) {
          log.trace("Scanning class: {}", clazz.getName());
@@ -85,6 +86,11 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
       // finally the methods
       for (Method method : clazz.getDeclaredMethods()) {
          visit(method, new MethodContextImpl(context));
+      }
+
+      if(ruleBuilder.getOperationBuilder() != null || ruleBuilder.getConditionBuilder() != null)
+      {
+         builder.addRule(ruleBuilder);
       }
 
    }
