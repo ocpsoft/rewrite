@@ -19,6 +19,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.test.MockInboundRewrite;
+import org.ocpsoft.rewrite.test.MockOutboundRewrite;
+import org.ocpsoft.rewrite.test.MockRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

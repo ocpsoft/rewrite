@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.config;
+package org.ocpsoft.rewrite.test;
 
 import org.ocpsoft.rewrite.context.Context;
-import org.ocpsoft.rewrite.event.OutboundRewrite;
+import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.mock.MockRewriteContext;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class MockOutboundRewrite implements OutboundRewrite
+public class MockRewrite implements Rewrite
 {
    @Override
    public Context getRewriteContext()

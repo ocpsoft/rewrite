@@ -178,7 +178,7 @@ public class URLBuilder
    {
       try
       {
-         String prepared = ("http://localhost/" + segment);
+         String prepared = ("http://localhost/" + segment).replaceAll("\\+", "%20");
          final URI uri = new URI(prepared);
          return uri.getPath().substring(1);
       }

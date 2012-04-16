@@ -10,10 +10,13 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.faces.config.PhaseAction;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
-import org.ocpsoft.rewrite.servlet.config.Lifecycle;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
+import org.ocpsoft.rewrite.servlet.event.SubflowTask;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -59,17 +62,27 @@ public class RewritePhaseListener implements PhaseListener
       ArrayList<PhaseOperation<?>> operations = PhaseOperation.getSortedPhaseOperations(request);
       if (operations != null)
       {
-         for (PhaseOperation<?> operation : operations) {
+         for (final PhaseOperation<?> operation : operations) {
+
             if (operation.getBeforePhases().contains(event.getPhaseId())
                      || operation.getBeforePhases().contains(PhaseId.ANY_PHASE))
             {
-               Lifecycle.proceed().perform(operation.getEvent(), operation.getContext());
-               operation.performOperation(operation.getEvent(), operation.getContext());
-               if (operation.getEvent().getFlow().is(Flow.ABORT_REQUEST))
+               Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
+                        new SubflowTask() {
+
+                           @Override
+                           public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
+                           {
+                              operation.performOperation((HttpServletRewrite) rewriteEvent, context);
+                           }
+
+                        });
+
+               if (flow.is(Flow.ABORT_REQUEST))
                {
                   event.getFacesContext().responseComplete();
                }
-               if (operation.getEvent().getFlow().is(Flow.HANDLED))
+               if (flow.is(Flow.HANDLED))
                {
                   break;
                }
@@ -86,17 +99,26 @@ public class RewritePhaseListener implements PhaseListener
       ArrayList<PhaseOperation<?>> operations = PhaseOperation.getSortedPhaseOperations(request);
       if (operations != null)
       {
-         for (PhaseOperation<?> operation : operations) {
+         for (final PhaseOperation<?> operation : operations) {
             if (operation.getAfterPhases().contains(event.getPhaseId())
                      || operation.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
-               Lifecycle.proceed().perform(operation.getEvent(), operation.getContext());
-               operation.performOperation(operation.getEvent(), operation.getContext());
-               if (operation.getEvent().getFlow().is(Flow.ABORT_REQUEST))
+               Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
+                        new SubflowTask() {
+
+                           @Override
+                           public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
+                           {
+                              operation.performOperation((HttpServletRewrite) rewriteEvent, context);
+                           }
+
+                        });
+
+               if (flow.is(Flow.ABORT_REQUEST))
                {
                   event.getFacesContext().responseComplete();
                }
-               if (operation.getEvent().getFlow().is(Flow.HANDLED))
+               if (flow.is(Flow.HANDLED))
                {
                   break;
                }

@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.config;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.ocpsoft.rewrite.test.MockRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
