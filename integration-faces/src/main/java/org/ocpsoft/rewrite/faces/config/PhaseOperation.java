@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * This class encapsulates another operation that should be performed during the JSF lifecycle
- * 
+ *
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -51,16 +51,26 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
     */
    public abstract void performOperation(final HttpServletRewrite event, final EvaluationContext context);
 
+   /**
+    * Get the phases before which this {@link PhaseOperation} will be performed.
+    */
    public Set<PhaseId> getBeforePhases()
    {
       return beforePhases;
    }
 
+   /**
+    * Get the phases after which this {@link PhaseOperation} will be performed.
+    */
    public Set<PhaseId> getAfterPhases()
    {
       return afterPhases;
    }
 
+   /**
+    * Perform this {@link PhaseOperation} before the given phases (Except {@link PhaseId#RESTORE_VIEW}). The deferred
+    * {@link Operation} will be performed once for each {@link PhaseId} provided.
+    */
    @SuppressWarnings("unchecked")
    public T before(final PhaseId... phases)
    {
@@ -69,6 +79,10 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
       return (T) this;
    }
 
+   /**
+    * Perform this {@link PhaseOperation} after the given phases (Except {@link PhaseId#RENDER_RESPONSE}). The deferred
+    * {@link Operation} will be performed once for each {@link PhaseId} provided.
+    */
    @SuppressWarnings("unchecked")
    public T after(final PhaseId... phases)
    {
@@ -103,16 +117,25 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
       return operations;
    }
 
+   /**
+    * Get the {@link HttpServletRewrite} with which this {@link PhaseOperation} was deferred.
+    */
    public HttpServletRewrite getEvent()
    {
       return event;
    }
 
+   /**
+    * Get the {@link EvaluationContext} with which this {@link PhaseOperation} was deferred.
+    */
    public EvaluationContext getContext()
    {
       return context;
    }
 
+   /**
+    * Defer the given {@link Operation} until the specified phases.
+    */
    public static PhaseOperation<?> enqueue(final Operation operation)
    {
       return enqueue(operation, 0);

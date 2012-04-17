@@ -82,4 +82,28 @@ public class PhaseOperationTest extends RewriteTestBase
       Assert.assertEquals("lincoln", action.getResponseHeaderValues("Value").get(0));
    }
 
+   @Test
+   public void testPhaseBindingDefersValidationAndConversion()
+   {
+      HttpAction<HttpGet> action = get("/defer_validation/true");
+      String content = action.getResponseContent();
+      Assert.assertTrue(content.contains("Empty"));
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testPhaseBindingDefersValidationAndConversionStillDisplays404Page()
+   {
+      HttpAction<HttpGet> action = get("/defer_validation/false");
+      action.getResponseContent();
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testEagerValidationFailureDisplays404Page()
+   {
+      HttpAction<HttpGet> action = get("/eager_validation/false");
+      action.getResponseContent();
+      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
+   }
 }

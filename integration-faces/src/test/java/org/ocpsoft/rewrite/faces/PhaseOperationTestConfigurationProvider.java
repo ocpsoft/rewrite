@@ -5,6 +5,7 @@ import javax.faces.event.PhaseId;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Operation;
@@ -27,6 +28,18 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
    @Override
    public Configuration getConfiguration(ServletContext context)
    {
+      Validator<String> validator = new Validator<String>() {
+         @Override
+         public boolean validate(Rewrite event, EvaluationContext context, String value)
+         {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext == null)
+            {
+               throw new IllegalStateException("FacesContext should be active.");
+            }
+            return "true".equals(value);
+         }
+      };
       return ConfigurationBuilder
                .begin()
 
@@ -47,6 +60,9 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                   }
                }).after(PhaseId.RESTORE_VIEW))
 
+               /*
+                * Perform before Render Response
+                */
                .defineRule()
                .when(Path.matches("/render_response").and(DispatchType.isRequest()))
                .perform(Forward.to("/empty.xhtml").and(PhaseOperation.enqueue(new Operation() {
@@ -60,6 +76,9 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                   }
                }).before(PhaseId.RENDER_RESPONSE)))
 
+               /*
+                * PhaseBinding deferral
+                */
                .defineRule()
                .when(Path.matches("/binding/{value}").where("value")
                         .bindsTo(PhaseBinding.to(Request.parameter("v"))
@@ -88,7 +107,27 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                               else
                                  SendStatus.code(505).perform(event, context);
                            }
-                        }).before(PhaseId.RENDER_RESPONSE)));
+                        }).before(PhaseId.RENDER_RESPONSE)))
+
+               /*
+                * Defer validation with binding.
+                */
+               .defineRule()
+               .when(Path.matches("/defer_validation/{value}")
+                        .where("value")
+                        .bindsTo(PhaseBinding.to(Request.parameter("v").validatedBy(validator)).after(
+                                 PhaseId.RESTORE_VIEW))
+                        .and(DispatchType.isRequest()))
+               .perform(Forward.to("/empty.xhtml"))
+
+               /*
+                * Perform eager validation.
+                */
+               .defineRule()
+               .when(Path.matches("/eager_validation/{value}")
+                        .where("value")
+                        .validatedBy(validator))
+               .perform(Forward.to("/empty.xhtml"));
    }
 
    @Override

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,16 +32,16 @@ import org.ocpsoft.rewrite.util.Maps;
 /**
  * Responsible for binding to {@link ServletRequest#setAttribute(String, Object)} and
  * {@link ServletRequest#getParameterMap()} contexts.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
-public abstract class Request extends BindingBuilder
+public abstract class Request extends BindingBuilder<Request, String>
 {
    /**
     * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map.
     */
-   public static BindingBuilder attribute(final String property)
+   public static Request attribute(final String property)
    {
       return new RequestAttributeBinding(property);
    }
@@ -50,7 +50,7 @@ public abstract class Request extends BindingBuilder
     * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map. Use the given
     * {@link org.ocpsoft.rewrite.bind.Converter} when retrieving any values.
     */
-   public static BindingBuilder attribute(final String property, final Class<? extends Converter<?>> type)
+   public static Request attribute(final String property, final Class<? extends Converter<?>> type)
    {
       return attribute(property).convertedBy(type);
    }
@@ -60,7 +60,7 @@ public abstract class Request extends BindingBuilder
     * {@link org.ocpsoft.rewrite.bind.Validator} before attempting to submit any values. Use the given {@link Converter}
     * when retrieving any values.
     */
-   public static BindingBuilder attribute(final String property, final Class<Converter<?>> converterType,
+   public static Request attribute(final String property, final Class<Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
    {
       return attribute(property, converterType).validatedBy(validatorType);
@@ -69,7 +69,7 @@ public abstract class Request extends BindingBuilder
    /**
     * Bind a value to the {@link ServletRequest#getParameterMap()}.
     */
-   public static BindingBuilder parameter(final String property)
+   public static Request parameter(final String property)
    {
       return new RequestParameterBinding(property);
    }
@@ -78,7 +78,7 @@ public abstract class Request extends BindingBuilder
     * Bind a value to the {@link ServletRequest#getParameterMap()} map. Use the given {@link Converter} when retrieving
     * any values.
     */
-   public static BindingBuilder parameter(final String property, final Class<? extends Converter<?>> type)
+   public static Request parameter(final String property, final Class<? extends Converter<?>> type)
    {
       return parameter(property).convertedBy(type);
    }
@@ -88,7 +88,7 @@ public abstract class Request extends BindingBuilder
     * {@link org.ocpsoft.rewrite.bind.Validator} before attempting to submit any values. Use the given {@link Converter}
     * when retrieving any values.
     */
-   public static BindingBuilder parameter(final String property, final Class<Converter<?>> converterType,
+   public static Request parameter(final String property, final Class<Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
    {
       return parameter(property, converterType).validatedBy(validatorType);
