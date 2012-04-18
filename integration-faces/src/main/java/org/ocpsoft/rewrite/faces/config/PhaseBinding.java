@@ -44,7 +44,7 @@ public class PhaseBinding extends HttpOperation implements Binding
 
    private final Submission deferred;
    private Object deferredValue;
-   private Operation operation = SendStatus.code(404);
+   private Operation operation = SendStatus.error(404);
 
    private PhaseBinding(Submission binding)
    {
