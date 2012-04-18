@@ -25,19 +25,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 @RunWith(Arquillian.class)
-public class TuckeyConfigurationProviderTest extends RewriteTestBase
+public class TuckeyConfigurationProviderTest extends RewriteTest
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase.getDeployment()
+      WebArchive deployment = RewriteTest.getDeployment()
                .addAsLibraries(resolveDependencies("org.tuckey:urlrewritefilter:3.1.0"))
                .addAsWebInfResource("urlrewrite.xml")
                .addPackages(true, TuckeyRoot.class.getPackage());

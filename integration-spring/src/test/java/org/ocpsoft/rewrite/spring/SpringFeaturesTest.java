@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.springframework.web.context.WebApplicationContext;
 
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * <p>
@@ -44,7 +44,7 @@ import org.ocpsoft.rewrite.test.RewriteTestBase;
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
-public class SpringFeaturesTest extends RewriteTestBase {
+public class SpringFeaturesTest extends RewriteTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {

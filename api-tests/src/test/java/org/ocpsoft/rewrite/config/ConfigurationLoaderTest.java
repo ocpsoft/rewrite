@@ -22,19 +22,19 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  */
-public class ConfigurationLoaderTest extends RewriteTestBase
+public class ConfigurationLoaderTest extends RewriteTest
 {
 
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase.getDeployment()
+      WebArchive deployment = RewriteTest.getDeployment()
                .addPackages(true, Root.class.getPackage())
                .addAsServiceProvider(ConfigurationProvider.class, NullValueConfigurationProvider.class);
       return deployment;

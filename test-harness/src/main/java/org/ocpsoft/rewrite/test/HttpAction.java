@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,12 +32,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
-
 import org.ocpsoft.rewrite.exception.RewriteException;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class HttpAction<T extends HttpRequest>
 {
@@ -47,6 +46,7 @@ public class HttpAction<T extends HttpRequest>
    private final HttpContext context;
    private final String baseUrl;
    private final String contextPath;
+   private String responseContent;
 
    public HttpAction(final HttpClient client, final HttpContext context, final T request,
             final HttpResponse response, final String baseUrl, final String contextPath)
@@ -144,17 +144,20 @@ public class HttpAction<T extends HttpRequest>
 
    public String getResponseContent()
    {
-      try {
-         HttpEntity entity = getResponse().getEntity();
-         if(entity != null)
-         {
-            return toString(entity.getContent());
+      if (responseContent == null)
+      {
+         try {
+            HttpEntity entity = getResponse().getEntity();
+            if (entity != null)
+            {
+               responseContent = toString(entity.getContent());
+            }
+         }
+         catch (Exception e) {
+            throw new RewriteException("Could not stringify response InputStream", e);
          }
       }
-      catch (Exception e) {
-         throw new RewriteException("Could not stringify response InputStream", e);
-      }
-      return null;
+      return responseContent;
    }
 
    /**

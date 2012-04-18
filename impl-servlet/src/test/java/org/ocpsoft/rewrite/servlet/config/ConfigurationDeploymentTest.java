@@ -23,19 +23,19 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class ConfigurationDeploymentTest extends RewriteTestBase
+public class ConfigurationDeploymentTest extends RewriteTest
 {
    @Deployment(testable = true)
    @ShouldThrowException(Exception.class)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase.getDeployment()
+      WebArchive deployment = RewriteTest.getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
                .addAsResource(new StringAsset("org.ocpsoft.rewrite.servlet.config.NonExistentConfigProvider"),
                         "/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider");

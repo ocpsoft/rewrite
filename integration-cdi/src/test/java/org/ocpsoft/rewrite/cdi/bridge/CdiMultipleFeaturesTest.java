@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.cdi.CDIRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -35,12 +35,12 @@ import org.ocpsoft.rewrite.test.RewriteTestBase;
  * TODO for some reason only the first CDI test run functions. look in to this
  */
 @RunWith(Arquillian.class)
-public class CdiMultipleFeaturesTest extends RewriteTestBase
+public class CdiMultipleFeaturesTest extends RewriteTest
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      return RewriteTestBase.getDeployment()
+      return RewriteTest.getDeployment()
                .addPackages(true, CDIRoot.class.getPackage());
    }
 

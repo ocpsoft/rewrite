@@ -28,18 +28,18 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.gwt.server.history.HistoryRewriteConfiguration;
 import org.ocpsoft.rewrite.servlet.GWTRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class HistoryRewriteConfigurationTest extends RewriteTestBase
+public class HistoryRewriteConfigurationTest extends RewriteTest
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase
+      WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, GWTRoot.class.getPackage())
                .addAsServiceProvider(ConfigurationProvider.class, HistoryRewriteConfiguration.class);

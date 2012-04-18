@@ -26,18 +26,18 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class EncodeQueryConfigurationTest extends RewriteTestBase
+public class EncodeQueryConfigurationTest extends RewriteTest
 {
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase
+      WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
                .addAsServiceProvider(ConfigurationProvider.class, EncodeQueryConfigurationProvider.class);

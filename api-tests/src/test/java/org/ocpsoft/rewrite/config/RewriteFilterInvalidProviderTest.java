@@ -23,19 +23,19 @@ import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  */
-public class RewriteFilterInvalidProviderTest extends RewriteTestBase
+public class RewriteFilterInvalidProviderTest extends RewriteTest
 {
 
    @Deployment(testable = true)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTestBase.getDeployment()
+      WebArchive deployment = RewriteTest.getDeployment()
                .addPackages(true, Root.class.getPackage())
                .addAsServiceProvider(RewriteProvider.class,
                         RewriteFilterInvalidRewriteProvider.class);

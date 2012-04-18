@@ -24,19 +24,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
-public class ExpressionLanguageTest extends RewriteTestBase
+public class ExpressionLanguageTest extends RewriteTest
 {
 
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTestBase
+      return RewriteTest
                .getDeploymentNoWebXml()
                .setWebXML("faces-web.xml")
                .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))

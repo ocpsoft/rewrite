@@ -26,6 +26,11 @@ public class RewritePhaseListener implements PhaseListener
    private static final long serialVersionUID = 6706075446314218089L;
    private static Logger log = Logger.getLogger(RewritePhaseListener.class);
 
+   public RewritePhaseListener()
+   {
+      log.info(RewritePhaseListener.class.getSimpleName() + " starting up.");
+   }
+
    @Override
    public PhaseId getPhaseId()
    {
@@ -103,24 +108,29 @@ public class RewritePhaseListener implements PhaseListener
             if (operation.getAfterPhases().contains(event.getPhaseId())
                      || operation.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
-               Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
-                        new SubflowTask() {
+               try {
+                  Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
+                           new SubflowTask() {
 
-                           @Override
-                           public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
-                           {
-                              operation.performOperation((HttpServletRewrite) rewriteEvent, context);
-                           }
+                              @Override
+                              public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
+                              {
+                                 operation.performOperation((HttpServletRewrite) rewriteEvent, context);
+                              }
 
-                        });
+                           });
 
-               if (flow.is(Flow.ABORT_REQUEST))
-               {
-                  event.getFacesContext().responseComplete();
+                  if (flow.is(Flow.ABORT_REQUEST))
+                  {
+                     event.getFacesContext().responseComplete();
+                  }
+                  if (flow.is(Flow.HANDLED))
+                  {
+                     break;
+                  }
                }
-               if (flow.is(Flow.HANDLED))
-               {
-                  break;
+               catch (Exception e) {
+                  e.printStackTrace();
                }
             }
          }
