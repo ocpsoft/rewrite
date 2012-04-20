@@ -24,12 +24,13 @@ How to use
         
  * Create rules using type-safe method invocation!
  
-     Typesafe typesafeInvocation = Typesafe.method();
-     typesafe.invoke(MyObject.class).method(typesafe.param(long.class, "id"));
+        Typesafe typesafeInvocation = Typesafe.method();
+        typesafe.invoke(MyObject.class).method(typesafe.param(long.class, "id"));
  
-     ConfigurationBuilder.begin()
-         .defineRule()
-         .when(Path.matches("/id/{id}").where("id")
-         							   .convertedBy(IntegerConverter.class))
-         							   .validatedBy(IntegerValidator.class))
-         .perform(typesafe);
+        ConfigurationBuilder.begin()
+           .defineRule()
+           .when(Path.matches("/id/{id}")
+               .where("id")
+               .convertedBy(IntegerConverter.class))
+               .validatedBy(IntegerValidator.class))
+           .perform(typesafeInvocation);
