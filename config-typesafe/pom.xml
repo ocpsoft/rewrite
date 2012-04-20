@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <artifactId>rewrite-parent</artifactId>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <version>1.0.6-SNAPSHOT</version>
+      <relativePath>../</relativePath>
+   </parent>
+
+   <artifactId>rewrite-config-typesafe</artifactId>
+
+   <properties>
+      <cglib.version>2.2</cglib.version>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>cglib</groupId>
+         <artifactId>cglib-nodep</artifactId>
+         <version>${cglib.version}</version>
+         <scope>compile</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-test-harness</artifactId>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <finalName>config-typesafe</finalName>
+      <plugins>
+         <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                     <artifactSet>
+                        <includes>
+                           <include>cglib:cglib-nodep</include>
+                        </includes>
+                     </artifactSet>
+                     <relocations>
+                        <relocation>
+                           <pattern>net.sf.cglib</pattern>
+                           <shadedPattern>org.ocpsoft.rewrite.typesafe.net.sf.cglib</shadedPattern>
+                        </relocation>
+                     </relocations>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+</project>

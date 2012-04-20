@@ -58,7 +58,6 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
  */
 public class RewriteFilter implements Filter
 {
-
    Logger log = Logger.getLogger(RewriteFilter.class);
 
    private List<RewriteLifecycleListener<Rewrite>> listeners;

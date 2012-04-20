@@ -36,6 +36,7 @@
       <module>config-annotations-impl</module>
       <module>config-jodatime</module>
       <module>config-tuckey</module>
+      <module>config-typesafe</module>
       <module>api-servlet</module>
       <module>impl-servlet</module>
       <module>integration-cdi</module>
