@@ -1,4 +1,4 @@
-package org.ocpsoft.rewrite.annotation.scan;
+package org.ocpsoft.rewrite.annotation.context;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;

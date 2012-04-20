@@ -1,4 +1,19 @@
-package org.ocpsoft.rewrite.annotation;
+/*
+ * Copyright 2010 Lincoln Baxter, III
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.ocpsoft.rewrite.annotation.config;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -11,6 +26,7 @@ import javax.servlet.ServletContext;
 
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.annotation.ClassVisitorImpl;
 import org.ocpsoft.rewrite.annotation.scan.ByteCodeFilter;
 import org.ocpsoft.rewrite.annotation.scan.PackageFilter;
 import org.ocpsoft.rewrite.annotation.scan.WebClassesFinder;
@@ -46,7 +62,7 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
       // retrieve the optional package filter configuration parameter
       String packageFilters = servletContext.getInitParameter(CONFIG_BASE_PACKAGES);
 
-      // does the user want to scan the webapp lib directory
+      // does the user want to scan the WEB-INF/lib directory
       boolean scanLibDir = false;
       String jarConfig = servletContext.getInitParameter(CONFIG_SCAN_LIB_DIR);
       if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("true")) {
@@ -55,7 +71,7 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
 
       // users can disable annotation scanning
       if ((packageFilters != null) && packageFilters.trim().equalsIgnoreCase("none")) {
-         log.debug("Annotation scanning has is disabled!");
+         log.debug("Annotation scanning is disabled!");
          return null;
       }
 
@@ -101,6 +117,7 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
        * ======================================================
        */
 
+      // TODO this should be pulled out into a utility allowing it to run in Java SE
       // compile a list of class finders to run
       List<ClassFinder> classFinders = new ArrayList<ClassFinder>();
       classFinders.add(new WebClassesFinder(servletContext, classloader, packageFilter, byteCodeFilter));

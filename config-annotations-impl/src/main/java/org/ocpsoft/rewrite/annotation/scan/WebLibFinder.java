@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Lincoln Baxter, III
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,11 +27,10 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;
 
-
 /**
  * Implementation of {@link ClassFinder} that searches for classes in the JAR archives found in the
  * <code>/WEB-INF/lib/</code> directory of a web application.
- * 
+ *
  * @author Christian Kaltepoth
  */
 public class WebLibFinder extends AbstractClassFinder
@@ -96,7 +95,7 @@ public class WebLibFinder extends AbstractClassFinder
 
    /**
     * Process a single JAR file in the <code>/WEB-INF/lib/</code> directory.
-    * 
+    *
     * @param jarUrl The URL of the JAR file
     * @param visitor The visitor to call on classes
     */

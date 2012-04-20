@@ -13,49 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.annotation.scan;
+package org.ocpsoft.rewrite.annotation.context;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
-import org.ocpsoft.rewrite.annotation.api.FieldContext;
+import org.ocpsoft.rewrite.annotation.api.MethodContext;
+import org.ocpsoft.rewrite.annotation.api.ParameterContext;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.context.ContextBase;
 
 /**
- * Default implementation of {@link FieldContext}
+ * Default implementation of {@link ParameterContext}
  *
- * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @SuppressWarnings("rawtypes")
-public class FieldContextImpl extends ContextBase implements FieldContext
+public class ParameterContextImpl extends ContextBase implements ParameterContext
 {
-
-   private final ClassContext classContext;
+   private final MethodContext methodContext;
 
    private BindingBuilder bindingBuilder;
 
-   public FieldContextImpl(ClassContext classContext)
+   public ParameterContextImpl(MethodContext methodContext)
    {
-      this.classContext = classContext;
+      this.methodContext = methodContext;
+   }
+
+   @Override
+   public MethodContext getMethodContext()
+   {
+      return methodContext;
    }
 
    @Override
    public ClassContext getClassContext()
    {
-      return classContext;
+      return methodContext.getClassContext();
    }
 
    @Override
    public ConfigurationBuilder getConfigurationBuilder()
    {
-      return classContext.getConfigurationBuilder();
+      return getClassContext().getConfigurationBuilder();
    }
 
    @Override
    public RuleBuilder getRuleBuilder()
    {
-      return classContext.getRuleBuilder();
+      return getClassContext().getRuleBuilder();
    }
 
    @Override

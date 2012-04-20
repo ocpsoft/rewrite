@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Lincoln Baxter, III
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,15 +24,15 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.ocpsoft.rewrite.annotation.ClassVisitorImpl;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;
-
 
 /**
  * Implementation of {@link ClassFinder} that searches for classes in the <code>/WEB-INF/classes</code> directory of a
  * web application. Please note that this class is stateful. It should be used only for one call to
  * {@link #findClasses(ClassVisitorImpl)}.
- * 
+ *
  * @author Christian Kaltepoth
  */
 public class WebClassesFinder extends AbstractClassFinder
@@ -83,16 +83,16 @@ public class WebClassesFinder extends AbstractClassFinder
 
    /**
     * Scan for classes in a single directory. This method will call itself recursively if it finds other directories and
-    * call {@link #processClass(String, InputStream, ClassVisitorImpl) when it finds a file ending with ".class" and that is
-    * accepted by the {@link PackageFilter}
-    * 
+    * call {@link #processClass(String, InputStream, ClassVisitorImpl) when it finds a file ending with ".class" and
+    * that is accepted by the {@link PackageFilter}
+    *
     * @param directoryUrl The URL of the directory to scan
     * @param visitor The vistor class to call for classes found
     * @throws MalformedURLException for invalid URLs
     */
    protected void processDirectory(URL classesFolderUrl, URL directoryUrl, ClassVisitor visitor)
             throws MalformedURLException
-            {
+   {
 
       // only the path of the classes folder URL is required in this method
       String classesFolderPath = classesFolderUrl.getPath();
@@ -199,7 +199,7 @@ public class WebClassesFinder extends AbstractClassFinder
             }
          }
       }
-            }
+   }
 
    /**
     * This method will create a path relative to the '/WEB-INF/classes/' folder for the given path. It will first try to
@@ -207,7 +207,7 @@ public class WebClassesFinder extends AbstractClassFinder
     * the jetty-maven-plugin with 'jetty:run' goal), the method will try to build the relative name by stripping the
     * path of the '/WEB-INF/classes/' folder which must be supplied to the method. The method will throw an
     * {@link IllegalArgumentException} if the relative path could not be build.
-    * 
+    *
     * @param path The path to build the relative path for
     * @param classesFolderPath the known path of the '/WEB-INF/classes/' folder.
     * @return the relative name of the path

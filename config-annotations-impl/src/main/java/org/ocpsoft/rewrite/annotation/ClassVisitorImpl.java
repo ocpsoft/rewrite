@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010 Lincoln Baxter, III
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.rewrite.annotation;
 
 import java.lang.annotation.Annotation;
@@ -12,9 +27,10 @@ import java.util.Map;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
-import org.ocpsoft.rewrite.annotation.scan.ClassContextImpl;
-import org.ocpsoft.rewrite.annotation.scan.FieldContextImpl;
-import org.ocpsoft.rewrite.annotation.scan.MethodContextImpl;
+import org.ocpsoft.rewrite.annotation.context.ClassContextImpl;
+import org.ocpsoft.rewrite.annotation.context.FieldContextImpl;
+import org.ocpsoft.rewrite.annotation.context.MethodContextImpl;
+import org.ocpsoft.rewrite.annotation.context.ParameterContextImpl;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
@@ -83,12 +99,19 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
          visit(field, new FieldContextImpl(context));
       }
 
-      // finally the methods
+      // then the methods
       for (Method method : clazz.getDeclaredMethods()) {
-         visit(method, new MethodContextImpl(context));
+         MethodContextImpl methodContext = new MethodContextImpl(context);
+         visit(method, methodContext);
+
+         // then the method parameters
+         for (int i = 0; i < method.getParameterTypes().length; i++) {
+            visit(new ParameterImpl(method, method.getParameterTypes()[i], method.getParameterAnnotations()[i], i),
+                     new ParameterContextImpl(methodContext));
+         }
       }
 
-      if(ruleBuilder.getOperationBuilder() != null || ruleBuilder.getConditionBuilder() != null)
+      if (ruleBuilder.getOperationBuilder() != null || ruleBuilder.getConditionBuilder() != null)
       {
          builder.addRule(ruleBuilder);
       }

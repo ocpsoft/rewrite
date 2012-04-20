@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Lincoln Baxter, III
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,18 +26,18 @@ import org.ocpsoft.logging.Logger;
 
 /**
  * <p>
- * This class reads Java class files and checks whether they contain references to specific annotations. This allows to check
- * classes for the presence of annotations before instantiating them.
+ * This class reads Java class files and checks whether they contain references to specific annotations. This allows to
+ * check classes for the presence of annotations before instantiating them.
  * </p>
- * 
+ *
  * <p>
  * The filter is inspired by the <code>ClassByteCodeAnnotationFilter</code> of Apache MyFaces 2.0. Many thanks go out to
  * Leonardo Uribe for his great work on this class.
  * </p>
- * 
+ *
  * @see http://docs.oracle.com/javase/specs/jvms/se5.0/html/ClassFile.doc.html
  * @see http://en.wikipedia.org/wiki/Class_%28file_format%29
- * 
+ *
  * @author Christian Kaltepoth
  */
 public class ByteCodeFilter
@@ -74,7 +74,7 @@ public class ByteCodeFilter
    /**
     * The filter must be initialized with a list of types to look for when scanning the class files. If a class files
     * contains a reference to one of these types, the filter will accept the class.
-    * 
+    *
     * @param types A Set of types to look for
     */
    public ByteCodeFilter(Set<Class<? extends Annotation>> types)
@@ -92,7 +92,7 @@ public class ByteCodeFilter
     * <p>
     * The caller of this method is responsible to close the supplied {@link InputStream}. This method won't do it!
     * </p>
-    * 
+    *
     * @param classFileStream The stream to read the class file from.
     * @return <code>true</code> for files that contain at least one reference to one of the "interesting" annotations
     * @throws IOException for any kind of IO problem

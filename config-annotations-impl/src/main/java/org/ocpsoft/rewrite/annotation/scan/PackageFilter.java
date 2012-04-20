@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Lincoln Baxter, III
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,10 +22,10 @@ import org.ocpsoft.logging.Logger;
 
 /**
  * <p>
- * This class represents a package filter specified by the
- * <code>com.ocpsoft.pretty.SCAN_PACKAGES</code> initialization parameter.
+ * This class represents a package filter specified by the <code>com.ocpsoft.pretty.SCAN_PACKAGES</code> initialization
+ * parameter.
  * </p>
- * 
+ *
  * @author Christian Kaltepoth
  */
 public class PackageFilter
@@ -37,9 +37,8 @@ public class PackageFilter
 
    /**
     * Creates a new {@link PackageFilter}
-    * 
-    * @param config
-    *           Comma-separated list of packages (null safe)
+    *
+    * @param config Comma-separated list of packages (null safe)
     */
    public PackageFilter(String config)
    {
@@ -75,18 +74,14 @@ public class PackageFilter
     * Checks whether the supplied packages matches the filter.
     * </p>
     * <p>
-    * The method returns <code>true</code> if one of the following checks
-    * succeed:
+    * The method returns <code>true</code> if one of the following checks succeed:
     * </p>
     * <ul>
-    * <li>The supplied package is one of the packages specified in the filter
-    * condition.</li>
-    * <li>The supplied package is a sub-package of one of the packages specified
-    * in the filter condition.</li>
+    * <li>The supplied package is one of the packages specified in the filter condition.</li>
+    * <li>The supplied package is a sub-package of one of the packages specified in the filter condition.</li>
     * </ul>
-    * 
-    * @param packageName
-    *           A package name
+    *
+    * @param packageName A package name
     * @return <code>true</code> if the filter matches
     */
    public boolean isAllowedPackage(String packageName)
@@ -115,7 +110,7 @@ public class PackageFilter
 
    /**
     * Returns the total number of base packages that this instance is holding.
-    * 
+    *
     * @return Number of base packages
     */
    public int getNumberOfBasePackages()
