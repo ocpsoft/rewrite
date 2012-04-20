@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 
 @Inherited
 @Documented
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Param
+public @interface MethodAnno
 {
    String value();
 }

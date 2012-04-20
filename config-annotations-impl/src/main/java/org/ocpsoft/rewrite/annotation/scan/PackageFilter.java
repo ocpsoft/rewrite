@@ -118,4 +118,10 @@ public class PackageFilter
       return packageSet.size();
    }
 
+   @Override
+   public String toString()
+   {
+      return "PackageFilter [packageSet=" + packageSet + "]";
+   }
+
 }

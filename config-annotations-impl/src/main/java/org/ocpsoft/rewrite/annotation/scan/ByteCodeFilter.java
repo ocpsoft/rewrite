@@ -269,4 +269,10 @@ public class ByteCodeFilter
       return false;
    }
 
+   @Override
+   public String toString()
+   {
+      return "ByteCodeFilter [fieldDescriptors=" + fieldDescriptors + "]";
+   }
+
 }

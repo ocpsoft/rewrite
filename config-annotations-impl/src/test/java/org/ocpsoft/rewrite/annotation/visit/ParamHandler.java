@@ -6,20 +6,20 @@ import org.ocpsoft.rewrite.annotation.spi.ParameterAnnotationHandler;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.SendStatus;
 
-public class ParamHandler extends ParameterAnnotationHandler<Param>
+public class ParamHandler extends ParameterAnnotationHandler<ParamAnno>
 {
    @Override
-   public Class<Param> handles()
+   public Class<ParamAnno> handles()
    {
-      return Param.class;
+      return ParamAnno.class;
    }
 
    @Override
-   public void process(ParameterContext context, Parameter element, Param annotation)
+   public void process(ParameterContext context, Parameter element, ParamAnno annotation)
    {
-      context.getRuleBuilder()
+      context.getConfigurationBuilder().defineRule()
                .when(Path.matches("/annotation/" + annotation.value()))
-               .perform(SendStatus.code(201));
+               .perform(SendStatus.code(203));
    }
 
 }

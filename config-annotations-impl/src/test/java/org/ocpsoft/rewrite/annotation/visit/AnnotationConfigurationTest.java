@@ -40,14 +40,43 @@ public class AnnotationConfigurationTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, AnnotationRoot.class.getPackage())
-               .addAsServiceProvider(AnnotationHandler.class, ParamHandler.class);
+               .addAsServiceProvider(AnnotationHandler.class, FieldHandler.class, MethodHandler.class,
+                        ParamHandler.class, TypeHandler.class);
       return deployment;
    }
 
    @Test
-   public void testQueryEncoding()
+   public void testControl()
+   {
+      HttpAction<HttpGet> action = get("/annotation/control");
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testTypeAnnotation()
+   {
+      HttpAction<HttpGet> action = get("/annotation/type");
+      Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testFieldAnnotation()
+   {
+      HttpAction<HttpGet> action = get("/annotation/field");
+      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testMethodAnnotation()
+   {
+      HttpAction<HttpGet> action = get("/annotation/method");
+      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testParameterAnnotation()
    {
       HttpAction<HttpGet> action = get("/annotation/parameter");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
    }
 }

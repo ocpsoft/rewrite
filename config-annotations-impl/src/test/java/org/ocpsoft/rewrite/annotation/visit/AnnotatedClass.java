@@ -1,8 +1,13 @@
 package org.ocpsoft.rewrite.annotation.visit;
 
+@TypeAnno("type")
 public class AnnotatedClass
 {
-   public void method(int param)
+   @FieldAnno("field")
+   public boolean field;
+
+   @MethodAnno("method")
+   public void method(@ParamAnno("parameter") int param)
    {
 
    }

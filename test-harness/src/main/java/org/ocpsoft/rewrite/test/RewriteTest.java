@@ -21,7 +21,6 @@ import javax.el.ExpressionFactory;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -61,9 +60,9 @@ public class RewriteTest extends RewriteTestBase
                /*
                 * Set up container configuration
                 */
-               .addAsWebResource(new StringAsset("<beans/>"), ArchivePaths.create("WEB-INF/beans.xml"))
-               .addAsWebResource("jetty-env.xml", ArchivePaths.create("WEB-INF/jetty-env.xml"))
-               .addAsResource("jetty-log4j.xml", ArchivePaths.create("WEB-INF/classes/log4j.xml"));
+               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
+               .addAsWebInfResource("jetty-env.xml", "jetty-env.xml")
+               .addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
    }
 
    protected static JavaArchive getRewriteArchive()

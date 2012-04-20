@@ -19,25 +19,23 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
-import org.ocpsoft.rewrite.annotation.api.Parameter;
-import org.ocpsoft.rewrite.annotation.api.ParameterContext;
 
 /**
- * A common base class for {@link AnnotationHandler} implementations that process method argument annotations.
+ * A common base class for {@link AnnotationHandler} implementations that process method annotations.
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterAnnotationHandler<A extends Annotation> implements AnnotationHandler<A>
+public abstract class ClassAnnotationHandler<A extends Annotation> implements AnnotationHandler<A>
 {
 
    @Override
    public final void process(ClassContext context, AnnotatedElement element, A annotation)
    {
-      if (context instanceof ParameterContext && element instanceof Parameter) {
-         process((ParameterContext) context, (Parameter) element, annotation);
+      if (element instanceof Class) {
+         process(context, (Class<?>) element, annotation);
       }
    }
 
-   public abstract void process(ParameterContext context, Parameter element, A annotation);
+   public abstract void process(ClassContext context, Class<?> type, A annotation);
 
 }
