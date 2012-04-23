@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.spi;
+package org.ocpsoft.rewrite.el.spi;
 
 import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
 

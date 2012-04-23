@@ -22,7 +22,7 @@ import javax.el.ValueExpression;
 import javax.inject.Inject;
 
 import org.ocpsoft.rewrite.cdi.expressions.Expressions;
-import org.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
+import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

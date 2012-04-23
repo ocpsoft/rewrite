@@ -25,7 +25,7 @@ public class Typesafe implements Operation
 
    private static List<InstanceFactory> factories;
 
-   private final List<Arg> parameters = new ArrayList<Arg>();
+   private final List<String> parameters = new ArrayList<String>();
 
    private Method method;
    private Object[] args;
@@ -76,7 +76,42 @@ public class Typesafe implements Operation
    @Override
    public void perform(Rewrite event, EvaluationContext context)
    {
+      performInvoke(buildArguments(event, context));
+   }
+
+   public Object[] buildArguments(Rewrite event, EvaluationContext context)
+   {
       Class<?> type = method.getDeclaringClass();
+
+      if (parameters.size() != args.length)
+      {
+         throw new IllegalStateException("Invalid number of parameters specified in "
+                  + Typesafe.class.getSimpleName() + " method invocation [" + buildSignature(type, method)
+                  + "]. Expected [" + args.length + "] but got [" + parameters.size() + "]");
+      }
+
+      Object[] values = new Object[args.length];
+
+      for (int i = 0; i < args.length; i++) {
+         String arg = parameters.get(i);
+         if (arg != null)
+            values[i] = Evaluation.property(arg).retrieveConverted(event, context);
+         else
+            values[i] = args[i];
+      }
+      return values;
+   }
+
+   public Object performInvoke(Object[] values)
+   {
+      Class<?> type = method.getDeclaringClass();
+
+      if (values.length != args.length)
+      {
+         throw new IllegalStateException("Invalid number of parameters provided in "
+                  + Typesafe.class.getSimpleName() + " method invocation [" + buildSignature(type, method)
+                  + "]. Expected [" + args.length + "] but got [" + values.length + "]");
+      }
 
       Object instance = null;
       for (InstanceFactory factory : factories) {
@@ -90,25 +125,8 @@ public class Typesafe implements Operation
                   + "] because no instance of type [" + type.getName()
                   + "] could be provided by any configured " + InstanceFactory.class.getSimpleName());
 
-      if (parameters.size() != args.length)
-      {
-         throw new IllegalStateException("Invalid number of parameters specified in "
-                  + Typesafe.class.getSimpleName() + " method invocation [" + buildSignature(type, method)
-                  + "]. Expected [" + args.length + "] but got [" + parameters.size() + "]");
-      }
-
-      Object[] values = new Object[args.length];
-
-      for (int i = 0; i < args.length; i++) {
-         Arg arg = parameters.get(i);
-         if (arg.getName() != null)
-            values[i] = Evaluation.property(arg.getName()).retrieveConverted(event, context);
-         else
-            values[i] = args[i];
-      }
-
       try {
-         method.invoke(instance, values);
+         return method.invoke(instance, values);
       }
       catch (Exception e) {
          throw new RuntimeException(e);
@@ -149,30 +167,8 @@ public class Typesafe implements Operation
       if (type != null && (short.class.isAssignableFrom(type)))
          result = (T) new Short("0");
 
-      this.parameters.add(new Arg(name, type));
+      this.parameters.add(name);
       return result;
-   }
-
-   private class Arg
-   {
-      private final String name;
-      private final Class<?> type;
-
-      public Arg(String name, Class<?> type)
-      {
-         this.name = name;
-         this.type = type;
-      }
-
-      public String getName()
-      {
-         return name;
-      }
-
-      public Class<?> getType()
-      {
-         return type;
-      }
    }
 
    /*
@@ -197,5 +193,10 @@ public class Typesafe implements Operation
 
       result += ")";
       return result;
+   }
+
+   public Method getMethod()
+   {
+      return method;
    }
 }

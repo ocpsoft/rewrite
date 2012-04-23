@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.bind;
+package org.ocpsoft.rewrite.el;
 
 import java.util.List;
 
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.bind.BindingBuilder;
+import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.bind.Retrieval;
+import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
-import org.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 
 /**
  * Responsible for binding to EL expressions.

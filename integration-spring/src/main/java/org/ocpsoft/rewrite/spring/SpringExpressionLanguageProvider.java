@@ -1,7 +1,7 @@
 package org.ocpsoft.rewrite.spring;
 
+import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
-import org.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanExpressionContext;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -22,7 +22,7 @@ import org.springframework.expression.spel.support.StandardTypeLocator;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Implementation of {@link org.ocpsoft.rewrite.spi.ExpressionLanguageProvider} for the Spring Expression Language (SpEL)
+ * Implementation of {@link org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider} for the Spring Expression Language (SpEL)
  * 
  * @author Christian Kaltepoth
  */

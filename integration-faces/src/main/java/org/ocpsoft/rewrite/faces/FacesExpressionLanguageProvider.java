@@ -21,8 +21,8 @@ import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 
+import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
-import org.ocpsoft.rewrite.spi.ExpressionLanguageProvider;
 
 /**
  * Implementation of {@link ExpressionLanguageProvider} that uses the {@link FacesContext} to obtain the
