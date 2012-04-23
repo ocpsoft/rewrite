@@ -44,7 +44,7 @@ public class PhaseOperationTest extends RewriteTest
                .setWebXML("faces-web.xml")
                .addPackages(true, FacesRoot.class.getPackage())
                .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))
-               .addAsWebInfResource("faces-config.xml","faces-config.xml")
+               .addAsWebInfResource("faces-config.xml", "faces-config.xml")
                .addAsWebResource("empty.xhtml", "empty.xhtml")
                .addAsServiceProvider(ConfigurationProvider.class, PhaseOperationTestConfigurationProvider.class);
 
@@ -57,7 +57,6 @@ public class PhaseOperationTest extends RewriteTest
       HttpAction<HttpGet> action = get("/empty.xhtml?adf=blah");
       String content = action.getResponseContent();
       Assert.assertTrue(Strings.isNullOrEmpty(content));
-      // TODO why is content empty here, but null in below test?
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
    }
 
@@ -67,7 +66,6 @@ public class PhaseOperationTest extends RewriteTest
       HttpAction<HttpGet> action = get("/render_response");
       String content = action.getResponseContent();
       Assert.assertTrue(Strings.isNullOrEmpty(content));
-      // TODO why is content null here, but not in above test?
       Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
    }
 
@@ -77,7 +75,6 @@ public class PhaseOperationTest extends RewriteTest
       HttpAction<HttpGet> action = get("/binding/lincoln");
       String content = action.getResponseContent();
       Assert.assertTrue(Strings.isNullOrEmpty(content));
-      // TODO why is content null here, but not in above test?
       Assert.assertEquals(205, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertEquals("lincoln", action.getResponseHeaderValues("Value").get(0));
    }
