@@ -25,7 +25,7 @@ How to use
  * Create rules using type-safe method invocation!
  
         Typesafe typesafeInvocation = Typesafe.method();
-        typesafe.invoke(MyObject.class).method(typesafe.param(long.class, "id"));
+        typesafe.invoke(MyObject.class).myMethod(typesafe.param(long.class, "id"));
  
         ConfigurationBuilder.begin()
            .defineRule()
