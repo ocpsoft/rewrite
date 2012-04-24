@@ -57,6 +57,10 @@ public class CDNConfigurationProvider extends HttpConfigurationProvider
                         .where("p").matches(".*")
                         .where("s").matches(".*")
                         .to("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"))
+               .addRule(CDN.relocate("{p}foo-{version}.js")
+                        .where("p").matches(".*")
+                        .where("version").matches(".*")
+                        .to("http://mycdn.com/foo-{version}.js"))
 
                /*
                 * Now send a response to our test case containing the relocated resource.
@@ -70,7 +74,7 @@ public class CDNConfigurationProvider extends HttpConfigurationProvider
                      try {
                         HttpServletResponse response = event.getResponse();
                         response.getWriter().write(response.encodeURL("/jquery.min.js"));
-                        response.getWriter().write(response.encodeURL("/jquery.js"));
+                        response.getWriter().write(response.encodeURL("/something/foo-1.2.3.js"));
                         SendStatus.code(200).perform(event, context);
                      }
                      catch (IOException e) {

@@ -51,6 +51,8 @@ public class CDNConfigurationTest extends RewriteTest
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains(
                "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"));
+      Assert.assertTrue(action.getResponseContent().contains(
+               "http://mycdn.com/foo-1.2.3.js"));
 
    }
 
