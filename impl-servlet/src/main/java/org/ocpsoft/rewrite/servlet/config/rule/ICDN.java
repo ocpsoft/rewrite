@@ -18,8 +18,6 @@ package org.ocpsoft.rewrite.servlet.config.rule;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.ServletRequest;
-
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
@@ -33,64 +31,51 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
+import org.ocpsoft.rewrite.servlet.config.rule.ICDN.CDNParameter;
 
 /**
- *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
  */
-public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule, ConditionBuilder
+public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, ConditionBuilder
 {
    /**
-    * The internal server resource (real or virtual) to be served.
+    * The new resource (real or virtual) to be served, either from a local context or remote CDN.
     */
-   public IJoin to(String resource);
+   public ICDN to(String location);
 
-   public ParameterizedPattern getPathExpression();
+   public ParameterizedPattern getLocationExpression();
 
-   public ParameterizedPattern getResourcexpression();
+   public ParameterizedPattern getResourcExpression();
 
    /**
     * Define additional {@link Operation} instances to be performed when this rule matches successfully.
     */
-   public IJoin perform(Operation operation);
+   public ICDN perform(Operation operation);
 
    /**
-    * Define additional {@link Condition} instances that must be satisfied in order for this rule to match
-    * successfully.
+    * Define additional {@link Condition} instances that must be satisfied in order for this rule to match successfully.
     */
-   public IJoin when(Condition condition);
+   public ICDN when(Condition condition);
 
    /**
     * Set the ID of this {@link Join}.
     */
-   public IJoin withId(String id);
+   public ICDN withId(String id);
 
-   /**
-    * Redirect inbound requests for the internal resource to the outward facing URL instead.
-    */
-   public IJoin withInboundCorrection();
-
-   /**
-    * Bind inbound {parameter} values to the {@link ServletRequest#getParameterMap()}, by name.
-    */
-   public IJoin withRequestBinding();
-
-   public interface IJoinParameter extends IJoin, Bindable<JoinParameter>, Parameter<JoinParameter, String>
+   public interface ICDNParameter extends ICDN, Bindable<CDNParameter>, Parameter<CDNParameter, String>
    {
       /**
        * Specify the pattern to which this Parameter must match.
        */
-      IJoinParameter matches(String string);
+      ICDNParameter matches(String string);
    }
 
-   public class JoinParameter extends ParameterBuilder<JoinParameter, String> implements IJoinParameter
+   public class CDNParameter extends ParameterBuilder<CDNParameter, String> implements ICDNParameter
    {
-      private final IJoin parent;
+      private final ICDN parent;
       private final List<RegexCapture> captures;
 
-      public JoinParameter(IJoin join, RegexCapture... captures)
+      public CDNParameter(ICDN join, RegexCapture... captures)
       {
          super((Object[]) captures);
          this.parent = join;
@@ -98,7 +83,7 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       }
 
       @Override
-      public IJoinParameter matches(String string)
+      public ICDNParameter matches(String string)
       {
          for (RegexCapture capture : captures) {
             if (capture != null)
@@ -118,19 +103,13 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       }
 
       @Override
-      public IJoin withRequestBinding()
-      {
-         return parent.withRequestBinding();
-      }
-
-      @Override
-      public JoinParameter where(String param)
+      public CDNParameter where(String param)
       {
          return parent.where(param);
       }
 
       @Override
-      public JoinParameter where(String param, Binding binding)
+      public CDNParameter where(String param, Binding binding)
       {
          return parent.where(param, binding);
       }
@@ -142,15 +121,15 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       }
 
       @Override
-      public ParameterizedPattern getPathExpression()
+      public ParameterizedPattern getLocationExpression()
       {
-         return parent.getPathExpression();
+         return parent.getLocationExpression();
       }
 
       @Override
-      public ParameterizedPattern getResourcexpression()
+      public ParameterizedPattern getResourcExpression()
       {
-         return parent.getResourcexpression();
+         return parent.getResourcExpression();
       }
 
       @Override
@@ -190,31 +169,25 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       }
 
       @Override
-      public IJoin withInboundCorrection()
+      public ICDN to(String location)
       {
-         return parent.withInboundCorrection();
+         return parent.to(location);
       }
 
       @Override
-      public IJoin to(String resource)
-      {
-         return parent.to(resource);
-      }
-
-      @Override
-      public IJoin perform(Operation operation)
+      public ICDN perform(Operation operation)
       {
          return parent.perform(operation);
       }
 
       @Override
-      public IJoin when(Condition condition)
+      public ICDN when(Condition condition)
       {
          return parent.when(condition);
       }
 
       @Override
-      public IJoin withId(String id)
+      public ICDN withId(String id)
       {
          return parent.withId(id);
       }
