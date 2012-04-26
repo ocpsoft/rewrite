@@ -46,7 +46,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     */
    public static El methodBinding(final String retrieve, final String submit)
    {
-      return new ElMethod(retrieve, submit);
+      return new ElMethod(new ConstantExpression(retrieve), new ConstantExpression(submit));
    }
 
    /**
@@ -54,7 +54,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     */
    public static El retrievalMethod(final String expression)
    {
-      return new ElMethod(expression, null);
+      return new ElMethod(new ConstantExpression(expression), null);
    }
 
    /**
@@ -64,7 +64,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    public static El retrievalMethod(final String expression,
             final Class<? extends Converter<?>> converterType)
    {
-      ElMethod el = new ElMethod(expression, null);
+      ElMethod el = new ElMethod(new ConstantExpression(expression), null);
       el.convertedBy(converterType);
       return el;
    }
@@ -74,7 +74,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     */
    public static El submissionMethod(final String expression)
    {
-      return new ElMethod(null, expression);
+      return new ElMethod(null, new ConstantExpression(expression));
    }
 
    /**
@@ -84,7 +84,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    public static El submissionMethod(final String expression,
             final Class<? extends Converter<?>> converterType)
    {
-      ElMethod el = new ElMethod(null, expression);
+      ElMethod el = new ElMethod(null, new ConstantExpression(expression));
       el.convertedBy(converterType);
       return el;
    }
@@ -98,7 +98,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
             final Class<? extends Converter<?>> converterType,
                      final Class<? extends Validator<?>> validatorType)
    {
-      ElMethod el = new ElMethod(null, expression);
+      ElMethod el = new ElMethod(null, new ConstantExpression(expression));
       el.convertedBy(converterType);
       el.validatedBy(validatorType);
       return el;
@@ -110,7 +110,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     */
    public static El property(final String expression)
    {
-      return new ElProperty(expression);
+      return new ElProperty(new ConstantExpression(expression));
    }
 
    /**
@@ -120,7 +120,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     */
    public static El property(final String expression, final Class<? extends Converter<?>> type)
    {
-      ElProperty el = new ElProperty(expression);
+      ElProperty el = new ElProperty(new ConstantExpression(expression));
       el.convertedBy(type);
       return el;
    }
@@ -133,7 +133,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    public static El property(final String expression, final Class<? extends Converter<?>> converterType,
             final Class<? extends Validator<?>> validatorType)
    {
-      ElProperty el = new ElProperty(expression);
+      ElProperty el = new ElProperty(new ConstantExpression(expression));
       el.convertedBy(converterType);
       el.validatedBy(validatorType);
       return el;
@@ -156,10 +156,10 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     */
    public static class ElMethod extends El
    {
-      private final String getExpression;
-      private final String setExpression;
+      private final Expression getExpression;
+      private final Expression setExpression;
 
-      public ElMethod(final String getExpression, final String setExpression)
+      public ElMethod(final Expression getExpression, final Expression setExpression)
       {
          this.getExpression = getExpression;
          this.setExpression = setExpression;
@@ -180,7 +180,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
 
             try
             {
-               return provider.evaluateMethodExpression(getExpression);
+               return provider.evaluateMethodExpression(getExpression.getExpression());
             }
             catch (UnsupportedEvaluationException e) {
                log.debug("El provider [" + provider.getClass().getName()
@@ -209,7 +209,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
          for (ExpressionLanguageProvider provider : getProviders()) {
             try
             {
-               return provider.evaluateMethodExpression(setExpression, value);
+               return provider.evaluateMethodExpression(setExpression.getExpression(), value);
             }
             catch (UnsupportedEvaluationException e) {
                log.debug("El provider [" + provider.getClass().getName()
@@ -252,9 +252,9 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     */
    public static class ElProperty extends El
    {
-      private final String expression;
+      private final Expression expression;
 
-      public ElProperty(final String expression)
+      public ElProperty(final Expression expression)
       {
          this.expression = expression;
       }
@@ -270,7 +270,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
 
             try
             {
-               value = provider.retrieveValue(expression);
+               value = provider.retrieveValue(expression.getExpression());
                break;
             }
             catch (UnsupportedEvaluationException e)
@@ -321,7 +321,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
          for (ExpressionLanguageProvider provider : providers) {
             try
             {
-               provider.submitValue(expression, value);
+               provider.submitValue(expression.getExpression(), value);
                break;
             }
             catch (UnsupportedEvaluationException e)
