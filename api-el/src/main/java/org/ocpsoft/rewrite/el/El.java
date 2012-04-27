@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.el;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.ocpsoft.common.services.ServiceLoader;
@@ -57,6 +59,15 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       return new ElMethod(new ConstantExpression(expression), null);
    }
 
+   /**
+    * Create a new EL Method binding to retrieve values. This method allows the caller to supply {@link Method} instance
+    * to refer to the method that should be invoked.
+    */
+   public static El retrievalMethod(final Method method)
+   {
+      return new ElMethod(new TypeBasedExpression(method.getDeclaringClass(), method.getName()), null);
+   }
+   
    /**
     * Create a new EL Method binding to retrieve values. The method must return a value of the expected type. Use the
     * given {@link Converter} when retrieving any values.
@@ -111,6 +122,16 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    public static El property(final String expression)
    {
       return new ElProperty(new ConstantExpression(expression));
+   }
+   
+   /**
+    * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
+    * either be public, or have a publicly defined getter/setter. Instead of an EL expression this method expects a
+    * {@link Field} argument. The EL expression will be automatically created at runtime.
+    */
+   public static El property(final Field field)
+   {
+      return new ElProperty(new TypeBasedExpression(field.getDeclaringClass(), field.getName()));
    }
 
    /**
