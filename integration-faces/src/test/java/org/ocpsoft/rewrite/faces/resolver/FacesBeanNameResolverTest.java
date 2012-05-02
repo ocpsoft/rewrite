@@ -49,7 +49,7 @@ public class FacesBeanNameResolverTest extends RewriteTest
    }
 
    @Test
-   public void testSpringFeatures()
+   public void testFacesBeanNameResolverFeatures()
    {
       HttpAction<HttpGet> action = get("/name/christian");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());

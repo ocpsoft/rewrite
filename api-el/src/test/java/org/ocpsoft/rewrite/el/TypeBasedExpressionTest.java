@@ -26,7 +26,7 @@ public class TypeBasedExpressionTest
    public void testTypeBasedExpression() throws Exception
    {
       TypeBasedExpression expression = new TypeBasedExpression(BeanWithElBeanNameAnnotation.class, "sayHello");
-      assertEquals("#{myBean.sayHello}", expression.getExpression());
+      assertEquals("myBean.sayHello", expression.getExpression());
    }
 
    @ELBeanName("myBean")
