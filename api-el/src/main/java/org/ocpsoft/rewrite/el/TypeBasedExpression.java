@@ -82,7 +82,7 @@ class TypeBasedExpression implements Expression
 
             // create the complete EL expression including the component
             String el = new StringBuffer()
-                     .append("#{").append(beanName).append('.').append(component).append('}')
+                     .append(beanName).append('.').append(component)
                      .toString();
 
             if (log.isTraceEnabled()) {
