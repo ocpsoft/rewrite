@@ -102,10 +102,11 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
    @Override
    public Object evaluateMethodExpression(String expression, Object... values) throws UnsupportedEvaluationException
    {
+      String el = toELExpression(expression);
       FacesContext facesContext = getFacesContext();
       ELContext elContext = facesContext.getELContext();
       ExpressionFactory expressionFactory = facesContext.getApplication().getExpressionFactory();
-      MethodExpression methodExpression = expressionFactory.createMethodExpression(elContext, expression,
+      MethodExpression methodExpression = expressionFactory.createMethodExpression(elContext, el,
                Object.class, new Class[values.length]);
       return methodExpression.invoke(elContext, values);
    }
@@ -115,8 +116,9 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
     */
    private ValueExpression getValueExpression(FacesContext facesContext, String expression)
    {
+      String el = toELExpression(expression);
       ExpressionFactory expressionFactory = facesContext.getApplication().getExpressionFactory();
-      return expressionFactory.createValueExpression(facesContext.getELContext(), expression, Object.class);
+      return expressionFactory.createValueExpression(facesContext.getELContext(), el, Object.class);
    }
 
    /**
@@ -132,5 +134,16 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
                            + "You should use PhaseAction and PhaseBinding to perform an deferred operation instead.");
       }
       return facesContext;
+   }
+
+   /**
+    * Adds #{..} to the expression if required
+    */
+   private String toELExpression(String s)
+   {
+      if (s != null && !s.startsWith("#{")) {
+         return "#{" + s + "}";
+      }
+      return s;
    }
 }
