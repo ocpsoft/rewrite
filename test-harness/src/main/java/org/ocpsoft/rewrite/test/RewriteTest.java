@@ -26,8 +26,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.mock.MockBinding;
 
-import com.sun.el.ExpressionFactoryImpl;
-
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
