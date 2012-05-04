@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 public class ConfigurationLoaderTest extends RewriteTest
 {
 
-   @Deployment(testable = true)
+   @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTest.getDeployment()

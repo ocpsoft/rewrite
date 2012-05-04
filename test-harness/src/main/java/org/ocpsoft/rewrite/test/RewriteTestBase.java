@@ -2,6 +2,7 @@ package org.ocpsoft.rewrite.test;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,6 +15,7 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
@@ -110,7 +112,7 @@ public abstract class RewriteTestBase
 
    protected String getBaseURL()
    {
-      String baseUrl = "http://localhost:9090";
+      String baseUrl = "http://localhost:8080";
       if (baseUrl.endsWith("/"))
       {
          baseUrl = baseUrl.substring(0, baseUrl.length() - 1);

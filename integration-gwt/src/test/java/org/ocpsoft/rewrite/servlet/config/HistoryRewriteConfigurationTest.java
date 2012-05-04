@@ -36,7 +36,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 @RunWith(Arquillian.class)
 public class HistoryRewriteConfigurationTest extends RewriteTest
 {
-   @Deployment(testable = true)
+   @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTest

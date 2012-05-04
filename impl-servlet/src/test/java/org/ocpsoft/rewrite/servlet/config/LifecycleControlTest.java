@@ -34,7 +34,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 @RunWith(Arquillian.class)
 public class LifecycleControlTest extends RewriteTest
 {
-   @Deployment(testable = true)
+   @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTest

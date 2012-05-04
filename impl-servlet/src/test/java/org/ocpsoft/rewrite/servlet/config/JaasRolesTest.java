@@ -8,6 +8,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.common.services.ServiceProvider;
+import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
 @RunWith(Arquillian.class)
@@ -18,6 +19,7 @@ public class JaasRolesTest extends RewriteTest
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()
+               .addPackages(true, ServletRoot.class.getPackage())
                .addAsServiceProvider(ServiceProvider.class, JaasRolesTestProvider.class);
    }
 

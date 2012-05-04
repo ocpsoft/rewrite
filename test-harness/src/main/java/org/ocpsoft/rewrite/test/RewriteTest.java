@@ -23,10 +23,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.mock.MockBinding;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 public class RewriteTest extends RewriteTestBase
@@ -35,7 +36,8 @@ public class RewriteTest extends RewriteTestBase
    public static WebArchive getDeployment()
    {
       return getDeploymentNoWebXml()
-               .setWebXML("jetty-web.xml");
+      // .setWebXML("jetty-web.xml")
+      ;
    }
 
    public static WebArchive getDeploymentNoWebXml()
@@ -43,7 +45,10 @@ public class RewriteTest extends RewriteTestBase
 
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
+               .addPackages(true, MockBinding.class.getPackage())
+               .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api:1.0.1.Final"))
                .addAsLibraries(getRewriteArchive())
+
       // .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"))
       //
       // /*
@@ -58,13 +63,15 @@ public class RewriteTest extends RewriteTestBase
       // .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
       // .addAsWebInfResource("jetty-env.xml", "jetty-env.xml")
       // .addAsWebInfResource("jetty-log4j.xml", "log4j.xml")
-               ;
+      ;
    }
 
    protected static JavaArchive getRewriteArchive()
    {
       return ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
                .addAsResource(new File("../api/target/classes/org"))
+               .addAsResource(new File("../api-el/target/classes/org"))
+               .addAsResource(new File("../impl-config/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
    }

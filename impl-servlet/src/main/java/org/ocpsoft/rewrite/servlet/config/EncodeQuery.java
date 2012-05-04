@@ -182,6 +182,14 @@ public class EncodeQuery implements Operation
          }
 
       }
-
    }
+
+   @Override
+   public String toString()
+   {
+      return "EncodeQuery [tokenName=" + tokenName + ", checksumStrategy=" + checksumStrategy + ", encodingStrategy="
+               + encodingStrategy + ", params=" + params + ", excludedParams=" + excludedParams
+               + ", inboundCorrection=" + inboundCorrection + ", onfailure=" + onfailure + "]";
+   }
+
 }

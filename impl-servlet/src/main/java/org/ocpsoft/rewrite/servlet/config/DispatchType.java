@@ -101,6 +101,12 @@ public class DispatchType extends HttpCondition implements Bindable<DispatchType
    }
 
    @Override
+   public String toString()
+   {
+      return type == null ? "unknown" : type.toString();
+   }
+
+   @Override
    public DispatchType bindsTo(final Binding binding)
    {
       bindable.bindsTo(binding);

@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.util.Timer;
  */
 public class ConfigurationCacheProviderTest extends RewriteTest
 {
-   @Deployment(testable = true)
+   @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTest

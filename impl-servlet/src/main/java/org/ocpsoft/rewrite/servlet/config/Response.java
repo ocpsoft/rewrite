@@ -95,4 +95,12 @@ public abstract class Response extends HttpOperation
       };
    }
 
+   @Override
+   public String toString()
+   {
+      return "Response";
+   }
+   
+   
+
 }

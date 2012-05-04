@@ -37,7 +37,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 @RunWith(Arquillian.class)
 public class CdiMultipleFeaturesTest extends RewriteTest
 {
-   @Deployment(testable = true)
+   @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()

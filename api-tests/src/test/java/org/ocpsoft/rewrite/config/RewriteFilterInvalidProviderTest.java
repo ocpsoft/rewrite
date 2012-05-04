@@ -32,7 +32,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 public class RewriteFilterInvalidProviderTest extends RewriteTest
 {
 
-   @Deployment(testable = true)
+   @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTest.getDeployment()
