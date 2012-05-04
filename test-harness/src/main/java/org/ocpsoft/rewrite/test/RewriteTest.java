@@ -42,9 +42,6 @@ public class RewriteTest extends RewriteTestBase
    public static WebArchive getDeployment(String name)
    {
       WebArchive archive = getDeploymentNoWebXml(name);
-      if (isJetty()) {
-         archive.setWebXML("jetty-web.xml");
-      }
       return archive;
    }
 
@@ -55,12 +52,15 @@ public class RewriteTest extends RewriteTestBase
 
    public static WebArchive getDeploymentNoWebXml(String name)
    {
-
+      if(isJetty() && "ROOT.war".equals(name))
+         name = ".war";
+         
       WebArchive archive = ShrinkWrap
                .create(WebArchive.class, name)
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api:1.0.1.Final"))
                .addAsLibraries(getRewriteArchive())
+               .addAsLibraries(getContainerArchive())
                .addAsLibraries(getCurrentArchive());
 
       // Jetty specific stuff
@@ -74,6 +74,11 @@ public class RewriteTest extends RewriteTestBase
          archive.addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"));
          archive.add(new StringAsset("com.sun.el.ExpressionFactoryImpl"),
                   "/WEB-INF/classes/META-INF/services/javax.el.ExpressionFactory");
+
+         /*
+          * Set the JSF implementation
+          */
+         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"));
 
          /*
          * Set up container configuration
@@ -99,6 +104,19 @@ public class RewriteTest extends RewriteTestBase
       }
    }
 
+   protected static JavaArchive getContainerArchive()
+   {
+
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-current-module.jar");
+
+      if (isJetty())
+      {
+         archive.addAsManifestResource("jetty-web-fragment.xml", "web-fragment.xml");
+      }
+
+      return archive.addAsResource(new StringAsset("placeholder"), "README");
+   }
+
    protected static JavaArchive getCurrentArchive()
    {
       File classes = new File("target/classes/org");
@@ -106,10 +124,13 @@ public class RewriteTest extends RewriteTestBase
 
       JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-current-module.jar");
 
-      if (classes.exists())
-         archive.addAsResource(classes);
-      if (metaInf.exists())
-         archive.addAsResource(metaInf);
+      if (!classes.getAbsolutePath().contains("impl-servlet"))
+      {
+         if (classes.exists())
+            archive.addAsResource(classes);
+         if (metaInf.exists())
+            archive.addAsResource(metaInf);
+      }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");
    }

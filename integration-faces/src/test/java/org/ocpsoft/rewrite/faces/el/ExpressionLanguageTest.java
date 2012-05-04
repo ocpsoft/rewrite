@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.faces.resolver.FacesBeanNameResolverBean;
 import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
@@ -40,7 +41,8 @@ public class ExpressionLanguageTest extends RewriteTest
       return FacesBase
                .getDeployment()
                .addAsWebResource("expression-language.xhtml")
-               .addClasses(ExpressionLanguageBean.class, ExpressionLanguageConfigProvider.class)
+               .addClasses(FacesBeanNameResolverBean.class, ExpressionLanguageBean.class,
+                        ExpressionLanguageConfigProvider.class)
                .addAsServiceProvider(ConfigurationProvider.class, ExpressionLanguageConfigProvider.class);
    }
 

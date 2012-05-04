@@ -44,9 +44,9 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    {
       return RewriteTest
                .getDeployment()
+               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
                .addClasses(BindingBean.class, ExpressionLanguageTestConfigurationProvider.class, MockBean.class,
-                        RewriteLifecycleEventObserver.class, ServiceEnricherTestConfigProvider.class)
-               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
+                        RewriteLifecycleEventObserver.class, ServiceEnricherTestConfigProvider.class);
    }
 
    /*

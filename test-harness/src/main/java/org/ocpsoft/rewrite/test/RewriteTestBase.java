@@ -122,7 +122,10 @@ public abstract class RewriteTestBase
 
    protected String getContextPath()
    {
-      return baseUrl.getPath().replaceAll("^(.*)/$", "$1").replaceAll("ROOT$", "");
+      String contextPath = baseUrl.getPath();
+      if (!"/".equals(contextPath))
+         contextPath = contextPath.replaceAll("^(.*)/$", "$1").replaceAll("ROOT$", "");
+      return contextPath;
    }
 
    protected HtmlAction getWebClient(String path) throws FailingHttpStatusCodeException, IOException
