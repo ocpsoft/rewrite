@@ -20,15 +20,12 @@ import junit.framework.Assert;
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.test.HttpAction;
-import org.springframework.web.context.WebApplicationContext;
-
 import org.ocpsoft.rewrite.test.RewriteTest;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * <p>
@@ -44,24 +41,25 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
-public class SpringFeaturesTest extends RewriteTest {
+public class SpringFeaturesTest extends RewriteTest
+{
 
-    @Deployment(testable = false)
-    public static WebArchive getDeployment() {
-        return ShrinkWrap
-                .create(WebArchive.class, "rewrite-test.war")
-                .addAsLibraries(getRewriteArchive())
-                .setWebXML("jetty-web-spring.xml")
-                .addAsResource("jetty-log4j.xml", ArchivePaths.create("/log4j.xml"))
-                .addAsWebInfResource("applicationContext.xml")
-                .addPackages(true, SpringRoot.class.getPackage());
-    }
+   @Deployment(testable = false)
+   public static WebArchive getDeployment()
+   {
+      return RewriteTest.getDeployment()
+               .setWebXML("spring-web.xml")
+               .addAsWebInfResource("applicationContext.xml")
+               .addAsLibraries(resolveDependencies("org.springframework:spring-web:3.0.6.RELEASE"))
+               .addClasses(SpringFeaturesBean.class, SpringFeaturesConfigProvider.class);
+   }
 
-    @Test
-    public void testSpringFeatures() {
-        HttpAction<HttpGet> action = get("/name-christian");
-        Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-        Assert.assertEquals("/hello/CHRISTIAN", action.getCurrentContextRelativeURL());
-    }
+   @Test
+   public void testSpringFeatures()
+   {
+      HttpAction<HttpGet> action = get("/name-christian");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals("/hello/CHRISTIAN", action.getCurrentContextRelativeURL());
+   }
 
 }

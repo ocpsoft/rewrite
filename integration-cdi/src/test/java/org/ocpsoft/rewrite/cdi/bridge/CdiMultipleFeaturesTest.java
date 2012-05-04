@@ -20,10 +20,12 @@ import junit.framework.Assert;
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ocpsoft.rewrite.cdi.CDIRoot;
+import org.ocpsoft.rewrite.cdi.bind.BindingBean;
+import org.ocpsoft.rewrite.cdi.bind.ExpressionLanguageTestConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -40,8 +42,11 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTest.getDeployment()
-               .addPackages(true, CDIRoot.class.getPackage());
+      return RewriteTest
+               .getDeployment()
+               .addClasses(BindingBean.class, ExpressionLanguageTestConfigurationProvider.class, MockBean.class,
+                        RewriteLifecycleEventObserver.class, ServiceEnricherTestConfigProvider.class)
+               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
    }
 
    /*

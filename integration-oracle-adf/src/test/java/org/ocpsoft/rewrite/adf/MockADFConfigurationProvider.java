@@ -22,7 +22,7 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.QueryString;
-import org.ocpsoft.rewrite.servlet.config.Response;
+import org.ocpsoft.rewrite.servlet.config.SendStatus;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,7 +46,7 @@ public class MockADFConfigurationProvider extends HttpConfigurationProvider
       Configuration config = ConfigurationBuilder.begin()
                .defineRule()
                .when(QueryString.parameterExists("adf"))
-               .perform(Response.setCode(203));
+               .perform(SendStatus.code(203));
 
       return config;
    }

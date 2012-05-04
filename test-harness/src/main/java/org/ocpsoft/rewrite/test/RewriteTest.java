@@ -20,6 +20,7 @@ import java.io.File;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
@@ -48,6 +49,7 @@ public class RewriteTest extends RewriteTestBase
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api:1.0.1.Final"))
                .addAsLibraries(getRewriteArchive())
+               .addAsLibraries(getCurrentArchive())
 
       // .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"))
       //
@@ -66,14 +68,33 @@ public class RewriteTest extends RewriteTestBase
       ;
    }
 
+   protected static JavaArchive getCurrentArchive()
+   {
+      File classes = new File("target/classes/org");
+      File metaInf = new File("target/classes/META-INF");
+
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-current-module.jar");
+
+      if (classes.exists())
+         archive.addAsResource(classes);
+      if (metaInf.exists())
+         archive.addAsResource(metaInf);
+      
+      return archive.addAsResource(new StringAsset("placeholder"), "README");
+   }
+
    protected static JavaArchive getRewriteArchive()
    {
-      return ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
+
                .addAsResource(new File("../api/target/classes/org"))
                .addAsResource(new File("../api-el/target/classes/org"))
+               .addAsResource(new File("../api-el/target/classes/META-INF"))
                .addAsResource(new File("../impl-config/target/classes/org"))
                .addAsResource(new File("../api-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
+
+      return archive;
    }
 }

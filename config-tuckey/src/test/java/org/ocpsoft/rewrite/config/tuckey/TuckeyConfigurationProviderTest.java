@@ -20,10 +20,12 @@ import junit.framework.Assert;
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -39,7 +41,9 @@ public class TuckeyConfigurationProviderTest extends RewriteTest
    {
       WebArchive deployment = RewriteTest.getDeployment()
                .addAsLibraries(resolveDependencies("org.tuckey:urlrewritefilter:3.1.0"))
+               .addAsServiceProvider(ConfigurationProvider.class, TuckeyConfigurationProvider.class)
                .addAsWebInfResource("urlrewrite.xml")
+               .addAsWebResource(new StringAsset("exists"), "index.html")
                .addPackages(true, TuckeyRoot.class.getPackage());
 
       return deployment;

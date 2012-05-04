@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -36,13 +37,10 @@ public class ExpressionLanguageTest extends RewriteTest
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTest
-               .getDeploymentNoWebXml()
-               .setWebXML("faces-web.xml")
-               .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))
-               .addAsWebInfResource("faces-config.xml", "faces-config.xml")
+      return FacesBase
+               .getDeployment()
                .addAsWebResource("expression-language.xhtml")
-               .addPackages(true, ExpressionLanguageBean.class.getPackage())
+               .addClasses(ExpressionLanguageBean.class, ExpressionLanguageConfigProvider.class)
                .addAsServiceProvider(ConfigurationProvider.class, ExpressionLanguageConfigProvider.class);
    }
 

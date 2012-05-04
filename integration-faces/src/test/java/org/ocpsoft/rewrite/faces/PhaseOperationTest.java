@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -37,14 +38,11 @@ public class PhaseOperationTest extends RewriteTest
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTest
-               .getDeploymentNoWebXml()
-               .setWebXML("faces-web.xml")
-               .addPackages(true, FacesRoot.class.getPackage())
-               .addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"))
-               .addAsWebInfResource("faces-config.xml", "faces-config.xml")
-               .addAsWebResource("empty.xhtml", "empty.xhtml")
-               .addAsServiceProvider(ConfigurationProvider.class, PhaseOperationTestConfigurationProvider.class);
+      WebArchive deployment = FacesBase
+               .getDeployment()
+               .addClasses(PhaseOperationTestConfigurationProvider.class)
+               .addAsServiceProvider(ConfigurationProvider.class, PhaseOperationTestConfigurationProvider.class)
+               .addAsWebResource("empty.xhtml", "empty.xhtml");
 
       return deployment;
    }

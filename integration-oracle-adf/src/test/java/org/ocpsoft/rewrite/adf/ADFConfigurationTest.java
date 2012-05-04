@@ -39,9 +39,8 @@ public class ADFConfigurationTest extends RewriteTest
    {
       WebArchive deployment = RewriteTest
                .getDeployment()
-               .addPackages(true, ADFRoot.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, ADFConfigurationProvider.class,
-                        MockADFConfigurationProvider.class);
+               .addClass(MockADFConfigurationProvider.class)
+               .addAsServiceProvider(ConfigurationProvider.class, MockADFConfigurationProvider.class);
       return deployment;
    }
 

@@ -20,8 +20,8 @@ import junit.framework.Assert;
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.test.HttpAction;
@@ -30,7 +30,6 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 /**
  * @author Christian Kaltepoth
  */
-@Ignore // this test works only when executed alone, not when the whole test suite is executed?!?!?!
 @RunWith(Arquillian.class)
 public class CdiBeanNameResolverTest extends RewriteTest
 {
@@ -39,8 +38,8 @@ public class CdiBeanNameResolverTest extends RewriteTest
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()
-               .addClass(CdiBeanNameResolverBean.class)
-               .addClass(CdiBeanNameResolverConfigProvider.class);
+               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
+               .addClasses(CdiBeanNameResolverBean.class, CdiBeanNameResolverConfigProvider.class);
    }
 
    @Test

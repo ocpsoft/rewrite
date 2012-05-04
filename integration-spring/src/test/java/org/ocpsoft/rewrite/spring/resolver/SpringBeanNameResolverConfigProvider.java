@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.faces.resolver;
+package org.ocpsoft.rewrite.spring.resolver;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.faces.event.PhaseId;
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Invoke;
 import org.ocpsoft.rewrite.el.El;
-import org.ocpsoft.rewrite.faces.config.PhaseAction;
-import org.ocpsoft.rewrite.faces.config.PhaseBinding;
-import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.Redirect;
+import org.ocpsoft.rewrite.servlet.config.SendStatus;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Christian Kaltepoth
  */
-public class FacesBeanNameResolverConfigProvider extends HttpConfigurationProvider
+@Component
+public class SpringBeanNameResolverConfigProvider extends HttpConfigurationProvider
 {
 
    @Override
@@ -42,16 +43,23 @@ public class FacesBeanNameResolverConfigProvider extends HttpConfigurationProvid
 
       try {
 
-         Field nameField = FacesBeanNameResolverBean.class.getDeclaredField("name");
-         Method actionMethod = FacesBeanNameResolverBean.class.getMethod("action");
+         Field nameField = SpringBeanNameResolverBean.class.getDeclaredField("name");
+         Field uppercaseField = SpringBeanNameResolverBean.class.getDeclaredField("uppercase");
+         Method actionMethod = SpringBeanNameResolverBean.class.getMethod("action");
 
          return ConfigurationBuilder
                   .begin()
                   .defineRule()
                   .when(Path.matches("/name/{name}")
-                           .where("name").bindsTo(PhaseBinding.to(El.property(nameField)).after(PhaseId.RESTORE_VIEW)))
-                  .perform(PhaseAction.retrieveFrom(El.retrievalMethod(actionMethod)).after(PhaseId.RESTORE_VIEW)
-                           .and(Forward.to("/resolver.xhtml")));
+                           .where("name").bindsTo(El.property(nameField)))
+                  .perform(Invoke.binding(El.retrievalMethod(actionMethod))
+                           .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")
+                                    .where("name").bindsTo(El.property(uppercaseField))))
+
+                  .defineRule()
+                  .when(Path.matches("/hello/{name}"))
+                  .perform(SendStatus.code(200));
+
       }
       catch (Exception e) {
          throw new IllegalStateException(e);

@@ -9,7 +9,7 @@
    
    <rule>
       <from>^/some/fordir/nonredirect$</from>
-      <to type="forward">/</to>
+      <to type="forward">/index.html</to>
    </rule>
    
    <rule>

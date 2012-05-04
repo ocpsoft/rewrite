@@ -21,12 +21,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.gwt.server.history.HistoryRewriteConfiguration;
-import org.ocpsoft.rewrite.servlet.GWTRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -41,7 +41,7 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    {
       WebArchive deployment = RewriteTest
                .getDeployment()
-               .addPackages(true, GWTRoot.class.getPackage())
+               .addAsWebResource(new StringAsset(""), "index.html")
                .addAsServiceProvider(ConfigurationProvider.class, HistoryRewriteConfiguration.class);
       return deployment;
    }
@@ -59,7 +59,7 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    @Test
    public void testContextPathNotServedFromGetRequest()
    {
-      HttpAction<HttpGet> action = get("/?org.ocpsoft.rewrite.gwt.history.contextPath");
+      HttpAction<HttpGet> action = get("/index.html?org.ocpsoft.rewrite.gwt.history.contextPath");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       Assert.assertTrue(action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").isEmpty());
@@ -68,7 +68,7 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    @Test
    public void testContextPathServedFromCookieOnNormalRequest()
    {
-      HttpAction<HttpGet> action = get("/");
+      HttpAction<HttpGet> action = get("/index.html");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       String cookie = action.getResponseHeaderValues("Set-Cookie").get(0);

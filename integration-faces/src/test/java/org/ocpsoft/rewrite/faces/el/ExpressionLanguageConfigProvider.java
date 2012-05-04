@@ -46,7 +46,7 @@ public class ExpressionLanguageConfigProvider extends HttpConfigurationProvider
                                  .after(PhaseId.RESTORE_VIEW)))
                .perform(PhaseAction.retrieveFrom(El.retrievalMethod("#{expressionLanguageBean.action}"))
                         .after(PhaseId.RESTORE_VIEW)
-                        .and(Forward.to("/faces/expression-language.xhtml")));
+                        .and(Forward.to("/expression-language.xhtml")));
    }
 
    @Override

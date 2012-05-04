@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.faces.resolver;
+package org.ocpsoft.rewrite.spring.resolver;
 
 import junit.framework.Assert;
 
@@ -23,8 +23,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ocpsoft.rewrite.config.ConfigurationProvider;
-import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -32,27 +30,25 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
-public class FacesBeanNameResolverTest extends RewriteTest
+public class SpringBeanNameResolverTest extends RewriteTest
 {
-
+ 
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return FacesBase
-               .getDeployment()
-               .addClass(FacesBeanNameResolverBean.class)
-               .addClass(FacesBeanNameResolverConfigProvider.class)
-               .addAsServiceProvider(ConfigurationProvider.class, FacesBeanNameResolverConfigProvider.class)
-               .addAsWebResource("resolver.xhtml");
+      return RewriteTest.getDeployment()
+               .setWebXML("spring-web.xml")
+               .addAsLibraries(resolveDependencies("org.springframework:spring-web:3.0.6.RELEASE"))
+               .addAsWebInfResource("applicationContext.xml")
+               .addClasses(SpringBeanNameResolverBean.class, SpringBeanNameResolverConfigProvider.class);
    }
 
    @Test
-   public void testFacesBeanNameResolverFeatures()
+   public void testSpringBeanNameResolver()
    {
       HttpAction<HttpGet> action = get("/name/christian");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("Name = [christian]"));
-      Assert.assertTrue(action.getResponseContent().contains("Uppercase = [CHRISTIAN]"));
+      Assert.assertEquals("/hello/CHRISTIAN", action.getCurrentContextRelativeURL());
    }
 
 }
