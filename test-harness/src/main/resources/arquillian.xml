@@ -4,7 +4,6 @@
 
    <container qualifier="jetty" default="true">
       <configuration>
-         <property name="bindHttpPort">8080</property>
       </configuration>
    </container>
 </arquillian>

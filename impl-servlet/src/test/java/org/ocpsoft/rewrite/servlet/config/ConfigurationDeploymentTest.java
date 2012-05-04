@@ -29,7 +29,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class ConfigurationDeploymentTest extends RewriteTest
+public class ConfigurationDeploymentTest
 {
    @Deployment(testable = false)
    @ShouldThrowException(Exception.class)
