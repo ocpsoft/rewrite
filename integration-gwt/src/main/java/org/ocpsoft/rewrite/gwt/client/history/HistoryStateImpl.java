@@ -34,8 +34,15 @@ public class HistoryStateImpl extends HistoryImpl
 
    static void setContextPath(String contextPath)
    {
+      if (contextPath != null && !contextPath.endsWith("/"))
+      {
+         contextPath += "/";
+      }
+      
       HistoryStateImpl.contextPath = contextPath;
+      
       System.out.println("Set contextPath: " + contextPath);
+      
       for (ContextPathListener listner : listeners) {
          listner.onContextPathSet(contextPath);
       }
@@ -55,10 +62,6 @@ public class HistoryStateImpl extends HistoryImpl
 
    public static String getContextPath()
    {
-      if (contextPath != null && !contextPath.endsWith("/"))
-      {
-         contextPath += "/";
-      }
       return contextPath;
    }
 

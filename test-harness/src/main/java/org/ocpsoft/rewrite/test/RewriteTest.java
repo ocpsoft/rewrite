@@ -36,8 +36,13 @@ public class RewriteTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      WebArchive archive = getDeploymentNoWebXml();
-      if(isJetty()) {
+      return getDeployment("rewrite-test.war");
+   }
+
+   public static WebArchive getDeployment(String name)
+   {
+      WebArchive archive = getDeploymentNoWebXml(name);
+      if (isJetty()) {
          archive.setWebXML("jetty-web.xml");
       }
       return archive;
@@ -45,41 +50,45 @@ public class RewriteTest extends RewriteTestBase
 
    public static WebArchive getDeploymentNoWebXml()
    {
+      return getDeploymentNoWebXml("rewrite-test.war");
+   }
+
+   public static WebArchive getDeploymentNoWebXml(String name)
+   {
 
       WebArchive archive = ShrinkWrap
-               .create(WebArchive.class, "rewrite-test.war")
+               .create(WebArchive.class, name)
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api:1.0.1.Final"))
                .addAsLibraries(getRewriteArchive())
                .addAsLibraries(getCurrentArchive());
 
       // Jetty specific stuff
-      if(isJetty()) {
-         
-          archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
-         
-          /*
-          * Set the EL implementation
-          */
+      if (isJetty()) {
+
+         archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
+
+         /*
+         * Set the EL implementation
+         */
          archive.addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"));
          archive.add(new StringAsset("com.sun.el.ExpressionFactoryImpl"),
                   "/WEB-INF/classes/META-INF/services/javax.el.ExpressionFactory");
-         
-          /*
-          * Set up container configuration
-          */
-          archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
-          archive.addAsWebInfResource("jetty-env.xml", "jetty-env.xml");
-          archive.addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
-          
+
+         /*
+         * Set up container configuration
+         */
+         archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
+         archive.addAsWebInfResource("jetty-env.xml", "jetty-env.xml");
+         archive.addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
+
       }
-      
-      System.out.println(archive.toString(true));
-      
+
       return archive;
    }
-   
-   protected static boolean isJetty() {
+
+   protected static boolean isJetty()
+   {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       try {
          classLoader.loadClass("org.jboss.arquillian.container.jetty.embedded_7.JettyEmbeddedContainer");
@@ -101,7 +110,7 @@ public class RewriteTest extends RewriteTestBase
          archive.addAsResource(classes);
       if (metaInf.exists())
          archive.addAsResource(metaInf);
-      
+
       return archive.addAsResource(new StringAsset("placeholder"), "README");
    }
 

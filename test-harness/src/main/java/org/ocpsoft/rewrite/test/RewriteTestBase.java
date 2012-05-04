@@ -27,7 +27,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
  * Base utility class for Rewrite Tests.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class RewriteTestBase
@@ -53,6 +53,7 @@ public abstract class RewriteTestBase
                .loadMetadataFromPom("pom.xml")
                .resolveAs(GenericArchive.class)).get(0);
    }
+
    /**
     * Request a resource from the deployed test-application. The {@link HttpServletRequest#getContextPath()} will be
     * automatically prepended to the given path.
@@ -110,19 +111,18 @@ public abstract class RewriteTestBase
       }
    }
 
+   @ArquillianResource
+   URL baseUrl;
+
    protected String getBaseURL()
    {
-      String baseUrl = "http://localhost:8080";
-      if (baseUrl.endsWith("/"))
-      {
-         baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-      }
-      return baseUrl;
+      return baseUrl.getProtocol() + "://" + baseUrl.getHost()
+               + (baseUrl.getPort() == -1 ? "" : ":" + baseUrl.getPort());
    }
 
    protected String getContextPath()
    {
-      return "/rewrite-test";
+      return baseUrl.getPath().replaceAll("^(.*)/$", "$1").replaceAll("ROOT$", "");
    }
 
    protected HtmlAction getWebClient(String path) throws FailingHttpStatusCodeException, IOException

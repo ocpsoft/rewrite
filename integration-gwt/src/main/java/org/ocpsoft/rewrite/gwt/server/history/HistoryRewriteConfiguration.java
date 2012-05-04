@@ -29,18 +29,22 @@ public class HistoryRewriteConfiguration extends HttpConfigurationProvider
 
          if (config == null)
          {
+            String contextPath = context.getContextPath();
+            if (contextPath == null || contextPath.isEmpty())
+               contextPath = "/";
+
             config = ConfigurationBuilder
                      .begin()
                      .defineRule()
-                     .perform(Response.addCookie(new Cookie("org.ocpsoft.rewrite.gwt.history.contextPath", context
-                             .getContextPath())))
+                     .perform(Response
+                              .addCookie(new Cookie("org.ocpsoft.rewrite.gwt.history.contextPath", contextPath)))
 
                      .defineRule()
                      .when(Method.isHead().and(
                               QueryString.parameterExists("org.ocpsoft.rewrite.gwt.history.contextPath")))
                      .perform(Response.setCode(200).and(
                               Response.addHeader("org.ocpsoft.rewrite.gwt.history.contextPath",
-                                       context.getContextPath())));
+                                       contextPath)));
          }
       }
       return config;

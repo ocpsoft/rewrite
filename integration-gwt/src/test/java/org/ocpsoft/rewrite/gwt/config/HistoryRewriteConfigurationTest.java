@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.servlet.config;
+package org.ocpsoft.rewrite.gwt.config;
 
 import junit.framework.Assert;
 
