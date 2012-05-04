@@ -16,17 +16,25 @@
       <version.arquillian>1.0.0.Final</version.arquillian>
       <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
       <version.jetty>8.1.2.v20120308</version.jetty>
+      <version.jbossas>7.1.1.Final</version.jbossas>
    </properties>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${version.arquillian}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
 
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>org.ocpsoft.logging</groupId>
-         <artifactId>logging-adapter-slf4j</artifactId>
       </dependency>
 
       <dependency>
@@ -58,9 +66,6 @@
    <profiles>
       <profile>
          <id>jetty-embedded</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-         </activation>
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.junit</groupId>
@@ -104,9 +109,14 @@
                <artifactId>slf4j-log4j12</artifactId>
                <version>1.5.10</version>
             </dependency>
+            <dependency>
+               <groupId>org.ocpsoft.logging</groupId>
+               <artifactId>logging-adapter-slf4j</artifactId>
+            </dependency>
 
             <!-- Weld servlet, EL and JSP required for testing CDI injections -->
-            <!-- Don't use 'org.jboss.weld.servlet:weld-servlet' as it has an incompatible slf4j version shaded in -->
+            <!-- Don't use 'org.jboss.weld.servlet:weld-servlet' as it has 
+               an incompatible slf4j version shaded in -->
             <dependency>
                <groupId>org.jboss.weld.servlet</groupId>
                <artifactId>weld-servlet-core</artifactId>
@@ -131,6 +141,96 @@
                <groupId>javax.servlet.jsp</groupId>
                <artifactId>jsp-api</artifactId>
                <version>2.2</version>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <id>JBOSS_AS_MANAGED_7.X</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <extensions>false</extensions>
+                  <executions>
+                     <execution>
+                        <id>unpack</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                           <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                           <artifactItems>
+                              <artifactItem>
+                                 <groupId>org.jboss.as</groupId>
+                                 <artifactId>jboss-as-dist</artifactId>
+                                 <version>${version.jbossas}</version>
+                                 <type>zip</type>
+                                 <overWrite>false</overWrite>
+                                 <outputDirectory>../target</outputDirectory>
+                              </artifactItem>
+                           </artifactItems>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.spec</groupId>
+               <artifactId>jboss-javaee-web-6.0</artifactId>
+               <version>3.0.1.Final</version>
+               <type>pom</type>
+               <scope>compile</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-arquillian-container-managed</artifactId>
+               <version>${version.jbossas}</version>
+               <scope>compile</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.arquillian.junit</groupId>
+               <artifactId>arquillian-junit-container</artifactId>
+               <scope>compile</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.shrinkwrap.resolver</groupId>
+               <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+               <scope>compile</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <id>JBOSS_AS_REMOTE_7.X</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.spec</groupId>
+               <artifactId>jboss-javaee-web-6.0</artifactId>
+               <version>3.0.1.Final</version>
+               <type>pom</type>
+               <scope>compile</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-arquillian-container-remote</artifactId>
+               <version>${version.jbossas}</version>
+               <scope>compile</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.arquillian.junit</groupId>
+               <artifactId>arquillian-junit-container</artifactId>
+               <scope>compile</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.shrinkwrap.resolver</groupId>
+               <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+               <scope>compile</scope>
             </dependency>
          </dependencies>
       </profile>

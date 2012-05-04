@@ -17,17 +17,12 @@ package org.ocpsoft.rewrite.test;
 
 import java.io.File;
 
-import javax.el.ExpressionFactory;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
-
-import com.sun.el.ExpressionFactoryImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -49,20 +44,21 @@ public class RewriteTest extends RewriteTestBase
       return ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
                .addAsLibraries(getRewriteArchive())
-               .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"))
-
-               /*
-                * Set the EL implementation
-                */
-               .addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"))
-               .addAsServiceProvider(ExpressionFactory.class, ExpressionFactoryImpl.class)
-
-               /*
-                * Set up container configuration
-                */
-               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
-               .addAsWebInfResource("jetty-env.xml", "jetty-env.xml")
-               .addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
+      // .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"))
+      //
+      // /*
+      // * Set the EL implementation
+      // */
+      // .addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"))
+      // .addAsServiceProvider(ExpressionFactory.class, ExpressionFactoryImpl.class)
+      //
+      // /*
+      // * Set up container configuration
+      // */
+      // .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
+      // .addAsWebInfResource("jetty-env.xml", "jetty-env.xml")
+      // .addAsWebInfResource("jetty-log4j.xml", "log4j.xml")
+               ;
    }
 
    protected static JavaArchive getRewriteArchive()

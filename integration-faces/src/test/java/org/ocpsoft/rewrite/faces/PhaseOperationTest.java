@@ -28,8 +28,6 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
-import com.google.common.base.Strings;
-
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -56,7 +54,7 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction<HttpGet> action = get("/empty.xhtml?adf=blah");
       String content = action.getResponseContent();
-      Assert.assertTrue(Strings.isNullOrEmpty(content));
+      Assert.assertTrue(content == null || content.isEmpty());
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
    }
 
@@ -65,7 +63,7 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction<HttpGet> action = get("/render_response");
       String content = action.getResponseContent();
-      Assert.assertTrue(Strings.isNullOrEmpty(content));
+      Assert.assertTrue(content == null || content.isEmpty());
       Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
    }
 
@@ -74,7 +72,7 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction<HttpGet> action = get("/binding/lincoln");
       String content = action.getResponseContent();
-      Assert.assertTrue(Strings.isNullOrEmpty(content));
+      Assert.assertTrue(content == null || content.isEmpty());
       Assert.assertEquals(205, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertEquals("lincoln", action.getResponseHeaderValues("Value").get(0));
    }
