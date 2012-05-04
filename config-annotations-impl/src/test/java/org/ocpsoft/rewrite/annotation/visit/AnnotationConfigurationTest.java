@@ -24,7 +24,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.annotation.AnnotationRoot;
+import org.ocpsoft.rewrite.annotation.config.AnnotationConfigProvider;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
+import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -40,6 +42,7 @@ public class AnnotationConfigurationTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, AnnotationRoot.class.getPackage())
+               .addAsServiceProvider(ConfigurationProvider.class, AnnotationConfigProvider.class)
                .addAsServiceProvider(AnnotationHandler.class, FieldHandler.class, MethodHandler.class,
                         ParamHandler.class, TypeHandler.class);
       return deployment;

@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.config;
 
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +28,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class RewriteFilterInvalidProviderTest extends RewriteTest
 {
@@ -37,6 +38,7 @@ public class RewriteFilterInvalidProviderTest extends RewriteTest
    {
       WebArchive deployment = RewriteTest.getDeployment()
                .addPackages(true, Root.class.getPackage())
+               .addAsWebResource(new StringAsset("exists"), "index.html")
                .addAsServiceProvider(RewriteProvider.class,
                         RewriteFilterInvalidRewriteProvider.class);
       return deployment;
@@ -45,7 +47,7 @@ public class RewriteFilterInvalidProviderTest extends RewriteTest
    @Test
    public void testInvalidProvidersAreIgnored()
    {
-      HttpAction<HttpGet> action = get("/");
+      HttpAction<HttpGet> action = get("/index.html");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 
