@@ -36,36 +36,58 @@ public class RewriteTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return getDeploymentNoWebXml()
-      // .setWebXML("jetty-web.xml")
-      ;
+      WebArchive archive = getDeploymentNoWebXml();
+      if(isJetty()) {
+         archive.setWebXML("jetty-web.xml");
+      }
+      return archive;
    }
 
    public static WebArchive getDeploymentNoWebXml()
    {
 
-      return ShrinkWrap
+      WebArchive archive = ShrinkWrap
                .create(WebArchive.class, "rewrite-test.war")
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api:1.0.1.Final"))
                .addAsLibraries(getRewriteArchive())
-               .addAsLibraries(getCurrentArchive())
+               .addAsLibraries(getCurrentArchive());
 
-      // .addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"))
-      //
-      // /*
-      // * Set the EL implementation
-      // */
-      // .addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"))
-      // .addAsServiceProvider(ExpressionFactory.class, ExpressionFactoryImpl.class)
-      //
-      // /*
-      // * Set up container configuration
-      // */
-      // .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
-      // .addAsWebInfResource("jetty-env.xml", "jetty-env.xml")
-      // .addAsWebInfResource("jetty-log4j.xml", "log4j.xml")
-      ;
+      // Jetty specific stuff
+      if(isJetty()) {
+         
+          archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
+         
+          /*
+          * Set the EL implementation
+          */
+         archive.addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"));
+         archive.add(new StringAsset("com.sun.el.ExpressionFactoryImpl"),
+                  "/WEB-INF/classes/META-INF/services/javax.el.ExpressionFactory");
+         
+          /*
+          * Set up container configuration
+          */
+          archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
+          archive.addAsWebInfResource("jetty-env.xml", "jetty-env.xml");
+          archive.addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
+          
+      }
+      
+      System.out.println(archive.toString(true));
+      
+      return archive;
+   }
+   
+   protected static boolean isJetty() {
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      try {
+         classLoader.loadClass("org.jboss.arquillian.container.jetty.embedded_7.JettyEmbeddedContainer");
+         return true;
+      }
+      catch (ClassNotFoundException e) {
+         return false;
+      }
    }
 
    protected static JavaArchive getCurrentArchive()
