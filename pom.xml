@@ -30,6 +30,7 @@
       <version.logging>1.0.1.Final</version.logging>
       <version.arquillian>1.0.0.Final</version.arquillian>
       <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
+      <version.arquillian.glassfish>1.0.0.CR3</version.arquillian.glassfish>
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
    </properties>
@@ -322,6 +323,45 @@
             </dependency>
          </dependencies>
       </profile>
+
+      <profile>
+         <id>GLASSFISH-MANAGED-3.1</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-glassfish-managed-3.1</artifactId>
+               <version>${version.arquillian.glassfish}</version>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.spec</groupId>
+               <artifactId>jboss-javaee-6.0</artifactId>
+               <version>${version.jboss.spec}</version>
+               <type>pom</type>
+               <scope>provided</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <id>GLASSFISH-REMOTE-3.1</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-glassfish-remote-3.1</artifactId>
+               <version>${version.arquillian.glassfish}</version>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.spec</groupId>
+               <artifactId>jboss-javaee-6.0</artifactId>
+               <version>${version.jboss.spec}</version>
+               <type>pom</type>
+               <scope>provided</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+
    </profiles>
 
    <developers>
