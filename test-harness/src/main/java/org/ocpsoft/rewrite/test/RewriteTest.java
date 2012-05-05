@@ -92,7 +92,7 @@ public class RewriteTest extends RewriteTestBase
       return archive;
    }
 
-   protected static boolean isJetty()
+   public static boolean isJetty()
    {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       try {
