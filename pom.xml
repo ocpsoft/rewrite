@@ -325,7 +325,7 @@
       </profile>
 
       <profile>
-         <id>GLASSFISH-MANAGED-3.1</id>
+         <id>GLASSFISH_MANAGED_3.1</id>
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
@@ -344,7 +344,7 @@
       </profile>
 
       <profile>
-         <id>GLASSFISH-REMOTE-3.1</id>
+         <id>GLASSFISH_REMOTE_3.1</id>
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
