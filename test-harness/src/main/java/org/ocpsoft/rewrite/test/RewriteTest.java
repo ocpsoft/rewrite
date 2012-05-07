@@ -88,6 +88,20 @@ public class RewriteTest extends RewriteTestBase
          archive.addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
 
       }
+      
+      // Tomcat specific stuff
+      if (isTomcat()) {
+
+         // add Weld dependency
+         archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
+
+         // setup BeanManager in JNDI
+         archive.addAsWebResource("tomcat-context.xml", "META-INF/context.xml");
+
+         // make it a CDI archive
+         archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
+
+      }
 
       return archive;
    }
@@ -104,6 +118,18 @@ public class RewriteTest extends RewriteTestBase
       }
    }
 
+   public static boolean isTomcat()
+   {
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      try {
+         classLoader.loadClass("org.jboss.arquillian.container.tomcat.embedded_7.TomcatContainer");
+         return true;
+      }
+      catch (ClassNotFoundException e) {
+         return false;
+      }
+   }
+   
    protected static JavaArchive getContainerArchive()
    {
 
@@ -112,6 +138,11 @@ public class RewriteTest extends RewriteTestBase
       if (isJetty())
       {
          archive.addAsManifestResource("jetty-web-fragment.xml", "web-fragment.xml");
+      }
+      
+      if (isTomcat())
+      {
+         archive.addAsManifestResource("tomcat-web-fragment.xml", "web-fragment.xml");
       }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");
