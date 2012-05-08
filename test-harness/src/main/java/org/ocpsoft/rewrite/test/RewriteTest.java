@@ -133,7 +133,7 @@ public class RewriteTest extends RewriteTestBase
    protected static JavaArchive getContainerArchive()
    {
 
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-current-module.jar");
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-container-module.jar");
 
       if (isJetty())
       {
