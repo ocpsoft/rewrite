@@ -264,6 +264,15 @@
          <build>
             <plugins>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <systemPropertyVariables>
+                        <arquillian.launch>jbossas_managed</arquillian.launch>
+                     </systemPropertyVariables>
+                  </configuration>
+               </plugin>
+               <plugin>
                   <artifactId>maven-dependency-plugin</artifactId>
                   <extensions>false</extensions>
                   <executions>
@@ -281,13 +290,30 @@
                                  <version>${version.jbossas}</version>
                                  <type>zip</type>
                                  <overWrite>false</overWrite>
-                                 <outputDirectory>../target</outputDirectory>
+                                 <outputDirectory>${project.baseDir}/target</outputDirectory>
                               </artifactItem>
                            </artifactItems>
                         </configuration>
                      </execution>
                   </executions>
                </plugin>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <phase>process-test-classes</phase>
+                        <configuration>
+                           <tasks>
+                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="${project.baseDir}/target/jboss-as-7.1.1.Final/standalone/configuration"/>
+                           </tasks>
+                        </configuration>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+
             </plugins>
          </build>
          <dependencies>
@@ -386,10 +412,10 @@
                <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-logging-juli</artifactId>
-                <version>${version.tomcat}</version>
-            </dependency>            
+               <groupId>org.apache.tomcat.embed</groupId>
+               <artifactId>tomcat-embed-logging-juli</artifactId>
+               <version>${version.tomcat}</version>
+            </dependency>
             <dependency>
                <groupId>org.eclipse.jdt.core.compiler</groupId>
                <artifactId>ecj</artifactId>
