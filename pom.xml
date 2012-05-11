@@ -31,7 +31,7 @@
       <version.arquillian>1.0.0.Final</version.arquillian>
       <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
       <version.arquillian.glassfish>1.0.0.CR3</version.arquillian.glassfish>
-      <version.arquillian.tomcat>1.0.0.CR3</version.arquillian.tomcat>
+      <version.arquillian.tomcat>1.0.0.Final-SNAPSHOT</version.arquillian.tomcat>
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
       <version.tomcat>7.0.19</version.tomcat>
@@ -58,6 +58,18 @@
       <module>rewrite-servlet</module>
       <module>distribution</module>
    </modules>
+
+   <build>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <version>2.12</version>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
 
    <dependencyManagement>
       <dependencies>
@@ -365,57 +377,56 @@
       </profile>
 
       <profile>
-         <id>TOMCAT-EMBEDDED_7.x</id>
+         <id>TOMCAT_MANAGED_7_WELD</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <systemProperties>
+                        <arquillian.launch>tomcat-managed-7</arquillian.launch>
+                        <rewrite.test.cdi>weld</rewrite.test.cdi>
+                     </systemProperties>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-tomcat-embedded-7</artifactId>
+               <artifactId>arquillian-tomcat-managed-7</artifactId>
                <version>${version.arquillian.tomcat}</version>
                <scope>test</scope>
             </dependency>
+         </dependencies>
+      </profile>          
+
+      <profile>
+         <id>TOMCAT_MANAGED_7_OWB</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <systemProperties>
+                        <arquillian.launch>tomcat-managed-7</arquillian.launch>
+                        <rewrite.test.cdi>owb</rewrite.test.cdi>
+                     </systemProperties>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+         <dependencies>
             <dependency>
-               <groupId>org.apache.tomcat.embed</groupId>
-               <artifactId>tomcat-embed-core</artifactId>
-               <version>${version.tomcat}</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.apache.tomcat.embed</groupId>
-               <artifactId>tomcat-embed-jasper</artifactId>
-               <version>${version.tomcat}</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-logging-juli</artifactId>
-                <version>${version.tomcat}</version>
-            </dependency>            
-            <dependency>
-               <groupId>org.eclipse.jdt.core.compiler</groupId>
-               <artifactId>ecj</artifactId>
-               <version>3.7</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet-core</artifactId>
-               <version>1.1.4.Final</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.jboss.weld</groupId>
-               <artifactId>weld-core</artifactId>
-               <version>1.1.4.Final</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-simple</artifactId>
-               <version>1.5.10</version>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-tomcat-managed-7</artifactId>
+               <version>${version.arquillian.tomcat}</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
-      </profile>
+      </profile>          
 
    </profiles>
 

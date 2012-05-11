@@ -6,4 +6,20 @@
       <configuration>
       </configuration>
    </container>
+
+   <!--
+    
+     Add this to $CATALINA_HOME/conf/tomcat-users.xml:
+
+       <role rolename="manager-script"/>
+       <user username="arquillian" password="arquillian" roles="manager-script"/>
+   
+    -->
+   <container qualifier="tomcat-managed-7">
+      <configuration>
+         <property name="user">arquillian</property>
+         <property name="pass">arquillian</property>
+      </configuration>
+   </container>
+   
 </arquillian>
