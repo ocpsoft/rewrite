@@ -35,6 +35,7 @@
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
       <version.tomcat>7.0.19</version.tomcat>
+      <version.glassfish>3.1.2</version.glassfish>
       <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
    </properties>
 
@@ -341,6 +342,39 @@
 
       <profile>
          <id>GLASSFISH_MANAGED_3.1</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.7</version>
+                  <executions>
+                     <execution>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <mkdir dir="${container.download.dir}" />
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true"
+                                 src="http://download.java.net/glassfish/${version.glassfish}/release/glassfish-${version.glassfish}-web.zip" />
+                              <unzip src="${container.download.dir}/glassfish-${version.glassfish}-web.zip" dest="${project.build.directory}/container" />
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <systemProperties>
+                        <arquillian.launch>glassfish-managed-3.1</arquillian.launch>
+                     </systemProperties>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
          <dependencies>
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>

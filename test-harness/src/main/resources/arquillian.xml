@@ -22,5 +22,11 @@
          <property name="pass">arquillian</property>
       </configuration>
    </container>
-   
+
+   <container qualifier="glassfish-managed-3.1">
+      <configuration>
+         <property name="glassFishHome">target/container/glassfish3</property>
+      </configuration>
+   </container>
+
 </arquillian>
