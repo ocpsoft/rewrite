@@ -35,6 +35,7 @@
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
       <version.tomcat>7.0.19</version.tomcat>
+      <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
    </properties>
 
    <modules>
@@ -381,6 +382,37 @@
          <build>
             <plugins>
                <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.7</version>
+                  <executions>
+                     <execution>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <mkdir dir="${container.download.dir}" />
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true"
+                                 src="http://archive.apache.org/dist/tomcat/tomcat-7/v${version.tomcat}/bin/apache-tomcat-${version.tomcat}.zip" />
+                              <unzip src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip" dest="${project.build.directory}/container" />
+                              <move file="${project.build.directory}/container/apache-tomcat-${version.tomcat}"
+                                 tofile="${project.build.directory}/container/apache-tomcat-7"/>
+                              <echo file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
+                                 <![CDATA[
+                                 <?xml version="1.0" encoding="UTF-8"?>
+                                 <tomcat-users>
+                                    <role rolename="manager-script"/>
+                                    <user username="arquillian" password="arquillian" roles="manager-script"/>
+                                 </tomcat-users>
+                                 ]]>
+                              </echo>
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
@@ -400,6 +432,19 @@
                <scope>test</scope>
             </dependency>
          </dependencies>
+         <repositories>
+            <!-- We current need this because we have to use the SNAPSHOTS for the Tomcat container adapter -->
+            <repository>
+               <id>arquillian-snapshots</id>
+               <url>https://repository-arquillian.forge.cloudbees.com/snapshot/</url>
+               <releases>
+                  <enabled>false</enabled>
+               </releases>
+               <snapshots>
+                  <enabled>true</enabled>
+               </snapshots>
+            </repository>
+         </repositories>
       </profile>          
 
       <profile>
