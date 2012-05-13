@@ -5,7 +5,7 @@
   <parent>
     <artifactId>rewrite-showcase</artifactId>
     <groupId>org.ocpsoft.rewrite.showcase</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>rewrite-showcase-mega-rewrite</artifactId>
