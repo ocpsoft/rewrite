@@ -49,35 +49,35 @@ public class AnnotationConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testControl()
+   public void testControl() throws Exception
    {
       HttpAction<HttpGet> action = get("/annotation/control");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testTypeAnnotation()
+   public void testTypeAnnotation() throws Exception
    {
       HttpAction<HttpGet> action = get("/annotation/type");
       Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testFieldAnnotation()
+   public void testFieldAnnotation() throws Exception
    {
       HttpAction<HttpGet> action = get("/annotation/field");
       Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testMethodAnnotation()
+   public void testMethodAnnotation() throws Exception
    {
       HttpAction<HttpGet> action = get("/annotation/method");
       Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testParameterAnnotation()
+   public void testParameterAnnotation() throws Exception
    {
       HttpAction<HttpGet> action = get("/annotation/parameter");
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());

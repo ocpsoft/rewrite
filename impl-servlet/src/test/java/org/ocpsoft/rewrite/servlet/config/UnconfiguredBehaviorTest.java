@@ -42,7 +42,7 @@ public class UnconfiguredBehaviorTest extends RewriteTest
    }
 
    @Test
-   public void testErrorPageIsDisplayed()
+   public void testErrorPageIsDisplayed() throws Exception
    {
       HttpAction<HttpGet> action = get("/other");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());

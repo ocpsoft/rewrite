@@ -44,7 +44,7 @@ public class SpringBeanNameResolverTest extends RewriteTest
    }
 
    @Test
-   public void testSpringBeanNameResolver()
+   public void testSpringBeanNameResolver() throws Exception
    {
       HttpAction<HttpGet> action = get("/name/christian");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());

@@ -50,7 +50,7 @@ public class TuckeyConfigurationProviderTest extends RewriteTest
    }
 
    @Test
-   public void testConfigurationIntegratesWithRedirectFlow()
+   public void testConfigurationIntegratesWithRedirectFlow() throws Exception
    {
       HttpAction<HttpGet> action = get("/some/olddir/value");
       Assert.assertEquals("/very/newdir/value", action.getCurrentURL());
@@ -58,7 +58,7 @@ public class TuckeyConfigurationProviderTest extends RewriteTest
    }
 
    @Test
-   public void testConfigurationIntegratesWithForwardFlow()
+   public void testConfigurationIntegratesWithForwardFlow() throws Exception
    {
       HttpAction<HttpGet> action = get("/some/fordir/value");
       Assert.assertEquals("/very/newdir/value", action.getCurrentURL());
@@ -66,7 +66,7 @@ public class TuckeyConfigurationProviderTest extends RewriteTest
    }
 
    @Test
-   public void testConfigurationIntegratesWithForwardFlowNonRedirecting()
+   public void testConfigurationIntegratesWithForwardFlowNonRedirecting() throws Exception
    {
       HttpAction<HttpGet> action = get("/some/fordir/nonredirect");
       Assert.assertEquals("/some/fordir/nonredirect", action.getCurrentContextRelativeURL());
@@ -74,7 +74,7 @@ public class TuckeyConfigurationProviderTest extends RewriteTest
    }
 
    @Test
-   public void testConfigurationIntegratesWithForwardFlowNonRedirecting404()
+   public void testConfigurationIntegratesWithForwardFlowNonRedirecting404() throws Exception
    {
       HttpAction<HttpGet> action = get("/some/404/dir");
       Assert.assertEquals("/some/404/dir", action.getCurrentContextRelativeURL());

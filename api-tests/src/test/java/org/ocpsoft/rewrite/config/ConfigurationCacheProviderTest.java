@@ -47,7 +47,7 @@ public class ConfigurationCacheProviderTest extends RewriteTest
    volatile int configBuildCount = 0;
 
    @Test
-   public void testCachingConfiguration()
+   public void testCachingConfiguration() throws Exception
    {
       HttpAction<HttpGet> action = get("/cache1");
       Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
@@ -84,7 +84,13 @@ public class ConfigurationCacheProviderTest extends RewriteTest
       @Override
       public void run()
       {
-         HttpAction<HttpGet> action = get("/cache1");
+         HttpAction<HttpGet> action = null;
+         try {
+            action = get("/cache1");
+         }
+         catch (Exception e) {
+            throw new RuntimeException(e);
+         }
          configBuildCount = action.getResponse().getStatusLine().getStatusCode() - 200;
          vote();
       }

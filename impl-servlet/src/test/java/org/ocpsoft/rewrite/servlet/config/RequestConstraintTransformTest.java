@@ -45,21 +45,21 @@ public class RequestConstraintTransformTest extends RewriteTest
    }
 
    @Test
-   public void testUnsatisfiedConstraintPreventsRuleExecution()
+   public void testUnsatisfiedConstraintPreventsRuleExecution() throws Exception
    {
       HttpAction<HttpGet> action = get("/constraint/ONE/2");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testSatisfiedConstraintPreventsRuleExecution()
+   public void testSatisfiedConstraintPreventsRuleExecution() throws Exception
    {
       HttpAction<HttpGet> action = get("/constraint/ONE/TWO");
       Assert.assertEquals(211, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testTransformModifiesIncomingValue()
+   public void testTransformModifiesIncomingValue() throws Exception
    {
       HttpAction<HttpGet> action = get("/constraint/ONE/TWO");
       Assert.assertEquals("ONE", action.getResponseHeaderValues("one").get(0));
@@ -67,7 +67,7 @@ public class RequestConstraintTransformTest extends RewriteTest
    }
 
    @Test
-   public void testTransformModifiesOutboundValue()
+   public void testTransformModifiesOutboundValue() throws Exception
    {
       HttpAction<HttpGet> action = get("/constraint/ONE/TWO");
       Assert.assertEquals(action.getContextPath() + "/outbound/three", action.getResponseHeaderValues("three").get(0));

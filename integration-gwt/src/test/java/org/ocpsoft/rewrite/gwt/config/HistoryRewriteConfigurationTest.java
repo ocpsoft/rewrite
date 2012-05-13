@@ -57,7 +57,7 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testContextPathNotServedFromGetRequest()
+   public void testContextPathNotServedFromGetRequest() throws Exception
    {
       HttpAction<HttpGet> action = get("/index.html?org.ocpsoft.rewrite.gwt.history.contextPath");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
@@ -66,7 +66,7 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testContextPathServedFromCookieOnNormalRequest()
+   public void testContextPathServedFromCookieOnNormalRequest() throws Exception
    {
       HttpAction<HttpGet> action = get("/index.html");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());

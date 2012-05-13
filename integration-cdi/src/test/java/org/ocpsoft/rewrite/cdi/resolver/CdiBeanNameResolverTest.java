@@ -43,7 +43,7 @@ public class CdiBeanNameResolverTest extends RewriteTest
    }
 
    @Test
-   public void testCdiBeanNameResolver()
+   public void testCdiBeanNameResolver() throws Exception
    {
       HttpAction<HttpGet> action = get("/name/christian");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());

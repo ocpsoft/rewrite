@@ -45,7 +45,7 @@ public class LifecycleControlTest extends RewriteTest
    }
 
    @Test
-   public void testAbort()
+   public void testAbort() throws Exception
    {
       HttpAction<HttpGet> action = get("/aborty");
       Assert.assertEquals(400, action.getStatusCode());
@@ -55,7 +55,7 @@ public class LifecycleControlTest extends RewriteTest
    }
 
    @Test
-   public void testHandled()
+   public void testHandled() throws Exception
    {
       HttpAction<HttpGet> action = get("/handley");
       Assert.assertEquals(401, action.getStatusCode());
@@ -65,7 +65,7 @@ public class LifecycleControlTest extends RewriteTest
    }
 
    @Test
-   public void testProceed()
+   public void testProceed() throws Exception
    {
       HttpAction<HttpGet> action = get("/proceedy");
       Assert.assertEquals(402, action.getStatusCode());

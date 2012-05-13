@@ -44,28 +44,28 @@ public class RelocatingConfigurationLoaderTest extends RewriteTest
    }
 
    @Test
-   public void testRelocatedRuleExecutesInNewOrderUp()
+   public void testRelocatedRuleExecutesInNewOrderUp() throws Exception
    {
       HttpAction<HttpGet> action = get("/priority");
       Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testRelocatedRuleExecutesInNewOrderDown()
+   public void testRelocatedRuleExecutesInNewOrderDown() throws Exception
    {
       HttpAction<HttpGet> action = get("/priority2");
       Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testRelocatedRuleExecutesInNewOrderUpUp()
+   public void testRelocatedRuleExecutesInNewOrderUpUp() throws Exception
    {
       HttpAction<HttpGet> action = get("/priority3");
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testRelocatedRulePriorityOverlapFollowsProviderPriorityOrder()
+   public void testRelocatedRulePriorityOverlapFollowsProviderPriorityOrder() throws Exception
    {
       HttpAction<HttpGet> action = get("/priority4");
       Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());

@@ -47,7 +47,7 @@ public class HttpConfigurationOrderTest extends RewriteTest
    }
 
    @Test
-   public void testLowerPriorityConfigsEvaluateFirst()
+   public void testLowerPriorityConfigsEvaluateFirst() throws Exception
    {
       HttpAction<HttpGet> action = get("/path");
       Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());

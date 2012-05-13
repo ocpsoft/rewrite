@@ -43,7 +43,7 @@ public class ConfigurationLoaderTest extends RewriteTest
    }
 
    @Test
-   public void testNullConfiguration()
+   public void testNullConfiguration() throws Exception
    {
       HttpAction<HttpGet> action = get("/index.html");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());

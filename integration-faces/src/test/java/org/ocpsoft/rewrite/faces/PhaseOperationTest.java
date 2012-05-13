@@ -48,7 +48,7 @@ public class PhaseOperationTest extends RewriteTest
    }
 
    @Test
-   public void testDeferOperationRestoreView()
+   public void testDeferOperationRestoreView() throws Exception
    {
       HttpAction<HttpGet> action = get("/empty.xhtml?adf=blah");
       String content = action.getResponseContent();
@@ -57,7 +57,7 @@ public class PhaseOperationTest extends RewriteTest
    }
 
    @Test
-   public void testDeferOperationRenderResponse()
+   public void testDeferOperationRenderResponse() throws Exception
    {
       HttpAction<HttpGet> action = get("/render_response");
       String content = action.getResponseContent();
@@ -66,7 +66,7 @@ public class PhaseOperationTest extends RewriteTest
    }
 
    @Test
-   public void testPhaseBindingDefersValue()
+   public void testPhaseBindingDefersValue() throws Exception
    {
       HttpAction<HttpGet> action = get("/binding/lincoln");
       String content = action.getResponseContent();
@@ -76,7 +76,7 @@ public class PhaseOperationTest extends RewriteTest
    }
 
    @Test
-   public void testPhaseBindingDefersValidationAndConversion()
+   public void testPhaseBindingDefersValidationAndConversion() throws Exception
    {
       HttpAction<HttpGet> action = get("/defer_validation/true");
       String content = action.getResponseContent();
@@ -85,7 +85,7 @@ public class PhaseOperationTest extends RewriteTest
    }
 
    @Test
-   public void testPhaseBindingDefersValidationAndConversionStillDisplays404Page()
+   public void testPhaseBindingDefersValidationAndConversionStillDisplays404Page() throws Exception
    {
       HttpAction<HttpGet> action = get("/defer_validation/false");
       action.getResponseContent();
@@ -93,7 +93,7 @@ public class PhaseOperationTest extends RewriteTest
    }
 
    @Test
-   public void testEagerValidationFailureDisplays404Page()
+   public void testEagerValidationFailureDisplays404Page() throws Exception
    {
       HttpAction<HttpGet> action = get("/eager_validation/false");
       action.getResponseContent();

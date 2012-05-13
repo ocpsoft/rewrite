@@ -45,7 +45,7 @@ public class JoinConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testUrlMappingConfiguration()
+   public void testUrlMappingConfiguration() throws Exception
    {
       HttpAction<HttpGet> action = get("/p/rewrite");
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
@@ -55,7 +55,7 @@ public class JoinConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testUrlMappingConfigurationWithoutInboundCorrection()
+   public void testUrlMappingConfigurationWithoutInboundCorrection() throws Exception
    {
       HttpAction<HttpGet> action = get("/viewProject.xhtml");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
@@ -64,7 +64,7 @@ public class JoinConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testUrlMappingConfigurationWithInboundCorrection()
+   public void testUrlMappingConfigurationWithInboundCorrection() throws Exception
    {
       HttpAction<HttpGet> action = get("/list.xhtml?p1=foo&p2=bar");
       Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
@@ -73,7 +73,7 @@ public class JoinConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testSubstitutionWithExtraQueryParams()
+   public void testSubstitutionWithExtraQueryParams() throws Exception
    {
       HttpAction<HttpGet> action = get("/1/querypath/2/?in=out");
       Assert.assertEquals(207, action.getResponse().getStatusLine().getStatusCode());

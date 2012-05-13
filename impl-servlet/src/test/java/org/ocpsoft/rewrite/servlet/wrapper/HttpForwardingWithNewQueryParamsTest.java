@@ -45,14 +45,14 @@ public class HttpForwardingWithNewQueryParamsTest extends RewriteTest
    }
 
    @Test
-   public void testForwardedParameterAddedToRequestParameterMap()
+   public void testForwardedParameterAddedToRequestParameterMap() throws Exception
    {
       HttpAction<HttpGet> action = get("/forward?foo=bar");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testRequestParameterConditionRequired()
+   public void testRequestParameterConditionRequired() throws Exception
    {
       HttpAction<HttpGet> action = get("/forward-fail?foo=bar");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());

@@ -55,7 +55,7 @@ public class SpringFeaturesTest extends RewriteTest
    }
 
    @Test
-   public void testSpringFeatures()
+   public void testSpringFeatures() throws Exception
    {
       HttpAction<HttpGet> action = get("/name-christian");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());

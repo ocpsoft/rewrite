@@ -44,21 +44,21 @@ public class HttpConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testConfigurationProviderForward()
+   public void testConfigurationProviderForward() throws Exception
    {
       HttpAction<HttpGet> action = get("/path");
       Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testConfigurationIngoresUnconfiguredRequests()
+   public void testConfigurationIngoresUnconfiguredRequests() throws Exception
    {
       HttpAction<HttpGet> action = get("/other");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testConfigurationProviderRedirect()
+   public void testConfigurationProviderRedirect() throws Exception
    {
       HttpAction<HttpGet> action = get("/redirect");
       Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());

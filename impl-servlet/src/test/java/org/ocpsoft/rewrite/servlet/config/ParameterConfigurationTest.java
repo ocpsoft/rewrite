@@ -45,7 +45,7 @@ public class ParameterConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testPathParameterRequestBinding()
+   public void testPathParameterRequestBinding() throws Exception
    {
       HttpAction<HttpGet> action = get("/lincoln/order/3");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
@@ -54,21 +54,21 @@ public class ParameterConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testTestPathParameterNotMatchingRegexes()
+   public void testTestPathParameterNotMatchingRegexes() throws Exception
    {
       HttpAction<HttpGet> action = get("/lincoln3/order/z42");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testTestPathAndForwardUseEvaluationContextByDefault()
+   public void testTestPathAndForwardUseEvaluationContextByDefault() throws Exception
    {
       HttpAction<HttpGet> action = get("/p/rewrite/story/50");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testFailedBindingRaisesException()
+   public void testFailedBindingRaisesException() throws Exception
    {
       HttpAction<HttpGet> action = get("/lincoln/profile");
       Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());

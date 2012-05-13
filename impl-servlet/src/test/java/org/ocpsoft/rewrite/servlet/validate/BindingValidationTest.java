@@ -44,21 +44,21 @@ public class BindingValidationTest extends RewriteTest
    }
 
    @Test
-   public void testConfigurationProviderForward()
+   public void testConfigurationProviderForward() throws Exception
    {
       HttpAction<HttpGet> action = get("/v/valid");
       Assert.assertEquals(205, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testConfigurationIngoresUnconfiguredRequests()
+   public void testConfigurationIngoresUnconfiguredRequests() throws Exception
    {
       HttpAction<HttpGet> action = get("/v/bar");
       Assert.assertEquals(206, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testConfigurationProviderRedirect()
+   public void testConfigurationProviderRedirect() throws Exception
    {
       HttpAction<HttpGet> action = get("/v/not-v4lid");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());

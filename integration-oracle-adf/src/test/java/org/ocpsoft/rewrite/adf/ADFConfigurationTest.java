@@ -45,7 +45,7 @@ public class ADFConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testUrlMappingConfiguration()
+   public void testUrlMappingConfiguration() throws Exception
    {
       HttpAction<HttpGet> action = get("/?adf=blah");
       Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());

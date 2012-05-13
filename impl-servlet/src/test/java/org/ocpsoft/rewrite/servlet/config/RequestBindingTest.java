@@ -45,7 +45,7 @@ public class RequestBindingTest extends RewriteTest
    }
 
    @Test
-   public void testRequestBinding()
+   public void testRequestBinding() throws Exception
    {
       HttpAction<HttpGet> action = get("/requestBinding/ONE/TWO");
       Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());

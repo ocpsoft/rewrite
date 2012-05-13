@@ -53,14 +53,14 @@ public class CdiMultipleFeaturesTest extends RewriteTest
     * RewriteProviderBridge
     */
    @Test
-   public void testRewriteProviderBridgeAcceptsChanges()
+   public void testRewriteProviderBridgeAcceptsChanges() throws Exception
    {
       HttpAction<HttpGet> action = get("/success");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testRewriteRedirect301()
+   public void testRewriteRedirect301() throws Exception
    {
       HttpAction<HttpGet> action = get("/redirect-301");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
@@ -71,7 +71,7 @@ public class CdiMultipleFeaturesTest extends RewriteTest
     * CdiServiceEnricher
     */
    @Test
-   public void testCdiServiceEnricherProvidesEnrichment()
+   public void testCdiServiceEnricherProvidesEnrichment() throws Exception
    {
       HttpAction<HttpGet> action = get("/cdi/inject");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
@@ -81,7 +81,7 @@ public class CdiMultipleFeaturesTest extends RewriteTest
     * CdiExpressionLanguageProvider
     */
    @Test
-   public void testParameterExpressionBinding()
+   public void testParameterExpressionBinding() throws Exception
    {
       HttpAction<HttpGet> action = get("/one/2");
       Assert.assertEquals("/2/one", action.getCurrentContextRelativeURL());
@@ -89,7 +89,7 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    }
 
    @Test
-   public void testParameterRegexValidationIgnoresInvalidInput1()
+   public void testParameterRegexValidationIgnoresInvalidInput1() throws Exception
    {
       HttpAction<HttpGet> action = get("/one/44");
       Assert.assertEquals("/one/44", action.getCurrentContextRelativeURL());
@@ -97,7 +97,7 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    }
 
    @Test
-   public void testParameterRegexValidationIgnoresInvalidInput2()
+   public void testParameterRegexValidationIgnoresInvalidInput2() throws Exception
    {
       HttpAction<HttpGet> action = get("/one/two");
       Assert.assertEquals("/one/two", action.getCurrentContextRelativeURL());

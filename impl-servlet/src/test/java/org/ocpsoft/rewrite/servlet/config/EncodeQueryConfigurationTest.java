@@ -45,14 +45,14 @@ public class EncodeQueryConfigurationTest extends RewriteTest
    }
 
    @Test
-   public void testQueryEncoding()
+   public void testQueryEncoding() throws Exception
    {
       HttpAction<HttpGet> action = get("/encodequery?foo=bar");
       Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testQueryEncodingUnchanged()
+   public void testQueryEncodingUnchanged() throws Exception
    {
       HttpAction<HttpGet> action = get("/encodequery");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());

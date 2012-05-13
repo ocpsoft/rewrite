@@ -59,8 +59,10 @@ public abstract class RewriteTestBase
     * automatically prepended to the given path.
     * <p>
     * E.g: A path of '/example' will be sent as '/rewrite-test/example'
+    * 
+    * @throws Exception
     */
-   protected HttpAction<HttpGet> get(final String path)
+   protected HttpAction<HttpGet> get(final String path) throws Exception
    {
       DefaultHttpClient client = new DefaultHttpClient();
       return get(client, path);
@@ -71,21 +73,16 @@ public abstract class RewriteTestBase
     * automatically prepended to the given path.
     * <p>
     * E.g: A path of '/example' will be sent as '/rewrite-test/example'
+    * 
+    * @throws Exception
     */
-   protected HttpAction<HttpGet> get(HttpClient client, String path)
+   protected HttpAction<HttpGet> get(HttpClient client, String path) throws Exception
    {
-      try
-      {
-         HttpGet request = new HttpGet(getBaseURL() + getContextPath() + path);
-         HttpContext context = new BasicHttpContext();
-         HttpResponse response = client.execute(request, context);
+      HttpGet request = new HttpGet(getBaseURL() + getContextPath() + path);
+      HttpContext context = new BasicHttpContext();
+      HttpResponse response = client.execute(request, context);
 
-         return new HttpAction<HttpGet>(client, context, request, response, getBaseURL(), getContextPath());
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
+      return new HttpAction<HttpGet>(client, context, request, response, getBaseURL(), getContextPath());
    }
 
    /**

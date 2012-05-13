@@ -17,7 +17,13 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import junit.framework.Assert;
 
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolException;
+import org.apache.http.client.RedirectStrategy;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,14 +31,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
-import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class CDNConfigurationTest extends RewriteTest
+public class SchemeChangeTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
@@ -40,20 +45,39 @@ public class CDNConfigurationTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, CDNConfigurationProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, SchemeChangeConfigurationProvider.class);
       return deployment;
    }
 
    @Test
-   public void testCDNRelocation() throws Exception
+   public void testRedirectToHttps()
    {
-      HttpAction<HttpGet> action = get("/relocate");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains(
-               "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"));
-      Assert.assertTrue(action.getResponseContent().contains(
-               "http://mycdn.com/foo-1.2.3.js"));
+      DefaultHttpClient client = new DefaultHttpClient();
+      client.setRedirectStrategy(new RedirectStrategy() {
 
+         @Override
+         public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context)
+                  throws ProtocolException
+         {
+            if (response.getFirstHeader("Location").getValue().contains("https"))
+               throw new RuntimeException("Success!");
+            return false;
+         }
+
+         @Override
+         public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context)
+                  throws ProtocolException
+         {
+            throw new IllegalStateException("Not implemented.");
+         }
+         
+      });
+      try {
+         get(client, "/login");
+      }
+      catch (Exception e) {
+         if (!e.getMessage().equals("Success!"))
+            Assert.fail();
+      }
    }
-
 }

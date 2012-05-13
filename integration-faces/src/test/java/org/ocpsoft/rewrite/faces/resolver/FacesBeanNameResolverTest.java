@@ -47,7 +47,7 @@ public class FacesBeanNameResolverTest extends RewriteTest
    }
 
    @Test
-   public void testFacesBeanNameResolverFeatures()
+   public void testFacesBeanNameResolverFeatures() throws Exception
    {
       HttpAction<HttpGet> action = get("/name/christian");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
