@@ -39,7 +39,7 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                 * Time based access control (only grants access during the first half of each minute)
                 */
                .addRule(Join.path("/{global}").to("/{global}.xhtml")
-                        .when(JodaTime.matches(timeGranted))
+                        .when(JodaTime.matches(timeGranted).and(DispatchType.isRequest()))
                         .withInboundCorrection())
 
                /*

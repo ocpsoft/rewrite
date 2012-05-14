@@ -5,7 +5,7 @@
    <modelVersion>4.0.0</modelVersion>
 
    <groupId>org.ocpsoft.rewrite.showcase</groupId>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>1.0.6-SNAPSHOT</version>
    <artifactId>rewrite-showcase-multi-domain</artifactId>
 
    <packaging>war</packaging>
