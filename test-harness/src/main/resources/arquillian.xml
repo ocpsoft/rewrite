@@ -9,20 +9,12 @@
       </protocol>
       <configuration>
          <property name="serverConfig">jbossas-managed-standalone.xml</property>
-         <property name="jbossHome">${project.baseDir}/target/jboss-as-7.1.1.Final/</property>
+         <property name="jbossHome">target/container/jboss-as-7.1.1.Final/</property>
          <property name="allowConnectingToRunningServer">true</property>
       </configuration>
    </container>
 
-   <!--
-    
-     Add this to $CATALINA_HOME/conf/tomcat-users.xml:
-
-       <role rolename="manager-script"/>
-       <user username="arquillian" password="arquillian" roles="manager-script"/>
-   
-    -->
-   <container qualifier="tomcat-managed-7">
+   <container qualifier="tomcat_managed">
       <configuration>
          <property name="catalinaHome">target/container/apache-tomcat-7</property>
          <property name="user">arquillian</property>
@@ -30,7 +22,7 @@
       </configuration>
    </container>
 
-   <container qualifier="glassfish-managed-3.1">
+   <container qualifier="glassfish_managed">
       <configuration>
          <property name="glassFishHome">target/container/glassfish3</property>
       </configuration>

@@ -304,7 +304,7 @@
                                  <version>${version.jbossas}</version>
                                  <type>zip</type>
                                  <overWrite>false</overWrite>
-                                 <outputDirectory>${project.baseDir}/target</outputDirectory>
+                                 <outputDirectory>target/container</outputDirectory>
                               </artifactItem>
                            </artifactItems>
                         </configuration>
@@ -315,11 +315,15 @@
                   <artifactId>maven-antrun-plugin</artifactId>
                   <executions>
                      <execution>
-                        <phase>process-test-classes</phase>
+                        <phase>generate-test-resources</phase>
                         <configuration>
-                           <tasks>
-                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="${project.baseDir}/target/jboss-as-7.1.1.Final/standalone/configuration"/>
-                           </tasks>
+                           <target>
+                              <mkdir dir="${container.download.dir}" />
+                              <get dest="${container.download.dir}/jboss-as-dist-${version.jbossas}.zip" verbose="true" skipexisting="true"
+                                 src="http://search.maven.org/remotecontent?filepath=org/jboss/as/jboss-as-dist/${version.jbossas}/jboss-as-dist-${version.jbossas}.zip" />
+                              <unzip src="${container.download.dir}/jboss-as-dist-${version.jbossas}.zip" dest="${project.build.directory}/container" />
+                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="target/container/jboss-as-${version.jbossas}/standalone/configuration"/>
+                           </target>
                         </configuration>
                         <goals>
                            <goal>run</goal>
@@ -395,7 +399,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <systemProperties>
-                        <arquillian.launch>glassfish-managed-3.1</arquillian.launch>
+                        <arquillian.launch>glassfish_managed</arquillian.launch>
                      </systemProperties>
                   </configuration>
                </plugin>
@@ -477,7 +481,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <systemProperties>
-                        <arquillian.launch>tomcat-managed-7</arquillian.launch>
+                        <arquillian.launch>tomcat_managed</arquillian.launch>
                         <rewrite.test.cdi>weld</rewrite.test.cdi>
                      </systemProperties>
                   </configuration>
@@ -516,7 +520,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <systemProperties>
-                        <arquillian.launch>tomcat-managed-7</arquillian.launch>
+                        <arquillian.launch>tomcat_managed</arquillian.launch>
                         <rewrite.test.cdi>owb</rewrite.test.cdi>
                      </systemProperties>
                   </configuration>

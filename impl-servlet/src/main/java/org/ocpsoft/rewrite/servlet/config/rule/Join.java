@@ -24,6 +24,7 @@ import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
+import org.ocpsoft.rewrite.config.Not;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -104,7 +105,7 @@ public class Join implements IJoin
       {
          requestPath.withRequestBinding();
 
-         if (requestPath.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
+         if (Not.any(DispatchType.isForward()).and(requestPath).evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
          {
             if (operation != null)
                context.addPreOperation(operation);
