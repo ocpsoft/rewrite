@@ -92,11 +92,24 @@ public class RewriteTest extends RewriteTestBase
       // Tomcat specific stuff
       if (isTomcat()) {
 
-         // add Weld dependency
-         archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
+         // setup Weld
+         if (isWeld()) {
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
+            archive.addAsWebResource("tomcat-weld-context.xml", "META-INF/context.xml");
+         }
 
-         // setup BeanManager in JNDI
-         archive.addAsWebResource("tomcat-context.xml", "META-INF/context.xml");
+         // setup OWB
+         if (isOWB()) {
+            archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api:1.0-SP4"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-impl:1.1.4"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-web:1.1.4"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-spi:1.1.4"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-resource:1.1.4"));
+            archive.addAsWebResource("tomcat-owb-context.xml", "META-INF/context.xml");
+         }
+
+         // setup Mojarra
+         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"));
 
          // make it a CDI archive
          archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
@@ -122,14 +135,24 @@ public class RewriteTest extends RewriteTestBase
    {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       try {
-         classLoader.loadClass("org.jboss.arquillian.container.tomcat.embedded_7.TomcatContainer");
+         classLoader.loadClass("org.jboss.arquillian.container.tomcat.managed_7.TomcatManagedContainer");
          return true;
       }
       catch (ClassNotFoundException e) {
          return false;
       }
    }
-   
+
+   public static boolean isWeld()
+   {
+      return "weld".equalsIgnoreCase(System.getProperty("rewrite.test.cdi"));
+   }
+
+   public static boolean isOWB()
+   {
+      return "owb".equalsIgnoreCase(System.getProperty("rewrite.test.cdi"));
+   }
+
    protected static JavaArchive getContainerArchive()
    {
 
@@ -142,7 +165,12 @@ public class RewriteTest extends RewriteTestBase
       
       if (isTomcat())
       {
-         archive.addAsManifestResource("tomcat-web-fragment.xml", "web-fragment.xml");
+         if (isWeld()) {
+            archive.addAsManifestResource("tomcat-weld-web-fragment.xml", "web-fragment.xml");
+         }
+         if (isOWB()) {
+            archive.addAsManifestResource("tomcat-owb-web-fragment.xml", "web-fragment.xml");
+         }
       }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");

@@ -13,10 +13,27 @@
          <property name="allowConnectingToRunningServer">true</property>
       </configuration>
    </container>
+
+   <!--
+    
+     Add this to $CATALINA_HOME/conf/tomcat-users.xml:
+
+       <role rolename="manager-script"/>
+       <user username="arquillian" password="arquillian" roles="manager-script"/>
    
-   <container qualifier="jetty">
+    -->
+   <container qualifier="tomcat-managed-7">
       <configuration>
+         <property name="catalinaHome">target/container/apache-tomcat-7</property>
+         <property name="user">arquillian</property>
+         <property name="pass">arquillian</property>
       </configuration>
    </container>
-   
+
+   <container qualifier="glassfish-managed-3.1">
+      <configuration>
+         <property name="glassFishHome">target/container/glassfish3</property>
+      </configuration>
+   </container>
+
 </arquillian>
