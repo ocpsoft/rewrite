@@ -34,7 +34,7 @@
     </repository>
   </repositories>
   <build>
-    <finalName>composite-query</finalName>
+    <finalName>mega-rewrite</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
