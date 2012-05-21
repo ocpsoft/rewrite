@@ -19,14 +19,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class LessEngineTest
+public class LessTest
 {
 
    @Test
    public void testCalculation()
    {
       String input = ".class { width: 1 + 1 }";
-      String output = new LessEngine().process(input);
+      String output = new Less().render(input);
       assertSameCSS(".class { width: 2; }", output);
    }
 
@@ -34,7 +34,7 @@ public class LessEngineTest
    public void testVariables()
    {
       String input = "@nice-blue: #5B83AD;\n.myblue{ color: @nice-blue; }";
-      String output = new LessEngine().process(input);
+      String output = new Less().render(input);
       assertSameCSS(".myblue { color: #5B83AD; }", output);
    }
 
@@ -42,7 +42,7 @@ public class LessEngineTest
    public void testMixins()
    {
       String input = ".bordered { border: 1px solid red; }\n.navigation { .bordered }\n";
-      String output = new LessEngine().process(input);
+      String output = new Less().render(input);
       assertSameCSS(".bordered{ border: 1px solid red; }\n.navigation{ border: 1px solid red; }\n", output);
    }
 

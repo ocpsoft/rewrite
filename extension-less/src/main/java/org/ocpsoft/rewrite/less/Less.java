@@ -19,107 +19,82 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
-import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.config.Rule;
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+import org.ocpsoft.rewrite.render.StringRenderer;
 
-/**
- * 
- * Implementation of {@link Rule} that renders LESS files to CSS.
- * 
- * @author Christian Kaltepoth
- * 
- */
-public class Less implements Rule
+public class Less extends StringRenderer
 {
 
-   private final Logger log = Logger.getLogger(Less.class);
+   private final String baseScript;
 
-   private final String suffix;
-
-   private final LessEngine lessEngine = new LessEngine();
-
-   public static Less fileType(String fileType)
+   public Less()
    {
-      return new Less("." + fileType);
-   }
-
-   private Less(String suffix)
-   {
-      this.suffix = suffix;
+      StringBuilder scriptBuilder = new StringBuilder();
+      scriptBuilder.append("function print(s) {}"); // required by env.rhino
+      scriptBuilder.append(getClasspathResourceAsString("env.rhino.1.2.js"));
+      scriptBuilder.append(getClasspathResourceAsString("less-1.3.0.min.js"));
+      scriptBuilder.append(getClasspathResourceAsString("api.js"));
+      baseScript = scriptBuilder.toString();
    }
 
    @Override
-   public String getId()
+   public String defaultFileType()
    {
+      return "css";
+   }
+
+   @Override
+   public String render(String less)
+   {
+
+      Context context = Context.enter();
+
+      try {
+
+         context.setOptimizationLevel(-1);
+         context.setLanguageVersion(Context.VERSION_1_8);
+
+         Scriptable scope = context.initStandardObjects();
+
+         String script = new StringBuilder(baseScript)
+                  .append("lessToCss('")
+                  .append(escape(less))
+                  .append("');")
+                  .toString();
+
+         Object result = context.evaluateString(scope, script, this.getClass().getSimpleName(), 1, null);
+
+         if (result != null) {
+            return result.toString();
+         }
+
+      }
+      finally {
+         Context.exit();
+      }
       return null;
-   }
-
-   @Override
-   public boolean evaluate(Rewrite event, EvaluationContext context)
-   {
-
-      // rendering effects only inbound requests
-      if (event instanceof HttpInboundServletRewrite) {
-
-         // the rule matches if the path ends with the suffix
-         String path = ((HttpInboundServletRewrite) event).getRequestPath();
-         if (path.endsWith(suffix)) {
-            return true;
-         }
-
-      }
-
-      return false;
 
    }
 
-   @Override
-   public void perform(Rewrite event, EvaluationContext context)
+   private static String getClasspathResourceAsString(String resource)
    {
-
-      // rendering effects only inbound requests
-      if (event instanceof HttpInboundServletRewrite) {
-
-         HttpInboundServletRewrite inboundRewrite = (HttpInboundServletRewrite) event;
-
-         // try to load the accessed LESS source
-         ServletContext servletContext = inboundRewrite.getRequest().getServletContext();
-         InputStream inputStream = servletContext.getResourceAsStream(inboundRewrite.getRequestPath());
-
-         // proceed only if requested resource has been found
-         if (inputStream != null) {
-
-            // IO errors must be handled here
-            try {
-
-               // read the LESS source and render it to CSS
-               String lessData = IOUtils.toString(inputStream);
-               String cssData = lessEngine.process(lessData);
-
-               // write the CSS to the client
-               HttpServletResponse response = inboundRewrite.getResponse();
-               response.getOutputStream().write(cssData.getBytes(Charset.forName("UTF8")));
-               response.flushBuffer();
-
-               // the application doesn't need to process the request anymore
-               inboundRewrite.abort();
-
-            }
-            catch (IOException e) {
-               log.error("Failed to process LESS file", e);
-            }
-
+      try {
+         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+         if (inputStream == null) {
+            throw new IllegalStateException("Could not find resource on the classpath: " + resource);
          }
-
+         return IOUtils.toString(inputStream, Charset.forName("UTF-8"));
       }
+      catch (IOException e) {
+         throw new IllegalArgumentException(e);
+      }
+   }
 
+   private String escape(String s)
+   {
+      return s.replace("\r", "").replace("\n", "\\n");
    }
 
 }
