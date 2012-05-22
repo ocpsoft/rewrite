@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.render;
+package org.ocpsoft.rewrite.transform;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface Renderer
+public interface Transformer
 {
 
    void render(InputStream input, OutputStream output) throws IOException;

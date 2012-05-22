@@ -52,7 +52,7 @@
       <module>api-el</module>
       <module>api-servlet</module>
       <module>impl-servlet</module>
-      <module>extension-less</module>
+      <module>transform</module>
       <module>integration-cdi</module>
       <module>integration-faces</module>
       <module>integration-oracle-adf</module>

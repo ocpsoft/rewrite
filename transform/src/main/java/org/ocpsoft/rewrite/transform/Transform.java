@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.render;
+package org.ocpsoft.rewrite.transform;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,24 +27,24 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
-public class Render implements Rule
+public class Transform implements Rule
 {
 
-   private final Logger log = Logger.getLogger(Render.class);
+   private final Logger log = Logger.getLogger(Transform.class);
 
-   private final Renderer renderer;
+   private final Transformer renderer;
 
    private String suffix;
 
-   public static Render with(Renderer renderer)
+   public static Transform with(Transformer renderer)
    {
-      return new Render(renderer);
+      return new Transform(renderer);
    }
 
-   public static Render with(Class<? extends Renderer> rendererType)
+   public static Transform with(Class<? extends Transformer> rendererType)
    {
       try {
-         return new Render(rendererType.newInstance());
+         return new Transform(rendererType.newInstance());
       }
       catch (InstantiationException e) {
          throw new IllegalArgumentException(e);
@@ -54,13 +54,13 @@ public class Render implements Rule
       }
    }
 
-   private Render(Renderer renderer)
+   private Transform(Transformer renderer)
    {
       this.renderer = renderer;
       fileType(renderer.defaultFileType());
    }
 
-   public Render fileType(String fileType)
+   public Transform fileType(String fileType)
    {
       this.suffix = "." + fileType;
       return this;

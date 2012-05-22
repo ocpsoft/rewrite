@@ -9,7 +9,7 @@
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-extension-less</artifactId>
+   <artifactId>rewrite-transform</artifactId>
 
    <dependencies>
 
@@ -25,13 +25,14 @@
          <scope>provided</scope>
       </dependency>
 
+      <!-- LESS should be moved to a separate module later -->
       <dependency>
          <groupId>org.mozilla</groupId>
          <artifactId>rhino</artifactId>
          <version>1.7R3</version>
       </dependency>
 
-      <!-- TODO: Remove later -->
+      <!-- TODO: use ocpsoft commons -->
       <dependency>
          <groupId>commons-io</groupId>
          <artifactId>commons-io</artifactId>

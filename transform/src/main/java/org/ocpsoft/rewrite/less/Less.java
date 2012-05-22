@@ -22,9 +22,9 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
-import org.ocpsoft.rewrite.render.StringRenderer;
+import org.ocpsoft.rewrite.transform.StringTransformer;
 
-public class Less extends StringRenderer
+public class Less extends StringTransformer
 {
 
    private final String baseScript;

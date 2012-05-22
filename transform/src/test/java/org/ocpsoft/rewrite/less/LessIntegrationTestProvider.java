@@ -20,8 +20,8 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
-import org.ocpsoft.rewrite.render.Render;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.transform.Transform;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class LessIntegrationTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .addRule(Render.with(Less.class).fileType("less"));
+               .addRule(Transform.with(Less.class).fileType("less"));
    }
 
 }

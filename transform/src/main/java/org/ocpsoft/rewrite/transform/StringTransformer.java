@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.render;
+package org.ocpsoft.rewrite.transform;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 
-public abstract class StringRenderer implements Renderer
+public abstract class StringTransformer implements Transformer
 {
 
    private static final Charset UTF8 = Charset.forName("UTF8");
