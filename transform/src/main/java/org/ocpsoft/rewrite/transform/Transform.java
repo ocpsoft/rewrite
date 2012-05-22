@@ -22,9 +22,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 
 public class Transform implements Rule
@@ -32,19 +34,29 @@ public class Transform implements Rule
 
    private final Logger log = Logger.getLogger(Transform.class);
 
-   private final Transformer renderer;
+   private final Condition condition;
 
-   private String suffix;
+   private Transformer transformer;
 
-   public static Transform with(Transformer renderer)
+   public static Transform request(Condition condition)
    {
-      return new Transform(renderer);
+      return new Transform(condition);
    }
 
-   public static Transform with(Class<? extends Transformer> rendererType)
+   public static Transform request(String fileType)
+   {
+      return request(Path.matches("{something}"+fileType).where("something").matches(".*"));
+   }
+
+   public Transform(Condition condition)
+   {
+      this.condition = condition;
+   }
+
+   public Transform apply(Class<? extends Transformer> transformerType)
    {
       try {
-         return new Transform(rendererType.newInstance());
+         return apply(transformerType.newInstance());
       }
       catch (InstantiationException e) {
          throw new IllegalArgumentException(e);
@@ -54,15 +66,9 @@ public class Transform implements Rule
       }
    }
 
-   private Transform(Transformer renderer)
+   public Transform apply(Transformer transformer)
    {
-      this.renderer = renderer;
-      fileType(renderer.defaultFileType());
-   }
-
-   public Transform fileType(String fileType)
-   {
-      this.suffix = "." + fileType;
+      this.transformer = transformer;
       return this;
    }
 
@@ -78,13 +84,7 @@ public class Transform implements Rule
 
       // rendering effects only inbound requests
       if (event instanceof HttpInboundServletRewrite) {
-
-         // the rule matches if the path ends with the suffix
-         String path = ((HttpInboundServletRewrite) event).getRequestPath();
-         if (path.endsWith(suffix)) {
-            return true;
-         }
-
+         return condition.evaluate(event, context);
       }
 
       return false;
@@ -112,7 +112,7 @@ public class Transform implements Rule
 
                // run the rendering process
                HttpServletResponse response = inboundRewrite.getResponse();
-               renderer.render(inputStream, response.getOutputStream());
+               transformer.transform(inputStream, response.getOutputStream());
                response.flushBuffer();
 
                // the application doesn't need to process the request anymore

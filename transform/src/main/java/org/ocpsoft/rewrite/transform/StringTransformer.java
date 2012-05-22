@@ -30,7 +30,7 @@ public abstract class StringTransformer implements Transformer
    public abstract String render(String input);
 
    @Override
-   public void render(InputStream inputStream, OutputStream outputStream) throws IOException
+   public void transform(InputStream inputStream, OutputStream outputStream) throws IOException
    {
       String input = IOUtils.toString(inputStream, UTF8);
       String output = render(input);

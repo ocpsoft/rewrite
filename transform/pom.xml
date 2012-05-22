@@ -25,6 +25,11 @@
          <scope>provided</scope>
       </dependency>
 
+      <dependency>
+         <groupId>org.ocpsoft.common</groupId>
+         <artifactId>common-api</artifactId>
+      </dependency>
+
       <!-- LESS should be moved to a separate module later -->
       <dependency>
          <groupId>org.mozilla</groupId>

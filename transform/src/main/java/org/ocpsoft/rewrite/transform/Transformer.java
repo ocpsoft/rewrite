@@ -21,9 +21,5 @@ import java.io.OutputStream;
 
 public interface Transformer
 {
-
-   void render(InputStream input, OutputStream output) throws IOException;
-
-   String defaultFileType();
-
+   void transform(InputStream input, OutputStream output) throws IOException;
 }

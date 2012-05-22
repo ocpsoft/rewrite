@@ -40,12 +40,6 @@ public class Less extends StringTransformer
    }
 
    @Override
-   public String defaultFileType()
-   {
-      return "css";
-   }
-
-   @Override
    public String render(String less)
    {
 

@@ -43,7 +43,7 @@ public class LessIntegrationTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .addRule(Transform.with(Less.class).fileType("less"));
+               .addRule(Transform.request(".less").apply(Less.class));
    }
 
 }
