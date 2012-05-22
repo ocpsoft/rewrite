@@ -22,6 +22,7 @@ import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.transform.Transform;
+import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**
  * 
@@ -43,7 +44,9 @@ public class LessIntegrationTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .addRule(Transform.request(".less").apply(Less.class));
+               .addRule(Transform.request(".css")
+                        .resolvedBy(WebResourceResolver.fileType(".less"))
+                        .apply(Less.class));
    }
 
 }

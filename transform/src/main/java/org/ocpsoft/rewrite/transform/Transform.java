@@ -28,6 +28,8 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import org.ocpsoft.rewrite.transform.resolve.ResourceResolver;
+import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 public class Transform implements Rule
 {
@@ -36,6 +38,8 @@ public class Transform implements Rule
 
    private final Condition condition;
 
+   private ResourceResolver resourceResolver = WebResourceResolver.identity();
+   
    private Transformer transformer;
 
    public static Transform request(Condition condition)
@@ -71,6 +75,11 @@ public class Transform implements Rule
       this.transformer = transformer;
       return this;
    }
+   
+   public Transform resolvedBy(ResourceResolver resourceResolver) {
+      this.resourceResolver = resourceResolver;
+      return this;
+   }
 
    @Override
    public String getId()
@@ -101,8 +110,7 @@ public class Transform implements Rule
          HttpInboundServletRewrite inboundRewrite = (HttpInboundServletRewrite) event;
 
          // try to load the underlying resource
-         ServletContext servletContext = inboundRewrite.getRequest().getServletContext();
-         InputStream inputStream = servletContext.getResourceAsStream(inboundRewrite.getRequestPath());
+         InputStream inputStream = resourceResolver.getResource(event, context);
 
          // proceed only if requested resource has been found
          if (inputStream != null) {

@@ -50,7 +50,7 @@ public class LessIntegrationTest extends RewriteTest
    @Test
    public void testSimpleLessFileRendering() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.less");
+      HttpAction<HttpGet> action = get("/test.css");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       assertTrue(action.getResponseContent().contains("width: 3"));
    }
@@ -58,7 +58,7 @@ public class LessIntegrationTest extends RewriteTest
    @Test
    public void testNotExistingLessFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.less");
+      HttpAction<HttpGet> action = get("/not-existing.css");
       assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 
