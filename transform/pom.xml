@@ -37,6 +37,12 @@
          <version>1.7R3</version>
       </dependency>
 
+      <dependency>
+         <groupId>com.yahoo.platform.yui</groupId>
+         <artifactId>yuicompressor</artifactId>
+         <version>2.4.6</version>
+      </dependency>
+
       <!-- TODO: use ocpsoft commons -->
       <dependency>
          <groupId>commons-io</groupId>
