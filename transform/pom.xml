@@ -31,19 +31,22 @@
       </dependency>
 
       <!-- LESS should be moved to a separate module later -->
-      <!-- Note: Removed for now because yuicompressor provides this dependency -->
-      <!--
       <dependency>
          <groupId>org.mozilla</groupId>
          <artifactId>rhino</artifactId>
          <version>1.7R3</version>
       </dependency>
-       -->
 
       <dependency>
          <groupId>com.yahoo.platform.yui</groupId>
          <artifactId>yuicompressor</artifactId>
          <version>2.4.6</version>
+         <exclusions>
+            <exclusion>
+               <artifactId>js</artifactId>
+               <groupId>rhino</groupId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <!-- TODO: use ocpsoft commons -->
