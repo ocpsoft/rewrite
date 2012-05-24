@@ -48,7 +48,7 @@ public class Less extends StringTransformer
       try {
 
          context.setOptimizationLevel(-1);
-         context.setLanguageVersion(Context.VERSION_1_8);
+         context.setLanguageVersion(Context.VERSION_1_6);
 
          Scriptable scope = context.initStandardObjects();
 
