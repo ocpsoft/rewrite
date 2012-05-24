@@ -47,7 +47,7 @@ public class CssCompressTest extends RewriteTest
    }
 
    @Test
-   public void testSimpleLessFileRendering() throws Exception
+   public void testCssFileCompression() throws Exception
    {
       HttpAction<HttpGet> action = get("/test.css");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
@@ -55,7 +55,7 @@ public class CssCompressTest extends RewriteTest
    }
 
    @Test
-   public void testNotExistingLessFile() throws Exception
+   public void testNotExistingSourceFile() throws Exception
    {
       HttpAction<HttpGet> action = get("/not-existing.css");
       assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
