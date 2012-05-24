@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.less;
+package org.ocpsoft.rewrite.transform.less;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.ocpsoft.rewrite.transform.less.Less;
 
 public class LessTest
 {
@@ -26,7 +27,7 @@ public class LessTest
    public void testCalculation()
    {
       String input = ".class { width: 1 + 1 }";
-      String output = new Less().render(input);
+      String output = new Less().transform(input);
       assertSameCSS(".class { width: 2; }", output);
    }
 
@@ -34,7 +35,7 @@ public class LessTest
    public void testVariables()
    {
       String input = "@nice-blue: #5B83AD;\n.myblue{ color: @nice-blue; }";
-      String output = new Less().render(input);
+      String output = new Less().transform(input);
       assertSameCSS(".myblue { color: #5B83AD; }", output);
    }
 
@@ -42,7 +43,7 @@ public class LessTest
    public void testMixins()
    {
       String input = ".bordered { border: 1px solid red; }\n.navigation { .bordered }\n";
-      String output = new Less().render(input);
+      String output = new Less().transform(input);
       assertSameCSS(".bordered{ border: 1px solid red; }\n.navigation{ border: 1px solid red; }\n", output);
    }
 

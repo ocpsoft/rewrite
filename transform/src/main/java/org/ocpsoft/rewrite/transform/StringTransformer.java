@@ -27,13 +27,13 @@ public abstract class StringTransformer implements Transformer
 
    private static final Charset UTF8 = Charset.forName("UTF8");
 
-   public abstract String render(String input);
+   public abstract String transform(String input);
 
    @Override
    public void transform(InputStream inputStream, OutputStream outputStream) throws IOException
    {
       String input = IOUtils.toString(inputStream, UTF8);
-      String output = render(input);
+      String output = transform(input);
       outputStream.write(output.getBytes(UTF8));
    }
 

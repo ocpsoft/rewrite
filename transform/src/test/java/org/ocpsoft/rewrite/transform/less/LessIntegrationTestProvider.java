@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.less;
+package org.ocpsoft.rewrite.transform.less;
 
 import javax.servlet.ServletContext;
 
@@ -22,6 +22,7 @@ import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.transform.Transform;
+import org.ocpsoft.rewrite.transform.less.Less;
 import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**

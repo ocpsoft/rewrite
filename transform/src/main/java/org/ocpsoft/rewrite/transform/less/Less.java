@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.less;
+package org.ocpsoft.rewrite.transform.less;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +40,7 @@ public class Less extends StringTransformer
    }
 
    @Override
-   public String render(String less)
+   public String transform(String less)
    {
 
       Context context = Context.enter();

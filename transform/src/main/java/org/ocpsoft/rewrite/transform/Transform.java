@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.transform;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.logging.Logger;
