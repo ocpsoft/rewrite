@@ -53,6 +53,8 @@
       <module>api-servlet</module>
       <module>impl-servlet</module>
       <module>transform</module>
+      <module>transform-less</module>
+      <module>transform-minify</module>
       <module>integration-cdi</module>
       <module>integration-faces</module>
       <module>integration-oracle-adf</module>
@@ -149,6 +151,11 @@
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-integration-cdi</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-transform</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>

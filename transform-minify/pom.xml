@@ -9,7 +9,7 @@
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-transform</artifactId>
+   <artifactId>rewrite-transform-minify</artifactId>
 
    <dependencies>
 
@@ -20,14 +20,25 @@
       </dependency>
 
       <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-transform</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.ocpsoft.common</groupId>
+         <artifactId>common-api</artifactId>
+      </dependency>
+
+      <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
          <scope>provided</scope>
       </dependency>
 
       <dependency>
-         <groupId>org.ocpsoft.common</groupId>
-         <artifactId>common-api</artifactId>
+         <groupId>com.yahoo.platform.yui</groupId>
+         <artifactId>yuicompressor</artifactId>
+         <version>2.4.6</version>
       </dependency>
 
       <dependency>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.transform.yui;
+package org.ocpsoft.rewrite.transform.minify;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,44 +22,43 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+import org.ocpsoft.rewrite.transform.minify.CssCompress;
 
 /**
  * 
- * Integration test for {@link JsCompress}.
+ * Integration test for {@link CssCompress}.
  * 
  * @author Christian Kaltepoth
  * 
  */
 @RunWith(Arquillian.class)
-public class JsCompressTest extends RewriteTest
+public class CssCompressTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()
-               .addAsWebResource(new StringAsset("var text = \"hello\";\n\nalert(text);"), "test.js")
-               .addAsServiceProvider(ConfigurationProvider.class, JsCompressTestProvider.class);
+               .addAsWebResource(new StringAsset(".class {\n  width : 100px;\n}"), "test.css")
+               .addAsServiceProvider(ConfigurationProvider.class, CssCompressTestProvider.class);
    }
 
    @Test
-   @Ignore // Rhino version conflict
-   public void testJavaScriptCompression() throws Exception
+   public void testCssFileCompression() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.js");
+      HttpAction<HttpGet> action = get("/test.css");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      assertEquals("var text=\"hello\";alert(text);", action.getResponseContent());
+      assertEquals(".class{width:100px}", action.getResponseContent());
    }
 
    @Test
    public void testNotExistingSourceFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.js");
+      HttpAction<HttpGet> action = get("/not-existing.css");
       assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.transform.yui;
+package org.ocpsoft.rewrite.transform.minify;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,34 +30,34 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * 
- * Integration test for {@link CssCompress}.
+ * Integration test for {@link JsCompress}.
  * 
  * @author Christian Kaltepoth
  * 
  */
 @RunWith(Arquillian.class)
-public class CssCompressTest extends RewriteTest
+public class JsCompressTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()
-               .addAsWebResource(new StringAsset(".class {\n  width : 100px;\n}"), "test.css")
-               .addAsServiceProvider(ConfigurationProvider.class, CssCompressTestProvider.class);
+               .addAsWebResource(new StringAsset("var text = \"hello\";\n\nalert(text);"), "test.js")
+               .addAsServiceProvider(ConfigurationProvider.class, JsCompressTestProvider.class);
    }
 
    @Test
-   public void testCssFileCompression() throws Exception
+   public void testJavaScriptCompression() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.css");
+      HttpAction<HttpGet> action = get("/test.js");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      assertEquals(".class{width:100px}", action.getResponseContent());
+      assertEquals("var text=\"hello\";alert(text);", action.getResponseContent());
    }
 
    @Test
    public void testNotExistingSourceFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.css");
+      HttpAction<HttpGet> action = get("/not-existing.js");
       assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 

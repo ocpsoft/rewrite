@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
-import org.ocpsoft.rewrite.transform.less.Less;
 
 /**
  * 
