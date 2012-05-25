@@ -37,9 +37,9 @@ public class Transform implements Rule
 
    private final Condition condition;
 
-   private ResourceResolver resourceResolver = WebResourceResolver.identity();
-   
-   private Transformer transformer;
+   private ResourceResolver resolver = WebResourceResolver.identity();
+
+   private Pipeline pipeline = new Pipeline();
 
    public static Transform request(Condition condition)
    {
@@ -48,7 +48,7 @@ public class Transform implements Rule
 
    public static Transform request(String fileType)
    {
-      return request(Path.matches("{something}"+fileType).where("something").matches(".*"));
+      return request(Path.matches("{something}" + fileType).where("something").matches(".*"));
    }
 
    public Transform(Condition condition)
@@ -69,14 +69,44 @@ public class Transform implements Rule
       }
    }
 
-   public Transform apply(Transformer transformer)
+   public Transform apply(Class<? extends Transformer> first, Class<? extends Transformer> second,
+            Class<? extends Transformer> third)
    {
-      this.transformer = transformer;
+      apply(first);
+      apply(second);
+      apply(third);
       return this;
    }
-   
-   public Transform resolvedBy(ResourceResolver resourceResolver) {
-      this.resourceResolver = resourceResolver;
+
+   public Transform apply(Class<? extends Transformer> first, Class<? extends Transformer> second)
+   {
+      apply(first);
+      apply(second);
+      return this;
+   }
+
+   /*
+    * invoking this one will create compiler warnings :(
+    */
+   public Transform apply(Class<? extends Transformer>... transformerTypes)
+   {
+      for (Class<? extends Transformer> transformerType : transformerTypes) {
+         apply(transformerType);
+      }
+      return this;
+   }
+
+   public Transform apply(Transformer... transformers)
+   {
+      for (Transformer transformer : transformers) {
+         pipeline.add(transformer);
+      }
+      return this;
+   }
+
+   public Transform resolvedBy(ResourceResolver resourceResolver)
+   {
+      this.resolver = resourceResolver;
       return this;
    }
 
@@ -109,7 +139,7 @@ public class Transform implements Rule
          HttpInboundServletRewrite inboundRewrite = (HttpInboundServletRewrite) event;
 
          // try to load the underlying resource
-         InputStream inputStream = resourceResolver.getResource(event, context);
+         InputStream inputStream = resolver.getResource(event, context);
 
          // proceed only if requested resource has been found
          if (inputStream != null) {
@@ -119,7 +149,7 @@ public class Transform implements Rule
 
                // run the rendering process
                HttpServletResponse response = inboundRewrite.getResponse();
-               transformer.transform(inputStream, response.getOutputStream());
+               pipeline.transform(inputStream, response.getOutputStream());
                response.flushBuffer();
 
                // the application doesn't need to process the request anymore
