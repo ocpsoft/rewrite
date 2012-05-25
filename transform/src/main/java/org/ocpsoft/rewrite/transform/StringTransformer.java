@@ -15,12 +15,13 @@
  */
 package org.ocpsoft.rewrite.transform;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.IOUtils;
+import org.ocpsoft.common.util.Streams;
 
 public abstract class StringTransformer implements Transformer
 {
@@ -32,9 +33,18 @@ public abstract class StringTransformer implements Transformer
    @Override
    public void transform(InputStream inputStream, OutputStream outputStream) throws IOException
    {
-      String input = IOUtils.toString(inputStream, UTF8);
+
+      // read input stream and store it in a string
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      Streams.copy(inputStream, bos);
+      String input = new String(bos.toByteArray(), Charset.forName("UTF-8"));
+
+      // perform internal transformation
       String output = transform(input);
+
+      // write result to the output stream
       outputStream.write(output.getBytes(UTF8));
+
    }
 
 }

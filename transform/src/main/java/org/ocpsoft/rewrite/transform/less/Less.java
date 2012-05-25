@@ -15,13 +15,13 @@
  */
 package org.ocpsoft.rewrite.transform.less;
 
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 
 public class Less extends StringTransformer
@@ -74,16 +74,13 @@ public class Less extends StringTransformer
 
    private static String getClasspathResourceAsString(String resource)
    {
-      try {
-         InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-         if (inputStream == null) {
-            throw new IllegalStateException("Could not find resource on the classpath: " + resource);
-         }
-         return IOUtils.toString(inputStream, Charset.forName("UTF-8"));
+      InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+      if (input == null) {
+         throw new IllegalStateException("Could not find resource on the classpath: " + resource);
       }
-      catch (IOException e) {
-         throw new IllegalArgumentException(e);
-      }
+      ByteArrayOutputStream output = new ByteArrayOutputStream();
+      Streams.copy(input, output);
+      return new String(output.toByteArray(), Charset.forName("UTF-8"));
    }
 
    private String escape(String s)
