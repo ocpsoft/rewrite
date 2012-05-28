@@ -26,8 +26,8 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <version.jboss.spec>3.0.0.Final</version.jboss.spec>
       <version.junit>4.8.1</version.junit>
-      <version.common>1.0.4.Final</version.common>
-      <version.logging>1.0.1.Final</version.logging>
+      <version.common>1.0.5.Final</version.common>
+      <version.logging>1.0.2.Final</version.logging>
       <version.arquillian>1.0.0.Final</version.arquillian>
       <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
       <version.arquillian.glassfish>1.0.0.CR3</version.arquillian.glassfish>

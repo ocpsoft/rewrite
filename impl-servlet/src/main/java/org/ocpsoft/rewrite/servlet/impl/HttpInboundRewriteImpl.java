@@ -20,6 +20,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
@@ -190,7 +191,8 @@ implements HttpInboundServletRewrite
    @Override
    public String getRequestQueryString()
    {
-      return getRequest().getQueryString() == null ? "" : QueryStringBuilder.createFrom(getRequest().getQueryString())
+      String query = getRequest().getQueryString();
+      return Strings.isNullOrEmpty(query) ? "" : QueryStringBuilder.createFrom(query)
                .decode().toQueryString().substring(1);
    }
 

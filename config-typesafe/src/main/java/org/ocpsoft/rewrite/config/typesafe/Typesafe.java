@@ -35,7 +35,7 @@ public class Typesafe implements Operation
    {
       if (factories == null)
       {
-         factories = Iterators.asUniqueList(ServiceLoader.load(InstanceFactory.class));
+         factories = Iterators.asList(ServiceLoader.load(InstanceFactory.class));
          Collections.sort(factories, new WeightedComparator());
          ServiceLogger.logLoadedServices(log, InstanceFactory.class, factories);
       }

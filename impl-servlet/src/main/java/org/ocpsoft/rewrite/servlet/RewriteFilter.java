@@ -72,11 +72,11 @@ public class RewriteFilter implements Filter
    {
       log.info("RewriteFilter starting up...");
 
-      listeners = Iterators.asUniqueList(ServiceLoader.load(RewriteLifecycleListener.class));
-      wrappers = Iterators.asUniqueList(ServiceLoader.load(RequestCycleWrapper.class));
-      providers = Iterators.asUniqueList(ServiceLoader.load(RewriteProvider.class));
-      inbound = Iterators.asUniqueList(ServiceLoader.load(InboundRewriteProducer.class));
-      outbound = Iterators.asUniqueList(ServiceLoader.load(OutboundRewriteProducer.class));
+      listeners = Iterators.asList(ServiceLoader.load(RewriteLifecycleListener.class));
+      wrappers = Iterators.asList(ServiceLoader.load(RequestCycleWrapper.class));
+      providers = Iterators.asList(ServiceLoader.load(RewriteProvider.class));
+      inbound = Iterators.asList(ServiceLoader.load(InboundRewriteProducer.class));
+      outbound = Iterators.asList(ServiceLoader.load(OutboundRewriteProducer.class));
 
       Collections.sort(listeners, new WeightedComparator());
       Collections.sort(wrappers, new WeightedComparator());
@@ -94,31 +94,31 @@ public class RewriteFilter implements Filter
        * Log more services for debug purposes only.
        */
       ServiceLogger.logLoadedServices(log, ContextListener.class,
-               Iterators.asUniqueList(ServiceLoader.load(ContextListener.class)));
+               Iterators.asList(ServiceLoader.load(ContextListener.class)));
 
       ServiceLogger.logLoadedServices(log, RequestListener.class,
-               Iterators.asUniqueList(ServiceLoader.load(RequestListener.class)));
+               Iterators.asList(ServiceLoader.load(RequestListener.class)));
 
       ServiceLogger.logLoadedServices(log, RequestParameterProvider.class,
-               Iterators.asUniqueList(ServiceLoader.load(RequestParameterProvider.class)));
+               Iterators.asList(ServiceLoader.load(RequestParameterProvider.class)));
 
       ServiceLogger.logLoadedServices(log, ExpressionLanguageProvider.class,
-               Iterators.asUniqueList(ServiceLoader.load(ExpressionLanguageProvider.class)));
+               Iterators.asList(ServiceLoader.load(ExpressionLanguageProvider.class)));
 
       ServiceLogger.logLoadedServices(log, InvocationResultHandler.class,
-               Iterators.asUniqueList(ServiceLoader.load(InvocationResultHandler.class)));
+               Iterators.asList(ServiceLoader.load(InvocationResultHandler.class)));
 
       ServiceLogger.logLoadedServices(log, ServiceEnricher.class,
-               Iterators.asUniqueList(ServiceLoader.load(ServiceEnricher.class)));
+               Iterators.asList(ServiceLoader.load(ServiceEnricher.class)));
 
       /*
        * Load ConfigurationProviders and ConfigurationCacheProviders here solely so that we
        * can see registered implementations at boot time.
        */
       ServiceLogger.logLoadedServices(log, ConfigurationCacheProvider.class,
-               Iterators.asUniqueList(ServiceLoader.load(ConfigurationCacheProvider.class)));
+               Iterators.asList(ServiceLoader.load(ConfigurationCacheProvider.class)));
 
-      List<ConfigurationProvider<?>> configurations = Iterators.asUniqueList(ServiceLoader
+      List<ConfigurationProvider<?>> configurations = Iterators.asList(ServiceLoader
                .load(ConfigurationProvider.class));
       ServiceLogger.logLoadedServices(log, ConfigurationProvider.class, configurations);
 
