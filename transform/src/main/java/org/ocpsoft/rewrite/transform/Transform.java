@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.transform;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +28,7 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.transform.resolve.ResourceResolver;
 import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
+import org.ocpsoft.rewrite.transform.resource.Resource;
 
 public class Transform implements Rule
 {
@@ -139,17 +139,17 @@ public class Transform implements Rule
          HttpInboundServletRewrite inboundRewrite = (HttpInboundServletRewrite) event;
 
          // try to load the underlying resource
-         InputStream inputStream = resolver.getResource(event, context);
+         Resource resource = resolver.getResource(event, context);
 
          // proceed only if requested resource has been found
-         if (inputStream != null) {
+         if (resource != null) {
 
             // IO errors must be handled here
             try {
 
                // run the rendering process
                HttpServletResponse response = inboundRewrite.getResponse();
-               pipeline.transform(inputStream, response.getOutputStream());
+               pipeline.transform(resource.getInputStream(), response.getOutputStream());
                response.flushBuffer();
 
                // the application doesn't need to process the request anymore

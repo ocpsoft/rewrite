@@ -13,13 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.transform.resolve;
+package org.ocpsoft.rewrite.transform.resource;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.transform.resource.Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
-public interface ResourceResolver
-{
-   Resource getResource(Rewrite event, EvaluationContext context);
+public class FileResource implements Resource {
+   
+   private final File file;
+
+   public FileResource(File file)
+   {
+      this.file = file;
+   }
+
+   @Override
+   public InputStream getInputStream()
+   {
+      try {
+         return new FileInputStream(file);
+      }
+      catch (FileNotFoundException e) {
+         throw new IllegalArgumentException(e);
+      }
+   }
+
+   @Override
+   public long getLastModified()
+   {
+      return file.lastModified();
+   }
+   
 }

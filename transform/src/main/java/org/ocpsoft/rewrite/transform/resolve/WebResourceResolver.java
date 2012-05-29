@@ -15,11 +15,15 @@
  */
 package org.ocpsoft.rewrite.transform.resolve;
 
-import java.io.InputStream;
+import java.io.File;
+
+import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.transform.resource.FileResource;
+import org.ocpsoft.rewrite.transform.resource.Resource;
 
 public class WebResourceResolver implements ResourceResolver
 {
@@ -42,7 +46,7 @@ public class WebResourceResolver implements ResourceResolver
    }
 
    @Override
-   public InputStream getResource(Rewrite event, EvaluationContext context)
+   public Resource getResource(Rewrite event, EvaluationContext context)
    {
 
       // will only work for HTTP requests
@@ -51,13 +55,22 @@ public class WebResourceResolver implements ResourceResolver
 
          // the name of the requested resource
          String path = httpServletRewrite.getRequestPath();
-         
-         if(fileType != null) {
+
+         if (fileType != null) {
             path = path.replaceAll("\\.\\w+$", fileType);
          }
 
-         // try to load the underlying resource
-         return httpServletRewrite.getRequest().getServletContext().getResourceAsStream(path);
+         // obtain the file system path of the resource
+         ServletContext servletContext = httpServletRewrite.getRequest().getServletContext();
+         String realPath = servletContext.getRealPath(path);
+
+         // wrap the file in a FileResource
+         if (realPath != null) {
+            File resource = new File(realPath);
+            if (resource.isFile() && resource.canRead()) {
+               return new FileResource(resource);
+            }
+         }
 
       }
 

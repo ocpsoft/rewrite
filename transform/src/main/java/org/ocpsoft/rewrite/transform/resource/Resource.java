@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.transform.resolve;
+package org.ocpsoft.rewrite.transform.resource;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.transform.resource.Resource;
+import java.io.InputStream;
 
-public interface ResourceResolver
+public interface Resource
 {
-   Resource getResource(Rewrite event, EvaluationContext context);
+
+   InputStream getInputStream();
+
+   long getLastModified();
+
 }
