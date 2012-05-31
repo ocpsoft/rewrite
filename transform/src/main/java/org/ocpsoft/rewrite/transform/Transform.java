@@ -15,10 +15,14 @@
  */
 package org.ocpsoft.rewrite.transform;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Rule;
@@ -26,6 +30,11 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import org.ocpsoft.rewrite.transform.cache.CacheKeyStrategy;
+import org.ocpsoft.rewrite.transform.cache.CachedTransformation;
+import org.ocpsoft.rewrite.transform.cache.DefaultTransformationCache;
+import org.ocpsoft.rewrite.transform.cache.RequestPathCacheKeyStrategy;
+import org.ocpsoft.rewrite.transform.cache.TransformationCache;
 import org.ocpsoft.rewrite.transform.resolve.ResourceResolver;
 import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 import org.ocpsoft.rewrite.transform.resource.Resource;
@@ -40,6 +49,10 @@ public class Transform implements Rule
    private ResourceResolver resolver = WebResourceResolver.identity();
 
    private Pipeline pipeline = new Pipeline();
+
+   private TransformationCache cache = new DefaultTransformationCache();
+
+   private CacheKeyStrategy cacheKeyFactory = new RequestPathCacheKeyStrategy();
 
    public static Transform request(Condition condition)
    {
@@ -104,9 +117,21 @@ public class Transform implements Rule
       return this;
    }
 
+   public Transform cacheWith(TransformationCache cache)
+   {
+      this.cache = cache;
+      return this;
+   }
+
    public Transform resolvedBy(ResourceResolver resourceResolver)
    {
       this.resolver = resourceResolver;
+      return this;
+   }
+
+   public Transform cacheKeyStrategy(CacheKeyStrategy cacheKeyFactory)
+   {
+      this.cacheKeyFactory = cacheKeyFactory;
       return this;
    }
 
@@ -138,28 +163,73 @@ public class Transform implements Rule
 
          HttpInboundServletRewrite inboundRewrite = (HttpInboundServletRewrite) event;
 
-         // try to load the underlying resource
-         Resource resource = resolver.getResource(event, context);
+         // IO errors must be handled here
+         try {
 
-         // proceed only if requested resource has been found
-         if (resource != null) {
+            // try to load the underlying resource
+            Resource resource = resolver.getResource(event, context);
 
-            // IO errors must be handled here
-            try {
+            // proceed only if requested resource has been found
+            if (resource != null) {
 
-               // run the rendering process
+               // is the result of the transformation available from the cache?
+               Serializable key = cacheKeyFactory.create(inboundRewrite);
+               CachedTransformation cacheEntry = cache.get(key);
+
+               // holds the result of the transformation written to the client at a later stage
+               byte[] result = null;
+
+               // use the cached version of it is up to data
+               long lastModified = resource.getLastModified();
+               if (cacheEntry != null && cacheEntry.getTimestamp() >= lastModified) {
+
+                  if (log.isDebugEnabled()) {
+                     log.debug("Found cached transformation for: {}", key);
+                  }
+
+                  result = cacheEntry.getData();
+
+               }
+
+               // no cached version available, we have to perform the full transformation
+               else {
+
+                  if (log.isDebugEnabled()) {
+                     log.debug("No cached transformation found. Starting transformation process...");
+                  }
+
+                  long start = System.currentTimeMillis();
+
+                  // run transformation and store it in a byte array
+                  ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                  pipeline.transform(resource.getInputStream(), bos);
+                  result = bos.toByteArray();
+
+                  if (log.isDebugEnabled()) {
+                     log.debug("Transformation finished in: {}ms", System.currentTimeMillis() - start);
+                  }
+
+                  // store the result for later requests
+                  cache.put(key, new CachedTransformation(result, lastModified));
+
+               }
+
+               if (log.isDebugEnabled()) {
+                  log.debug("Writing {} bytes back to the client.", result.length);
+               }
+
+               // write the data to the client
                HttpServletResponse response = inboundRewrite.getResponse();
-               pipeline.transform(resource.getInputStream(), response.getOutputStream());
+               Streams.copy(new ByteArrayInputStream(result), response.getOutputStream());
                response.flushBuffer();
 
                // the application doesn't need to process the request anymore
                inboundRewrite.abort();
 
             }
-            catch (IOException e) {
-               log.error("Failed to render resource", e);
-            }
-
+         }
+         catch (IOException e) {
+            log.error("Failed to render resource", e);
          }
 
       }
