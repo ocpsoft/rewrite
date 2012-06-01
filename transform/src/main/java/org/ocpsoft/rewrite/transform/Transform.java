@@ -19,6 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,6 +43,8 @@ import org.ocpsoft.rewrite.transform.resource.Resource;
 
 public class Transform implements Rule
 {
+
+   private static final String PATTERN_RFC1123 = "EEE, dd MMM yyyy HH:mm:ss zzz";
 
    private final Logger log = Logger.getLogger(Transform.class);
 
@@ -162,6 +166,7 @@ public class Transform implements Rule
       if (event instanceof HttpInboundServletRewrite) {
 
          HttpInboundServletRewrite inboundRewrite = (HttpInboundServletRewrite) event;
+         HttpServletResponse response = inboundRewrite.getResponse();
 
          // IO errors must be handled here
          try {
@@ -172,56 +177,67 @@ public class Transform implements Rule
             // proceed only if requested resource has been found
             if (resource != null) {
 
-               // is the result of the transformation available from the cache?
-               Serializable key = cacheKeyFactory.create(inboundRewrite);
-               CachedTransformation cacheEntry = cache.get(key);
+               // We may send a 304 response if the client already has a current version
+               if (clientHasAlreadyTheLatestVersion(inboundRewrite, resource)) {
 
-               // holds the result of the transformation written to the client at a later stage
-               byte[] result = null;
-
-               // use the cached version of it is up to data
-               long lastModified = resource.getLastModified();
-               if (cacheEntry != null && cacheEntry.getTimestamp() >= lastModified) {
-
-                  if (log.isDebugEnabled()) {
-                     log.debug("Found cached transformation for: {}", key);
-                  }
-
-                  result = cacheEntry.getData();
+                  // send 304 meaning 'resource didn't change since the last time you requested it'
+                  inboundRewrite.sendStatusCode(304);
 
                }
 
-               // no cached version available, we have to perform the full transformation
+               // we must send the content to the client
                else {
 
-                  if (log.isDebugEnabled()) {
-                     log.debug("No cached transformation found. Starting transformation process...");
+                  // is the result of the transformation available from the cache?
+                  Serializable key = cacheKeyFactory.create(inboundRewrite);
+                  CachedTransformation cacheEntry = cache.get(key);
+
+                  // holds the result of the transformation written to the client at a later stage
+                  byte[] result = null;
+
+                  // use the cached version of it is up to data
+                  if (cacheEntry != null && cacheEntry.getTimestamp() >= resource.getLastModified()) {
+
+                     if (log.isDebugEnabled()) {
+                        log.debug("Found cached transformation for: {}", key);
+                     }
+
+                     result = cacheEntry.getData();
+
                   }
 
-                  long start = System.currentTimeMillis();
+                  // no cached version available, we have to perform the full transformation
+                  else {
 
-                  // run transformation and store it in a byte array
-                  ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                  pipeline.transform(resource.getInputStream(), bos);
-                  result = bos.toByteArray();
+                     if (log.isDebugEnabled()) {
+                        log.debug("No cached transformation found. Starting transformation process...");
+                     }
 
-                  if (log.isDebugEnabled()) {
-                     log.debug("Transformation finished in: {}ms", System.currentTimeMillis() - start);
+                     long start = System.currentTimeMillis();
+
+                     // run transformation and store it in a byte array
+                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                     pipeline.transform(resource.getInputStream(), bos);
+                     result = bos.toByteArray();
+
+                     if (log.isDebugEnabled()) {
+                        log.debug("Transformation finished in: {}ms", System.currentTimeMillis() - start);
+                     }
+
+                     // store the result for later requests
+                     cache.put(key, new CachedTransformation(result, resource.getLastModified()));
+
                   }
 
-                  // store the result for later requests
-                  cache.put(key, new CachedTransformation(result, lastModified));
+                  if (log.isDebugEnabled()) {
+                     log.debug("Writing {} bytes back to the client.", result.length);
+                  }
+
+                  // write the data to the client
+                  Streams.copy(new ByteArrayInputStream(result), response.getOutputStream());
+                  response.flushBuffer();
 
                }
-
-               if (log.isDebugEnabled()) {
-                  log.debug("Writing {} bytes back to the client.", result.length);
-               }
-
-               // write the data to the client
-               HttpServletResponse response = inboundRewrite.getResponse();
-               Streams.copy(new ByteArrayInputStream(result), response.getOutputStream());
-               response.flushBuffer();
 
                // the application doesn't need to process the request anymore
                inboundRewrite.abort();
@@ -233,6 +249,38 @@ public class Transform implements Rule
          }
 
       }
+
+   }
+
+   private boolean clientHasAlreadyTheLatestVersion(HttpInboundServletRewrite rewrite, Resource resource)
+   {
+
+      // we can only send a 304 if there is a modification of the resouce
+      if (resource.getLastModified() > 0) {
+
+         long ifModifiedSince = 0;
+
+         // check for a 'If-Modified-Since' header
+         String headerValue = rewrite.getRequest().getHeader("If-Modified-Since");
+         if (headerValue != null && headerValue.trim().length() > 0) {
+
+            // try to parse the RFC1123 date
+            try {
+               ifModifiedSince = new SimpleDateFormat(PATTERN_RFC1123).parse(headerValue).getTime();
+            }
+            catch (ParseException e) {
+               // invalid header format -> ignore it
+            }
+
+         }
+
+         // if the 'If-Modified-Since' date AFTER the last modification date of the resouce?
+         if (ifModifiedSince > 0 && ifModifiedSince > resource.getLastModified()) {
+            return true;
+         }
+
+      }
+      return false;
 
    }
 

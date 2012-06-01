@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -78,7 +79,23 @@ public abstract class RewriteTestBase
     */
    protected HttpAction<HttpGet> get(HttpClient client, String path) throws Exception
    {
+      return get(client, path, new Header[0]);
+   }
+
+   /**
+    * Request a resource from the deployed test-application. The {@link HttpServletRequest#getContextPath()} will be
+    * automatically prepended to the given path.
+    * <p>
+    * E.g: A path of '/example' will be sent as '/rewrite-test/example'
+    * 
+    * @throws Exception
+    */
+   protected HttpAction<HttpGet> get(HttpClient client, String path, Header... headers) throws Exception
+   {
       HttpGet request = new HttpGet(getBaseURL() + getContextPath() + path);
+      if (headers != null && headers.length > 0) {
+         request.setHeaders(headers);
+      }
       HttpContext context = new BasicHttpContext();
       HttpResponse response = client.execute(request, context);
 
