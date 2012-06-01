@@ -23,7 +23,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
+import org.ocpsoft.common.util.Streams;
 
 class Pipeline implements Transformer
 {
@@ -41,7 +41,7 @@ class Pipeline implements Transformer
 
       // just do a copy if no transformers have been added
       if (pipeline.isEmpty()) {
-         IOUtils.copy(input, output);
+         Streams.copy(input, output);
       }
 
       // delegate if there is only one transformer
