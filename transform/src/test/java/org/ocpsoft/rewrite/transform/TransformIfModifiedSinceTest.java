@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpGet;
@@ -98,7 +99,7 @@ public class TransformIfModifiedSinceTest extends RewriteTest
       cal.add(GregorianCalendar.HOUR_OF_DAY, hours);
       Date date = cal.getTime();
 
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
 
       return new BasicHeader("If-Modified-Since", simpleDateFormat.format(date));
 

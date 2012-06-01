@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -233,6 +234,12 @@ public class Transform implements Rule
                      log.debug("Writing {} bytes back to the client.", result.length);
                   }
 
+                  // send 'Last-Modified' date if available
+                  if (resource.getLastModified() > 0) {
+                     // round up to the next second because resource modification times have milliseconds
+                     response.setDateHeader("Last-Modified", resource.getLastModified() + 1000);
+                  }
+                  
                   // write the data to the client
                   Streams.copy(new ByteArrayInputStream(result), response.getOutputStream());
                   response.flushBuffer();
@@ -266,7 +273,7 @@ public class Transform implements Rule
 
             // try to parse the RFC1123 date
             try {
-               ifModifiedSince = new SimpleDateFormat(PATTERN_RFC1123).parse(headerValue).getTime();
+               ifModifiedSince = new SimpleDateFormat(PATTERN_RFC1123, Locale.ENGLISH).parse(headerValue).getTime();
             }
             catch (ParseException e) {
                // invalid header format -> ignore it
