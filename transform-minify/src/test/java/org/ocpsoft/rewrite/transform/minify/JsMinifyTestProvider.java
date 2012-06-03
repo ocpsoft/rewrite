@@ -22,17 +22,17 @@ import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.transform.Transform;
-import org.ocpsoft.rewrite.transform.minify.CssCompress;
+import org.ocpsoft.rewrite.transform.minify.JsMinify;
 import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**
  * 
- * {@link ConfigurationProvider} for {@link CssCompressTest}.
+ * {@link ConfigurationProvider} for {@link JsMinifyTest}.
  * 
  * @author Christian Kaltepoth
  * 
  */
-public class CssCompressTestProvider extends HttpConfigurationProvider
+public class JsMinifyTestProvider extends HttpConfigurationProvider
 {
    @Override
    public int priority()
@@ -45,9 +45,9 @@ public class CssCompressTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .addRule(Transform.request(".css")
+               .addRule(Transform.request(".js")
                         .resolvedBy(WebResourceResolver.identity())
-                        .apply(CssCompress.class));
+                        .apply(JsMinify.class));
    }
 
 }

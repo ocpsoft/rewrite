@@ -27,24 +27,24 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
-import org.ocpsoft.rewrite.transform.minify.CssCompress;
+import org.ocpsoft.rewrite.transform.minify.CssMinify;
 
 /**
  * 
- * Integration test for {@link CssCompress}.
+ * Integration test for {@link CssMinify}.
  * 
  * @author Christian Kaltepoth
  * 
  */
 @RunWith(Arquillian.class)
-public class CssCompressTest extends RewriteTest
+public class CssMinifyTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset(".class {\n  width : 100px;\n}"), "test.css")
-               .addAsServiceProvider(ConfigurationProvider.class, CssCompressTestProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, CssMinifyTestProvider.class);
    }
 
    @Test

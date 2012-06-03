@@ -34,17 +34,17 @@ import com.yahoo.platform.yui.compressor.CssCompressor;
  * @author Christian Kaltepoth
  * 
  */
-public class CssCompress implements Transformer
+public class CssMinify implements Transformer
 {
 
    private final Charset charset;
 
-   public CssCompress()
+   public CssMinify()
    {
       this(Charset.forName("UTF8"));
    }
 
-   public CssCompress(Charset charset)
+   public CssMinify(Charset charset)
    {
       this.charset = charset;
    }

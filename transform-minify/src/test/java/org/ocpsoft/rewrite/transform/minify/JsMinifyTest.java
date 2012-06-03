@@ -30,20 +30,20 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * 
- * Integration test for {@link JsCompress}.
+ * Integration test for {@link JsMinify}.
  * 
  * @author Christian Kaltepoth
  * 
  */
 @RunWith(Arquillian.class)
-public class JsCompressTest extends RewriteTest
+public class JsMinifyTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset("var text = \"hello\";\n\nalert(text);"), "test.js")
-               .addAsServiceProvider(ConfigurationProvider.class, JsCompressTestProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, JsMinifyTestProvider.class);
    }
 
    @Test
