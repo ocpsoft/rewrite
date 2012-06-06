@@ -17,6 +17,8 @@ package org.ocpsoft.rewrite.transform.markup;
 
 import java.util.Arrays;
 
+import org.jruby.embed.LocalContextScope;
+import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 
@@ -32,16 +34,25 @@ public class Sass extends StringTransformer {
         script.append("', :syntax => :scss, :cache => false)\n");
         script.append("engine.render");
 
-        // prepare the scripting environment
-        ScriptingContainer container = new ScriptingContainer();
-        container.setLoadPaths(Arrays.asList("ruby/sass/lib"));
+        ScriptingContainer container = null;
+        try {
 
-        // run the transformation and return the result
-        Object result = container.runScriptlet(script.toString());
-        if (result != null) {
-            return result.toString();
+            // prepare the scripting environment
+            container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
+            container.setLoadPaths(Arrays.asList("ruby/sass/lib"));
+
+            // run the transformation and return the result
+            Object result = container.runScriptlet(script.toString());
+            if (result != null) {
+                return result.toString();
+            }
+            return null;
+
+        } finally {
+            if (container != null) {
+                container.terminate();
+            }
         }
-        return null;
 
     }
 

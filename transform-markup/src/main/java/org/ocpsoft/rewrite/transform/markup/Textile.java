@@ -17,6 +17,8 @@ package org.ocpsoft.rewrite.transform.markup;
 
 import java.util.Arrays;
 
+import org.jruby.embed.LocalContextScope;
+import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 
@@ -42,31 +44,40 @@ public class Textile extends StringTransformer {
         script.append(input);
         script.append("').to_html\n");
 
-        // prepare the scripting environment
-        ScriptingContainer container = new ScriptingContainer();
-        container.setLoadPaths(Arrays.asList("ruby/redcloth/lib"));
+        ScriptingContainer container = null;
+        try {
 
-        // run the transformation and return the result
-        Object fragment = container.runScriptlet(script.toString());
-        if (fragment != null) {
+            // prepare the scripting environment
+            container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
+            container.setLoadPaths(Arrays.asList("ruby/redcloth/lib"));
 
-            // create complete HTML structure
-            if (completeDocument) {
-                StringBuilder result = new StringBuilder();
-                result.append("<!DOCTYPE html>\n");
-                result.append("<html>\n<body>\n");
-                result.append(fragment.toString());
-                result.append("</body>\n</html>\n");
-                return result.toString();
+            // run the transformation and return the result
+            Object fragment = container.runScriptlet(script.toString());
+            if (fragment != null) {
+
+                // create complete HTML structure
+                if (completeDocument) {
+                    StringBuilder result = new StringBuilder();
+                    result.append("<!DOCTYPE html>\n");
+                    result.append("<html>\n<body>\n");
+                    result.append(fragment.toString());
+                    result.append("</body>\n</html>\n");
+                    return result.toString();
+                }
+
+                // output just the fragment
+                else {
+                    return fragment.toString();
+                }
+
             }
+            return null;
 
-            // output just the fragment
-            else {
-                return fragment.toString();
+        } finally {
+            if (container != null) {
+                container.terminate();
             }
-
         }
-        return null;
 
     }
 
