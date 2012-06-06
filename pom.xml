@@ -55,6 +55,7 @@
       <module>transform</module>
       <module>transform-less</module>
       <module>transform-minify</module>
+      <module>transform-markup</module>
       <module>integration-cdi</module>
       <module>integration-faces</module>
       <module>integration-oracle-adf</module>
