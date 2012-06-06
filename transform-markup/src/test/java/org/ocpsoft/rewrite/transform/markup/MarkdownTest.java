@@ -38,7 +38,7 @@ public class MarkdownTest {
         String markdown = "# Header\n\n##Section\n\nSome text!";
         String html = new Markdown(false).transform(markdown);
 
-        assertEquals("<h1 id='header'>Header</h1><h2 id='section'>Section</h2><p>Some text!</p>", removeNewLines(html));
+        assertEquals("<h1 id='header'>Header</h1><h2 id='section'>Section</h2><p>Some text!</p>", normalize(html));
 
     }
 
@@ -48,7 +48,7 @@ public class MarkdownTest {
         String markdown = "> Some quote";
         String html = new Markdown(false).transform(markdown);
 
-        assertEquals("<blockquote><p>Some quote</p></blockquote>", removeNewLines(html));
+        assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
 
     }
 
@@ -58,7 +58,7 @@ public class MarkdownTest {
         String markdown = "* One\n* Two";
         String html = new Markdown(false).transform(markdown);
 
-        assertEquals("<ul><li>One</li><li>Two</li></ul>", removeNewLines(html));
+        assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html));
 
     }
 
@@ -68,7 +68,7 @@ public class MarkdownTest {
         String markdown = "    private int n = 0;";
         String html = new Markdown(false).transform(markdown);
 
-        assertEquals("<pre><code>private int n = 0;</code></pre>", removeNewLines(html));
+        assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
 
     }
 
@@ -85,8 +85,8 @@ public class MarkdownTest {
 
     }
 
-    private static String removeNewLines(String s) {
-        return s.replaceAll("\n", "");
+    private static String normalize(String s) {
+        return s.replaceAll("\n", "").replaceAll("[\t ]+", " ").trim();
     }
 
 }

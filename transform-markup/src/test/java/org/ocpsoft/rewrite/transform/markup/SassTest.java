@@ -62,7 +62,7 @@ public class SassTest {
     }
 
     private static String normalize(String s) {
-        return s.replaceAll("\n", " ").replaceAll(" +", " ").trim();
+        return s.replaceAll("\n", "").replaceAll("[\t ]+", " ").trim();
     }
 
 }
