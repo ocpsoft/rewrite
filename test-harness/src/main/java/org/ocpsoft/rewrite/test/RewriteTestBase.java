@@ -39,8 +39,9 @@ public abstract class RewriteTestBase
    protected static Collection<GenericArchive> resolveDependencies(final String coords)
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
+               .loadEffectivePom("pom.xml")
+               .importAllDependencies()
                .artifacts(coords)
-               .loadMetadataFromPom("pom.xml")
                .resolveAs(GenericArchive.class);
    }
 
@@ -49,10 +50,7 @@ public abstract class RewriteTestBase
     */
    protected static GenericArchive resolveDependency(final String coords)
    {
-      return new ArrayList<GenericArchive>(DependencyResolvers.use(MavenDependencyResolver.class)
-               .artifacts(coords)
-               .loadMetadataFromPom("pom.xml")
-               .resolveAs(GenericArchive.class)).get(0);
+      return new ArrayList<GenericArchive>(resolveDependencies(coords)).get(0);
    }
 
    /**

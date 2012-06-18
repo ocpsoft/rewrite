@@ -21,13 +21,6 @@
 
    <dependencyManagement>
       <dependencies>
-         <dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-bom</artifactId>
-            <version>${version.arquillian}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
       </dependencies>
    </dependencyManagement>
 
@@ -64,7 +57,7 @@
          <version>2.9</version>
          <scope>compile</scope>
       </dependency>
-      
+
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
@@ -72,13 +65,24 @@
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.arquillian.junit</groupId>
-         <artifactId>arquillian-junit-container</artifactId>
+         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+         <artifactId>shrinkwrap-resolver-api</artifactId>
+         <scope>compile</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+         <artifactId>shrinkwrap-resolver-api-maven</artifactId>
          <scope>compile</scope>
       </dependency>
       <dependency>
          <groupId>org.jboss.shrinkwrap.resolver</groupId>
          <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+         <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.junit</groupId>
+         <artifactId>arquillian-junit-container</artifactId>
          <scope>compile</scope>
       </dependency>
 

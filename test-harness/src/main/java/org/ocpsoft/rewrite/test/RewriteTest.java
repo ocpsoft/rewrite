@@ -58,7 +58,7 @@ public class RewriteTest extends RewriteTestBase
       WebArchive archive = ShrinkWrap
                .create(WebArchive.class, name)
                .addPackages(true, MockBinding.class.getPackage())
-               .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api:1.0.1.Final"))
+               .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api"))
                .addAsLibraries(getRewriteArchive())
                .addAsLibraries(getContainerArchive())
                .addAsLibraries(getCurrentArchive());
@@ -66,19 +66,19 @@ public class RewriteTest extends RewriteTestBase
       // Jetty specific stuff
       if (isJetty()) {
 
-         archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
+         archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet"));
 
          /*
          * Set the EL implementation
          */
-         archive.addAsLibraries(resolveDependencies("org.glassfish.web:el-impl:jar:2.2"));
+         archive.addAsLibraries(resolveDependencies("org.glassfish.web:el-impl"));
          archive.add(new StringAsset("com.sun.el.ExpressionFactoryImpl"),
                   "/WEB-INF/classes/META-INF/services/javax.el.ExpressionFactory");
 
          /*
           * Set the JSF implementation
           */
-         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"));
+         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces"));
 
          /*
          * Set up container configuration
@@ -94,22 +94,22 @@ public class RewriteTest extends RewriteTestBase
 
          // setup Weld
          if (isWeld()) {
-            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet:1.1.4.Final"));
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet"));
             archive.addAsWebResource("tomcat-weld-context.xml", "META-INF/context.xml");
          }
 
          // setup OWB
          if (isOWB()) {
-            archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api:1.0-SP4"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-impl:1.1.4"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-web:1.1.4"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-spi:1.1.4"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-resource:1.1.4"));
+            archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-impl"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-web"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-spi"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-resource"));
             archive.addAsWebResource("tomcat-owb-context.xml", "META-INF/context.xml");
          }
 
          // setup Mojarra
-         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:jar:2.1.7"));
+         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces"));
 
          // make it a CDI archive
          archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");

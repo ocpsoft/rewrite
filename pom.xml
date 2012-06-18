@@ -180,6 +180,17 @@
             <version>${version.junit}</version>
             <scope>test</scope>
          </dependency>
+         
+
+         <!-- We are overriding version of ShrinkWrap Maven Resolver from 
+            Arquillian BOM -->
+         <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-bom</artifactId>
+            <version>2.0.0-alpha-1</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
          <dependency>
             <groupId>org.jboss.arquillian</groupId>
             <artifactId>arquillian-bom</artifactId>
