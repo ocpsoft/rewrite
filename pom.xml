@@ -24,7 +24,7 @@
 
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <version.jboss.spec>3.0.0.Final</version.jboss.spec>
+      <version.jboss.spec>3.0.1.Final</version.jboss.spec>
       <version.junit>4.8.1</version.junit>
       <version.common>1.0.5.Final</version.common>
       <version.logging>1.0.2.Final</version.logging>
