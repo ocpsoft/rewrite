@@ -49,7 +49,6 @@ public class LessTest
 
    private static void assertSameCSS(String expected, String actual)
    {
-
       assertEquals(normalize(expected), normalize(actual));
    }
 

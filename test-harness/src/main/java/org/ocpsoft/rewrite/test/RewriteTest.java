@@ -190,7 +190,7 @@ public class RewriteTest extends RewriteTestBase
          if (metaInf.exists())
             archive.addAsResource(metaInf);
       }
-
+      
       return archive.addAsResource(new StringAsset("placeholder"), "README");
    }
 

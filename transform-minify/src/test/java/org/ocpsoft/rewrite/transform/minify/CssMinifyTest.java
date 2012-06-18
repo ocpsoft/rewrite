@@ -17,10 +17,14 @@ package org.ocpsoft.rewrite.transform.minify;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +48,19 @@ public class CssMinifyTest extends RewriteTest
    {
       return RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset(".class {\n  width : 100px;\n}"), "test.css")
+               .addAsLibraries(getTransformArchive())
+               .addAsLibraries(resolveDependency("com.yahoo.platform.yui:yuicompressor"))
+               .addClasses(CssMinifyTestProvider.class)
                .addAsServiceProvider(ConfigurationProvider.class, CssMinifyTestProvider.class);
+   }
+
+   protected static JavaArchive getTransformArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-transform.jar")
+
+               .addAsResource(new File("../transform/target/classes/org"));
+
+      return archive;
    }
 
    @Test

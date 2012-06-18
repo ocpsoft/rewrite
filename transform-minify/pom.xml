@@ -14,9 +14,10 @@
    <build>
       <plugins>
 
-         <!-- yuicompressor requires a very old version of Mozilla Rhino and doesn't work with new ones. The other rewrite-transform 
-            modules require a recent version of Rhino. Therefore we shade yuicompressor and the old Rhino version into the JAR and relocate the 
-            corresponding classes -->
+         <!-- yuicompressor requires a very old version of Mozilla Rhino 
+            and doesn't work with new ones. The other rewrite-transform modules require 
+            a recent version of Rhino. Therefore we shade yuicompressor and the old Rhino 
+            version into the JAR and relocate the corresponding classes -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
@@ -94,6 +95,12 @@
          <groupId>com.yahoo.platform.yui</groupId>
          <artifactId>yuicompressor</artifactId>
          <version>2.4.6</version>
+      </dependency>
+
+      <dependency>
+         <groupId>rhino</groupId>
+         <artifactId>js</artifactId>
+         <version>1.6R7</version>
       </dependency>
 
       <dependency>

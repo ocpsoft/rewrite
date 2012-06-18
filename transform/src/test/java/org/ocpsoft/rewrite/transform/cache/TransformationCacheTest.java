@@ -45,6 +45,7 @@ public class TransformationCacheTest extends RewriteTest
    {
       return RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset("some content"), "test.txt")
+               .addClasses(TransformationCacheTestProvider.class, ServletContextConfigurationCacheProvider.class, SlowTransformer.class)
                .addAsServiceProvider(ConfigurationProvider.class, TransformationCacheTestProvider.class)
                .addAsServiceProvider(ConfigurationCacheProvider.class, ServletContextConfigurationCacheProvider.class);
    }

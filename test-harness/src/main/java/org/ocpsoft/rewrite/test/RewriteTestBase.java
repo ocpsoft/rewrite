@@ -40,7 +40,6 @@ public abstract class RewriteTestBase
    {
       return DependencyResolvers.use(MavenDependencyResolver.class)
                .loadEffectivePom("pom.xml")
-               .importAllDependencies()
                .artifacts(coords)
                .resolveAs(GenericArchive.class);
    }

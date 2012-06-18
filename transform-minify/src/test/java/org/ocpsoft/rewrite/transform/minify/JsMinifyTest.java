@@ -43,6 +43,10 @@ public class JsMinifyTest extends RewriteTest
    {
       return RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset("var text = \"hello\";\n\nalert(text);"), "test.js")
+               .addAsLibraries(CssMinifyTest.getTransformArchive())
+               .addAsLibraries(resolveDependency("com.yahoo.platform.yui:yuicompressor"))
+               .addAsLibraries(resolveDependency("rhino:js"))
+               .addClasses(JsMinifyTestProvider.class)
                .addAsServiceProvider(ConfigurationProvider.class, JsMinifyTestProvider.class);
    }
 

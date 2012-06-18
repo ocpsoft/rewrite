@@ -18,10 +18,14 @@ package org.ocpsoft.rewrite.transform.less;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +49,19 @@ public class LessIntegrationTest extends RewriteTest
    {
       return RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset(".class { width: 1 + 2 }"), "test.less")
+               .addAsLibraries(getTransformArchive())
+               .addAsLibraries(resolveDependency("org.mozilla:rhino"))
+               .addClasses(LessIntegrationTestProvider.class)
                .addAsServiceProvider(ConfigurationProvider.class, LessIntegrationTestProvider.class);
+   }
+
+   protected static JavaArchive getTransformArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-transform.jar")
+
+               .addAsResource(new File("../transform/target/classes/org"));
+      
+      return archive;
    }
 
    @Test

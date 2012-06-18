@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * 
- * Integration test for {@link Less}.
+ * Integration test for core {@link Transform} API.
  * 
  * @author Christian Kaltepoth
  * 
@@ -41,9 +41,11 @@ public class TransformPipelineTest extends RewriteTest
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTest.getDeployment()
+      WebArchive archive = RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset("this is foo"), "test.txt")
+               .addClasses(TransformPipelineTestProvider.class, FooBarTransformer.class, UppercaseTransformer.class)
                .addAsServiceProvider(ConfigurationProvider.class, TransformPipelineTestProvider.class);
+      return archive;
    }
 
    @Test

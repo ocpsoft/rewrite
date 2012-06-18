@@ -33,9 +33,9 @@ public class Less extends StringTransformer
    {
       StringBuilder scriptBuilder = new StringBuilder();
       scriptBuilder.append("function print(s) {}"); // required by env.rhino
-      scriptBuilder.append(getClasspathResourceAsString("env.rhino.1.2.js"));
-      scriptBuilder.append(getClasspathResourceAsString("less-1.3.0.min.js"));
-      scriptBuilder.append(getClasspathResourceAsString("api.js"));
+      scriptBuilder.append(getClasspathResourceAsString("org/ocpsoft/rewrite/transform/js/" + "env.rhino.1.2.js"));
+      scriptBuilder.append(getClasspathResourceAsString("org/ocpsoft/rewrite/transform/js/" + "less-1.3.0.min.js"));
+      scriptBuilder.append(getClasspathResourceAsString("org/ocpsoft/rewrite/transform/js/" + "api.js"));
       baseScript = scriptBuilder.toString();
    }
 

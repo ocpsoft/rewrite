@@ -51,6 +51,7 @@ public class TransformIfModifiedSinceTest extends RewriteTest
    {
       return RewriteTest.getDeployment()
                .addAsWebResource(new StringAsset("something"), "test.txt")
+               .addClasses(TransformIfModifiedSinceTestProvider.class, UppercaseTransformer.class)
                .addAsServiceProvider(ConfigurationProvider.class, TransformIfModifiedSinceTestProvider.class);
    }
 
