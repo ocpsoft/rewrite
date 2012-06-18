@@ -62,4 +62,11 @@ public class ConfigurationBuilder implements Configuration
       rules.add(rule);
       return this;
    }
+
+   @Override
+   public String toString()
+   {
+      return "ConfigurationBuilder [rules=" + rules + "]";
+   }
+   
 }

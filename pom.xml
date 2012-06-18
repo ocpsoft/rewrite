@@ -309,6 +309,7 @@
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
+                  <version>2.12</version>
                   <configuration>
                      <systemPropertyVariables>
                         <arquillian.launch>jbossas_managed</arquillian.launch>
@@ -333,7 +334,7 @@
                                  <version>${version.jbossas}</version>
                                  <type>zip</type>
                                  <overWrite>false</overWrite>
-                                 <outputDirectory>target/container</outputDirectory>
+                                 <outputDirectory>${project.build.directory}/container</outputDirectory>
                               </artifactItem>
                            </artifactItems>
                         </configuration>
@@ -342,16 +343,13 @@
                </plugin>
                <plugin>
                   <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.7</version>
                   <executions>
                      <execution>
-                        <phase>generate-test-resources</phase>
+                        <phase>process-test-classes</phase>
                         <configuration>
                            <target>
-                              <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}/jboss-as-dist-${version.jbossas}.zip" verbose="true" skipexisting="true"
-                                 src="http://search.maven.org/remotecontent?filepath=org/jboss/as/jboss-as-dist/${version.jbossas}/jboss-as-dist-${version.jbossas}.zip" />
-                              <unzip src="${container.download.dir}/jboss-as-dist-${version.jbossas}.zip" dest="${project.build.directory}/container" />
-                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="target/container/jboss-as-${version.jbossas}/standalone/configuration"/>
+                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="${project.build.directory}/container/jboss-as-${version.jbossas}/standalone/configuration"/>
                            </target>
                         </configuration>
                         <goals>
@@ -360,7 +358,6 @@
                      </execution>
                   </executions>
                </plugin>
-
             </plugins>
          </build>
          <dependencies>
