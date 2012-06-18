@@ -24,6 +24,14 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Supplies additional request parameters to the {@link HttpServletRequest} object.
  * 
+ * Additional parameter providers may be specified by providing a service activator file containing the name of your
+ * implementations:
+ * <p>
+ * <code> /META-INF/services/org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider<br>
+ * 
+ * --------------<br>
+ * com.example.ParameterProviderImpl</code>
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */

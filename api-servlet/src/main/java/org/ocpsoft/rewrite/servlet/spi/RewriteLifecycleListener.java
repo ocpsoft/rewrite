@@ -23,7 +23,11 @@ import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Listens to {@link org.ocpsoft.rewrite.event.Rewrite} life-cycle events.
+ * Listens to {@link org.ocpsoft.rewrite.event.Rewrite} life-cycle events. Additional listeners may be specified by
+ * providing a service activator file containing the name of your implementations:
+ * 
+ * /META-INF/services/org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener --------------
+ * com.example.LifecycleListenerImpl
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -35,24 +39,27 @@ public interface RewriteLifecycleListener<T extends Rewrite> extends Specialized
    void beforeInboundLifecycle(T event);
 
    /**
-    * Invoked after {@link RequestCycleWrapper} services are processed, but before {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are
-    * processed for inbound {@link Rewrite} requests.
+    * Invoked after {@link RequestCycleWrapper} services are processed, but before
+    * {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are processed for inbound {@link Rewrite} requests.
     */
    void beforeInboundRewrite(T event);
 
    /**
-    * Invoked after {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are processed on inbound {@link Rewrite} requests, but before
-    * control of the request cycle is passed to the application via {@link FilterChain#doFilter(IN, OUT)}
+    * Invoked after {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are processed on inbound {@link Rewrite}
+    * requests, but before control of the request cycle is passed to the application via
+    * {@link FilterChain#doFilter(IN, OUT)}
     */
    void afterInboundRewrite(T event);
 
    /**
-    * Invoked before {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are processed on outbound {@link Rewrite} events.
+    * Invoked before {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are processed on outbound {@link Rewrite}
+    * events.
     */
    void beforeOutboundRewrite(T event);
 
    /**
-    * Invoked after {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are processed on outbound {@link Rewrite} events.
+    * Invoked after {@link org.ocpsoft.rewrite.spi.RewriteProvider} services are processed on outbound {@link Rewrite}
+    * events.
     */
    void afterOutboundRewrite(T event);
 

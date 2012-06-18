@@ -18,6 +18,16 @@ package org.ocpsoft.rewrite.servlet.spi;
 import javax.servlet.ServletContextEvent;
 
 /**
+ * Listens to {@link ServletContextEvent}.
+ * 
+ * Additional listeners may be specified by providing a service activator file containing the name of your
+ * implementations:
+ * <p>
+ * <code> /META-INF/services/org.ocpsoft.rewrite.servlet.spi.ContextListener<br>
+ * 
+ * --------------<br>
+ * com.example.ContextListenerImpl</code>
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
