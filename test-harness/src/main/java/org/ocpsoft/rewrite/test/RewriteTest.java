@@ -52,9 +52,9 @@ public class RewriteTest extends RewriteTestBase
 
    public static WebArchive getDeploymentNoWebXml(String name)
    {
-      if(isJetty() && "ROOT.war".equals(name))
+      if (isJetty() && "ROOT.war".equals(name))
          name = ".war";
-         
+
       WebArchive archive = ShrinkWrap
                .create(WebArchive.class, name)
                .addPackages(true, MockBinding.class.getPackage())
@@ -66,19 +66,11 @@ public class RewriteTest extends RewriteTestBase
       // Jetty specific stuff
       if (isJetty()) {
 
-         archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet"));
-
          /*
          * Set the EL implementation
          */
-         archive.addAsLibraries(resolveDependencies("org.glassfish.web:el-impl"));
          archive.add(new StringAsset("com.sun.el.ExpressionFactoryImpl"),
                   "/WEB-INF/classes/META-INF/services/javax.el.ExpressionFactory");
-
-         /*
-          * Set the JSF implementation
-          */
-         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces"));
 
          /*
          * Set up container configuration
@@ -88,13 +80,14 @@ public class RewriteTest extends RewriteTestBase
          archive.addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
 
       }
-      
+
       // Tomcat specific stuff
       if (isTomcat()) {
 
          // setup Weld
          if (isWeld()) {
-            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet"));
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld:weld-core"));
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet-core"));
             archive.addAsWebResource("tomcat-weld-context.xml", "META-INF/context.xml");
          }
 
@@ -162,7 +155,7 @@ public class RewriteTest extends RewriteTestBase
       {
          archive.addAsManifestResource("jetty-web-fragment.xml", "web-fragment.xml");
       }
-      
+
       if (isTomcat())
       {
          if (isWeld()) {
@@ -190,7 +183,7 @@ public class RewriteTest extends RewriteTestBase
          if (metaInf.exists())
             archive.addAsResource(metaInf);
       }
-      
+
       return archive.addAsResource(new StringAsset("placeholder"), "README");
    }
 
