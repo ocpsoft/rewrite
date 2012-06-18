@@ -309,7 +309,6 @@
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
-                  <version>2.12</version>
                   <configuration>
                      <systemPropertyVariables>
                         <arquillian.launch>jbossas_managed</arquillian.launch>
@@ -401,6 +400,15 @@
          <build>
             <plugins>
                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <systemProperties>
+                        <arquillian.launch>glassfish_managed</arquillian.launch>
+                     </systemProperties>
+                  </configuration>
+               </plugin>
+               <plugin>
                   <artifactId>maven-antrun-plugin</artifactId>
                   <version>1.7</version>
                   <executions>
@@ -419,15 +427,6 @@
                         </configuration>
                      </execution>
                   </executions>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>
-                     <systemProperties>
-                        <arquillian.launch>glassfish_managed</arquillian.launch>
-                     </systemProperties>
-                  </configuration>
                </plugin>
             </plugins>
          </build>
