@@ -43,6 +43,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class RestRewriteConfiguration extends HttpConfigurationProvider
 {
+
    @Inject
    private ProductRegistry products;
 
@@ -60,19 +61,9 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                .when(Method.isGet()
                         .and(Path.matches("/store/product/{pid}")
                                  .where("pid").matches("\\d+")
-                                 .constrainedBy(new Constraint<String>() {
-                                    @Override
-                                    public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
-                                    {
-                                       try {
-                                          Integer.valueOf(value);
-                                       }
-                                       catch (NumberFormatException e) {
-                                          return false;
-                                       }
-                                       return true;
-                                    }
-                                 }).convertedBy(ProductConverter.class).validatedBy(ProductValidator.class)))
+                                 .constrainedBy(new IntegerConstraint())
+                                 .convertedBy(ProductConverter.class)
+                                 .validatedBy(ProductValidator.class)))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
