@@ -64,12 +64,15 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                                     @Override
                                     public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
                                     {
-                                       Integer valueOf = Integer.valueOf(value);
-                                       return false;
+                                       try {
+                                          Integer.valueOf(value);
+                                       }
+                                       catch (NumberFormatException e) {
+                                          return false;
+                                       }
+                                       return true;
                                     }
-                                 })
-                                 .bindsTo(Evaluation.property("pid").convertedBy(ProductConverter.class)
-                                          .validatedBy(ProductValidator.class))))
+                                 }).convertedBy(ProductConverter.class).validatedBy(ProductValidator.class)))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -81,7 +84,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                       * bindings such as {@link El}, the value will be bound directly to the type of the referenced
                       * property type, and this array downcast is not necessary.
                       */
-                     Product product = (Product) Evaluation.property("pid").retrieve(event, context);
+                     Product product = (Product) Evaluation.property("pid").retrieveConverted(event, context);
 
                      /**
                       * Marshal the Product into XML using JAXB. This has been extracted into a utility class.
