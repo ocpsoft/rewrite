@@ -21,7 +21,7 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
-import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
+import org.ocpsoft.rewrite.servlet.config.Path;
 
 /**
  * 
@@ -45,9 +45,9 @@ public class TransformIfModifiedSinceTestProvider extends HttpConfigurationProvi
                .begin()
 
                // one single transformer
-               .addRule(Transform.request(".txt")
-                        .resolvedBy(WebResourceResolver.identity())
-                        .apply(UppercaseTransformer.class));
+               .defineRule()
+               .when(Path.matches("{something}.txt").where("something").matches(".*"))
+               .perform(Transform.with(UppercaseTransformer.class));
    }
 
 }

@@ -21,8 +21,8 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.transform.Transform;
-import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**
  * 
@@ -46,9 +46,9 @@ public class TransformationCacheTestProvider extends HttpConfigurationProvider
                .begin()
 
                // a very slow transformation
-               .addRule(Transform.request(".txt")
-                        .resolvedBy(WebResourceResolver.identity())
-                        .apply(SlowTransformer.class));
+               .defineRule()
+               .when(Path.matches("{something}.txt").where("something").matches(".*"))
+               .perform(Transform.with(SlowTransformer.class));
 
    }
 

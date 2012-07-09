@@ -27,12 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.cache.CacheKeyStrategy;
 import org.ocpsoft.rewrite.transform.cache.CachedTransformation;
 import org.ocpsoft.rewrite.transform.cache.DefaultTransformationCache;
@@ -42,14 +40,12 @@ import org.ocpsoft.rewrite.transform.resolve.ResourceResolver;
 import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 import org.ocpsoft.rewrite.transform.resource.Resource;
 
-public class Transform implements Rule
+public class Transform extends HttpOperation
 {
 
    private static final String PATTERN_RFC1123 = "EEE, dd MMM yyyy HH:mm:ss zzz";
 
    private final Logger log = Logger.getLogger(Transform.class);
-
-   private final Condition condition;
 
    private ResourceResolver resolver = WebResourceResolver.identity();
 
@@ -59,21 +55,10 @@ public class Transform implements Rule
 
    private CacheKeyStrategy cacheKeyFactory = new RequestPathCacheKeyStrategy();
 
-   public static Transform request(Condition condition)
-   {
-      return new Transform(condition);
+   public static Transform with(Class<? extends Transformer> transformerType) {
+      return new Transform().apply(transformerType);
    }
-
-   public static Transform request(String fileType)
-   {
-      return request(Path.matches("{something}" + fileType).where("something").matches(".*"));
-   }
-
-   public Transform(Condition condition)
-   {
-      this.condition = condition;
-   }
-
+   
    public Transform apply(Class<? extends Transformer> transformerType)
    {
       try {
@@ -141,26 +126,7 @@ public class Transform implements Rule
    }
 
    @Override
-   public String getId()
-   {
-      return null;
-   }
-
-   @Override
-   public boolean evaluate(Rewrite event, EvaluationContext context)
-   {
-
-      // rendering effects only inbound requests
-      if (event instanceof HttpInboundServletRewrite) {
-         return condition.evaluate(event, context);
-      }
-
-      return false;
-
-   }
-
-   @Override
-   public void perform(Rewrite event, EvaluationContext context)
+   public void performHttp(HttpServletRewrite event, EvaluationContext context)
    {
 
       // rendering effects only inbound requests
@@ -239,7 +205,7 @@ public class Transform implements Rule
                      // round up to the next second because resource modification times have milliseconds
                      response.setDateHeader("Last-Modified", resource.getLastModified() + 1000);
                   }
-                  
+
                   // write the data to the client
                   Streams.copy(new ByteArrayInputStream(result), response.getOutputStream());
                   response.flushBuffer();

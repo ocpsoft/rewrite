@@ -21,9 +21,8 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.transform.Transform;
-import org.ocpsoft.rewrite.transform.minify.CssMinify;
-import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**
  * 
@@ -45,9 +44,10 @@ public class CssMinifyTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .addRule(Transform.request(".css")
-                        .resolvedBy(WebResourceResolver.identity())
-                        .apply(CssMinify.class));
+               .defineRule()
+               .when(Path.matches("{something}.css").where("something").matches(".*"))
+               .perform(Transform.with(CssMinify.class));
+
    }
 
 }

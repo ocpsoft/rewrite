@@ -21,6 +21,7 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**
@@ -45,18 +46,22 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
                .begin()
 
                // no transformer added
-               .addRule(Transform.request(".none")
-                        .resolvedBy(WebResourceResolver.fileType(".txt")))
+               .defineRule()
+               .when(Path.matches("{something}.none").where("something").matches(".*"))
+               .perform(new Transform().resolvedBy(WebResourceResolver.fileType(".txt")))
 
                // one single transformer
-               .addRule(Transform.request(".one")
-                        .resolvedBy(WebResourceResolver.fileType(".txt"))
-                        .apply(FooBarTransformer.class))
+               .defineRule()
+               .when(Path.matches("{something}.one").where("something").matches(".*"))
+               .perform(Transform.with(FooBarTransformer.class)
+                        .resolvedBy(WebResourceResolver.fileType(".txt")))
 
                // multiple transformers
-               .addRule(Transform.request(".two")
-                        .resolvedBy(WebResourceResolver.fileType(".txt"))
-                        .apply(FooBarTransformer.class, UppercaseTransformer.class))
+               .defineRule()
+               .when(Path.matches("{something}.two").where("something").matches(".*"))
+               .perform(Transform.with(FooBarTransformer.class)
+                        .apply(UppercaseTransformer.class)
+                        .resolvedBy(WebResourceResolver.fileType(".txt")))
 
       ;
    }
