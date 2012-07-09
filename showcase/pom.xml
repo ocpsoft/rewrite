@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>rewrite-parent</artifactId>
-    <groupId>org.ocpsoft.rewrite</groupId>
-    <version>1.0.6-SNAPSHOT</version>
-    <relativePath>../</relativePath>
-  </parent>
-  
-  <groupId>org.ocpsoft.rewrite.showcase</groupId>
-  <artifactId>rewrite-showcase</artifactId>
-  <packaging>pom</packaging>
+<project
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>rewrite-parent</artifactId>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <version>1.0.6-SNAPSHOT</version>
+      <relativePath>../</relativePath>
+   </parent>
 
-  <modules>
-	<module>access-control</module>
-	<module>composite-query</module>
-	<module>mega-rewrite</module>
-	<module>multi-domain</module>
-	<module>rest-ws</module>
-  </modules>
+   <groupId>org.ocpsoft.rewrite.showcase</groupId>
+   <artifactId>rewrite-showcase</artifactId>
+   <packaging>pom</packaging>
 
-  <build>
-    <finalName>rewrite-showcase</finalName>
-  </build>
+   <modules>
+      <module>access-control</module>
+      <module>composite-query</module>
+      <module>rest-ws</module>
+   </modules>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-6.0</artifactId>
+            <version>${version.jboss.spec}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime</artifactId>
+            <version>1.0.8.Final</version>
+            <scope>compile</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>

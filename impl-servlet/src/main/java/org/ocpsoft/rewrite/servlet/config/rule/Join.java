@@ -196,7 +196,7 @@ public class Join implements IJoin
    @Override
    public JoinParameter where(final String parameter)
    {
-      return new JoinParameter(this, requestPath.getPathExpression().getParameter(parameter));
+      return new JoinParameter(this, requestPath.getPathExpression().getParameter(parameter), resourcePath.getPathExpression().getParameter(parameter));
    }
 
    @Override

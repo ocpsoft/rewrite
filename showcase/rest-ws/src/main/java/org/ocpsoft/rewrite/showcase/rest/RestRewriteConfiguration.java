@@ -134,7 +134,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                          * Just for fun, set a response header containing the URL to the newly created Product.
                          */
                         String location = new ParameterizedPattern(event.getContextPath() + "/store/product/{pid}")
-                                 .build(product.getId());
+                                 .buildUnsafe(product.getId());
                         Response.addHeader("Location", location).perform(event, context);
 
                         event.getResponse().setContentType("text/html");

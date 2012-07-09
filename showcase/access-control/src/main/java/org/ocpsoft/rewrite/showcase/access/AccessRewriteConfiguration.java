@@ -1,19 +1,23 @@
 package org.ocpsoft.rewrite.showcase.access;
 
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.joda.time.DateTime;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.config.jodatime.JodaTime;
 import org.ocpsoft.rewrite.config.jodatime.TimeCondition;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Domain;
 import org.ocpsoft.rewrite.servlet.config.Forward;
+import org.ocpsoft.rewrite.servlet.config.HttpCondition;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.Lifecycle;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -21,9 +25,6 @@ import org.ocpsoft.rewrite.servlet.config.rule.Join;
  */
 public class AccessRewriteConfiguration extends HttpConfigurationProvider
 {
-   @Inject
-   private TimerBean timerBean;
-
    @Override
    public Configuration getConfiguration(final ServletContext context)
    {
@@ -36,27 +37,53 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                .addRule(Join.path("/").to("/index.xhtml").withInboundCorrection())
 
                /*
-                * Time based access control (only grants access during the first half of each minute)
-                */
-               .addRule(Join.path("/{global}").to("/{global}.xhtml")
-                        .when(JodaTime.matches(timeGranted).and(DispatchType.isRequest()))
-                        .withInboundCorrection())
-
-               /*
                 * Domain based access control (only grants access to specific domains)
                 */
-               .addRule(Join.path("/domain").to("/domain.xhtml")
-                        .when(Domain.matches(".*rhcloud.*").or(Domain.matches("localhost"))))
+               .addRule(Join.path("/domain").to("/domain.xhtml").withInboundCorrection().when(new HttpCondition() {
+                  @Override
+                  public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context)
+                  {
+                     if (Direction
+                              .isInbound()
+                              .andNot(Domain.matches("localhost").or(
+                                       Domain.matches("{1}rhcloud{2}").where("1").matches(".*").where("2")
+                                                .matches(".*")))
+                              .evaluate(event, context))
+                        return false;
+                     return true;
+                  }
+               }))
 
                /*
-                * Deny access to anything except the index unless we matched one of the rules above. 
+                * Time based access control (only grants access during the first half of each minute)
                 */
-               .defineRule()
-               .when(Path.matches(".*").and(DispatchType.isRequest())
-                        .andNot(Path.matches(".*javax.faces.resource.*"))
-                        .andNot(Path.matches("/")))
+               .addRule(Join.path("/timer").to("/timer.xhtml")
+                        .withInboundCorrection().when(new HttpCondition() {
+                           @Override
+                           public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context)
+                           {
+                              if (Direction.isInbound().andNot(JodaTime.matches(timeGranted)).evaluate(event, context))
+                                 return false;
+                              return true;
+                           }
+                        }))
 
+               .defineRule()
+               .when(Direction.isInbound()
+                        .and(DispatchType.isForward())
+                        .and(Path.matches("/timer.xhtml"))
+                        .andNot(JodaTime.matches(timeGranted))
+                        .and(DispatchType.isRequest()))
+               .perform(Lifecycle.handled())
+
+               .defineRule()
+               .when(Direction
+                        .isInbound()
+                        .and(DispatchType.isRequest())
+                        .andNot(Path.matches("{1}javax.faces.resource{2}").where("1").matches(".*").where("2")
+                                 .matches(".*")))
                .perform(Forward.to("/accessDenied.xhtml"));
+
    }
 
    private final TimeCondition timeGranted = new TimeCondition() {
