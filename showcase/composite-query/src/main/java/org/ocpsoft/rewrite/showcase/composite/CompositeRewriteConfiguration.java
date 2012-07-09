@@ -23,9 +23,7 @@ public class CompositeRewriteConfiguration extends HttpConfigurationProvider
                 * If hacking is detected, redirect to the hackers page.
                 */
                .defineRule()
-               .perform(EncodeQuery.params().to("c"))
-
-               // .onChecksumFailure(Redirect.temporary(context.getContextPath() + "/hacker"))
+               .perform(EncodeQuery.params().to("c").onChecksumFailure(Redirect.temporary(context.getContextPath() + "/hacker")))
 
                /*
                 * Show the index page at '/'
