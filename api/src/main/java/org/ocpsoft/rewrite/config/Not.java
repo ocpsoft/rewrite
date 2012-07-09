@@ -55,4 +55,12 @@ public class Not extends DefaultConditionBuilder implements CompositeCondition
    {
       return Arrays.asList(condition);
    }
+
+   @Override
+   public String toString()
+   {
+      return "Not [" + condition + "]";
+   }
+   
+   
 }

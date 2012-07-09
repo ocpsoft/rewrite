@@ -149,4 +149,11 @@ public class Redirect extends HttpOperation implements IRedirect
       return location;
    }
 
+   @Override
+   public String toString()
+   {
+      return "Redirect [type=" + type + ", location=" + location + ", parameters=" + parameters + "]";
+   }
+
+   
 }

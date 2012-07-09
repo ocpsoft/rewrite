@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 
-import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -29,8 +29,10 @@ import org.ocpsoft.rewrite.servlet.config.encodequery.EncodingStrategy;
 import org.ocpsoft.rewrite.servlet.config.encodequery.HashCodeChecksumStrategy;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedRequest;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
+import org.ocpsoft.rewrite.util.Maps;
 
 /**
  * Encodes any or many query-parameters into a single parameter using the given {@link ChecksumStrategy} and
@@ -104,17 +106,11 @@ public class EncodeQuery implements Operation
    /**
     * {@link Operation} to be performed when the current {@link ChecksumStrategy} detects an inbound checksum failure.
     */
-   public DefaultOperationBuilder onChecksumFailure(final Operation operation)
+   public EncodeQuery onChecksumFailure(final Operation operation)
    {
-      DefaultOperationBuilder builder = new DefaultOperationBuilder() {
-         @Override
-         public void perform(final Rewrite event, final EvaluationContext context)
-         {
-            operation.perform(event, context);
-         }
-      };
-      this.onfailure = builder;
-      return builder;
+
+      this.onfailure = operation;
+      return this;
    }
 
    /**
@@ -145,8 +141,13 @@ public class EncodeQuery implements Operation
             {
                decoded = checksumStrategy.removeChecksum(decoded);
                query.removeParameter(tokenName);
-               String newUrl = in.getRequestPath() + "?" + decoded;
-               in.forward(newUrl);
+               QueryStringBuilder queryParams = QueryStringBuilder.createFrom(decoded);
+               HttpRewriteWrappedRequest request = HttpRewriteWrappedRequest.getFromRequest(in.getRequest());
+               for (Entry<String, List<String>> param : queryParams.getParameterMap().entrySet()) {
+                  for (String value : param.getValue()) {
+                     Maps.addArrayValue(request.getModifiableParameters(), param.getKey(), value);
+                  }
+               }
             }
             else if (onfailure != null)
             {
@@ -180,7 +181,6 @@ public class EncodeQuery implements Operation
                out.setOutboundURL(url.toPath() + "?" + tokenName + "=" + encoded);
             }
          }
-
       }
    }
 

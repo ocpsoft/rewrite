@@ -65,4 +65,10 @@ public class And extends DefaultConditionBuilder implements CompositeCondition
    {
       return conditions;
    }
+
+   @Override
+   public String toString()
+   {
+      return "And [" + conditions + "]";
+   }
 }
