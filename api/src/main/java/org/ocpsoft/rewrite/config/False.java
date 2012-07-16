@@ -31,4 +31,10 @@ public class False extends DefaultConditionBuilder
    {
       return false;
    }
+
+   @Override
+   public String toString()
+   {
+      return "False";
+   }
 }

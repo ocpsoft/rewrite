@@ -364,8 +364,8 @@ public class ParameterizedPattern
    }
 
    /**
-    * Get the {@link org.ocpsoft.rewrite.param.Parameter} with the given name. Return null if no such
-    * {@link org.ocpsoft.rewrite.param.Parameter} exists.
+    * Get all {@link RegexCapture} with the given name. Return null if no such
+    * {@link RegexCapture} exists.
     */
    public RegexCapture getParameter(final String name)
    {

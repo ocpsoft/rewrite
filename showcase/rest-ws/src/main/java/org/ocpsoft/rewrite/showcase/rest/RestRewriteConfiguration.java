@@ -26,8 +26,6 @@ import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Method;
@@ -43,6 +41,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class RestRewriteConfiguration extends HttpConfigurationProvider
 {
+
    @Inject
    private ProductRegistry products;
 
@@ -60,16 +59,9 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                .when(Method.isGet()
                         .and(Path.matches("/store/product/{pid}")
                                  .where("pid").matches("\\d+")
-                                 .constrainedBy(new Constraint<String>() {
-                                    @Override
-                                    public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
-                                    {
-                                       Integer valueOf = Integer.valueOf(value);
-                                       return false;
-                                    }
-                                 })
-                                 .bindsTo(Evaluation.property("pid").convertedBy(ProductConverter.class)
-                                          .validatedBy(ProductValidator.class))))
+                                 .constrainedBy(new IntegerConstraint())
+                                 .convertedBy(ProductConverter.class)
+                                 .validatedBy(ProductValidator.class)))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -81,7 +73,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                       * bindings such as {@link El}, the value will be bound directly to the type of the referenced
                       * property type, and this array downcast is not necessary.
                       */
-                     Product product = (Product) Evaluation.property("pid").retrieve(event, context);
+                     Product product = (Product) Evaluation.property("pid").retrieveConverted(event, context);
 
                      /**
                       * Marshal the Product into XML using JAXB. This has been extracted into a utility class.
@@ -134,7 +126,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                          * Just for fun, set a response header containing the URL to the newly created Product.
                          */
                         String location = new ParameterizedPattern(event.getContextPath() + "/store/product/{pid}")
-                                 .build(product.getId());
+                                 .buildUnsafe(product.getId());
                         Response.addHeader("Location", location).perform(event, context);
 
                         event.getResponse().setContentType("text/html");

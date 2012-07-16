@@ -62,6 +62,7 @@
       <module>integration-gwt</module>
       <module>integration-spring</module>
       <module>rewrite-servlet</module>
+      <module>showcase</module>
       <module>distribution</module>
    </modules>
 
@@ -156,6 +157,13 @@
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-impl-servlet</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+            <classifier>sources</classifier>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-servlet</artifactId>
             <version>${project.version}</version>
          </dependency>
@@ -190,7 +198,7 @@
             <version>${version.junit}</version>
             <scope>test</scope>
          </dependency>
-         
+
 
          <!-- We are overriding version of ShrinkWrap Maven Resolver from 
             Arquillian BOM -->
@@ -355,7 +363,9 @@
                         <phase>process-test-classes</phase>
                         <configuration>
                            <target>
-                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="${project.build.directory}/container/jboss-as-${version.jbossas}/standalone/configuration"/>
+                              <copy
+                                 file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml"
+                                 todir="${project.build.directory}/container/jboss-as-${version.jbossas}/standalone/configuration" />
                            </target>
                         </configuration>
                         <goals>
@@ -427,9 +437,12 @@
                         <configuration>
                            <target>
                               <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}" verbose="true" skipexisting="true"
+                              <get dest="${container.download.dir}"
+                                 verbose="true" skipexisting="true"
                                  src="http://download.java.net/glassfish/${version.glassfish}/release/glassfish-${version.glassfish}-web.zip" />
-                              <unzip src="${container.download.dir}/glassfish-${version.glassfish}-web.zip" dest="${project.build.directory}/container" />
+                              <unzip
+                                 src="${container.download.dir}/glassfish-${version.glassfish}-web.zip"
+                                 dest="${project.build.directory}/container" />
                            </target>
                         </configuration>
                      </execution>
@@ -489,12 +502,17 @@
                         <configuration>
                            <target>
                               <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}" verbose="true" skipexisting="true"
+                              <get dest="${container.download.dir}"
+                                 verbose="true" skipexisting="true"
                                  src="http://archive.apache.org/dist/tomcat/tomcat-7/v${version.tomcat}/bin/apache-tomcat-${version.tomcat}.zip" />
-                              <unzip src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip" dest="${project.build.directory}/container" />
-                              <move file="${project.build.directory}/container/apache-tomcat-${version.tomcat}"
-                                 tofile="${project.build.directory}/container/apache-tomcat-7"/>
-                              <echo file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
+                              <unzip
+                                 src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip"
+                                 dest="${project.build.directory}/container" />
+                              <move
+                                 file="${project.build.directory}/container/apache-tomcat-${version.tomcat}"
+                                 tofile="${project.build.directory}/container/apache-tomcat-7" />
+                              <echo
+                                 file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
                                  <![CDATA[
                                  <?xml version="1.0" encoding="UTF-8"?>
                                  <tomcat-users>
@@ -529,7 +547,8 @@
             </dependency>
          </dependencies>
          <repositories>
-            <!-- We current need this because we have to use the SNAPSHOTS for the Tomcat container adapter -->
+            <!-- We current need this because we have to use the SNAPSHOTS 
+               for the Tomcat container adapter -->
             <repository>
                <id>arquillian-snapshots</id>
                <url>https://repository-arquillian.forge.cloudbees.com/snapshot/</url>
@@ -541,7 +560,7 @@
                </snapshots>
             </repository>
          </repositories>
-      </profile>          
+      </profile>
 
       <profile>
          <id>TOMCAT_MANAGED_7_OWB</id>
@@ -567,7 +586,7 @@
                <scope>test</scope>
             </dependency>
          </dependencies>
-      </profile>          
+      </profile>
 
    </profiles>
 

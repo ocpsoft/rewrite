@@ -6,8 +6,7 @@
 
 <ui:composition template="/resources/forge-template.xhtml">
 
-	<ui:param name="pageTitle"
-		value="Access DENIED!" />
+	<ui:param name="pageTitle" value="Access DENIED!" />
 
 	<ui:define name="header">
 		Access DENIED!
@@ -18,10 +17,16 @@
 	</ui:define>
 
 	<ui:define name="main">
-		<h:link outcome="/index" value="Return to the Access Control Menu." /><br/><br/>
-		
-		Access to the <h:link outcome="/timer" value="timer demo"/> will be granted #{timerBean.secondsUntilGranted}
-		
+		<h:link outcome="/index" value="Return to the Access Control Menu." />
+		<br />
+		<br />
+
+		<h:panelGroup> Access to the <h:link outcome="/timer"
+				value="timer demo" /> will be granted #{timerBean.secondsUntilGranted}</h:panelGroup>
+		<br />
+		<h:panelGroup> Access to the <h:link outcome="/domain"
+				value="domain demo" /> will be granted by accessing the app with the domain "localhost".</h:panelGroup>
+
 		<p>
 			<a target="_blank" href="http://ocpsoft.com"><br /> OCPsoft
 				Website</a> | <a target="_blank"

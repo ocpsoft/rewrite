@@ -23,22 +23,31 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Abstract builder for fluently defining new composite {@link Operation} instances.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class DefaultOperationBuilder implements OperationBuilder
 {
+   public static class NoOp extends DefaultOperationBuilder
+   {
+      @Override
+      public void perform(Rewrite event, EvaluationContext context)
+      {}
+      
+      @Override
+      public String toString()
+      {
+         return "NoOp";
+      }
+   }
+
    /**
-    * Return a new {@link DefaultOperationBuilder} that takes no action when {@link #perform(Rewrite, EvaluationContext)} is
-    * invoked.
+    * Return a new {@link DefaultOperationBuilder} that takes no action when
+    * {@link #perform(Rewrite, EvaluationContext)} is invoked.
     */
    public static OperationBuilder create()
    {
-      return new DefaultOperationBuilder() {
-         @Override
-         public void perform(Rewrite event, EvaluationContext context)
-         {}
-      };
+      return new NoOp();
    }
 
    /**
@@ -82,6 +91,12 @@ public abstract class DefaultOperationBuilder implements OperationBuilder
       public List<Operation> getOperations()
       {
          return Arrays.asList(left, right);
+      }
+
+      @Override
+      public String toString()
+      {
+         return DefaultCompositeOperation.class.getSimpleName() + " [left=" + left + ", right=" + right + "]";
       }
    }
 }

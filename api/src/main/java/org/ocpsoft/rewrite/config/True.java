@@ -30,4 +30,10 @@ public class True extends DefaultConditionBuilder
    {
       return true;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "True";
+   }
 }

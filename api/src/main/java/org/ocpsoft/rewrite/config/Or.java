@@ -63,4 +63,10 @@ public class Or extends DefaultConditionBuilder implements CompositeCondition
    {
       return conditions;
    }
+
+   @Override
+   public String toString()
+   {
+      return "Or [" + conditions + "]";
+   }
 }

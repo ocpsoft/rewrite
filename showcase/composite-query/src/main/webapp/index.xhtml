@@ -24,7 +24,11 @@
 		parameters at request-time.</p>
 		<p>Try adding some query-parameters to the URL, or click the sample links,
 		 and watch the results below!</p>
-		<b>#{facesContext.externalContext.request.queryString}</b>
+		 <ul>
+			 <ui:repeat value="#{parametersBean.list}" var="p">
+				<li>${p}</li>		 
+			 </ui:repeat>
+		 </ul>
 		<br/>
 		<br/>
 		<h:link outcome="/index" value="Single parameter">

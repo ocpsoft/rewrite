@@ -31,7 +31,13 @@ public class HashCodeChecksumStrategy implements ChecksumStrategy
       if (token.contains(CHECKSUM_DELIM))
       {
          int hashCode = token.substring(token.indexOf(CHECKSUM_DELIM) + 1).hashCode();
-         Integer storedHashCode = Integer.valueOf(token.substring(0, token.indexOf(CHECKSUM_DELIM)));
+         Integer storedHashCode;
+         try {
+            storedHashCode = Integer.valueOf(token.substring(0, token.indexOf(CHECKSUM_DELIM)));
+         }
+         catch (NumberFormatException e) {
+            return false;
+         }
          return hashCode == storedHashCode;
       }
       return false;

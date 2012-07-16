@@ -156,4 +156,11 @@ public class RuleBuilder implements RelocatableRule
       new ConditionVisit(condition).accept(visitor);
    }
 
+   @Override
+   public String toString()
+   {
+      return "RuleBuilder [priority=" + priority + ", id=" + id + ", condition=" + condition + ", operation="
+               + operation + "]";
+   }
+   
 }
