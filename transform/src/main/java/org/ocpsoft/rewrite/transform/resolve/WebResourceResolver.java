@@ -19,20 +19,26 @@ import java.io.File;
 
 import javax.servlet.ServletContext;
 
+import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.servlet.config.IForward.ForwardParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 import org.ocpsoft.rewrite.transform.resource.FileResource;
 import org.ocpsoft.rewrite.transform.resource.Resource;
 
 public class WebResourceResolver implements ResourceResolver
 {
 
-   private final String fileType;
+   private final ParameterizedPattern pattern;
 
-   public static WebResourceResolver fileType(String fileType)
+   private final ParameterStore<ForwardParameter> parameters = new ParameterStore<ForwardParameter>();
+
+   public static WebResourceResolver named(String pattern)
    {
-      return new WebResourceResolver(fileType);
+      return new WebResourceResolver(pattern);
    }
 
    public static WebResourceResolver identity()
@@ -40,9 +46,14 @@ public class WebResourceResolver implements ResourceResolver
       return new WebResourceResolver(null);
    }
 
-   private WebResourceResolver(String fileType)
+   private WebResourceResolver(String pattern)
    {
-      this.fileType = fileType;
+      if (pattern != null) {
+         this.pattern = new ParameterizedPattern(CaptureType.BRACE, "[^/]+", pattern);
+      }
+      else {
+         this.pattern = null;
+      }
    }
 
    @Override
@@ -53,11 +64,13 @@ public class WebResourceResolver implements ResourceResolver
       if (event instanceof HttpServletRewrite) {
          HttpServletRewrite httpServletRewrite = (HttpServletRewrite) event;
 
-         // the name of the requested resource
-         String path = httpServletRewrite.getRequestPath();
-
-         if (fileType != null) {
-            path = path.replaceAll("\\.\\w+$", fileType);
+         // get the requested resource
+         String path = null;
+         if (pattern != null) {
+            path = pattern.build(event, context, parameters.getParameters());
+         }
+         else {
+            path = httpServletRewrite.getRequestPath();
          }
 
          // obtain the file system path of the resource
