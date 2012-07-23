@@ -64,7 +64,7 @@ public interface RewriteLifecycleListener<T extends Rewrite> extends Specialized
    void afterOutboundRewrite(T event);
 
    /**
-    * Invoked after application has returned control of the request to the rewrite engine, but before the rewrite engine
+    * Invoked after application has returned control of the request to the rewrite engine, and after the rewrite engine
     * calls {@link FilterChain#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse)} or ends the
     * request.
     */
