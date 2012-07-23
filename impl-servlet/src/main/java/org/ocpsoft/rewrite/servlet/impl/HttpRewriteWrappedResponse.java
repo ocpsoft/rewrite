@@ -77,15 +77,31 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    private PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(stream,
             Charset.forName(getCharacterEncoding())), true);
    private List<OutputBuffer> bufferedStages = new ArrayList<OutputBuffer>();
+   private boolean buffersLocked = false;
 
    public boolean isBufferingActive()
    {
       return !bufferedStages.isEmpty();
    }
 
-   public void addBufferStage(OutputBuffer stage)
+   public void addBufferStage(OutputBuffer stage) throws IllegalStateException
    {
+      if (areBuffersLocked())
+      {
+         throw new IllegalStateException(
+                  "Cannot add output buffers to Response once request processing has been passed to the application.");
+      }
       this.bufferedStages.add(stage);
+   }
+
+   private boolean areBuffersLocked()
+   {
+      return buffersLocked;
+   }
+
+   private void lockBuffers()
+   {
+      this.buffersLocked = true;
    }
 
    public void flushBufferedStreams()
@@ -135,6 +151,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
          return printWriter;
       else
          try {
+            lockBuffers();
             return super.getWriter();
          }
          catch (IOException e) {
@@ -149,6 +166,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
          return new ByteArrayServletOutputStream(stream);
       else
          try {
+            lockBuffers();
             return super.getOutputStream();
          }
          catch (IOException e) {
@@ -159,6 +177,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public void setContentLength(int contentLength)
    {
+      lockBuffers();
       /*
        * Prevent content-length being set as the page might be modified.
        */
@@ -172,7 +191,10 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       if (isBufferingActive())
          stream.flush();
       else
+      {
+         lockBuffers();
          super.flushBuffer();
+      }
    }
 
    private class ByteArrayServletOutputStream extends ServletOutputStream
@@ -280,211 +302,185 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public void addCookie(Cookie cookie)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.addCookie(cookie);
    }
 
    @Override
    public boolean containsHeader(String name)
    {
-      // TODO Auto-generated method stub
       return super.containsHeader(name);
    }
 
    @Override
    public void sendError(int sc, String msg) throws IOException
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.sendError(sc, msg);
    }
 
    @Override
    public void sendError(int sc) throws IOException
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.sendError(sc);
    }
 
    @Override
    public void sendRedirect(String location) throws IOException
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.sendRedirect(location);
    }
 
    @Override
    public void setDateHeader(String name, long date)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.setDateHeader(name, date);
    }
 
    @Override
    public void addDateHeader(String name, long date)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.addDateHeader(name, date);
    }
 
    @Override
    public void setHeader(String name, String value)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.setHeader(name, value);
    }
 
    @Override
    public void addHeader(String name, String value)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.addHeader(name, value);
    }
 
    @Override
    public void setIntHeader(String name, int value)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.setIntHeader(name, value);
    }
 
    @Override
    public void addIntHeader(String name, int value)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.addIntHeader(name, value);
    }
 
    @Override
    public void setStatus(int sc)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.setStatus(sc);
    }
 
    @Override
+   @SuppressWarnings("deprecation")
    public void setStatus(int sc, String sm)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.setStatus(sc, sm);
    }
 
    @Override
    public int getStatus()
    {
-      // TODO Auto-generated method stub
       return super.getStatus();
    }
 
    @Override
    public String getHeader(String name)
    {
-      // TODO Auto-generated method stub
       return super.getHeader(name);
    }
 
    @Override
    public Collection<String> getHeaders(String name)
    {
-      // TODO Auto-generated method stub
       return super.getHeaders(name);
    }
 
    @Override
    public Collection<String> getHeaderNames()
    {
-      // TODO Auto-generated method stub
       return super.getHeaderNames();
    }
 
    @Override
    public ServletResponse getResponse()
    {
-      // TODO Auto-generated method stub
       return super.getResponse();
    }
 
    @Override
    public void setResponse(ServletResponse response)
    {
-      // TODO Auto-generated method stub
       super.setResponse(response);
    }
 
    @Override
    public void setCharacterEncoding(String charset)
    {
-      // TODO Auto-generated method stub
+      lockBuffers();
       super.setCharacterEncoding(charset);
    }
 
    @Override
    public String getCharacterEncoding()
    {
-      // TODO Auto-generated method stub
       return super.getCharacterEncoding();
    }
 
    @Override
    public void setBufferSize(int size)
    {
-      // TODO Auto-generated method stub
       super.setBufferSize(size);
    }
 
    @Override
    public int getBufferSize()
    {
-      // TODO Auto-generated method stub
       return super.getBufferSize();
    }
 
    @Override
    public boolean isCommitted()
    {
-      // TODO Auto-generated method stub
       return super.isCommitted();
    }
 
    @Override
    public void reset()
    {
-      // TODO Auto-generated method stub
+      stream.reset();
       super.reset();
    }
 
    @Override
    public void resetBuffer()
    {
-      // TODO Auto-generated method stub
+      stream.reset();
       super.resetBuffer();
    }
 
    @Override
    public void setLocale(Locale loc)
    {
-      // TODO Auto-generated method stub
       super.setLocale(loc);
    }
 
    @Override
    public Locale getLocale()
    {
-      // TODO Auto-generated method stub
       return super.getLocale();
-   }
-
-   @Override
-   public boolean isWrapperFor(ServletResponse wrapped)
-   {
-      // TODO Auto-generated method stub
-      return super.isWrapperFor(wrapped);
-   }
-
-   @Override
-   public boolean isWrapperFor(Class wrappedType)
-   {
-      // TODO Auto-generated method stub
-      return super.isWrapperFor(wrappedType);
    }
 
 }

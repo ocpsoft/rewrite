@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.servlet.wrapper;
 
+import java.io.IOException;
+
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
@@ -24,6 +26,7 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Response;
+import org.ocpsoft.rewrite.servlet.config.SendStatus.SendError;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
@@ -57,8 +60,8 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                /*
                 * Test unbuffered. Use a Join to perform a forward so we know buffering would have been activated.
                 */
-               .addRule(Join.path("/unbuffered").to("/other.html"))
-               .defineRule().when(Path.matches("/other.html"))
+               .addRule(Join.path("/unbuffered").to("/unbuffered.html"))
+               .defineRule().when(Path.matches("/unbuffered.html"))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
@@ -70,6 +73,39 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                      else
                      {
                         Response.setCode(201).perform(event, context);
+                     }
+                  }
+               })
+
+               /*
+                * Test buffer failure constraints.
+                */
+               .addRule(Join.path("/bufferforward").to("/forward.html"))
+               .defineRule().when(Path.matches("/forward.html"))
+               .perform(new HttpOperation() {
+                  @Override
+                  public void performHttp(HttpServletRewrite event, EvaluationContext context)
+                  {
+                     Response.withOutputBufferedBy(new BufferedResponseToLowercase1()).perform(event, context);
+                     Response.setCode(202).perform(event, context);
+                  }
+               })
+
+               .defineRule().when(Path.matches("/bufferfail"))
+               .perform(new HttpOperation() {
+                  @Override
+                  public void performHttp(HttpServletRewrite event, EvaluationContext context)
+                  {
+                     try {
+                        event.getResponse().getOutputStream(); // cause buffers to lock
+                        Response.withOutputBufferedBy(new BufferedResponseToLowercase1()).perform(event, context);
+                     }
+                     catch (IllegalStateException e) {
+                        SendError.code(503).perform(event, context);
+                     }
+                     catch (IOException e)
+                     {
+                        throw new RuntimeException(e);
                      }
                   }
                });

@@ -42,7 +42,8 @@ public class BufferedResponseTest extends RewriteTest
                .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
                .addAsWebResource(new StringAsset("UPPERCASE"), "index.html")
-               .addAsWebResource(new StringAsset("UPPERCASE"), "other.html")
+               .addAsWebResource(new StringAsset("UPPERCASE"), "unbuffered.html")
+               .addAsWebResource(new StringAsset("UPPERCASE"), "forward.html")
                .addAsServiceProvider(ConfigurationProvider.class, BufferedResponseConfigurationProvider.class);
       return deployment;
    }
@@ -58,8 +59,23 @@ public class BufferedResponseTest extends RewriteTest
    @Test
    public void testResponseBufferingOnlyAppliesWhenBuffersRegistered() throws Exception
    {
-      HttpAction<HttpGet> action = get("/other.html");
+      HttpAction<HttpGet> action = get("/unbuffered");
       Assert.assertEquals(201, action.getStatusCode());
       Assert.assertEquals("UPPERCASE", action.getResponseContent());
+   }
+
+   @Test
+   public void testResponseBufferingAcceptedAfterForward() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/bufferforward");
+      Assert.assertEquals(202, action.getStatusCode());
+      Assert.assertEquals("uppercase", action.getResponseContent());
+   }
+
+   @Test
+   public void testResponseBufferingRejectedAfterStreamAccessed() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/bufferfail");
+      Assert.assertEquals(503, action.getStatusCode());
    }
 }
