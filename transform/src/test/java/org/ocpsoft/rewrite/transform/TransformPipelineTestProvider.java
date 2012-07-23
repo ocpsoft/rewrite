@@ -47,21 +47,21 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
 
                // no transformer added
                .defineRule()
-               .when(Path.matches("{something}.none").where("something").matches(".*"))
-               .perform(new Transform().resolvedBy(WebResourceResolver.fileType(".txt")))
+               .when(Path.matches("/{basename}.none"))
+               .perform(new Transform().resolvedBy(WebResourceResolver.named("/{basename}.txt")))
 
                // one single transformer
                .defineRule()
-               .when(Path.matches("{something}.one").where("something").matches(".*"))
+               .when(Path.matches("/{basename}.one"))
                .perform(Transform.with(FooBarTransformer.class)
-                        .resolvedBy(WebResourceResolver.fileType(".txt")))
+                        .resolvedBy(WebResourceResolver.named("/{basename}.txt")))
 
                // multiple transformers
                .defineRule()
-               .when(Path.matches("{something}.two").where("something").matches(".*"))
+               .when(Path.matches("/{basename}.two"))
                .perform(Transform.with(FooBarTransformer.class)
                         .apply(UppercaseTransformer.class)
-                        .resolvedBy(WebResourceResolver.fileType(".txt")))
+                        .resolvedBy(WebResourceResolver.named("/{basename}.txt")))
 
       ;
    }
