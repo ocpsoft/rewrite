@@ -19,38 +19,35 @@ import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.config.Direction;
+import org.ocpsoft.rewrite.servlet.config.SendStatus.SendError;
+import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class SchemeChangeConfigurationProvider extends HttpConfigurationProvider
+public class HttpConfigurationOrder2TestProvider extends HttpConfigurationProvider
 {
    @Override
    public int priority()
    {
-      return 0;
+      /*
+       * Priority of overall configuration is lower than default.
+       */
+      return 10;
    }
 
    @Override
    public Configuration getConfiguration(final ServletContext context)
    {
-      Configuration config = ConfigurationBuilder.begin()
-
-               .defineRule().when(Path.matches("/login")).perform(new HttpOperation() {
-                  
-                  @Override
-                  public void performHttp(HttpServletRewrite event, EvaluationContext context)
-                  {
-                     String url = event.getRequest().getRequestURL().toString().replaceFirst("http", "https");
-                     Redirect.temporary(url).perform(event, context);
-                  }
-               })
-               
-               .defineRule().when(Scheme.matches("https")).perform(SendStatus.code(200));
-               ;
-      return config;
+      return ConfigurationBuilder.begin()
+               .addRule(Join.path("/").to("/index.html"))
+               .addRule(Join.path("/login").to("/test.html"))
+               .addRule(Join.path("/registration").to("/test.html"))
+               .addRule(Join.path("/myProfile").to("/test.html"))
+               .defineRule()
+               .when(Direction.isInbound().and(DispatchType.isRequest()))
+               .perform(SendError.code(403));
    }
 }

@@ -30,7 +30,7 @@ import org.ocpsoft.logging.Logger;
 /**
  * Responsible for loading all {@link ConfigurationProvider} instances, and building a single unified
  * {@link Configuration} based on {@link ConfigurationProvider#priority()}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationLoader
@@ -134,7 +134,7 @@ public class ConfigurationLoader
                   for (Rule rule : rules) {
                      if (rule != null)
                      {
-                        if (rule instanceof RelocatableRule)
+                        if (rule instanceof RelocatableRule && ((RelocatableRule) rule).isRelocated())
                            addListValue(priorityMap, ((RelocatableRule) rule).priority(), rule);
                         else
                            addListValue(priorityMap, provider.priority(), rule);
