@@ -45,8 +45,6 @@ import org.ocpsoft.rewrite.servlet.config.OutputBuffer;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
-import org.ocpsoft.rewrite.servlet.wrapper.BufferedResponseToLowercase1;
-import org.ocpsoft.rewrite.servlet.wrapper.BufferedResponseToLowercase2;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
@@ -99,7 +97,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
             for (OutputBuffer stage : bufferedStages) {
                result = stage.execute(result);
             }
-            Streams.copy(result, getResponse().getOutputStream());
+            Streams.copy(result, super.getOutputStream());
             if (printWriter != null) {
                printWriter.close();
             }
