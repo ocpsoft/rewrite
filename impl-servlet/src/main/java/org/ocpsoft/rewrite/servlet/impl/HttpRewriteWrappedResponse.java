@@ -16,9 +16,17 @@
 
 package org.ocpsoft.rewrite.servlet.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletContext;
@@ -29,11 +37,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
+import org.ocpsoft.rewrite.servlet.config.OutputBuffer;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
+import org.ocpsoft.rewrite.servlet.wrapper.BufferedResponseToLowercase1;
+import org.ocpsoft.rewrite.servlet.wrapper.BufferedResponseToLowercase2;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
 
 /**
@@ -42,12 +55,156 @@ import org.ocpsoft.rewrite.spi.RewriteProvider;
 public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
 {
    private final HttpServletRequest request;
+   private final static String INSTANCE_KEY = HttpRewriteWrappedResponse.class.getName() + "_instance";
+
+   public static HttpRewriteWrappedResponse getInstance(HttpServletRequest request)
+   {
+      return (HttpRewriteWrappedResponse) request.getAttribute(INSTANCE_KEY);
+   }
 
    public HttpRewriteWrappedResponse(final HttpServletRequest request, final HttpServletResponse response)
    {
       super(response);
       this.request = request;
+
+      if (getInstance(request) == null) {
+         request.setAttribute(INSTANCE_KEY, this);
+      }
    }
+
+   /*
+    * Buffering Facilities
+    */
+   private ByteArrayOutputStream stream = new ByteArrayOutputStream();
+   private PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(stream,
+            Charset.forName(getCharacterEncoding())), true);
+   private List<OutputBuffer> bufferedStages = new ArrayList<OutputBuffer>();
+
+   public boolean isBufferingActive()
+   {
+      return !bufferedStages.isEmpty();
+   }
+
+   public void addBufferStage(OutputBuffer stage)
+   {
+      this.bufferedStages.add(stage);
+   }
+
+   public void flushBufferedStreams()
+   {
+      if (isBufferingActive())
+      {
+         try {
+            InputStream result = new ByteArrayInputStream(stream.toByteArray());
+            for (OutputBuffer stage : bufferedStages) {
+               result = stage.execute(result);
+            }
+            Streams.copy(result, getResponse().getOutputStream());
+            if (printWriter != null) {
+               printWriter.close();
+            }
+            if (stream != null) {
+               stream.close();
+            }
+         }
+         catch (IOException e) {
+            // TODO what should we really do here?
+            e.printStackTrace();
+         }
+      }
+   }
+
+   @Override
+   public String toString()
+   {
+      if (isBufferingActive())
+      {
+         try {
+            return stream.toString(getCharacterEncoding());
+         }
+         catch (UnsupportedEncodingException e) {
+            throw new RewriteException("Response accepted invalid character encoding " + getCharacterEncoding(), e);
+         }
+      }
+      else
+         return super.toString();
+   }
+
+   @Override
+   public PrintWriter getWriter()
+   {
+      if (isBufferingActive())
+         return printWriter;
+      else
+         try {
+            return super.getWriter();
+         }
+         catch (IOException e) {
+            throw new RewriteException(e);
+         }
+   }
+
+   @Override
+   public ServletOutputStream getOutputStream()
+   {
+      if (isBufferingActive())
+         return new ByteArrayServletOutputStream(stream);
+      else
+         try {
+            return super.getOutputStream();
+         }
+         catch (IOException e) {
+            throw new RewriteException(e);
+         }
+   }
+
+   @Override
+   public void setContentLength(int contentLength)
+   {
+      /*
+       * Prevent content-length being set as the page might be modified.
+       */
+      if (!isBufferingActive())
+         super.setContentLength(contentLength);
+   }
+
+   @Override
+   public void flushBuffer() throws IOException
+   {
+      if (isBufferingActive())
+         stream.flush();
+      else
+         super.flushBuffer();
+   }
+
+   private class ByteArrayServletOutputStream extends ServletOutputStream
+   {
+      private ByteArrayOutputStream outputStream;
+
+      public ByteArrayServletOutputStream(ByteArrayOutputStream outputStream)
+      {
+         this.outputStream = outputStream;
+      }
+
+      public void write(int b)
+      {
+         outputStream.write(b);
+      }
+
+      public void write(byte[] bytes) throws IOException
+      {
+         outputStream.write(bytes);
+      }
+
+      public void write(byte[] bytes, int off, int len)
+      {
+         outputStream.write(bytes, off, len);
+      }
+   }
+
+   /*
+    * End buffering facilities
+    */
 
    public HttpServletRequest getRequest()
    {
@@ -270,41 +427,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    }
 
    @Override
-   public ServletOutputStream getOutputStream() throws IOException
-   {
-      // TODO Auto-generated method stub
-      return super.getOutputStream();
-   }
-
-   @Override
-   public PrintWriter getWriter() throws IOException
-   {
-      // TODO Auto-generated method stub
-      return super.getWriter();
-   }
-
-   @Override
-   public void setContentLength(int len)
-   {
-      // TODO Auto-generated method stub
-      super.setContentLength(len);
-   }
-
-   @Override
-   public void setContentType(String type)
-   {
-      // TODO Auto-generated method stub
-      super.setContentType(type);
-   }
-
-   @Override
-   public String getContentType()
-   {
-      // TODO Auto-generated method stub
-      return super.getContentType();
-   }
-
-   @Override
    public void setBufferSize(int size)
    {
       // TODO Auto-generated method stub
@@ -316,13 +438,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    {
       // TODO Auto-generated method stub
       return super.getBufferSize();
-   }
-
-   @Override
-   public void flushBuffer() throws IOException
-   {
-      // TODO Auto-generated method stub
-      super.flushBuffer();
    }
 
    @Override
@@ -373,6 +488,5 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       // TODO Auto-generated method stub
       return super.isWrapperFor(wrappedType);
    }
-
 
 }

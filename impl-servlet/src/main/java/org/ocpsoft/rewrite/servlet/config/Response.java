@@ -15,11 +15,14 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
 
 /**
  * Responsible for adding various properties such as headers and cookies to the {@link HttpServletResponse}
@@ -28,6 +31,28 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public abstract class Response extends HttpOperation
 {
+   /**
+    * Add the given {@link OutputBuffer} instances to the current {@link ServletResponse}. This will activate response
+    * buffering on the current {@link ServletRequest} - meaning that generated output will not be sent to the client
+    * until the entire request has completed and all registered {@link OutputBuffer} instances have been executed.
+    * 
+    * @param bufferedResponseToLowercase2
+    * 
+    * @throws IllegalStateException When output has already been written to the client.
+    */
+   public static Response withOutputBufferedBy(final OutputBuffer... buffers) throws IllegalStateException
+   {
+      return new Response() {
+         @Override
+         public void performHttp(HttpServletRewrite event, EvaluationContext context)
+         {
+            for (OutputBuffer buffer : buffers) {
+               HttpRewriteWrappedResponse.getInstance(event.getRequest()).addBufferStage(buffer);
+            }
+         }
+      };
+   }
+
    /**
     * Create an {@link org.ocpsoft.rewrite.config.Operation} that adds a header to the {@link HttpServletResponse}
     */
@@ -71,7 +96,8 @@ public abstract class Response extends HttpOperation
    }
 
    /**
-    * Create an {@link org.ocpsoft.rewrite.config.Operation} that adds a {@link Cookie} to the {@link HttpServletResponse}
+    * Create an {@link org.ocpsoft.rewrite.config.Operation} that adds a {@link Cookie} to the
+    * {@link HttpServletResponse}
     */
    public static Response addCookie(final Cookie cookie)
    {
@@ -100,7 +126,5 @@ public abstract class Response extends HttpOperation
    {
       return "Response";
    }
-   
-   
 
 }
