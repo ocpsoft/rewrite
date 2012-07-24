@@ -25,7 +25,6 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -40,7 +39,7 @@ import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  */
-public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule, ConditionBuilder
+public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
 {
    /**
     * The internal server resource (real or virtual) to be served.
@@ -151,30 +150,6 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public ParameterizedPattern getResourcexpression()
       {
          return parent.getResourcexpression();
-      }
-
-      @Override
-      public ConditionBuilder and(Condition condition)
-      {
-         return parent.and(condition);
-      }
-
-      @Override
-      public ConditionBuilder andNot(Condition condition)
-      {
-         return parent.andNot(condition);
-      }
-
-      @Override
-      public ConditionBuilder or(Condition condition)
-      {
-         return parent.or(condition);
-      }
-
-      @Override
-      public ConditionBuilder orNot(Condition condition)
-      {
-         return parent.orNot(condition);
       }
 
       @Override

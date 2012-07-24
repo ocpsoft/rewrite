@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Rule extends ConfigurationElement
+public interface Rule extends Condition, Operation
 {
    /**
     * Get the ID for this {@link Rule}

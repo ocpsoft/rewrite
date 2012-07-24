@@ -23,7 +23,6 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
-import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.config.Not;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -237,30 +236,6 @@ public class Join implements IJoin
    {
       return "Join [url=" + pattern + ", to=" + resource + ", id=" + id + ", inboundCorrection="
                + inboundCorrection + "]";
-   }
-
-   @Override
-   public ConditionBuilder and(Condition condition)
-   {
-      return DefaultConditionBuilder.wrap(this.condition).and(condition);
-   }
-
-   @Override
-   public ConditionBuilder andNot(Condition condition)
-   {
-      return DefaultConditionBuilder.wrap(this.condition).andNot(condition);
-   }
-
-   @Override
-   public ConditionBuilder or(Condition condition)
-   {
-      return DefaultConditionBuilder.wrap(this.condition).or(condition);
-   }
-
-   @Override
-   public ConditionBuilder orNot(Condition condition)
-   {
-      return DefaultConditionBuilder.wrap(this.condition).orNot(condition);
    }
 
    @Override

@@ -33,7 +33,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    @Override
-   public ConfigurationBuilder addRule(final Rule rule)
+   public ConfigurationRuleBuilder addRule(final Rule rule)
    {
       return wrapped.addRule(rule);
    }

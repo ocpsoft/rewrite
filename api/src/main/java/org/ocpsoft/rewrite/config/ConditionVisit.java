@@ -35,7 +35,7 @@ public class ConditionVisit
    }
 
    /**
-    * Submit the supplied visitor and apply it to all conditions in the tree
+    * Submit the supplied visitor and apply it to all {@link Condition} instances in the tree
     */
    public void accept(Visitor<Condition> visitor)
    {
@@ -43,8 +43,8 @@ public class ConditionVisit
    }
 
    /**
-    * Method to call the visitor for the supplied condition and recursively calls itself, if the condition is a
-    * {@link CompositeCondition}.
+    * Method to call the visitor for the supplied {@link Condition} and recursively calls itself, if the
+    * {@link Condition} is a {@link CompositeCondition}.
     */
    private void visit(Condition condition, Visitor<Condition> visitor)
    {

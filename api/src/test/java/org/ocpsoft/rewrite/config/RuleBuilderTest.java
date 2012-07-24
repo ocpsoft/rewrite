@@ -18,6 +18,8 @@ package org.ocpsoft.rewrite.config;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -39,6 +41,34 @@ public class RuleBuilderTest
       Assert.assertTrue(ruleBuilder instanceof Rule);
       Assert.assertTrue(ruleBuilder instanceof Relocatable);
       Assert.assertTrue(ruleBuilder instanceof RelocatableRule);
+   }
+
+   @Test
+   public void testRuleBuilderCreatedFromRule()
+   {
+      Rule rule = new Rule() {
+         @Override
+         public void perform(Rewrite event, EvaluationContext context)
+         {
+         }
+         
+         @Override
+         public String getId()
+         {
+            return null;
+         }
+         
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return false;
+         }
+      };
+      
+      RuleBuilder ruleBuilder = RuleBuilder.wrap(rule);
+      
+      Assert.assertEquals(null, ruleBuilder.getId());
+      Assert.assertEquals(0, ruleBuilder.priority());
    }
 
 }

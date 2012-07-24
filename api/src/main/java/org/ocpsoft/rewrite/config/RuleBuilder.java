@@ -20,7 +20,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Builder for fluently defining new composite {@link Rule} instances.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RuleBuilder implements RelocatableRule
@@ -39,6 +39,14 @@ public class RuleBuilder implements RelocatableRule
    public static RuleBuilder define()
    {
       return new RuleBuilder();
+   }
+
+   /**
+    * Returns a new {@link RuleBuilder} instance wrapping the given {@link Rule}.
+    */
+   public static RuleBuilder wrap(Rule rule)
+   {
+      return new RuleBuilder().withId(rule.getId()).when(rule).perform(rule);
    }
 
    /**
@@ -74,7 +82,7 @@ public class RuleBuilder implements RelocatableRule
     */
    public RuleBuilder when(final Condition condition)
    {
-      this.condition = condition;
+      this.condition = DefaultConditionBuilder.wrap(this.condition).and(condition);
       return this;
    }
 
@@ -83,7 +91,7 @@ public class RuleBuilder implements RelocatableRule
     */
    public RuleBuilder perform(final Operation operation)
    {
-      this.operation = operation;
+      this.operation = DefaultOperationBuilder.wrap(this.operation).and(operation);
       return this;
    }
 
@@ -133,8 +141,6 @@ public class RuleBuilder implements RelocatableRule
 
    /**
     * Return the underlying {@link OperationBuilder}
-    *
-    * @return
     */
    public DefaultOperationBuilder getOperationBuilder()
    {
@@ -148,7 +154,7 @@ public class RuleBuilder implements RelocatableRule
 
    /**
     * This method will call the supplied visitor for all conditions attached to the rule builder.
-    *
+    * 
     * @param visitor visitor to process
     */
    public void accept(Visitor<Condition> visitor)
@@ -162,5 +168,5 @@ public class RuleBuilder implements RelocatableRule
       return "RuleBuilder [priority=" + priority + ", id=" + id + ", condition=" + condition + ", operation="
                + operation + "]";
    }
-   
+
 }

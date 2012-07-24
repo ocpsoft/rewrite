@@ -57,10 +57,10 @@ public class ConfigurationBuilder implements Configuration
    /**
     * Add a pre-defined {@link Rule}.
     */
-   public ConfigurationBuilder addRule(final Rule rule)
+   public ConfigurationRuleBuilder addRule(final Rule rule)
    {
       rules.add(rule);
-      return this;
+      return new ConfigurationRuleBuilder(this, RuleBuilder.wrap(rule));
    }
 
    @Override
