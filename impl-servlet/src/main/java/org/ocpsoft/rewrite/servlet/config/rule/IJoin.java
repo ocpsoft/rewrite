@@ -23,7 +23,6 @@ import javax.servlet.ServletRequest;
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
@@ -32,6 +31,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
 
 /**
@@ -87,9 +87,9 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
    public class JoinParameter extends ParameterBuilder<JoinParameter, String> implements IJoinParameter
    {
       private final IJoin parent;
-      private final List<RegexCapture> captures;
+      private final List<PathParameter> captures;
 
-      public JoinParameter(IJoin join, RegexCapture... captures)
+      public JoinParameter(IJoin join, PathParameter... captures)
       {
          super((Object[]) captures);
          this.parent = join;
@@ -99,7 +99,7 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       @Override
       public IJoinParameter matches(String string)
       {
-         for (RegexCapture capture : captures) {
+         for (PathParameter capture : captures) {
             if (capture != null)
                capture.matches(string);
          }
@@ -109,7 +109,7 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       @Override
       public String getName()
       {
-         for (RegexCapture capture : captures) {
+         for (PathParameter capture : captures) {
             if (capture != null)
                return capture.getName();
          }

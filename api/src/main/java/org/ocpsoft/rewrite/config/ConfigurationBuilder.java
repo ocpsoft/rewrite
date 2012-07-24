@@ -59,8 +59,9 @@ public class ConfigurationBuilder implements Configuration
     */
    public ConfigurationRuleBuilder addRule(final Rule rule)
    {
-      rules.add(rule);
-      return new ConfigurationRuleBuilder(this, RuleBuilder.wrap(rule));
+      RuleBuilder wrapped = RuleBuilder.wrap(rule);
+      rules.add(wrapped);
+      return new ConfigurationRuleBuilder(this, wrapped);
    }
 
    @Override
