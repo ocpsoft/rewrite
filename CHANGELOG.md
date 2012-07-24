@@ -1,8 +1,9 @@
 ------------------------------------
-           VERSION 1.1.0
-------------------------------------
+VERSION 1.1.0
+=============
 
-++Features & Enhancements:
+Features & Enhancements:
+========================
 * Enabled fluent chaining of additional Condition and Operation instances when adding single/custom rules by calling `ConfigurationBuilder.addRule(new CustomRule()).when(...).perform(...);`
 * Added Response output buffering support.
 * JAAS support with JAASRoles condition
@@ -12,12 +13,14 @@
 * Preview of Transformer APIs
 * Preview of Annotation Configuration API
 
-++Regression Impact:
+Regression Impact:
+==================
 * Configuration strings are now literal. Regular expressions must be configured through a parameter such as: `.defineRule().when(Path.matches("/{*}").where("*").matches(".*"))`
 * Join no longer matches Forwarded requests.
 * EL API is now a separate module and the Java package name has changed to 'org.ocpsoft.rewrite.el'
 
-++Bug Fixes:
+Bug Fixes:
+==========
 * Parameter binding now works on Join rules.
 * Issue #67 - Keep order of fluent rules when building configuration.
 * Fixed NumberFormatException on EncodeQuery operation when hashCode of checksum is modified
