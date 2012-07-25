@@ -8,12 +8,11 @@
    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
    the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-parent</artifactId>
-   <version>1.0.6-SNAPSHOT</version>
+   <version>1.1.0.Final</version>
    <packaging>pom</packaging>
 
    <parent>
@@ -363,9 +362,7 @@
                         <phase>process-test-classes</phase>
                         <configuration>
                            <target>
-                              <copy
-                                 file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml"
-                                 todir="${project.build.directory}/container/jboss-as-${version.jbossas}/standalone/configuration" />
+                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="${project.build.directory}/container/jboss-as-${version.jbossas}/standalone/configuration" />
                            </target>
                         </configuration>
                         <goals>
@@ -437,12 +434,8 @@
                         <configuration>
                            <target>
                               <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}"
-                                 verbose="true" skipexisting="true"
-                                 src="http://download.java.net/glassfish/${version.glassfish}/release/glassfish-${version.glassfish}-web.zip" />
-                              <unzip
-                                 src="${container.download.dir}/glassfish-${version.glassfish}-web.zip"
-                                 dest="${project.build.directory}/container" />
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://download.java.net/glassfish/${version.glassfish}/release/glassfish-${version.glassfish}-web.zip" />
+                              <unzip src="${container.download.dir}/glassfish-${version.glassfish}-web.zip" dest="${project.build.directory}/container" />
                            </target>
                         </configuration>
                      </execution>
@@ -502,22 +495,15 @@
                         <configuration>
                            <target>
                               <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}"
-                                 verbose="true" skipexisting="true"
-                                 src="http://archive.apache.org/dist/tomcat/tomcat-7/v${version.tomcat}/bin/apache-tomcat-${version.tomcat}.zip" />
-                              <unzip
-                                 src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip"
-                                 dest="${project.build.directory}/container" />
-                              <move
-                                 file="${project.build.directory}/container/apache-tomcat-${version.tomcat}"
-                                 tofile="${project.build.directory}/container/apache-tomcat-7" />
-                              <echo
-                                 file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://archive.apache.org/dist/tomcat/tomcat-7/v${version.tomcat}/bin/apache-tomcat-${version.tomcat}.zip" />
+                              <unzip src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip" dest="${project.build.directory}/container" />
+                              <move file="${project.build.directory}/container/apache-tomcat-${version.tomcat}" tofile="${project.build.directory}/container/apache-tomcat-7" />
+                              <echo file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
                                  <![CDATA[
                                  <?xml version="1.0" encoding="UTF-8"?>
                                  <tomcat-users>
-                                    <role rolename="manager-script"/>
-                                    <user username="arquillian" password="arquillian" roles="manager-script"/>
+                                    <role rolename="manager-script" />
+                                    <user username="arquillian" password="arquillian" roles="manager-script" />
                                  </tomcat-users>
                                  ]]>
                               </echo>
