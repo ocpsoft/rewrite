@@ -25,11 +25,11 @@ import javax.servlet.ServletRegistration;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for comparing URLs to Servlet Mappings.
@@ -40,14 +40,14 @@ public class ServletMapping extends HttpCondition implements IServletMapping
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
-   private final ParameterizedPattern resource;
+   private final ParameterizedPatternImpl resource;
    private final ParameterStore<ServletMappingParameter> parameters = new ParameterStore<ServletMappingParameter>();
 
    private ServletMapping(final String resource)
    {
-      this.resource = new ParameterizedPattern(resource);
+      this.resource = new ParameterizedPatternImpl(resource);
 
-      for (RegexCapture parameter : this.resource.getParameters().values()) {
+      for (PatternParameter parameter : this.resource.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -57,7 +57,7 @@ public class ServletMapping extends HttpCondition implements IServletMapping
    {
       if (resource != null)
       {
-         String path = resource.build(event, context, parameters.getParameters());
+         String path = resource.build(event, context, parameters);
          try {
 
             for (Entry<String, ? extends ServletRegistration> entry : event.getRequest().getServletContext()
@@ -115,7 +115,7 @@ public class ServletMapping extends HttpCondition implements IServletMapping
    }
 
    @Override
-   public ParameterizedPattern getResourceExpression()
+   public ParameterizedPatternImpl getResourceExpression()
    {
       return resource;
    }

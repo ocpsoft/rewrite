@@ -37,7 +37,7 @@ public class HttpConfigurationTestProviderTwo extends HttpConfigurationProvider
    public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
-               .defineRule()
+               .addRule()
                .when(
                         Direction.isInbound().and(Path.matches("/path"))
                )

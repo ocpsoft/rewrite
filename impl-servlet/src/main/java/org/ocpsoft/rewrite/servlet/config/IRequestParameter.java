@@ -17,9 +17,8 @@
  import java.util.Arrays;
 import java.util.List;
 
- import org.ocpsoft.rewrite.bind.Bindable;
+import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -27,6 +26,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterParameter;
 
  /**
@@ -47,9 +47,9 @@ import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterPara
     IRequestParameterParameter
     {
        private final IRequestParameter parent;
-       private final List<RegexCapture> captures;
+       private final List<PatternParameter> captures;
 
-       public RequestParameterParameter(IRequestParameter condition, RegexCapture... captures)
+       public RequestParameterParameter(IRequestParameter condition, PatternParameter... captures)
        {
           super((Object[]) captures);
           this.parent = condition;
@@ -71,7 +71,7 @@ import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterPara
        @Override
        public IRequestParameterParameter matches(String string)
        {
-          for (RegexCapture capture : captures) {
+          for (PatternParameter capture : captures) {
              if (capture != null)
                 capture.matches(string);
           }
@@ -81,7 +81,7 @@ import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterPara
        @Override
        public String getName()
        {
-          for (RegexCapture capture : captures) {
+          for (PatternParameter capture : captures) {
              if (capture != null)
                 return capture.getName();
           }

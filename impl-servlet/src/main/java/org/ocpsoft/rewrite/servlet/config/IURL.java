@@ -17,8 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -26,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.IURL.URLParameter;
 
 /**
@@ -37,7 +37,7 @@ public interface IURL extends Parameterized<IURL, URLParameter, String>, Conditi
 {
    public IURL withRequestBinding();
 
-   public ParameterizedPattern getPathExpression();
+   public ParameterizedPatternImpl getPathExpression();
 
    public interface IURLParameter extends IURL, Bindable<URLParameter>, Parameter<URLParameter, String>
    {
@@ -47,9 +47,9 @@ public interface IURL extends Parameterized<IURL, URLParameter, String>, Conditi
    public class URLParameter extends ParameterBuilder<URLParameter, String> implements IURLParameter
    {
       private final IURL parent;
-      private final RegexCapture parameter;
+      private final PatternParameter parameter;
 
-      public URLParameter(IURL path, RegexCapture capture)
+      public URLParameter(IURL path, PatternParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -94,7 +94,7 @@ public interface IURL extends Parameterized<IURL, URLParameter, String>, Conditi
       }
 
       @Override
-      public ParameterizedPattern getPathExpression()
+      public ParameterizedPatternImpl getPathExpression()
       {
          return parent.getPathExpression();
       }

@@ -22,11 +22,11 @@ import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for determining existence of resources within the web root
@@ -38,14 +38,14 @@ public class Resource extends HttpCondition implements IResource
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
-   private final ParameterizedPattern resource;
+   private final ParameterizedPatternImpl resource;
    private final ParameterStore<ResourceParameter> parameters = new ParameterStore<ResourceParameter>();
 
    private Resource(final String resource)
    {
-      this.resource = new ParameterizedPattern(resource);
+      this.resource = new ParameterizedPatternImpl(resource);
 
-      for (RegexCapture parameter : this.resource.getParameters().values()) {
+      for (PatternParameter parameter : this.resource.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -55,12 +55,12 @@ public class Resource extends HttpCondition implements IResource
    {
       if (resource != null)
       {
-         String file = resource.build(event, context, parameters.getParameters());
+         String file = resource.build(event, context, parameters);
          try {
             if (event.getRequest().getServletContext().getResource(file) != null)
             {
-               Map<RegexCapture, String[]> parameters = resource.parse(event, context, file);
-               for (RegexCapture capture : parameters.keySet()) {
+               Map<PatternParameter, String[]> parameters = resource.parse(event, context, file);
+               for (PatternParameter capture : parameters.keySet()) {
                   if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                      return false;
                }
@@ -96,7 +96,7 @@ public class Resource extends HttpCondition implements IResource
    }
 
    @Override
-   public ParameterizedPattern getResourceExpression()
+   public ParameterizedPatternImpl getResourceExpression()
    {
       return resource;
    }

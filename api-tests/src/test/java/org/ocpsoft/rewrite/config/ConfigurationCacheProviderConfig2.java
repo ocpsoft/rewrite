@@ -34,7 +34,7 @@ public class ConfigurationCacheProviderConfig2 implements ConfigurationProvider<
       catch (InterruptedException e) {
       }
 
-      return ConfigurationBuilder.begin().defineRule()
+      return ConfigurationBuilder.begin().addRule()
                .when(Path.matches("/cache2"))
                .perform(SendStatus.code(accessCount));
    }

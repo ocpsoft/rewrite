@@ -25,20 +25,20 @@ public class RelocatingConfigurationProvider1 implements ConfigurationProvider<O
    public Configuration getConfiguration(final Object context)
    {
       return ConfigurationBuilder.begin()
-               .defineRule()
+               .addRule()
                .when(Path.matches("/priority"))
                .perform(SendStatus.code(201))
                
-               .defineRule()
+               .addRule()
                .when(Path.matches("/priority2"))
                .perform(SendStatus.code(201))
                
-               .defineRule()
+               .addRule()
                .when(Path.matches("/priority3"))
                .perform(SendStatus.code(201))
                .withPriority(12)
                
-               .defineRule()
+               .addRule()
                .when(Path.matches("/priority4"))
                .perform(SendStatus.code(201))
                ;

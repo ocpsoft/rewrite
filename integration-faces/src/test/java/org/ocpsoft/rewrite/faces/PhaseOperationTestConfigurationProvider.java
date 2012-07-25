@@ -46,7 +46,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                /*
                 * Perform an operation after restore view.
                 */
-               .defineRule()
+               .addRule()
                .when(Path.matches("/empty.xhtml").and(DispatchType.isRequest()))
                .perform(PhaseOperation.enqueue(new Operation() {
 
@@ -63,7 +63,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                /*
                 * Perform before Render Response
                 */
-               .defineRule()
+               .addRule()
                .when(Path.matches("/render_response").and(DispatchType.isRequest()))
                .perform(Forward.to("/empty.xhtml").and(PhaseOperation.enqueue(new Operation() {
                   @Override
@@ -79,7 +79,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                /*
                 * PhaseBinding deferral
                 */
-               .defineRule()
+               .addRule()
                .when(Path.matches("/binding/{value}").where("value")
                         .bindsTo(PhaseBinding.to(Request.parameter("v"))
                                  .after(PhaseId.RESTORE_VIEW))
@@ -112,7 +112,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                /*
                 * Defer validation with binding.
                 */
-               .defineRule()
+               .addRule()
                .when(Path.matches("/defer_validation/{value}")
                         .where("value")
                         .bindsTo(PhaseBinding.to(Request.parameter("v").validatedBy(validator)).after(
@@ -123,7 +123,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                /*
                 * Perform eager validation.
                 */
-               .defineRule()
+               .addRule()
                .when(Path.matches("/eager_validation/{value}")
                         .where("value")
                         .validatedBy(validator))

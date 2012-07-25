@@ -20,7 +20,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Not;
@@ -197,8 +197,10 @@ public class Join implements IJoin
    public JoinParameter where(final String parameter)
    {
       return new JoinParameter(this,
-               requestPath.getPathExpression().getParameter(parameter) != null ? requestPath.where(parameter) : null,
-               resourcePath.getPathExpression().getParameter(parameter) != null ? resourcePath.where(parameter) : null);
+               requestPath.getPathExpression().getParameterMap().containsKey(parameter) ? requestPath.where(parameter)
+                        : null,
+               resourcePath.getPathExpression().getParameterMap().containsKey(parameter) ? resourcePath
+                        .where(parameter) : null);
    }
 
    @Override
@@ -249,13 +251,13 @@ public class Join implements IJoin
    }
 
    @Override
-   public ParameterizedPattern getPathExpression()
+   public ParameterizedPatternImpl getPathExpression()
    {
       return requestPath.getPathExpression();
    }
 
    @Override
-   public ParameterizedPattern getResourcexpression()
+   public ParameterizedPatternImpl getResourcexpression()
    {
       return resourcePath.getPathExpression();
    }

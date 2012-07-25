@@ -15,7 +15,7 @@ public class JaasRolesTestProvider extends HttpConfigurationProvider
       Configuration config = ConfigurationBuilder
                .begin()
 
-               .defineRule()
+               .addRule()
                .when(JAASRoles.required("admin").and(Direction.isInbound())
                         .and(Path.matches("/admin/{tail}").where("tail").matches(".*")))
                .perform(SendStatus.code(200));

@@ -45,7 +45,7 @@ public class TransformIfModifiedSinceTestProvider extends HttpConfigurationProvi
                .begin()
 
                // one single transformer
-               .defineRule()
+               .addRule()
                .when(Path.matches("{something}.txt").where("something").matches(".*"))
                .perform(Transform.with(UppercaseTransformer.class));
    }

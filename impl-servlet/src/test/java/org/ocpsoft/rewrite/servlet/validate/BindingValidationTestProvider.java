@@ -46,7 +46,7 @@ public class BindingValidationTestProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder
                .begin()
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(
                         Path.matches("/v/{param}").where("param")
                                  .bindsTo(Evaluation.property("param").validatedBy(new Validator() {
@@ -59,7 +59,7 @@ public class BindingValidationTestProvider extends HttpConfigurationProvider
                                  }))))
                .perform(SendStatus.code(205))
 
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(Path.matches("/v/{param}").where("param").matches("[a-zA-Z]+")))
                .perform(SendStatus.code(206));
 

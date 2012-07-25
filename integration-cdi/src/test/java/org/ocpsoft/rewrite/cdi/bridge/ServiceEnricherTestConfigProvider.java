@@ -41,7 +41,7 @@ public class ServiceEnricherTestConfigProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .defineRule()
+               .addRule()
                .when(Path.matches("/cdi/inject").and(new Condition() {
                   @Override
                   public boolean evaluate(final Rewrite event, final EvaluationContext context)

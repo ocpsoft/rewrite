@@ -19,20 +19,20 @@ import java.io.File;
 
 import javax.servlet.ServletContext;
 
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.servlet.config.IForward.ForwardParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 import org.ocpsoft.rewrite.transform.resource.FileResource;
 import org.ocpsoft.rewrite.transform.resource.Resource;
 
 public class WebResourceResolver implements ResourceResolver
 {
 
-   private final ParameterizedPattern pattern;
+   private final ParameterizedPatternImpl pattern;
 
    private final ParameterStore<ForwardParameter> parameters = new ParameterStore<ForwardParameter>();
 
@@ -49,7 +49,7 @@ public class WebResourceResolver implements ResourceResolver
    private WebResourceResolver(String pattern)
    {
       if (pattern != null) {
-         this.pattern = new ParameterizedPattern(CaptureType.BRACE, "[^/]+", pattern);
+         this.pattern = new ParameterizedPatternImpl(CaptureType.BRACE, "[^/]+", pattern);
       }
       else {
          this.pattern = null;
@@ -67,7 +67,7 @@ public class WebResourceResolver implements ResourceResolver
          // get the requested resource
          String path = null;
          if (pattern != null) {
-            path = pattern.build(event, context, parameters.getParameters());
+            path = pattern.build(event, context, parameters);
          }
          else {
             path = httpServletRewrite.getRequestPath();

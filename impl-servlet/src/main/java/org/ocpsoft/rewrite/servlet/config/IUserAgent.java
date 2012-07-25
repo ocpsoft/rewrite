@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.RegexCapture;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -25,6 +24,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.IUserAgent.UserAgentParameter;
 
 /**
@@ -42,9 +42,9 @@ public interface IUserAgent extends Parameterized<IUserAgent, UserAgentParameter
    public class UserAgentParameter extends ParameterBuilder<UserAgentParameter, String> implements IUserAgentParameter
    {
       private final IUserAgent parent;
-      private final RegexCapture parameter;
+      private final PatternParameter parameter;
 
-      public UserAgentParameter(IUserAgent path, RegexCapture capture)
+      public UserAgentParameter(IUserAgent path, PatternParameter capture)
       {
          super(capture);
          this.parent = path;

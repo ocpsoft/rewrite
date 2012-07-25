@@ -53,7 +53,7 @@ public class ConfigurationBuilderTest
    @Test
    public void testBuildConfiguration()
    {
-      Configuration config = ConfigurationBuilder.begin().defineRule()
+      Configuration config = ConfigurationBuilder.begin().addRule()
                .when(And.all(Direction.isInbound(), new True()))
                .perform(operation);
 

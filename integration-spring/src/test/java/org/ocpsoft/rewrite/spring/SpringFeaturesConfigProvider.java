@@ -39,14 +39,14 @@ public class SpringFeaturesConfigProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .defineRule()
+               .addRule()
                .when(Path.matches("/name-{name}")
                         .where("name").bindsTo(El.property("springFeaturesBean.name")))
                .perform(Invoke.binding(El.retrievalMethod("springFeaturesBean.action()"))
                         .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")
                                  .where("name").bindsTo(El.property("springFeaturesBean.uppercase"))))
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/hello/{name}"))
                .perform(SendStatus.code(200));
    }

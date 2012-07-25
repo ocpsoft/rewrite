@@ -22,7 +22,7 @@ public class CompositeRewriteConfiguration extends HttpConfigurationProvider
                 * Combine all query parameters into one encoded parameter.
                 * If hacking is detected, redirect to the hackers page.
                 */
-               .defineRule()
+               .addRule()
                .perform(EncodeQuery.params().to("c")
                         .onChecksumFailure(Redirect.temporary(context.getContextPath() + "/hacker")))
 

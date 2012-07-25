@@ -46,7 +46,7 @@ public class LessIntegrationTestProvider extends HttpConfigurationProvider
       return ConfigurationBuilder
                .begin()
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/{something}.css"))
                .perform(Transform.with(Less.class)
                         .resolvedBy(WebResourceResolver.named("/{something}.less")));

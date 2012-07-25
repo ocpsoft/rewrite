@@ -42,18 +42,18 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
    public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(Path.matches("/forward")).and(RequestParameter.exists("foo")))
                .perform(Forward.to("/forward2?baz=cab"))
 
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound()
                         .and(Path.matches("/forward2"))
                         .and(RequestParameter.exists("foo"))
                         .and(RequestParameter.exists("baz")))
                .perform(SendStatus.code(200))
 
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound()
                         .and(Path.matches("/forward-fail"))
                         .and(RequestParameter.exists("foo")))

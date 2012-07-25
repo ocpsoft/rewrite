@@ -39,7 +39,7 @@ public class JoinBindingConfigurationProvider extends HttpConfigurationProvider
       Configuration config = ConfigurationBuilder.begin()
                .addRule(Join.path("/bind/{id}").to("/bind.html").where("id").bindsTo(Request.parameter("join-id")))
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/bind.html").and(RequestParameter.exists("join-id")))
                .perform(SendStatus.code(201));
       return config;

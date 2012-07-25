@@ -23,13 +23,13 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
@@ -39,15 +39,15 @@ import org.ocpsoft.rewrite.servlet.util.ParameterStore;
  */
 public class URL extends HttpCondition implements IURL
 {
-   private final ParameterizedPattern expression;
+   private final ParameterizedPatternImpl expression;
    private final ParameterStore<URLParameter> parameters = new ParameterStore<URLParameter>();
 
    private URL(final String pattern)
    {
       Assert.notNull(pattern, "URL must not be null.");
-      this.expression = new ParameterizedPattern(".*", pattern);
+      this.expression = new ParameterizedPatternImpl(".*", pattern);
 
-      for (RegexCapture parameter : expression.getParameters().values()) {
+      for (PatternParameter parameter : expression.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -90,7 +90,7 @@ public class URL extends HttpCondition implements IURL
    @Override
    public URL withRequestBinding()
    {
-      for (RegexCapture capture : expression.getParameters().values()) {
+      for (PatternParameter capture : expression.getParameterMap().values()) {
          where(capture.getName()).bindsTo(Request.parameter(capture.getName()));
       }
       return this;
@@ -131,9 +131,9 @@ public class URL extends HttpCondition implements IURL
 
       if (expression.matches(event, context, requestURL))
       {
-         Map<RegexCapture, String[]> parameters = expression.parse(event, context, requestURL);
+         Map<PatternParameter, String[]> parameters = expression.parse(event, context, requestURL);
 
-         for (RegexCapture capture : parameters.keySet()) {
+         for (PatternParameter capture : parameters.keySet()) {
             if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                return false;
          }
@@ -143,11 +143,11 @@ public class URL extends HttpCondition implements IURL
    }
 
    /**
-    * Get the underlying {@link ParameterizedPattern} for this {@link URL}
+    * Get the underlying {@link ParameterizedPatternImpl} for this {@link URL}
     * <p>
     * See also: {@link #where(String)}
     */
-   public ParameterizedPattern getSchemeExpression()
+   public ParameterizedPatternImpl getSchemeExpression()
    {
       return expression;
    }
@@ -159,7 +159,7 @@ public class URL extends HttpCondition implements IURL
    }
 
    @Override
-   public ParameterizedPattern getPathExpression()
+   public ParameterizedPatternImpl getPathExpression()
    {
       return expression;
    }

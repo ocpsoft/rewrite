@@ -23,12 +23,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * Responsible for asserting on {@link HttpServletRequest#getHeader(String)} values.
@@ -37,8 +37,8 @@ import org.ocpsoft.rewrite.servlet.util.ParameterStore;
  */
 public class Header extends HttpCondition implements IHeader
 {
-   private final ParameterizedPattern name;
-   private final ParameterizedPattern value;
+   private final ParameterizedPatternImpl name;
+   private final ParameterizedPatternImpl value;
 
    private final ParameterStore<HeaderParameter> parameters = new ParameterStore<HeaderParameter>();
 
@@ -46,8 +46,8 @@ public class Header extends HttpCondition implements IHeader
    {
       Assert.notNull(name, "Header name pattern cannot be null.");
       Assert.notNull(value, "Header value pattern cannot be null.");
-      this.name = new ParameterizedPattern(name);
-      this.value = new ParameterizedPattern(value);
+      this.name = new ParameterizedPatternImpl(name);
+      this.value = new ParameterizedPatternImpl(value);
    }
 
    /**
@@ -95,13 +95,17 @@ public class Header extends HttpCondition implements IHeader
       {
          if (name.matches(event, context, header) && matchesValue(event, context, request, header))
          {
-            Map<RegexCapture, String[]> parameters = name.parse(event, context, header);
-            parameters.putAll(value.parse(event, context, header));
-
-            for (RegexCapture capture : parameters.keySet()) {
-               if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
+            Map<PatternParameter, String[]> parameterValues = name.parse(event, context, header);
+            for (PatternParameter parameter : parameterValues.keySet()) {
+               if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
                   return false;
             }
+            parameterValues = value.parse(event, context, header);
+            for (PatternParameter parameter : parameterValues.keySet()) {
+               if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
+                  return false;
+            }
+            
             return true;
          }
       }
@@ -124,7 +128,9 @@ public class Header extends HttpCondition implements IHeader
    @Override
    public HeaderParameter where(String param)
    {
-      return parameters.where(param, new HeaderParameter(this, name.getParameter(param), value.getParameter(param)));
+      PatternParameter nameParam = name.getParameterNames().contains(param) ? name.getParameter(param) : null;
+      PatternParameter valueParam = value.getParameterNames().contains(param) ? value.getParameter(param) : null;
+      return parameters.where(param, new HeaderParameter(this, nameParam, valueParam));
    }
 
    @Override

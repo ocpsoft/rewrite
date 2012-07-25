@@ -46,7 +46,7 @@ public class HttpConfigurationOrder2TestProvider extends HttpConfigurationProvid
                .addRule(Join.path("/login").to("/test.html"))
                .addRule(Join.path("/registration").to("/test.html"))
                .addRule(Join.path("/myProfile").to("/test.html"))
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(DispatchType.isRequest()))
                .perform(SendError.code(403));
    }

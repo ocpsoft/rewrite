@@ -65,7 +65,7 @@ public class CDNConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Now send a response to our test case containing the relocated resource.
                 */
-               .defineRule().when(Direction.isInbound().and(Path.matches("/relocate")))
+               .addRule().when(Direction.isInbound().and(Path.matches("/relocate")))
                .perform(new HttpOperation() {
 
                   @Override

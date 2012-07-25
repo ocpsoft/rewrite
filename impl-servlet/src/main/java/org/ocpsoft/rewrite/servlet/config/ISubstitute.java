@@ -17,8 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -26,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.ISubstitute.SubstituteParameter;
 
 /**
@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.config.ISubstitute.SubstituteParameter;
  */
 public interface ISubstitute extends Parameterized<ISubstitute, SubstituteParameter, String>, OperationBuilder
 {
-   public ParameterizedPattern getTargetExpression();
+   public ParameterizedPatternImpl getTargetExpression();
 
    public interface ISubstituteParameter extends ISubstitute, Bindable<SubstituteParameter>, Parameter<SubstituteParameter, String>
    {
@@ -45,9 +45,9 @@ public interface ISubstitute extends Parameterized<ISubstitute, SubstituteParame
    public class SubstituteParameter extends ParameterBuilder<SubstituteParameter, String> implements ISubstituteParameter
    {
       private final ISubstitute parent;
-      private final RegexCapture parameter;
+      private final PatternParameter parameter;
 
-      public SubstituteParameter(ISubstitute path, RegexCapture capture)
+      public SubstituteParameter(ISubstitute path, PatternParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -86,7 +86,7 @@ public interface ISubstitute extends Parameterized<ISubstitute, SubstituteParame
       }
 
       @Override
-      public ParameterizedPattern getTargetExpression()
+      public ParameterizedPatternImpl getTargetExpression()
       {
          return parent.getTargetExpression();
       }

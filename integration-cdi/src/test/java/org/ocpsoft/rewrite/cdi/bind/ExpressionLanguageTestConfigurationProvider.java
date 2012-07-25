@@ -38,7 +38,7 @@ public class ExpressionLanguageTestConfigurationProvider extends HttpConfigurati
    {
       return ConfigurationBuilder
                .begin()
-               .defineRule()
+               .addRule()
                .when(Path.matches("/{one}/{two}")
                         .where("one").bindsTo(El.property("bindingBean.one"))
                         .where("two").matches("[0-9]{1}").bindsTo(El.property("bindingBean.two")))
@@ -47,7 +47,7 @@ public class ExpressionLanguageTestConfigurationProvider extends HttpConfigurati
                                  .where("one").bindsTo(El.property("bindingBean.two"))
                                  .where("two").bindsTo(El.property("bindingBean.one"))))
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/2/one"))
                .perform(SendStatus.code(200));
    }

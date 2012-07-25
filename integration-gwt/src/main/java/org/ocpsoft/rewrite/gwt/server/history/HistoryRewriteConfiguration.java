@@ -35,11 +35,11 @@ public class HistoryRewriteConfiguration extends HttpConfigurationProvider
 
             config = ConfigurationBuilder
                      .begin()
-                     .defineRule()
+                     .addRule()
                      .perform(Response
                               .addCookie(new Cookie("org.ocpsoft.rewrite.gwt.history.contextPath", contextPath)))
 
-                     .defineRule()
+                     .addRule()
                      .when(Method.isHead().and(
                               QueryString.parameterExists("org.ocpsoft.rewrite.gwt.history.contextPath")))
                      .perform(Response.setCode(200).and(

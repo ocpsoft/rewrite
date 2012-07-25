@@ -46,7 +46,7 @@ public class TransformationCacheTestProvider extends HttpConfigurationProvider
                .begin()
 
                // a very slow transformation
-               .defineRule()
+               .addRule()
                .when(Path.matches("{something}.txt").where("something").matches(".*"))
                .perform(Transform.with(SlowTransformer.class));
 

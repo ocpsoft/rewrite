@@ -44,7 +44,7 @@ public class MockADFConfigurationProvider extends HttpConfigurationProvider
       // TODO implement a response confirming that the request was correctly handled by ADFConfigurationProvider
 
       Configuration config = ConfigurationBuilder.begin()
-               .defineRule()
+               .addRule()
                .when(QueryString.parameterExists("adf"))
                .perform(SendStatus.code(203));
 

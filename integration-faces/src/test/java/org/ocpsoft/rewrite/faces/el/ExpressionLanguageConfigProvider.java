@@ -38,7 +38,7 @@ public class ExpressionLanguageConfigProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .defineRule()
+               .addRule()
                .when(Path
                         .matches("/name/{name}")
                         .where("name")

@@ -23,12 +23,12 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
@@ -38,15 +38,15 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  */
 public class Scheme extends HttpCondition implements IScheme
 {
-   private final ParameterizedPattern expression;
+   private final ParameterizedPatternImpl expression;
    private final ParameterStore<SchemeParameter> parameters = new ParameterStore<SchemeParameter>();
 
    private Scheme(final String pattern)
    {
       Assert.notNull(pattern, "Scheme must not be null.");
-      this.expression = new ParameterizedPattern(pattern);
+      this.expression = new ParameterizedPatternImpl(pattern);
 
-      for (RegexCapture parameter : this.expression.getParameters().values()) {
+      for (PatternParameter parameter : this.expression.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -100,9 +100,9 @@ public class Scheme extends HttpCondition implements IScheme
 
       if (scheme != null && expression.matches(event, context, scheme))
       {
-         Map<RegexCapture, String[]> parameters = expression.parse(event, context, scheme);
+         Map<PatternParameter, String[]> parameters = expression.parse(event, context, scheme);
 
-         for (RegexCapture capture : parameters.keySet()) {
+         for (PatternParameter capture : parameters.keySet()) {
             if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                return false;
          }
@@ -112,11 +112,11 @@ public class Scheme extends HttpCondition implements IScheme
    }
 
    /**
-    * Get the underlying {@link ParameterizedPattern} for this {@link Scheme}
+    * Get the underlying {@link ParameterizedPatternImpl} for this {@link Scheme}
     * <p>
     * See also: {@link #where(String)}
     */
-   public ParameterizedPattern getExpression()
+   public ParameterizedPatternImpl getExpression()
    {
       return expression;
    }

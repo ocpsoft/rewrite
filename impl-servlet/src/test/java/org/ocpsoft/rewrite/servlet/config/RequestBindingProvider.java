@@ -40,7 +40,7 @@ public class RequestBindingProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder
                .begin()
-               .defineRule()
+               .addRule()
                .when(Path.matches("/requestBinding/{1}/{2}").where("1").bindsTo(Request.parameter("one")).where("2")
                         .bindsTo(Request.attribute("two")))
                .perform(new HttpOperation() {

@@ -23,13 +23,13 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
@@ -39,13 +39,13 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  */
 public class Domain extends HttpCondition implements IDomain
 {
-   private final ParameterizedPattern expression;
+   private final ParameterizedPatternImpl expression;
    private final ParameterStore<DomainParameter> parameters = new ParameterStore<DomainParameter>();
 
    private Domain(final String pattern)
    {
       Assert.notNull(pattern, "Domain must not be null.");
-      this.expression = new ParameterizedPattern(pattern);
+      this.expression = new ParameterizedPatternImpl(pattern);
    }
 
    /**
@@ -98,13 +98,13 @@ public class Domain extends HttpCondition implements IDomain
 
       if (hostName != null && expression.matches(event, context, hostName))
       {
-         Map<RegexCapture, String[]> parameters = expression.parse(event, context, hostName);
+         Map<PatternParameter, String[]> parameters = expression.parse(event, context, hostName);
 
-         for (RegexCapture parameter : this.expression.getParameters().values()) {
+         for (PatternParameter parameter : this.expression.getParameterMap().values()) {
             where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
          }
 
-         for (RegexCapture capture : parameters.keySet()) {
+         for (PatternParameter capture : parameters.keySet()) {
             if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                return false;
          }
@@ -114,11 +114,11 @@ public class Domain extends HttpCondition implements IDomain
    }
 
    /**
-    * Get the underlying {@link ParameterizedPattern} for this {@link Domain}
+    * Get the underlying {@link ParameterizedPatternImpl} for this {@link Domain}
     * <p>
     * See also: {@link #where(String)}
     */
-   public ParameterizedPattern getExpression()
+   public ParameterizedPatternImpl getExpression()
    {
       return expression;
    }
@@ -132,14 +132,14 @@ public class Domain extends HttpCondition implements IDomain
    @Override
    public IDomain withRequestBinding()
    {
-      for (RegexCapture parameter : expression.getParameters().values()) {
+      for (PatternParameter parameter : expression.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Request.parameter(parameter.getName()));
       }
       return this;
    }
 
    @Override
-   public ParameterizedPattern getDomainExpression()
+   public ParameterizedPatternImpl getDomainExpression()
    {
       return expression;
    }

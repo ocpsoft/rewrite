@@ -20,8 +20,7 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
@@ -31,6 +30,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.rule.ICDN.CDNParameter;
 
 /**
@@ -43,9 +43,9 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
     */
    public ICDN to(String location);
 
-   public ParameterizedPattern getLocationExpression();
+   public ParameterizedPatternImpl getLocationExpression();
 
-   public ParameterizedPattern getResourcExpression();
+   public ParameterizedPatternImpl getResourcExpression();
 
    /**
     * Define additional {@link Operation} instances to be performed when this rule matches successfully.
@@ -73,9 +73,9 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
    public class CDNParameter extends ParameterBuilder<CDNParameter, String> implements ICDNParameter
    {
       private final ICDN parent;
-      private final List<RegexCapture> captures;
+      private final List<PatternParameter> captures;
 
-      public CDNParameter(ICDN join, RegexCapture... captures)
+      public CDNParameter(ICDN join, PatternParameter... captures)
       {
          super((Object[]) captures);
          this.parent = join;
@@ -85,7 +85,7 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
       @Override
       public ICDNParameter matches(String string)
       {
-         for (RegexCapture capture : captures) {
+         for (PatternParameter capture : captures) {
             if (capture != null)
                capture.matches(string);
          }
@@ -95,7 +95,7 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
       @Override
       public String getName()
       {
-         for (RegexCapture capture : captures) {
+         for (PatternParameter capture : captures) {
             if (capture != null)
                return capture.getName();
          }
@@ -121,13 +121,13 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
       }
 
       @Override
-      public ParameterizedPattern getLocationExpression()
+      public ParameterizedPatternImpl getLocationExpression()
       {
          return parent.getLocationExpression();
       }
 
       @Override
-      public ParameterizedPattern getResourcExpression()
+      public ParameterizedPatternImpl getResourcExpression()
       {
          return parent.getResourcExpression();
       }

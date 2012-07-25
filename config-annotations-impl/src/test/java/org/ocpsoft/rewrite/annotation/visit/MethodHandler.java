@@ -18,7 +18,7 @@ public class MethodHandler extends MethodAnnotationHandler<MethodAnno>
    @Override
    public void process(MethodContext context, Method element, MethodAnno annotation)
    {
-      context.getConfigurationBuilder().defineRule()
+      context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))
                .perform(SendStatus.code(202));
    }

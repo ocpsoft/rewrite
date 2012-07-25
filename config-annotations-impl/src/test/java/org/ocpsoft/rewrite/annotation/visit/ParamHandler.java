@@ -17,7 +17,7 @@ public class ParamHandler extends ParameterAnnotationHandler<ParamAnno>
    @Override
    public void process(ParameterContext context, Parameter element, ParamAnno annotation)
    {
-      context.getConfigurationBuilder().defineRule()
+      context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))
                .perform(SendStatus.code(203));
    }

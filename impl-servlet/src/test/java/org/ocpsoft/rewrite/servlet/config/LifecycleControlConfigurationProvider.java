@@ -37,16 +37,16 @@ public class LifecycleControlConfigurationProvider extends HttpConfigurationProv
    {
       Configuration config = ConfigurationBuilder.begin()
 
-               .defineRule().when(Path.matches("/abort")).perform(Lifecycle.abort())
-               .defineRule().when(Path.matches("/abort{path}").where("path").matches(".*"))
+               .addRule().when(Path.matches("/abort")).perform(Lifecycle.abort())
+               .addRule().when(Path.matches("/abort{path}").where("path").matches(".*"))
                .perform(SendStatus.code(400))
 
-               .defineRule().when(Path.matches("/handle")).perform(Lifecycle.handled())
-               .defineRule().when(Path.matches("/handle{path}").where("path").matches(".*"))
+               .addRule().when(Path.matches("/handle")).perform(Lifecycle.handled())
+               .addRule().when(Path.matches("/handle{path}").where("path").matches(".*"))
                .perform(SendStatus.code(401))
 
-               .defineRule().when(Path.matches("/proceed")).perform(Lifecycle.proceed())
-               .defineRule().when(Path.matches("/proceed{path}").where("path").matches(".*"))
+               .addRule().when(Path.matches("/proceed")).perform(Lifecycle.proceed())
+               .addRule().when(Path.matches("/proceed{path}").where("path").matches(".*"))
                .perform(SendStatus.code(402));
 
       return config;

@@ -68,7 +68,7 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                            }
                         }))
 
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound()
                         .and(DispatchType.isForward())
                         .and(Path.matches("/timer.xhtml"))
@@ -76,7 +76,7 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                         .and(DispatchType.isRequest()))
                .perform(Lifecycle.handled())
 
-               .defineRule()
+               .addRule()
                .when(Direction
                         .isInbound()
                         .and(DispatchType.isRequest())

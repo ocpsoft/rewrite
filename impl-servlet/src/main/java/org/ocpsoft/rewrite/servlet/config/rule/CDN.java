@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config.rule;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
@@ -149,13 +149,13 @@ public class CDN implements ICDN
    }
 
    @Override
-   public ParameterizedPattern getLocationExpression()
+   public ParameterizedPatternImpl getLocationExpression()
    {
       return location.getTargetExpression();
    }
 
    @Override
-   public ParameterizedPattern getResourcExpression()
+   public ParameterizedPatternImpl getResourcExpression()
    {
       return resource.getPathExpression();
    }

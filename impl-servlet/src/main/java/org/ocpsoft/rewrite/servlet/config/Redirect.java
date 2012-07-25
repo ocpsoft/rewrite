@@ -22,13 +22,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * An {@link Operation} that performs redirects via {@link HttpInboundServletRewrite#redirectPermanent(String)} and
@@ -40,15 +40,15 @@ public class Redirect extends HttpOperation implements IRedirect
 {
    private final RedirectType type;
 
-   private final ParameterizedPattern location;
+   private final ParameterizedPatternImpl location;
    private final ParameterStore<RedirectParameter> parameters = new ParameterStore<RedirectParameter>();
 
    private Redirect(final String location, final RedirectType type)
    {
-      this.location = new ParameterizedPattern("[^/]+", location);
+      this.location = new ParameterizedPatternImpl("[^/]+", location);
       this.type = type;
 
-      for (RegexCapture parameter : this.location.getParameters().values()) {
+      for (PatternParameter parameter : this.location.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -58,7 +58,7 @@ public class Redirect extends HttpOperation implements IRedirect
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, parameters.getParameters());
+         String target = location.build(event, context, parameters);
          switch (type)
          {
          case PERMANENT:
@@ -144,7 +144,7 @@ public class Redirect extends HttpOperation implements IRedirect
    }
 
    @Override
-   public ParameterizedPattern getTargetExpression()
+   public ParameterizedPatternImpl getTargetExpression()
    {
       return location;
    }

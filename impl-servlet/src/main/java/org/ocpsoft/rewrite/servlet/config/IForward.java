@@ -17,8 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -26,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.IForward.ForwardParameter;
 
 /**
@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.servlet.config.IForward.ForwardParameter;
  */
 public interface IForward extends Parameterized<IForward, ForwardParameter, String>, OperationBuilder
 {
-   public ParameterizedPattern getTargetExpression();
+   public ParameterizedPatternImpl getTargetExpression();
 
    public interface IForwardParameter extends IForward, Bindable<ForwardParameter>, Parameter<ForwardParameter, String>
    {
@@ -43,9 +43,9 @@ public interface IForward extends Parameterized<IForward, ForwardParameter, Stri
    public class ForwardParameter extends ParameterBuilder<ForwardParameter, String> implements IForwardParameter
    {
       private final IForward parent;
-      private final RegexCapture parameter;
+      private final PatternParameter parameter;
 
-      public ForwardParameter(IForward path, RegexCapture capture)
+      public ForwardParameter(IForward path, PatternParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -84,7 +84,7 @@ public interface IForward extends Parameterized<IForward, ForwardParameter, Stri
       }
 
       @Override
-      public ParameterizedPattern getTargetExpression()
+      public ParameterizedPatternImpl getTargetExpression()
       {
          return parent.getTargetExpression();
       }

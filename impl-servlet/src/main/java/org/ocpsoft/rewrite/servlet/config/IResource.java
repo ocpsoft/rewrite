@@ -17,8 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -26,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.IResource.ResourceParameter;
 
 /**
@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.config.IResource.ResourceParameter;
  */
 public interface IResource extends Parameterized<IResource, ResourceParameter, String>, ConditionBuilder
 {
-   public ParameterizedPattern getResourceExpression();
+   public ParameterizedPatternImpl getResourceExpression();
 
    public interface IResourceParameter extends IResource, Bindable<ResourceParameter>, Parameter<ResourceParameter, String>
    {
@@ -45,9 +45,9 @@ public interface IResource extends Parameterized<IResource, ResourceParameter, S
    public class ResourceParameter extends ParameterBuilder<ResourceParameter, String> implements IResourceParameter
    {
       private final IResource parent;
-      private final RegexCapture parameter;
+      private final PatternParameter parameter;
 
-      public ResourceParameter(IResource path, RegexCapture capture)
+      public ResourceParameter(IResource path, PatternParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -80,7 +80,7 @@ public interface IResource extends Parameterized<IResource, ResourceParameter, S
       }
 
       @Override
-      public ParameterizedPattern getResourceExpression()
+      public ParameterizedPatternImpl getResourceExpression()
       {
          return parent.getResourceExpression();
       }

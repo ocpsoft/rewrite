@@ -49,14 +49,14 @@ public class SpringBeanNameResolverConfigProvider extends HttpConfigurationProvi
 
          return ConfigurationBuilder
                   .begin()
-                  .defineRule()
+                  .addRule()
                   .when(Path.matches("/name/{name}")
                            .where("name").bindsTo(El.property(nameField)))
                   .perform(Invoke.binding(El.retrievalMethod(actionMethod))
                            .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")
                                     .where("name").bindsTo(El.property(uppercaseField))))
 
-                  .defineRule()
+                  .addRule()
                   .when(Path.matches("/hello/{name}"))
                   .perform(SendStatus.code(200));
 

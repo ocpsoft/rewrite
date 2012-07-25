@@ -59,7 +59,7 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Now send a verification to our test case that the rule worked correctly.
                 */
-               .defineRule().when(Direction.isInbound().and(Path.matches("/viewProject.xhtml"))
+               .addRule().when(Direction.isInbound().and(Path.matches("/viewProject.xhtml"))
                         .and(RequestParameter.exists("project")))
                .perform(new HttpOperation() {
 
@@ -81,7 +81,7 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                 */
                .addRule(Join.path("/{p1}/{p2}").to("/list.xhtml").withInboundCorrection())
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/list.xhtml"))
                .perform(SendStatus.code(204))
 
@@ -90,7 +90,7 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                 */
                .addRule(Join.path("/{id}/querypath/{other}/").to("/{id}-query.xhtml").withInboundCorrection())
 
-               .defineRule().when(Direction.isInbound().and(Path.matches("/{id}-query.xhtml")))
+               .addRule().when(Direction.isInbound().and(Path.matches("/{id}-query.xhtml")))
                .perform(new HttpOperation() {
 
                   @Override

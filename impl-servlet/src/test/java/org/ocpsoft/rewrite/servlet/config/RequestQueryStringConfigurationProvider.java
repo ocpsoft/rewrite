@@ -46,7 +46,7 @@ public class RequestQueryStringConfigurationProvider extends HttpConfigurationPr
                /*
                 * Set up our rule (This does the work.)
                 */
-               .defineRule()
+               .addRule()
                .when(Path.matches("/something")
                         .and(QueryString.matches("")))
                .perform(SendStatus.code(209));

@@ -17,8 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -26,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.IRedirect.RedirectParameter;
 
 /**
@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.config.IRedirect.RedirectParameter;
  */
 public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, String>, OperationBuilder
 {
-   public ParameterizedPattern getTargetExpression();
+   public ParameterizedPatternImpl getTargetExpression();
 
    public interface IRedirectParameter extends IRedirect, Bindable<RedirectParameter>, Parameter<RedirectParameter, String>
    {
@@ -45,9 +45,9 @@ public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, S
    public class RedirectParameter extends ParameterBuilder<RedirectParameter, String> implements IRedirectParameter
    {
       private final IRedirect parent;
-      private final RegexCapture parameter;
+      private final PatternParameter parameter;
 
-      public RedirectParameter(IRedirect path, RegexCapture capture)
+      public RedirectParameter(IRedirect path, PatternParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -86,7 +86,7 @@ public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, S
       }
 
       @Override
-      public ParameterizedPattern getTargetExpression()
+      public ParameterizedPatternImpl getTargetExpression()
       {
          return parent.getTargetExpression();
       }

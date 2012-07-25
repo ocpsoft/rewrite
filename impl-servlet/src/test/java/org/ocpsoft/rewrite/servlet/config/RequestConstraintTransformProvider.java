@@ -61,11 +61,11 @@ public class RequestConstraintTransformProvider extends HttpConfigurationProvide
       Configuration config = ConfigurationBuilder
                .begin()
 
-               .defineRule()
+               .addRule()
                .when(Direction.isOutbound().and(Path.matches("/outbound/{3}").where("3").transformedBy(toLowercase)))
                .perform(Substitute.with("/outbound/{3}"))
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/constraint/{1}/{2}").where("1").constrainedBy(uppercaseOnly).where("2")
                         .constrainedBy(uppercaseOnly).transformedBy(toLowercase))
                .perform(new HttpOperation() {

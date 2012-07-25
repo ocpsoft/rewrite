@@ -47,7 +47,7 @@ public class ConfigurationBuilder implements Configuration
    /**
     * Define a new fluent {@link Rule}
     */
-   public ConfigurationRuleBuilder defineRule()
+   public ConfigurationRuleBuilder addRule()
    {
       RuleBuilder rule = RuleBuilder.define();
       rules.add(rule);

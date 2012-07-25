@@ -16,7 +16,7 @@ public class TypeHandler extends ClassAnnotationHandler<TypeAnno>
    @Override
    public void process(ClassContext context, Class<?> type, TypeAnno annotation)
    {
-      context.getConfigurationBuilder().defineRule()
+      context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))
                .perform(SendStatus.code(204));
    }

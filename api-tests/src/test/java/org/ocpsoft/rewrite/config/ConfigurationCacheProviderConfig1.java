@@ -29,7 +29,7 @@ public class ConfigurationCacheProviderConfig1 implements ConfigurationProvider<
    {
       accessCount++;
 
-      return ConfigurationBuilder.begin().defineRule()
+      return ConfigurationBuilder.begin().addRule()
                .when(Path.matches("/cache1"))
                .perform(SendStatus.code(accessCount));
    }

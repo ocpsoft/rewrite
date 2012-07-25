@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -51,7 +51,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
       return ConfigurationBuilder
                .begin()
 
-               .defineRule()
+               .addRule()
 
                /**
                 * Define the inbound conditions and conversion mechanisms to be used when handling inbound requests.
@@ -95,7 +95,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                   }
                })
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/store/products").and(Method.isGet()))
                .perform(new HttpOperation() {
                   @Override
@@ -112,7 +112,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                   }
                })
 
-               .defineRule()
+               .addRule()
                .when(Path.matches("/store/products").and(Method.isPost()))
                .perform(new HttpOperation() {
                   @Override
@@ -125,7 +125,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                         /**
                          * Just for fun, set a response header containing the URL to the newly created Product.
                          */
-                        String location = new ParameterizedPattern(event.getContextPath() + "/store/product/{pid}")
+                        String location = new ParameterizedPatternImpl(event.getContextPath() + "/store/product/{pid}")
                                  .buildUnsafe(product.getId());
                         Response.addHeader("Location", location).perform(event, context);
 
@@ -138,7 +138,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                   }
                })
 
-               .defineRule().when(Path.matches("/")).perform(new HttpOperation() {
+               .addRule().when(Path.matches("/")).perform(new HttpOperation() {
 
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)

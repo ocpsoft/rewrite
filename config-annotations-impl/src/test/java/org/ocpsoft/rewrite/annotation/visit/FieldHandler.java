@@ -18,7 +18,7 @@ public class FieldHandler extends FieldAnnotationHandler<FieldAnno>
    @Override
    public void process(FieldContext context, Field element, FieldAnno annotation)
    {
-      context.getConfigurationBuilder().defineRule()
+      context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))
                .perform(SendStatus.code(201));
    }

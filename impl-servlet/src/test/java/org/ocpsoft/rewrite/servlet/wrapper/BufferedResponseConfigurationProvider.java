@@ -52,7 +52,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                /*
                 * Test buffered
                 */
-               .defineRule()
+               .addRule()
                .when(Path.matches("/index.html"))
                .perform(Response.withOutputBufferedBy(new BufferedResponseToLowercase1(),
                         new BufferedResponseToLowercase2()))
@@ -61,7 +61,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                 * Test unbuffered. Use a Join to perform a forward so we know buffering would have been activated.
                 */
                .addRule(Join.path("/unbuffered").to("/unbuffered.html"))
-               .defineRule().when(Path.matches("/unbuffered.html"))
+               .addRule().when(Path.matches("/unbuffered.html"))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
@@ -81,7 +81,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                 * Test buffer failure constraints.
                 */
                .addRule(Join.path("/bufferforward").to("/forward.html"))
-               .defineRule().when(Path.matches("/forward.html"))
+               .addRule().when(Path.matches("/forward.html"))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
@@ -91,7 +91,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                   }
                })
 
-               .defineRule().when(Path.matches("/bufferfail"))
+               .addRule().when(Path.matches("/bufferfail"))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)

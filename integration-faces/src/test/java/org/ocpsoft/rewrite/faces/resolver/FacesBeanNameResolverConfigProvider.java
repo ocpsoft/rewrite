@@ -47,7 +47,7 @@ public class FacesBeanNameResolverConfigProvider extends HttpConfigurationProvid
 
          return ConfigurationBuilder
                   .begin()
-                  .defineRule()
+                  .addRule()
                   .when(Path.matches("/name/{name}")
                            .where("name").bindsTo(PhaseBinding.to(El.property(nameField)).after(PhaseId.RESTORE_VIEW)))
                   .perform(PhaseAction.retrieveFrom(El.retrievalMethod(actionMethod)).after(PhaseId.RESTORE_VIEW)

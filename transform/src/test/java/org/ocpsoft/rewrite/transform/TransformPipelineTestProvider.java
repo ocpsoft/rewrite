@@ -46,18 +46,18 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
                .begin()
 
                // no transformer added
-               .defineRule()
+               .addRule()
                .when(Path.matches("/{basename}.none"))
                .perform(new Transform().resolvedBy(WebResourceResolver.named("/{basename}.txt")))
 
                // one single transformer
-               .defineRule()
+               .addRule()
                .when(Path.matches("/{basename}.one"))
                .perform(Transform.with(FooBarTransformer.class)
                         .resolvedBy(WebResourceResolver.named("/{basename}.txt")))
 
                // multiple transformers
-               .defineRule()
+               .addRule()
                .when(Path.matches("/{basename}.two"))
                .perform(Transform.with(FooBarTransformer.class)
                         .apply(UppercaseTransformer.class)

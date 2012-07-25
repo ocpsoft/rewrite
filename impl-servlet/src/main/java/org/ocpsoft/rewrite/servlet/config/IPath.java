@@ -17,8 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -26,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 
 /**
@@ -37,7 +37,7 @@ public interface IPath extends Parameterized<IPath, PathParameter, String>, Cond
 {
    public IPath withRequestBinding();
 
-   public ParameterizedPattern getPathExpression();
+   public ParameterizedPatternImpl getPathExpression();
 
    public interface IPathParameter extends IPath, Bindable<PathParameter>, Parameter<PathParameter, String>
    {
@@ -47,9 +47,9 @@ public interface IPath extends Parameterized<IPath, PathParameter, String>, Cond
    public class PathParameter extends ParameterBuilder<PathParameter, String> implements IPathParameter
    {
       private final IPath parent;
-      private final RegexCapture parameter;
+      private final PatternParameter parameter;
 
-      public PathParameter(IPath path, RegexCapture capture)
+      public PathParameter(IPath path, PatternParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -94,7 +94,7 @@ public interface IPath extends Parameterized<IPath, PathParameter, String>, Cond
       }
 
       @Override
-      public ParameterizedPattern getPathExpression()
+      public ParameterizedPatternImpl getPathExpression()
       {
          return parent.getPathExpression();
       }

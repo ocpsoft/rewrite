@@ -39,7 +39,7 @@ public class SchemeChangeConfigurationProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder.begin()
 
-               .defineRule().when(Path.matches("/login")).perform(new HttpOperation() {
+               .addRule().when(Path.matches("/login")).perform(new HttpOperation() {
                   
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
@@ -49,7 +49,7 @@ public class SchemeChangeConfigurationProvider extends HttpConfigurationProvider
                   }
                })
                
-               .defineRule().when(Scheme.matches("https")).perform(SendStatus.code(200));
+               .addRule().when(Scheme.matches("https")).perform(SendStatus.code(200));
                ;
       return config;
    }

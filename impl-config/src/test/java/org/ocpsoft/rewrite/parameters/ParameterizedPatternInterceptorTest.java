@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.util.Maps;
@@ -48,7 +48,7 @@ public class ParameterizedPatternInterceptorTest
    @Test
    public void testMatchesWithParametersRespectsTrailingCharsWithWildcardParameter()
    {
-      ParameterizedPattern path = new ParameterizedPattern("[^/]+", "/{i18n:customer}/{customer}/orders/{id}");
+      ParameterizedPatternImpl path = new ParameterizedPatternImpl("[^/]+", "/{i18n:customer}/{customer}/orders/{id}");
       Assert.assertTrue(path.matches(rewrite, context, "/cust/lincoln/orders/3"));
       Assert.assertFalse(path.matches(rewrite, context, "/wrong/lincoln/orders/3"));
    }
@@ -57,7 +57,7 @@ public class ParameterizedPatternInterceptorTest
    @Test
    public void testBuildWithParameters()
    {
-      ParameterizedPattern path = new ParameterizedPattern("[^/]+", "/{i18n:customer}/{customer}/orders/{id}");
+      ParameterizedPatternImpl path = new ParameterizedPatternImpl("[^/]+", "/{i18n:customer}/{customer}/orders/{id}");
       Map<String, List<Object>> map = new LinkedHashMap<String, List<Object>>();
       Maps.addListValue(map, "customer", "lincoln");
       Maps.addListValue(map, "id", "24");

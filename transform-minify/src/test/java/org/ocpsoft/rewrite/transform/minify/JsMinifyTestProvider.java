@@ -44,7 +44,7 @@ public class JsMinifyTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder
                .begin()
-               .defineRule()
+               .addRule()
                .when(Path.matches("{something}.js").where("something").matches(".*"))
                .perform(Transform.with(JsMinify.class));
    }

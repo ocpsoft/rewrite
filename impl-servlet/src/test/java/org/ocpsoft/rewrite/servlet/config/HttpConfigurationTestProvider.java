@@ -37,11 +37,11 @@ public class HttpConfigurationTestProvider extends HttpConfigurationProvider
    public Configuration getConfiguration(final ServletContext context)
    {
       Configuration config = ConfigurationBuilder.begin()
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(Path.matches("/path")))
                .perform(SendStatus.code(201))
 
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(Path.matches("/redirect")))
                .perform(Redirect.permanent(context.getContextPath() + "/path"));
 

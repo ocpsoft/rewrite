@@ -22,13 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPattern;
-import org.ocpsoft.rewrite.bind.RegexCapture;
+import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.bind.parse.CaptureType;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.PatternParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.ParameterStore;
 
 /**
  * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via
@@ -38,15 +38,15 @@ import org.ocpsoft.rewrite.servlet.util.ParameterStore;
  */
 public class Forward extends HttpOperation implements IForward
 {
-   private final ParameterizedPattern location;
+   private final ParameterizedPatternImpl location;
    private final ParameterStore<ForwardParameter> parameters = new ParameterStore<ForwardParameter>();
 
    private Forward(final String location)
    {
       Assert.notNull(location, "Location must not be null.");
-      this.location = new ParameterizedPattern(CaptureType.BRACE, "[^/]+", location);
+      this.location = new ParameterizedPatternImpl(CaptureType.BRACE, "[^/]+", location);
 
-      for (RegexCapture parameter : this.location.getParameters().values()) {
+      for (PatternParameter parameter : this.location.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -78,7 +78,7 @@ public class Forward extends HttpOperation implements IForward
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, parameters.getParameters());
+         String target = location.build(event, context, parameters);
          ((HttpInboundServletRewrite) event).forward(target);
       }
    }
@@ -102,7 +102,7 @@ public class Forward extends HttpOperation implements IForward
    }
 
    @Override
-   public ParameterizedPattern getTargetExpression()
+   public ParameterizedPatternImpl getTargetExpression()
    {
       return location;
    }

@@ -52,7 +52,7 @@ public class ADFConfigurationProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder.begin()
 
-               .defineRule()
+               .addRule()
                .when(new HttpCondition() {
                   
                   @Override
@@ -78,7 +78,7 @@ public class ADFConfigurationProvider extends HttpConfigurationProvider
                /*
                 * And you can have more than one rule
                 */
-               .defineRule() // ...
+               .addRule() // ...
 
       ;
 

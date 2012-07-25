@@ -45,7 +45,7 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Handle a request with Path parameter binding
                 */
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(
                         Path.matches("/{user}/order/{oid}")
                                  .where("user").matches("[a-zA-Z]+").bindsTo(Request.parameter("uname"))
@@ -63,7 +63,7 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Forward a request to another resource
                 */
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(Path.matches("/p/{project}/story/{id}")
                         .where("project").matches("[a-zA-Z]+")
                         .where("id").matches("[0-9]+")))
@@ -72,7 +72,7 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Handle the forwarded request
                 */
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(Path.matches("/viewProject"))
                         .and(RequestParameter.exists("project"))
                         .and(RequestParameter.exists("id")))
@@ -81,7 +81,7 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                /*
                 * Handle a request that fails to bind
                 */
-               .defineRule()
+               .addRule()
                .when(Direction.isInbound().and(
                         Path.matches("/{user}/profile")
                                  .where("user").matches("[a-zA-Z]+").bindsTo(new MockFailedBinding())
