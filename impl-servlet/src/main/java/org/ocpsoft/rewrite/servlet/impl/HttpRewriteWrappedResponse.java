@@ -302,7 +302,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public void addCookie(Cookie cookie)
    {
-      lockBuffers();
       super.addCookie(cookie);
    }
 
@@ -336,49 +335,42 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public void setDateHeader(String name, long date)
    {
-      lockBuffers();
       super.setDateHeader(name, date);
    }
 
    @Override
    public void addDateHeader(String name, long date)
    {
-      lockBuffers();
       super.addDateHeader(name, date);
    }
 
    @Override
    public void setHeader(String name, String value)
    {
-      lockBuffers();
       super.setHeader(name, value);
    }
 
    @Override
    public void addHeader(String name, String value)
    {
-      lockBuffers();
       super.addHeader(name, value);
    }
 
    @Override
    public void setIntHeader(String name, int value)
    {
-      lockBuffers();
       super.setIntHeader(name, value);
    }
 
    @Override
    public void addIntHeader(String name, int value)
    {
-      lockBuffers();
       super.addIntHeader(name, value);
    }
 
    @Override
    public void setStatus(int sc)
    {
-      lockBuffers();
       super.setStatus(sc);
    }
 
@@ -386,7 +378,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @SuppressWarnings("deprecation")
    public void setStatus(int sc, String sm)
    {
-      lockBuffers();
       super.setStatus(sc, sm);
    }
 
@@ -429,7 +420,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public void setCharacterEncoding(String charset)
    {
-      lockBuffers();
       super.setCharacterEncoding(charset);
    }
 
