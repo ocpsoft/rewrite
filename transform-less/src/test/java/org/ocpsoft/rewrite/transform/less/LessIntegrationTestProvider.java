@@ -20,10 +20,10 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.transform.Transform;
-import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class LessIntegrationTestProvider extends HttpConfigurationProvider
 
                .addRule()
                .when(Path.matches("/{something}.css"))
-               .perform(Transform.with(Less.class)
-                        .resolvedBy(WebResourceResolver.named("/{something}.less")));
+               .perform(Forward.to("/{something}.less").and(Transform.with(Less.class)));
+
    }
 }

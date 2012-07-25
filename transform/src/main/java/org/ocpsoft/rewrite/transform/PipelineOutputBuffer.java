@@ -24,8 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ocpsoft.common.util.Streams;
+import org.ocpsoft.rewrite.servlet.config.OutputBuffer;
 
-class Pipeline implements Transformer
+class PipelineOutputBuffer implements OutputBuffer
 {
 
    private List<Transformer> pipeline = new ArrayList<Transformer>();
@@ -36,6 +37,18 @@ class Pipeline implements Transformer
    }
 
    @Override
+   public InputStream execute(InputStream input)
+   {
+      try {
+         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+         transform(input, buffer);
+         return new ByteArrayInputStream(buffer.toByteArray());
+      }
+      catch (IOException e) {
+         throw new IllegalStateException("Failed to apply transformation pipeline", e);
+      }
+   }
+
    public void transform(InputStream input, OutputStream output) throws IOException
    {
 

@@ -20,9 +20,9 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
-import org.ocpsoft.rewrite.transform.resolve.WebResourceResolver;
 
 /**
  * 
@@ -48,20 +48,18 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
                // no transformer added
                .addRule()
                .when(Path.matches("/{basename}.none"))
-               .perform(new Transform().resolvedBy(WebResourceResolver.named("/{basename}.txt")))
+               .perform(Forward.to("/{basename}.txt").and(new Transform()))
 
                // one single transformer
                .addRule()
                .when(Path.matches("/{basename}.one"))
-               .perform(Transform.with(FooBarTransformer.class)
-                        .resolvedBy(WebResourceResolver.named("/{basename}.txt")))
+               .perform(Forward.to("/{basename}.txt").and(Transform.with(FooBarTransformer.class)))
 
                // multiple transformers
                .addRule()
                .when(Path.matches("/{basename}.two"))
-               .perform(Transform.with(FooBarTransformer.class)
-                        .apply(UppercaseTransformer.class)
-                        .resolvedBy(WebResourceResolver.named("/{basename}.txt")))
+               .perform(Forward.to("/{basename}.txt").and(
+                        Transform.with(FooBarTransformer.class).apply(UppercaseTransformer.class)))
 
       ;
    }
