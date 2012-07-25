@@ -104,7 +104,8 @@ public class Join implements IJoin
       {
          requestPath.withRequestBinding();
 
-         if (Not.any(DispatchType.isForward()).and(requestPath).evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
+         if (Not.any(DispatchType.isForward()).and(requestPath).evaluate(event, context)
+                  && ((condition == null) || condition.evaluate(event, context)))
          {
             if (operation != null)
                context.addPreOperation(operation);
@@ -195,7 +196,9 @@ public class Join implements IJoin
    @Override
    public JoinParameter where(final String parameter)
    {
-      return new JoinParameter(this, requestPath.where(parameter), resourcePath.where(parameter));
+      return new JoinParameter(this,
+               requestPath.getPathExpression().getParameter(parameter) != null ? requestPath.where(parameter) : null,
+               resourcePath.getPathExpression().getParameter(parameter) != null ? resourcePath.where(parameter) : null);
    }
 
    @Override
