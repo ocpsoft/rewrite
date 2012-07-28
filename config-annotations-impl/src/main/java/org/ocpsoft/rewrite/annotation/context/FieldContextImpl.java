@@ -19,12 +19,13 @@ import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.context.ContextBase;
 
 /**
  * Default implementation of {@link FieldContext}
- *
+ * 
  * @author Christian Kaltepoth
  */
 @SuppressWarnings("rawtypes")
@@ -68,6 +69,12 @@ public class FieldContextImpl extends ContextBase implements FieldContext
    public BindingBuilder getBindingBuilder()
    {
       return bindingBuilder;
+   }
+
+   @Override
+   public void setBaseRule(Rule rule)
+   {
+      classContext.setBaseRule(rule);
    }
 
 }

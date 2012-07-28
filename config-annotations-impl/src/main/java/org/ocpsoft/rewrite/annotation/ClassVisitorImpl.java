@@ -35,7 +35,6 @@ import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Rule;
-import org.ocpsoft.rewrite.config.RuleBuilder;
 
 public class ClassVisitorImpl implements ClassVisitor, Configuration
 {
@@ -84,8 +83,7 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    public void visit(Class<?> clazz)
    {
 
-      RuleBuilder ruleBuilder = RuleBuilder.define();
-      ClassContext context = new ClassContextImpl(builder, ruleBuilder);
+      ClassContext context = new ClassContextImpl(builder);
 
       if (log.isTraceEnabled()) {
          log.trace("Scanning class: {}", clazz.getName());
@@ -109,11 +107,6 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
             visit(new ParameterImpl(method, method.getParameterTypes()[i], method.getParameterAnnotations()[i], i),
                      new ParameterContextImpl(methodContext));
          }
-      }
-
-      if (ruleBuilder.getOperationBuilder() != null || ruleBuilder.getConditionBuilder() != null)
-      {
-         builder.addRule(ruleBuilder);
       }
 
    }

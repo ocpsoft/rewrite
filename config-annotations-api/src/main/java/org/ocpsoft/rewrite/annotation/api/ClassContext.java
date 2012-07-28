@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.annotation.api;
 
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.context.Context;
 
@@ -33,7 +34,15 @@ public interface ClassContext extends Context
    ConfigurationBuilder getConfigurationBuilder();
 
    /**
-    * Get the {@link RuleBuilder} for the current class visit.
+    * Get the {@link RuleBuilder} for the current class visit. If no base rule has been set by calling
+    * {@link #setBaseRule(Rule)}, the method will return a new {@link RuleBuilder} instance.
     */
    RuleBuilder getRuleBuilder();
+
+   /**
+    * Sets the basic rule that is built from the class. Subsequent calls of {@link #getRuleBuilder()} will return
+    * builder initialized with this rule.
+    */
+   void setBaseRule(Rule rule);
+
 }
