@@ -74,6 +74,23 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
       return this;
    }
 
+   /**
+    * Set the ID for the current rule.
+    */
+   public ConfigurationRuleBuilder withId(String id)
+   {
+      rule.withId(id);
+      return this;
+   }
+
+   /**
+    * Provides access to the rule builder for the current rule.
+    */
+   public RuleBuilder getRuleBuilder()
+   {
+      return rule;
+   }
+
    @Override
    public List<Rule> getRules()
    {
