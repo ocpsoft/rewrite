@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +33,7 @@ import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
@@ -112,4 +116,20 @@ public class PathTest
    {
       Path.matches(null);
    }
+
+   @Test
+   public void testMultipleWhereInvocationsReturnSameParam()
+   {
+      IPath path = Path.matches("/something/#{param}");
+      PathParameter p1 = path.where("param");
+      PathParameter p2 = path.where("param");
+      assertTrue(p1 == p2);
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testUnknownParameterNameWhenInvokingWhere()
+   {
+      Path.matches("/something/#{param}").where("notexisting");
+   }
+
 }
