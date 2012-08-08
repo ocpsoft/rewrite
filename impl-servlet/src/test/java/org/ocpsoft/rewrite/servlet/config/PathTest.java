@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
