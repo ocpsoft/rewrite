@@ -15,14 +15,12 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 public class JoinTest
 {
 
-   @Ignore // ignored for now as the class is not acting like expected
    @Test(expected = IllegalArgumentException.class)
    public void testUnknownParameterNameWhenInvokingWhere()
    {

@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.IPath;
+import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.QueryString;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
@@ -196,11 +198,19 @@ public class Join implements IJoin
    @Override
    public JoinParameter where(final String parameter)
    {
-      return new JoinParameter(this,
-               requestPath.getPathExpression().getParameterMap().containsKey(parameter) ? requestPath.where(parameter)
-                        : null,
-               resourcePath.getPathExpression().getParameterMap().containsKey(parameter) ? resourcePath
-                        .where(parameter) : null);
+      List<PathParameter> params = new ArrayList<PathParameter>();
+      if (requestPath.getPathExpression().getParameterMap().containsKey(parameter)) {
+         params.add(requestPath.where(parameter));
+      }
+      if (resourcePath.getPathExpression().getParameterMap().containsKey(parameter)) {
+         params.add(resourcePath.where(parameter));
+      }
+
+      if (!params.isEmpty()) {
+         return new JoinParameter(this, params.toArray(new PathParameter[params.size()]));
+      }
+
+      throw new IllegalArgumentException("No such parameter [" + parameter + "] exists.");
    }
 
    @Override
