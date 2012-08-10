@@ -23,4 +23,10 @@ public class MethodHandler extends MethodAnnotationHandler<MethodAnno>
                .perform(SendStatus.code(202));
    }
 
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

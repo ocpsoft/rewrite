@@ -22,4 +22,10 @@ public class ParamHandler extends ParameterAnnotationHandler<ParamAnno>
                .perform(SendStatus.code(203));
    }
 
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

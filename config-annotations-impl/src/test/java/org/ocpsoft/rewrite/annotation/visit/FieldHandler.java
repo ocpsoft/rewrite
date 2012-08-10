@@ -23,4 +23,10 @@ public class FieldHandler extends FieldAnnotationHandler<FieldAnno>
                .perform(SendStatus.code(201));
    }
 
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

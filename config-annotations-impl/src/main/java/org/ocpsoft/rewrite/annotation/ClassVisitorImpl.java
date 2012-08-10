@@ -20,10 +20,10 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
+import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
@@ -42,9 +42,9 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    private final Logger log = Logger.getLogger(ClassVisitorImpl.class);
 
    /**
-    * Maps annotation types to a list of handlers supporting the corresponding type
+    * list of handlers for processing annotations
     */
-   private final Map<Class<Annotation>, List<AnnotationHandler<Annotation>>> handlerMap = new HashMap<Class<Annotation>, List<AnnotationHandler<Annotation>>>();
+   private final List<AnnotationHandler<Annotation>> handlerList;
 
    /**
     * The rules created by the visitor
@@ -56,19 +56,8 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
     */
    public ClassVisitorImpl(List<AnnotationHandler<Annotation>> handlers)
    {
-      for (AnnotationHandler<Annotation> handler : handlers) {
-
-         // determine the annotation the handler can process
-         Class<Annotation> annotationType = handler.handles();
-
-         // register the handler in the handlers map
-         List<AnnotationHandler<Annotation>> list = handlerMap.get(annotationType);
-         if (list == null) {
-            list = new ArrayList<AnnotationHandler<Annotation>>();
-            handlerMap.put(annotationType, list);
-         }
-         list.add(handler);
-      }
+      handlerList = new ArrayList<AnnotationHandler<Annotation>>(handlers);
+      Collections.sort(handlerList, new WeightedComparator());
 
       if (log.isDebugEnabled()) {
          log.debug("Initialized to use {} AnnotationHandlers..", handlers.size());
@@ -120,15 +109,9 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
       // each annotation on the element may be interesting for us
       for (Annotation annotation : element.getAnnotations()) {
 
-         // type of this annotation
-         Class<? extends Annotation> annotationType = annotation.annotationType();
-
-         // determine the handlers to call for this type
-         List<AnnotationHandler<Annotation>> handlers = handlerMap.get(annotationType);
-
-         // process handlers if any
-         if (handlers != null) {
-            for (AnnotationHandler<Annotation> handler : handlers) {
+         // check if any of the handlers is responsible
+         for (AnnotationHandler<Annotation> handler : handlerList) {
+            if (handler.handles().equals(annotation.annotationType())) {
                handler.process(context, element, annotation);
             }
          }

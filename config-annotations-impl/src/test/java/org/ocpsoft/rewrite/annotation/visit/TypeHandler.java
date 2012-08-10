@@ -21,4 +21,10 @@ public class TypeHandler extends ClassAnnotationHandler<TypeAnno>
                .perform(SendStatus.code(204));
    }
 
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }
