@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.annotation.context;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.MethodContext;
 import org.ocpsoft.rewrite.annotation.api.ParameterContext;
-import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.config.RuleBuilder;
@@ -29,12 +28,9 @@ import org.ocpsoft.rewrite.context.ContextBase;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("rawtypes")
 public class ParameterContextImpl extends ContextBase implements ParameterContext
 {
    private final MethodContext methodContext;
-
-   private BindingBuilder bindingBuilder;
 
    public ParameterContextImpl(MethodContext methodContext)
    {
@@ -63,18 +59,6 @@ public class ParameterContextImpl extends ContextBase implements ParameterContex
    public RuleBuilder getRuleBuilder()
    {
       return getClassContext().getRuleBuilder();
-   }
-
-   @Override
-   public void setBindingBuilder(BindingBuilder bindingBuilder)
-   {
-      this.bindingBuilder = bindingBuilder;
-   }
-
-   @Override
-   public BindingBuilder getBindingBuilder()
-   {
-      return bindingBuilder;
    }
 
    @Override

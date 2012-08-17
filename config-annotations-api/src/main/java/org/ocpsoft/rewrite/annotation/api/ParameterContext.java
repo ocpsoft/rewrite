@@ -15,27 +15,13 @@
  */
 package org.ocpsoft.rewrite.annotation.api;
 
-import org.ocpsoft.rewrite.bind.BindingBuilder;
-
 /**
  * Context for scanning a single field of a class
- *
+ * 
  * @author Christian Kaltepoth
  */
-@SuppressWarnings("rawtypes")
 public interface ParameterContext extends ClassContext
 {
-   /**
-    * Sets the {@link BindingBuilder} for the current parameter. Should be called by annotation handlers after creating
-    * a binding for the parameter.
-    */
-   public void setBindingBuilder(BindingBuilder bindingBuilder);
-
-   /**
-    * Returns the {@link BindingBuilder} for the current parameter. May return <code>null</code> if no binding has yet
-    * been created for the parameter.
-    */
-   public BindingBuilder getBindingBuilder();
 
    /**
     * Return the parent {@link ClassContext} to which this context is a descendant.
@@ -46,4 +32,5 @@ public interface ParameterContext extends ClassContext
     * Return the parent {@link MethodContext} to which this context is a descendant.
     */
    MethodContext getMethodContext();
+
 }
