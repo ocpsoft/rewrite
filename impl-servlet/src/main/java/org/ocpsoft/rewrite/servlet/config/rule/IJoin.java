@@ -35,9 +35,9 @@ import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
 
 /**
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
 {
@@ -56,10 +56,15 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
    public IJoin perform(Operation operation);
 
    /**
-    * Define additional {@link Condition} instances that must be satisfied in order for this rule to match
-    * successfully.
+    * Define additional {@link Condition} instances that must be satisfied in order for this rule to match successfully.
     */
    public IJoin when(Condition condition);
+
+   /**
+    * Allow the target of this {@link Join} to invoke another {@link Join} rule. By default, once a {@link Join} has
+    * been invoked, no more {@link Join} rules will be processed.
+    */
+   public IJoin withChaining();
 
    /**
     * Set the ID of this {@link Join}.
@@ -192,6 +197,12 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public IJoin withId(String id)
       {
          return parent.withId(id);
+      }
+
+      @Override
+      public IJoin withChaining()
+      {
+         return parent.withChaining();
       }
    }
 }

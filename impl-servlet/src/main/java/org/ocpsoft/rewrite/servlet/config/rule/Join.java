@@ -30,6 +30,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
+import org.ocpsoft.rewrite.servlet.config.HttpCondition;
 import org.ocpsoft.rewrite.servlet.config.IPath;
 import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -38,6 +39,7 @@ import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 
 /**
@@ -61,6 +63,16 @@ public class Join implements IJoin
    private Condition condition;
 
    private boolean inboundCorrection = false;
+
+   private boolean chainingDisabled = true;
+
+   HttpCondition disabled = new HttpCondition() {
+      @Override
+      public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context)
+      {
+         return Boolean.TRUE.equals(event.getRewriteContext().get(Join.class.getName() + "_DISABLED"));
+      }
+   };
 
    protected Join(final String pattern)
    {
@@ -106,7 +118,7 @@ public class Join implements IJoin
       {
          requestPath.withRequestBinding();
 
-         if (Not.any(DispatchType.isForward()).and(requestPath).evaluate(event, context)
+         if (Not.any(disabled).and(requestPath).evaluate(event, context)
                   && ((condition == null) || condition.evaluate(event, context)))
          {
             if (operation != null)
@@ -165,6 +177,11 @@ public class Join implements IJoin
       if (event instanceof HttpInboundServletRewrite)
       {
          saveCurrentJoin(((HttpInboundServletRewrite) event).getRequest());
+         if (chainingDisabled)
+         {
+            event.getRewriteContext().put(Join.class.getName() + "_DISABLED", true);
+            event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", false);
+         }
          Forward.to(resource).perform(event, context);
       }
 
@@ -251,6 +268,13 @@ public class Join implements IJoin
    {
       return "Join [url=" + pattern + ", to=" + resource + ", id=" + id + ", inboundCorrection="
                + inboundCorrection + "]";
+   }
+
+   @Override
+   public IJoin withChaining()
+   {
+      this.chainingDisabled = false;
+      return this;
    }
 
    @Override

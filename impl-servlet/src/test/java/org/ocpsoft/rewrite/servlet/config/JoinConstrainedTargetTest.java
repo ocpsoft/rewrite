@@ -22,10 +22,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
+import org.ocpsoft.rewrite.servlet.impl.HttpRewriteContextImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -35,6 +38,7 @@ public class JoinConstrainedTargetTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
+   private Context context = new HttpRewriteContextImpl(null, null, null, null, null);
 
    @Before
    public void before()
@@ -49,6 +53,9 @@ public class JoinConstrainedTargetTest
 
       Mockito.when(request.getContextPath())
       .thenReturn("/context");
+      
+      Mockito.when(request.getAttribute(RewriteLifecycleContext.CONTEXT_KEY))
+      .thenReturn(context );
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }

@@ -3,6 +3,7 @@ package org.ocpsoft.rewrite.servlet.impl;
 import javax.servlet.ServletRequest;
 
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
@@ -59,7 +60,17 @@ public class DefaultRewriteLifecycleListener implements RewriteLifecycleListener
 
    @Override
    public void afterInboundRewrite(HttpServletRewrite event)
-   {}
+   {
+      if (Boolean.TRUE.equals(event.getRewriteContext().get(Join.class.getName() + "_DISABLED_RESET_NEXT")))
+      {
+         event.getRewriteContext().put(Join.class.getName() + "_DISABLED", false);
+         event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", false);
+      }
+      else if (Boolean.TRUE.equals(event.getRewriteContext().get(Join.class.getName() + "_DISABLED")))
+      {
+         event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", true);
+      }
+   }
 
    @Override
    public void beforeOutboundRewrite(HttpServletRewrite event)
