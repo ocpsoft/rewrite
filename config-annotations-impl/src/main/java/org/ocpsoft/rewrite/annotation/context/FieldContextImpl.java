@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.annotation.context;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
-import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.config.RuleBuilder;
@@ -28,13 +27,10 @@ import org.ocpsoft.rewrite.context.ContextBase;
  * 
  * @author Christian Kaltepoth
  */
-@SuppressWarnings("rawtypes")
 public class FieldContextImpl extends ContextBase implements FieldContext
 {
 
    private final ClassContext classContext;
-
-   private BindingBuilder bindingBuilder;
 
    public FieldContextImpl(ClassContext classContext)
    {
@@ -57,18 +53,6 @@ public class FieldContextImpl extends ContextBase implements FieldContext
    public RuleBuilder getRuleBuilder()
    {
       return classContext.getRuleBuilder();
-   }
-
-   @Override
-   public void setBindingBuilder(BindingBuilder bindingBuilder)
-   {
-      this.bindingBuilder = bindingBuilder;
-   }
-
-   @Override
-   public BindingBuilder getBindingBuilder()
-   {
-      return bindingBuilder;
    }
 
    @Override
