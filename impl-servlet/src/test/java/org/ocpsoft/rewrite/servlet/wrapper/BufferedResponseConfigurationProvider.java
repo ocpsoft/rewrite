@@ -54,7 +54,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                 */
                .addRule()
                .when(Path.matches("/index.html"))
-               .perform(Response.withOutputBufferedBy(new BufferedResponseToLowercase1(),
+               .perform(Response.withOutputInterceptedBy(new BufferedResponseToLowercase1(),
                         new BufferedResponseToLowercase2()))
 
                /*
@@ -86,7 +86,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
-                     Response.withOutputBufferedBy(new BufferedResponseToLowercase1()).perform(event, context);
+                     Response.withOutputInterceptedBy(new BufferedResponseToLowercase1()).perform(event, context);
                      Response.setCode(202).perform(event, context);
                   }
                })
@@ -98,7 +98,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                   {
                      try {
                         event.getResponse().getOutputStream(); // cause buffers to lock
-                        Response.withOutputBufferedBy(new BufferedResponseToLowercase1()).perform(event, context);
+                        Response.withOutputInterceptedBy(new BufferedResponseToLowercase1()).perform(event, context);
                      }
                      catch (IllegalStateException e) {
                         SendError.code(503).perform(event, context);

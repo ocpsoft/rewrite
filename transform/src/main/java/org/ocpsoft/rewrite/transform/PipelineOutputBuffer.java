@@ -24,9 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ocpsoft.common.util.Streams;
-import org.ocpsoft.rewrite.servlet.config.OutputBuffer;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseBuffer;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptor;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptorChain;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-class PipelineOutputBuffer implements OutputBuffer
+class PipelineOutputBuffer implements ResponseInterceptor
 {
 
    private List<Transformer> pipeline = new ArrayList<Transformer>();
@@ -37,12 +40,12 @@ class PipelineOutputBuffer implements OutputBuffer
    }
 
    @Override
-   public InputStream execute(InputStream input)
+   public void intercept(HttpServletRewrite event, ResponseBuffer buffer, ResponseInterceptorChain chain)
    {
       try {
-         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-         transform(input, buffer);
-         return new ByteArrayInputStream(buffer.toByteArray());
+         ByteArrayOutputStream output = new ByteArrayOutputStream();
+         transform(new ByteArrayInputStream(buffer.getContents()), output);
+         buffer.setContents(output.toByteArray());
       }
       catch (IOException e) {
          throw new IllegalStateException("Failed to apply transformation pipeline", e);

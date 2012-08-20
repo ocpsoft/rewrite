@@ -21,6 +21,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptor;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
 
@@ -32,21 +33,21 @@ import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
 public abstract class Response extends HttpOperation
 {
    /**
-    * Add the given {@link OutputBuffer} instances to the current {@link ServletResponse}. This will activate response
+    * Add the given {@link ResponseInterceptor} instances to the current {@link ServletResponse}. This will activate response
     * buffering on the current {@link ServletRequest} - meaning that generated output will not be sent to the client
-    * until the entire request has completed and all registered {@link OutputBuffer} instances have been executed.
+    * until the entire request has completed and all registered {@link ResponseInterceptor} instances have been executed.
     * 
     * @param bufferedResponseToLowercase2
     * 
     * @throws IllegalStateException When output has already been written to the client.
     */
-   public static Response withOutputBufferedBy(final OutputBuffer... buffers) throws IllegalStateException
+   public static Response withOutputInterceptedBy(final ResponseInterceptor... buffers) throws IllegalStateException
    {
       return new Response() {
          @Override
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
-            for (OutputBuffer buffer : buffers) {
+            for (ResponseInterceptor buffer : buffers) {
                HttpRewriteWrappedResponse.getInstance(event.getRequest()).addBufferStage(buffer);
             }
          }

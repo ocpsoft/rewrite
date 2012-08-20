@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2012 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.ocpsoft.rewrite.servlet.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -41,7 +39,8 @@ import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
-import org.ocpsoft.rewrite.servlet.config.OutputBuffer;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseBuffer;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptor;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
@@ -73,25 +72,25 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    /*
     * Buffering Facilities
     */
-   private ByteArrayOutputStream stream = new ByteArrayOutputStream();
-   private PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(stream,
+   private ByteArrayOutputStream responseOutputBuffer = new ByteArrayOutputStream();
+   private PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(responseOutputBuffer,
             Charset.forName(getCharacterEncoding())), true);
-   private List<OutputBuffer> bufferedStages = new ArrayList<OutputBuffer>();
+   private List<ResponseInterceptor> responseInterceptors = new ArrayList<ResponseInterceptor>();
    private boolean buffersLocked = false;
 
    public boolean isBufferingActive()
    {
-      return !bufferedStages.isEmpty();
+      return !responseInterceptors.isEmpty();
    }
 
-   public void addBufferStage(OutputBuffer stage) throws IllegalStateException
+   public void addBufferStage(ResponseInterceptor stage) throws IllegalStateException
    {
       if (areBuffersLocked())
       {
          throw new IllegalStateException(
                   "Cannot add output buffers to Response once request processing has been passed to the application.");
       }
-      this.bufferedStages.add(stage);
+      this.responseInterceptors.add(stage);
    }
 
    private boolean areBuffersLocked()
@@ -109,16 +108,18 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       if (isBufferingActive())
       {
          try {
-            InputStream result = new ByteArrayInputStream(stream.toByteArray());
-            for (OutputBuffer stage : bufferedStages) {
-               result = stage.execute(result);
-            }
-            Streams.copy(result, super.getOutputStream());
+            ResponseBuffer buffer = new ResponseBufferImpl(responseOutputBuffer.toByteArray(), Charset.forName(getCharacterEncoding()));
+            new ResponseInterceptorChainImpl(responseInterceptors).begin(new HttpBufferRewriteImpl(request, this), buffer);
+            
+            if (!Charset.forName(getCharacterEncoding()).equals(buffer.getCharset()))
+               setCharacterEncoding(buffer.getCharset().name());
+            
+            Streams.copy(new ByteArrayInputStream(buffer.getContents()), super.getOutputStream());
             if (printWriter != null) {
                printWriter.close();
             }
-            if (stream != null) {
-               stream.close();
+            if (responseOutputBuffer != null) {
+               responseOutputBuffer.close();
             }
          }
          catch (IOException e) {
@@ -134,7 +135,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       if (isBufferingActive())
       {
          try {
-            return stream.toString(getCharacterEncoding());
+            return responseOutputBuffer.toString(getCharacterEncoding());
          }
          catch (UnsupportedEncodingException e) {
             throw new RewriteException("Response accepted invalid character encoding " + getCharacterEncoding(), e);
@@ -163,7 +164,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    public ServletOutputStream getOutputStream()
    {
       if (isBufferingActive())
-         return new ByteArrayServletOutputStream(stream);
+         return new ByteArrayServletOutputStream(responseOutputBuffer);
       else
          try {
             lockBuffers();
@@ -189,7 +190,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    public void flushBuffer() throws IOException
    {
       if (isBufferingActive())
-         stream.flush();
+         responseOutputBuffer.flush();
       else
       {
          lockBuffers();
@@ -450,14 +451,14 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    @Override
    public void reset()
    {
-      stream.reset();
+      responseOutputBuffer.reset();
       super.reset();
    }
 
    @Override
    public void resetBuffer()
    {
-      stream.reset();
+      responseOutputBuffer.reset();
       super.resetBuffer();
    }
 

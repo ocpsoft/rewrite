@@ -81,7 +81,7 @@ public class Join implements IJoin
    }
 
    /**
-    * The outward facing URL path to which this {@link Join} will apply.
+    * The client-facing URL path to which this {@link Join} will apply.
     */
    public static IJoin path(final String pattern)
    {

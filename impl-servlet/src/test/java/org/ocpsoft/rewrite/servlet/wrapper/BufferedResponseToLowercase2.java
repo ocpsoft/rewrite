@@ -1,17 +1,17 @@
 package org.ocpsoft.rewrite.servlet.wrapper;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseBuffer;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptor;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptorChain;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-import org.ocpsoft.common.util.Streams;
-import org.ocpsoft.rewrite.servlet.config.OutputBuffer;
-
-public class BufferedResponseToLowercase2 implements OutputBuffer
+public class BufferedResponseToLowercase2 implements ResponseInterceptor
 {
    @Override
-   public InputStream execute(InputStream input)
+   public void intercept(HttpServletRewrite event, ResponseBuffer buffer, ResponseInterceptorChain chain)
    {
-      String contents = Streams.toString(input);
-      return new ByteArrayInputStream(contents.replaceAll("uppercase", "lowercase").getBytes());
+      buffer.setContents(new String(buffer.getContents(), buffer.getCharset()).replaceAll("uppercase", "lowercase")
+               .getBytes());
+      chain.next(event, buffer, chain);
    }
 }
