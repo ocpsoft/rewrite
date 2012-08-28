@@ -17,18 +17,18 @@ package org.ocpsoft.rewrite.servlet.impl;
 
 import java.nio.charset.Charset;
 
-import org.ocpsoft.rewrite.servlet.config.response.ResponseBuffer;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseContent;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ResponseBufferImpl implements ResponseBuffer
+public class ResponseContentImpl implements ResponseContent
 {
 
    private byte[] contents;
    private Charset charset;
 
-   public ResponseBufferImpl(byte[] contents, Charset charset)
+   public ResponseContentImpl(byte[] contents, Charset charset)
    {
       this.contents = contents;
       this.charset = charset;

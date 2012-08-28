@@ -106,7 +106,7 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper impleme
       {
          return strings[0];
       }
-      return null;
+      return super.getParameter(name);
    }
 
    @Override
@@ -474,6 +474,7 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper impleme
    }
 
    @Override
+   @SuppressWarnings("deprecation")
    public String getRealPath(String path)
    {
       // TODO Auto-generated method stub
@@ -544,6 +545,7 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper impleme
    }
 
    @Override
+   @SuppressWarnings("rawtypes")
    public boolean isWrapperFor(Class wrappedType)
    {
       // TODO Auto-generated method stub

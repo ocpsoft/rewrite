@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class BufferedResponseTest extends RewriteTest
+public class ResponseContentInterceptorTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
@@ -44,7 +44,7 @@ public class BufferedResponseTest extends RewriteTest
                .addAsWebResource(new StringAsset("UPPERCASE"), "index.html")
                .addAsWebResource(new StringAsset("UPPERCASE"), "unbuffered.html")
                .addAsWebResource(new StringAsset("UPPERCASE"), "forward.html")
-               .addAsServiceProvider(ConfigurationProvider.class, BufferedResponseConfigurationProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, ResponseContentInterceptorConfigurationProvider.class);
       return deployment;
    }
 

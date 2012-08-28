@@ -15,18 +15,17 @@
  */
 package org.ocpsoft.rewrite.servlet.config.response;
 
-import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Chain responsible for controlling interception of {@link ResponseInterceptor} instances.
+ * Chain responsible for controlling interception of {@link ResponseContentInterceptor} instances.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ResponseInterceptorChain
+public interface ResponseContentInterceptorChain
 {
    /**
-    * Invoke the next {@link ResponseInterceptor} in the chain. When no more registered {@link ResponseInterceptor}
-    * instances exist, this method simply returns control back to the calling {@link ResponseInterceptor}.
+    * Invoke the next {@link ResponseContentInterceptor} in the chain. When no more registered {@link ResponseContentInterceptor}
+    * instances exist, this method simply returns control back to the calling {@link ResponseContentInterceptor}.
     */
-   void next(HttpServletRewrite event, ResponseBuffer buffer, ResponseInterceptorChain chain);
+   void proceed();
 }

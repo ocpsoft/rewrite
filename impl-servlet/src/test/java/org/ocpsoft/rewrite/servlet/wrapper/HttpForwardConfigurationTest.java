@@ -32,7 +32,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class HttpForwardingWithNewQueryParamsTest extends RewriteTest
+public class HttpForwardConfigurationTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
@@ -40,6 +40,7 @@ public class HttpForwardingWithNewQueryParamsTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
+               .addAsWebResource("org/ocpsoft/rewrite/servlet/wrapper/forward.jsp", "forward.jsp")
                .addAsServiceProvider(ConfigurationProvider.class, HttpForwardConfigurationTestProvider.class);
       return deployment;
    }
@@ -56,5 +57,12 @@ public class HttpForwardingWithNewQueryParamsTest extends RewriteTest
    {
       HttpAction<HttpGet> action = get("/forward-fail?foo=bar");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testRequestParameterPreservedWhenForwardedFromJSP() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/forward.jsp");
+      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
    }
 }

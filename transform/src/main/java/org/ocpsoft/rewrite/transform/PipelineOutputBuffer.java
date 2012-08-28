@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ocpsoft.common.util.Streams;
-import org.ocpsoft.rewrite.servlet.config.response.ResponseBuffer;
-import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptor;
-import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptorChain;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseContent;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptorChain;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-class PipelineOutputBuffer implements ResponseInterceptor
+class PipelineOutputBuffer implements ResponseContentInterceptor
 {
 
    private List<Transformer> pipeline = new ArrayList<Transformer>();
@@ -40,7 +40,7 @@ class PipelineOutputBuffer implements ResponseInterceptor
    }
 
    @Override
-   public void intercept(HttpServletRewrite event, ResponseBuffer buffer, ResponseInterceptorChain chain)
+   public void intercept(HttpServletRewrite event, ResponseContent buffer, ResponseContentInterceptorChain chain)
    {
       try {
          ByteArrayOutputStream output = new ByteArrayOutputStream();

@@ -20,17 +20,25 @@ import javax.servlet.ServletResponse;
 
 import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
-
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * Provides an opportunity for extensions to wrap the {@link ServletRequest} and {@link ServletResponse} object on each
+ * request-response cycle.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends ServletResponse>
-extends Weighted, Specialized<Rewrite>
+         extends Weighted, Specialized<Rewrite>
 {
+   /**
+    * Wrap the inbound {@link IN} object.
+    */
    IN wrapRequest(IN request, OUT response);
 
+   /**
+    * Wrap the outbound {@link OUT} object.
+    */
    OUT wrapResponse(IN request, OUT response);
 }

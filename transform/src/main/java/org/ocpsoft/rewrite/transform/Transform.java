@@ -83,7 +83,7 @@ public class Transform extends HttpOperation
    public void performHttp(HttpServletRewrite event, EvaluationContext context)
    {
       if (event instanceof HttpInboundServletRewrite) {
-         HttpRewriteWrappedResponse.getInstance(event.getRequest()).addBufferStage(pipeline);
+         HttpRewriteWrappedResponse.getInstance(event.getRequest()).addContentInterceptor(pipeline);
       }
    }
 

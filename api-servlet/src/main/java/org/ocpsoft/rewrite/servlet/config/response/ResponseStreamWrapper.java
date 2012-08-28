@@ -15,20 +15,27 @@
  */
 package org.ocpsoft.rewrite.servlet.config.response;
 
+import java.io.OutputStream;
+
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * An intercepter that operates on the fully buffered {@link ServletResponse#getOutputStream()} before flushing to the
- * client, once the control of the application has been returned to Rewrite.
+ * A wrapper for the {@link HttpServletResponse} content {@link OutputStream}. This should be used in favor of
+ * {@link ResponseContentInterceptor} whenever possible to avoid buffering the entire response in memory.
+ * 
+ * <p>
+ * <b>NOTICE:</b> Stream wrapping must be configured before any content or headers have been written to the
+ * {@link ServletResponse}.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ResponseInterceptor
+public interface ResponseStreamWrapper
 {
    /**
-    * Perform modifications on the fully buffered {@link ServletResponse#getOutputStream()} contents. 
+    * Wrap the {@link OutputStream} for the current {@link HttpServletResponse}.
     */
-   void intercept(HttpServletRewrite event, ResponseBuffer buffer, ResponseInterceptorChain chain);
+   OutputStream wrap(HttpServletRewrite rewrite, OutputStream outputStream);
 }

@@ -15,34 +15,20 @@
  */
 package org.ocpsoft.rewrite.servlet.config.response;
 
-import java.nio.charset.Charset;
+import javax.servlet.ServletResponse;
 
-import javax.servlet.http.HttpServletResponse;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Holds contents of the fully completed {@link HttpServletResponse}.
+ * An intercepter that operates on the fully buffered {@link ServletResponse#getOutputStream()} before flushing to the
+ * client, once the control of the application has been returned to Rewrite.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ResponseBuffer
+public interface ResponseContentInterceptor
 {
    /**
-    * Get the contents of this buffer. 
+    * Perform modifications on the fully buffered {@link ServletResponse#getOutputStream()} contents. 
     */
-   public byte[] getContents();
-
-   /**
-    * Set the contents of this buffer.
-    */
-   public void setContents(byte[] contents);
-
-   /**
-    * Get the {@link Charset} with which response output is encoded.
-    */
-   public Charset getCharset();
-   
-   /**
-    * Set the {@link Charset} with which response output will be encoded.
-    */
-   public void setCharset(Charset charset);
+   void intercept(HttpServletRewrite event, ResponseContent buffer, ResponseContentInterceptorChain chain);
 }

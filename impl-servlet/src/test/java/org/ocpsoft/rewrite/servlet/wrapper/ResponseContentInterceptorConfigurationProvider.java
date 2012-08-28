@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class BufferedResponseConfigurationProvider extends HttpConfigurationProvider
+public class ResponseContentInterceptorConfigurationProvider extends HttpConfigurationProvider
 {
    @Override
    public int priority()
@@ -54,8 +54,8 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                 */
                .addRule()
                .when(Path.matches("/index.html"))
-               .perform(Response.withOutputInterceptedBy(new BufferedResponseToLowercase1(),
-                        new BufferedResponseToLowercase2()))
+               .perform(Response.withOutputInterceptedBy(new ResponseToLowercase(),
+                        new ResponseToLowercaseWord()))
 
                /*
                 * Test unbuffered. Use a Join to perform a forward so we know buffering would have been activated.
@@ -66,7 +66,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
-                     if (HttpRewriteWrappedResponse.getInstance(event.getRequest()).isBufferingActive())
+                     if (HttpRewriteWrappedResponse.getInstance(event.getRequest()).isResponseContentIntercepted())
                      {
                         throw new IllegalStateException("Buffering should not be active.");
                      }
@@ -86,7 +86,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
-                     Response.withOutputInterceptedBy(new BufferedResponseToLowercase1()).perform(event, context);
+                     Response.withOutputInterceptedBy(new ResponseToLowercase()).perform(event, context);
                      Response.setCode(202).perform(event, context);
                   }
                })
@@ -98,7 +98,7 @@ public class BufferedResponseConfigurationProvider extends HttpConfigurationProv
                   {
                      try {
                         event.getResponse().getOutputStream(); // cause buffers to lock
-                        Response.withOutputInterceptedBy(new BufferedResponseToLowercase1()).perform(event, context);
+                        Response.withOutputInterceptedBy(new ResponseToLowercase()).perform(event, context);
                      }
                      catch (IllegalStateException e) {
                         SendError.code(503).perform(event, context);

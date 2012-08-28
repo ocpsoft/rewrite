@@ -94,22 +94,26 @@ public class Path extends HttpCondition implements IPath
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      String requestURL = null;
+      String url = null;
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         requestURL = ((HttpOutboundServletRewrite) event).getOutboundURL().split("\\?")[0];
-         if (requestURL.startsWith(event.getContextPath()))
+         url = ((HttpOutboundServletRewrite) event).getOutboundURL();
+         if (url != null)
          {
-            requestURL = requestURL.substring(event.getContextPath().length());
+            url = url.split("\\?")[0];
+            if (url.startsWith(event.getContextPath()))
+            {
+               url = url.substring(event.getContextPath().length());
+            }
          }
       }
       else
-         requestURL = event.getRequestPath();
+         url = event.getRequestPath();
 
-      if (expression.matches(event, context, requestURL))
+      if (expression.matches(event, context, url))
       {
-         Map<PatternParameter, String[]> parameters = expression.parse(event, context, requestURL);
+         Map<PatternParameter, String[]> parameters = expression.parse(event, context, url);
 
          for (PatternParameter capture : parameters.keySet()) {
             if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))

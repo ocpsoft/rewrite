@@ -21,7 +21,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.servlet.config.response.ResponseInterceptor;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
 
@@ -33,22 +34,41 @@ import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
 public abstract class Response extends HttpOperation
 {
    /**
-    * Add the given {@link ResponseInterceptor} instances to the current {@link ServletResponse}. This will activate response
-    * buffering on the current {@link ServletRequest} - meaning that generated output will not be sent to the client
-    * until the entire request has completed and all registered {@link ResponseInterceptor} instances have been executed.
+    * Add the given {@link ResponseContentInterceptor} instances to the current {@link ServletResponse}. This will
+    * activate response buffering on the current {@link ServletRequest} - meaning that generated output will not be sent
+    * to the client until the entire request has completed and all registered {@link ResponseContentInterceptor}
+    * instances have been executed.
     * 
-    * @param bufferedResponseToLowercase2
+    * <p>
+    * <b>WARNING:</b> This will cause the ENTIRE response to be buffered in memory, which may cause performance issues
+    * on larger responses. Make sure you know what you are doing! If it is possible to do the necessary operations using
+    * a {@link ResponseStreamWrapper} instead, you should probably consider doing so to avoid memory overhead.
     * 
     * @throws IllegalStateException When output has already been written to the client.
     */
-   public static Response withOutputInterceptedBy(final ResponseInterceptor... buffers) throws IllegalStateException
+   public static Response withOutputInterceptedBy(final ResponseContentInterceptor... buffers)
+            throws IllegalStateException
    {
       return new Response() {
          @Override
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
-            for (ResponseInterceptor buffer : buffers) {
-               HttpRewriteWrappedResponse.getInstance(event.getRequest()).addBufferStage(buffer);
+            for (ResponseContentInterceptor buffer : buffers) {
+               HttpRewriteWrappedResponse.getInstance(event.getRequest()).addContentInterceptor(buffer);
+            }
+         }
+      };
+   }
+
+   public static Response withOutputStreamWrappedBy(final ResponseStreamWrapper... wrappers)
+            throws IllegalStateException
+   {
+      return new Response() {
+         @Override
+         public void performHttp(HttpServletRewrite event, EvaluationContext context)
+         {
+            for (ResponseStreamWrapper wrapper : wrappers) {
+               HttpRewriteWrappedResponse.getInstance(event.getRequest()).addStreamWrapper(wrapper);
             }
          }
       };

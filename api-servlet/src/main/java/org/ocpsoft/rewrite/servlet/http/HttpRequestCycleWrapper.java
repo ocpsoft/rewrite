@@ -23,6 +23,9 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 
 /**
+ * Provides an opportunity for extensions to wrap the {@link HttpServletRequest} and {@link HttpServletResponse} object
+ * on each request-response cycle.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */

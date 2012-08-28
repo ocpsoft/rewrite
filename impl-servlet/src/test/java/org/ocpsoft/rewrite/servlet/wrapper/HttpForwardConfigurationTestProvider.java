@@ -57,6 +57,13 @@ public class HttpForwardConfigurationTestProvider extends HttpConfigurationProvi
                .when(Direction.isInbound()
                         .and(Path.matches("/forward-fail"))
                         .and(RequestParameter.exists("foo")))
-               .perform(Forward.to("/forward2"));
+               .perform(Forward.to("/forward2"))
+
+               // JSP Forward
+               .addRule()
+               .when(Direction.isInbound()
+                        .and(Path.matches("/from-jsp"))
+                        .and(RequestParameter.matches("test", "123")))
+               .perform(SendStatus.code(201));
    }
 }
