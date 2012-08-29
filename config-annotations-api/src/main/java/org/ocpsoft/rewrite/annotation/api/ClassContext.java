@@ -45,4 +45,9 @@ public interface ClassContext extends Context
     */
    void setBaseRule(Rule rule);
 
+   /**
+    * Get the Java class that is currently processed
+    */
+   Class<?> getJavaClass();
+
 }

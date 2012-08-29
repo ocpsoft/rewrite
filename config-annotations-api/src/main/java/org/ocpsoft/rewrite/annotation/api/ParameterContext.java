@@ -33,4 +33,9 @@ public interface ParameterContext extends ClassContext
     */
    MethodContext getMethodContext();
 
+   /**
+    * Get the parameter that is currently processed
+    */
+   Parameter getJavaParameter();
+
 }

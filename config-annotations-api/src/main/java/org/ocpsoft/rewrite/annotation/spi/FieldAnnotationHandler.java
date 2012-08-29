@@ -16,11 +16,10 @@
 package org.ocpsoft.rewrite.annotation.spi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
+import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 
 /**
  * A common base class for {@link AnnotationHandler} implementations that process field annotations.
@@ -31,13 +30,13 @@ public abstract class FieldAnnotationHandler<A extends Annotation> implements An
 {
 
    @Override
-   public final void process(ClassContext context, AnnotatedElement element, A annotation)
+   public final void process(ClassContext context, A annotation, HandlerChain chain)
    {
-      if (context instanceof FieldContext && element instanceof Field) {
-         process((FieldContext) context, (Field) element, annotation);
+      if (context instanceof FieldContext) {
+         process((FieldContext) context, annotation, chain);
       }
    }
 
-   public abstract void process(FieldContext context, Field element, A annotation);
+   public abstract void process(FieldContext context, A annotation, HandlerChain chain);
 
 }

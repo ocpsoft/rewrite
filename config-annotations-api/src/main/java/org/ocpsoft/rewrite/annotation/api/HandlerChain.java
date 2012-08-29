@@ -15,24 +15,7 @@
  */
 package org.ocpsoft.rewrite.annotation.api;
 
-import java.lang.reflect.Method;
-
-/**
- * Context for scanning a single field of a class
- * 
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- */
-public interface MethodContext extends ClassContext
+public interface HandlerChain
 {
-
-   /**
-    * Return the parent {@link ClassContext} to which this context is a descendant.
-    */
-   ClassContext getClassContext();
-
-   /**
-    * Get the method that is currently processed
-    */
-   Method getJavaMethod();
-
+   void proceed();
 }

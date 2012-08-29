@@ -1,11 +1,12 @@
 package org.ocpsoft.rewrite.annotation.visit;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
-import org.ocpsoft.rewrite.annotation.spi.ClassAnnotationHandler;
+import org.ocpsoft.rewrite.annotation.api.HandlerChain;
+import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.SendStatus;
 
-public class TypeHandler extends ClassAnnotationHandler<TypeAnno>
+public class TypeHandler implements AnnotationHandler<TypeAnno>
 {
    @Override
    public Class<TypeAnno> handles()
@@ -14,7 +15,7 @@ public class TypeHandler extends ClassAnnotationHandler<TypeAnno>
    }
 
    @Override
-   public void process(ClassContext context, Class<?> type, TypeAnno annotation)
+   public void process(ClassContext context, TypeAnno annotation, HandlerChain chain)
    {
       context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))

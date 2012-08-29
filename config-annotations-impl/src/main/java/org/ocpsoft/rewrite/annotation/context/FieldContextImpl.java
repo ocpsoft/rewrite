@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.annotation.context;
 
+import java.lang.reflect.Field;
+
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
@@ -31,10 +33,13 @@ public class FieldContextImpl extends ContextBase implements FieldContext
 {
 
    private final ClassContext classContext;
+   
+   private final Field javaField;
 
-   public FieldContextImpl(ClassContext classContext)
+   public FieldContextImpl(ClassContext classContext, Field field)
    {
       this.classContext = classContext;
+      this.javaField = field;
    }
 
    @Override
@@ -59,6 +64,17 @@ public class FieldContextImpl extends ContextBase implements FieldContext
    public void setBaseRule(Rule rule)
    {
       classContext.setBaseRule(rule);
+   }
+
+   public Field getJavaField()
+   {
+      return javaField;
+   }
+
+   @Override
+   public Class<?> getJavaClass()
+   {
+      return classContext.getJavaClass();
    }
 
 }

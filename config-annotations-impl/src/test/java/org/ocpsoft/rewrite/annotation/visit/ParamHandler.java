@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.annotation.visit;
 
-import org.ocpsoft.rewrite.annotation.api.Parameter;
+import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.api.ParameterContext;
 import org.ocpsoft.rewrite.annotation.spi.ParameterAnnotationHandler;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -15,7 +15,7 @@ public class ParamHandler extends ParameterAnnotationHandler<ParamAnno>
    }
 
    @Override
-   public void process(ParameterContext context, Parameter element, ParamAnno annotation)
+   public void process(ParameterContext context, ParamAnno annotation, HandlerChain chain)
    {
       context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))

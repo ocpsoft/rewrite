@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.annotation.context;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.MethodContext;
+import org.ocpsoft.rewrite.annotation.api.Parameter;
 import org.ocpsoft.rewrite.annotation.api.ParameterContext;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Rule;
@@ -31,10 +32,13 @@ import org.ocpsoft.rewrite.context.ContextBase;
 public class ParameterContextImpl extends ContextBase implements ParameterContext
 {
    private final MethodContext methodContext;
+   
+   private final Parameter parameter;
 
-   public ParameterContextImpl(MethodContext methodContext)
+   public ParameterContextImpl(MethodContext methodContext, Parameter parameter)
    {
       this.methodContext = methodContext;
+      this.parameter = parameter;
    }
 
    @Override
@@ -67,4 +71,16 @@ public class ParameterContextImpl extends ContextBase implements ParameterContex
       methodContext.setBaseRule(rule);
    }
 
+   @Override
+   public Parameter getJavaParameter()
+   {
+      return parameter;
+   }
+
+   @Override
+   public Class<?> getJavaClass()
+   {
+      return methodContext.getJavaClass();
+   }
+   
 }

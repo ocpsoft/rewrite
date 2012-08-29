@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.annotation.api;
 
+import java.lang.reflect.Field;
+
 /**
  * Context for scanning a single field of a class
  * 
@@ -27,5 +29,10 @@ public interface FieldContext extends ClassContext
     * Return the parent {@link ClassContext} to which this context is a descendant.
     */
    ClassContext getClassContext();
+
+   /**
+    * Returns the field that is currently processed
+    */
+   Field getJavaField();
 
 }

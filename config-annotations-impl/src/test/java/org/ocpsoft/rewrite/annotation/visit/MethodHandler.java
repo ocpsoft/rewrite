@@ -1,7 +1,6 @@
 package org.ocpsoft.rewrite.annotation.visit;
 
-import java.lang.reflect.Method;
-
+import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.api.MethodContext;
 import org.ocpsoft.rewrite.annotation.spi.MethodAnnotationHandler;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -16,7 +15,7 @@ public class MethodHandler extends MethodAnnotationHandler<MethodAnno>
    }
 
    @Override
-   public void process(MethodContext context, Method element, MethodAnno annotation)
+   public void process(MethodContext context, MethodAnno annotation, HandlerChain chain)
    {
       context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))
