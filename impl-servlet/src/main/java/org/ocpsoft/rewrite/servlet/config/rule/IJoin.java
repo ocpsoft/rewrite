@@ -77,9 +77,9 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
    public IJoin withInboundCorrection();
 
    /**
-    * Bind inbound {parameter} values to the {@link ServletRequest#getParameterMap()}, by name.
+    * Do not bind inbound {parameter} values to the {@link ServletRequest#getParameterMap()}, by name.
     */
-   public IJoin withRequestBinding();
+   public IJoin withoutRequestBinding();
 
    public interface IJoinParameter extends IJoin, Bindable<JoinParameter>, Parameter<JoinParameter, String>
    {
@@ -122,9 +122,9 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       }
 
       @Override
-      public IJoin withRequestBinding()
+      public IJoin withoutRequestBinding()
       {
-         return parent.withRequestBinding();
+         return parent.withoutRequestBinding();
       }
 
       @Override

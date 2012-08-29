@@ -74,6 +74,8 @@ public class Join implements IJoin
       }
    };
 
+   private boolean withRequestBinding = true;
+
    protected Join(final String pattern)
    {
       this.pattern = pattern;
@@ -116,7 +118,8 @@ public class Join implements IJoin
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         requestPath.withRequestBinding();
+         if (withRequestBinding)
+            requestPath.withRequestBinding();
 
          if (Not.any(disabled).and(requestPath).evaluate(event, context)
                   && ((condition == null) || condition.evaluate(event, context)))
@@ -278,9 +281,9 @@ public class Join implements IJoin
    }
 
    @Override
-   public IJoin withRequestBinding()
+   public IJoin withoutRequestBinding()
    {
-      requestPath.withRequestBinding();
+      this.withRequestBinding = false;
       return this;
    }
 
