@@ -11,7 +11,9 @@ import java.util.List;
 import org.junit.Test;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
+import org.ocpsoft.rewrite.annotation.context.ClassContextImpl;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
+import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 
 public class HandlerChainImplTest
 {
@@ -56,7 +58,8 @@ public class HandlerChainImplTest
 
       List<String> log = new ArrayList<String>();
 
-      HandlerChainImpl chain = new HandlerChainImpl(null, TestAnnotationHandler.class, Arrays.asList(
+      HandlerChainImpl chain = new HandlerChainImpl(new ClassContextImpl(ConfigurationBuilder.begin(),
+               TestAnnotationHandler.class), TestAnnotationHandler.class, Arrays.asList(
                new TestAnnotationHandler("First", log),
                new TestAnnotationHandler("Second", log)
                ));
@@ -72,7 +75,8 @@ public class HandlerChainImplTest
 
    }
 
-   private static class TestAnnotationHandler implements AnnotationHandler<Annotation>
+   @MockAnno
+   private static class TestAnnotationHandler implements AnnotationHandler<MockAnno>
    {
 
       private final String name;
@@ -92,13 +96,13 @@ public class HandlerChainImplTest
       }
 
       @Override
-      public Class<Annotation> handles()
+      public Class<MockAnno> handles()
       {
-         return Annotation.class;
+         return MockAnno.class;
       }
 
       @Override
-      public void process(ClassContext context, Annotation annotation, HandlerChain chain)
+      public void process(ClassContext context, MockAnno annotation, HandlerChain chain)
       {
          log.add("Before: " + name);
          chain.proceed();

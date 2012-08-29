@@ -3,6 +3,7 @@ package org.ocpsoft.rewrite.annotation;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.ocpsoft.common.util.Assert;
@@ -17,15 +18,17 @@ public class HandlerChainImpl implements HandlerChain
 
    private AnnotatedElement element;
 
-   private final List<? extends AnnotationHandler<Annotation>> handlers;
+   private final List<AnnotationHandler<Annotation>> handlers;
 
    private int pos = 0;
 
+   @SuppressWarnings("unchecked")
    public HandlerChainImpl(ClassContext context, AnnotatedElement element, List<? extends AnnotationHandler<?>> handlers)
    {
       this.context = context;
       this.element = element;
-      this.handlers = new ArrayList(handlers);
+      this.handlers = new ArrayList<AnnotationHandler<Annotation>>();
+      this.handlers.addAll((Collection<? extends AnnotationHandler<Annotation>>) handlers);
    }
 
    @Override
