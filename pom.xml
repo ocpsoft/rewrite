@@ -45,6 +45,7 @@
       <module>impl-config</module>
       <module>config-annotations-api</module>
       <module>config-annotations-impl</module>
+      <module>config-annotations</module>
       <module>config-jodatime</module>
       <module>config-tuckey</module>
       <module>config-typesafe</module>
