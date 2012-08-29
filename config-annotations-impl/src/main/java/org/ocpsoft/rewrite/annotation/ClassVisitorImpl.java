@@ -72,7 +72,7 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    public void visit(Class<?> clazz)
    {
 
-      ClassContext context = new ClassContextImpl(builder);
+      ClassContext context = new ClassContextImpl(builder, clazz);
 
       if (log.isTraceEnabled()) {
          log.trace("Scanning class: {}", clazz.getName());
@@ -83,18 +83,18 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
 
       // then process the fields
       for (Field field : clazz.getDeclaredFields()) {
-         visit(field, new FieldContextImpl(context));
+         visit(field, new FieldContextImpl(context, field));
       }
 
       // then the methods
       for (Method method : clazz.getDeclaredMethods()) {
-         MethodContextImpl methodContext = new MethodContextImpl(context);
+         MethodContextImpl methodContext = new MethodContextImpl(context, method);
          visit(method, methodContext);
 
          // then the method parameters
          for (int i = 0; i < method.getParameterTypes().length; i++) {
-            visit(new ParameterImpl(method, method.getParameterTypes()[i], method.getParameterAnnotations()[i], i),
-                     new ParameterContextImpl(methodContext));
+            ParameterImpl parameter = new ParameterImpl(method, method.getParameterTypes()[i], method.getParameterAnnotations()[i], i);
+            visit(parameter, new ParameterContextImpl(methodContext, parameter));
          }
       }
 
@@ -106,15 +106,28 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    private void visit(AnnotatedElement element, ClassContext context)
    {
 
-      // each annotation on the element may be interesting for us
-      for (Annotation annotation : element.getAnnotations()) {
+      List<AnnotationHandler<Annotation>> elementHandlers = new ArrayList<AnnotationHandler<Annotation>>();
+      
+      // check if any of the handlers is responsible
+      for (AnnotationHandler<Annotation> handler : handlerList) {
 
-         // check if any of the handlers is responsible
-         for (AnnotationHandler<Annotation> handler : handlerList) {
+         // each annotation on the element may be interesting for us
+         for (Annotation annotation : element.getAnnotations()) {
             if (handler.handles().equals(annotation.annotationType())) {
-               handler.process(context, element, annotation);
+               elementHandlers.add(handler);
             }
          }
+
+      }
+
+      if (!elementHandlers.isEmpty()) {
+
+         if (log.isTraceEnabled()) {
+            log.trace("Executing handler chain on " + element + ": " + elementHandlers);
+         }
+
+         // execute the handler chain
+         new HandlerChainImpl(context, element, elementHandlers).proceed();
 
       }
    }

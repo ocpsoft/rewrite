@@ -16,10 +16,9 @@
 package org.ocpsoft.rewrite.annotation.spi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
-import org.ocpsoft.rewrite.annotation.api.Parameter;
+import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.api.ParameterContext;
 
 /**
@@ -31,13 +30,13 @@ public abstract class ParameterAnnotationHandler<A extends Annotation> implement
 {
 
    @Override
-   public final void process(ClassContext context, AnnotatedElement element, A annotation)
+   public final void process(ClassContext context, A annotation, HandlerChain chain)
    {
-      if (context instanceof ParameterContext && element instanceof Parameter) {
-         process((ParameterContext) context, (Parameter) element, annotation);
+      if (context instanceof ParameterContext) {
+         process((ParameterContext) context, annotation, chain);
       }
    }
 
-   public abstract void process(ParameterContext context, Parameter element, A annotation);
+   public abstract void process(ParameterContext context, A annotation, HandlerChain chain);
 
 }

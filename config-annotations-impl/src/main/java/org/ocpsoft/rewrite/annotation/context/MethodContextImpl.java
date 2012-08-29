@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.annotation.context;
 
+import java.lang.reflect.Method;
+
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.MethodContext;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
@@ -31,10 +33,13 @@ public class MethodContextImpl extends ContextBase implements MethodContext
 {
 
    private final ClassContext classContext;
+   
+   private final Method method;
 
-   public MethodContextImpl(ClassContext classContext)
+   public MethodContextImpl(ClassContext classContext, Method method)
    {
       this.classContext = classContext;
+      this.method = method;
    }
 
    @Override
@@ -59,6 +64,18 @@ public class MethodContextImpl extends ContextBase implements MethodContext
    public void setBaseRule(Rule rule)
    {
       classContext.setBaseRule(rule);
+   }
+
+   @Override
+   public Method getJavaMethod()
+   {
+      return method;
+   }
+
+   @Override
+   public Class<?> getJavaClass()
+   {
+      return classContext.getJavaClass();
    }
 
 }

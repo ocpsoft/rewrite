@@ -16,10 +16,9 @@
 package org.ocpsoft.rewrite.annotation.spi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
+import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.api.MethodContext;
 
 /**
@@ -31,13 +30,13 @@ public abstract class MethodAnnotationHandler<A extends Annotation> implements A
 {
 
    @Override
-   public final void process(ClassContext context, AnnotatedElement element, A annotation)
+   public final void process(ClassContext context, A annotation, HandlerChain chain)
    {
-      if (context instanceof MethodContext && element instanceof Method) {
-         process((MethodContext) context, (Method) element, annotation);
+      if (context instanceof MethodContext) {
+         process((MethodContext) context, annotation, chain);
       }
    }
 
-   public abstract void process(MethodContext context, Method method, A annotation);
+   public abstract void process(MethodContext context, A annotation, HandlerChain chain);
 
 }

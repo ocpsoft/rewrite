@@ -42,7 +42,7 @@ public class ParameterImpl implements Parameter
    public <T extends Annotation> T getAnnotation(Class<T> type)
    {
       for (Annotation a : annotations) {
-         if (type.equals(a))
+         if (type.equals(a.annotationType()))
             return (T) a;
       }
       return null;

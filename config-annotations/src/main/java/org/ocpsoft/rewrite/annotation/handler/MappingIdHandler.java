@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Lincoln Baxter, III
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.annotation.spi;
+package org.ocpsoft.rewrite.annotation.handler;
 
-import java.lang.annotation.Annotation;
-
+import org.ocpsoft.rewrite.annotation.MappingId;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
-import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
+import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 
-/**
- * A common base class for {@link AnnotationHandler} implementations that process field annotations.
- * 
- * @author Christian Kaltepoth
- */
-public abstract class FieldAnnotationHandler<A extends Annotation> implements AnnotationHandler<A>
+public class MappingIdHandler implements AnnotationHandler<MappingId>
 {
 
    @Override
-   public final void process(ClassContext context, A annotation, HandlerChain chain)
+   public Class<MappingId> handles()
    {
-      if (context instanceof FieldContext) {
-         process((FieldContext) context, annotation, chain);
-      }
+      return MappingId.class;
    }
 
-   public abstract void process(FieldContext context, A annotation, HandlerChain chain);
+   @Override
+   public int priority()
+   {
+      return HandlerWeights.WEIGHT_TYPE_ENRICHING;
+   }
+
+   @Override
+   public void process(ClassContext context, MappingId annotation, HandlerChain chain)
+   {
+      context.getRuleBuilder().withId(annotation.value());
+      chain.proceed();
+   }
 
 }

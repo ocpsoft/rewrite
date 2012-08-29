@@ -13,9 +13,12 @@ public class ClassContextImpl extends ContextBase implements ClassContext
 
    private ConfigurationRuleBuilder configurationRuleBuilder;
 
-   public ClassContextImpl(ConfigurationBuilder config)
+   private final Class<?> javaClass;
+
+   public ClassContextImpl(ConfigurationBuilder config, Class<?> clazz)
    {
       this.config = config;
+      this.javaClass = clazz;
    }
 
    @Override
@@ -37,6 +40,12 @@ public class ClassContextImpl extends ContextBase implements ClassContext
    public ConfigurationBuilder getConfigurationBuilder()
    {
       return config;
+   }
+
+   @Override
+   public Class<?> getJavaClass()
+   {
+      return javaClass;
    }
 
 }
