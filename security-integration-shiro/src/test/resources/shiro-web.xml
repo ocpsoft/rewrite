@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+   <context-param>
+      <param-name>javax.faces.PROJECT_STAGE</param-name>
+      <param-value>Development</param-value>
+   </context-param>
+
+   <listener>
+      <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+   </listener>
+
+   <listener>
+      <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+   </listener>
+
+   <filter>
+      <filter-name>ShiroFilter</filter-name>
+      <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+   </filter>
+
+   <filter-mapping>
+      <filter-name>ShiroFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+      <dispatcher>INCLUDE</dispatcher>
+      <dispatcher>ERROR</dispatcher>
+   </filter-mapping>
+
+   <servlet>
+      <servlet-name>LoginServlet</servlet-name>
+      <servlet-class>org.ocpsoft.rewrite.security.shiro.LoginServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>LoginServlet</servlet-name>
+      <url-pattern>/login</url-pattern>
+   </servlet-mapping>
+
+   <servlet>
+      <servlet-name>LogoutServlet</servlet-name>
+      <servlet-class>org.ocpsoft.rewrite.security.shiro.LogoutServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>LogoutServlet</servlet-name>
+      <url-pattern>/logout</url-pattern>
+   </servlet-mapping>
+
+   <servlet>
+      <servlet-name>Faces Servlet</servlet-name>
+      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>/faces/*</url-pattern>
+   </servlet-mapping>
+
+</web-app>

@@ -61,6 +61,7 @@
       <module>integration-oracle-adf</module>
       <module>integration-gwt</module>
       <module>integration-spring</module>
+      <module>security-integration-shiro</module>
       <module>rewrite-servlet</module>
       <module>showcase</module>
       <module>distribution</module>
@@ -122,6 +123,11 @@
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-annotations</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-config-annotations-api</artifactId>
             <version>${project.version}</version>
          </dependency>
@@ -170,6 +176,11 @@
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-integration-cdi</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-security-integration-shiro</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>

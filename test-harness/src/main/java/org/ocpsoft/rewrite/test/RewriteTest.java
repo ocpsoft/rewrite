@@ -60,6 +60,7 @@ public class RewriteTest extends RewriteTestBase
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api"))
                .addAsLibraries(getRewriteArchive())
+               .addAsLibraries(getRewriteAnnotationsArchive())
                .addAsLibraries(getContainerArchive())
                .addAsLibraries(getCurrentArchive());
 
@@ -198,6 +199,19 @@ public class RewriteTest extends RewriteTestBase
                .addAsResource(new File("../api-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
+
+      return archive;
+   }
+
+   protected static JavaArchive getRewriteAnnotationsArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-annotations.jar")
+
+               .addAsResource(new File("../config-annotations-api/target/classes/org"))
+               .addAsResource(new File("../config-annotations-impl/target/classes/org"))
+               .addAsResource(new File("../config-annotations-impl/target/classes/META-INF"))
+               .addAsResource(new File("../config-annotations/target/classes/org"))
+               .addAsResource(new File("../config-annotations/target/classes/META-INF"));
 
       return archive;
    }
