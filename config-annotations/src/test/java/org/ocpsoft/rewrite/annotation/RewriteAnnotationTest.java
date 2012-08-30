@@ -15,4 +15,11 @@ public class RewriteAnnotationTest
                .addAsResource(new File("../config-annotations-impl/target/classes/META-INF"));
    }
 
+   public static JavaArchive getRewriteCdiArchive()
+   {
+      return ShrinkWrap.create(JavaArchive.class, "rewrite-cdi.jar")
+               .addAsResource(new File("../integration-cdi/target/classes/org"))
+               .addAsResource(new File("../integration-cdi/target/classes/META-INF"));
+   }
+
 }
