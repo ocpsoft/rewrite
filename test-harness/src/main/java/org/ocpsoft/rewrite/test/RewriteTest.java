@@ -63,6 +63,9 @@ public class RewriteTest extends RewriteTestBase
                .addAsLibraries(getRewriteAnnotationsArchive())
                .addAsLibraries(getContainerArchive())
                .addAsLibraries(getCurrentArchive());
+      
+      // make it a CDI archive
+      archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
 
       // Jetty specific stuff
       if (isJetty()) {
@@ -76,7 +79,6 @@ public class RewriteTest extends RewriteTestBase
          /*
          * Set up container configuration
          */
-         archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
          archive.addAsWebInfResource("jetty-env.xml", "jetty-env.xml");
          archive.addAsWebInfResource("jetty-log4j.xml", "log4j.xml");
 
@@ -104,9 +106,6 @@ public class RewriteTest extends RewriteTestBase
 
          // setup Mojarra
          archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces"));
-
-         // make it a CDI archive
-         archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
 
       }
 
