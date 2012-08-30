@@ -205,14 +205,19 @@ public class RewriteTest extends RewriteTestBase
 
    protected static JavaArchive getRewriteAnnotationsArchive()
    {
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-annotations.jar")
+      File classes = new File("../config-annotations/target/classes/org");
 
-               .addAsResource(new File("../config-annotations-api/target/classes/org"))
-               .addAsResource(new File("../config-annotations-impl/target/classes/org"))
-               .addAsResource(new File("../config-annotations-impl/target/classes/META-INF"))
-               .addAsResource(new File("../config-annotations/target/classes/org"))
-               .addAsResource(new File("../config-annotations/target/classes/META-INF"));
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-annotations.jar");
 
-      return archive;
+		if(classes.exists())
+		{
+         archive.addAsResource(new File("../config-annotations-api/target/classes/org"))
+            .addAsResource(new File("../config-annotations-impl/target/classes/org"))
+            .addAsResource(new File("../config-annotations-impl/target/classes/META-INF"))
+            .addAsResource(new File("../config-annotations/target/classes/org"))
+            .addAsResource(new File("../config-annotations/target/classes/META-INF"));
+      }
+
+      return archive.addAsResource(new StringAsset("placeholder"), "README");
    }
 }
