@@ -34,7 +34,7 @@ public class ParameterBindingTest extends RewriteTestBase
 
    @Test
    @Ignore
-   public void testPlainJoinWithAnnotations() throws Exception
+   public void testParameterBindingAnnotation() throws Exception
    {
       HttpAction<HttpGet> action = get("/param/christian/");
       assertEquals(200, action.getStatusCode());

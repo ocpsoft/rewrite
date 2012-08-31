@@ -29,7 +29,7 @@ public class SimpleForwardTest extends RewriteTestBase
    }
 
    @Test
-   public void testPlainJoinWithAnnotations() throws Exception
+   public void testSimpleForward() throws Exception
    {
       HttpAction<HttpGet> action = get("/forward");
       assertEquals(200, action.getStatusCode());

@@ -31,7 +31,7 @@ public class JoinParameterTest extends RewriteTestBase
    }
 
    @Test
-   public void testPlainJoinWithAnnotations() throws Exception
+   public void testJoinWithParameter() throws Exception
    {
 
       HttpAction<HttpGet> action = get("/join/test/");

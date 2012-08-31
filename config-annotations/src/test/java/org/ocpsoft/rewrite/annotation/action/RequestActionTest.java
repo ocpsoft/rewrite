@@ -34,7 +34,7 @@ public class RequestActionTest extends RewriteTestBase
 
    @Test
    @Ignore
-   public void testPlainJoinWithAnnotations() throws Exception
+   public void testRequestAction() throws Exception
    {
       HttpAction<HttpGet> action = get("/action");
       assertEquals(200, action.getStatusCode());
