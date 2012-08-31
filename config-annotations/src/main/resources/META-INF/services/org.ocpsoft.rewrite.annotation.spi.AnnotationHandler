@@ -5,3 +5,4 @@ org.ocpsoft.rewrite.annotation.handler.PathPatternHandler
 org.ocpsoft.rewrite.annotation.handler.PriorityHandler
 org.ocpsoft.rewrite.annotation.handler.RequestActionHandler
 org.ocpsoft.rewrite.annotation.handler.RolesRequiredHandler
+org.ocpsoft.rewrite.annotation.handler.ParameterBindingHandler
