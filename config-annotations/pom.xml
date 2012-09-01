@@ -30,6 +30,11 @@
          <artifactId>rewrite-test-harness</artifactId>
          <scope>test</scope>
       </dependency>
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+         <scope>test</scope>
+      </dependency>
 
    </dependencies>
 
