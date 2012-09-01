@@ -212,9 +212,14 @@ public class RewriteTest extends RewriteTestBase
 		{
          archive.addAsResource(new File("../config-annotations-api/target/classes/org"))
             .addAsResource(new File("../config-annotations-impl/target/classes/org"))
-            .addAsResource(new File("../config-annotations-impl/target/classes/META-INF"))
-            .addAsResource(new File("../config-annotations/target/classes/org"))
-            .addAsResource(new File("../config-annotations/target/classes/META-INF"));
+            .addAsResource(new File("../config-annotations-impl/target/classes/META-INF"));
+         
+         // if 'config-annotations' is currently tested, don't add it here, because it will be added via getCurrentArchive()
+         if(!new File("target/classes").getAbsolutePath().contains("config-annotations")) {
+            archive.addAsResource(new File("../config-annotations/target/classes/org"))
+               .addAsResource(new File("../config-annotations/target/classes/META-INF"));
+         }
+         
       }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");

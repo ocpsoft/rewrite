@@ -8,7 +8,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.annotation.RewriteAnnotationTest;
@@ -33,7 +32,6 @@ public class ParameterBindingTest extends RewriteTestBase
    }
 
    @Test
-   @Ignore
    public void testParameterBindingAnnotation() throws Exception
    {
       HttpAction<HttpGet> action = get("/param/christian/");
