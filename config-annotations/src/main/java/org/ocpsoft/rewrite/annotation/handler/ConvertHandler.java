@@ -69,7 +69,7 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
 
       // some logging
       if (log.isTraceEnabled()) {
-         log.trace("Attached converter adapeter for [{}] to field [{}] of class [{}]", new Object[] {
+         log.trace("Attached converter adapter for [{}] to field [{}] of class [{}]", new Object[] {
                   converterType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
          });
       }

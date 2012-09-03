@@ -69,7 +69,7 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
 
       // some logging
       if (log.isTraceEnabled()) {
-         log.trace("Attached validator adapeter for [{}] to field [{}] of class [{}]", new Object[] {
+         log.trace("Attached validator adapter for [{}] to field [{}] of class [{}]", new Object[] {
                   validatorType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
          });
       }
