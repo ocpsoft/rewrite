@@ -9,3 +9,4 @@ org.ocpsoft.rewrite.annotation.handler.ParameterBindingHandler
 org.ocpsoft.rewrite.annotation.handler.MatchesHandler
 org.ocpsoft.rewrite.annotation.handler.ForwardToHandler
 org.ocpsoft.rewrite.annotation.handler.ConvertHandler
+org.ocpsoft.rewrite.annotation.handler.ValidateHandler
