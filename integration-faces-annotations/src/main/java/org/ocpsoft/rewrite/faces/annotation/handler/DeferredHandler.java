@@ -70,6 +70,8 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
    public void process(ClassContext context, Deferred annotation, HandlerChain chain)
    {
 
+      chain.proceed();
+      
       if (context instanceof FieldContext) {
 
          Field field = ((FieldContext) context).getJavaField();
@@ -133,8 +135,6 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
          }
 
       }
-
-      chain.proceed();
 
    }
 
