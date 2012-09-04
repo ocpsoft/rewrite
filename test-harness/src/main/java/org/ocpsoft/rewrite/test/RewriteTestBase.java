@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.junit.Assert;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -149,4 +150,15 @@ public abstract class RewriteTestBase
          throw new RuntimeException(e);
       }
    }
+
+   /**
+    * Verifies that the given text contains the given string.
+    */
+   protected static void assertContains(String text, String s)
+   {
+      if (text == null || s == null || !text.contains(s)) {
+         Assert.fail("Could not find [" + s + "] in text: " + text);
+      }
+   }
+
 }

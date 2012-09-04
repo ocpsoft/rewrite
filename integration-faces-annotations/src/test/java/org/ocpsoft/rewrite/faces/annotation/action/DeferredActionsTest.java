@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.faces.annotation.action;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.faces.annotation.RewriteFacesAnnotationsTest;
@@ -40,13 +39,6 @@ public class DeferredActionsTest extends RewriteTestBase
       assertContains(secondPageContent, "Action 2 = [RENDER_RESPONSE]");
       assertContains(secondPageContent, "Action 3 = [INVOKE_APPLICATION]");
 
-   }
-
-   protected static void assertContains(String text, String s)
-   {
-      if (text == null || s == null || !text.contains(s)) {
-         Assert.fail("Could not find [" + s + "] in text: " + text);
-      }
    }
 
 }
