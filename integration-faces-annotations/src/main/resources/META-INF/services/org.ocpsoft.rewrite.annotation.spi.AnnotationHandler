@@ -1,1 +1,2 @@
 org.ocpsoft.rewrite.faces.annotation.handler.DeferredHandler
+org.ocpsoft.rewrite.faces.annotation.handler.IgnorePostbackHandler
