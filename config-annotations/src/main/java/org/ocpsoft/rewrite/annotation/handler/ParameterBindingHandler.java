@@ -17,12 +17,13 @@ package org.ocpsoft.rewrite.annotation.handler;
 
 import java.lang.reflect.Field;
 
+import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.annotation.ParameterBinding;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
-import org.ocpsoft.rewrite.bind.BindingBuilder;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Visitor;
 import org.ocpsoft.rewrite.el.El;
@@ -64,7 +65,7 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
       }
 
       // add bindings to conditions by walking over the condition tree
-      context.getRuleBuilder().accept(new AddBindingVisitor(context, param, field));
+      context.getRuleBuilder().accept(new AddBindingVisitor(context, chain, param, field));
 
       // continue
       chain.proceed();
@@ -82,10 +83,14 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
       private final String param;
       private final FieldContext context;
       private final Field field;
+      private final HandlerChain chain;
 
-      public AddBindingVisitor(FieldContext context, String paramName, Field field)
+      private boolean stop = false;
+
+      public AddBindingVisitor(FieldContext context, HandlerChain chain, String paramName, Field field)
       {
          this.context = context;
+         this.chain = chain;
          this.param = paramName;
          this.field = field;
       }
@@ -96,28 +101,34 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
       {
 
          // only conditions with parameters interesting
-         if (condition instanceof Parameterized) {
+         if (!stop && condition instanceof Parameterized) {
             Parameterized parameterized = (Parameterized) condition;
-
-            // The binding to add
-            El elBinding = El.property(field);
 
             // the parameter may not exist in the Parameterized instance
             try {
 
-               // add the parameter and the binding
+               // add the parameter and the binding and publish it in the context
                Parameter parameter = parameterized.where(param);
-
-               // other handlers will use the context to enrich the parameter
                context.put(Parameter.class, parameter);
 
-               // the binding may also be enriched
-               parameter.bindsTo(elBinding);
-               context.put(BindingBuilder.class, elBinding);
+               // create the binding and publish it in the context
+               Binding rawBinding = El.property(field);
+               context.put(Binding.class, rawBinding);
+
+               // run subsequent handler to enrich the parameter and wrap the binding
+               chain.proceed();
+
+               // add the enriched binding to the parameter
+               Binding enrichedBinding = (Binding) context.get(Binding.class);
+               Assert.notNull(enrichedBinding, "BindingBuilder was removed from the context");
+               parameter.bindsTo(enrichedBinding);
 
                if (log.isDebugEnabled()) {
                   log.debug("Added binding for parameter [{}] to: {}", param, parameterized.getClass().getSimpleName());
                }
+
+               // creating more than one binding would break the chain
+               stop = true;
 
             }
 
