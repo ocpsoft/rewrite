@@ -41,6 +41,7 @@ import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.api.MethodContext;
 import org.ocpsoft.rewrite.annotation.handler.HandlerWeights;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -71,16 +72,16 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
    {
 
       chain.proceed();
-      
+
       if (context instanceof FieldContext) {
 
          Field field = ((FieldContext) context).getJavaField();
 
          // locate the binding previously created by @ParameterBinding
-         BindingBuilder bindingBuilder = (BindingBuilder) context.get(BindingBuilder.class);
-         if (bindingBuilder != null) {
+         Binding binding = (Binding) context.get(Binding.class);
+         if (binding != null) {
 
-            PhaseBinding phaseBinding = PhaseBinding.to(bindingBuilder);
+            PhaseBinding phaseBinding = PhaseBinding.to(binding);
 
             // configure the target phase
             if (annotation.before() == Phase.NONE && annotation.after() == Phase.NONE) {
@@ -98,7 +99,7 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
             }
 
             // replace existing binding builder
-            context.put(BindingBuilder.class, phaseBinding);
+            context.put(Binding.class, phaseBinding);
 
          }
 
