@@ -26,6 +26,7 @@ import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.ConverterProvider;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -59,19 +60,24 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
       Field field = context.getJavaField();
 
       // locate the binding previously created by @ParameterBinding
-      BindingBuilder bindingBuilder = (BindingBuilder) context.get(BindingBuilder.class);
-      Assert.notNull(bindingBuilder, "No binding found for field: " + field);
+      Binding binding = (Binding) context.get(Binding.class);
+      if (binding != null) {
 
-      // add the converter
-      Class<?> converterType = annotation.with();
-      LazyConverterAdapter converter = new LazyConverterAdapter(converterType);
-      bindingBuilder.convertedBy(converter);
+         Assert.assertTrue(binding instanceof BindingBuilder,
+                  "Found Binding which is not a BindingBuilder but: " + binding.getClass().getSimpleName());
+         BindingBuilder bindingBuilder = (BindingBuilder) binding;
 
-      // some logging
-      if (log.isTraceEnabled()) {
-         log.trace("Attached converter adapter for [{}] to field [{}] of class [{}]", new Object[] {
-                  converterType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
-         });
+         // add the converter
+         Class<?> converterType = annotation.with();
+         LazyConverterAdapter converter = new LazyConverterAdapter(converterType);
+         bindingBuilder.convertedBy(converter);
+
+         // some logging
+         if (log.isTraceEnabled()) {
+            log.trace("Attached converter adapter for [{}] to field [{}] of class [{}]", new Object[] {
+                     converterType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
+            });
+         }
       }
 
       // continue with the chain
@@ -80,7 +86,8 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
    }
 
    /**
-    * This class uses the {@link ConverterProvider} SPI to lazily obtain the {@link Converter} for a given {@link Class} instance.
+    * This class uses the {@link ConverterProvider} SPI to lazily obtain the {@link Converter} for a given {@link Class}
+    * instance.
     */
    private static class LazyConverterAdapter implements Converter<Object>
    {

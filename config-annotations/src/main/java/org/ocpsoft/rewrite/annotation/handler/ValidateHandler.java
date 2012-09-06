@@ -26,6 +26,7 @@ import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.annotation.spi.ValidatorProvider;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -59,19 +60,25 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
       Field field = context.getJavaField();
 
       // locate the binding previously created by @ParameterBinding
-      BindingBuilder bindingBuilder = (BindingBuilder) context.get(BindingBuilder.class);
-      Assert.notNull(bindingBuilder, "No binding found for field: " + field);
+      Binding binding = (Binding) context.get(Binding.class);
+      if (binding != null) {
 
-      // add the validator
-      Class<?> validatorType = annotation.with();
-      LazyValidatorAdapter validator = new LazyValidatorAdapter(validatorType);
-      bindingBuilder.validatedBy(validator);
+         Assert.assertTrue(binding instanceof BindingBuilder,
+                  "Found Binding which is not a BindingBuilder but: " + binding.getClass().getSimpleName());
+         BindingBuilder bindingBuilder = (BindingBuilder) binding;
 
-      // some logging
-      if (log.isTraceEnabled()) {
-         log.trace("Attached validator adapter for [{}] to field [{}] of class [{}]", new Object[] {
-                  validatorType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
-         });
+         // add the validator
+         Class<?> validatorType = annotation.with();
+         LazyValidatorAdapter validator = new LazyValidatorAdapter(validatorType);
+         bindingBuilder.validatedBy(validator);
+
+         // some logging
+         if (log.isTraceEnabled()) {
+            log.trace("Attached validator adapter for [{}] to field [{}] of class [{}]", new Object[] {
+                     validatorType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
+            });
+         }
+
       }
 
       // continue with the chain
