@@ -109,12 +109,13 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
          // let one of the SPI implementations build the converter
          Iterator<ConverterProvider> providers = ServiceLoader.load(ConverterProvider.class).iterator();
          while (providers.hasNext()) {
-            converter = providers.next().getByType(converterClass);
+            ConverterProvider provider = providers.next();
+            converter = provider.getByType(converterClass);
             if (converter != null) {
                break;
             }
          }
-         Assert.notNull(converter, "Could not build converter for type: " + converterClass.getName());
+         Assert.notNull(converter, "Got no result from any ConverterProvider for type: " + converterClass.getName());
 
          return converter.convert(event, context, value);
 
