@@ -65,7 +65,9 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
       }
 
       // add bindings to conditions by walking over the condition tree
-      context.getRuleBuilder().accept(new AddBindingVisitor(context, chain, param, field));
+      AddBindingVisitor visitor = new AddBindingVisitor(context, chain, param, field);
+      context.getRuleBuilder().accept(visitor);
+      Assert.assertTrue(visitor.isFound(), "The parameter [" + param + "] was not found in any condition.");
 
       // continue
       chain.proceed();
@@ -85,7 +87,7 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
       private final Field field;
       private final HandlerChain chain;
 
-      private boolean stop = false;
+      private boolean found = false;
 
       public AddBindingVisitor(FieldContext context, HandlerChain chain, String paramName, Field field)
       {
@@ -101,14 +103,29 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
       {
 
          // only conditions with parameters interesting
-         if (!stop && condition instanceof Parameterized) {
+         if (condition instanceof Parameterized) {
             Parameterized parameterized = (Parameterized) condition;
 
-            // the parameter may not exist in the Parameterized instance
+            // check if the parameter is present here
+            Parameter parameter = null;
             try {
+               parameter = parameterized.where(param);
+            }
+            catch (IllegalArgumentException e) {
+               if (log.isTraceEnabled()) {
+                  log.trace("Parameter [{}] not found on: {}", param, parameterized.getClass().getSimpleName());
+               }
+            }
 
-               // add the parameter and the binding and publish it in the context
-               Parameter parameter = parameterized.where(param);
+            // only proceed if the parameter was found
+            if (parameter != null) {
+
+               // as the following code proceeds with the chain, only one condition can get the binding
+               Assert.assertFalse(found, "It seems like the parameter [" + param
+                        + "] is present in more than one condition. That is currently not supported!");
+               found = true;
+
+               // the parameter may be enriched by subsequent handlers
                context.put(Parameter.class, parameter);
 
                // create the binding and publish it in the context
@@ -127,19 +144,14 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
                   log.debug("Added binding for parameter [{}] to: {}", param, parameterized.getClass().getSimpleName());
                }
 
-               // creating more than one binding would break the chain
-               stop = true;
-
             }
-
-            // parameter does not exist
-            catch (IllegalArgumentException e) {
-               if (log.isTraceEnabled()) {
-                  log.trace("Parameter [{}] not found on: {}", param, parameterized.getClass().getSimpleName());
-               }
-            }
-
          }
+
+      }
+
+      public boolean isFound()
+      {
+         return found;
       }
    }
 
