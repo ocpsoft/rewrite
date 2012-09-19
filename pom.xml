@@ -43,8 +43,8 @@
       <module>api</module>
       <module>api-tests</module>
       <module>impl-config</module>
-      <module>config-annotations-api</module>
-      <module>config-annotations-impl</module>
+      <module>annotations-api</module>
+      <module>annotations-impl</module>
       <module>config-annotations</module>
       <module>config-jodatime</module>
       <module>config-tuckey</module>
