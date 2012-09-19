@@ -30,7 +30,7 @@
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-config-annotations-api</artifactId>
+         <artifactId>rewrite-annotations-api</artifactId>
       </dependency>
 
       <dependency>

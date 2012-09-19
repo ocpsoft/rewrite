@@ -210,9 +210,9 @@ public class RewriteTest extends RewriteTestBase
 
 		if(classes.exists())
 		{
-         archive.addAsResource(new File("../config-annotations-api/target/classes/org"))
-            .addAsResource(new File("../config-annotations-impl/target/classes/org"))
-            .addAsResource(new File("../config-annotations-impl/target/classes/META-INF"));
+         archive.addAsResource(new File("../annotations-api/target/classes/org"))
+            .addAsResource(new File("../annotations-impl/target/classes/org"))
+            .addAsResource(new File("../annotations-impl/target/classes/META-INF"));
          
          // if 'config-annotations' is currently tested, don't add it here, because it will be added via getCurrentArchive()
          if(!new File("target/classes").getAbsolutePath().contains("config-annotations")) {

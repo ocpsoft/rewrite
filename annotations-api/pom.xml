@@ -8,7 +8,7 @@
       <relativePath>../</relativePath>
    </parent>
    
-   <artifactId>rewrite-config-annotations-api</artifactId>
+   <artifactId>rewrite-annotations-api</artifactId>
    
    <properties>
    </properties>
@@ -27,6 +27,6 @@
    </dependencies>
    
    <build>
-      <finalName>config-annotations-api</finalName>
+      <finalName>annotations-api</finalName>
    </build>
 </project>
