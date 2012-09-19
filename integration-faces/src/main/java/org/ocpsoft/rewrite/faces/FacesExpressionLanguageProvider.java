@@ -22,7 +22,6 @@ import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
-import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
 
 /**
  * Implementation of {@link ExpressionLanguageProvider} that uses the {@link FacesContext} to obtain the
@@ -34,7 +33,7 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
 {
 
    @Override
-   public Object retrieveValue(String expression) throws UnsupportedEvaluationException
+   public Object retrieveValue(String expression) throws UnsupportedOperationException
    {
       FacesContext facesContext = getFacesContext();
       ELContext elContext = facesContext.getELContext();
@@ -42,7 +41,7 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
    }
 
    @Override
-   public void submitValue(String expression, Object value) throws UnsupportedEvaluationException
+   public void submitValue(String expression, Object value) throws UnsupportedOperationException
    {
       FacesContext facesContext = getFacesContext();
       ELContext elContext = facesContext.getELContext();
@@ -94,13 +93,13 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
    }
 
    @Override
-   public Object evaluateMethodExpression(String expression) throws UnsupportedEvaluationException
+   public Object evaluateMethodExpression(String expression) throws UnsupportedOperationException
    {
       return evaluateMethodExpression(expression, new Object[0]);
    }
 
    @Override
-   public Object evaluateMethodExpression(String expression, Object... values) throws UnsupportedEvaluationException
+   public Object evaluateMethodExpression(String expression, Object... values) throws UnsupportedOperationException
    {
       String el = toELExpression(expression);
       FacesContext facesContext = getFacesContext();

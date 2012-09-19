@@ -380,7 +380,7 @@ public class QueryStringBuilder
             return URLDecoder.decode(value, "UTF-8");
          }
          catch (UnsupportedEncodingException e) {
-            throw new RewriteException(e);
+            throw new RewriteException("Encoding type UTF-8 is not supported by this JVM.", e);
          }
          catch (IllegalArgumentException e)
          {
@@ -399,7 +399,7 @@ public class QueryStringBuilder
             return URLEncoder.encode(value, "UTF-8");
          }
          catch (UnsupportedEncodingException e) {
-            throw new RewriteException(e);
+            throw new RewriteException("Encoding type UTF-8 is not supported by this JVM.", e);
          }
          catch (IllegalArgumentException e)
          {

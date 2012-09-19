@@ -22,7 +22,7 @@ public class SimpleForwardTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTest.getDeployment()
+      return RewriteTest.getDeploymentWithCDI()
                .addAsLibrary(RewriteAnnotationTest.getRewriteAnnotationArchive())
                .addClass(SimpleForwardBean.class)
                .addAsWebResource(new StringAsset("<h1>Simple Forward</h1>"), "simple-forward.html");

@@ -21,6 +21,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
@@ -45,6 +46,13 @@ public class RewriteTest extends RewriteTestBase
       return archive;
    }
 
+   public static LibraryContainer<WebArchive> getDeploymentWithCDI()
+   {
+      WebArchive archive = getDeployment();
+      archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
+      return archive;
+   }
+
    public static WebArchive getDeploymentNoWebXml()
    {
       return getDeploymentNoWebXml("rewrite-test.war");
@@ -63,9 +71,6 @@ public class RewriteTest extends RewriteTestBase
                .addAsLibraries(getRewriteAnnotationsArchive())
                .addAsLibraries(getContainerArchive())
                .addAsLibraries(getCurrentArchive());
-      
-      // make it a CDI archive
-      archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
 
       // Jetty specific stuff
       if (isJetty()) {
@@ -208,18 +213,19 @@ public class RewriteTest extends RewriteTestBase
 
       JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-annotations.jar");
 
-		if(classes.exists())
-		{
+      if (classes.exists())
+      {
          archive.addAsResource(new File("../annotations-api/target/classes/org"))
-            .addAsResource(new File("../annotations-impl/target/classes/org"))
-            .addAsResource(new File("../annotations-impl/target/classes/META-INF"));
-         
-         // if 'config-annotations' is currently tested, don't add it here, because it will be added via getCurrentArchive()
-         if(!new File("target/classes").getAbsolutePath().contains("config-annotations")) {
+                  .addAsResource(new File("../annotations-impl/target/classes/org"))
+                  .addAsResource(new File("../annotations-impl/target/classes/META-INF"));
+
+         // if 'config-annotations' is currently tested, don't add it here, because it will be added via
+         // getCurrentArchive()
+         if (!new File("target/classes").getAbsolutePath().contains("config-annotations")) {
             archive.addAsResource(new File("../config-annotations/target/classes/org"))
-               .addAsResource(new File("../config-annotations/target/classes/META-INF"));
+                     .addAsResource(new File("../config-annotations/target/classes/META-INF"));
          }
-         
+
       }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");

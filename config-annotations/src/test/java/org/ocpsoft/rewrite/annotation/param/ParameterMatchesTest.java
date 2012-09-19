@@ -22,7 +22,7 @@ public class ParameterMatchesTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTest.getDeployment()
+      return RewriteTest.getDeploymentWithCDI()
                .addAsLibrary(RewriteAnnotationTest.getRewriteAnnotationArchive())
                .addAsLibrary(RewriteAnnotationTest.getRewriteCdiArchive())
                .addClass(ParameterMatchesBean.class)
@@ -36,7 +36,7 @@ public class ParameterMatchesTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/param/abcd/");
       assertEquals(200, action.getStatusCode());
-      assertTrue(action.getResponseContent().contains("Value: [abcd]"));
+      assertEquals("Value: [abcd]", action.getResponseContent());
    }
 
    @Test

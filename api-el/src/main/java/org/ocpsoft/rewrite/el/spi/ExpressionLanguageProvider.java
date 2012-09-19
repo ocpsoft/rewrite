@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.el.spi;
 
-import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
 
 /**
  * Defines a service interface to provide EL support.
@@ -27,20 +26,20 @@ public interface ExpressionLanguageProvider
    /**
     * Extract a value from the location specified by the given EL location.
     */
-   Object retrieveValue(String expression) throws UnsupportedEvaluationException;
+   Object retrieveValue(String expression) throws UnsupportedOperationException;
 
    /**
     * Inject a value into location specified by the given EL expression.
     */
-   void submitValue(String expression, Object value) throws UnsupportedEvaluationException;
+   void submitValue(String expression, Object value) throws UnsupportedOperationException;
 
    /**
     * Invoke the method specified by the given EL expression, returning the result - if any.
     */
-   Object evaluateMethodExpression(String expression) throws UnsupportedEvaluationException;
+   Object evaluateMethodExpression(String expression) throws UnsupportedOperationException;
 
    /**
     * Evaluate a method expression, passing the given parameters, returning the result - if any.
     */
-   Object evaluateMethodExpression(String expression, Object... values) throws UnsupportedEvaluationException;
+   Object evaluateMethodExpression(String expression, Object... values) throws UnsupportedOperationException;
 }

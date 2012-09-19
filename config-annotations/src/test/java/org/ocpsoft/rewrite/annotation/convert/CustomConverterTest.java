@@ -22,7 +22,7 @@ public class CustomConverterTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTest.getDeployment()
+      return RewriteTest.getDeploymentWithCDI()
                .addAsLibrary(RewriteAnnotationTest.getRewriteAnnotationArchive())
                .addAsLibrary(RewriteAnnotationTest.getRewriteCdiArchive())
                .addClasses(CustomConverterBean.class, LowercaseConverter.class)

@@ -23,11 +23,6 @@ public class RewriteException extends RuntimeException
 {
    private static final long serialVersionUID = -6610549860707315081L;
 
-   public RewriteException()
-   {
-      super();
-   }
-
    public RewriteException(final String message, final Throwable e)
    {
       super(message, e);
@@ -37,10 +32,4 @@ public class RewriteException extends RuntimeException
    {
       super(message);
    }
-
-   public RewriteException(final Throwable e)
-   {
-      super(e);
-   }
-
 }

@@ -12,6 +12,8 @@ import org.ocpsoft.rewrite.config.Invoke;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
+import org.ocpsoft.rewrite.servlet.event.SubflowTask;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -67,73 +69,72 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
    @SuppressWarnings("unchecked")
    public void performOperation(final HttpServletRewrite event, final EvaluationContext context)
    {
-      Object result = null;
-      if ((submission == null) && (retrieval != null))
-      {
-         result = retrieval.retrieve(event, context);
-         log.debug("Invoked binding [" + retrieval + "] returned value [" + result + "]");
-      }
-      else if (retrieval != null)
-      {
-         Object converted = submission.convert(event, context, retrieval.retrieve(event, context));
-         result = submission.submit(event, context, converted);
-         log.debug("Invoked binding [" + submission + "] returned value [" + result + "]");
-      }
-      else
-      {
-         log.warn("No binding specified for Invocation.");
-      }
+      SubflowTask.perform(event, context, Flow.UN_HANDLED, new SubflowTask() {
 
-      Flow savedState = event.getFlow();
-      event.setFlow(Flow.UN_HANDLED);
-
-      try
-      {
-         if (result instanceof Operation)
+         @Override
+         public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
          {
-            ((Operation) result).perform(event, context);
-         }
-         else if (result != null)
-         {
-            ServiceLoader<InvocationResultHandler> providers = ServiceLoader.load(InvocationResultHandler.class);
-            if (!providers.iterator().hasNext())
+            Object result = null;
+            if ((submission == null) && (retrieval != null))
             {
-               log.debug("No instances of [" + InvocationResultHandler.class.getName()
-                        + "] were registered to handing binding invocation result [" + result + "]");
+               result = retrieval.retrieve(event, context);
+               log.debug("Invoked binding [" + retrieval + "] returned value [" + result + "]");
+            }
+            else if (retrieval != null)
+            {
+               Object converted = submission.convert(event, context, retrieval.retrieve(event, context));
+               result = submission.submit(event, context, converted);
+               log.debug("Invoked binding [" + submission + "] returned value [" + result + "]");
+            }
+            else
+            {
+               log.warn("No binding specified for Invocation.");
             }
 
-            for (InvocationResultHandler handler : providers) {
-               handler.handle(event, context, result);
+            if (result instanceof Operation)
+            {
+               ((Operation) result).perform(event, context);
             }
-         }
-
-         if (result != null)
-         {
-            try {
-               if (event.getFlow().is(Flow.ABORT_REQUEST))
+            else if (result != null)
+            {
+               ServiceLoader<InvocationResultHandler> providers = ServiceLoader.load(InvocationResultHandler.class);
+               if (!providers.iterator().hasNext())
                {
-                  FacesContext facesContext = FacesContext.getCurrentInstance();
-                  if (event.getFlow().is(Flow.FORWARD))
+                  log.debug("No instances of [" + InvocationResultHandler.class.getName()
+                           + "] were registered to handing binding invocation result [" + result + "]");
+               }
+
+               for (InvocationResultHandler handler : providers) {
+                  handler.handle(event, context, result);
+               }
+            }
+
+            if (result != null)
+            {
+               try {
+                  if (event.getFlow().is(Flow.ABORT_REQUEST))
                   {
-                     String dispatchResource = ((HttpInboundServletRewrite) event).getDispatchResource();
-                     facesContext.getExternalContext().dispatch(dispatchResource);
+                     FacesContext facesContext = FacesContext.getCurrentInstance();
+                     if (event.getFlow().is(Flow.FORWARD))
+                     {
+                        String dispatchResource = ((HttpInboundServletRewrite) event).getDispatchResource();
+                        facesContext.getExternalContext().dispatch(dispatchResource);
+                     }
+                     facesContext.responseComplete();
                   }
-                  facesContext.responseComplete();
+                  else if (event.getFlow().is(Flow.INCLUDE))
+                  {
+                     throw new IllegalStateException(
+                              "Cannot issue INCLUDE directive within JSF lifecycle. Not supported.");
+                  }
                }
-               else if (event.getFlow().is(Flow.INCLUDE))
-               {
-                  throw new IllegalStateException("Cannot issue INCLUDE directive within JSF lifecycle. Not supported.");
+               catch (Exception e) {
+                  throw new RewriteException("", e);
                }
             }
-            catch (Exception e) {
-               throw new RewriteException(e);
-            }
+
          }
-      }
-      finally
-      {
-         event.setFlow(savedState);
-      }
+      });
    }
 
 }

@@ -30,7 +30,6 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
-import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
 
 /**
  * Responsible for binding to EL expressions.
@@ -203,7 +202,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
             {
                return provider.evaluateMethodExpression(getExpression.getExpression());
             }
-            catch (UnsupportedEvaluationException e) {
+            catch (UnsupportedOperationException e) {
                log.debug("El provider [" + provider.getClass().getName()
                         + "] could not invoke method ["
                         + getExpression + "]", e);
@@ -232,7 +231,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
             {
                return provider.evaluateMethodExpression(setExpression.getExpression(), value);
             }
-            catch (UnsupportedEvaluationException e) {
+            catch (UnsupportedOperationException e) {
                log.debug("El provider [" + provider.getClass().getName()
                         + "] could not submit method [" + setExpression
                         + "} with value [" + value + "]", e);
@@ -294,7 +293,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
                value = provider.retrieveValue(expression.getExpression());
                break;
             }
-            catch (UnsupportedEvaluationException e)
+            catch (UnsupportedOperationException e)
             {
                log.debug("El provider [" + provider.getClass().getName() + "] could not extract value from property ["
                         + expression + "]", e);
@@ -345,7 +344,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
                provider.submitValue(expression.getExpression(), value);
                break;
             }
-            catch (UnsupportedEvaluationException e)
+            catch (UnsupportedOperationException e)
             {
                log.debug("El provider [" + provider.getClass().getName()
                         + "] could not inject property [" + expression

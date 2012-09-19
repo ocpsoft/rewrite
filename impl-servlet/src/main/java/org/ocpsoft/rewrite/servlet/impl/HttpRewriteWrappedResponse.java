@@ -182,7 +182,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
             return super.getWriter();
          }
          catch (IOException e) {
-            throw new RewriteException(e);
+            throw new RewriteException("Could not get response writer.", e);
          }
    }
 
@@ -199,7 +199,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
                outputStream = super.getOutputStream();
             }
             catch (IOException e) {
-               throw new RewriteException(e);
+               throw new RewriteException("Could not get response output stream.", e);
             }
          }
 

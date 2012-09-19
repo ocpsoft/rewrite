@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.spring;
 
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
-import org.ocpsoft.rewrite.exception.UnsupportedEvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanExpressionContext;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -54,7 +53,7 @@ public class SpringExpressionLanguageProvider implements ExpressionLanguageProvi
    private WebApplicationContext applicationContext;
 
    @Override
-   public Object retrieveValue(String expression) throws UnsupportedEvaluationException
+   public Object retrieveValue(String expression) throws UnsupportedOperationException
    {
 
       try {
@@ -70,7 +69,7 @@ public class SpringExpressionLanguageProvider implements ExpressionLanguageProvi
    }
 
    @Override
-   public void submitValue(String expression, Object value) throws UnsupportedEvaluationException
+   public void submitValue(String expression, Object value) throws UnsupportedOperationException
    {
 
       try {
@@ -86,7 +85,7 @@ public class SpringExpressionLanguageProvider implements ExpressionLanguageProvi
    }
 
    @Override
-   public Object evaluateMethodExpression(String expression) throws UnsupportedEvaluationException
+   public Object evaluateMethodExpression(String expression) throws UnsupportedOperationException
    {
 
       try {
@@ -103,15 +102,15 @@ public class SpringExpressionLanguageProvider implements ExpressionLanguageProvi
 
       }
       catch (SpelEvaluationException e) {
-         throw new UnsupportedEvaluationException(e);
+         throw new UnsupportedOperationException(e);
       }
 
    }
 
    @Override
-   public Object evaluateMethodExpression(String expression, Object... values) throws UnsupportedEvaluationException
+   public Object evaluateMethodExpression(String expression, Object... values) throws UnsupportedOperationException
    {
-      throw new UnsupportedEvaluationException();
+      throw new UnsupportedOperationException();
    }
 
    /**
