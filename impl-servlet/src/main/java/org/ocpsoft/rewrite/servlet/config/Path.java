@@ -39,6 +39,7 @@ public class Path extends HttpCondition implements IPath
 {
    private final ParameterizedPatternImpl expression;
    private final ParameterStore<PathParameter> parameters = new ParameterStore<PathParameter>();
+   private boolean withRequestBinding = false;
 
    private Path(final String pattern)
    {
@@ -85,8 +86,12 @@ public class Path extends HttpCondition implements IPath
    @Override
    public IPath withRequestBinding()
    {
-      for (PatternParameter capture : expression.getParameterMap().values()) {
-         where(capture.getName()).bindsTo(Request.parameter(capture.getName()));
+      if (!withRequestBinding)
+      {
+         for (PatternParameter capture : expression.getParameterMap().values()) {
+            where(capture.getName()).bindsTo(Request.parameter(capture.getName()));
+         }
+         withRequestBinding  = true;
       }
       return this;
    }

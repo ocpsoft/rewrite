@@ -52,16 +52,16 @@ public class JoinRequestBindingConfigurationProvider extends HttpConfigurationPr
                 * Test Request Binding
                 */
                .addRule(Join.path("/rb/{p1}").to("/rb.xhtml"))
-               
+
                .addRule()
                .when(Path.matches("/rb.xhtml").and(RequestParameter.exists("p1")))
                .perform(SendStatus.code(201))
-               
+
                /*
                 * Test without Request Binding
                 */
-               .addRule(Join.path("/norb/{p1}").to("/norb.xhtml").withoutRequestBinding())
-               
+               .addRule(Join.nonBindingPath("/norb/{p1}").to("/norb.xhtml"))
+
                .addRule()
                .when(Path.matches("/norb.xhtml").andNot(RequestParameter.exists("p1")))
                .perform(SendStatus.code(202));

@@ -37,6 +37,7 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.QueryString;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
+import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -74,20 +75,32 @@ public class Join implements IJoin
       }
    };
 
-   private boolean withRequestBinding = true;
-
-   protected Join(final String pattern)
+   protected Join(final String pattern, boolean requestBinding)
    {
       this.pattern = pattern;
       this.requestPath = Path.matches(pattern);
+      if (requestBinding)
+         requestPath.withRequestBinding();
    }
 
    /**
-    * The client-facing URL path to which this {@link Join} will apply.
+    * The client-facing URL path to which this {@link Join} will apply. Parameters of the form <code>"{n}"</code> will
+    * be bound by name to the request parameter map via {@link Request#parameter(String)}, and subsequently used to
+    * build the outbound URL by extracting values from the query string
+    * <code>"?n=value"<code>. To disable request parameter binding and outbound URL rewriting, instead use {@link #nonBindingPath(String)}
     */
    public static IJoin path(final String pattern)
    {
-      return new Join(pattern);
+      return new Join(pattern, true);
+   }
+
+   /**
+    * The client-facing URL path to which this {@link Join} will apply. Paramters will not be bound to the request
+    * parameter map. To enable request parameter binding and outbound URL rewriting, instead use {@link #path(String)}.
+    */
+   public static Join nonBindingPath(String pattern)
+   {
+      return new Join(pattern, false);
    }
 
    /**
@@ -118,9 +131,6 @@ public class Join implements IJoin
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         if (withRequestBinding)
-            requestPath.withRequestBinding();
-
          if (Not.any(disabled).and(requestPath).evaluate(event, context)
                   && ((condition == null) || condition.evaluate(event, context)))
          {
@@ -277,13 +287,6 @@ public class Join implements IJoin
    public IJoin withChaining()
    {
       this.chainingDisabled = false;
-      return this;
-   }
-
-   @Override
-   public IJoin withoutRequestBinding()
-   {
-      this.withRequestBinding = false;
       return this;
    }
 

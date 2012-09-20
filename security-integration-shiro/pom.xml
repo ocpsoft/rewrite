@@ -22,12 +22,9 @@
    <artifactId>rewrite-security-integration-shiro</artifactId>
    <packaging>jar</packaging>
 
-   <name>Rewrite Shiro Integration</name>
    <description>Shiro Integration</description>
-   <url>http://ocpsoft.org/rewrite/</url>
 
    <dependencies>
-
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-annotations-api</artifactId>

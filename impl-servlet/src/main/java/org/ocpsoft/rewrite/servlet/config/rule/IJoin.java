@@ -18,8 +18,6 @@ package org.ocpsoft.rewrite.servlet.config.rule;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.ServletRequest;
-
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
@@ -76,11 +74,6 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
     */
    public IJoin withInboundCorrection();
 
-   /**
-    * Do not bind inbound {parameter} values to the {@link ServletRequest#getParameterMap()}, by name.
-    */
-   public IJoin withoutRequestBinding();
-
    public interface IJoinParameter extends IJoin, Bindable<JoinParameter>, Parameter<JoinParameter, String>
    {
       /**
@@ -119,12 +112,6 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
                return capture.getName();
          }
          return null;
-      }
-
-      @Override
-      public IJoin withoutRequestBinding()
-      {
-         return parent.withoutRequestBinding();
       }
 
       @Override

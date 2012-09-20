@@ -33,9 +33,9 @@ import org.ocpsoft.rewrite.util.Maps;
 /**
  * Responsible for binding to {@link ServletRequest#setAttribute(String, Object)} and
  * {@link ServletRequest#getParameterMap()} contexts.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public abstract class Request extends BindingBuilder<Request, String>
 {
@@ -120,7 +120,7 @@ public abstract class Request extends BindingBuilder<Request, String>
       public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          ServletRequest request = ((ServletRewrite<?, ?>) event).getRequest();
-         ServletResponse response =((ServletRewrite<?, ?>) event).getResponse();
+         ServletResponse response = ((ServletRewrite<?, ?>) event).getResponse();
          HttpRewriteWrappedRequest wrapper = HttpRewriteWrappedRequest.getFromRequest(request);
 
          Map<String, String[]> modifiableParameters = wrapper.getParameters(request, response);
@@ -143,6 +143,12 @@ public abstract class Request extends BindingBuilder<Request, String>
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
          return ((HttpServletRewrite) event).getRequest().getParameter(parameter);
+      }
+
+      @Override
+      public String toString()
+      {
+         return "RequestParameterBinding [parameter=" + parameter + "]";
       }
    }
 
@@ -171,5 +177,12 @@ public abstract class Request extends BindingBuilder<Request, String>
          else
             return null;
       }
+
+      @Override
+      public String toString()
+      {
+         return "RequestAttributeBinding [parameter=" + parameter + "]";
+      }
+
    }
 }

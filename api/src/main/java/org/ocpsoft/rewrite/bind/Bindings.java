@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.bind;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,36 +67,41 @@ public abstract class Bindings
          Object value = entry.getValue();
 
          List<Binding> bindings = parameter.getBindings();
-         for (Binding binding : bindings) {
-            try {
-               if (binding instanceof Evaluation)
-               {
-                  /*
-                   * Binding to the EvaluationContext is available immediately.
-                   */
-                  Object convertedValue = binding.convert(event, context, value);
-                  if (binding.validate(event, context, convertedValue))
+         try {
+            for (Binding binding : bindings) {
+               try {
+                  if (binding instanceof Evaluation)
                   {
-                     binding.submit(event, context, value);
+                     /*
+                      * Binding to the EvaluationContext is available immediately.
+                      */
+                     Object convertedValue = binding.convert(event, context, value);
+                     if (binding.validate(event, context, convertedValue))
+                     {
+                        binding.submit(event, context, value);
+                     }
+                     else
+                        return false;
                   }
                   else
-                     return false;
-               }
-               else
-               {
-                  Object convertedValue = binding.convert(event, context, value);
-                  if (binding.validate(event, context, convertedValue))
                   {
-                     convertedValue = binding.convert(event, context, convertedValue);
-                     operations.add(new BindingOperation(binding, convertedValue));
+                     Object convertedValue = binding.convert(event, context, value);
+                     if (binding.validate(event, context, convertedValue))
+                     {
+                        convertedValue = binding.convert(event, context, convertedValue);
+                        operations.add(new BindingOperation(binding, convertedValue));
+                     }
+                     else
+                        return false;
                   }
-                  else
-                     return false;
+               }
+               catch (Exception e) {
+                  throw new RewriteException("Failed to bind value [" + value + "] to binding [" + binding + "]", e);
                }
             }
-            catch (Exception e) {
-               throw new RewriteException("Failed to bind value [" + value + "] to binding [" + binding + "]", e);
-            }
+         }
+         catch (ConcurrentModificationException e) {
+            e.printStackTrace();
          }
       }
 
