@@ -37,7 +37,9 @@ import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.QueryString;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
+import org.ocpsoft.rewrite.servlet.config.SimpleForward;
 import org.ocpsoft.rewrite.servlet.config.SimplePath;
+import org.ocpsoft.rewrite.servlet.config.SimpleSubstitute;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -225,8 +227,15 @@ public class Join implements IJoin
             event.getRewriteContext().put(Join.class.getName() + "_DISABLED", true);
             event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", false);
          }
-         /* TODO: Use something like a simple forward if this.simple is true */
-         Forward.to(resource).perform(event, context);
+
+         if(simple)
+         {
+        	 SimpleForward.to(resource).perform(event, context);
+         }
+         else
+         {
+        	 Forward.to(resource).perform(event, context);
+         }
       }
 
       else if (event instanceof HttpOutboundServletRewrite)
@@ -247,8 +256,14 @@ public class Join implements IJoin
             }
          }
 
-         /* TODO: Use something like a simple substitute if this.simple is true */
-         Substitute.with(pattern + query.toQueryString()).perform(event, context);
+         if(simple)
+         {
+        	 SimpleSubstitute.with(pattern + query.toQueryString()).perform(event, context);
+         }
+         else
+         {
+        	 Substitute.with(pattern + query.toQueryString()).perform(event, context);
+         }
       }
    }
 
