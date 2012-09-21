@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
+import java.util.List;
+
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.common.services.NonEnriching;
@@ -28,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements NonEnriching
 {
@@ -57,12 +59,22 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          }
 
       Configuration compiledConfiguration = loader.loadConfiguration(servletContext);
-      for (Rule rule : compiledConfiguration.getRules()) {
-         EvaluationContextImpl context = new EvaluationContextImpl();
+      List<Rule> rules = compiledConfiguration.getRules();
+
+      /*
+       * Highly optimized loop - for performance reasons. Think before you change this!
+       */
+      EvaluationContextImpl context = new EvaluationContextImpl();
+      for (int i = 0; i < rules.size(); i++)
+      {
+         context.clear();
+         Rule rule = rules.get(i);
          if (rule.evaluate(event, context))
          {
-            for (Operation operation : context.getPreOperations()) {
-               operation.perform(event, context);
+
+            List<Operation> preOperations = context.getPreOperations();
+            for (int j = 0; j < preOperations.size(); j++) {
+               preOperations.get(j).perform(event, context);
             }
 
             if (event.getFlow().is(Flow.HANDLED))
@@ -77,8 +89,9 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                break;
             }
 
-            for (Operation operation : context.getPostOperations()) {
-               operation.perform(event, context);
+            List<Operation> postOperations = context.getPostOperations();
+            for (int k = 0; k < postOperations.size(); k++) {
+               postOperations.get(k).perform(event, context);
             }
 
             if (event.getFlow().is(Flow.HANDLED))

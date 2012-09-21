@@ -44,7 +44,7 @@ public class BeanManagerUnavailableException extends RuntimeException
 
    public String getProvidersAsString()
    {
-      StringBuffer out = new StringBuffer();
+      StringBuilder out = new StringBuilder();
       int i = 0;
       for (BeanManagerProvider provider : providers) {
          if (i > 0) {

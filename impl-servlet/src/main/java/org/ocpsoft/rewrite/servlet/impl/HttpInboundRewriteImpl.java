@@ -32,9 +32,18 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse>
-implements HttpInboundServletRewrite
+         implements HttpInboundServletRewrite
 {
    Logger log = Logger.getLogger(HttpInboundRewriteImpl.class);
+
+   /*
+    * For caching and performance purposes only.
+    */
+   private String requestPath;
+   private String requestQueryString;
+   private String requestQueryStringSeparator;
+   private String requestUrl;
+   private String requestContextPath;
 
    public HttpInboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response)
    {
@@ -160,52 +169,66 @@ implements HttpInboundServletRewrite
    @Override
    public String getContextPath()
    {
-      String contextPath = getRequest().getContextPath();
-      return contextPath;
+      if (this.requestContextPath == null)
+         this.requestContextPath = getRequest().getContextPath();
+      return this.requestContextPath;
    }
 
    @Override
    public String getRequestPath()
    {
-      String url = getRequest().getRequestURI();
-      if (url.startsWith(getContextPath()))
+      if (this.requestPath == null)
       {
-         url = url.substring(getContextPath().length());
-      }
+         String url = getRequest().getRequestURI();
+         if (url.startsWith(getContextPath()))
+         {
+            url = url.substring(getContextPath().length());
+         }
 
-      url = URLBuilder.createFrom(url).decode().toURL();
-      return url;
+         this.requestPath = URLBuilder.createFrom(url).decode().toURL();
+      }
+      return this.requestPath;
    }
 
    @Override
    public String getRequestQueryStringSeparator()
    {
-      String queryString = getRequestQueryString();
-      if ((queryString != null) && !queryString.isEmpty())
+      if (this.requestQueryStringSeparator == null)
       {
-         return "?";
+         String queryString = getRequestQueryString();
+         if ((queryString != null) && !queryString.isEmpty())
+            this.requestQueryStringSeparator = "?";
+         else
+            return this.requestQueryStringSeparator = "";
       }
-      return "";
+      return this.requestQueryStringSeparator;
    }
 
    @Override
    public String getRequestQueryString()
    {
-      String query = getRequest().getQueryString();
-      return Strings.isNullOrEmpty(query) ? "" : QueryStringBuilder.createFrom(query)
-               .decode().toQueryString().substring(1);
+      if (this.requestQueryString == null)
+      {
+         String query = getRequest().getQueryString();
+         this.requestQueryString = Strings.isNullOrEmpty(query) ? "" : QueryStringBuilder.createFrom(query)
+                  .decode().toQueryString().substring(1);
+      }
+      return this.requestQueryString;
    }
 
    @Override
    public String getURL()
    {
-      return getRequestPath() + getRequestQueryStringSeparator() + getRequestQueryString();
+      if (this.requestUrl == null)
+         this.requestUrl = getRequestPath() + getRequestQueryStringSeparator() + getRequestQueryString();
+      return this.requestUrl;
    }
 
    @Override
    public String toString()
    {
-      return "InboundRewrite ["+getRequest().getMethod()+" url=" + getURL() + ", flow=" + getFlow() + ", dispatchResource=" + getDispatchResource()
+      return "InboundRewrite [" + getRequest().getMethod() + " url=" + getURL() + ", flow=" + getFlow()
+               + ", dispatchResource=" + getDispatchResource()
                + "]";
    }
 }

@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.spi.RewriteProvider;
  */
 public interface RewriteLifecycleContext<C> extends Context
 {
-   public static final String CONTEXT_KEY = "_com.ocpsoft.rewrite.RequestContext";
+   public static final String LIFECYCLE_CONTEXT_KEY = "_com.ocpsoft.rewrite.RequestContext";
 
    /**
     * Get all available {@link RewriteLifecycleListener} instances.

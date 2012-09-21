@@ -29,7 +29,6 @@ import java.util.TreeMap;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -464,13 +463,6 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper impleme
    {
       // TODO Auto-generated method stub
       return super.isSecure();
-   }
-
-   @Override
-   public RequestDispatcher getRequestDispatcher(String path)
-   {
-      // TODO Auto-generated method stub
-      return super.getRequestDispatcher(path);
    }
 
    @Override

@@ -342,7 +342,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    {
       @SuppressWarnings("unchecked")
       RewriteLifecycleContext<ServletContext> context = (RewriteLifecycleContext<ServletContext>) request
-               .getAttribute(RewriteLifecycleContext.CONTEXT_KEY);
+               .getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY);
       for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
       {
          listener.beforeOutboundRewrite(event);

@@ -9,7 +9,9 @@ import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
 public class DefaultRewriteLifecycleListener implements RewriteLifecycleListener<HttpServletRewrite>
 {
+   private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
    private static final String REQUEST_NESTING_KEY = DefaultRewriteLifecycleListener.class + "_request_nesting";
+   private static final String JOIN_DISABLED_RESET_NEXT_KEY = Join.class.getName() + "_DISABLED_RESET_NEXT";
 
    @Override
    public boolean handles(Rewrite payload)
@@ -61,14 +63,14 @@ public class DefaultRewriteLifecycleListener implements RewriteLifecycleListener
    @Override
    public void afterInboundRewrite(HttpServletRewrite event)
    {
-      if (Boolean.TRUE.equals(event.getRewriteContext().get(Join.class.getName() + "_DISABLED_RESET_NEXT")))
+      if (Boolean.TRUE.equals(event.getRewriteContext().get(JOIN_DISABLED_RESET_NEXT_KEY)))
       {
-         event.getRewriteContext().put(Join.class.getName() + "_DISABLED", false);
-         event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", false);
+         event.getRewriteContext().put(JOIN_DISABLED_KEY, false);
+         event.getRewriteContext().put(JOIN_DISABLED_RESET_NEXT_KEY, false);
       }
-      else if (Boolean.TRUE.equals(event.getRewriteContext().get(Join.class.getName() + "_DISABLED")))
+      else if (Boolean.TRUE.equals(event.getRewriteContext().get(JOIN_DISABLED_KEY)))
       {
-         event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", true);
+         event.getRewriteContext().put(JOIN_DISABLED_RESET_NEXT_KEY, true);
       }
    }
 

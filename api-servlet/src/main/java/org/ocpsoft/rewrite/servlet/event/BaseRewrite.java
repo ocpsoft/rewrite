@@ -35,6 +35,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    private OUT response;
    protected Flow flow;
    protected String dispatchResource;
+   private Context context;
 
    public BaseRewrite(final IN request, final OUT response)
    {
@@ -57,9 +58,9 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    }
 
    /**
-    * Continue processing {@link org.ocpsoft.rewrite.config.Rule} definitions for the current {@link ServletRequest}, even if a call to
-    * {@link #abort()}, {@link #handled()}, {@link #forward(String)}, or any other life-cycle control method has
-    * previously been made.
+    * Continue processing {@link org.ocpsoft.rewrite.config.Rule} definitions for the current {@link ServletRequest},
+    * even if a call to {@link #abort()}, {@link #handled()}, {@link #forward(String)}, or any other life-cycle control
+    * method has previously been made.
     */
    public void proceed()
    {
@@ -67,9 +68,9 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    }
 
    /**
-    * Stop processing {@link org.ocpsoft.rewrite.config.Rule} definitions and pass control of the the current {@link ServletRequest} to the
-    * underlying application, even if a call to {@link #abort()}, {@link #proceed()}, {@link #forward(String)}, or any
-    * other life-cycle control method has previously been made.
+    * Stop processing {@link org.ocpsoft.rewrite.config.Rule} definitions and pass control of the the current
+    * {@link ServletRequest} to the underlying application, even if a call to {@link #abort()}, {@link #proceed()},
+    * {@link #forward(String)}, or any other life-cycle control method has previously been made.
     */
    public void handled()
    {
@@ -237,12 +238,16 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
     */
    public Context getRewriteContext()
    {
-      Context context = (Context) request.getAttribute(RewriteLifecycleContext.CONTEXT_KEY);
-      if (context == null)
+      if (this.context == null)
       {
-         throw new RewriteException("RewriteContext was null. Something is seriously wrong, " +
-                  "or you are attempting to access this event outside of the Rewrite lifecycle.");
+         Context context = (Context) request.getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY);
+         if (context == null)
+         {
+            throw new RewriteException("RewriteContext was null. Something is seriously wrong, " +
+                     "or you are attempting to access this event outside of the Rewrite lifecycle.");
+         }
+         this.context = context;
       }
-      return context;
+      return this.context;
    }
 }

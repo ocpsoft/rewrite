@@ -24,13 +24,11 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
-import org.ocpsoft.rewrite.config.Not;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
-import org.ocpsoft.rewrite.servlet.config.HttpCondition;
 import org.ocpsoft.rewrite.servlet.config.IPath;
 import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -40,7 +38,6 @@ import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
-import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 
 /**
@@ -51,6 +48,8 @@ import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
  */
 public class Join implements IJoin
 {
+   private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
+
    private static final String CURRENT_JOIN = Join.class.getName() + "_current";
 
    private String id;
@@ -66,14 +65,6 @@ public class Join implements IJoin
    private boolean inboundCorrection = false;
 
    private boolean chainingDisabled = true;
-
-   HttpCondition disabled = new HttpCondition() {
-      @Override
-      public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context)
-      {
-         return Boolean.TRUE.equals(event.getRewriteContext().get(Join.class.getName() + "_DISABLED"));
-      }
-   };
 
    protected Join(final String pattern, boolean requestBinding)
    {
@@ -131,7 +122,7 @@ public class Join implements IJoin
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         if (Not.any(disabled).and(requestPath).evaluate(event, context)
+         if (!isChainingDisabled(event) && requestPath.evaluate(event, context)
                   && ((condition == null) || condition.evaluate(event, context)))
          {
             if (operation != null)
@@ -175,6 +166,11 @@ public class Join implements IJoin
       return false;
    }
 
+   private boolean isChainingDisabled(Rewrite event)
+   {
+      return Boolean.TRUE.equals(event.getRewriteContext().get(JOIN_DISABLED_KEY));
+   }
+
    private List<String> getPathRequestParameters()
    {
       List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
@@ -192,7 +188,7 @@ public class Join implements IJoin
          saveCurrentJoin(((HttpInboundServletRewrite) event).getRequest());
          if (chainingDisabled)
          {
-            event.getRewriteContext().put(Join.class.getName() + "_DISABLED", true);
+            event.getRewriteContext().put(JOIN_DISABLED_KEY, true);
             event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", false);
          }
          Forward.to(resource).perform(event, context);

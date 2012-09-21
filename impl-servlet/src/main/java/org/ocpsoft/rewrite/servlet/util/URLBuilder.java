@@ -26,9 +26,9 @@ import org.ocpsoft.common.util.Strings;
 
 /**
  * Utility for building URL strings. Also manages the URL query string with the help of {@link QueryStringBuilder}.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class URLBuilder
 {
@@ -170,7 +170,7 @@ public class URLBuilder
 
    /**
     * Decodes a segment using the {@link URI} class.
-    *
+    * 
     * @param segment The segment to decode
     * @return the decoded segment
     */
@@ -198,7 +198,7 @@ public class URLBuilder
 
    /**
     * Encodes a segment using the {@link URI} class.
-    *
+    * 
     * @param segment The segment to encode
     * @return the encoded segment
     */
@@ -217,22 +217,26 @@ public class URLBuilder
 
    private List<String> getDecodedSegments()
    {
+      /*
+       * Normal loop for performance reasons
+       */
       List<String> result = new ArrayList<String>();
-      for (String segment : segments)
-      {
-         result.add(decodeSegment(segment));
+      for (int i = 0; i < segments.size(); i++) {
+         result.add(decodeSegment(segments.get(i)));
       }
       return result;
    }
 
    private List<String> getEncodedSegments()
    {
-      List<String> resultSegments = new ArrayList<String>();
-      for (String segment : segments)
-      {
-         resultSegments.add(encodeSegment(segment));
+      /*
+       * Normal loop for performance reasons
+       */
+      List<String> result = new ArrayList<String>();
+      for (int i = 0; i < segments.size(); i++) {
+         result.add(encodeSegment(segments.get(i)));
       }
-      return resultSegments;
+      return result;
    }
 
    /**
@@ -314,7 +318,7 @@ public class URLBuilder
 
    /**
     * Set the {@link Metadata} object for this URL
-    *
+    * 
     * @return
     */
    public URLBuilder setMetadata(final Metadata metadata)

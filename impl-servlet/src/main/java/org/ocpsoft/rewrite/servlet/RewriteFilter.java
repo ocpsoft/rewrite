@@ -152,11 +152,11 @@ public class RewriteFilter implements Filter
       }
       else
       {
-         if (request.getAttribute(RewriteLifecycleContext.CONTEXT_KEY) == null)
+         if (request.getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY) == null)
          {
             RewriteLifecycleContext<ServletContext> context = new HttpRewriteContextImpl(inbound, outbound, listeners,
                      wrappers, providers);
-            request.setAttribute(RewriteLifecycleContext.CONTEXT_KEY, context);
+            request.setAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY, context);
          }
 
          for (RewriteLifecycleListener<Rewrite> listener : listeners)

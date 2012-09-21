@@ -51,8 +51,8 @@ public class And extends DefaultConditionBuilder implements CompositeCondition
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       boolean result = true;
-      for (Condition c : conditions) {
-         if (!c.evaluate(event, context))
+      for (int i = 0; i < conditions.size(); i++) {
+         if (!conditions.get(i).evaluate(event, context))
          {
             result = false;
          }

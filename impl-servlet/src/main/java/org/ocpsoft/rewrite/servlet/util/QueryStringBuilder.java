@@ -303,7 +303,7 @@ public class QueryStringBuilder
     */
    public String toQueryString()
    {
-      StringBuffer result = new StringBuffer();
+      StringBuilder result = new StringBuilder();
 
       if ((null != parameters) && !parameters.isEmpty())
       {

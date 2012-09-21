@@ -81,7 +81,7 @@ class TypeBasedExpression implements Expression
          if (beanName != null) {
 
             // create the complete EL expression including the component
-            String el = new StringBuffer()
+            String el = new StringBuilder()
                      .append(beanName).append('.').append(component)
                      .toString();
 

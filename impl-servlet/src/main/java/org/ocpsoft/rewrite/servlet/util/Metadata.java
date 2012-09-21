@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.util;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class Metadata
@@ -45,11 +44,13 @@ public class Metadata
          result.append("/");
       }
 
-      for (Iterator<String> iter = segments.iterator(); iter.hasNext();)
-      {
-         String segment = iter.next();
+      /*
+       * Normal loop for performance reasons
+       */
+      for (int i = 0; i < segments.size(); i++) {
+         String segment = segments.get(i);
          result.append(segment);
-         if (iter.hasNext())
+         if (i < (segments.size() - 1))
          {
             result.append("/");
          }

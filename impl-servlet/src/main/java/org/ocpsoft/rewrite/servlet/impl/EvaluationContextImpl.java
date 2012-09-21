@@ -66,4 +66,13 @@ public class EvaluationContextImpl extends ContextBase implements EvaluationCont
       return "EvaluationContextImpl [preOperations=" + preOperations + ", postOperations=" + postOperations + "]";
    }
 
+   /**
+    * Clears the state of this context so that it may be reused, saving instantiation cost during rule iteration.
+    */
+   public void clear()
+   {
+      this.postOperations.clear();
+      this.postOperations.clear();
+   }
+
 }
