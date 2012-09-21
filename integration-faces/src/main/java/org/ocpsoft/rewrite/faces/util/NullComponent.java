@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.faces.annotation.util;
+package org.ocpsoft.rewrite.faces.util;
 
 import javax.faces.component.UIComponentBase;
 

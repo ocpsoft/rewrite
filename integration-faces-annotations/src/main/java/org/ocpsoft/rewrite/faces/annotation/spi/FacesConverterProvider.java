@@ -8,7 +8,7 @@ import org.ocpsoft.rewrite.annotation.spi.ConverterProvider;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.faces.annotation.util.NullComponent;
+import org.ocpsoft.rewrite.faces.util.NullComponent;
 
 /**
  * {@link ConverterProvider} that allows to use JSF converters with Rewrite.

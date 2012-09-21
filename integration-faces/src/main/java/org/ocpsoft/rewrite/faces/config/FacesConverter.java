@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.faces.annotation.config;
+package org.ocpsoft.rewrite.faces.config;
 
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
@@ -23,24 +23,44 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.faces.annotation.util.NullComponent;
+import org.ocpsoft.rewrite.faces.util.NullComponent;
 
 /**
  * Adapter class that allows to use JSF converters with Rewrite.
  * 
  * @author Christian Kaltepoth
  */
-public class FacesConverterAdapter<T> implements Converter<T>
+public class FacesConverter<T> implements Converter<T>
 {
 
    private final Class<?> targetType;
    private final String converterId;
 
+   private FacesConverter(String converterId, Class<?> targetType)
+   {
+      this.converterId = converterId;
+      this.targetType = targetType;
+   }
+
    /**
-    * Create an adapter for the specified target type. The adapter will use {@link Application#createConverter(Class)}
-    * to obtain the underlying JSF converter.
+    * Creates a converter adapter for the given target type. The converter will use
+    * {@link Application#createConverter(Class)} to obtain the underlying JSF converter.
     */
-   public FacesConverterAdapter(Class<?> targetType)
+   public static <T> FacesConverter<T> forType(Class<?> targetType)
+   {
+      return new FacesConverter<T>(null, targetType);
+   }
+
+   /**
+    * Creates a converter with the given ID. The converter will use {@link Application#createConverter(String))} to
+    * obtain the underlying JSF converter.
+    */
+   public static <T> FacesConverter<T> forId(String converterId)
+   {
+      return new FacesConverter<T>(converterId, null);
+   }
+
+   public FacesConverter(Class<?> targetType)
    {
       this.targetType = targetType;
       this.converterId = null;
@@ -50,7 +70,7 @@ public class FacesConverterAdapter<T> implements Converter<T>
     * Create an adapter for the specified converter ID. The adapter will use {@link Application#createConverter(String)}
     * to obtain the underlying JSF converter.
     */
-   public FacesConverterAdapter(String converterId)
+   public FacesConverter(String converterId)
    {
       this.converterId = converterId;
       this.targetType = null;
