@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config.rule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,9 @@ import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.QueryString;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
+import org.ocpsoft.rewrite.servlet.config.SimpleForward;
+import org.ocpsoft.rewrite.servlet.config.SimplePath;
+import org.ocpsoft.rewrite.servlet.config.SimpleSubstitute;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -66,6 +70,8 @@ public class Join implements IJoin
    private boolean inboundCorrection = false;
 
    private boolean chainingDisabled = true;
+   
+   private boolean simple;
 
    HttpCondition disabled = new HttpCondition() {
       @Override
@@ -74,12 +80,18 @@ public class Join implements IJoin
          return Boolean.TRUE.equals(event.getRewriteContext().get(Join.class.getName() + "_DISABLED"));
       }
    };
-
+   
    protected Join(final String pattern, boolean requestBinding)
    {
+       this(pattern, requestBinding, false);
+   }
+
+   protected Join(final String pattern, boolean requestBinding, boolean simple)
+   {
       this.pattern = pattern;
-      this.requestPath = Path.matches(pattern);
-      if (requestBinding)
+      this.requestPath = simple ? SimplePath.matches(pattern) : Path.matches(pattern);
+      this.simple = simple;
+      if (!simple && requestBinding)
          requestPath.withRequestBinding();
    }
 
@@ -102,6 +114,17 @@ public class Join implements IJoin
    {
       return new Join(pattern, false);
    }
+   
+   /**
+    * The client-facing URL path to which this {@link Join} will apply.
+    * Since this join will not use patterns to match urls, parameters are not
+    * supported. Any call to a method of this join that would make use of
+    * parameters will result in an {@link UnsupportedOperationException}
+    */
+   public static IJoin simple(String path)
+   {
+      return new Join(path, false, true);
+   }
 
    /**
     * Retrieve the {@link Join} that was invoked on the current request; if no {@link Join} was invoked, return null.
@@ -115,13 +138,18 @@ public class Join implements IJoin
    public IJoin to(final String resource)
    {
       this.resource = resource;
-      this.resourcePath = Path.matches(resource);
+      this.resourcePath = simple ? SimplePath.matches(resource) : Path.matches(resource);
       return this;
    }
 
    @Override
    public IJoin withInboundCorrection()
    {
+       if(simple)
+       {
+           throw new UnsupportedOperationException("SimpleJoin does not support inbound correction!");
+       }
+       
       this.inboundCorrection = true;
       return this;
    }
@@ -177,6 +205,10 @@ public class Join implements IJoin
 
    private List<String> getPathRequestParameters()
    {
+       if(simple){
+           return Collections.emptyList();
+       }
+       
       List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
 
       List<String> queryParameters = requestPath.getPathExpression().getParameterNames();
@@ -195,17 +227,27 @@ public class Join implements IJoin
             event.getRewriteContext().put(Join.class.getName() + "_DISABLED", true);
             event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", false);
          }
-         Forward.to(resource).perform(event, context);
+
+         if(simple)
+         {
+        	 SimpleForward.to(resource).perform(event, context);
+         }
+         else
+         {
+        	 Forward.to(resource).perform(event, context);
+         }
       }
 
       else if (event instanceof HttpOutboundServletRewrite)
       {
-         List<String> parameters = getPathRequestParameters();
 
          String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
-         QueryStringBuilder query = QueryStringBuilder.createNew();
+         String queryString = "";
+         
          if (outboundURL.contains("?"))
          {
+            final List<String> parameters = getPathRequestParameters();
+        	final QueryStringBuilder query = QueryStringBuilder.createNew();
             query.addParameters(outboundURL);
             for (String string : parameters) {
                List<String> values = query.removeParameter(string);
@@ -214,9 +256,18 @@ public class Join implements IJoin
                   query.addParameter(string, values.subList(1, values.size()).toArray(new String[] {}));
                }
             }
+            
+            queryString = query.toQueryString();
          }
 
-         Substitute.with(pattern + query.toQueryString()).perform(event, context);
+         if(simple)
+         {
+        	 SimpleSubstitute.with(pattern + queryString).perform(event, context);
+         }
+         else
+         {
+        	 Substitute.with(pattern + queryString).perform(event, context);
+         }
       }
    }
 
