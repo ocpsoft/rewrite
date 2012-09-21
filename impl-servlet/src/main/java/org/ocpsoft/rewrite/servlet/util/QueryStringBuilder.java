@@ -303,10 +303,13 @@ public class QueryStringBuilder
     */
    public String toQueryString()
    {
-      StringBuffer result = new StringBuffer();
-
       if ((null != parameters) && !parameters.isEmpty())
       {
+   	   /* 
+   	    * Use StringBuilder instead of StringBuffer for performance.
+   	    * Also initialize the builder with a reasonable default size.
+   	    */
+    	  StringBuilder result = new StringBuilder(parameters.size() * 10);
          result.append("?");
          Iterator<Entry<String, List<String>>> iterator = parameters.entrySet().iterator();
          while (iterator.hasNext())
@@ -346,9 +349,11 @@ public class QueryStringBuilder
                result.append("&");
             }
          }
+         
+         return result.toString();
       }
 
-      return result.toString();
+      return "";
    }
 
    @Override

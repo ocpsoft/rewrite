@@ -240,12 +240,14 @@ public class Join implements IJoin
 
       else if (event instanceof HttpOutboundServletRewrite)
       {
-         List<String> parameters = getPathRequestParameters();
 
          String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
-         QueryStringBuilder query = QueryStringBuilder.createNew();
+         String queryString = "";
+         
          if (outboundURL.contains("?"))
          {
+            final List<String> parameters = getPathRequestParameters();
+        	final QueryStringBuilder query = QueryStringBuilder.createNew();
             query.addParameters(outboundURL);
             for (String string : parameters) {
                List<String> values = query.removeParameter(string);
@@ -254,15 +256,17 @@ public class Join implements IJoin
                   query.addParameter(string, values.subList(1, values.size()).toArray(new String[] {}));
                }
             }
+            
+            queryString = query.toQueryString();
          }
 
          if(simple)
          {
-        	 SimpleSubstitute.with(pattern + query.toQueryString()).perform(event, context);
+        	 SimpleSubstitute.with(pattern + queryString).perform(event, context);
          }
          else
          {
-        	 Substitute.with(pattern + query.toQueryString()).perform(event, context);
+        	 Substitute.with(pattern + queryString).perform(event, context);
          }
       }
    }
