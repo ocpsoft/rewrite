@@ -18,8 +18,7 @@ package org.ocpsoft.rewrite.annotation.spi;
 import org.ocpsoft.rewrite.bind.Converter;
 
 /**
- * SPI for providing integration with other conversion frameworks. Implementations should be able to build an Rewrite
- * {@link Converter} from any kind of 3rd party class.
+ * SPI for providing integration with other conversion frameworks.
  * 
  * @author Christian Kaltepoth
  */
@@ -27,8 +26,18 @@ public interface ConverterProvider
 {
 
    /**
-    * Create a Rewrite {@link Converter} from the given converter class. Which types are supported is up to the
-    * implementation class. A JSF implementation would for example support JSF converters.
+    * Create a {@link Converter} by some unique ID.
     */
-   Converter<?> getByType(Class<?> converterClass);
+   Converter<?> getByConverterId(String id);
+
+   /**
+    * Create a {@link Converter} by a third party converter class.
+    */
+   Converter<?> getByConverterType(Class<?> converterType);
+
+   /**
+    * Create a {@link Converter} by a target type.
+    */
+   Converter<?> getByTargetType(Class<?> targetType);
+
 }

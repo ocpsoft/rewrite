@@ -18,22 +18,19 @@ package org.ocpsoft.rewrite.annotation.spi;
 import org.ocpsoft.rewrite.bind.Converter;
 
 /**
- * Default implementation of {@link ConverterProvider} that builds {@link Converter} instances by creating an instance
- * of the supplied class using the default constructor.
- * 
- * @author Christian Kaltepoth
+ * Default implementation of {@link ConverterProvider} which allows to use Rewrite {@link Converter} implementations by
+ * their type.
  */
 public class DefaultConverterProvider implements ConverterProvider
 {
 
    @Override
-   public Converter<?> getByType(Class<?> converterClass)
+   public Converter<?> getByConverterType(Class<?> converterType)
    {
-
-      if (Converter.class.isAssignableFrom(converterClass)) {
+      if (Converter.class.isAssignableFrom(converterType)) {
 
          try {
-            return (Converter<?>) converterClass.newInstance();
+            return (Converter<?>) converterType.newInstance();
          }
          catch (InstantiationException e) {
             throw new IllegalArgumentException(e);
@@ -46,6 +43,20 @@ public class DefaultConverterProvider implements ConverterProvider
 
       return null;
 
+   }
+
+   @Override
+   public Converter<?> getByTargetType(Class<?> targetType)
+   {
+      // unsupported
+      return null;
+   }
+
+   @Override
+   public Converter<?> getByConverterId(String id)
+   {
+      // unsupported
+      return null;
    }
 
 }

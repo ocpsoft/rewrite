@@ -17,7 +17,7 @@ public class DefaultConverterProviderTest
    @Test
    public void testCreateRewriteConverter()
    {
-      Converter<?> converter = new DefaultConverterProvider().getByType(TestConverter.class);
+      Converter<?> converter = new DefaultConverterProvider().getByConverterType(TestConverter.class);
       assertNotNull(converter);
       assertTrue(converter instanceof TestConverter);
    }
@@ -25,7 +25,21 @@ public class DefaultConverterProviderTest
    @Test
    public void testUnsupportedType()
    {
-      Converter<?> converter = new DefaultConverterProvider().getByType(BigDecimal.class);
+      Converter<?> converter = new DefaultConverterProvider().getByConverterType(BigDecimal.class);
+      assertNull(converter);
+   }
+
+   @Test
+   public void testSomeIdentifier()
+   {
+      Converter<?> converter = new DefaultConverterProvider().getByConverterId("something");
+      assertNull(converter);
+   }
+
+   @Test
+   public void testByTargetType()
+   {
+      Converter<?> converter = new DefaultConverterProvider().getByTargetType(Integer.class);
       assertNull(converter);
    }
 

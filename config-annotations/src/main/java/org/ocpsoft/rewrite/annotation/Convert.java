@@ -28,5 +28,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Convert
 {
-   Class<?> with();
+   Class<?> with() default Object.class;
+
+   String id() default "";
 }

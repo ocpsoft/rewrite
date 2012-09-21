@@ -67,17 +67,31 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
                   "Found Binding which is not a BindingBuilder but: " + binding.getClass().getSimpleName());
          BindingBuilder bindingBuilder = (BindingBuilder) binding;
 
-         // add the converter
-         Class<?> converterType = annotation.with();
-         LazyConverterAdapter converter = new LazyConverterAdapter(converterType);
+         Converter<?> converter = null;
+
+         // identify converter by the type of the converter
+         if (annotation.with() != Object.class) {
+            converter = LazyConverterAdapter.forConverterType(annotation.with());
+         }
+
+         // identify converter by some kind of unique id
+         else if (annotation.id().length() > 0) {
+            converter = LazyConverterAdapter.forConverterId(annotation.id());
+         }
+
+         // default: identify converter by the target type
+         else {
+            converter = LazyConverterAdapter.forTargetType(field.getType());
+         }
+
          bindingBuilder.convertedBy(converter);
 
-         // some logging
          if (log.isTraceEnabled()) {
-            log.trace("Attached converter adapter for [{}] to field [{}] of class [{}]", new Object[] {
-                     converterType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
+            log.trace("Attached converter to field [{}] of class [{}]: ", new Object[] {
+                     field.getName(), field.getDeclaringClass().getName(), converter
             });
          }
+
       }
 
       // continue with the chain
@@ -92,11 +106,30 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
    private static class LazyConverterAdapter implements Converter<Object>
    {
 
-      private final Class<?> converterClass;
+      private final Class<?> targetType;
+      private final String converterId;
+      private final Class<?> converterType;
 
-      public LazyConverterAdapter(Class<?> clazz)
+      private LazyConverterAdapter(Class<?> targetType, String converterId, Class<?> converterType)
       {
-         this.converterClass = clazz;
+         this.targetType = targetType;
+         this.converterId = converterId;
+         this.converterType = converterType;
+      }
+
+      public static LazyConverterAdapter forConverterType(Class<?> converterType)
+      {
+         return new LazyConverterAdapter(null, null, converterType);
+      }
+
+      public static LazyConverterAdapter forConverterId(String id)
+      {
+         return new LazyConverterAdapter(null, id, null);
+      }
+
+      public static LazyConverterAdapter forTargetType(Class<?> targetType)
+      {
+         return new LazyConverterAdapter(targetType, null, null);
       }
 
       @Override
@@ -110,15 +143,48 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
          Iterator<ConverterProvider> providers = ServiceLoader.load(ConverterProvider.class).iterator();
          while (providers.hasNext()) {
             ConverterProvider provider = providers.next();
-            converter = provider.getByType(converterClass);
+
+            if (targetType != null) {
+               converter = provider.getByTargetType(targetType);
+            }
+            else if (converterType != null) {
+               converter = provider.getByConverterType(converterType);
+            }
+            else {
+               converter = provider.getByConverterId(converterId);
+            }
+
             if (converter != null) {
                break;
             }
+
          }
-         Assert.notNull(converter, "Got no result from any ConverterProvider for type: " + converterClass.getName());
+         Assert.notNull(converter, "Got no converter from any ConverterProvider for: " + this.toString());
 
          return converter.convert(event, context, value);
 
       }
+
+      @Override
+      public String toString()
+      {
+         StringBuilder b = new StringBuilder();
+         b.append(this.getClass().getSimpleName());
+         b.append(" for ");
+         if (targetType != null) {
+            b.append(" target type ");
+            b.append(targetType.getName());
+         }
+         else if (converterType != null) {
+            b.append(" converter type ");
+            b.append(converterType.getName());
+         }
+         else {
+            b.append(" id ");
+            b.append(converterId);
+         }
+         return b.toString();
+      }
+
    }
 }
