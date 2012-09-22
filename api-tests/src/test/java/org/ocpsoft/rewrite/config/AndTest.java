@@ -42,4 +42,15 @@ public class AndTest
    {
       Assert.assertFalse(And.all(new False(), new False()).evaluate(new MockRewrite(), null));
    }
+
+   @Test
+   public void testFlattensNestedAnds() throws Exception
+   {
+      And and = And.all(new True(), And.all(new True(), new False()));
+      Assert.assertEquals(3, and.getConditions().size());
+      Assert.assertFalse(and.evaluate(new MockRewrite(), null));
+      Assert.assertTrue(and.getConditions().get(0) instanceof True);
+      Assert.assertTrue(and.getConditions().get(1) instanceof True);
+      Assert.assertTrue(and.getConditions().get(2) instanceof False);
+   }
 }

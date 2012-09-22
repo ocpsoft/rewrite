@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class True extends DefaultConditionBuilder
+public final class True extends DefaultConditionBuilder
 {
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)

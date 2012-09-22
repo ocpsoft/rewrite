@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper implements NonEnriching
 {
@@ -49,18 +49,21 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
    @Override
    public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
    {
-      Map<String, String[]> additionalParams = new HashMap<String, String[]>();
+      HttpServletRequest result = request;
+      if (HttpRewriteWrappedRequest.getFromRequest(request) == null) {
+         Map<String, String[]> additionalParams = new HashMap<String, String[]>();
 
-      for (RequestParameterProvider provider : providers) {
-         Map<String, String[]> m = provider.getParameters(request, response);
-         if (m != null)
-         {
-            additionalParams.putAll(m);
+         for (RequestParameterProvider provider : providers) {
+            Map<String, String[]> m = provider.getAdditionalParameters(request, response);
+            if (m != null)
+            {
+               additionalParams.putAll(m);
+            }
          }
-      }
 
-      HttpRewriteWrappedRequest wrapped = new HttpRewriteWrappedRequest(request, additionalParams);
-      return wrapped;
+         result = new HttpRewriteWrappedRequest(request, additionalParams);
+      }
+      return result;
    }
 
    @Override

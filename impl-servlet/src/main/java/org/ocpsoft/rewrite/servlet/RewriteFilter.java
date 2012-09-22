@@ -53,7 +53,7 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * {@link Filter} responsible for handling all inbound {@link org.ocpsoft.rewrite.event.Rewrite} events.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RewriteFilter implements Filter
@@ -208,14 +208,18 @@ public class RewriteFilter implements Filter
             throws ServletException,
             IOException
    {
-      for (RewriteLifecycleListener<Rewrite> listener : listeners)
+      int listenerCount = listeners.size();
+      for (int i = 0; i < listenerCount; i++)
       {
+         RewriteLifecycleListener<Rewrite> listener = listeners.get(i);
          if (listener.handles(event))
             listener.beforeInboundRewrite(event);
       }
 
-      for (RewriteProvider<?, Rewrite> provider : providers)
+      int providerCount = providers.size();
+      for (int i = 0; i < providerCount; i++)
       {
+         RewriteProvider<ServletContext, Rewrite> provider = providers.get(i);
          if (provider.handles(event))
          {
             provider.rewrite(event);
@@ -228,8 +232,9 @@ public class RewriteFilter implements Filter
          }
       }
 
-      for (RewriteLifecycleListener<Rewrite> listener : listeners)
+      for (int i = 0; i < listenerCount; i++)
       {
+         RewriteLifecycleListener<Rewrite> listener = listeners.get(i);
          if (listener.handles(event))
             listener.afterInboundRewrite(event);
       }

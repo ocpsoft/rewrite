@@ -67,14 +67,15 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                .when(Direction.isInbound().and(Path.matches("/p/{project}/story/{id}")
                         .where("project").matches("[a-zA-Z]+")
                         .where("id").matches("[0-9]+")))
-               .perform(Forward.to("/viewProject?project={project}&id={id}"))
+               .perform(Forward.to("/viewProject?p={project}&id={id}"))
 
                /*
                 * Handle the forwarded request
                 */
                .addRule()
                .when(Direction.isInbound().and(Path.matches("/viewProject"))
-                        .and(RequestParameter.exists("project"))
+                        .and(RequestParameter.exists("p"))
+                        .andNot(RequestParameter.exists("project'"))
                         .and(RequestParameter.exists("id")))
                .perform(SendStatus.code(200))
 

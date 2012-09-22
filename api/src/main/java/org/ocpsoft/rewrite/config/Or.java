@@ -15,9 +15,11 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -26,7 +28,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Or extends DefaultConditionBuilder implements CompositeCondition
+public final class Or extends DefaultConditionBuilder implements CompositeCondition
 {
    private final List<Condition> conditions;
 
@@ -42,7 +44,25 @@ public class Or extends DefaultConditionBuilder implements CompositeCondition
     */
    public static Or any(final Condition... conditions)
    {
-      return new Or(conditions);
+      Assert.notNull(conditions, "At least one condition is required.");
+      Assert.assertTrue(conditions.length > 0, "At least one condition is required.");
+      return new Or(flattenConditions(Arrays.asList(conditions)).toArray(new Condition[] {}));
+   }
+
+   private static List<Condition> flattenConditions(List<Condition> conditions)
+   {
+      List<Condition> result = new ArrayList<Condition>();
+      for (Condition condition : conditions) {
+         if (condition instanceof Or)
+         {
+            result.addAll(flattenConditions(((Or) condition).getConditions()));
+         }
+         else
+         {
+            result.add(condition);
+         }
+      }
+      return result;
    }
 
    @Override

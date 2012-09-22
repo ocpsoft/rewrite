@@ -39,7 +39,6 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class RequestParameter extends HttpCondition implements IRequestParameter
 {
-
    private final ParameterizedPatternImpl name;
    private final ParameterizedPatternImpl value;
    private final ParameterStore<RequestParameterParameter> parameters = new ParameterStore<RequestParameterParameter>();
@@ -195,5 +194,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
          }
          return true;
       }
+   }
+
+   @Override
+   public String toString()
+   {
+      return "RequestParameter [name=" + name + ", value=" + value + ", parameters=" + parameters + "]";
    }
 }

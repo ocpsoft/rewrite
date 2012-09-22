@@ -43,5 +43,5 @@ public interface RequestParameterProvider
     * 
     * @see {@link RewriteLifecycleListener}
     */
-   Map<String, String[]> getParameters(ServletRequest request, ServletResponse response);
+   Map<String, String[]> getAdditionalParameters(ServletRequest request, ServletResponse response);
 }

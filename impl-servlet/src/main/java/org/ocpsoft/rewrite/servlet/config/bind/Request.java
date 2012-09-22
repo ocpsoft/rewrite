@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.servlet.config.bind;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.bind.Converter;
@@ -120,10 +119,9 @@ public abstract class Request extends BindingBuilder<Request, String>
       public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          ServletRequest request = ((ServletRewrite<?, ?>) event).getRequest();
-         ServletResponse response = ((ServletRewrite<?, ?>) event).getResponse();
          HttpRewriteWrappedRequest wrapper = HttpRewriteWrappedRequest.getFromRequest(request);
 
-         Map<String, String[]> modifiableParameters = wrapper.getParameters(request, response);
+         Map<String, String[]> modifiableParameters = wrapper.getModifiableParameters();
          if (value.getClass().isArray())
          {
             Object[] values = (Object[]) value;

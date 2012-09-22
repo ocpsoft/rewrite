@@ -44,4 +44,15 @@ public class OrTest
    {
       Assert.assertFalse(Or.any(new False(), new False()).evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
+
+   @Test
+   public void testFlattensNestedOrs() throws Exception
+   {
+      Or or = Or.any(new False(), Or.any(new False(), new True()));
+      Assert.assertEquals(3, or.getConditions().size());
+      Assert.assertTrue(or.evaluate(new MockRewrite(), null));
+      Assert.assertTrue(or.getConditions().get(0) instanceof False);
+      Assert.assertTrue(or.getConditions().get(1) instanceof False);
+      Assert.assertTrue(or.getConditions().get(2) instanceof True);
+   }
 }

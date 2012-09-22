@@ -15,9 +15,11 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -27,13 +29,13 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class And extends DefaultConditionBuilder implements CompositeCondition
+public final class And extends DefaultConditionBuilder implements CompositeCondition
 {
-   private final List<Condition> conditions;
+   private final Condition[] conditions;
 
    private And(final Condition... conditions)
    {
-      this.conditions = Arrays.asList(conditions);
+      this.conditions = conditions;
    }
 
    /**
@@ -44,15 +46,33 @@ public class And extends DefaultConditionBuilder implements CompositeCondition
     */
    public static And all(final Condition... conditions)
    {
-      return new And(conditions);
+      Assert.notNull(conditions, "At least one condition is required.");
+      Assert.assertTrue(conditions.length > 0, "At least one condition is required.");
+      return new And(flattenConditions(Arrays.asList(conditions)).toArray(new Condition[] {}));
+   }
+
+   private static List<Condition> flattenConditions(List<Condition> conditions)
+   {
+      List<Condition> result = new ArrayList<Condition>();
+      for (Condition condition : conditions) {
+         if (condition instanceof And)
+         {
+            result.addAll(flattenConditions(((And) condition).getConditions()));
+         }
+         else
+         {
+            result.add(condition);
+         }
+      }
+      return result;
    }
 
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       boolean result = true;
-      for (int i = 0; i < conditions.size(); i++) {
-         if (!conditions.get(i).evaluate(event, context))
+      for (int i = 0; i < conditions.length; i++) {
+         if (!conditions[i].evaluate(event, context))
          {
             result = false;
          }
@@ -63,7 +83,7 @@ public class And extends DefaultConditionBuilder implements CompositeCondition
    @Override
    public List<Condition> getConditions()
    {
-      return conditions;
+      return Arrays.asList(conditions);
    }
 
    @Override
