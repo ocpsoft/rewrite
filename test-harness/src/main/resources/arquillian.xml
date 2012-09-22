@@ -25,6 +25,7 @@
    <container qualifier="glassfish_managed" default="true">
       <configuration>
          <property name="glassFishHome">target/container/glassfish3</property>
+         <property name="adminPort">34848</property>
       </configuration>
    </container>
 
