@@ -17,6 +17,7 @@
    <container qualifier="tomcat_managed">
       <configuration>
          <property name="catalinaHome">target/container/apache-tomcat-7</property>
+         <property name="bindHttpPort">38080</property>
          <property name="user">arquillian</property>
          <property name="pass">arquillian</property>
       </configuration>

@@ -94,23 +94,24 @@ public class RewriteTest extends RewriteTestBase
 
          // setup Weld
          if (isWeld()) {
-            archive.addAsLibraries(resolveDependencies("org.jboss.weld:weld-core"));
-            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet-core"));
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld:weld-core:1.1.9.Final"));
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet-core:1.1.9.Final"));
             archive.addAsWebResource("tomcat-weld-context.xml", "META-INF/context.xml");
          }
 
          // setup OWB
          if (isOWB()) {
-            archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-impl"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-web"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-spi"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-resource"));
+            archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api:1.0-SP4"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-impl:1.1.5"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-web:1.1.5"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-spi:1.1.5"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-resource:1.1.5"));
             archive.addAsWebResource("tomcat-owb-context.xml", "META-INF/context.xml");
          }
 
          // setup Mojarra
-         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces"));
+         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:2.1.13"));
+         archive.addAsLibraries(resolveDependencies("javax.servlet:jstl:1.2"));
 
       }
 
