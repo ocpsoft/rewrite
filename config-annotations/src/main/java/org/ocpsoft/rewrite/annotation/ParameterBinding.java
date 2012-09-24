@@ -22,11 +22,45 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.bind.Binding;
+
+/**
+ * Registers a {@link Binding} for a parameter. This annotation can be used to bind a parameter to a bean property.
+ * 
+ * <pre>
+ * {@literal @}Join(path = "/user/{id}", to = "/user-details.html")
+ * public class MyClass {
+ * 
+ *   {@literal @}ParameterBinding
+ *   private String id;
+ * 
+ * }
+ * </pre>
+ * 
+ * Please note that you have to specify the parameter name manually if it differs from the field name.
+ * 
+ * <pre>
+ * {@literal @}Join(path = "/user/{id}", to = "/user-details.html")
+ * public class MyClass {
+ * 
+ *   {@literal @}ParameterBinding("id")
+ *   private String userId;
+ * 
+ * }
+ * </pre>
+ * 
+ * @author Christian Kaltepoth
+ */
 @Inherited
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ParameterBinding
 {
+
+   /**
+    * The name of the parameter. If the attribute is not set, the name of the annotated field is used.
+    */
    String value() default "";
+
 }

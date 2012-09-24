@@ -22,11 +22,36 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.servlet.config.Domain;
+
+/**
+ * <p>
+ * Adds a {@link Domain} condition to the current rule. This allows to restrict the rule to a specific hostname or to
+ * bind a substring of the hostname to a bean property.
+ * </p>
+ * 
+ * <pre>
+ * {@literal @}Hostname("{lang}.example.com")
+ * {@literal @}Join(path = "/something", to = "/some-page.html")
+ * public class MyClass {
+ * 
+ *   {@literal @}ParameterBinding
+ *   private String lang;
+ * 
+ * }
+ * </pre>
+ * 
+ * @author Christian Kaltepoth
+ */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Hostname
 {
+
+   /**
+    * The pattern used for matching the hostname.
+    */
    String value();
 }

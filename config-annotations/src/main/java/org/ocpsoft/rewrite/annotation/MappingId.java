@@ -22,11 +22,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.config.RuleBuilder;
+
+/**
+ * Sets the ID of the current rule. Same as calling {@link RuleBuilder#withId(String)}.
+ * 
+ * @author Christian Kaltepoth
+ */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MappingId
 {
+
+   /**
+    * The ID of the rule.
+    */
    String value();
+
 }

@@ -22,11 +22,34 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.servlet.config.Forward;
+
+/**
+ * <p>
+ * Adds a {@link Forward} operation to the current rule. This operation will perform a Servlet forward to the specified
+ * path.
+ * </p>
+ * 
+ * <pre>
+ * {@literal @}PathPattern("/login")
+ * {@literal @}Forward("/login-page.html")
+ * public class MyClass {
+ * 
+ * }
+ * </pre>
+ * 
+ * @author Christian Kaltepoth
+ */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ForwardTo
 {
+
+   /**
+    * The path to forward the request to. The path is relative to the context path.
+    */
    String value();
+
 }

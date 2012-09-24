@@ -22,11 +22,36 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.ocpsoft.rewrite.servlet.config.JAASRoles;
+
+/**
+ * <p>
+ * Adds a {@link JAASRoles} condition to the current rule. This allows to restrict the rule to users with the given
+ * role. Rewrite uses {@link HttpServletRequest#isUserInRole(String)} for checking the roles.
+ * </p>
+ * 
+ * <pre>
+ * {@literal @}Join(path = "/admin/users", to = "/admin/user-list.html")
+ * {@literal @}RolesRequired("admin")
+ * public class MyClass {
+ * 
+ * }
+ * </pre>
+ * 
+ * @author Christian Kaltepoth
+ */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RolesRequired
 {
+
+   /**
+    * The roles required for the rule to match.
+    */
    String[] value();
+
 }

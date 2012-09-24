@@ -22,11 +22,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.config.RuleBuilder;
+
+/**
+ * Sets the priority of the current rule. Same as calling {@link RuleBuilder#withPriority(int)}.
+ * 
+ * @author Christian Kaltepoth
+ */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Priority
 {
+
+   /**
+    * The priority of the rule.
+    */
    int value();
+   
 }

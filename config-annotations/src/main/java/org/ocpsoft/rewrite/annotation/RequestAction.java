@@ -22,6 +22,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.config.Invoke;
+
+/**
+ * Adds an {@link Invoke} to the current rule. This will invoke the annotated method if the rule matches.
+ * 
+ * <pre>
+ * {@literal @}Join(path = "/user/{id}", to = "/user-details.html")
+ * public class MyClass {
+ * 
+ *   {@literal @}RequestAction
+ *   public void loadData() {
+ *     // do something
+ *   }
+ * 
+ * }
+ * </pre>
+ * 
+ * @author Christian Kaltepoth
+ */
 @Inherited
 @Documented
 @Target(ElementType.METHOD)
