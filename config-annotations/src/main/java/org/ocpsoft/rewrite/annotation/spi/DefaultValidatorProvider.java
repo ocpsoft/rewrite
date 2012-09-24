@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.annotation.spi;
 import org.ocpsoft.rewrite.bind.Validator;
 
 /**
- * Default implementation of {@link ValidatorProvider} that builds {@link Validator} instances by creating an instance
- * of the supplied class using the default constructor.
+ * Default implementation of {@link ValidatorProvider} which allows to use Rewrite {@link Validator} implementations by
+ * their type.
  * 
  * @author Christian Kaltepoth
  */
@@ -27,13 +27,12 @@ public class DefaultValidatorProvider implements ValidatorProvider
 {
 
    @Override
-   public Validator<?> getByType(Class<?> clazz)
+   public Validator<?> getByValidatorType(Class<?> validatorType)
    {
-
-      if (Validator.class.isAssignableFrom(clazz)) {
+      if (Validator.class.isAssignableFrom(validatorType)) {
 
          try {
-            return (Validator<?>) clazz.newInstance();
+            return (Validator<?>) validatorType.newInstance();
          }
          catch (InstantiationException e) {
             throw new IllegalArgumentException(e);
@@ -46,6 +45,20 @@ public class DefaultValidatorProvider implements ValidatorProvider
 
       return null;
 
+   }
+
+   @Override
+   public Validator<?> getByTargetType(Class<?> targetType)
+   {
+      // unsupported
+      return null;
+   }
+
+   @Override
+   public Validator<?> getByValidatorId(String id)
+   {
+      // unsupported
+      return null;
    }
 
 }

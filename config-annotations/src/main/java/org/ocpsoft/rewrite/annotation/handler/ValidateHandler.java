@@ -67,15 +67,28 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
                   "Found Binding which is not a BindingBuilder but: " + binding.getClass().getSimpleName());
          BindingBuilder bindingBuilder = (BindingBuilder) binding;
 
-         // add the validator
-         Class<?> validatorType = annotation.with();
-         LazyValidatorAdapter validator = new LazyValidatorAdapter(validatorType);
+         Validator<?> validator = null;
+
+         // identify validator by the type of the validator
+         if (annotation.with() != Object.class) {
+            validator = LazyValidatorAdapter.forValidatorType(annotation.with());
+         }
+
+         // identify validator by some kind of unique id
+         else if (annotation.id().length() > 0) {
+            validator = LazyValidatorAdapter.forValidatorId(annotation.id());
+         }
+
+         // default: identify validator by the target type
+         else {
+            validator = LazyValidatorAdapter.forTargetType(field.getType());
+         }
+
          bindingBuilder.validatedBy(validator);
 
-         // some logging
          if (log.isTraceEnabled()) {
-            log.trace("Attached validator adapter for [{}] to field [{}] of class [{}]", new Object[] {
-                     validatorType.getSimpleName(), field.getName(), field.getDeclaringClass().getName()
+            log.trace("Attached validator to field [{}] of class [{}]: ", new Object[] {
+                     field.getName(), field.getDeclaringClass().getName(), validator
             });
          }
 
@@ -93,11 +106,30 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
    private static class LazyValidatorAdapter implements Validator<Object>
    {
 
-      private final Class<?> validatorClass;
+      private final Class<?> targetType;
+      private final String validatorId;
+      private final Class<?> validatorType;
 
-      public LazyValidatorAdapter(Class<?> clazz)
+      private LazyValidatorAdapter(Class<?> targetType, String validatorId, Class<?> validatorType)
       {
-         this.validatorClass = clazz;
+         this.targetType = targetType;
+         this.validatorId = validatorId;
+         this.validatorType = validatorType;
+      }
+
+      public static LazyValidatorAdapter forValidatorType(Class<?> validatorType)
+      {
+         return new LazyValidatorAdapter(null, null, validatorType);
+      }
+
+      public static LazyValidatorAdapter forValidatorId(String id)
+      {
+         return new LazyValidatorAdapter(null, id, null);
+      }
+
+      public static LazyValidatorAdapter forTargetType(Class<?> targetType)
+      {
+         return new LazyValidatorAdapter(targetType, null, null);
       }
 
       @Override
@@ -110,15 +142,48 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
          // let one of the SPI implementations build the validator
          Iterator<ValidatorProvider> providers = ServiceLoader.load(ValidatorProvider.class).iterator();
          while (providers.hasNext()) {
-            validator = providers.next().getByType(validatorClass);
+            ValidatorProvider provider = providers.next();
+
+            if (targetType != null) {
+               validator = provider.getByTargetType(targetType);
+            }
+            else if (validatorType != null) {
+               validator = provider.getByValidatorType(validatorType);
+            }
+            else {
+               validator = provider.getByValidatorId(validatorId);
+            }
+
             if (validator != null) {
                break;
             }
+
          }
-         Assert.notNull(validator, "Could not build validator for type: " + validatorClass.getName());
+         Assert.notNull(validator, "Got no validator from any ValidatorProvider for: " + this.toString());
 
          return validator.validate(event, context, value);
 
+      }
+
+      @Override
+      public String toString()
+      {
+         StringBuilder b = new StringBuilder();
+         b.append(this.getClass().getSimpleName());
+         b.append(" for ");
+         if (targetType != null) {
+            b.append(" target type ");
+            b.append(targetType.getName());
+         }
+         else if (validatorType != null) {
+            b.append(" validator type ");
+            b.append(validatorType.getName());
+         }
+         else {
+            b.append(" id ");
+            b.append(validatorId);
+         }
+         return b.toString();
       }
    }
 }

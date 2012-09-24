@@ -18,8 +18,7 @@ package org.ocpsoft.rewrite.annotation.spi;
 import org.ocpsoft.rewrite.bind.Validator;
 
 /**
- * SPI for providing integration with other validation frameworks. Implementations should be able to build an Rewrite
- * {@link Validator} from any kind of 3rd party class.
+ * SPI for providing integration with other validation frameworks.
  * 
  * @author Christian Kaltepoth
  */
@@ -27,9 +26,18 @@ public interface ValidatorProvider
 {
 
    /**
-    * Create a Rewrite {@link Validator} from the given validator class. Which types are supported is up to the
-    * implementation class. A JSF implementation would for example support JSF validator.
+    * Create a {@link Validator} by some unique ID.
     */
-   Validator<?> getByType(Class<?> validatorClass);
+   Validator<?> getByValidatorId(String id);
+
+   /**
+    * Create a {@link Validator} by a third party Validator class.
+    */
+   Validator<?> getByValidatorType(Class<?> validatorType);
+
+   /**
+    * Create a {@link Validator} by a target type.
+    */
+   Validator<?> getByTargetType(Class<?> targetType);
 
 }

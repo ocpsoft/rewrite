@@ -20,6 +20,8 @@ import org.ocpsoft.rewrite.bind.Converter;
 /**
  * Default implementation of {@link ConverterProvider} which allows to use Rewrite {@link Converter} implementations by
  * their type.
+ * 
+ * @author Christian Kaltepoth
  */
 public class DefaultConverterProvider implements ConverterProvider
 {
