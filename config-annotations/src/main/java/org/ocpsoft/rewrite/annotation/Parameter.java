@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.bind.Binding;
  * {@literal @}Join(path = "/user/{id}", to = "/user-details.html")
  * public class MyClass {
  * 
- *   {@literal @}ParameterBinding
+ *   {@literal @}Parameter
  *   private String id;
  * 
  * }
@@ -43,7 +43,7 @@ import org.ocpsoft.rewrite.bind.Binding;
  * {@literal @}Join(path = "/user/{id}", to = "/user-details.html")
  * public class MyClass {
  * 
- *   {@literal @}ParameterBinding("id")
+ *   {@literal @}Parameter("id")
  *   private String userId;
  * 
  * }
@@ -55,7 +55,7 @@ import org.ocpsoft.rewrite.bind.Binding;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ParameterBinding
+public @interface Parameter
 {
 
    /**

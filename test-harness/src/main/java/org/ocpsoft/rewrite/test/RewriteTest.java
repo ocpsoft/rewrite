@@ -200,7 +200,8 @@ public class RewriteTest extends RewriteTestBase
                .addAsResource(new File("../api/target/classes/org"))
                .addAsResource(new File("../api-el/target/classes/org"))
                .addAsResource(new File("../api-el/target/classes/META-INF"))
-               .addAsResource(new File("../impl-config/target/classes/org"))
+               .addAsResource(new File("../impl/target/classes/org"))
+               .addAsResource(new File("../impl/target/classes/META-INF"))
                .addAsResource(new File("../api-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));

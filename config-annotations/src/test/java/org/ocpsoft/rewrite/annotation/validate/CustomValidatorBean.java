@@ -4,7 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.annotation.ParameterBinding;
+import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.Validate;
 
 @Named
@@ -13,7 +13,7 @@ import org.ocpsoft.rewrite.annotation.Validate;
 public class CustomValidatorBean
 {
 
-   @ParameterBinding
+   @Parameter
    @Validate(with = EvenLengthValidator.class)
    private String value;
 

@@ -15,18 +15,18 @@
  */
 package org.ocpsoft.rewrite.annotation.handler;
 
-import org.ocpsoft.rewrite.annotation.MappingId;
+import org.ocpsoft.rewrite.annotation.Rule;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 
-public class MappingIdHandler implements AnnotationHandler<MappingId>
+public class RuleHandler implements AnnotationHandler<Rule>
 {
 
    @Override
-   public Class<MappingId> handles()
+   public Class<Rule> handles()
    {
-      return MappingId.class;
+      return Rule.class;
    }
 
    @Override
@@ -36,7 +36,7 @@ public class MappingIdHandler implements AnnotationHandler<MappingId>
    }
 
    @Override
-   public void process(ClassContext context, MappingId annotation, HandlerChain chain)
+   public void process(ClassContext context, Rule annotation, HandlerChain chain)
    {
       context.getRuleBuilder().withId(annotation.value());
       chain.proceed();

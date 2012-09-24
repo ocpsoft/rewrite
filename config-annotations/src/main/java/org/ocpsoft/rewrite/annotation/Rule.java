@@ -25,7 +25,8 @@ import java.lang.annotation.Target;
 import org.ocpsoft.rewrite.config.RuleBuilder;
 
 /**
- * Sets the ID of the current rule. Same as calling {@link RuleBuilder#withId(String)}.
+ * Sets the ID of the current rule. Same as calling {@link RuleBuilder#withId(String)}. This is an optional annotation,
+ * as rules do not require names.
  * 
  * @author Christian Kaltepoth
  */
@@ -33,7 +34,7 @@ import org.ocpsoft.rewrite.config.RuleBuilder;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MappingId
+public @interface Rule
 {
 
    /**

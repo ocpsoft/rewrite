@@ -20,7 +20,7 @@ import javax.faces.bean.RequestScoped;
 
 import org.ocpsoft.rewrite.annotation.Convert;
 import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.annotation.ParameterBinding;
+import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 
 @ManagedBean
@@ -29,14 +29,14 @@ import org.ocpsoft.rewrite.faces.annotation.Deferred;
 public class BindingConverterBean
 {
 
-   @ParameterBinding("value")
-   @Deferred
    @Convert(id = "AdvancedStringConverter")
+   @Deferred
+   @Parameter("value")
    private AdvancedString byId;
 
-   @ParameterBinding("value")
-   @Deferred
    @Convert
+   @Deferred
+   @Parameter("value")
    private AdvancedString byType;
 
    public AdvancedString getById()

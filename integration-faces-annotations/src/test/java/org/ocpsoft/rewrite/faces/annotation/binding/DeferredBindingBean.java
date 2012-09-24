@@ -8,7 +8,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
 import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.annotation.ParameterBinding;
+import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.Phase;
 
@@ -20,15 +20,15 @@ public class DeferredBindingBean
 
    private final List<String> log = new ArrayList<String>();
 
-   @ParameterBinding("value")
+   @Parameter("value")
    @Deferred
    private String defaultPhase;
 
-   @ParameterBinding("value")
+   @Parameter("value")
    @Deferred(after = Phase.INVOKE_APPLICATION)
    private String afterInvokeApplication;
 
-   @ParameterBinding("value")
+   @Parameter("value")
    @Deferred(before = Phase.RENDER_RESPONSE)
    private String beforeRenderResponse;
 

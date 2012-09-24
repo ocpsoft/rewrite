@@ -42,7 +42,7 @@
       <module>test-harness</module>
       <module>api</module>
       <module>api-tests</module>
-      <module>impl-config</module>
+      <module>impl</module>
       <module>annotations-api</module>
       <module>annotations-impl</module>
       <module>config-annotations</module>
@@ -119,7 +119,7 @@
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
-            <artifactId>rewrite-impl-config</artifactId>
+            <artifactId>rewrite-impl</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>

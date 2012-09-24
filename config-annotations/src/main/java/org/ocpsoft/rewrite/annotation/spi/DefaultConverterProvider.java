@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.annotation.spi;
 
 import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.util.Instances;
 
 /**
  * Default implementation of {@link ConverterProvider} which allows to use Rewrite {@link Converter} implementations by
@@ -30,17 +31,7 @@ public class DefaultConverterProvider implements ConverterProvider
    public Converter<?> getByConverterType(Class<?> converterType)
    {
       if (Converter.class.isAssignableFrom(converterType)) {
-
-         try {
-            return (Converter<?>) converterType.newInstance();
-         }
-         catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-         }
-         catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-         }
-
+         return (Converter<?>) Instances.lookup(converterType);
       }
 
       return null;

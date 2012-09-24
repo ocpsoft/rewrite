@@ -1,13 +1,11 @@
 package org.ocpsoft.rewrite.annotation.param;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.annotation.RewriteAnnotationTest;
@@ -25,9 +23,9 @@ public class ParameterMatchesTest extends RewriteTestBase
       return RewriteTest.getDeploymentWithCDI()
                .addAsLibrary(RewriteAnnotationTest.getRewriteAnnotationArchive())
                .addAsLibrary(RewriteAnnotationTest.getRewriteCdiArchive())
-               .addClass(ParameterMatchesBean.class)
+               .addClass(ParameterMatchesTestBean.class)
                .addAsWebResource(new StringAsset(
-                        "Value: [${parameterMatchesBean.value}]"),
+                        "Value: [${parameterMatchesTestBean.value}]"),
                         "param.jsp");
    }
 
@@ -35,15 +33,15 @@ public class ParameterMatchesTest extends RewriteTestBase
    public void testMatchesWithValidUrl() throws Exception
    {
       HttpAction<HttpGet> action = get("/param/abcd/");
-      assertEquals(200, action.getStatusCode());
-      assertEquals("Value: [abcd]", action.getResponseContent());
+      Assert.assertEquals(200, action.getStatusCode());
+      Assert.assertEquals("Value: [abcd]", action.getResponseContent());
    }
 
    @Test
    public void testMatchesWithInvalidUrl() throws Exception
    {
       HttpAction<HttpGet> action = get("/param/abcde/");
-      assertEquals(404, action.getStatusCode());
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
 }

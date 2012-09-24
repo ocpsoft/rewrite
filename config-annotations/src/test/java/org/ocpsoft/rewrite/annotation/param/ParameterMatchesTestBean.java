@@ -4,15 +4,17 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.annotation.ParameterBinding;
+import org.ocpsoft.rewrite.annotation.Matches;
+import org.ocpsoft.rewrite.annotation.Parameter;
 
 @Named
 @RequestScoped
 @Join(path = "/param/{value}/", to = "/param.jsp")
-public class ParameterBindingBean
+public class ParameterMatchesTestBean
 {
 
-   @ParameterBinding
+   @Parameter
+   @Matches("\\w{4}")
    private String value;
 
    public String getValue()

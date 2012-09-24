@@ -2,44 +2,28 @@ package org.ocpsoft.rewrite.config.typesafe;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-import org.ocpsoft.common.pattern.WeightedComparator;
-import org.ocpsoft.common.services.ServiceLoader;
-import org.ocpsoft.common.util.Iterators;
-import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.util.ServiceLogger;
+import org.ocpsoft.rewrite.spi.InstanceProvider;
+import org.ocpsoft.rewrite.util.Instances;
 
 public class Typesafe implements Operation
 {
-   private static Logger log = Logger.getLogger(Typesafe.class);
-
-   private static List<InstanceFactory> factories;
-
    private final List<String> parameters = new ArrayList<String>();
 
    private Method method;
    private Object[] args;
 
-   @SuppressWarnings("unchecked")
    public static Typesafe method()
    {
-      if (factories == null)
-      {
-         factories = Iterators.asList(ServiceLoader.load(InstanceFactory.class));
-         Collections.sort(factories, new WeightedComparator());
-         ServiceLogger.logLoadedServices(log, InstanceFactory.class, factories);
-      }
-
       return new Typesafe();
    }
 
@@ -113,17 +97,12 @@ public class Typesafe implements Operation
                   + "]. Expected [" + args.length + "] but got [" + values.length + "]");
       }
 
-      Object instance = null;
-      for (InstanceFactory factory : factories) {
-         instance = factory.getInstance(type);
-         if (instance != null)
-            break;
-      }
+      Object instance = Instances.lookup(type);
 
       if (instance == null)
          throw new IllegalStateException("Cannot invoke method [" + buildSignature(type, method)
                   + "] because no instance of type [" + type.getName()
-                  + "] could be provided by any configured " + InstanceFactory.class.getSimpleName());
+                  + "] could be provided by any configured " + InstanceProvider.class.getSimpleName());
 
       try {
          return method.invoke(instance, values);

@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.annotation.spi;
 
 import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.util.Instances;
 
 /**
  * Default implementation of {@link ValidatorProvider} which allows to use Rewrite {@link Validator} implementations by
@@ -31,15 +32,7 @@ public class DefaultValidatorProvider implements ValidatorProvider
    {
       if (Validator.class.isAssignableFrom(validatorType)) {
 
-         try {
-            return (Validator<?>) validatorType.newInstance();
-         }
-         catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-         }
-         catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-         }
+         return (Validator<?>) Instances.lookup(validatorType);
 
       }
 

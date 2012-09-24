@@ -5,7 +5,7 @@ import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Convert;
 import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.annotation.ParameterBinding;
+import org.ocpsoft.rewrite.annotation.Parameter;
 
 @Named
 @RequestScoped
@@ -13,7 +13,7 @@ import org.ocpsoft.rewrite.annotation.ParameterBinding;
 public class CustomConverterBean
 {
 
-   @ParameterBinding
+   @Parameter
    @Convert(with = LowercaseConverter.class)
    private String value;
 

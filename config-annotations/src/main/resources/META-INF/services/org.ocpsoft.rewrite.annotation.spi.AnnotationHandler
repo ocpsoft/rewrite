@@ -1,11 +1,11 @@
 org.ocpsoft.rewrite.annotation.handler.HostnameHandler
 org.ocpsoft.rewrite.annotation.handler.JoinHandler
-org.ocpsoft.rewrite.annotation.handler.MappingIdHandler
+org.ocpsoft.rewrite.annotation.handler.RuleHandler
 org.ocpsoft.rewrite.annotation.handler.PathPatternHandler
 org.ocpsoft.rewrite.annotation.handler.PriorityHandler
 org.ocpsoft.rewrite.annotation.handler.RequestActionHandler
 org.ocpsoft.rewrite.annotation.handler.RolesRequiredHandler
-org.ocpsoft.rewrite.annotation.handler.ParameterBindingHandler
+org.ocpsoft.rewrite.annotation.handler.ParameterHandler
 org.ocpsoft.rewrite.annotation.handler.MatchesHandler
 org.ocpsoft.rewrite.annotation.handler.ForwardToHandler
 org.ocpsoft.rewrite.annotation.handler.ConvertHandler

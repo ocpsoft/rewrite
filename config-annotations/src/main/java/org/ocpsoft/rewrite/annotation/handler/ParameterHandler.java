@@ -19,26 +19,29 @@ import java.lang.reflect.Field;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.annotation.ParameterBinding;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.Or;
+import org.ocpsoft.rewrite.config.True;
 import org.ocpsoft.rewrite.config.Visitor;
 import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.servlet.config.RequestParameter;
+import org.ocpsoft.rewrite.servlet.config.bind.Request;
 
-public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBinding>
+public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite.annotation.Parameter>
 {
 
-   private final Logger log = Logger.getLogger(ParameterBindingHandler.class);
+   private final Logger log = Logger.getLogger(ParameterHandler.class);
 
    @Override
-   public Class<ParameterBinding> handles()
+   public Class<org.ocpsoft.rewrite.annotation.Parameter> handles()
    {
-      return ParameterBinding.class;
+      return org.ocpsoft.rewrite.annotation.Parameter.class;
    }
 
    @Override
@@ -48,7 +51,7 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
    }
 
    @Override
-   public void process(FieldContext context, ParameterBinding annotation, HandlerChain chain)
+   public void process(FieldContext context, org.ocpsoft.rewrite.annotation.Parameter annotation, HandlerChain chain)
    {
 
       // default name is the name of the field
@@ -67,7 +70,19 @@ public class ParameterBindingHandler extends FieldAnnotationHandler<ParameterBin
       // add bindings to conditions by walking over the condition tree
       AddBindingVisitor visitor = new AddBindingVisitor(context, chain, param, field);
       context.getRuleBuilder().accept(visitor);
-      Assert.assertTrue(visitor.isFound(), "The parameter [" + param + "] was not found in any condition.");
+      if (!visitor.isFound())
+      {
+         // Fall back to the Request parameter map by default
+         AddBindingVisitor fallback = new AddBindingVisitor(context, chain, param, field);
+         context.getRuleBuilder()
+                  .getConditionBuilder().and(Or.any(
+                           RequestParameter.exists("{param}").where(param).matches(param)
+                                    .bindsTo(Request.parameter(param)), new True()));
+
+         Assert.assertTrue(fallback.isFound(),
+                  "The parameter [" + param + "] bound to Field [" + field.getDeclaringClass().getName() + "."
+                           + field.getName() + "] was not found in any condition.");
+      }
 
       // continue
       chain.proceed();
