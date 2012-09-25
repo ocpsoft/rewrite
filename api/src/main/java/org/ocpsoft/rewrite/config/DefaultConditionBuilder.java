@@ -36,13 +36,15 @@ public abstract class DefaultConditionBuilder implements ConditionBuilder
    }
 
    /**
-    * Wrap a given {@link Condition} as a new {@link DefaultConditionBuilder} that evaluates the the original {@link Condition}
-    * when {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
+    * Wrap a given {@link Condition} as a new {@link DefaultConditionBuilder} that evaluates the the original
+    * {@link Condition} when {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
     */
    public static ConditionBuilder wrap(Condition condition)
    {
       if (condition == null)
          return create();
+      if (condition instanceof ConditionBuilder)
+         return (ConditionBuilder) condition;
       return And.all(condition);
    }
 

@@ -50,7 +50,7 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
    public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
    {
       HttpServletRequest result = request;
-      if (HttpRewriteWrappedRequest.getFromRequest(request) == null) {
+      if (HttpRewriteWrappedRequest.getCurrentInstance(request) == null) {
          Map<String, String[]> additionalParams = new HashMap<String, String[]>();
 
          for (RequestParameterProvider provider : providers) {
@@ -69,7 +69,10 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
    @Override
    public HttpServletResponse wrapResponse(final HttpServletRequest request, final HttpServletResponse response)
    {
-      return new HttpRewriteWrappedResponse(request, response);
+      HttpServletResponse result = response;
+      if (HttpRewriteWrappedResponse.getCurrentInstance(request) == null)
+         result = new HttpRewriteWrappedResponse(request, response);
+      return result;
    }
 
    @Override

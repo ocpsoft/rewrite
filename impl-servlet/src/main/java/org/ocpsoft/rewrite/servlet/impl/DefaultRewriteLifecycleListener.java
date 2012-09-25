@@ -36,7 +36,7 @@ public class DefaultRewriteLifecycleListener implements RewriteLifecycleListener
    {
       decrementRequestNesting(event);
       if (getRequestNesting(event.getRequest()) == 0)
-         HttpRewriteWrappedResponse.getInstance(event.getRequest()).flushBufferedStreams();
+         HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest()).flushBufferedStreams();
    }
 
    private void decrementRequestNesting(HttpServletRewrite event)

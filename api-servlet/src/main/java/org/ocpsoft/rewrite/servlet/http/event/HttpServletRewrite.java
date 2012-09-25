@@ -25,12 +25,17 @@ import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
  * 
  */
 public interface HttpServletRewrite extends
-        ServletRewrite<HttpServletRequest, HttpServletResponse>
+         ServletRewrite<HttpServletRequest, HttpServletResponse>
 {
    /**
     * Return the application context root {@link HttpServletRequest#getContextPath()}
     */
    public String getContextPath();
+
+   /**
+    * Get the full URL of the current request.
+    */
+   String getRequestURL();
 
    /**
     * Portion of the request URL representing request path within the application. The context path is not included, and

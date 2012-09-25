@@ -38,7 +38,7 @@ public class EncodeQueryConfigurationProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder.begin()
 
-               .addRule().when(Direction.isInbound().and(QueryString.parameterExists("c")))
+               .addRule().when(Direction.isInbound().and(Query.parameterExists("c")))
                .perform(SendStatus.code(210))
                .addRule().when(Path.matches("/encodequery")).perform(EncodeQuery.params().to("c"))
 

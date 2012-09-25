@@ -20,30 +20,17 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.exception.RewriteException;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse>
-         implements HttpInboundServletRewrite
+public class HttpInboundRewriteImpl extends BaseHttpRewrite implements HttpInboundServletRewrite
 {
    Logger log = Logger.getLogger(HttpInboundRewriteImpl.class);
-
-   /*
-    * For caching and performance purposes only.
-    */
-   private String requestPath;
-   private String requestQueryString;
-   private String requestQueryStringSeparator;
-   private String requestUrl;
-   private String requestContextPath;
 
    public HttpInboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response)
    {
@@ -167,61 +154,9 @@ public class HttpInboundRewriteImpl extends BaseRewrite<HttpServletRequest, Http
    }
 
    @Override
-   public String getContextPath()
-   {
-      if (this.requestContextPath == null)
-         this.requestContextPath = getRequest().getContextPath();
-      return this.requestContextPath;
-   }
-
-   @Override
-   public String getRequestPath()
-   {
-      if (this.requestPath == null)
-      {
-         String url = getRequest().getRequestURI();
-         if (url.startsWith(getContextPath()))
-         {
-            url = url.substring(getContextPath().length());
-         }
-
-         this.requestPath = URLBuilder.createFrom(url).decode().toURL();
-      }
-      return this.requestPath;
-   }
-
-   @Override
-   public String getRequestQueryStringSeparator()
-   {
-      if (this.requestQueryStringSeparator == null)
-      {
-         String queryString = getRequestQueryString();
-         if ((queryString != null) && !queryString.isEmpty())
-            this.requestQueryStringSeparator = "?";
-         else
-            return this.requestQueryStringSeparator = "";
-      }
-      return this.requestQueryStringSeparator;
-   }
-
-   @Override
-   public String getRequestQueryString()
-   {
-      if (this.requestQueryString == null)
-      {
-         String query = getRequest().getQueryString();
-         this.requestQueryString = Strings.isNullOrEmpty(query) ? "" : QueryStringBuilder.createFrom(query)
-                  .decode().toQueryString().substring(1);
-      }
-      return this.requestQueryString;
-   }
-
-   @Override
    public String getURL()
    {
-      if (this.requestUrl == null)
-         this.requestUrl = getRequestPath() + getRequestQueryStringSeparator() + getRequestQueryString();
-      return this.requestUrl;
+      return getRequestURL();
    }
 
    @Override

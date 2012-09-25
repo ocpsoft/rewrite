@@ -18,18 +18,16 @@ package org.ocpsoft.rewrite.servlet.impl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse> implements
-        HttpOutboundServletRewrite
+public class HttpOutboundRewriteImpl extends BaseHttpRewrite implements HttpOutboundServletRewrite
 {
-
    private String url;
+   private final String originalURL;
 
    public HttpOutboundRewriteImpl(final HttpServletRequest request,
             final HttpServletResponse response,
@@ -37,6 +35,7 @@ public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, Htt
    {
       super(request, response);
       this.url = url;
+      this.originalURL = url;
    }
 
    @Override
@@ -52,35 +51,6 @@ public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, Htt
    }
 
    @Override
-   public String getContextPath()
-   {
-      return getRequest().getContextPath();
-   }
-
-   @Override
-   public String getRequestPath()
-   {
-      return getRequest().getRequestURI().substring(getContextPath().length());
-   }
-
-   @Override
-   public String getRequestQueryString()
-   {
-      return getRequest().getQueryString() == null ? "" : getRequest().getQueryString();
-   }
-
-   @Override
-   public String getRequestQueryStringSeparator()
-   {
-      String queryString = getRequestQueryString();
-      if ((queryString != null) && !queryString.isEmpty())
-      {
-         return "?";
-      }
-      return "";
-   }
-
-   @Override
    public String toString()
    {
       return "OutboundRewrite [flow=" + flow + ", outboundURL=" + getOutboundURL() + ", dispatchResource="
@@ -91,5 +61,11 @@ public class HttpOutboundRewriteImpl extends BaseRewrite<HttpServletRequest, Htt
    public String getURL()
    {
       return getOutboundURL();
+   }
+
+   @Override
+   public String getOriginalOutboundURL()
+   {
+      return originalURL;
    }
 }

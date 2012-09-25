@@ -91,7 +91,7 @@ public class Path extends HttpCondition implements IPath
          for (PatternParameter capture : expression.getParameterMap().values()) {
             where(capture.getName()).bindsTo(Request.parameter(capture.getName()));
          }
-         withRequestBinding  = true;
+         withRequestBinding = true;
       }
       return this;
    }
@@ -103,10 +103,17 @@ public class Path extends HttpCondition implements IPath
 
       if (event instanceof HttpOutboundServletRewrite)
       {
+         /*
+          * Performance optimized - think carefully and run a profiler if you chance this.
+          */
          url = ((HttpOutboundServletRewrite) event).getOutboundURL();
          if (url != null)
          {
-            url = url.split("\\?")[0];
+            int index = url.indexOf('?');
+            if (index >= 0)
+            {
+               url = url.substring(0, index);
+            }
             if (url.startsWith(event.getContextPath()))
             {
                url = url.substring(event.getContextPath().length());

@@ -70,7 +70,7 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
       return modifiableParameters;
    }
 
-   public static HttpRewriteWrappedRequest getFromRequest(ServletRequest request)
+   public static HttpRewriteWrappedRequest getCurrentInstance(ServletRequest request)
    {
       HttpRewriteWrappedRequest wrapper = (HttpRewriteWrappedRequest) request
                .getAttribute(HttpRewriteWrappedRequest.class.getName());

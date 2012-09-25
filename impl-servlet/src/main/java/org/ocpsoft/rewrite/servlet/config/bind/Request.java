@@ -119,7 +119,7 @@ public abstract class Request extends BindingBuilder<Request, String>
       public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          ServletRequest request = ((ServletRewrite<?, ?>) event).getRequest();
-         HttpRewriteWrappedRequest wrapper = HttpRewriteWrappedRequest.getFromRequest(request);
+         HttpRewriteWrappedRequest wrapper = HttpRewriteWrappedRequest.getCurrentInstance(request);
 
          Map<String, String[]> modifiableParameters = wrapper.getModifiableParameters();
          if (value.getClass().isArray())

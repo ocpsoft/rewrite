@@ -43,16 +43,16 @@ import org.ocpsoft.rewrite.util.Maps;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class QueryString extends HttpCondition implements Bindable<QueryString>
+public abstract class Query extends HttpCondition implements Bindable<Query>
 {
    @SuppressWarnings({ "rawtypes" })
    protected final DefaultBindable<?> bindable = new DefaultBindable();
 
    /**
-    * Bind the values of this {@link QueryString} query to the given {@link Binding}.
+    * Bind the values of this {@link Query} query to the given {@link Binding}.
     */
    @Override
-   public QueryString bindsTo(final Binding binding)
+   public Query bindsTo(final Binding binding)
    {
       this.bindable.bindsTo(binding);
       return this;
@@ -72,11 +72,12 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
-   public static QueryString matches(final String pattern)
+   public static Query matches(final String queryPattern)
    {
-      Assert.notNull(pattern, "URL pattern must not be null.");
+      Assert.notNull(queryPattern, "URL pattern must not be null.");
+      final Pattern pattern = Pattern.compile(queryPattern);
 
-      return new QueryString() {
+      return new Query() {
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
@@ -84,9 +85,11 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
             if (event instanceof InboundRewrite)
                queryString = event.getRequestQueryString();
             else if (event instanceof HttpOutboundServletRewrite)
-               queryString = QueryStringBuilder.createFrom(event.getURL()).toQueryString();
+            {
+               queryString = QueryStringBuilder.extractQuery(event.getURL());
+            }
 
-            if (Pattern.compile(pattern).matcher(queryString == null ? "" : queryString).matches())
+            if (pattern.matcher(queryString == null ? "" : queryString).matches())
             {
                List<String> values = new ArrayList<String>();
                values.add(queryString);
@@ -107,20 +110,17 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
-   public static QueryString parameterExists(final String nameRegex)
+   public static Query parameterExists(final String nameRegex)
    {
       Assert.notNull(nameRegex, "Parameter name pattern must not be null.");
+      final Pattern pattern = Pattern.compile(nameRegex);
 
-      return new QueryString() {
+      return new Query() {
          @Override
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            Pattern pattern = Pattern.compile(nameRegex);
-
-            QueryStringBuilder queryString = null;
-
-            queryString = QueryStringBuilder.createFrom(event.getURL());
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL());
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();
@@ -155,17 +155,17 @@ public abstract class QueryString extends HttpCondition implements Bindable<Quer
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
-   public static QueryString valueExists(final String valueRegex)
+   public static Query valueExists(final String valueRegex)
    {
       Assert.notNull(valueRegex, "Parameter value pattern must not be null.");
+      final Pattern pattern = Pattern.compile(valueRegex);
 
-      return new QueryString() {
+      return new Query() {
          @Override
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            Pattern pattern = Pattern.compile(valueRegex);
-            QueryStringBuilder queryString = QueryStringBuilder.createFrom(event.getRequestQueryString());
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL());
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();

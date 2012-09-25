@@ -318,12 +318,27 @@ public class ParameterizedPatternImpl implements ParameterizedPattern
       return matcher;
    }
 
-   public Map<PatternParameter, String[]> parse(final Rewrite event, final EvaluationContext context,
-            final String path)
+   @Override
+   public Map<PatternParameter, String[]> parse(String value)
    {
       Map<PatternParameter, String[]> values = new LinkedHashMap<PatternParameter, String[]>();
 
-      Matcher matcher = getMatcher(path);
+      Matcher matcher = getMatcher(value);
+      if (matcher.matches())
+      {
+         for (RegexGroup group : groups) {
+            Maps.addArrayValue(values, parameters.get(group.getName()), matcher.group(group.getIndex() + 1));
+         }
+      }
+      return values;
+   }
+
+   public Map<PatternParameter, String[]> parse(final Rewrite event, final EvaluationContext context,
+            final String value)
+   {
+      Map<PatternParameter, String[]> values = new LinkedHashMap<PatternParameter, String[]>();
+
+      Matcher matcher = getMatcher(value);
       if (matcher.matches())
       {
          for (RegexGroup group : groups) {
@@ -336,8 +351,7 @@ public class ParameterizedPatternImpl implements ParameterizedPattern
    }
 
    private String applyTransforms(final Rewrite event, final EvaluationContext context,
-            PatternParameter param,
-            String value)
+            PatternParameter param, String value)
    {
       String result = value;
       for (Transform<String> t : param.getTransforms()) {

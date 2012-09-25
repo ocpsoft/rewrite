@@ -32,7 +32,7 @@ import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.IPath;
 import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.Path;
-import org.ocpsoft.rewrite.servlet.config.QueryString;
+import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
@@ -54,8 +54,8 @@ public class Join implements IJoin
 
    private String id;
 
-   private final String pattern;
-   private String resource;
+   private final String requestPattern;
+   private String resourcePattern;
    private final IPath requestPath;
    private IPath resourcePath;
 
@@ -66,9 +66,13 @@ public class Join implements IJoin
 
    private boolean chainingDisabled = true;
 
+   private List<String> pathRequestParameters;
+
+   private ConditionBuilder outboundConditionCache;
+
    protected Join(final String pattern, boolean requestBinding)
    {
-      this.pattern = pattern;
+      this.requestPattern = pattern;
       this.requestPath = Path.matches(pattern);
       if (requestBinding)
          requestPath.withRequestBinding();
@@ -86,7 +90,7 @@ public class Join implements IJoin
    }
 
    /**
-    * The client-facing URL path to which this {@link Join} will apply. Paramters will not be bound to the request
+    * The client-facing URL path to which this {@link Join} will apply. Parameters will not be bound to the request
     * parameter map. To enable request parameter binding and outbound URL rewriting, instead use {@link #path(String)}.
     */
    public static Join nonBindingPath(String pattern)
@@ -105,8 +109,23 @@ public class Join implements IJoin
    @Override
    public IJoin to(final String resource)
    {
-      this.resource = resource;
+      if (this.resourcePattern != null)
+      {
+         throw new IllegalStateException("Cannot set resource path more than once.");
+      }
+      this.resourcePattern = resource;
       this.resourcePath = Path.matches(resource);
+
+      List<String> parameters = getPathRequestParameters();
+      if (outboundConditionCache == null)
+      {
+         this.outboundConditionCache = resourcePath;
+         for (int i = 0; i < parameters.size(); i++) {
+            String name = parameters.get(i);
+            outboundConditionCache = outboundConditionCache.and(Query.parameterExists(name));
+         }
+      }
+
       return this;
    }
 
@@ -133,28 +152,22 @@ public class Join implements IJoin
                   && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context)
                   && ((condition == null) || condition.evaluate(event, context)))
          {
-            List<String> names = requestPath.getPathExpression().getParameterNames();
-            for (String name : names) {
-               if (!QueryString.parameterExists(name).evaluate(event, context))
+            List<String> parameters = getPathRequestParameters();
+            for (String param : parameters) {
+               if (!Query.parameterExists(param).evaluate(event, context))
                {
                   return false;
                }
             }
             context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
-                     + pattern));
+                     + requestPattern));
             return true;
          }
       }
       else if ((event instanceof HttpOutboundServletRewrite))
       {
-         List<String> parameters = getPathRequestParameters();
-
-         ConditionBuilder outbound = resourcePath;
-         for (String name : parameters)
-         {
-            outbound = outbound.and(QueryString.parameterExists(name));
-         }
-         if (outbound.evaluate(event, context) && ((condition == null) || condition.evaluate(event, context)))
+         if (outboundConditionCache.evaluate(event, context)
+                  && ((condition == null) || condition.evaluate(event, context)))
          {
             if (operation != null)
                context.addPreOperation(operation);
@@ -173,11 +186,18 @@ public class Join implements IJoin
 
    private List<String> getPathRequestParameters()
    {
-      List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
+      /*
+       * For performance purposes - think and profile this if changed.
+       */
+      if (pathRequestParameters == null)
+      {
+         List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
+         List<String> queryParameters = requestPath.getPathExpression().getParameterNames();
+         queryParameters.removeAll(nonQueryParameters);
+         pathRequestParameters = queryParameters;
+      }
 
-      List<String> queryParameters = requestPath.getPathExpression().getParameterNames();
-      queryParameters.removeAll(nonQueryParameters);
-      return queryParameters;
+      return pathRequestParameters;
    }
 
    @Override
@@ -191,7 +211,7 @@ public class Join implements IJoin
             event.getRewriteContext().put(JOIN_DISABLED_KEY, true);
             event.getRewriteContext().put(Join.class.getName() + "_DISABLED_RESET_NEXT", false);
          }
-         Forward.to(resource).perform(event, context);
+         Forward.to(resourcePattern).perform(event, context);
       }
 
       else if (event instanceof HttpOutboundServletRewrite)
@@ -212,7 +232,11 @@ public class Join implements IJoin
             }
          }
 
-         Substitute.with(pattern + query.toQueryString()).perform(event, context);
+         Substitute.with(requestPattern + query.toQueryString()).perform(event, context);
+         if (chainingDisabled)
+         {
+            ((HttpOutboundServletRewrite) event).handled();
+         }
       }
    }
 
@@ -275,7 +299,7 @@ public class Join implements IJoin
    @Override
    public String toString()
    {
-      return "Join [url=" + pattern + ", to=" + resource + ", id=" + id + ", inboundCorrection="
+      return "Join [url=" + requestPattern + ", to=" + resourcePattern + ", id=" + id + ", inboundCorrection="
                + inboundCorrection + "]";
    }
 

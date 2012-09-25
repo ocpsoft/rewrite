@@ -21,7 +21,7 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
-import org.ocpsoft.rewrite.servlet.config.QueryString;
+import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.SendStatus;
 
 /**
@@ -45,7 +45,7 @@ public class MockADFConfigurationProvider extends HttpConfigurationProvider
 
       Configuration config = ConfigurationBuilder.begin()
                .addRule()
-               .when(QueryString.parameterExists("adf"))
+               .when(Query.parameterExists("adf"))
                .perform(SendStatus.code(203));
 
       return config;

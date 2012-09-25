@@ -9,7 +9,7 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Method;
-import org.ocpsoft.rewrite.servlet.config.QueryString;
+import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.Response;
 import org.ocpsoft.rewrite.servlet.util.ContextUtil;
 
@@ -41,7 +41,7 @@ public class HistoryRewriteConfiguration extends HttpConfigurationProvider
 
                      .addRule()
                      .when(Method.isHead().and(
-                              QueryString.parameterExists("org.ocpsoft.rewrite.gwt.history.contextPath")))
+                              Query.parameterExists("org.ocpsoft.rewrite.gwt.history.contextPath")))
                      .perform(Response.setCode(200).and(
                               Response.addHeader("org.ocpsoft.rewrite.gwt.history.contextPath",
                                        contextPath)));

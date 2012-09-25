@@ -91,6 +91,17 @@ public class ParameterizedPatternTest
    }
 
    @Test
+   public void testMatchesEmptyPathNoTransforms()
+   {
+      ParameterizedPattern path = new ParameterizedPatternImpl(CaptureType.BRACE, "");
+
+      Assert.assertEquals(0, path.getParameterMap().size());
+      Assert.assertTrue(path.matches(rewrite, context, ""));
+      Map<PatternParameter, String[]> results = path.parse("");
+      Assert.assertNotNull(results);
+   }
+
+   @Test
    public void testMatchesBarePath()
    {
       ParameterizedPattern path = new ParameterizedPatternImpl("/");
@@ -113,6 +124,21 @@ public class ParameterizedPatternTest
       Assert.assertEquals("id", parameters.get("id").getName());
 
       Map<PatternParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24");
+      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
+      Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
+   }
+
+   @Test
+   public void testMatchesWithParametersNoTransforms()
+   {
+      ParameterizedPattern path = new ParameterizedPatternImpl("[^/]+", "/{customer}/orders/{id}");
+
+      Map<String, PatternParameter> parameters = path.getParameterMap();
+      Assert.assertEquals(2, parameters.size());
+      Assert.assertEquals("customer", parameters.get("customer").getName());
+      Assert.assertEquals("id", parameters.get("id").getName());
+
+      Map<PatternParameter, String[]> results = path.parse("/lincoln/orders/24");
       Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
       Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
    }

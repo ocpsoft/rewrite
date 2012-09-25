@@ -30,11 +30,11 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public final class Or extends DefaultConditionBuilder implements CompositeCondition
 {
-   private final List<Condition> conditions;
+   private final Condition[] conditions;
 
    private Or(final Condition... conditions)
    {
-      this.conditions = Arrays.asList(conditions);
+      this.conditions = conditions;
    }
 
    /**
@@ -69,8 +69,8 @@ public final class Or extends DefaultConditionBuilder implements CompositeCondit
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       boolean result = false;
-      for (int i = 0; i < conditions.size(); i++) {
-         if (conditions.get(i).evaluate(event, context))
+      for (int i = 0; i < conditions.length; i++) {
+         if (conditions[i].evaluate(event, context))
          {
             result = true;
          }
@@ -81,12 +81,12 @@ public final class Or extends DefaultConditionBuilder implements CompositeCondit
    @Override
    public List<Condition> getConditions()
    {
-      return conditions;
+      return Arrays.asList(conditions);
    }
 
    @Override
    public String toString()
    {
-      return "Or [" + conditions + "]";
+      return "Or [" + Arrays.asList(conditions) + "]";
    }
 }

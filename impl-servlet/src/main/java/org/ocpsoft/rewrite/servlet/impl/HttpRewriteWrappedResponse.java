@@ -57,7 +57,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    private final HttpServletRequest request;
    private final static String INSTANCE_KEY = HttpRewriteWrappedResponse.class.getName() + "_instance";
 
-   public static HttpRewriteWrappedResponse getInstance(HttpServletRequest request)
+   public static HttpRewriteWrappedResponse getCurrentInstance(HttpServletRequest request)
    {
       return (HttpRewriteWrappedResponse) request.getAttribute(INSTANCE_KEY);
    }
@@ -67,7 +67,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       super(response);
       this.request = request;
 
-      if (getInstance(request) == null) {
+      if (getCurrentInstance(request) == null) {
          request.setAttribute(INSTANCE_KEY, this);
       }
    }
@@ -347,7 +347,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       {
          listener.beforeOutboundRewrite(event);
       }
-
+      
       for (RewriteProvider<ServletContext, Rewrite> p : context.getRewriteProviders())
       {
          if (p.handles(event))

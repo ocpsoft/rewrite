@@ -54,7 +54,7 @@ public abstract class Response extends HttpOperation
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
             for (ResponseContentInterceptor buffer : buffers) {
-               HttpRewriteWrappedResponse.getInstance(event.getRequest()).addContentInterceptor(buffer);
+               HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest()).addContentInterceptor(buffer);
             }
          }
       };
@@ -68,7 +68,7 @@ public abstract class Response extends HttpOperation
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
             for (ResponseStreamWrapper wrapper : wrappers) {
-               HttpRewriteWrappedResponse.getInstance(event.getRequest()).addStreamWrapper(wrapper);
+               HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest()).addStreamWrapper(wrapper);
             }
          }
       };

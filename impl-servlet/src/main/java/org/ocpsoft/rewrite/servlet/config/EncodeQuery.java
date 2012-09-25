@@ -141,8 +141,8 @@ public class EncodeQuery implements Operation
             {
                decoded = checksumStrategy.removeChecksum(decoded);
                query.removeParameter(tokenName);
-               QueryStringBuilder queryParams = QueryStringBuilder.createFrom(decoded);
-               HttpRewriteWrappedRequest request = HttpRewriteWrappedRequest.getFromRequest(in.getRequest());
+               QueryStringBuilder queryParams = QueryStringBuilder.createFromEncoded(decoded);
+               HttpRewriteWrappedRequest request = HttpRewriteWrappedRequest.getCurrentInstance(in.getRequest());
                for (Entry<String, List<String>> param : queryParams.getParameterMap().entrySet()) {
                   for (String value : param.getValue()) {
                      Maps.addArrayValue(request.getModifiableParameters(), param.getKey(), value);

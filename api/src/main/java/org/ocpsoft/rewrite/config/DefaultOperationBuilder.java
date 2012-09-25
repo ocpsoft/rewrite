@@ -33,7 +33,7 @@ public abstract class DefaultOperationBuilder implements OperationBuilder
       @Override
       public void perform(Rewrite event, EvaluationContext context)
       {}
-      
+
       @Override
       public String toString()
       {
@@ -58,6 +58,8 @@ public abstract class DefaultOperationBuilder implements OperationBuilder
    {
       if (operation == null)
          return create();
+      if (operation instanceof OperationBuilder)
+         return (OperationBuilder) operation;
       return new DefaultCompositeOperation(DefaultOperationBuilder.create(), operation);
    }
 

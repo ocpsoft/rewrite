@@ -97,6 +97,12 @@ public class PatternParameter extends ParameterBuilder<PatternParameter, String>
    }
 
    @Override
+   public Map<PatternParameter, String[]> parse(String value)
+   {
+      return parent.parse(value);
+   }
+
+   @Override
    public Map<PatternParameter, String[]> parse(Rewrite rewrite, EvaluationContext context, String value)
    {
       return parent.parse(rewrite, context, value);

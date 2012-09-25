@@ -318,8 +318,6 @@ public class URLBuilder
 
    /**
     * Set the {@link Metadata} object for this URL
-    * 
-    * @return
     */
    public URLBuilder setMetadata(final Metadata metadata)
    {
@@ -327,6 +325,9 @@ public class URLBuilder
       return this;
    }
 
+   /**
+    * Return the portion of this URL representing the path.
+    */
    public String toPath()
    {
       return metadata.buildURLFromSegments(segments);

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-public class HttpBufferRewriteImpl extends BaseRewrite<HttpServletRequest, HttpServletResponse> implements HttpServletRewrite
+public class HttpBufferRewriteImpl extends BaseHttpRewrite implements HttpServletRewrite
 {
    private HttpInboundRewriteImpl delegate;
 
@@ -39,7 +39,7 @@ public class HttpBufferRewriteImpl extends BaseRewrite<HttpServletRequest, HttpS
    {
       return delegate.getRequestQueryStringSeparator();
    }
-   
+
    @Override
    public String getURL()
    {

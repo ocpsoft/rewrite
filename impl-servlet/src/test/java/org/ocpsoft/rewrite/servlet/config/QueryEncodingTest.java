@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class QueryStringEncodingTest
+public class QueryEncodingTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
@@ -60,14 +60,14 @@ public class QueryStringEncodingTest
    @Test
    public void testQueryStringMatchesWithParameters()
    {
-      Assert.assertTrue(QueryString.parameterExists("my cat").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.parameterExists("my cat").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      QueryString query = QueryString.valueExists(".*∂ve.*")
+      Query query = Query.valueExists(".*∂ve.*")
                .bindsTo(mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(query.evaluate(rewrite, context));
@@ -93,14 +93,14 @@ public class QueryStringEncodingTest
    @Test
    public void testQueryStringMatchesPattern()
    {
-      Assert.assertTrue(QueryString.matches(".*&one=1.*").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.matches(".*&one=1.*").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringBindsToEntireValue()
    {
       MockBinding mockBinding = new MockBinding();
-      QueryString query = QueryString.matches(".*&one=1.*").bindsTo(mockBinding);
+      Query query = Query.matches(".*&one=1.*").bindsTo(mockBinding);
       Assert.assertTrue(query.evaluate(rewrite, new MockEvaluationContext()));
 
       MockEvaluationContext context = new MockEvaluationContext();
@@ -121,12 +121,12 @@ public class QueryStringEncodingTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(QueryString.matches(".*").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      Assert.assertFalse(Query.matches(".*").evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullCausesException()
    {
-      QueryString.matches(null);
+      Query.matches(null);
    }
 }

@@ -89,6 +89,6 @@ public final class And extends DefaultConditionBuilder implements CompositeCondi
    @Override
    public String toString()
    {
-      return "And [" + conditions + "]";
+      return "And [" + Arrays.asList(conditions) + "]";
    }
 }

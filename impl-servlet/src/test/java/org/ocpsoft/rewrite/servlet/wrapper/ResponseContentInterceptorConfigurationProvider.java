@@ -66,7 +66,7 @@ public class ResponseContentInterceptorConfigurationProvider extends HttpConfigu
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
-                     if (HttpRewriteWrappedResponse.getInstance(event.getRequest()).isResponseContentIntercepted())
+                     if (HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest()).isResponseContentIntercepted())
                      {
                         throw new IllegalStateException("Buffering should not be active.");
                      }

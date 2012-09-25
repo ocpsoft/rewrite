@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public class QueryStringSimpleTest
+public class QuerySimpleTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
@@ -55,48 +55,48 @@ public class QueryStringSimpleTest
    @Test
    public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(QueryString.matches("foo=bar&bar=baz").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.matches("foo=bar&bar=baz").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringMatchesPattern()
    {
-      Assert.assertTrue(QueryString.matches("foo=bar.*").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.matches("foo=bar.*").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringParameterExists()
    {
-      Assert.assertTrue(QueryString.parameterExists(".oo").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.parameterExists(".oo").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringParameterDoesNotExist()
    {
-      Assert.assertFalse(QueryString.parameterExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertFalse(Query.parameterExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringValueExists()
    {
-      Assert.assertTrue(QueryString.valueExists(".ar").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.valueExists(".ar").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testQueryStringValueDoesNotExist()
    {
-      Assert.assertFalse(QueryString.valueExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertFalse(Query.valueExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertTrue(QueryString.matches(".*bar=baz").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.matches(".*bar=baz").evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testNullCausesException()
    {
-      QueryString.matches(null);
+      Query.matches(null);
    }
 }

@@ -54,9 +54,10 @@ public class QueryStringBuilder
 
    /**
     * Build a query string from the given URL. If a '?' character is encountered in the URL, the any characters up to
-    * and including the first '?' will be ignored.
+    * and including the first '?' will be ignored. This method assumes that the given parameters have already been URL
+    * encoded.
     */
-   public static QueryStringBuilder createFrom(final String parameters)
+   public static QueryStringBuilder createFromEncoded(final String parameters)
    {
       QueryStringBuilder queryString = new QueryStringBuilder();
       queryString.addParameters(parameters);
@@ -82,50 +83,87 @@ public class QueryStringBuilder
    }
 
    /**
+    * Get the query string portion of the given URL. If no query string separator character '?' can be found, return the
+    * string unchanged.
+    */
+   public static String extractQuery(String url)
+   {
+      if (url != null)
+      {
+         int index = url.indexOf('?');
+         if (index >= 0)
+         {
+            url = url.substring(index + 1);
+         }
+      }
+      return url;
+   }
+
+   /**
     * Add parameters from the given URL. If a '?' character is encountered in the URL, the any characters up to and
     * including the first '?' will be ignored. If a parameter already exists, append new values to the existing list of
     * values for that parameter.
+    * <p>
+    * <b>Note:</b> This method assumes that the given string is already URL encoded.
     */
    public QueryStringBuilder addParameters(final String url)
    {
-      if ((url != null) && !"".equals(url))
+      String temp = extractQuery(url);
+      if (temp != null)
       {
-         String temp = url.trim();
-         if (temp.length() > 1)
+         temp = decodeHTMLAmpersands(temp);
+         int index = 0;
+         while ((index = temp.indexOf('&')) >= 0 || !temp.isEmpty())
          {
-            if (temp.contains("?"))
+            String pair = temp;
+            if (index >= 0)
             {
-               temp = temp.substring(temp.indexOf('?') + 1);
+               pair = temp.substring(0, index);
+               temp = temp.substring(index);
+               if (!temp.isEmpty())
+                  temp = temp.substring(1);
+            }
+            else
+               temp = "";
+
+            String name;
+            String value;
+            int pos = pair.indexOf('=');
+            // for "n=", the value is "", for "n", the value is null
+            if (pos == -1)
+            {
+               name = pair;
+               value = null;
+            }
+            else
+            {
+               name = pair.substring(0, pos);
+               value = pair.substring(pos + 1, pair.length());
             }
 
-            String pairs[] = temp.split("&(amp;)?");
-            for (String pair : pairs)
+            List<String> list = parameters.get(name);
+            if (list == null)
             {
-               String name;
-               String value;
-               int pos = pair.indexOf('=');
-               // for "n=", the value is "", for "n", the value is null
-               if (pos == -1)
-               {
-                  name = pair;
-                  value = null;
-               }
-               else
-               {
-                  name = pair.substring(0, pos);
-                  value = pair.substring(pos + 1, pair.length());
-               }
-               List<String> list = parameters.get(name);
-               if (list == null)
-               {
-                  list = new ArrayList<String>();
-                  parameters.put(name, list);
-               }
-               list.add(value);
+               list = new ArrayList<String>();
+               parameters.put(name, list);
             }
+            list.add(value);
          }
       }
       return this;
+   }
+
+   private String decodeHTMLAmpersands(String url)
+   {
+      if (url != null)
+      {
+         int index = 0;
+         while ((index = url.indexOf("&amp;")) >= 0)
+         {
+            url = url.substring(0, index + 1) + url.substring(index + 5);
+         }
+      }
+      return url;
    }
 
    /**

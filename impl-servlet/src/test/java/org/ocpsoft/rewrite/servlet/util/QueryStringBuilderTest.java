@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 public class QueryStringBuilderTest
@@ -37,7 +39,7 @@ public class QueryStringBuilderTest
       String queryString = qs.toQueryString();
       assertEquals("", queryString);
 
-      qs = QueryStringBuilder.createFrom(queryString);
+      qs = QueryStringBuilder.createFromEncoded(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -45,7 +47,7 @@ public class QueryStringBuilderTest
    public void testCreateStringQueryStringBuilder() throws Exception
    {
       String query = "?bar=555&foo=hello&foo=friend";
-      QueryStringBuilder qs = QueryStringBuilder.createFrom(query);
+      QueryStringBuilder qs = QueryStringBuilder.createFromEncoded(query);
 
       String result = qs.toQueryString();
 
@@ -59,7 +61,7 @@ public class QueryStringBuilderTest
    public void testCreateStringQueryStringBuilderWithExtraPreCharacters() throws Exception
    {
       String query = "?bar=555&foo=hello&foo=friend";
-      QueryStringBuilder qs = QueryStringBuilder.createFrom("www.ocpsoft.com/" + query);
+      QueryStringBuilder qs = QueryStringBuilder.createFromEncoded("www.ocpsoft.com/" + query);
 
       String result = qs.toQueryString();
 
@@ -73,11 +75,35 @@ public class QueryStringBuilderTest
    public void testCreateFromQuestionMarkYieldsEmptyQueryStringBuilder() throws Exception
    {
       String query = "?";
-      QueryStringBuilder qs = QueryStringBuilder.createFrom(query);
+      QueryStringBuilder qs = QueryStringBuilder.createFromEncoded(query);
 
       String result = qs.toQueryString();
 
       assertTrue(result.length() == 0);
+   }
+
+   @Test
+   public void testCreateFromQuestionMarks() throws Exception
+   {
+      String query = "????";
+      QueryStringBuilder qs = QueryStringBuilder.createFromEncoded(query);
+
+      String result = qs.toQueryString();
+
+      Assert.assertEquals("???", new ArrayList<String>(qs.getParameterNames()).get(0));
+      Assert.assertEquals("????", result);
+   }
+
+   @Test
+   public void testCreateFromAmpersands() throws Exception
+   {
+      String query = "?%26%26%26";
+      QueryStringBuilder qs = QueryStringBuilder.createFromEncoded(query);
+
+      String result = qs.decode().toQueryString();
+
+      Assert.assertEquals("%26%26%26", new ArrayList<String>(qs.getParameterNames()).get(0));
+      Assert.assertEquals("?&&&", result);
    }
 
    @Test
@@ -91,7 +117,7 @@ public class QueryStringBuilderTest
 
       assertEquals("?p1=val1", queryString);
 
-      qs = QueryStringBuilder.createFrom(queryString);
+      qs = QueryStringBuilder.createFromEncoded(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -106,7 +132,7 @@ public class QueryStringBuilderTest
 
       assertEquals("?p1", queryString);
 
-      qs = QueryStringBuilder.createFrom(queryString);
+      qs = QueryStringBuilder.createFromEncoded(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -121,7 +147,7 @@ public class QueryStringBuilderTest
 
       assertEquals("?p1=", queryString);
 
-      qs = QueryStringBuilder.createFrom(queryString);
+      qs = QueryStringBuilder.createFromEncoded(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -136,7 +162,7 @@ public class QueryStringBuilderTest
 
       assertEquals("?p1=val1&p1=val2", queryString);
 
-      qs = QueryStringBuilder.createFrom(queryString);
+      qs = QueryStringBuilder.createFromEncoded(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -156,7 +182,7 @@ public class QueryStringBuilderTest
       assertTrue(queryString.contains("p2=val3"));
       assertTrue(queryString.contains("p2=val4"));
 
-      qs = QueryStringBuilder.createFrom(queryString);
+      qs = QueryStringBuilder.createFromEncoded(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -185,7 +211,7 @@ public class QueryStringBuilderTest
       assertTrue(queryString.contains("p2=val3"));
       assertTrue(queryString.contains("p2=val4"));
 
-      qs = QueryStringBuilder.createFrom(queryString);
+      qs = QueryStringBuilder.createFromEncoded(queryString);
       assertEquals(queryString, qs.toQueryString());
    }
 
@@ -212,6 +238,22 @@ public class QueryStringBuilderTest
       QueryStringBuilder qs = new QueryStringBuilder();
       qs.addParameters("a=b&amp;c=d");
       assertEquals("?a=b&c=d", qs.toQueryString());
+   }
+
+   @Test
+   public void testDecodeAmpersand()
+   {
+      QueryStringBuilder qs = new QueryStringBuilder();
+      qs.addParameter("a", "b%26c=d");
+      assertEquals("?a=b&c=d", qs.decode().toQueryString());
+   }
+
+   @Test
+   public void testEncodeAmpersand()
+   {
+      QueryStringBuilder qs = new QueryStringBuilder();
+      qs.addParameter("a", "b&c=d");
+      assertEquals("?a=b%26c%3Dd", qs.encode().toQueryString());
    }
 
 }

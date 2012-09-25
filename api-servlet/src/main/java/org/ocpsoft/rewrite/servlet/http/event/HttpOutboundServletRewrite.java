@@ -24,7 +24,7 @@ import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface HttpOutboundServletRewrite extends
-        OutboundServletRewrite<HttpServletRequest, HttpServletResponse>, HttpServletRewrite
+         OutboundServletRewrite<HttpServletRequest, HttpServletResponse>, HttpServletRewrite
 {
    /**
     * Get the outbound URL to be rewritten.
@@ -35,4 +35,9 @@ public interface HttpOutboundServletRewrite extends
     * Set the new outbound URL.
     */
    public void setOutboundURL(final String url);
+
+   /**
+    * Get the original outbound URL (before any modifications.)
+    */
+   String getOriginalOutboundURL();
 }
