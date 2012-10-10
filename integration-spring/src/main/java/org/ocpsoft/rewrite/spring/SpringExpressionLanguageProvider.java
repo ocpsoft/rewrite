@@ -53,6 +53,12 @@ public class SpringExpressionLanguageProvider implements ExpressionLanguageProvi
    private WebApplicationContext applicationContext;
 
    @Override
+   public int priority()
+   {
+      return 20;
+   }
+
+   @Override
    public Object retrieveValue(String expression) throws UnsupportedOperationException
    {
 

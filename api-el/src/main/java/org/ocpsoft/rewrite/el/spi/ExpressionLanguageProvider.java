@@ -15,13 +15,15 @@
  */
 package org.ocpsoft.rewrite.el.spi;
 
+import org.ocpsoft.common.pattern.Weighted;
+
 
 /**
  * Defines a service interface to provide EL support.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ExpressionLanguageProvider
+public interface ExpressionLanguageProvider extends Weighted
 {
    /**
     * Extract a value from the location specified by the given EL location.

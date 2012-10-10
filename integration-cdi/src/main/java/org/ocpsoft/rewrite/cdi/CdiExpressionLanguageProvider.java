@@ -33,6 +33,12 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
    private Expressions expressions;
 
    @Override
+   public int priority()
+   {
+      return 10;
+   }
+
+   @Override
    public Object retrieveValue(final String expression)
    {
       return getValue(expressions.getELContext(), expressions.getExpressionFactory(),

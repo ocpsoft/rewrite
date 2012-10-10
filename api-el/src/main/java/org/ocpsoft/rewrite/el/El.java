@@ -17,8 +17,10 @@ package org.ocpsoft.rewrite.el;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 
+import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
@@ -39,7 +41,7 @@ import org.ocpsoft.rewrite.exception.RewriteException;
 public abstract class El extends BindingBuilder<El, Object> implements Retrieval
 {
    private static final Logger log = Logger.getLogger(El.class);
-   private static List<ExpressionLanguageProvider> providers;
+   private static volatile List<ExpressionLanguageProvider> _providers;
 
    /**
     * Create a new EL Method binding using distinct expressions to submit and retrieve values. The method intended for
@@ -159,16 +161,29 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       return el;
    }
 
+   @SuppressWarnings("unchecked")
    private static List<ExpressionLanguageProvider> getProviders()
    {
-      if (providers == null)
+      if (_providers == null)
       {
-         @SuppressWarnings("unchecked")
-         ServiceLoader<ExpressionLanguageProvider> serviceProviders = ServiceLoader
-                  .load(ExpressionLanguageProvider.class);
-         providers = Iterators.asList(serviceProviders);
+         synchronized (El.class)
+         {
+            if (_providers == null)
+            {
+               _providers = Iterators.asList(ServiceLoader.load(ExpressionLanguageProvider.class));
+               Collections.sort(_providers, new WeightedComparator());
+
+               if (_providers.isEmpty())
+               {
+                  log.warn("No instances of [{}] were configured. EL support is disabled.",
+                           ExpressionLanguageProvider.class.getName());
+               }
+
+            }
+
+         }
       }
-      return providers;
+      return _providers;
    }
 
    /**
@@ -186,17 +201,15 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      @SuppressWarnings("unchecked")
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
-         ServiceLoader<ExpressionLanguageProvider> providers = ServiceLoader.load(ExpressionLanguageProvider.class);
 
          if (!supportsRetrieval())
             throw new RewriteException("Method binding expression supports submission only [" + setExpression
                      + "], no value retrieval expression was defined");
 
          Object value = null;
-         for (ExpressionLanguageProvider provider : providers) {
+         for (ExpressionLanguageProvider provider : getProviders()) {
 
             try
             {
@@ -280,13 +293,10 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      @SuppressWarnings("unchecked")
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
-         ServiceLoader<ExpressionLanguageProvider> providers = ServiceLoader.load(ExpressionLanguageProvider.class);
-
          Object value = null;
-         for (ExpressionLanguageProvider provider : providers) {
+         for (ExpressionLanguageProvider provider : getProviders()) {
 
             try
             {
@@ -328,17 +338,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       @Override
       public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
-         @SuppressWarnings("unchecked")
-         ServiceLoader<ExpressionLanguageProvider> providers = ServiceLoader
-         .load(ExpressionLanguageProvider.class);
-
-         if (!providers.iterator().hasNext())
-         {
-            log.warn("No instances of [{}] were configured. EL support is disabled.",
-                     ExpressionLanguageProvider.class.getName());
-         }
-
-         for (ExpressionLanguageProvider provider : providers) {
+         for (ExpressionLanguageProvider provider : getProviders()) {
             try
             {
                provider.submitValue(expression.getExpression(), value);

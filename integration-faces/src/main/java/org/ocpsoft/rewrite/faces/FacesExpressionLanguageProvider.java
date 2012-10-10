@@ -33,6 +33,12 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
 {
 
    @Override
+   public int priority()
+   {
+      return 30;
+   }
+
+   @Override
    public Object retrieveValue(String expression) throws UnsupportedOperationException
    {
       FacesContext facesContext = getFacesContext();
