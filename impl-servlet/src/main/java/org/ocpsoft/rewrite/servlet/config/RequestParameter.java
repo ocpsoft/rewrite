@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,8 +102,9 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
       {
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
-            Map<PatternParameter, String[]> parameterValues = name.parse(event, context, parameter);
-            parameterValues = value.parse(event, context, parameter);
+            Map<PatternParameter, String[]> parameterValues = new HashMap<PatternParameter, String[]>();
+            parameterValues.putAll(name.parse(event, context, parameter));
+            parameterValues.putAll(value.parse(event, context, request.getParameter(parameter)));
 
             for (PatternParameter capture : parameterValues.keySet()) {
                if (!Bindings.enqueueSubmission(event, context, capture, parameterValues.get(capture)))
