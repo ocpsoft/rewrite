@@ -73,21 +73,33 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       context.getRuleBuilder().accept(visitor);
       if (!visitor.isFound())
       {
-         // fall back to use request parameter map
-         Condition requestParameter = RequestParameter.exists("{" + param + "}")
-                  .where(param).matches(param)
-                  .bindsTo(Request.parameter(param));
+
+         /*
+          * Creates a condition that matches the query parameter we are looking for.
+          * It also provides access to a parameter which is named like the parameter that
+          * the AddBindingVisitor is expecting.
+          */
+         Condition requestParameter = RequestParameter.matches("{name}", "{" + param + "}")
+                  .where("name").matches(param);
+
+         /*
+          * Add the query parameter condition to the condition tree. We must make sure that
+          * the condition is evaluated even if the existing part of the tree evaluates to true.
+          */
          ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
                   Or.any(requestParameter, True.create()));
          context.getRuleBuilder().when(composite);
 
-         // this visitor will find the condition added above
+         /*
+          * This new visitor will definitely find the expected parameter and add the binding.
+          */
          AddBindingVisitor fallback = new AddBindingVisitor(context, chain, param, field);
          context.getRuleBuilder().accept(fallback);
 
          Assert.assertTrue(fallback.isFound(),
                   "The parameter [" + param + "] bound to Field [" + field.getDeclaringClass().getName() + "."
                            + field.getName() + "] was not found in any condition.");
+
       }
 
       // continue
