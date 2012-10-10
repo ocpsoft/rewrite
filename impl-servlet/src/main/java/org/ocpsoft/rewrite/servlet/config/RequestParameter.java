@@ -132,7 +132,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    {
       PatternParameter nameParam = name.getParameterNames().contains(param) ? name.getParameter(param) : null;
       PatternParameter valueParam = value.getParameterNames().contains(param) ? value.getParameter(param) : null;
-      return parameters.where(param, new RequestParameterParameter(this, nameParam, valueParam));
+
+      if (nameParam != null || valueParam != null) {
+         return parameters.where(param, new RequestParameterParameter(this, nameParam, valueParam));
+      }
+      throw new IllegalArgumentException("No such parameter [" + param + "] exists.");
    }
 
    @Override
