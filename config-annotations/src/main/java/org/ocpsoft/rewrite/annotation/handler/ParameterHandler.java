@@ -24,6 +24,7 @@ import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Or;
 import org.ocpsoft.rewrite.config.True;
 import org.ocpsoft.rewrite.config.Visitor;
@@ -72,12 +73,17 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       context.getRuleBuilder().accept(visitor);
       if (!visitor.isFound())
       {
-         // Fall back to the Request parameter map by default
+         // fall back to use request parameter map
+         Condition requestParameter = RequestParameter.exists("{" + param + "}")
+                  .where(param).matches(param)
+                  .bindsTo(Request.parameter(param));
+         ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
+                  Or.any(requestParameter, True.create()));
+         context.getRuleBuilder().when(composite);
+
+         // this visitor will find the condition added above
          AddBindingVisitor fallback = new AddBindingVisitor(context, chain, param, field);
-         context.getRuleBuilder()
-                  .getConditionBuilder().and(Or.any(
-                           RequestParameter.exists("{param}").where(param).matches(param)
-                                    .bindsTo(Request.parameter(param)), new True()));
+         context.getRuleBuilder().accept(fallback);
 
          Assert.assertTrue(fallback.isFound(),
                   "The parameter [" + param + "] bound to Field [" + field.getDeclaringClass().getName() + "."
