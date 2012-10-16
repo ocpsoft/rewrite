@@ -23,6 +23,8 @@ import org.ocpsoft.common.util.Assert;
  */
 public abstract class ParseTools
 {
+   private static final char ESCAPE_CHAR = '\\';
+
    /**
     * Return the index of the terminating character in the group, excluding markers.
     */
@@ -40,9 +42,9 @@ public abstract class ParseTools
       Assert.assertTrue(chars[startPos] == type.getBegin(), "Character at starting position was [" + chars[startPos]
                + "] but expected [" + type.getBegin() + "]");
 
-      if ((startPos > 0) && (chars[startPos - 1] == '\\'))
+      if ((startPos > 0) && (chars[startPos - 1] == ESCAPE_CHAR))
       {
-         if ((startPos == 1) || ((startPos > 1) && (chars[startPos - 2] != '\\')))
+         if ((startPos == 1) || ((startPos > 1) && (chars[startPos - 2] != ESCAPE_CHAR)))
          {
             throw new IllegalArgumentException(
                      "Character at starting position is escaped, and cannot be used in capturing a group.");
@@ -88,9 +90,9 @@ public abstract class ParseTools
       Assert.assertTrue(cursor < (chars.length),
                "Start position must be within the array upper bound.");
 
-      if ((cursor > 0) && (chars[cursor - 1] == '\\'))
+      if ((cursor > 0) && (chars[cursor - 1] == ESCAPE_CHAR))
       {
-         if ((cursor == 1) || ((cursor > 1) && (chars[cursor - 2] != '\\')))
+         if ((cursor == 1) || ((cursor > 1) && (chars[cursor - 2] != ESCAPE_CHAR)))
          {
             return true;
          }

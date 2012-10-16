@@ -10,7 +10,7 @@ Get Started
 
         <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
-            <artifactId>rewrite-integation-gwt</artifactId>
+            <artifactId>rewrite-integration-gwt</artifactId>
             <version>${rewrite.version}</version>
         </dependency>
 

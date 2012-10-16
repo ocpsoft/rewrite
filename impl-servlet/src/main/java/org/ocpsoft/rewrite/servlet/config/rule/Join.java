@@ -27,6 +27,7 @@ import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.IPath;
@@ -311,13 +312,13 @@ public class Join implements IJoin
    }
 
    @Override
-   public ParameterizedPatternImpl getPathExpression()
+   public ParameterizedPattern getPathExpression()
    {
       return requestPath.getPathExpression();
    }
 
    @Override
-   public ParameterizedPatternImpl getResourcexpression()
+   public ParameterizedPattern getResourcexpression()
    {
       return resourcePath.getPathExpression();
    }
