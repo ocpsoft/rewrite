@@ -47,6 +47,7 @@
       <module>annotations-impl</module>
       <module>config-annotations</module>
       <module>config-jodatime</module>
+      <module>config-trie</module>
       <module>config-tuckey</module>
       <module>config-typesafe</module>
       <module>api-el</module>
