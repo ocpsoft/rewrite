@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.1.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.1.1 
+	http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.1.1.xsd">
+
+	<rewrite match="^(.*[^/])$" substitute="$1/" redirect="chain"
+		outbound="true" />
+	<rewrite toCase="lowercase" trailingSlash="append" />
+	<rewrite toCase="uppercase" trailingSlash="remove"
+		processor="com.ocpsoft.MockCustomUrlProcessor" url="http://www.google.com"
+		redirect="302" outbound="false" />
+
+	<url-mapping id="0">
+		<pattern value="/project/#{pid:viewProjectBean.projectId}/" />
+		<view-id value="/faces/viewProject.xhtml" />
+	</url-mapping>
+
+</pretty-config>

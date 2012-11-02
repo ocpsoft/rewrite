@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" 
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>0.01</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>prettyfaces</short-name>
+	<uri>http://ocpsoft.com/prettyfaces</uri>
+	<description>
+		Tag library for PrettyFaces.
+	</description>
+	<tag>
+		<name>
+			link
+		</name>
+		<tag-class>
+			com.ocpsoft.pretty.faces.component.tag.LinkTag
+		</tag-class>
+
+		<attribute>
+			<name>mappingId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The unique identifier of the PrettyFaces mapping. (e.g.
+				mapping-id in your pretty-config.xml)
+			</description>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				A developer assigned id to the element. Must be unique
+			</description>
+		</attribute>
+		<attribute>
+			<name>rendered</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+				A boolean value that indicates whether this component should be rendered.
+				Default value: true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>accesskey</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Access key that, when pressed, transfers focus to this
+				element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>anchor</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				When the "anchor" attribute is defined, the rendered URL
+				is constructed as follows:
+				http://{server}/{context}/{prettyUrl}#{anchor} 
+			</description>
+		</attribute>
+		<attribute>
+			<name>charset</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The character encoding of the resource designated by
+				this hyperlink. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>coords</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The position and shape of the hot spot on the screen
+				(for use in client-side image maps). 
+			</description>
+		</attribute>
+		<attribute>
+			<name>dir</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Direction indication for text that does not inherit
+				directionality. Valid values are "LTR" (left-to-right) and "RTL"
+				(right-to-left).
+			</description>
+		</attribute>
+		<attribute>
+			<name>hreflang</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The language code of the resource designated by this
+				hyperlink. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>lang</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Code describing the language used in the generated
+				markup for this component. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onblur</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when this element loses focus. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onclick</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a pointer button is
+				clicked over this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>ondblclick</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a pointer button is double
+				clicked over this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onfocus</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when this element receives
+				focus. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onkeydown</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a key is pressed down over
+				this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onkeypress</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a key is pressed and
+				released over this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onkeyup</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a key is released over
+				this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onmousedown</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a pointer button is
+				pressed down over this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onmousemove</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a pointer button is moved
+				within this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onmouseout</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a pointer button is moved
+				away from this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onmouseover</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a pointer button is moved
+				onto this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>onmouseup</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Javascript code executed when a pointer button is
+				released over this element. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>rel</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The relationship from the current document to the anchor
+				specified by this hyperlink.
+				The value of this attribute is a space-separated list of link types. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>rev</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				A reverse link from the anchor specified by this
+				hyperlink to the current document.
+				The value of this attribute is a space-separated list of link types. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>shape</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The shape of the hot spot on the screen (for use in
+				client-side image maps).
+				Valid values are: default (entire region); rect (rectangular region);
+				circle (circular region);
+				and poly (polygonal region). 
+			</description>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				CSS style(s) to be applied when this component is
+				rendered. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>styleClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Space-separated list of CSS style class(es) to be
+				applied when this element is rendered.
+				This value must be passed through as the "class" attribute on generated
+				markup. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Position of this element in the tabbing order for the
+				current document. This value must be an integer between 0 and 32767. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Name of a frame where the resource retrieved via this
+				hyperlink is to be displayed. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>title</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Advisory title information about markup elements
+				generated for this component. 
+			</description>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The content type of the resource designated by this
+				hyperlink. 
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>
+			urlbuffer
+		</name>
+		<tag-class>
+			com.ocpsoft.pretty.faces.component.tag.UrlBufferTag
+		</tag-class>
+		<attribute>
+			<name>mappingId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The unique identifier of the PrettyFaces mapping. (e.g.
+				mapping-id in your pretty-config.xml)
+			</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				The request map key in which to store the generated Url.
+				Accessed via #{requestScope.var}
+			</description>
+		</attribute>
+    <attribute>
+      <name>relative</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+        Boolean flag defining whether url should be relative to
+        web application context path ("true") or server root ("false").
+        Default value is "false".
+      </description>
+    </attribute>
+	</tag>
+</taglib>

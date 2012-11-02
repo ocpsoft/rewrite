@@ -146,6 +146,11 @@
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-prettyfaces</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-config-tuckey</artifactId>
             <version>${project.version}</version>
          </dependency>

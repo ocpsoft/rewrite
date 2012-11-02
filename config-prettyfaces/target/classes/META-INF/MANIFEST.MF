@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Built-By: lbaxter
+Build-Jdk: 1.6.0_37
+Specification-Title: rewrite-config-prettyfaces
+Specification-Version: 2.0.0-SNAPSHOT
+Specification-Vendor: OCPsoft
+Implementation-Title: rewrite-config-prettyfaces
+Implementation-Version: 2.0.0-SNAPSHOT
+Implementation-Vendor-Id: org.ocpsoft.rewrite
+Implementation-Vendor: OCPsoft
+Created-By: Maven Integration for Eclipse
+Implementation-URL: http://ocpsoft.org/rewrite/rewrite-config-prettyfa
+ ces/
+
+Name: Build-Information
+Os-Name: Mac OS X
+Java-Version: 1.6.0_37
+Scm-Url: http://github.com/ocpsoft/rewrite/rewrite-config-prettyfaces
+Java-Vendor: Apple Inc.
+Os-Version: 10.8.2
+Os-Arch: x86_64
+

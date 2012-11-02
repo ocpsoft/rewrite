@@ -1,0 +1,4 @@
+com.ocpsoft.pretty.faces.config.spi.AnnotationConfigurationProvider
+com.ocpsoft.pretty.faces.config.spi.ClassLoaderConfigurationProvider
+com.ocpsoft.pretty.faces.config.spi.ContextSpecifiedConfigurationProvider
+com.ocpsoft.pretty.faces.config.spi.DefaultXMLConfigurationProvider

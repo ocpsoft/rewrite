@@ -18,6 +18,8 @@ package com.ocpsoft.pretty.faces2.config.reload;
 import javax.faces.application.ProjectStage;
 import javax.servlet.ServletContext;
 
+import org.ocpsoft.logging.Logger;
+
 import com.ocpsoft.pretty.faces.spi.DevelopmentModeDetector;
 import com.ocpsoft.pretty.faces.util.FacesFactory;
 
@@ -29,6 +31,7 @@ import com.ocpsoft.pretty.faces.util.FacesFactory;
  */
 public class JSF2DevelopmentModeDetector implements DevelopmentModeDetector
 {
+   Logger log = Logger.getLogger(JSF2DevelopmentModeDetector.class);
 
    public int getPriority()
    {
@@ -37,7 +40,13 @@ public class JSF2DevelopmentModeDetector implements DevelopmentModeDetector
 
    public Boolean isDevelopmentMode(ServletContext servletContext)
    {
-      return !ProjectStage.Production.equals(FacesFactory.getApplication().getProjectStage());
+      try {
+         return !ProjectStage.Production.equals(FacesFactory.getApplication().getProjectStage());
+      }
+      catch (Exception e) {
+         log.warn("Could not determine project stage due to underlying exception.", e);
+         return false;
+      }
    }
 
 }
