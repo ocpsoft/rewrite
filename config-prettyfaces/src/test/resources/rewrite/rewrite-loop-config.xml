@@ -1,0 +1,6 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!-- matches "/rewrite-loop.html" AND "/rewrite-loop.jsf" -->
+  <rewrite match="/rewrite-loop\..*" substitute="/rewrite-loop.jsf" redirect="chain" />
+
+</pretty-config>

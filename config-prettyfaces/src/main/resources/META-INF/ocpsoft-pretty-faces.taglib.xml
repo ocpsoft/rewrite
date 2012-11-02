@@ -1,0 +1,366 @@
+<?xml version="1.0"?>
+<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+  http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+  version="2.0">
+
+  <namespace>http://ocpsoft.com/prettyfaces</namespace>
+
+  <tag>
+    <description>
+      JSF2 client behavior to change the current URL 
+      by setting 'window.location.href'.
+    </description>
+    <tag-name>location</tag-name>
+    <behavior>
+      <behavior-id>com.ocpsoft.pretty.LocationBehavior</behavior-id>
+    </behavior>
+    <attribute>
+      <description>
+        The event to bind the behavior to.
+      </description>
+      <name>event</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The unique identifier of the PrettyFaces mapping to generate
+        the URL from. This attribute is ignored if you set the 'url' 
+        attribute.
+      </description>
+      <name>mappingId</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The URL to navigate to. If this attribute is set, the behavior
+        will ignore the 'mappingId' attribute.
+      </description>
+      <name>url</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+
+  <tag>
+    <description>
+      Link component used to render Pretty URLs based on parameters passed. (see f:param)
+    </description>
+    <tag-name>link</tag-name>
+    <component>
+      <component-type>com.ocpsoft.pretty.Link</component-type>
+      <renderer-type>javax.faces.Link</renderer-type>
+    </component>
+    <attribute>
+      <description>
+        The unique identifier of the PrettyFaces mapping. (e.g.
+        mapping-id in your pretty-config.xml)
+      </description>
+      <name>mappingId</name>
+      <required>true</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        A developer assigned id to the element. Must be unique
+      </description>
+      <name>id</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Access key that, when pressed, transfers focus to this
+        element. 
+      </description>
+      <name>accesskey</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        When the "anchor" attribute is defined, the rendered URL
+        is constructed as follows:
+        http://{server}/{context}/{prettyUrl}#{anchor} 
+      </description>
+      <name>anchor</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The character encoding of the resource designated by
+        this hyperlink. 
+      </description>
+      <name>charset</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The position and shape of the hot spot on the screen
+        (for use in client-side image maps). 
+      </description>
+      <name>coords</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Direction indication for text that does not inherit
+        directionality. Valid values are "LTR" (left-to-right) and "RTL"
+        (right-to-left).
+      </description>
+      <name>dir</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The language code of the resource designated by this
+        hyperlink. 
+      </description>
+      <name>hreflang</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Code describing the language used in the generated
+        markup for this component. 
+      </description>
+      <name>lang</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when this element loses focus. 
+      </description>
+      <name>onblur</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a pointer button is
+        clicked over this element. 
+      </description>
+      <name>onclick</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a pointer button is double
+        clicked over this element. 
+      </description>
+      <name>ondblclick</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when this element receives
+        focus. 
+      </description>
+      <name>onfocus</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a key is pressed down over
+        this element. 
+      </description>
+      <name>onkeydown</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a key is pressed and
+        released over this element. 
+      </description>
+      <name>onkeypress</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a key is released over
+        this element. 
+      </description>
+      <name>onkeyup</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a pointer button is
+        pressed down over this element. 
+      </description>
+      <name>onmousedown</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a pointer button is moved
+        within this element. 
+      </description>
+      <name>onmousemove</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a pointer button is moved
+        away from this element. 
+      </description>
+      <name>onmouseout</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a pointer button is moved
+        onto this element. 
+      </description>
+      <name>onmouseover</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Javascript code executed when a pointer button is
+        released over this element. 
+      </description>
+      <name>onmouseup</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The relationship from the current document to the anchor
+        specified by this hyperlink.
+        The value of this attribute is a space-separated list of link types. 
+      </description>
+      <name>rel</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        A reverse link from the anchor specified by this
+        hyperlink to the current document.
+        The value of this attribute is a space-separated list of link types. 
+      </description>
+      <name>rev</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The shape of the hot spot on the screen (for use in
+        client-side image maps).
+        Valid values are: default (entire region); rect (rectangular region);
+        circle (circular region);
+        and poly (polygonal region). 
+      </description>
+      <name>shape</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        CSS style(s) to be applied when this component is
+        rendered. 
+      </description>
+      <name>style</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Space-separated list of CSS style class(es) to be
+        applied when this element is rendered.
+        This value must be passed through as the "class" attribute on generated
+        markup. 
+      </description>
+      <name>styleClass</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Position of this element in the tabbing order for the
+        current document. This value must be an integer between 0 and 32767. 
+      </description>
+      <name>tabindex</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Name of a frame where the resource retrieved via this
+        hyperlink is to be displayed. 
+      </description>
+      <name>target</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        Advisory title information about markup elements
+        generated for this component. 
+      </description>
+      <name>title</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The content type of the resource designated by this
+        hyperlink. 
+      </description>
+      <name>type</name>
+      <required>false</required>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+
+  <tag>
+    <description>
+      Component used to generate Pretty URLs based on parameters passed (see f:param.)
+      The generated URL is stored in the designated EL variable (in the requestScope).
+    </description>
+    <tag-name>urlbuffer</tag-name>
+    <component>
+      <component-type>com.ocpsoft.pretty.UrlBuffer</component-type>
+      <renderer-type>com.ocpsoft.pretty.UrlBuffer</renderer-type>
+    </component>
+    <attribute>
+      <description>
+        The unique identifier of the PrettyFaces mapping. (e.g.
+        mapping-id in your pretty-config.xml)
+      </description>
+      <name>mappingId</name>
+      <required>true</required>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>
+        The request map key in which to store the generated Url.
+        Accessed via #{requestScope.var}
+      </description>
+      <name>var</name>
+      <required>true</required>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+
+</facelet-taglib>

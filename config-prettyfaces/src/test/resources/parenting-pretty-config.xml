@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <url-mapping id="parent">
+      <pattern value="/parent" />
+      <query-param name="parent">#{myBean.parentParam}</query-param>
+      <view-id value="/parent.jsf" />
+      <action inheritable="true">#{myBean.parentAction}</action>
+   </url-mapping>
+
+   <url-mapping id="child" parentId="parent">
+      <pattern value="/child/#{name}">
+         <validate index="0" validatorIds="validator1" onError="#{validationBean.handle}" />
+      </pattern>
+      <query-param name="child">#{myBean.childParam}</query-param>
+      <view-id value="/child.jsf" />
+      <action>#{myBean.childAction}</action>
+   </url-mapping>
+
+   <url-mapping id="child2" parentId="parent">
+      <pattern value="/child2/#{name}" />
+      <query-param name="child2">#{myBean.child2Param}</query-param>
+      <view-id value="/child2.jsf" />
+      <action>#{myBean.child2Action}</action>
+   </url-mapping>
+
+   <url-mapping id="grandchild" parentId="child">
+      <pattern value="/grandchild/#{gname}">
+         <validate index="0" validatorIds="validator2" onError="#{validationBean.handle2}" validator="#{validationBean.validateMethod}" />
+      </pattern>
+      <query-param name="grandchild">#{myBean.grandchildParam}</query-param>
+      <view-id value="/grandchild.jsf" />
+      <action>#{myBean.grandchildAction}</action>
+   </url-mapping>
+
+</pretty-config>

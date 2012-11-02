@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:pretty="http://ocpsoft.com/prettyfaces"  
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<head>
+  <title>DynaView Test</title>
+</head>
+
+<body>
+
+  <p>
+    <pretty:link id="pathParamLink" mappingId="pathParamMapping">
+      <f:param value="correct"/>
+      <h:outputText value="Path Parameter!" />
+    </pretty:link>
+  </p>
+
+  <p>
+    <pretty:link id="queryParamLink" mappingId="queryParamMapping">
+      <f:param name="param" value="correct"/>
+      <h:outputText value="Query Parameter!" />
+    </pretty:link>
+  </p>
+
+  <p>
+    <pretty:link id="invalidPathParamLink" mappingId="pathParamMapping">
+      <f:param value="invalid"/>
+      <h:outputText value="Invalid Path Parameter!" />
+    </pretty:link>
+  </p>
+
+  <p>
+    <pretty:link id="invalidQueryParamLink" mappingId="queryParamMapping">
+      <f:param name="param" value="invalid"/>
+      <h:outputText value="Invalid Query Parameter!" />
+    </pretty:link>
+  </p>
+
+</body>
+
+</html>

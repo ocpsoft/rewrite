@@ -177,15 +177,15 @@ public class RewriteTest extends RewriteTestBase
 
    protected static JavaArchive getCurrentArchive()
    {
-      File classes = new File("target/classes/org");
+      File org = new File("target/classes/org");
       File metaInf = new File("target/classes/META-INF");
 
       JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-current-module.jar");
 
-      if (!classes.getAbsolutePath().contains("impl-servlet"))
+      if (!org.getAbsolutePath().contains("impl-servlet"))
       {
-         if (classes.exists())
-            archive.addAsResource(classes);
+         if (org.exists())
+            archive.addAsResource(org);
          if (metaInf.exists())
             archive.addAsResource(metaInf);
       }

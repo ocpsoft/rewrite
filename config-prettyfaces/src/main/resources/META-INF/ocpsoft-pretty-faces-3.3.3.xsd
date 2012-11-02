@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  Copyright 2010 Lincoln Baxter, III
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" targetNamespace="http://ocpsoft.com/prettyfaces/3.3.3"
+	xmlns="http://ocpsoft.com/prettyfaces/3.3.3">
+
+	<xs:annotation>
+		<xs:documentation>PrettyFaces Configuration XSD Schema
+		</xs:documentation>
+	</xs:annotation>
+	<xs:element name="pretty-config" type="pretty-config"></xs:element>
+
+	<xs:complexType name="pretty-config">
+		<xs:annotation>
+			<xs:documentation>The PrettyFaces configuration file root element.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="rewrite" minOccurs="0" maxOccurs="unbounded"
+				type="rewrite">
+			</xs:element>
+			<xs:element name="url-mapping" minOccurs="0" maxOccurs="unbounded"
+				type="url-mapping">
+			</xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="url-mapping">
+	   <xs:annotation>
+	      <xs:documentation>
+	         A PrettyFaces URL Mapping.
+	      </xs:documentation>
+	   </xs:annotation>
+	   <xs:sequence>
+	      <xs:element name="pattern" minOccurs="1" maxOccurs="1">
+	         <xs:annotation>
+	            <xs:documentation>
+	               Specify the pattern for which this URL will be
+	               matched.
+
+	               Any EL expressions #{someBean.paramName} found within
+	               the pattern will be processed as value injections.
+	               The URL will be parsed and the value found at the
+	               location of the EL expression will be injected into
+	               the location specified in that EL expression. Note:
+	               EL expressions will not match over the ‘/’ character.
+
+	               Additionally, each expression may specify a name, or
+	               only a name: #{myParam:someBean.paramName},
+	               #{myParam} - this provides parameter access to
+	               non-JSF applications by adding the extracted value to
+	               the HttpServletRequest property Map.
+
+	               In order to take advantage of outbound-URL rewriting,
+	               the parameter name specified must match the parameter
+	               name used internally in the application.
+	            </xs:documentation>
+	         </xs:annotation>
+	         <xs:complexType>
+	            <xs:annotation>
+	               <xs:documentation>
+
+	                  The pattern for which this url-mapping will match
+	                  and filter incoming requests, and the pattern with
+	                  which to generate outbound links.
+	               </xs:documentation>
+	            </xs:annotation>
+	            <xs:sequence>
+	               <xs:element minOccurs="0" name="validate"
+	                  maxOccurs="unbounded">
+	                  <xs:annotation>
+	                     <xs:documentation>
+	                        Specify any number of pattern validators for
+	                        this mapping. Validators may be attached to
+	                        individual parameters in each dynamic URL.
+	                     </xs:documentation>
+	                  </xs:annotation>
+	                  <xs:complexType>
+	                     <xs:annotation>
+	                        <xs:documentation>
+	                           A pattern validator for this mapping.
+	                           Validators may be attached to individual
+	                           parameters in each dynamic URL.
+	                        </xs:documentation>
+	                     </xs:annotation>
+	                     <xs:attribute name="index" type="xs:int"
+	                        use="required">
+	                        <xs:annotation>
+	                           <xs:documentation>
+	                              The value index of the pattern on
+	                              which this validator will operate.
+
+	                              Eg:
+
+	                              <pattern
+	                                 value="/validate/#{validationBean.pathInput}/#{validationBean.pathInput2}">
+	                                 <validate index="0"
+	                                    validatorIds="validator1" />
+	                                 <validate index="1"
+	                                    validatorIds="validator2" />
+	                              </pattern>
+	                           </xs:documentation>
+	                        </xs:annotation>
+	                     </xs:attribute>
+	                     <xs:attribute name="validatorIds"
+	                        type="xs:string">
+	                        <xs:annotation>
+	                           <xs:documentation>
+	                              The IDs of the JSF Validator objects
+	                              to attach and process before bean
+	                              value injection.
+	                           </xs:documentation>
+	                        </xs:annotation>
+	                     </xs:attribute>
+	                     <xs:attribute name="validator"
+	                        type="xs:string">
+	                        <xs:annotation>
+	                           <xs:documentation>
+	                              The validation method used to check
+	                              the value before bean value injection.
+	                           </xs:documentation>
+	                        </xs:annotation>
+	                     </xs:attribute>
+	                     <xs:attribute name="onError"
+	                        type="xs:string">
+	                        <xs:annotation>
+	                           <xs:documentation>
+	                              The pretty:mappingId or #{bean.method}
+	                              to evaluate, should validation fail.
+	                           </xs:documentation>
+	                        </xs:annotation>
+	                     </xs:attribute>
+	                  </xs:complexType>
+	               </xs:element>
+	            </xs:sequence>
+	            <xs:attribute name="value" use="required">
+	               <xs:annotation>
+	                  <xs:documentation>
+	                     Specify the pattern for which this URL will be
+	                     matched.
+
+	                     Any EL expressions #{someBean.paramName} found
+	                     within the pattern will be processed as value
+	                     injections. The URL will be parsed and the
+	                     value found at the location of the EL
+	                     expression will be injected into the location
+	                     specified in that EL expression. Note: EL
+	                     expressions will not match over the ‘/’
+	                     character.
+
+	                     Additionally, each expression may specify a
+	                     name, or only a name:
+	                     #{myParam:someBean.paramName}, #{myParam} -
+	                     this provides parameter access to non-JSF
+	                     applications by adding the extracted value to
+	                     the HttpServletRequest property Map.
+
+	                     In order to take advantage of outbound-URL
+	                     rewriting, the parameter name specified must
+	                     match the parameter name used internally in the
+	                     application.
+	                  </xs:documentation>
+	               </xs:annotation>
+	               <xs:simpleType>
+	                  <xs:restriction base="xs:string">
+	                     <xs:whiteSpace value="collapse"></xs:whiteSpace>
+	                  </xs:restriction>
+	               </xs:simpleType>
+	            </xs:attribute>
+	         </xs:complexType>
+	      </xs:element>
+	      <xs:element name="query-param" minOccurs="0"
+	         maxOccurs="unbounded">
+	         <xs:annotation>
+	            <xs:documentation>
+	               Defines a managed query parameter of the form
+	               http://site.com/url?key=somevalue, where if the
+	               parameter exists, the value will be injected into the
+	               specified managed bean. This also handles JSF
+	               commandLink and AJAX &lt;f:param&gt; values.
+	            </xs:documentation>
+	         </xs:annotation>
+	         <xs:complexType>
+	            <xs:annotation>
+	               <xs:documentation>
+	                  Defines a managed query parameter of the form
+	                  http://site.com/url?key=somevalue, where if the
+	                  parameter exists, the value will be injected into
+	                  the specified managed bean. This also handles JSF
+	                  commandLink and AJAX &amp;lt;f:param&amp;gt;
+	                  values.
+	               </xs:documentation>
+	            </xs:annotation>
+	            <xs:simpleContent>
+	               <xs:extension base="xs:string">
+	                  <xs:attribute name="name" use="required">
+	                     <xs:annotation>
+	                        <xs:documentation>
+	                           The managed parameter name. This value
+	                           corresponds to the named key
+	                           HttpServletRequest.getRequestParameter(...)
+	                           when extracting HTTP Request Parameters.
+	                        </xs:documentation>
+	                     </xs:annotation>
+	                     <xs:simpleType>
+	                        <xs:restriction base="xs:string"></xs:restriction>
+	                     </xs:simpleType>
+	                  </xs:attribute>
+	                  <xs:attribute name="onPostback"
+	                     type="xs:boolean">
+	                     <xs:annotation>
+	                        <xs:documentation>
+	                           Optional boolean (default true), if set
+	                           to false this query parameter will not be
+	                           injected on form postbacks.
+	                        </xs:documentation>
+	                     </xs:annotation>
+	                  </xs:attribute>
+	                  <xs:attribute name="onError" type="xs:string">
+	                     <xs:annotation>
+	                        <xs:documentation>
+	                           The pretty:mappingId or #{bean.method} to
+	                           evaluate, should validation fail.
+	                        </xs:documentation>
+	                     </xs:annotation>
+	                  </xs:attribute>
+	                  <xs:attribute name="validatorIds"
+	                     type="xs:string">
+	                     <xs:annotation>
+	                        <xs:documentation>
+	                           The IDs of the JSF Validator objects to
+	                           attach and process before bean value
+	                           injection.
+	                        </xs:documentation>
+	                     </xs:annotation>
+	                  </xs:attribute>
+	                  <xs:attribute name="validator" type="xs:string">
+	                     <xs:annotation>
+	                        <xs:documentation>
+	                           The validation method used to check the
+	                           value before bean value injection.
+	                        </xs:documentation>
+	                     </xs:annotation>
+	                  </xs:attribute>
+	               </xs:extension>
+	            </xs:simpleContent>
+	         </xs:complexType>
+	      </xs:element>
+	      <xs:element name="view-id" minOccurs="1" maxOccurs="1">
+	         <xs:annotation>
+	            <xs:documentation>
+	               Specify the URI displayed by this mapping, by either
+	               calling an el Method (must return an object for which
+	               the toString() method will return the view Id) or by
+	               returning a literal String value. The ViewId may be
+	               any resource located within the current Servlet
+	               Context: E.g. PrettyFaces can also forward to a
+	               non-Faces servlet.
+	            </xs:documentation>
+	         </xs:annotation>
+	         <xs:complexType>
+	            <xs:attribute name="value" type="xs:string"></xs:attribute>
+	         </xs:complexType>
+	      </xs:element>
+	      <xs:element name="action" minOccurs="0"
+	         maxOccurs="unbounded">
+	         <xs:annotation>
+	            <xs:documentation>
+	               Specify an action method to be called after URL
+	               parameters have been parsed and assigned into beans.
+	            </xs:documentation>
+	         </xs:annotation>
+	         <xs:complexType>
+	            <xs:annotation>
+	               <xs:documentation>
+	                  an action method to be called after URL parameters
+	                  have been parsed and assigned into beans.
+	               </xs:documentation>
+	            </xs:annotation>
+	            <xs:simpleContent>
+	               <xs:extension base="xs:string">
+	                  <xs:attribute name="phaseId">
+	                     <xs:simpleType>
+	                        <xs:restriction base="xs:string">
+	                           <xs:enumeration value="RESTORE_VIEW" />
+	                           <xs:enumeration
+	                              value="APPLY_REQUEST_VALUES" />
+	                           <xs:enumeration
+	                              value="PROCESS_VALIDATIONS" />
+	                           <xs:enumeration
+	                              value="UPDATE_MODEL_VALUES" />
+	                           <xs:enumeration
+	                              value="INVOKE_APPLICATION" />
+	                           <xs:enumeration value="RENDER_RESPONSE" />
+	                           <xs:enumeration value="ANY_PHASE" />
+	                        </xs:restriction>
+	                     </xs:simpleType>
+	                  </xs:attribute>
+	                  <xs:attribute name="onPostback"
+	                     type="xs:boolean">
+	                  </xs:attribute>
+	                  <xs:attribute name="inheritable"
+	                     type="xs:boolean" default="false">
+	                     <xs:annotation>
+	                        <xs:documentation>
+	                           Whether child mappings inherit
+	                           this action or not.
+	                        </xs:documentation>
+	                     </xs:annotation>
+	                  </xs:attribute>
+	               </xs:extension>
+	            </xs:simpleContent>
+	         </xs:complexType>
+	      </xs:element>
+	   </xs:sequence>
+	   <xs:attribute name="id" type="xs:string">
+	      <xs:annotation>
+	         <xs:documentation>
+	            The unique identifier by which this url-mapping will be
+	            referenced in the application (e.g.: link components,
+	            navigation outcomes, etc...)
+	         </xs:documentation>
+	      </xs:annotation>
+	   </xs:attribute>
+	   <xs:attribute name="outbound" type="xs:boolean">
+	      <xs:annotation>
+	         <xs:documentation>
+	            Enable or disable outbound URL rewriting for this
+	            mapping (default: 'true' / enabled.) If enabled, any
+	            links matching the viewId specified will be rewritten
+	            (if possible) using parameters mapping to named path
+	            parameters specified in the pattern.
+
+	            Eg, given the following mapping: &lt;url-mapping
+	            id="singleItem" outbound="true"&gt; &lt;pattern
+	            value="/store/#{cat:catBean.category}/#{pid:productBean.productId}"
+	            /&gt;
+	            &lt;viewId&gt;/faces/store/viewProduct.jsf&lt;/viewId&gt;
+	            &lt;/url-mapping&gt;
+
+	            The following outbound rewrite will occur:
+	            /faces/product/viewProduct.jsf?cat=foods&amp;pid=1234 =>
+	            /store/foods/1234
+	         </xs:documentation>
+	      </xs:annotation>
+	   </xs:attribute>
+	   <xs:attribute name="onPostback" type="xs:boolean">
+	      <xs:annotation>
+	         <xs:documentation>
+	            Optional boolean (default true), if set to false path
+	            parameters will not be injected on form postbacks.
+	         </xs:documentation>
+	      </xs:annotation>
+	   </xs:attribute>
+	   <xs:attribute name="parentId" type="xs:string"></xs:attribute>
+	</xs:complexType>
+
+
+	<xs:complexType name="rewrite">
+		<xs:annotation>
+			<xs:documentation>A Rewrite Engine rule.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="url" type="xs:anyURI">
+			<xs:annotation>
+				<xs:documentation>
+					Specify an entire URL to replace the current URL.
+					This will
+					overwrite the context-path and
+					query-parameters. This attribute must
+					be combined
+					with redirect="301" (default) or redirect="302", but
+					"302" is recommended to prevent adverse SEO effects.
+
+					Example:
+
+					<rewrite match="^/other-url-rewriting-tools" url="http://www.ocpsoft.com/prettyfaces/"
+						redirect="301" />
+
+					Note: You must provide a fully qualified URL,
+					including scheme name
+					- such as 'http://", 'ftp://',
+					'mailto:' ... and so on.
+
+Note: Regular expression backreferences to the match="" attribute are supported in the URL, so $ and / may change the value of the result.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="inbound" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>
+					Enable or disable inbound URL rewriting for this
+					rule
+					(default is 'true' / enabled.)
+
+					Inbound URL rewriting intercepts
+					incoming
+					HttpServletRequests. Setting this value to false
+					means that
+					this rule will be ignored on incoming
+					requests.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="match" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+					Describes, via a regular expression pattern,
+					when
+					this 'rewrite' rule should trigger on an
+					inbound or outbound URL. If
+					empty, this rule
+					will match all URLs.
+
+					Example: match="^/foo/.*$" -
+					will trigger only
+					on urls with of the form: /context-path/foo/bar
+
+					For more information on regular expressions,
+					read:
+					http://ocpsoft.com/opensource/guide-to-regular-expressions-in-java-part-1/
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="outbound" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>
+					Enable or disable outbound URL rewriting for
+					this
+					rule (default is 'true' / enabled.)
+
+					Outbound URL rewriting
+					intercepts calls to
+					public String HttpServletResponse.encodeURL(...)
+					and will rewrite any requested URLs according to
+					the rules
+					specified.
+
+					For examples, html link and form component URLs
+					generated
+					by a framework like JavaServer Faces
+					are encoded using this method,
+					and will be
+					rewritten if an appropriate rewrite rule, with
+					outbound="true", is triggered.
+					</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="processor" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+					Specify a custom processor class to perform
+					custom URL rewriting.
+					This class must implement
+					the interface:
+					'com.ocpsoft.pretty.rewrite.Processor'
+
+					Example:
+
+					<rewrite match="..." processor="com.your.CustomClassProcessor"
+						redirect="302" />
+
+					import com.ocpsoft.pretty.rewrite.Processor; import
+					com.ocpsoft.pretty.config.rewrite.RewriteRule;
+
+					public class
+					CustomClassProcessor implements
+					Processor { public static final
+					String RESULT =
+					"I PROCESSED!";
+
+					public String process(final RewriteRule
+					rewrite, final
+					String url) { return RESULT; } }
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="redirect" type="redirectType">
+			<xs:annotation>
+				<xs:documentation>
+					Specifies which type of redirect should be
+					issued
+					when this rule triggers.
+
+					'301' or 'Permanent' (default): will issue
+					a
+					redirect notifying of a permanent address
+					change; search engines
+					index through 301
+					redirects to maintain existing search rank, even
+					when a page is moved. The new address is
+					considered to be the new
+					location of the
+					resource.
+
+					'302' or 'Temporary': will issue a
+					temporary
+					redirect; search engines do not index through
+					302
+					redirects. The new URL is considered to be
+					an alternate/duplicate
+					resource - simply a
+					different page the server wants the browser to
+					see.
+
+					'Chain': will redirect internally after all
+					other chaining rules
+					have triggered.
+
+					301 and 302 redirects are issued immediately
+					upon a
+					rule triggering. Chaining is issued via
+					an internal Servlet forward
+					once all chaining
+					rules have executed on the request.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="substitute" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>
+					The regular expression substitution value of the
+					"match" attribute.
+					This effectively enables a
+					"search and replace" functionality.
+
+					Example:
+					<rewrite match="^/foo/(.*)$" substitute="/bar/$1" />
+
+					Will match the following URL:
+					'/context-path/foo/subst', and will
+					substitute
+					the following URL: '/context-path/bar/subst' in
+					its place.
+
+					For more information on regular expressions,
+					read:
+					http://ocpsoft.com/opensource/guide-to-regular-expressions-in-java-part-1/
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="toCase" type="toCaseType">
+			<xs:annotation>
+				<xs:documentation>
+					Change the entire URL (excluding context-path and
+					query-parameters) to 'UPPERCASE' or 'lowercase'.
+
+					Examples:
+
+					Ignore
+					(default): ../context-path/Ignore/Example -->
+					../context-path/Ignore/Example
+
+					Uppercase:
+					../context-path/Uppercase/Example -->
+					../context-path/UPPERCASE/EXAMPLE
+
+					Lowercase:
+					../context-path/Lowercase/Example -->
+					../context-path/lowercase/example
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="trailingSlash" type="trailingSlashType">
+			<xs:annotation>
+				<xs:documentation>
+					Control whether trailing slashes on a URL should
+					be appended if missing, or removed if present.
+
+					Examples:
+
+					Ignore
+					(default): ../context-path/ignore/slash/
+					-->
+					../context-path/remove/slash/
+					../context-path/ignore/slash -->
+					../context-path/remove/slash
+
+					Append: ../context-path/append/slash
+					-->
+					../context-path/append/slash/
+
+					Remove:
+					../context-path/remove/slash/ -->
+					../context-path/remove/slash/
+
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:simpleType name="trailingSlashType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="append"></xs:enumeration>
+			<xs:enumeration value="ignore"></xs:enumeration>
+			<xs:enumeration value="remove"></xs:enumeration>
+			<xs:whiteSpace value="collapse"></xs:whiteSpace>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="toCaseType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ignore"></xs:enumeration>
+			<xs:enumeration value="lowercase"></xs:enumeration>
+			<xs:enumeration value="uppercase"></xs:enumeration>
+			<xs:whiteSpace value="collapse"></xs:whiteSpace>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="redirectType">
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"></xs:whiteSpace>
+			<xs:enumeration value="301"></xs:enumeration>
+			<xs:enumeration value="302"></xs:enumeration>
+			<xs:enumeration value="chain"></xs:enumeration>
+			<xs:enumeration value="permanent"></xs:enumeration>
+			<xs:enumeration value="temporary"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

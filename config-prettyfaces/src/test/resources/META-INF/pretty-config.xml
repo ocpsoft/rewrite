@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.1.1"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.1.1 
+	http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.1.1.xsd">
+
+   <url-mapping id="0">
+      <pattern value="/project/#{viewProjectBean.projectId}/" />
+      <view-id value="#{viewProjectBean.getPrettyTarget}" />
+      <action>#{viewProjectBean.authorize}</action>
+      <action>#{viewProjectBean.load}</action>
+   </url-mapping>
+   <url-mapping id="1" onPostback="false">
+      <pattern value="/project/#{addProjectBean.projectName}/" />
+      <view-id value="#{addProjectBean.getPrettyTarget}" />
+      <action onPostback="false">#{addProjectBean.authorize}</action>
+      <action onPostback="true">#{addProjectBean.create}</action>
+   </url-mapping>
+   <url-mapping id="2">
+      <pattern value="/project/#{addProjectBean.projectName}/" />
+      <view-id value="#{addProjectBean.getPrettyTarget}" />
+      <action>#{addProjectBean.authorize}</action>
+      <action phaseId="ANY_PHASE">#{addProjectBean.create}
+		</action>
+   </url-mapping>
+   <url-mapping id="3">
+      <pattern value="/project/#{addProjectBean.projectName}/" />
+      <view-id value="#{addProjectBean.getPrettyTarget}" />
+      <action>#{addProjectBean.authorize}</action>
+      <action phaseId="RENDER_RESPONSE">#{addProjectBean.create}
+		</action>
+   </url-mapping>
+   <url-mapping id="4">
+      <pattern value="/project/#{deleteUserBean.projectName}/delete" />
+      <query-param name="user">#{deleteUserBean.userName}
+		</query-param>
+      <view-id value="#{deleteUserBean.getPrettyTarget}" />
+      <action phaseId="RENDER_RESPONSE">#{deleteUserBean.delete}
+		</action>
+   </url-mapping>
+   <url-mapping id="5">
+      <pattern value="/project/#{deleteUserBean.projectName}/delete" />
+      <query-param name="user">#{deleteUserBean.userName}</query-param>
+      <view-id value="#{deleteUserBean.getPrettyTarget}" />
+   </url-mapping>
+   <url-mapping id="6">
+      <pattern value="/project/#{searchUserBean.projectName}/search" />
+      <query-param name="name">#{searchUserBean.userName}</query-param>
+      <query-param name="gender">#{searchUserBean.userGender}
+		</query-param>
+      <view-id value="/faces/search.jsf" />
+      <action phaseId="RENDER_RESPONSE">#{searchUserBean.search}
+		</action>
+   </url-mapping>
+   <url-mapping id="7">
+      <pattern value="/project/#{viewUserBean.projectName}/view" />
+      <view-id value="/faces/search.jsf" />
+      <action phaseId="RENDER_RESPONSE">#{viewUserBean.load}</action>
+   </url-mapping>
+   <url-mapping id="8">
+      <pattern value="/some-view" />
+      <query-param name="withoutAttribute">#{someBean.someProperty}</query-param>
+      <query-param name="attributeSetToFalse" onPostback="false">#{someBean.someProperty}</query-param>
+      <query-param name="attributeSetToTrue" onPostback="true">#{someBean.someProperty}</query-param>
+      <view-id value="/faces/some-view.jsf" />
+   </url-mapping>
+
+   <!-- Begin non-ordered mappings -->
+   <url-mapping id="validate">
+      <pattern value="/validate/#{validationBean.pathInput}">
+         <validate index="0" validatorIds="validator1"
+            onError="#{validationBean.handle}" />
+         <validate index="1" validatorIds="validator2"
+            onError="#{validationBean.handle2}" validator="#{validationBean.validateMethod}" />
+      </pattern>
+      <query-param name="p" validatorIds="validator1 validator2"
+         onError="pretty:demo" validator="#{validationBean.validateMethod}">
+      #{validationBean.queryInput}
+		</query-param>
+      <view-id value="/faces/validate.jsf" />
+   </url-mapping>
+</pretty-config>

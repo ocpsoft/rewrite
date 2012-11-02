@@ -27,7 +27,6 @@
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
          <scope>provided</scope>
       </dependency>
-
       <dependency>
          <groupId>org.jboss.spec.javax.faces</groupId>
          <artifactId>jboss-jsf-api_2.1_spec</artifactId>
@@ -42,7 +41,9 @@
          <groupId>javax.servlet</groupId>
          <artifactId>jstl</artifactId>
          <version>1.1.2</version>
+         <scope>provided</scope>
       </dependency>
+      
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>

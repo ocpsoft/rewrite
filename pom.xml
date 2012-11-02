@@ -47,6 +47,7 @@
       <module>annotations-impl</module>
       <module>config-annotations</module>
       <module>config-jodatime</module>
+      <module>config-prettyfaces</module>
       <module>config-trie</module>
       <module>config-tuckey</module>
       <module>config-typesafe</module>
@@ -178,6 +179,11 @@
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-integration-cdi</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-integration-faces</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>
