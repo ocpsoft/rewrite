@@ -30,8 +30,8 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.Phase;
-import org.ocpsoft.rewrite.faces.annotation.config.DeferredOperation;
 import org.ocpsoft.rewrite.faces.config.PhaseBinding;
+import org.ocpsoft.rewrite.faces.config.PhaseOperation;
 
 public class DeferredHandler implements AnnotationHandler<Deferred>
 {
@@ -52,7 +52,6 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
    }
 
    @Override
-   @SuppressWarnings("rawtypes")
    public void process(ClassContext context, Deferred annotation, HandlerChain chain)
    {
 
@@ -99,17 +98,17 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
          Operation operation = (Operation) context.get(Operation.class);
          if (operation != null) {
 
-            DeferredOperation deferredOperation = new DeferredOperation(operation);
+            PhaseOperation<?> deferred = PhaseOperation.enqueue(operation, 10);
 
             // configure the target phase
             if (annotation.before() == Phase.NONE && annotation.after() == Phase.NONE) {
-               deferredOperation.after(PhaseId.RESTORE_VIEW);
+               deferred.after(PhaseId.RESTORE_VIEW);
             }
             else if (annotation.before() != Phase.NONE && annotation.after() == Phase.NONE) {
-               deferredOperation.before(annotation.before().getPhaseId());
+               deferred.before(annotation.before().getPhaseId());
             }
             else if (annotation.before() == Phase.NONE && annotation.after() != Phase.NONE) {
-               deferredOperation.after(annotation.after().getPhaseId());
+               deferred.after(annotation.after().getPhaseId());
             }
             else {
                throw new IllegalStateException("Error processing field " + method
@@ -117,7 +116,7 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
             }
 
             // replace existing binding builder
-            context.put(Operation.class, deferredOperation);
+            context.put(Operation.class, deferred);
 
          }
 

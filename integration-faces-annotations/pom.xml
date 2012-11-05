@@ -25,6 +25,11 @@
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-config-annotations</artifactId>
       </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl-servlet</artifactId>
+         <scope>provided</scope>
+      </dependency>
       
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
