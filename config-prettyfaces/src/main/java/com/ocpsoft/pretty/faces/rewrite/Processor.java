@@ -19,7 +19,6 @@ package com.ocpsoft.pretty.faces.rewrite;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.pretty.PrettyFilter;
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
 
 /**
@@ -32,7 +31,7 @@ public interface Processor
 {
    /**
     * Process an inbound URL Rewrite request. This takes place when the request first comes in to the server and passes
-    * through {@link PrettyFilter}
+    * through the rewrite rule processor.
     */
    String processInbound(HttpServletRequest request, HttpServletResponse response, RewriteRule rule, String url);
 

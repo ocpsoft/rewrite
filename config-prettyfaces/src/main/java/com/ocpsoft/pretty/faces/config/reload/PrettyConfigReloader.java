@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ocpsoft.common.services.ServiceLoader;
 
-import com.ocpsoft.pretty.PrettyFilter;
 import com.ocpsoft.pretty.faces.config.PrettyConfigurator;
 import com.ocpsoft.pretty.faces.spi.DevelopmentModeDetector;
 
@@ -55,13 +54,8 @@ public class PrettyConfigReloader
     */
    private Boolean developmentMode = null;
 
-   /**
-    * Called from
-    * {@link PrettyFilter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)}
-    */
-   public void onNewRequest(ServletContext servletContext)
+   public void reloadIfNecessary(ServletContext servletContext)
    {
-
       // the development mode detection is started when the first request is received
       if (developmentMode == null) {
 

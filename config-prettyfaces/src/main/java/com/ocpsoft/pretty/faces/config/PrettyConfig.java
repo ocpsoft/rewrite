@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.ocpsoft.pretty.PrettyContext;
-import com.ocpsoft.pretty.PrettyFilter;
 import com.ocpsoft.pretty.faces.config.mapping.UrlMapping;
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
 import com.ocpsoft.pretty.faces.url.URL;
@@ -48,7 +47,7 @@ public class PrettyConfig
    /**
     * Set the current DynaView ID. This is used when calculating dynamic viewIds specified in pretty-config.xml (Do not
     * change unless you know what you are doing - this maps directly to your Faces Servlet mapping and is discovered
-    * automatically when {@link PrettyFilter} starts up.
+    * automatically when the rewrite system starts up.
     */
    public void setDynaviewId(final String facesDynaViewId)
    {
