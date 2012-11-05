@@ -20,7 +20,9 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.faces.spi.JoinResourcePathResolver;
 
 /**
  * Helper class to build JSF action outcomes.
@@ -45,6 +47,25 @@ public class Navigate
    {
       Assert.notNull(viewId, "viewId must not be null");
       return new Navigate(viewId);
+   }
+
+   public static Navigate to(Class<?> clazz)
+   {
+
+      Assert.notNull(clazz, "clazz must not be null");
+
+      @SuppressWarnings("unchecked")
+      Iterable<JoinResourcePathResolver> resolvers = ServiceLoader.load(JoinResourcePathResolver.class);
+
+      for (JoinResourcePathResolver resolver : resolvers) {
+         String viewId = resolver.byClass(clazz);
+         if (viewId != null) {
+            return new Navigate(viewId);
+         }
+      }
+
+      throw new IllegalArgumentException("Unable to find the resource path for: " + clazz.getName());
+
    }
 
    public Navigate with(CharSequence name, Object value)
