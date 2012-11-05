@@ -29,7 +29,7 @@ import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptorChain;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-class PipelineOutputBuffer implements ResponseContentInterceptor
+class PipelineContentInterceptor implements ResponseContentInterceptor
 {
 
    private List<Transformer> pipeline = new ArrayList<Transformer>();

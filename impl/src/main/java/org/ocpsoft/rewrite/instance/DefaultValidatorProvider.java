@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.annotation.spi;
+package org.ocpsoft.rewrite.instance;
 
 import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.spi.ValidatorProvider;
 import org.ocpsoft.rewrite.util.Instances;
 
 /**
@@ -52,6 +53,12 @@ public class DefaultValidatorProvider implements ValidatorProvider
    {
       // unsupported
       return null;
+   }
+
+   @Override
+   public int priority()
+   {
+      return 0;
    }
 
 }

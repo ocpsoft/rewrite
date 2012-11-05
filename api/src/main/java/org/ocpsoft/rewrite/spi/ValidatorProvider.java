@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.annotation.spi;
+package org.ocpsoft.rewrite.spi;
 
+import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.rewrite.bind.Validator;
 
 /**
@@ -22,7 +23,7 @@ import org.ocpsoft.rewrite.bind.Validator;
  * 
  * @author Christian Kaltepoth
  */
-public interface ValidatorProvider
+public interface ValidatorProvider extends Weighted
 {
 
    /**

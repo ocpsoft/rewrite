@@ -13,31 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.annotation.spi;
+package org.ocpsoft.rewrite.annotation.resolver;
 
-import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.servlet.spi.ResourcePathResolver;
 
 /**
- * SPI for providing integration with other conversion frameworks.
+ * Implementation of {@link ResourcePathResolver} that looks for {@link Join} annotations on the target class.
  * 
  * @author Christian Kaltepoth
  */
-public interface ConverterProvider
+public class AnnotationJoinResourcePathResolver implements ResourcePathResolver
 {
 
-   /**
-    * Create a {@link Converter} by some unique ID.
-    */
-   Converter<?> getByConverterId(String id);
+   @Override
+   public String resolveFrom(Class<?> clazz)
+   {
+      Join annotation = clazz.getAnnotation(Join.class);
+      if (annotation != null) {
+         return annotation.to();
+      }
+      return null;
+   }
 
-   /**
-    * Create a {@link Converter} by a third party converter class.
-    */
-   Converter<?> getByConverterType(Class<?> converterType);
-
-   /**
-    * Create a {@link Converter} by a target type.
-    */
-   Converter<?> getByTargetType(Class<?> targetType);
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
 
 }

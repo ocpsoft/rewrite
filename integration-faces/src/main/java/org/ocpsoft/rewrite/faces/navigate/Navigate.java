@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.faces.spi.JoinResourcePathResolver;
+import org.ocpsoft.rewrite.servlet.spi.ResourcePathResolver;
 
 /**
  * Helper class to build JSF action outcomes.
@@ -55,10 +55,10 @@ public class Navigate
       Assert.notNull(clazz, "clazz must not be null");
 
       @SuppressWarnings("unchecked")
-      Iterable<JoinResourcePathResolver> resolvers = ServiceLoader.load(JoinResourcePathResolver.class);
+      Iterable<ResourcePathResolver> resolvers = ServiceLoader.load(ResourcePathResolver.class);
 
-      for (JoinResourcePathResolver resolver : resolvers) {
-         String viewId = resolver.byClass(clazz);
+      for (ResourcePathResolver resolver : resolvers) {
+         String viewId = resolver.resolveFrom(clazz);
          if (viewId != null) {
             return new Navigate(viewId);
          }

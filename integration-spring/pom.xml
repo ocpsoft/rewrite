@@ -32,11 +32,13 @@
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+         <scope>provided</scope>
       </dependency>
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
       </dependency>
 
    </dependencies>

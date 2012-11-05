@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <groupId>org.ocpsoft.rewrite</groupId>
@@ -9,6 +10,46 @@
    </parent>
 
    <artifactId>rewrite-transform-minify</artifactId>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl-servlet</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-transform</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.spec.javax.servlet</groupId>
+         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>com.yahoo.platform.yui</groupId>
+         <artifactId>yuicompressor</artifactId>
+         <version>2.4.6</version>
+      </dependency>
+
+      <dependency>
+         <groupId>rhino</groupId>
+         <artifactId>js</artifactId>
+         <version>1.6R7</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+   </dependencies>
+
 
    <build>
       <plugins>
@@ -65,48 +106,4 @@
          </plugin>
       </plugins>
    </build>
-
-   <dependencies>
-
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl-servlet</artifactId>
-         <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-transform</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>org.ocpsoft.common</groupId>
-         <artifactId>common-api</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>org.jboss.spec.javax.servlet</groupId>
-         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-         <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>com.yahoo.platform.yui</groupId>
-         <artifactId>yuicompressor</artifactId>
-         <version>2.4.6</version>
-      </dependency>
-
-      <dependency>
-         <groupId>rhino</groupId>
-         <artifactId>js</artifactId>
-         <version>1.6R7</version>
-      </dependency>
-
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-test-harness</artifactId>
-      </dependency>
-
-   </dependencies>
-
 </project>

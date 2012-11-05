@@ -4,11 +4,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.annotation.spi.ConverterProvider;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.faces.util.NullComponent;
+import org.ocpsoft.rewrite.spi.ConverterProvider;
 
 /**
  * {@link ConverterProvider} that allows to use JSF converters with Rewrite.
@@ -94,6 +94,13 @@ public class FacesConverterProvider implements ConverterProvider
          }
       }
 
+   }
+
+   @Override
+   public int priority()
+   {
+      // TODO Auto-generated method stub
+      return 0;
    }
 
 }

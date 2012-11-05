@@ -21,10 +21,6 @@
          <artifactId>rewrite-api</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl</artifactId>
-      </dependency>
-      <dependency>
          <groupId>cglib</groupId>
          <artifactId>cglib-nodep</artifactId>
          <version>${cglib.version}</version>
@@ -34,6 +30,12 @@
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl</artifactId>
+         <scope>test</scope>
       </dependency>
    </dependencies>
 

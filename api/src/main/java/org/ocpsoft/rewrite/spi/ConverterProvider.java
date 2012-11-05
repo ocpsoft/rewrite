@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,30 @@
  */
 package org.ocpsoft.rewrite.spi;
 
-import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
-import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.bind.Converter;
 
 /**
+ * SPI for providing integration with other conversion frameworks.
  * 
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * @author Christian Kaltepoth
  */
-public interface ParameterizedPatternInterceptor extends Weighted, Specialized<Parameter<?, ?>>
+public interface ConverterProvider extends Weighted
 {
+
+   /**
+    * Create a {@link Converter} by some unique ID.
+    */
+   Converter<?> getByConverterId(String id);
+
+   /**
+    * Create a {@link Converter} by a third party converter class.
+    */
+   Converter<?> getByConverterType(Class<?> converterType);
+
+   /**
+    * Create a {@link Converter} by a target type.
+    */
+   Converter<?> getByTargetType(Class<?> targetType);
+
 }

@@ -61,7 +61,6 @@
       <module>integration-cdi</module>
       <module>integration-faces</module>
       <module>integration-faces-annotations</module>
-      <module>integration-oracle-adf</module>
       <module>integration-gwt</module>
       <module>integration-spring</module>
       <module>security-integration-shiro</module>

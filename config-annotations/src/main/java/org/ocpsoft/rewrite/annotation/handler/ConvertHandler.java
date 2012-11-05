@@ -24,13 +24,13 @@ import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.annotation.Convert;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
-import org.ocpsoft.rewrite.annotation.spi.ConverterProvider;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.spi.ConverterProvider;
 
 /**
  * Handler for {@link Convert}.

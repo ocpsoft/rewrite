@@ -23,7 +23,7 @@
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-config-annotations</artifactId>
+         <artifactId>rewrite-annotations-api</artifactId>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
@@ -49,6 +49,11 @@
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-annotations</artifactId>
          <scope>test</scope>
       </dependency>
       <dependency>

@@ -24,7 +24,7 @@ import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
 public class Transform extends HttpOperation
 {
 
-   private PipelineOutputBuffer pipeline = new PipelineOutputBuffer();
+   private PipelineContentInterceptor pipeline = new PipelineContentInterceptor();
 
    public static Transform with(Class<? extends Transformer> transformerType)
    {

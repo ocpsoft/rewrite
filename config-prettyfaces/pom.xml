@@ -26,11 +26,12 @@
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-test-harness</artifactId>
+         <artifactId>rewrite-integration-faces</artifactId>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-integration-faces</artifactId>
+         <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>

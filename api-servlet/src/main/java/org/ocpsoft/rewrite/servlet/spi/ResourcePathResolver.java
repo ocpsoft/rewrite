@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.faces.annotation.navigate;
+package org.ocpsoft.rewrite.servlet.spi;
 
-import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.faces.spi.JoinResourcePathResolver;
+import org.ocpsoft.common.pattern.Weighted;
 
 /**
- * Implementation of {@link JoinResourcePathResolver} that looks for {@link Join} annotations on the target class.
+ * SPI which is responsible to resolve the server-side target resource assigned to a given {@link Class}.
  * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class AnnotationJoinResourcePathResolver implements JoinResourcePathResolver
+public interface ResourcePathResolver extends Weighted
 {
-
-   @Override
-   public String byClass(Class<?> clazz)
-   {
-      Join annotation = clazz.getAnnotation(Join.class);
-      if (annotation != null) {
-         return annotation.to();
-      }
-      return null;
-   }
-
+   /**
+    * Resolve the server side target resource. This should return the path to the resource as it would be requested from
+    * the client. E.g.: "/pages/index.xhtml".
+    */
+   String resolveFrom(Class<?> clazz);
 }
