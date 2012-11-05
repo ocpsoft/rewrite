@@ -27,11 +27,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.faces.component.UIParameter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -124,8 +127,10 @@ public class UrlMappingRuleAdaptor implements Rule
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       if ((event instanceof HttpInboundServletRewrite)
-               && mapping.matches(new URL(((HttpServletRewrite)event).getRequestURL())))
+               && mapping.matches(new URL(((HttpServletRewrite) event).getRequestURL())))
       {
+         ((HttpServletRewrite) event).getRequest().setAttribute(REWRITE_MAPPING_ID_KEY,
+                  REWRITE_MAPPING_ID_KEY + ":" + mapping.getId());
          return true;
       }
       else if ((event instanceof HttpOutboundServletRewrite)

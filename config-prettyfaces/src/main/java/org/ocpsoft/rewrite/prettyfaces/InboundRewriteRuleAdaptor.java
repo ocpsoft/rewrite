@@ -21,6 +21,8 @@
  */
 package org.ocpsoft.rewrite.prettyfaces;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -40,6 +42,7 @@ import com.ocpsoft.pretty.faces.util.StringUtils;
  */
 public class InboundRewriteRuleAdaptor implements Rule
 {
+   private static final String REWRITE_OCCURRED_KEY = InboundRewriteRuleAdaptor.class.getName() + "_REWRITE_OCCURRED";
    private final RewriteRule rule;
 
    public InboundRewriteRuleAdaptor(final RewriteRule rule)
@@ -57,6 +60,7 @@ public class InboundRewriteRuleAdaptor implements Rule
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       if ((event instanceof HttpInboundServletRewrite)
+               && isRewritingEnabled(event)
                && rule.isInbound()
                && rule.matches(URL.build(((HttpServletRewrite) event).getRequestPath()).decode().toURL()
                         + QueryString.build(((HttpServletRewrite) event).getRequestQueryStringSeparator()
@@ -117,8 +121,28 @@ public class InboundRewriteRuleAdaptor implements Rule
       else {
          if (!originalUrl.equals(newUrl))
          {
+            setRewriteOccurred(event);
             ((HttpInboundServletRewrite) event).forward(newUrl);
          }
       }
+   }
+
+   private void setRewriteOccurred(Rewrite event)
+   {
+      ((HttpServletRewrite) event).getRequest().setAttribute(REWRITE_OCCURRED_KEY, true);
+   }
+
+   boolean isRewritingEnabled(Rewrite event)
+   {
+      HttpServletRequest request = ((HttpServletRewrite) event).getRequest();
+      Object rewriteOccurred = request.getAttribute(REWRITE_OCCURRED_KEY);
+      Object mappingForwardOccurred = request.getAttribute(UrlMappingRuleAdaptor.REWRITE_MAPPING_ID_KEY);
+      return rewriteOccurred == null && mappingForwardOccurred == null;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "InboundRewriteRuleAdaptor [rule=" + rule + "]";
    }
 }
