@@ -58,4 +58,10 @@ public class PrettyFacesRequestParameterProvider implements RequestParameterProv
       return null;
    }
 
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

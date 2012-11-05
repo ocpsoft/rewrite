@@ -20,15 +20,18 @@ import javax.servlet.ServletResponse;
 
 import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
-
 import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 
 /**
+ * SPI for creating {@link OutboundRewriteEvent} instances.
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public interface OutboundRewriteProducer<IN extends ServletRequest, OUT extends ServletResponse, P> extends
 Specialized<ServletResponse>, Weighted
 {
+   /**
+    * Create an {@link OutboundServletRewrite} instance.
+    */
    OutboundServletRewrite<IN, OUT> createOutboundRewrite(ServletRequest request, ServletResponse response, P payload);
 }

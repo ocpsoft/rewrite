@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.annotation.spi;
 
+import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 
 /**
@@ -22,7 +23,7 @@ import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
  * 
  * @author Christian Kaltepoth
  */
-public interface ClassFinder
+public interface ClassFinder extends Weighted
 {
    /**
     * Starting to search for classes. The supplied {@link ClassVisitor} must be called for every class found.

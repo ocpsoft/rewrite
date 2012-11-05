@@ -16,6 +16,8 @@
  */
 package org.ocpsoft.rewrite.cdi.manager;
 
+import org.ocpsoft.rewrite.cdi.spi.BeanManagerProvider;
+
 /**
  * A {@link BeanManagerProvider} that looks it up from the standard JNDI location used in servlet containers.
  * 

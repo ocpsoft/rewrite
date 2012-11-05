@@ -15,7 +15,10 @@
  */
 package org.ocpsoft.rewrite.servlet.spi;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+
+import org.ocpsoft.common.pattern.Weighted;
 
 /**
  * Listens to {@link ServletContextEvent}.
@@ -31,9 +34,15 @@ import javax.servlet.ServletContextEvent;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface ContextListener
+public interface ContextListener extends Weighted
 {
+   /**
+    * Respond to {@link ServletContext} initialized event.
+    */
    void contextInitialized(ServletContextEvent event);
 
+   /**
+    * Respond to {@link ServletContext} destroyed event.
+    */
    void contextDestroyed(ServletContextEvent event);
 }

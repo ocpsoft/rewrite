@@ -21,6 +21,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.common.pattern.Weighted;
+
 /**
  * Supplies additional request parameters to the {@link HttpServletRequest} object.
  * 
@@ -35,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface RequestParameterProvider
+public interface RequestParameterProvider extends Weighted
 {
    /**
     * Return a map of parameters to be added to the current request as if they had been passed with the HTTP request

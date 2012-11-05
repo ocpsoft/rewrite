@@ -21,11 +21,11 @@ package org.ocpsoft.rewrite.el.spi;
  * </p>
  * 
  * @author Christian Kaltepoth
- * 
  */
 public interface BeanNameResolver
 {
-
+   /**
+    * Resolve the EL name of the given {@link Class} bean type.
+    */
    String getBeanName(Class<?> clazz);
-
 }

@@ -15,15 +15,26 @@
  */
 package org.ocpsoft.rewrite.servlet.spi;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 
+import org.ocpsoft.common.pattern.Weighted;
+
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Respond to {@link ServletRequest} event types.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RequestListener
+public interface RequestListener extends Weighted
 {
+   /**
+    * Respond to {@link ServletRequest} initialized event.
+    */
    void requestInitialized(ServletRequestEvent event);
 
+   /**
+    * Respond to {@link ServletContext} destroyed event.
+    */
    void requestDestroyed(ServletRequestEvent event);
 }

@@ -14,12 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.cdi.manager;
+package org.ocpsoft.rewrite.cdi.spi;
 
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.common.services.NonEnriching;
+import org.ocpsoft.rewrite.cdi.manager.BeanManagerLocator;
+import org.ocpsoft.rewrite.cdi.manager.DefaultJndiBeanManagerProvider;
+import org.ocpsoft.rewrite.cdi.manager.ServletContainerJndiBeanManagerProvider;
 
 /**
  * <p>

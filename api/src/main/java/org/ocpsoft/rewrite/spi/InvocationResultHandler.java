@@ -23,14 +23,16 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Handles return values from {@link Binding} results obtained during an {@link org.ocpsoft.rewrite.config.Invoke} operation.
+ * Handles return values from {@link Binding} results obtained during an {@link org.ocpsoft.rewrite.config.Invoke}
+ * operation.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface InvocationResultHandler extends Weighted, Specialized<Object>
 {
    /**
-    * Handle return value from {@link Binding} result obtained during an {@link org.ocpsoft.rewrite.config.Invoke} operation.
+    * Handle return value from {@link Binding} result obtained during an {@link org.ocpsoft.rewrite.config.Invoke}
+    * operation.
     */
    void handle(Rewrite event, EvaluationContext context, Object result);
 }

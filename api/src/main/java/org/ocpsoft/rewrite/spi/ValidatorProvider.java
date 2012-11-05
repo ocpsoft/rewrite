@@ -22,6 +22,7 @@ import org.ocpsoft.rewrite.bind.Validator;
  * SPI for providing integration with other validation frameworks.
  * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface ValidatorProvider extends Weighted
 {

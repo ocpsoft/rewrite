@@ -45,4 +45,10 @@ public class PrettyConfigContextListener implements ContextListener
    public void contextDestroyed(final ServletContextEvent event)
    {}
 
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

@@ -166,4 +166,10 @@ public class WebLibFinder extends AbstractClassFinder
 
    }
 
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+
 }

@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.ocpsoft.common.pattern.WeightedComparator;
+import org.ocpsoft.rewrite.cdi.spi.BeanManagerProvider;
 
 /**
  * <p>

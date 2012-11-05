@@ -1,4 +1,4 @@
-package org.ocpsoft.rewrite.faces.annotation.spi;
+package org.ocpsoft.rewrite.faces.artifact;
 
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;

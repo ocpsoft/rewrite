@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.ocpsoft.rewrite.cdi.spi.BeanManagerProvider;
+
 /**
  * A runtime exception that is thrown when the attempt to resolve the BeanManager using the {@link BeanManagerProvider}
  * service fails to locate the {@link BeanManager}.

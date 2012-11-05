@@ -20,13 +20,19 @@ import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
+ * SPI for {@link Rewrite} event handling.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
  */
-public interface RewriteProvider<C, T extends Rewrite>
-         extends Weighted, Specialized<Rewrite>
+public interface RewriteProvider<C, T extends Rewrite> extends Weighted, Specialized<Rewrite>
 {
-   void rewrite(T event);
-
+   /**
+    * Initialize this {@link RewriteProvider}
+    */
    void init(C context);
+
+   /**
+    * Handle the given {@link Rewrite} event.
+    */
+   void rewrite(T event);
 }

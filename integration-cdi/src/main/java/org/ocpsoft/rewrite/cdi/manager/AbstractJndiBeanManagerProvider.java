@@ -20,6 +20,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.ocpsoft.rewrite.cdi.spi.BeanManagerProvider;
+
 /**
  * A base for building a {@link BeanManagerProvider} backed by JNDI
  * 
