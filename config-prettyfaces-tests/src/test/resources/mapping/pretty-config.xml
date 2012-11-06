@@ -1,0 +1,13 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <url-mapping id="simple-mapping">
+    <pattern value="/simple-mapping" />
+    <view-id value="/page.jsf" />
+  </url-mapping>
+  
+  <url-mapping id="unusual-view-id">
+    <pattern value="/unusual-view-id" />
+    <view-id value="/unusual-view-id-(.xhtml" />
+  </url-mapping>
+
+</pretty-config>

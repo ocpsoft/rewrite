@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pretty="http://ocpsoft.com/prettyfaces"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<head>
+<title>Outbound URL Rewriting Test</title>
+</head>
+<h:body>
+	<h1>#{exampleBean.singleParam}/#{exampleBean.commentId}</h1>
+	<h2>#{request.requestURL}?#{request.queryString}</h2>
+
+	<h:link outcome="pretty:notfound" value="pretty:notfound">
+		<f:param name="p1" value="301" />
+	</h:link>
+	<br />
+
+	<h:link outcome="test" value="test">
+		<f:param name="p1" value="101" />
+	</h:link>
+	<br />
+
+	<h:link outcome="gooutbound" value="gooutbound">
+		<f:param name="p1" value="201" />
+	</h:link>
+	<br />
+
+	<h:link outcome="pretty:outbound1" value="pretty:outbound1">
+		<f:param name="p1" value="301" />
+	</h:link>
+	<br />
+
+	<h:link outcome="pretty:outbound2"
+		value="pretty:outbound2 - all params provided">
+		<f:param name="p1" value="401" />
+		<f:param name="p2" value="402" />
+	</h:link>
+	<br />
+
+	<h:link outcome="test" value="pretty:outbound2 - missing 1 param">
+		<f:param name="p1" value="403" />
+		<f:param name="pnot" value="404" />
+	</h:link>
+	<br />
+
+	<h:link outcome="pretty:outbound2" value="pretty:outbound2 - no params">
+	</h:link>
+	<br />
+
+	<h:link outcome="../outbound-rewrite/rewrite.xhtml"
+		value="../outbound-rewrite/rewrite.xhtml - no params">
+	</h:link>
+	<br />
+
+	<h:link outcome="../outbound-rewrite/rewrite.xhtml"
+		value="../outbound-rewrite/rewrite.xhtml - 2 params">
+		<f:param name="pnope" value="407" />
+		<f:param name="pnot" value="408" />
+	</h:link>
+	<br />
+	
+	<h:form>
+		<h:commandButton value="blank"></h:commandButton>
+		<h:commandButton value="Go to page 2" action="rewrite2?faces-redirect=true">
+		</h:commandButton>
+	</h:form>
+
+	<h:link outcome="/faces/demo.jsf" value="/faces/demo.jsf">
+		<f:param name="p1" value="501" />
+		<f:param name="p1" value="502" />
+		<f:param name="p1" value="503" /> Link to demo page! </h:link>
+	<br />
+	
+
+	<br />
+	<br />
+	<h:link outcome="pretty:outbound2" value="pretty:outbound2 - missing 1 param">
+		<f:param name="p1" value="403" />
+		<f:param name="pnot" value="404" />
+	</h:link>
+	<h:link outcome="../outbound-rewrite/fooooo/whee/rewrite.xhtml"
+		value="../outbound-rewrite/fooooo/whee/rewrite.xhtml - 2 params">
+		<f:param name="pnope" value="407" />
+		<f:param name="pnot" value="408" />
+	</h:link>
+	<br />
+
+
+	<h:link outcome="../outbound-rewrite/rewrite.xhtml"
+		value="../outbound-rewrite/rewrite.xhtml - 2 params">
+		<f:param name="pnope" value="407" />
+		<f:param name="pnot" value="408" />
+	</h:link>
+	
+</h:body>
+
+</html>
+

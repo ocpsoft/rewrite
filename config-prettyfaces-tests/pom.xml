@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 2010 Lincoln Baxter, III Licensed under the Apache License, 
+   Version 2.0 (the "License"); you may not use this file except in compliance 
+   with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+   Unless required by applicable law or agreed to in writing, software distributed 
+   under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+   OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+   the specific language governing permissions and limitations under the License. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-config-prettyfaces-tests</artifactId>
+   <version>2.0.0-SNAPSHOT</version>
+
+   <url>http://ocpsoft.org/prettyfaces/</url>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <version.arquillian>1.0.3.Final</version.arquillian>
+      <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
+      <version.jetty>8.1.1.v20120215</version.jetty>
+      <version.tomcat>6.0.29</version.tomcat>
+      <version.weld-servlet>1.1.4.Final</version.weld-servlet>
+   </properties>
+
+   <repositories>
+      <repository>
+         <id>jboss-public-repository</id>
+         <name>JBoss Repository</name>
+         <url>http://repository.jboss.org/nexus/content/groups/public</url>
+         <releases>
+            <updatePolicy>never</updatePolicy>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+   </repositories>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl-servlet</artifactId>
+         <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-prettyfaces</artifactId>
+         <version>2.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.el</groupId>
+         <artifactId>el-api</artifactId>
+         <version>1.0</version>
+         <scope>provided</scope>
+      </dependency>
+
+      <!-- We don't use weld-servlet because it shades and incompatible SLF4J 
+         version -->
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+         <version>${version.weld-servlet}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.weld.servlet</groupId>
+         <artifactId>weld-servlet-core</artifactId>
+         <version>${version.weld-servlet}</version>
+      </dependency>
+
+      <dependency>
+         <!-- Required until the Servlet 3.0 API can be resolved in Central -->
+         <groupId>org.glassfish</groupId>
+         <artifactId>javax.servlet</artifactId>
+         <version>3.0</version>
+         <scope>provided</scope>
+      </dependency>
+
+      <!-- FIXME Java APIs should be grouped by container profile -->
+      <dependency>
+         <groupId>javax.servlet.jsp</groupId>
+         <artifactId>jsp-api</artifactId>
+         <version>2.2</version>
+      </dependency>
+      <dependency>
+         <groupId>com.sun.faces</groupId>
+         <artifactId>jsf-api</artifactId>
+         <version>2.0.3</version>
+      </dependency>
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.8.1</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+         <artifactId>shrinkwrap-resolver-api</artifactId>
+         <version>2.0.0-alpha-1</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+         <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+         <version>2.0.0-alpha-1</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.resolver</groupId>
+         <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+         <version>2.0.0-alpha-1</version>
+         <scope>test</scope>
+      </dependency>
+
+
+      <!-- Test Profile Always runs Jetty -->
+      <dependency>
+         <groupId>org.eclipse.jetty</groupId>
+         <artifactId>jetty-webapp</artifactId>
+         <version>${version.jetty}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- Jetty needs SLF4J 1.6.x -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>1.6.4</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- FIXME only required if we want to use @Resource injection -->
+      <dependency>
+         <groupId>org.eclipse.jetty</groupId>
+         <artifactId>jetty-plus</artifactId>
+         <version>${version.jetty}</version>
+         <scope>test</scope>
+      </dependency>
+      <!-- TODO create a profile for the two JSF impls -->
+      <dependency>
+         <groupId>org.apache.myfaces.core</groupId>
+         <artifactId>myfaces-impl</artifactId>
+         <version>2.0.2</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.myfaces.core</groupId>
+         <artifactId>myfaces-api</artifactId>
+         <version>2.0.2</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>com.sun.faces</groupId>
+         <artifactId>jsf-impl</artifactId>
+         <version>2.0.3</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
+         <version>2.2</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-validator</artifactId>
+         <version>4.0.0.GA</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.junit</groupId>
+         <artifactId>arquillian-junit-container</artifactId>
+         <version>${version.arquillian}</version>
+      </dependency>
+      <!-- We need to force this version because the Jetty adapter would 
+         include an older one -->
+      <dependency>
+         <groupId>org.jboss.arquillian.container</groupId>
+         <artifactId>arquillian-container-spi</artifactId>
+         <version>${version.arquillian}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.arquillian.container</groupId>
+         <artifactId>arquillian-jetty-embedded-7</artifactId>
+         <version>${version.arquillian.jetty}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.jsfunit</groupId>
+         <artifactId>jsfunit-arquillian</artifactId>
+         <version>2.0.0.Beta2</version>
+      </dependency>
+      <!-- Force this version because JSFUnit would include an incompatible 
+         one -->
+      <dependency>
+         <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+         <artifactId>shrinkwrap-descriptors-impl</artifactId>
+         <version>1.0.0-beta-1</version>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <testResources>
+         <testResource>
+            <directory>src/test/resources</directory>
+         </testResource>
+         <testResource>
+            <directory>src/test/resources-jetty</directory>
+         </testResource>
+      </testResources>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>1.6</source>
+               <target>1.6</target>
+               <encoding>UTF-8</encoding>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
