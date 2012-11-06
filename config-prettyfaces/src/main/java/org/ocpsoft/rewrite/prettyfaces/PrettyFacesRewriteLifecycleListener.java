@@ -44,11 +44,16 @@ public class PrettyFacesRewriteLifecycleListener extends HttpRewriteLifecycleLis
    @Override
    public void beforeInboundLifecycle(final HttpServletRewrite event)
    {
+      if (event.getRequest().getAttribute(UrlMappingRuleAdaptor.REWRITE_MAPPING_ID_KEY) == null) {
+         PrettyContext context = PrettyContext.newDetachedInstance((HttpServletRequest) event.getRequest());
+         PrettyContext.setCurrentContext(event.getRequest(), context);
+      }
+      
       HttpServletRequest request = event.getRequest();
       ServletContext servletContext = request.getServletContext();
 
       reloader.reloadIfNecessary(servletContext);
-      if(request.getAttribute(PrettyContext.CONFIG_KEY) == null)
+      if (request.getAttribute(PrettyContext.CONFIG_KEY) == null)
       {
          new PrettyConfigurator(servletContext).configure();
          request.setAttribute(PrettyContext.CONFIG_KEY, servletContext.getAttribute(PrettyContext.CONFIG_KEY));

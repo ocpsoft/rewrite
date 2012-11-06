@@ -170,7 +170,7 @@ public class PrettyContext implements Serializable
     * Package private -- only {@link PrettyFilter} should be calling this method
     * -- it does not overwrite existing contexts in Request object
     */
-   static PrettyContext newDetachedInstance(final HttpServletRequest request)
+   public static PrettyContext newDetachedInstance(final HttpServletRequest request)
    {
       Assert.notNull(request, "HttpServletRequest argument was null");
 
@@ -182,7 +182,7 @@ public class PrettyContext implements Serializable
     * Package private -- only PrettyFilter or this class should be calling this
     * method -- it overwrites existing contexts in Request object
     */
-   static void setCurrentContext(final HttpServletRequest request, final PrettyContext prettyContext)
+   public static void setCurrentContext(final HttpServletRequest request, final PrettyContext prettyContext)
    {
       request.setAttribute(CONTEXT_REQUEST_KEY, prettyContext);
    }
