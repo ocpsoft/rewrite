@@ -68,6 +68,7 @@ public class RewriteTest extends RewriteTestBase
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api"))
                .addAsLibraries(getRewriteArchive())
+               .addAsLibraries(getRewriteConfingArchive())
                .addAsLibraries(getRewriteAnnotationsArchive())
                .addAsLibraries(getContainerArchive())
                .addAsLibraries(getCurrentArchive());
@@ -182,7 +183,7 @@ public class RewriteTest extends RewriteTestBase
 
       JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-current-module.jar");
 
-      if (!org.getAbsolutePath().contains("impl-servlet"))
+      if (!org.getAbsolutePath().contains("impl-servlet") && !org.getAbsolutePath().contains("config-servlet"))
       {
          if (org.exists())
             archive.addAsResource(org);
@@ -205,6 +206,16 @@ public class RewriteTest extends RewriteTestBase
                .addAsResource(new File("../api-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/org"))
                .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
+
+      return archive;
+   }
+
+   protected static JavaArchive getRewriteConfingArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-config-servlet.jar")
+
+               .addAsResource(new File("../config-servlet/target/classes/org"))
+               .addAsResource(new File("../config-servlet/target/classes/META-INF"));
 
       return archive;
    }

@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.ParameterizedPatternImpl;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Method;
@@ -125,7 +125,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                         /**
                          * Just for fun, set a response header containing the URL to the newly created Product.
                          */
-                        String location = new ParameterizedPatternImpl(event.getContextPath() + "/store/product/{pid}")
+                        String location = new RegexParameterizedPattern(event.getContextPath() + "/store/product/{pid}")
                                  .buildUnsafe(product.getId());
                         Response.addHeader("Location", location).perform(event, context);
 

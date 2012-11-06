@@ -26,6 +26,10 @@
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-servlet</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-config-jodatime</artifactId>
       </dependency>
       <dependency>

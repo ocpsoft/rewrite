@@ -24,7 +24,7 @@
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl-servlet</artifactId>
+         <artifactId>rewrite-config-servlet</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>

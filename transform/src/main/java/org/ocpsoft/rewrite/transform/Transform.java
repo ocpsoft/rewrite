@@ -16,10 +16,10 @@
 package org.ocpsoft.rewrite.transform;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
 
 public class Transform extends HttpOperation
 {
@@ -83,7 +83,7 @@ public class Transform extends HttpOperation
    public void performHttp(HttpServletRewrite event, EvaluationContext context)
    {
       if (event instanceof HttpInboundServletRewrite) {
-         HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest()).addContentInterceptor(pipeline);
+         RewriteWrappedResponse.getCurrentInstance(event.getRequest()).addContentInterceptor(pipeline);
       }
    }
 

@@ -44,7 +44,7 @@ public class ResponseContentInterceptorTest extends RewriteTest
                .addAsWebResource(new StringAsset("UPPERCASE"), "index.html")
                .addAsWebResource(new StringAsset("UPPERCASE"), "unbuffered.html")
                .addAsWebResource(new StringAsset("UPPERCASE"), "forward.html")
-               .addAsServiceProvider(ConfigurationProvider.class, ResponseContentInterceptorConfigurationProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, ResponseContentInterceptorTestProvider.class);
       return deployment;
    }
 

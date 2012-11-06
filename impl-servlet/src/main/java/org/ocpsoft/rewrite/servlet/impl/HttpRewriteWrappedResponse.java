@@ -24,22 +24,19 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
+import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContent;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
@@ -52,23 +49,17 @@ import org.ocpsoft.rewrite.spi.RewriteProvider;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
+public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 {
    private final HttpServletRequest request;
-   private final static String INSTANCE_KEY = HttpRewriteWrappedResponse.class.getName() + "_instance";
-
-   public static HttpRewriteWrappedResponse getCurrentInstance(HttpServletRequest request)
-   {
-      return (HttpRewriteWrappedResponse) request.getAttribute(INSTANCE_KEY);
-   }
 
    public HttpRewriteWrappedResponse(final HttpServletRequest request, final HttpServletResponse response)
    {
-      super(response);
+      super(request, response);
       this.request = request;
 
       if (getCurrentInstance(request) == null) {
-         request.setAttribute(INSTANCE_KEY, this);
+         super.setCurrentInstance(this);
       }
    }
 
@@ -84,16 +75,19 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    private boolean contentWritten = false;
    private ServletOutputStream outputStream = null;
 
+   @Override
    public boolean isResponseContentIntercepted()
    {
       return !responseContentInterceptors.isEmpty();
    }
 
+   @Override
    public boolean isResponseStreamWrapped()
    {
       return !responseStreamWrappers.isEmpty();
    }
 
+   @Override
    public void addContentInterceptor(ResponseContentInterceptor stage) throws IllegalStateException
    {
       if (areStreamsLocked())
@@ -104,6 +98,7 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
       this.responseContentInterceptors.add(stage);
    }
 
+   @Override
    public void addStreamWrapper(ResponseStreamWrapper wrapper)
    {
       if (areStreamsLocked())
@@ -127,7 +122,8 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    /**
     * Cause any buffered {@link ServletResponse} content to be processed and flushed to the client.
     */
-   public void flushBufferedStreams()
+   @Override
+   public void flushBufferedContent()
    {
       if (isResponseContentIntercepted())
       {
@@ -292,12 +288,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    /*
     * End buffering facilities
     */
-
-   public HttpServletRequest getRequest()
-   {
-      return request;
-   }
-
    @Override
    public String encodeRedirectUrl(final String url)
    {
@@ -367,18 +357,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    }
 
    @Override
-   public void addCookie(Cookie cookie)
-   {
-      super.addCookie(cookie);
-   }
-
-   @Override
-   public boolean containsHeader(String name)
-   {
-      return super.containsHeader(name);
-   }
-
-   @Override
    public void sendError(int sc, String msg) throws IOException
    {
       lockStreams();
@@ -400,121 +378,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    }
 
    @Override
-   public void setDateHeader(String name, long date)
-   {
-      super.setDateHeader(name, date);
-   }
-
-   @Override
-   public void addDateHeader(String name, long date)
-   {
-      super.addDateHeader(name, date);
-   }
-
-   @Override
-   public void setHeader(String name, String value)
-   {
-      super.setHeader(name, value);
-   }
-
-   @Override
-   public void addHeader(String name, String value)
-   {
-      super.addHeader(name, value);
-   }
-
-   @Override
-   public void setIntHeader(String name, int value)
-   {
-      super.setIntHeader(name, value);
-   }
-
-   @Override
-   public void addIntHeader(String name, int value)
-   {
-      super.addIntHeader(name, value);
-   }
-
-   @Override
-   public void setStatus(int sc)
-   {
-      super.setStatus(sc);
-   }
-
-   @Override
-   @SuppressWarnings("deprecation")
-   public void setStatus(int sc, String sm)
-   {
-      super.setStatus(sc, sm);
-   }
-
-   @Override
-   public int getStatus()
-   {
-      return super.getStatus();
-   }
-
-   @Override
-   public String getHeader(String name)
-   {
-      return super.getHeader(name);
-   }
-
-   @Override
-   public Collection<String> getHeaders(String name)
-   {
-      return super.getHeaders(name);
-   }
-
-   @Override
-   public Collection<String> getHeaderNames()
-   {
-      return super.getHeaderNames();
-   }
-
-   @Override
-   public ServletResponse getResponse()
-   {
-      return super.getResponse();
-   }
-
-   @Override
-   public void setResponse(ServletResponse response)
-   {
-      super.setResponse(response);
-   }
-
-   @Override
-   public void setCharacterEncoding(String charset)
-   {
-      super.setCharacterEncoding(charset);
-   }
-
-   @Override
-   public String getCharacterEncoding()
-   {
-      return super.getCharacterEncoding();
-   }
-
-   @Override
-   public void setBufferSize(int size)
-   {
-      super.setBufferSize(size);
-   }
-
-   @Override
-   public int getBufferSize()
-   {
-      return super.getBufferSize();
-   }
-
-   @Override
-   public boolean isCommitted()
-   {
-      return super.isCommitted();
-   }
-
-   @Override
    public void reset()
    {
       bufferedResponseContent.reset();
@@ -526,18 +389,6 @@ public class HttpRewriteWrappedResponse extends HttpServletResponseWrapper
    {
       bufferedResponseContent.reset();
       super.resetBuffer();
-   }
-
-   @Override
-   public void setLocale(Locale loc)
-   {
-      super.setLocale(loc);
-   }
-
-   @Override
-   public Locale getLocale()
-   {
-      return super.getLocale();
    }
 
 }

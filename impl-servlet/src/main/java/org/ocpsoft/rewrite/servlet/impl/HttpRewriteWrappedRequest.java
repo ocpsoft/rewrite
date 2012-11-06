@@ -21,17 +21,16 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.ocpsoft.rewrite.servlet.RewriteWrappedRequest;
 import org.ocpsoft.rewrite.servlet.util.CompositeMap;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
  */
-public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
+public class HttpRewriteWrappedRequest extends RewriteWrappedRequest
 {
    private final Map<String, String[]> modifiableParameters;
    private CompositeMap<String, String[]> allParameters;
@@ -48,7 +47,7 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
       modifiableParameters = new TreeMap<String, String[]>();
       modifiableParameters.putAll(additionalParams);
 
-      setInRequest(this, request);
+      setCurrentInstance(this);
    }
 
    public Map<String, String[]> getNativeParameters()
@@ -65,21 +64,10 @@ public class HttpRewriteWrappedRequest extends HttpServletRequestWrapper
       return Collections.unmodifiableMap(allParameters);
    }
 
+   @Override
    public Map<String, String[]> getModifiableParameters()
    {
       return modifiableParameters;
-   }
-
-   public static HttpRewriteWrappedRequest getCurrentInstance(ServletRequest request)
-   {
-      HttpRewriteWrappedRequest wrapper = (HttpRewriteWrappedRequest) request
-               .getAttribute(HttpRewriteWrappedRequest.class.getName());
-      return wrapper;
-   }
-
-   private static void setInRequest(final HttpRewriteWrappedRequest wrapped, final ServletRequest request)
-   {
-      request.setAttribute(HttpRewriteWrappedRequest.class.getName(), wrapped);
    }
 
    /*

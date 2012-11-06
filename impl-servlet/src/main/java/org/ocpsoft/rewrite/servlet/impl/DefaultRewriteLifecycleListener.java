@@ -3,15 +3,13 @@ package org.ocpsoft.rewrite.servlet.impl;
 import javax.servlet.ServletRequest;
 
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.servlet.config.rule.Join;
+import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
 public class DefaultRewriteLifecycleListener implements RewriteLifecycleListener<HttpServletRewrite>
 {
-   private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
    private static final String REQUEST_NESTING_KEY = DefaultRewriteLifecycleListener.class + "_request_nesting";
-   private static final String JOIN_DISABLED_RESET_NEXT_KEY = Join.class.getName() + "_DISABLED_RESET_NEXT";
 
    @Override
    public boolean handles(Rewrite payload)
@@ -36,7 +34,7 @@ public class DefaultRewriteLifecycleListener implements RewriteLifecycleListener
    {
       decrementRequestNesting(event);
       if (getRequestNesting(event.getRequest()) == 0)
-         HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest()).flushBufferedStreams();
+         RewriteWrappedResponse.getCurrentInstance(event.getRequest()).flushBufferedContent();
    }
 
    private void decrementRequestNesting(HttpServletRewrite event)
@@ -62,17 +60,7 @@ public class DefaultRewriteLifecycleListener implements RewriteLifecycleListener
 
    @Override
    public void afterInboundRewrite(HttpServletRewrite event)
-   {
-      if (Boolean.TRUE.equals(event.getRewriteContext().get(JOIN_DISABLED_RESET_NEXT_KEY)))
-      {
-         event.getRewriteContext().put(JOIN_DISABLED_KEY, false);
-         event.getRewriteContext().put(JOIN_DISABLED_RESET_NEXT_KEY, false);
-      }
-      else if (Boolean.TRUE.equals(event.getRewriteContext().get(JOIN_DISABLED_KEY)))
-      {
-         event.getRewriteContext().put(JOIN_DISABLED_RESET_NEXT_KEY, true);
-      }
-   }
+   {}
 
    @Override
    public void beforeOutboundRewrite(HttpServletRewrite event)

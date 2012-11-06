@@ -37,7 +37,7 @@ public interface ParameterizedPattern extends Parameterized<ParameterizedPattern
 
    /**
     * Get the {@link PatternParameter} with the given name. Return null if no such parameter exists in this
-    * {@link ParameterizedPatternImpl}.
+    * {@link ParameterizedPattern}.
     */
    PatternParameter getParameter(String string);
 

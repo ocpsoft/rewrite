@@ -18,12 +18,6 @@
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl-servlet</artifactId>
-         <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-transform</artifactId>
       </dependency>
 

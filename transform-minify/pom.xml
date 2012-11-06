@@ -15,12 +15,6 @@
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl-servlet</artifactId>
-         <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-transform</artifactId>
       </dependency>
 
@@ -45,6 +39,11 @@
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-servlet</artifactId>
          <scope>test</scope>
       </dependency>
 

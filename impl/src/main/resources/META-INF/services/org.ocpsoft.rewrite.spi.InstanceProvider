@@ -1,1 +1,1 @@
-org.ocpsoft.rewrite.instance.ReflectionInstanceProvider
+org.ocpsoft.rewrite.instance.DefaultInstanceProvider

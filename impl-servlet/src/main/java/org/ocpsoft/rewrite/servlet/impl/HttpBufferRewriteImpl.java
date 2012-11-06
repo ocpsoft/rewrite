@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.servlet.impl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 public class HttpBufferRewriteImpl extends BaseHttpRewrite implements HttpServletRewrite

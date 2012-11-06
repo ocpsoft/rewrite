@@ -40,7 +40,7 @@ public class RequestConstraintTransformTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, RequestConstraintTransformProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, RequestConstraintTransformTestProvider.class);
       return deployment;
    }
 

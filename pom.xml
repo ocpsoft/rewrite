@@ -48,6 +48,8 @@
       <module>config-annotations</module>
       <module>config-jodatime</module>
       <module>config-prettyfaces</module>
+      <module>config-servlet</module>
+      <module>config-servlet-tests</module>
       <module>config-trie</module>
       <module>config-tuckey</module>
       <module>config-typesafe</module>
@@ -157,6 +159,18 @@
             <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-config-typesafe</artifactId>
             <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-servlet</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-config-servlet</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+            <classifier>sources</classifier>
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>

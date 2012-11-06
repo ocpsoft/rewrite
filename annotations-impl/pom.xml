@@ -11,7 +11,6 @@
    <artifactId>rewrite-annotations-impl</artifactId>
 
    <dependencies>
-
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api</artifactId>
@@ -25,20 +24,20 @@
          <artifactId>rewrite-annotations-api</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.jboss.spec.javax.servlet</groupId>
+         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl-servlet</artifactId>
+         <artifactId>rewrite-config-servlet</artifactId>
          <scope>test</scope>
-      </dependency>
-
-      <dependency>
-         <groupId>org.jboss.spec.javax.servlet</groupId>
-         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-         <scope>provided</scope>
       </dependency>
    </dependencies>
 

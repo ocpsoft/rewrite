@@ -32,7 +32,6 @@ import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.servlet.config.RequestParameter;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
 
 public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite.annotation.Parameter>
 {

@@ -57,7 +57,7 @@ public class WrappedResponseStreamTest extends RewriteTest
                .addPackages(true, ServletRoot.class.getPackage())
                .addAsWebResource(new StringAsset("lowercase"), "index.html")
                .addAsWebResource(new StringAsset("zip me to gzip please and make it zippy"), "gzip.html")
-               .addAsServiceProvider(ConfigurationProvider.class, WrappedResponseStreamConfigurationProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, WrappedResponseStreamTestProvider.class);
       return deployment;
    }
 
