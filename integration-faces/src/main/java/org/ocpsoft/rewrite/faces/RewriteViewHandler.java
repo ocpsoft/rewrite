@@ -27,6 +27,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.common.util.Iterators;
+import org.ocpsoft.rewrite.faces.spi.FacesActionUrlProvider;
+
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
  */
@@ -34,6 +38,8 @@ public class RewriteViewHandler extends ViewHandler
 {
    protected ViewHandler parent;
    private final ThreadLocal<Boolean> bookmarkable = new ThreadLocal<Boolean>();
+   @SuppressWarnings("unchecked")
+   private List<FacesActionUrlProvider> providers = Iterators.asList(ServiceLoader.load(FacesActionUrlProvider.class));
 
    /**
     * <b>NOTE:</b> This method should only be used by the getBookmarkableURL and getActionURL methods, for the purposes
@@ -102,9 +108,8 @@ public class RewriteViewHandler extends ViewHandler
        * When this method is called for forms, getBookmarkableURL is NOT called; therefore, we have a way to distinguish
        * the two.
        */
-      String result = parent.getActionURL(context, viewId);
       HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-
+      String result = null;
       if (!isBookmarkable() && !RewriteNavigationHandler.isInNavigation(request)
                && (viewId != null)
                && viewId.equals(context.getViewRoot().getViewId()))
@@ -113,8 +118,14 @@ public class RewriteViewHandler extends ViewHandler
           * When rendering a form URL, Faces only provides the bare view-id, sans any bookmarkable parameters from the request. 
           * We need to restore those ourselves. 
           */
-         result = FacesRewriteLifecycleListener.getOriginalRequestURL(request);
+         for (FacesActionUrlProvider provider : providers) {
+            result = provider.getActionURL(context, viewId);
+            if (result != null)
+               break;
+         }
       }
+      if (result == null)
+         result = parent.getActionURL(context, viewId);
       return result;
    }
 

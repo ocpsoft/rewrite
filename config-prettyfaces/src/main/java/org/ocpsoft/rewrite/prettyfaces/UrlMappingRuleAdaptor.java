@@ -121,10 +121,12 @@ public class UrlMappingRuleAdaptor implements Rule
    }
 
    @Override
-   public boolean evaluate(final Rewrite event, final EvaluationContext context)
+   public boolean evaluate(final Rewrite event, final EvaluationContext ec)
    {
+      PrettyContext context = PrettyContext.getCurrentInstance(((HttpServletRewrite) event).getRequest());
       if ((event instanceof HttpInboundServletRewrite)
-               && mapping.matches(new URL(((HttpServletRewrite) event).getRequestURL())))
+               && PFUtil.isMappingEnabled(event)
+               && mapping.matches(context.getRequestURL()))
       {
          return true;
       }
@@ -158,7 +160,7 @@ public class UrlMappingRuleAdaptor implements Rule
          ((HttpServletRewrite) event).getRequest().setAttribute(REWRITE_MAPPING_ID_KEY,
                   REWRITE_MAPPING_ID_KEY + ":" + mapping.getId());
          
-         URL url = URL.build(((HttpServletRewrite) event).getRequestURL());
+         URL url = context.getRequestURL();
          if (context.shouldProcessDynaview())
          {
             log.trace("Forwarding mapped request [" + url.toURL() + "] to dynaviewId [" + context.getDynaViewId() + "]");
