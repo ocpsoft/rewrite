@@ -1,0 +1,165 @@
+/*
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.ocpsoft.rewrite.servlet.config;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ocpsoft.common.util.Streams;
+import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.test.HttpAction;
+import org.ocpsoft.rewrite.test.RewriteTest;
+
+/**
+ * @author Christian Kaltepoth
+ */
+@RunWith(Arquillian.class)
+public class JoinEncodingConfigurationTest extends RewriteTest
+{
+
+   @Deployment(testable = false)
+   public static WebArchive getDeployment()
+   {
+      return RewriteTest.getDeployment()
+               .addPackages(true, ConfigRoot.class.getPackage())
+               .addAsServiceProvider(ConfigurationProvider.class, JoinEncodingConfigurationProvider.class);
+   }
+
+   @Test
+   public void testJoinEncodingSimpleString() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding/foo");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      String responseContent = action.getResponseContent();
+      assertThat(responseContent, containsString("url: /encoding.html"));
+      assertThat(responseContent, containsString("query: param=foo"));
+   }
+
+   @Test
+   public void testJoinEncodingSpaceCharacter() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding/foo%20bar");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      String responseContent = action.getResponseContent();
+      assertThat(responseContent, containsString("url: /encoding.html"));
+      assertThat(responseContent, containsString("query: param=foo bar"));
+   }
+
+   @Test
+   public void testJoinEncodingAmpersandCharacter() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding/foo%26bar");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      String responseContent = action.getResponseContent();
+      assertThat(responseContent, containsString("url: /encoding.html"));
+      assertThat(responseContent, containsString("query: param=foo&bar"));
+   }
+
+   @Test
+   public void testInboundCorrectionSimpleString() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding.html?param=foo");
+
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      assertEquals("/encoding/foo", action.getCurrentContextRelativeURL());
+   }
+
+   @Test
+   // TODO: fix me
+   @Ignore
+   public void testInboundCorrectionSpaceCharacter() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding.html?param=foo+bar");
+
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      assertEquals("/encoding/foo%20bar", action.getCurrentContextRelativeURL());
+   }
+
+   @Test
+   // TODO: fix me
+   @Ignore
+   public void testInboundCorrectionAmpersandCharacter() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding.html?param=foo%26bar");
+
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      assertEquals("/encoding/foo%26bar", action.getCurrentContextRelativeURL());
+   }
+
+   @Test
+   public void testOutboundRewritingSimpleString() throws Exception
+   {
+      String url = "/encoding.html?param=foo";
+      String rewritten = post("/outbound", new StringEntity(url));
+
+      assertThat(rewritten, is("/encoding/foo"));
+   }
+
+   @Test
+   // TODO: fix me
+   @Ignore
+   public void testOutboundRewritingSpaceCharacter() throws Exception
+   {
+      String url = "/encoding.html?param=foo+bar";
+      String rewritten = post("/outbound", new StringEntity(url));
+
+      assertThat(rewritten, is("/encoding/foo%20bar"));
+   }
+
+   @Test
+   public void testOutboundRewritingAmpersandCharacter() throws Exception
+   {
+      String url = "/encoding.html?param=foo%26bar";
+      String rewritten = post("/outbound", new StringEntity(url));
+
+      assertThat(rewritten, is("/encoding/foo%26bar"));
+   }
+
+   /*
+    * Helper methods
+    */
+
+   private String post(String path, HttpEntity entity) throws IOException
+   {
+      HttpPost post = new HttpPost(getBaseURL() + getContextPath() + path);
+      post.setEntity(entity);
+      HttpContext context = new BasicHttpContext();
+      HttpResponse response = new DefaultHttpClient().execute(post, context);
+      return Streams.toString(response.getEntity().getContent()).trim();
+   }
+
+}
