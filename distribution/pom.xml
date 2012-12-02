@@ -138,17 +138,6 @@
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-integration-oracle-adf</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-integration-oracle-adf</artifactId>
-         <version>${project.version}</version>
-         <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-integration-spring</artifactId>
          <version>${project.version}</version>
       </dependency>

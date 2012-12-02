@@ -24,8 +24,9 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.RegexConstraint;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
 import org.ocpsoft.rewrite.servlet.config.IRedirect.RedirectParameter;
 
 /**
@@ -35,7 +36,7 @@ import org.ocpsoft.rewrite.servlet.config.IRedirect.RedirectParameter;
  */
 public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, String>, OperationBuilder
 {
-   public RegexParameterizedPattern getTargetExpression();
+   public RegexParameterizedPatternBuilder getTargetExpression();
 
    public interface IRedirectParameter extends IRedirect, Bindable<RedirectParameter>, Parameter<RedirectParameter, String>
    {
@@ -45,9 +46,9 @@ public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, S
    public class RedirectParameter extends ParameterBuilder<RedirectParameter, String> implements IRedirectParameter
    {
       private final IRedirect parent;
-      private final PatternParameter parameter;
+      private final ParameterizedPatternBuilderParameter parameter;
 
-      public RedirectParameter(IRedirect path, PatternParameter capture)
+      public RedirectParameter(IRedirect path, ParameterizedPatternBuilderParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -55,9 +56,9 @@ public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, S
       }
 
       @Override
-      public IRedirectParameter matches(String string)
+      public IRedirectParameter matches(String regex)
       {
-         parameter.matches(string);
+         parameter.constrainedBy(new RegexConstraint(regex));
          return this;
       }
 
@@ -86,7 +87,7 @@ public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, S
       }
 
       @Override
-      public RegexParameterizedPattern getTargetExpression()
+      public RegexParameterizedPatternBuilder getTargetExpression()
       {
          return parent.getTargetExpression();
       }

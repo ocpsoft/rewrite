@@ -26,8 +26,9 @@ import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -37,8 +38,8 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class Header extends HttpCondition implements IHeader
 {
-   private final RegexParameterizedPattern name;
-   private final RegexParameterizedPattern value;
+   private final ParameterizedPatternParser name;
+   private final ParameterizedPatternParser value;
 
    private final ParameterStore<HeaderParameter> parameters = new ParameterStore<HeaderParameter>();
 
@@ -46,8 +47,8 @@ public class Header extends HttpCondition implements IHeader
    {
       Assert.notNull(name, "Header name pattern cannot be null.");
       Assert.notNull(value, "Header value pattern cannot be null.");
-      this.name = new RegexParameterizedPattern(name);
-      this.value = new RegexParameterizedPattern(value);
+      this.name = new RegexParameterizedPatternParser(name);
+      this.value = new RegexParameterizedPatternParser(value);
    }
 
    /**
@@ -95,17 +96,17 @@ public class Header extends HttpCondition implements IHeader
       {
          if (name.matches(event, context, header) && matchesValue(event, context, request, header))
          {
-            Map<PatternParameter, String[]> parameterValues = name.parse(event, context, header);
-            for (PatternParameter parameter : parameterValues.keySet()) {
+            Map<ParameterizedPatternParserParameter, String[]> parameterValues = name.parse(event, context, header);
+            for (ParameterizedPatternParserParameter parameter : parameterValues.keySet()) {
                if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
                   return false;
             }
             parameterValues = value.parse(event, context, header);
-            for (PatternParameter parameter : parameterValues.keySet()) {
+            for (ParameterizedPatternParserParameter parameter : parameterValues.keySet()) {
                if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
                   return false;
             }
-            
+
             return true;
          }
       }
@@ -128,8 +129,10 @@ public class Header extends HttpCondition implements IHeader
    @Override
    public HeaderParameter where(String param)
    {
-      PatternParameter nameParam = name.getParameterNames().contains(param) ? name.getParameter(param) : null;
-      PatternParameter valueParam = value.getParameterNames().contains(param) ? value.getParameter(param) : null;
+      ParameterizedPatternParserParameter nameParam = name.getParameterNames().contains(param) ? name
+               .getParameter(param) : null;
+      ParameterizedPatternParserParameter valueParam = value.getParameterNames().contains(param) ? value
+               .getParameter(param) : null;
       return parameters.where(param, new HeaderParameter(this, nameParam, valueParam));
    }
 

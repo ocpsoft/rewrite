@@ -24,8 +24,9 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.RegexConstraint;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
 import org.ocpsoft.rewrite.servlet.config.IServletMapping.ServletMappingParameter;
 
 /**
@@ -36,7 +37,7 @@ import org.ocpsoft.rewrite.servlet.config.IServletMapping.ServletMappingParamete
 public interface IServletMapping extends Parameterized<IServletMapping, ServletMappingParameter, String>,
 ConditionBuilder
 {
-   public RegexParameterizedPattern getResourceExpression();
+   public RegexParameterizedPatternBuilder getResourceExpression();
 
    public interface IServletMappingParameter extends IServletMapping, Bindable<ServletMappingParameter>, Parameter<ServletMappingParameter, String>
    {
@@ -46,9 +47,9 @@ ConditionBuilder
    public class ServletMappingParameter extends ParameterBuilder<ServletMappingParameter, String> implements IServletMappingParameter
    {
       private final IServletMapping parent;
-      private final PatternParameter parameter;
+      private final ParameterizedPatternBuilderParameter parameter;
 
-      public ServletMappingParameter(IServletMapping path, PatternParameter capture)
+      public ServletMappingParameter(IServletMapping path, ParameterizedPatternBuilderParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -56,9 +57,9 @@ ConditionBuilder
       }
 
       @Override
-      public IServletMappingParameter matches(String string)
+      public IServletMappingParameter matches(String regex)
       {
-         parameter.matches(string);
+         parameter.constrainedBy(new RegexConstraint(regex));
          return this;
       }
 
@@ -81,7 +82,7 @@ ConditionBuilder
       }
 
       @Override
-      public RegexParameterizedPattern getResourceExpression()
+      public RegexParameterizedPatternBuilder getResourceExpression()
       {
          return parent.getResourceExpression();
       }

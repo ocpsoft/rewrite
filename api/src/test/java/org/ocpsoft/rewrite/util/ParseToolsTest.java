@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern.CaptureType;
+import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
 
 /**

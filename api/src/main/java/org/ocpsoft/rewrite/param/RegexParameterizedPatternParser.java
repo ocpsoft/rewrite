@@ -27,13 +27,11 @@ import java.util.regex.Pattern;
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.DefaultBindable;
-import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.util.Maps;
 import org.ocpsoft.rewrite.util.ParseTools;
+import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
 
 /**
@@ -41,7 +39,7 @@ import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RegexParameterizedPattern implements ParameterizedPattern
+public class RegexParameterizedPatternParser implements ParameterizedPatternParser
 {
    public interface Transposition
    {
@@ -49,43 +47,52 @@ public class RegexParameterizedPattern implements ParameterizedPattern
    }
 
    private static final String DEFAULT_PARAMETER_PATTERN = ".*";
-   private Pattern pattern;
+   private Pattern compiledPattern;
+   private String pattern;
    private final char[] chars;
    private final List<RegexGroup> groups = new ArrayList<RegexGroup>();
-   private final ParameterStore<PatternParameter> parameters = new ParameterStore<PatternParameter>();
+   private final ParameterStore<ParameterizedPatternParserParameter> parameters = new ParameterStore<ParameterizedPatternParserParameter>();
+   private RegexParameterizedPatternBuilder builder;
+
+   RegexParameterizedPatternParser(String pattern, RegexParameterizedPatternBuilder builder)
+   {
+      this(pattern);
+      this.builder = builder;
+   }
 
    /**
-    * Create a new {@link RegexParameterizedPattern} instance with the default
+    * Create a new {@link RegexParameterizedPatternParser} instance with the default
     * {@link org.ocpsoft.rewrite.bind.parse.CaptureType#BRACE} and parameter pattern of ".*".
     */
-   public RegexParameterizedPattern(final String pattern)
+   public RegexParameterizedPatternParser(final String pattern)
    {
       this(CaptureType.BRACE, DEFAULT_PARAMETER_PATTERN, pattern);
    }
 
    /**
-    * Create a new {@link RegexParameterizedPattern} instance with the default {@link CaptureType#BRACE}.
+    * Create a new {@link RegexParameterizedPatternParser} instance with the default {@link CaptureType#BRACE}.
     */
-   public RegexParameterizedPattern(final String parameterPattern, final String pattern)
+   public RegexParameterizedPatternParser(final String parameterPattern, final String pattern)
    {
       this(CaptureType.BRACE, parameterPattern, pattern);
    }
 
    /**
-    * Create a new {@link RegexParameterizedPattern} instance with the default parameter regex of ".*".
+    * Create a new {@link RegexParameterizedPatternParser} instance with the default parameter regex of ".*".
     */
-   public RegexParameterizedPattern(final CaptureType type, final String pattern)
+   public RegexParameterizedPatternParser(final CaptureType type, final String pattern)
    {
       this(type, DEFAULT_PARAMETER_PATTERN, pattern);
    }
 
    /**
-    * Create a new {@link RegexParameterizedPattern} instance.
+    * Create a new {@link RegexParameterizedPatternParser} instance.
     */
-   public RegexParameterizedPattern(final CaptureType type, final String parameterPattern, final String pattern)
+   public RegexParameterizedPatternParser(final CaptureType type, final String parameterPattern, final String pattern)
    {
       Assert.notNull(pattern, "Pattern must not be null");
 
+      this.pattern = pattern;
       chars = pattern.toCharArray();
 
       if (chars.length > 0)
@@ -103,7 +110,8 @@ public class RegexParameterizedPattern implements ParameterizedPattern
 
                groups.add(new RegexGroup(group, parameterIndex++));
                String parameterName = new String(group.getCaptured());
-               parameters.where(parameterName, new PatternParameter(this, parameterName).matches(parameterPattern));
+               parameters.where(parameterName,
+                        new ParameterizedPatternParserParameter(this, parameterName).matches(parameterPattern));
 
                break;
 
@@ -117,130 +125,9 @@ public class RegexParameterizedPattern implements ParameterizedPattern
    }
 
    @Override
-   public Map<String, PatternParameter> getParameterMap()
+   public Map<String, ParameterizedPatternParserParameter> getParameterMap()
    {
       return Collections.unmodifiableMap(parameters);
-   }
-
-   @Override
-   public String build(final Rewrite event, final EvaluationContext context,
-            final Map<String, ? extends Bindable<?>> parameters)
-   {
-      return buildUnsafe(extractBoundValues(event, context, new Transposition() {
-         @Override
-         @SuppressWarnings("rawtypes")
-         public Bindable<?> getBindable(RegexGroup capture)
-         {
-            Bindable<?> bindable = parameters.get(capture.getName());
-            if (bindable != null) {
-               return bindable;
-            }
-            return new DefaultBindable().bindsTo(Evaluation.property(capture.getName()));
-         }
-      }));
-   }
-
-   /**
-    * Use this expression to build a {@link String} from the given pattern. Extract needed values from the
-    * {@link EvaluationContext}.
-    */
-   public String build(final Rewrite event, final EvaluationContext context)
-   {
-      return buildUnsafe(extractBoundValues(event, context, new Transposition() {
-         @Override
-         @SuppressWarnings("rawtypes")
-         public Bindable<?> getBindable(RegexGroup capture)
-         {
-            return new DefaultBindable().bindsTo(Evaluation.property(capture.getName()));
-         }
-      }));
-   }
-
-   @Override
-   public String buildUnsafe(final Object... values)
-   {
-      if ((values == null) || (groups.size() != values.length))
-      {
-         throw new IllegalArgumentException("Must supply [" + groups.size() + "] values to build output string.");
-      }
-
-      StringBuilder builder = new StringBuilder();
-      CapturingGroup last = null;
-
-      int index = 0;
-      for (RegexGroup param : groups)
-      {
-         CapturingGroup capture = param.getCapture();
-
-         if ((last != null) && (last.getEnd() < capture.getStart()))
-         {
-            builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, capture.getStart()));
-         }
-         else if ((last == null) && (capture.getStart() > 0))
-         {
-            builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
-         }
-
-         builder.append(values[index++]);
-
-         last = capture;
-      }
-
-      if ((last != null) && (last.getEnd() < chars.length))
-      {
-         builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, chars.length));
-      }
-      else if (last == null)
-      {
-         builder.append(chars);
-      }
-
-      return builder.toString();
-   }
-
-   @Override
-   public String buildUnsafe(final Map<String, List<Object>> values)
-   {
-      if ((values == null) || (groups.size() != values.size()))
-      {
-         throw new IllegalArgumentException("Must supply [" + groups.size() + "] values to build output string.");
-      }
-
-      StringBuilder builder = new StringBuilder();
-      CapturingGroup last = null;
-      Map<String, Integer> pointers = new LinkedHashMap<String, Integer>();
-
-      for (RegexGroup param : groups)
-      {
-         CapturingGroup capture = param.getCapture();
-
-         if ((last != null) && (last.getEnd() < capture.getStart()))
-         {
-            builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, capture.getStart()));
-         }
-         else if ((last == null) && (capture.getStart() > 0))
-         {
-            builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
-         }
-
-         String name = param.getName();
-         int index = pointers.get(name) == null ? 0 : pointers.get(name);
-         builder.append(Maps.getListValue(values, name, index));
-         pointers.put(name, index++);
-
-         last = capture;
-      }
-
-      if ((last != null) && (last.getEnd() < chars.length))
-      {
-         builder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, chars.length));
-      }
-      else if (last == null)
-      {
-         builder.append(chars);
-      }
-
-      return builder.toString();
    }
 
    @Override
@@ -270,7 +157,7 @@ public class RegexParameterizedPattern implements ParameterizedPattern
 
    private Matcher getMatcher(final String value)
    {
-      if (pattern == null)
+      if (compiledPattern == null)
       {
          StringBuilder patternBuilder = new StringBuilder();
 
@@ -310,17 +197,17 @@ public class RegexParameterizedPattern implements ParameterizedPattern
             patternBuilder.append(new char[] { '\\', 'E' });
          }
 
-         pattern = Pattern.compile(patternBuilder.toString());
+         compiledPattern = Pattern.compile(patternBuilder.toString());
       }
 
-      Matcher matcher = pattern.matcher(value);
+      Matcher matcher = compiledPattern.matcher(value);
       return matcher;
    }
 
    @Override
-   public Map<PatternParameter, String[]> parse(String value)
+   public Map<ParameterizedPatternParserParameter, String[]> parse(String value)
    {
-      Map<PatternParameter, String[]> values = new LinkedHashMap<PatternParameter, String[]>();
+      Map<ParameterizedPatternParserParameter, String[]> values = new LinkedHashMap<ParameterizedPatternParserParameter, String[]>();
 
       Matcher matcher = getMatcher(value);
       if (matcher.matches())
@@ -332,10 +219,11 @@ public class RegexParameterizedPattern implements ParameterizedPattern
       return values;
    }
 
-   public Map<PatternParameter, String[]> parse(final Rewrite event, final EvaluationContext context,
+   public Map<ParameterizedPatternParserParameter, String[]> parse(final Rewrite event,
+            final EvaluationContext context,
             final String value)
    {
-      Map<PatternParameter, String[]> values = new LinkedHashMap<PatternParameter, String[]>();
+      Map<ParameterizedPatternParserParameter, String[]> values = new LinkedHashMap<ParameterizedPatternParserParameter, String[]>();
 
       Matcher matcher = getMatcher(value);
       if (matcher.matches())
@@ -350,39 +238,11 @@ public class RegexParameterizedPattern implements ParameterizedPattern
    }
 
    private String applyTransforms(final Rewrite event, final EvaluationContext context,
-            PatternParameter param, String value)
+            ParameterizedPatternParserParameter param, String value)
    {
       String result = value;
       for (Transform<String> t : param.getTransforms()) {
          result = t.transform(event, context, value);
-      }
-      return result;
-   }
-
-   /**
-    * Extract bound values from configured {@link Binding} instances. Return a {@link Map} of the extracted key-value
-    * pairs.
-    */
-   private Map<String, List<Object>> extractBoundValues(final Rewrite event, final EvaluationContext context,
-            final Transposition transpose)
-   {
-      Map<String, List<Object>> result = new LinkedHashMap<String, List<Object>>();
-
-      for (RegexGroup group : groups)
-      {
-         List<Object> values = Bindings.performRetrieval(event, context, transpose.getBindable(group));
-
-         for (Object boundValue : values) {
-
-            if (boundValue.getClass().isArray())
-               for (Object temp : (Object[]) boundValue)
-               {
-                  Maps.addListValue(result, group.getName(), temp);
-               }
-            else
-               Maps.addListValue(result, group.getName(), boundValue);
-         }
-
       }
       return result;
    }
@@ -404,19 +264,19 @@ public class RegexParameterizedPattern implements ParameterizedPattern
    }
 
    @Override
-   public PatternParameter where(String param)
+   public ParameterizedPatternParserParameter where(String param)
    {
       return parameters.get(param);
    }
 
    @Override
-   public PatternParameter where(String param, Binding binding)
+   public ParameterizedPatternParserParameter where(String param, Binding binding)
    {
       return where(param).bindsTo(binding);
    }
 
    @Override
-   public PatternParameter getParameter(String param)
+   public ParameterizedPatternParserParameter getParameter(String param)
    {
       return where(param);
    }
@@ -454,27 +314,19 @@ public class RegexParameterizedPattern implements ParameterizedPattern
       }
    }
 
-   public enum CaptureType
+   @Override
+   public String getPattern()
    {
-      BRACE('{', '}'), BRACKET('[', ']'), PAREN('(', ')'), REGEX('/', '/');
+      return compiledPattern.pattern();
+   }
 
-      private char begin;
-      private char end;
-
-      private CaptureType(final char begin, final char end)
+   @Override
+   public ParameterizedPatternBuilder getBuilder()
+   {
+      if (builder == null)
       {
-         this.begin = begin;
-         this.end = end;
+         builder = new RegexParameterizedPatternBuilder(pattern, this);
       }
-
-      public char getBegin()
-      {
-         return begin;
-      }
-
-      public char getEnd()
-      {
-         return end;
-      }
+      return builder;
    }
 }

@@ -24,11 +24,12 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.PatternParameter;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern.CaptureType;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 
 /**
  * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via
@@ -38,15 +39,15 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class Forward extends HttpOperation implements IForward
 {
-   private final RegexParameterizedPattern location;
+   private final ParameterizedPatternBuilder location;
    private final ParameterStore<ForwardParameter> parameters = new ParameterStore<ForwardParameter>();
 
    private Forward(final String location)
    {
       Assert.notNull(location, "Location must not be null.");
-      this.location = new RegexParameterizedPattern(CaptureType.BRACE, "[^/]+", location);
+      this.location = new RegexParameterizedPatternBuilder(CaptureType.BRACE, "[^/]+", location);
 
-      for (PatternParameter parameter : this.location.getParameterMap().values()) {
+      for (ParameterizedPatternBuilderParameter parameter : this.location.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -102,7 +103,7 @@ public class Forward extends HttpOperation implements IForward
    }
 
    @Override
-   public RegexParameterizedPattern getTargetExpression()
+   public ParameterizedPatternBuilder getTargetExpression()
    {
       return location;
    }

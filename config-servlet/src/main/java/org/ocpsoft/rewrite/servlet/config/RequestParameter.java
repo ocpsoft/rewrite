@@ -29,8 +29,9 @@ import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -40,16 +41,16 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class RequestParameter extends HttpCondition implements IRequestParameter
 {
-   private final RegexParameterizedPattern name;
-   private final RegexParameterizedPattern value;
+   private final ParameterizedPatternParser name;
+   private final ParameterizedPatternParser value;
    private final ParameterStore<RequestParameterParameter> parameters = new ParameterStore<RequestParameterParameter>();
 
    private RequestParameter(final String name, final String value)
    {
       Assert.notNull(name, "Header name pattern cannot be null.");
       Assert.notNull(value, "Header value pattern cannot be null.");
-      this.name = new RegexParameterizedPattern(name);
-      this.value = new RegexParameterizedPattern(value);
+      this.name = new RegexParameterizedPatternParser(name);
+      this.value = new RegexParameterizedPatternParser(value);
    }
 
    /**
@@ -102,11 +103,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
       {
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
-            Map<PatternParameter, String[]> parameterValues = new HashMap<PatternParameter, String[]>();
+            Map<ParameterizedPatternParserParameter, String[]> parameterValues = new HashMap<ParameterizedPatternParserParameter, String[]>();
             parameterValues.putAll(name.parse(event, context, parameter));
             parameterValues.putAll(value.parse(event, context, request.getParameter(parameter)));
 
-            for (PatternParameter capture : parameterValues.keySet()) {
+            for (ParameterizedPatternParserParameter capture : parameterValues.keySet()) {
                if (!Bindings.enqueueSubmission(event, context, capture, parameterValues.get(capture)))
                   return false;
             }
@@ -132,8 +133,10 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    @Override
    public RequestParameterParameter where(String param)
    {
-      PatternParameter nameParam = name.getParameterNames().contains(param) ? name.getParameter(param) : null;
-      PatternParameter valueParam = value.getParameterNames().contains(param) ? value.getParameter(param) : null;
+      ParameterizedPatternParserParameter nameParam = name.getParameterNames().contains(param) ? name
+               .getParameter(param) : null;
+      ParameterizedPatternParserParameter valueParam = value.getParameterNames().contains(param) ? value
+               .getParameter(param) : null;
 
       if (nameParam != null || valueParam != null) {
          return parameters.where(param, new RequestParameterParameter(this, nameParam, valueParam));
@@ -147,12 +150,12 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
       return where(param, binding);
    }
 
-   public RegexParameterizedPattern getNameExpression()
+   public ParameterizedPatternParser getNameExpression()
    {
       return name;
    }
 
-   public RegexParameterizedPattern getValueExpression()
+   public ParameterizedPatternParser getValueExpression()
    {
       return value;
    }
@@ -174,10 +177,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
             {
                if (matchesValues(event, context, request, name))
                {
-                  Map<PatternParameter, String[]> parameters = getNameExpression().parse(event, context, name);
+                  Map<ParameterizedPatternParserParameter, String[]> parameters = getNameExpression().parse(event,
+                           context, name);
                   parameters.putAll(getValueExpression().parse(event, context, name));
 
-                  for (PatternParameter capture : parameters.keySet()) {
+                  for (ParameterizedPatternParserParameter capture : parameters.keySet()) {
                      if (!Bindings.enqueueSubmission(event, context, capture, parameters.get(capture)))
                         return false;
                   }

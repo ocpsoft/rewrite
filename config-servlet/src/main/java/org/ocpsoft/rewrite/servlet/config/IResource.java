@@ -24,8 +24,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.servlet.config.IResource.ResourceParameter;
 
 /**
@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.config.IResource.ResourceParameter;
  */
 public interface IResource extends Parameterized<IResource, ResourceParameter, String>, ConditionBuilder
 {
-   public RegexParameterizedPattern getResourceExpression();
+   public ParameterizedPatternParser getResourceExpression();
 
    public interface IResourceParameter extends IResource, Bindable<ResourceParameter>, Parameter<ResourceParameter, String>
    {
@@ -45,9 +45,9 @@ public interface IResource extends Parameterized<IResource, ResourceParameter, S
    public class ResourceParameter extends ParameterBuilder<ResourceParameter, String> implements IResourceParameter
    {
       private final IResource parent;
-      private final PatternParameter parameter;
+      private final ParameterizedPatternParserParameter parameter;
 
-      public ResourceParameter(IResource path, PatternParameter capture)
+      public ResourceParameter(IResource path, ParameterizedPatternParserParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -80,7 +80,7 @@ public interface IResource extends Parameterized<IResource, ResourceParameter, S
       }
 
       @Override
-      public RegexParameterizedPattern getResourceExpression()
+      public ParameterizedPatternParser getResourceExpression()
       {
          return parent.getResourceExpression();
       }

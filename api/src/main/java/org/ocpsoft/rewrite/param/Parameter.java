@@ -26,8 +26,8 @@ import org.ocpsoft.rewrite.bind.Validator;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Parameter<P extends Parameter<P, T>, T> extends Bindable<P>, Constrainable<P, T>, Transformable<P, T>,
-Converter<Object>, Validator<Object>, HasValidator<P>, HasConverter<P>
+public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE, PARAMTYPE>, PARAMTYPE> extends Bindable<IMPLTYPE>, Constrainable<IMPLTYPE, PARAMTYPE>, Transformable<IMPLTYPE, PARAMTYPE>,
+Converter<Object>, Validator<Object>, HasValidator<IMPLTYPE>, HasConverter<IMPLTYPE>
 {
    /**
     * Get the name of this {@link Parameter}

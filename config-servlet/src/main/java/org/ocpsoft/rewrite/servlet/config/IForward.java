@@ -24,8 +24,9 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.config.IForward.ForwardParameter;
 
 /**
@@ -33,7 +34,7 @@ import org.ocpsoft.rewrite.servlet.config.IForward.ForwardParameter;
  */
 public interface IForward extends Parameterized<IForward, ForwardParameter, String>, OperationBuilder
 {
-   public RegexParameterizedPattern getTargetExpression();
+   public ParameterizedPatternBuilder getTargetExpression();
 
    public interface IForwardParameter extends IForward, Bindable<ForwardParameter>, Parameter<ForwardParameter, String>
    {
@@ -43,9 +44,9 @@ public interface IForward extends Parameterized<IForward, ForwardParameter, Stri
    public class ForwardParameter extends ParameterBuilder<ForwardParameter, String> implements IForwardParameter
    {
       private final IForward parent;
-      private final PatternParameter parameter;
+      private final ParameterizedPatternBuilderParameter parameter;
 
-      public ForwardParameter(IForward path, PatternParameter capture)
+      public ForwardParameter(IForward path, ParameterizedPatternBuilderParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -53,9 +54,9 @@ public interface IForward extends Parameterized<IForward, ForwardParameter, Stri
       }
 
       @Override
-      public IForwardParameter matches(String string)
+      public IForwardParameter matches(String regex)
       {
-         parameter.matches(string);
+         parameter.constrainedBy(new RegexConstraint(regex));
          return this;
       }
 
@@ -84,7 +85,7 @@ public interface IForward extends Parameterized<IForward, ForwardParameter, Stri
       }
 
       @Override
-      public RegexParameterizedPattern getTargetExpression()
+      public ParameterizedPatternBuilder getTargetExpression()
       {
          return parent.getTargetExpression();
       }

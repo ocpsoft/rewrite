@@ -24,7 +24,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.servlet.config.IScheme.SchemeParameter;
 
 /**
@@ -42,9 +42,9 @@ public interface IScheme extends Parameterized<IScheme, SchemeParameter, String>
    public class SchemeParameter extends ParameterBuilder<SchemeParameter, String> implements ISchemeParameter
    {
       private final IScheme parent;
-      private final PatternParameter parameter;
+      private final ParameterizedPatternParserParameter parameter;
 
-      public SchemeParameter(IScheme path, PatternParameter capture)
+      public SchemeParameter(IScheme path, ParameterizedPatternParserParameter capture)
       {
          super(capture);
          this.parent = path;

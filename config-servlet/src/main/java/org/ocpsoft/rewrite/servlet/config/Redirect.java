@@ -25,8 +25,8 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -40,15 +40,15 @@ public class Redirect extends HttpOperation implements IRedirect
 {
    private final RedirectType type;
 
-   private final RegexParameterizedPattern location;
+   private final RegexParameterizedPatternBuilder location;
    private final ParameterStore<RedirectParameter> parameters = new ParameterStore<RedirectParameter>();
 
    private Redirect(final String location, final RedirectType type)
    {
-      this.location = new RegexParameterizedPattern("[^/]+", location);
+      this.location = new RegexParameterizedPatternBuilder("[^/]+", location);
       this.type = type;
 
-      for (PatternParameter parameter : this.location.getParameterMap().values()) {
+      for (ParameterizedPatternBuilderParameter parameter : this.location.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -144,7 +144,7 @@ public class Redirect extends HttpOperation implements IRedirect
    }
 
    @Override
-   public RegexParameterizedPattern getTargetExpression()
+   public RegexParameterizedPatternBuilder getTargetExpression()
    {
       return location;
    }

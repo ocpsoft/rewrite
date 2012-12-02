@@ -27,8 +27,8 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -40,14 +40,14 @@ public class ServletMapping extends HttpCondition implements IServletMapping
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
-   private final RegexParameterizedPattern resource;
+   private final RegexParameterizedPatternBuilder resource;
    private final ParameterStore<ServletMappingParameter> parameters = new ParameterStore<ServletMappingParameter>();
 
    private ServletMapping(final String resource)
    {
-      this.resource = new RegexParameterizedPattern(resource);
+      this.resource = new RegexParameterizedPatternBuilder(resource);
 
-      for (PatternParameter parameter : this.resource.getParameterMap().values()) {
+      for (ParameterizedPatternBuilderParameter parameter : this.resource.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -115,7 +115,7 @@ public class ServletMapping extends HttpCondition implements IServletMapping
    }
 
    @Override
-   public RegexParameterizedPattern getResourceExpression()
+   public RegexParameterizedPatternBuilder getResourceExpression()
    {
       return resource;
    }

@@ -1,13 +1,16 @@
 package org.ocpsoft.rewrite.param;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * {@link Parameter} store which retains the order, bindings, and names of parameters contained within.
+ */
 public class ParameterStore<T extends ParameterBuilder<T, ?>> implements Map<String, T>
 {
-   private final Map<String, T> parameters = new HashMap<String, T>();
+   private final Map<String, T> parameters = new LinkedHashMap<String, T>();
 
    public T where(final String param, T deflt)
    {

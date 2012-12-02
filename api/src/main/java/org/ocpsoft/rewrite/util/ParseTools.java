@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.util;
 import java.util.Arrays;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern.CaptureType;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -135,6 +134,30 @@ public abstract class ParseTools
       public String toString()
       {
          return "CapturingGroup [start=" + start + ", end=" + end + "]";
+      }
+   }
+
+   public enum CaptureType
+   {
+      BRACE('{', '}'), BRACKET('[', ']'), PAREN('(', ')'), REGEX('/', '/');
+
+      private char begin;
+      private char end;
+
+      private CaptureType(final char begin, final char end)
+      {
+         this.begin = begin;
+         this.end = end;
+      }
+
+      public char getBegin()
+      {
+         return begin;
+      }
+
+      public char getEnd()
+      {
+         return end;
       }
    }
 }

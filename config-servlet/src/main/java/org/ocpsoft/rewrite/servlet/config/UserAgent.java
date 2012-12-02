@@ -25,8 +25,8 @@ import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -108,15 +108,15 @@ public abstract class UserAgent extends HttpCondition
 
    private static class PatternUserAgent extends UserAgent implements IUserAgent
    {
-      private final RegexParameterizedPattern expression;
+      private final RegexParameterizedPatternParser expression;
       private final ParameterStore<UserAgentParameter> parameters = new ParameterStore<UserAgentParameter>();
 
       private PatternUserAgent(final String pattern)
       {
          Assert.notNull(pattern, "Scheme must not be null.");
-         this.expression = new RegexParameterizedPattern(pattern);
+         this.expression = new RegexParameterizedPatternParser(pattern);
 
-         for (PatternParameter parameter : this.expression.getParameterMap().values()) {
+         for (ParameterizedPatternParserParameter parameter : this.expression.getParameterMap().values()) {
             where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
          }
       }
@@ -128,9 +128,9 @@ public abstract class UserAgent extends HttpCondition
 
          if (agent != null && expression.matches(event, context, agent))
          {
-            Map<PatternParameter, String[]> parameters = expression.parse(event, context, agent);
+            Map<ParameterizedPatternParserParameter, String[]> parameters = expression.parse(event, context, agent);
 
-            for (PatternParameter capture : parameters.keySet()) {
+            for (ParameterizedPatternParserParameter capture : parameters.keySet()) {
                if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                   return false;
             }

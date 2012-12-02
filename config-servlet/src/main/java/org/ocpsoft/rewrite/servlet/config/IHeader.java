@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.config.IHeader.HeaderParameter;
 
@@ -45,9 +45,9 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
    public class HeaderParameter extends ParameterBuilder<HeaderParameter, String> implements IHeaderParameter
    {
       private final IHeader parent;
-      private final List<PatternParameter> parameters;
+      private final List<ParameterizedPatternParserParameter> parameters;
 
-      public HeaderParameter(IHeader path, PatternParameter... captures)
+      public HeaderParameter(IHeader path, ParameterizedPatternParserParameter... captures)
       {
          super((Object[]) captures);
          this.parent = path;
@@ -57,7 +57,7 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
       @Override
       public HeaderParameter constrainedBy(Constraint<String> constraint)
       {
-         for (PatternParameter parameter : parameters) {
+         for (ParameterizedPatternParserParameter parameter : parameters) {
             if (parameter != null)
                parameter.constrainedBy(constraint);
          }
@@ -67,7 +67,7 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
       @Override
       public HeaderParameter transformedBy(Transform<String> transform)
       {
-         for (PatternParameter parameter : parameters) {
+         for (ParameterizedPatternParserParameter parameter : parameters) {
             if (parameter != null)
                parameter.transformedBy(transform);
          }
@@ -89,7 +89,7 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
       @Override
       public IHeaderParameter matches(String string)
       {
-         for (PatternParameter parameter : parameters) {
+         for (ParameterizedPatternParserParameter parameter : parameters) {
             if (parameter != null)
                parameter.matches(string);
          }
@@ -99,7 +99,7 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
       @Override
       public String getName()
       {
-         for (PatternParameter parameter : parameters) {
+         for (ParameterizedPatternParserParameter parameter : parameters) {
             if (parameter != null)
                return parameter.getName();
          }

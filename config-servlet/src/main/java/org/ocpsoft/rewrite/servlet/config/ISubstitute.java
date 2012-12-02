@@ -24,8 +24,9 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.config.ISubstitute.SubstituteParameter;
 
 /**
@@ -35,7 +36,7 @@ import org.ocpsoft.rewrite.servlet.config.ISubstitute.SubstituteParameter;
  */
 public interface ISubstitute extends Parameterized<ISubstitute, SubstituteParameter, String>, OperationBuilder
 {
-   public RegexParameterizedPattern getTargetExpression();
+   public ParameterizedPatternParser getTargetExpression();
 
    public interface ISubstituteParameter extends ISubstitute, Bindable<SubstituteParameter>, Parameter<SubstituteParameter, String>
    {
@@ -45,19 +46,19 @@ public interface ISubstitute extends Parameterized<ISubstitute, SubstituteParame
    public class SubstituteParameter extends ParameterBuilder<SubstituteParameter, String> implements ISubstituteParameter
    {
       private final ISubstitute parent;
-      private final PatternParameter parameter;
+      private final ParameterizedPatternParserParameter parameter;
 
-      public SubstituteParameter(ISubstitute path, PatternParameter capture)
+      public SubstituteParameter(ISubstitute path, ParameterizedPatternParserParameter parameter)
       {
-         super(capture);
+         super(parameter);
          this.parent = path;
-         this.parameter = capture;
+         this.parameter = parameter;
       }
 
       @Override
-      public ISubstituteParameter matches(String string)
+      public ISubstituteParameter matches(String regex)
       {
-         parameter.matches(string);
+         parameter.constrainedBy(new RegexConstraint(regex));
          return this;
       }
 
@@ -86,7 +87,7 @@ public interface ISubstitute extends Parameterized<ISubstitute, SubstituteParame
       }
 
       @Override
-      public RegexParameterizedPattern getTargetExpression()
+      public ParameterizedPatternParser getTargetExpression()
       {
          return parent.getTargetExpression();
       }

@@ -26,7 +26,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterParameter;
 
  /**
@@ -47,9 +47,9 @@ import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterPara
     IRequestParameterParameter
     {
        private final IRequestParameter parent;
-       private final List<PatternParameter> captures;
+       private final List<ParameterizedPatternParserParameter> captures;
 
-       public RequestParameterParameter(IRequestParameter condition, PatternParameter... captures)
+       public RequestParameterParameter(IRequestParameter condition, ParameterizedPatternParserParameter... captures)
        {
           super((Object[]) captures);
           this.parent = condition;
@@ -71,7 +71,7 @@ import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterPara
        @Override
        public IRequestParameterParameter matches(String string)
        {
-          for (PatternParameter capture : captures) {
+          for (ParameterizedPatternParserParameter capture : captures) {
              if (capture != null)
                 capture.matches(string);
           }
@@ -81,7 +81,7 @@ import org.ocpsoft.rewrite.servlet.config.IRequestParameter.RequestParameterPara
        @Override
        public String getName()
        {
-          for (PatternParameter capture : captures) {
+          for (ParameterizedPatternParserParameter capture : captures) {
              if (capture != null)
                 return capture.getName();
           }

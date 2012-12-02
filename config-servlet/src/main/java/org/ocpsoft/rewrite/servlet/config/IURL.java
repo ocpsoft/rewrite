@@ -24,8 +24,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.servlet.config.IURL.URLParameter;
 
 /**
@@ -37,7 +37,7 @@ public interface IURL extends Parameterized<IURL, URLParameter, String>, Conditi
 {
    public IURL withRequestBinding();
 
-   public RegexParameterizedPattern getPathExpression();
+   public ParameterizedPatternParser getPathExpression();
 
    public interface IURLParameter extends IURL, Bindable<URLParameter>, Parameter<URLParameter, String>
    {
@@ -47,9 +47,9 @@ public interface IURL extends Parameterized<IURL, URLParameter, String>, Conditi
    public class URLParameter extends ParameterBuilder<URLParameter, String> implements IURLParameter
    {
       private final IURL parent;
-      private final PatternParameter parameter;
+      private final ParameterizedPatternParserParameter parameter;
 
-      public URLParameter(IURL path, PatternParameter capture)
+      public URLParameter(IURL path, ParameterizedPatternParserParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -94,7 +94,7 @@ public interface IURL extends Parameterized<IURL, URLParameter, String>, Conditi
       }
 
       @Override
-      public RegexParameterizedPattern getPathExpression()
+      public ParameterizedPatternParser getPathExpression()
       {
          return parent.getPathExpression();
       }

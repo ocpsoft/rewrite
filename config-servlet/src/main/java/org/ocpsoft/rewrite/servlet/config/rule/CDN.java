@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.IPath;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
@@ -149,13 +149,13 @@ public class CDN implements ICDN
    }
 
    @Override
-   public RegexParameterizedPattern getLocationExpression()
+   public ParameterizedPatternParser getLocationExpression()
    {
       return location.getTargetExpression();
    }
 
    @Override
-   public RegexParameterizedPattern getResourcExpression()
+   public ParameterizedPatternParser getResourcExpression()
    {
       return resource.getPathExpression();
    }

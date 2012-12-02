@@ -23,14 +23,14 @@ import org.ocpsoft.rewrite.bind.Binding;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Parameterized<C extends Parameterized<C, P, T>, P extends Parameter<P, T>, T>
+public interface Parameterized<IMPLTYPE extends Parameterized<IMPLTYPE, PARAMTYPE, VALUETYPE>, PARAMTYPE extends Parameter<PARAMTYPE, VALUETYPE>, VALUETYPE>
 {
    /**
     * Select the parameter with the given name.
     * <p>
     * See also: {@link #where(String, String)}, {@link #where(String, String, org.ocpsoft.rewrite.bind.Binding)}, {@link #where(String, org.ocpsoft.rewrite.bind.Binding)}
     */
-   P where(String param);
+   PARAMTYPE where(String param);
 
    /**
     * Select the parameter with the given name. Bind the result of a successful parameter match to the given
@@ -38,5 +38,5 @@ public interface Parameterized<C extends Parameterized<C, P, T>, P extends Param
     * <p>
     * See also: {@link #where(String, String)}, {@link #where(String, String, Binding)}, {@link #where(String, Binding)}
     */
-   P where(String param, Binding binding);
+   PARAMTYPE where(String param, Binding binding);
 }

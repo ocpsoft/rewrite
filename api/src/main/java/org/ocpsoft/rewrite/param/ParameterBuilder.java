@@ -35,11 +35,11 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterBuilder<P extends ParameterBuilder<P, T>, T> extends DefaultBindable<P>
-implements Parameter<P, T>
+public abstract class ParameterBuilder<PARAMTYPE extends ParameterBuilder<PARAMTYPE, VALUETYPE>, VALUETYPE> extends DefaultBindable<PARAMTYPE>
+implements Parameter<PARAMTYPE, VALUETYPE>
 {
-   private final List<Transform<T>> transforms = new ArrayList<Transform<T>>();
-   private final List<Constraint<T>> constraints = new ArrayList<Constraint<T>>();
+   private final List<Transform<VALUETYPE>> transforms = new ArrayList<Transform<VALUETYPE>>();
+   private final List<Constraint<VALUETYPE>> constraints = new ArrayList<Constraint<VALUETYPE>>();
    private Converter<?> converter = null;
    private Validator<?> validator = null;
    private List<Object> delegates = new ArrayList<Object>(0);
@@ -73,7 +73,7 @@ implements Parameter<P, T>
    }
 
    @Override
-   public P bindsTo(Binding binding)
+   public PARAMTYPE bindsTo(Binding binding)
    {
       if (binding instanceof HasConverter && converter != null)
       {
@@ -96,7 +96,7 @@ implements Parameter<P, T>
 
    @Override
    @SuppressWarnings("unchecked")
-   public <X extends Converter<?>> P convertedBy(Class<X> type)
+   public <X extends Converter<?>> PARAMTYPE convertedBy(Class<X> type)
    {
       this.converter = ValueHolderUtil.resolveConverter(type);
       for (Binding binding : getBindings()) {
@@ -119,12 +119,12 @@ implements Parameter<P, T>
          }
       }
 
-      return (P) this;
+      return (PARAMTYPE) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public P convertedBy(Converter<?> converter)
+   public PARAMTYPE convertedBy(Converter<?> converter)
    {
       this.converter = converter;
       for (Binding binding : getBindings()) {
@@ -147,7 +147,7 @@ implements Parameter<P, T>
          }
       }
 
-      return (P) this;
+      return (PARAMTYPE) this;
    }
 
    @Override
@@ -158,7 +158,7 @@ implements Parameter<P, T>
 
    @Override
    @SuppressWarnings("unchecked")
-   public <X extends Validator<?>> P validatedBy(Class<X> type)
+   public <X extends Validator<?>> PARAMTYPE validatedBy(Class<X> type)
    {
       this.validator = ValueHolderUtil.resolveValidator(type);
       for (Binding binding : getBindings()) {
@@ -181,12 +181,12 @@ implements Parameter<P, T>
          }
       }
 
-      return (P) this;
+      return (PARAMTYPE) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public P validatedBy(Validator<?> validator)
+   public PARAMTYPE validatedBy(Validator<?> validator)
    {
       this.validator = validator;
       for (Binding binding : getBindings()) {
@@ -209,7 +209,7 @@ implements Parameter<P, T>
          }
       }
 
-      return (P) this;
+      return (PARAMTYPE) this;
    }
 
    @Override
@@ -220,44 +220,44 @@ implements Parameter<P, T>
 
    @Override
    @SuppressWarnings("unchecked")
-   public P constrainedBy(Constraint<T> constraint)
+   public PARAMTYPE constrainedBy(Constraint<VALUETYPE> constraint)
    {
       this.constraints.add(constraint);
 
       for (Object delegate : delegates) {
          if (delegate instanceof Constrainable)
          {
-            ((Constrainable<P, T>) delegate).constrainedBy(constraint);
+            ((Constrainable<PARAMTYPE, VALUETYPE>) delegate).constrainedBy(constraint);
          }
       }
 
-      return (P) this;
+      return (PARAMTYPE) this;
    }
 
    @Override
-   public List<Constraint<T>> getConstraints()
+   public List<Constraint<VALUETYPE>> getConstraints()
    {
       return constraints;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public P transformedBy(Transform<T> transform)
+   public PARAMTYPE transformedBy(Transform<VALUETYPE> transform)
    {
       this.transforms.add(transform);
 
       for (Object delegate : delegates) {
          if (delegate instanceof Transformable)
          {
-            ((Transformable<P, T>) delegate).transformedBy(transform);
+            ((Transformable<PARAMTYPE, VALUETYPE>) delegate).transformedBy(transform);
          }
       }
 
-      return (P) this;
+      return (PARAMTYPE) this;
    }
 
    @Override
-   public List<Transform<T>> getTransforms()
+   public List<Transform<VALUETYPE>> getTransforms()
    {
       return transforms;
    }

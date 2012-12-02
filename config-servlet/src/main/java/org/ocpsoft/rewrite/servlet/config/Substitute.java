@@ -21,8 +21,9 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -36,15 +37,15 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class Substitute extends HttpOperation implements ISubstitute
 {
-   private final RegexParameterizedPattern location;
+   private final ParameterizedPatternParser location;
    private final ParameterStore<SubstituteParameter> parameters = new ParameterStore<SubstituteParameter>();
 
    private Substitute(final String location)
    {
       Assert.notNull(location, "Location must not be null.");
-      this.location = new RegexParameterizedPattern("[^/]+", location);
+      this.location = new RegexParameterizedPatternParser("[^/]+", location);
 
-      for (PatternParameter parameter : this.location.getParameterMap().values()) {
+      for (ParameterizedPatternParserParameter parameter : this.location.getParameterMap().values()) {
          where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
       }
    }
@@ -75,12 +76,12 @@ public class Substitute extends HttpOperation implements ISubstitute
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, parameters);
+         String target = location.getBuilder().build(event, context, parameters);
          ((HttpInboundServletRewrite) event).forward(target);
       }
       else if (event instanceof HttpOutboundServletRewrite)
       {
-         String target = location.build(event, context, parameters);
+         String target = location.getBuilder().build(event, context, parameters);
          if (((HttpOutboundServletRewrite) event).getOutboundURL().startsWith(event.getContextPath())
                   && target.startsWith("/")
                   && !target.startsWith(event.getContextPath()))
@@ -104,7 +105,7 @@ public class Substitute extends HttpOperation implements ISubstitute
    }
 
    @Override
-   public RegexParameterizedPattern getTargetExpression()
+   public ParameterizedPatternParser getTargetExpression()
    {
       return location;
    }

@@ -24,8 +24,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexParameterizedPattern;
-import org.ocpsoft.rewrite.param.PatternParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.servlet.config.IDomain.DomainParameter;
 
 /**
@@ -38,7 +38,7 @@ public interface IDomain extends Parameterized<IDomain, DomainParameter, String>
     */
    public IDomain withRequestBinding();
 
-   public RegexParameterizedPattern getDomainExpression();
+   public ParameterizedPatternParser getDomainExpression();
 
    public interface IDomainParameter extends IDomain, Bindable<DomainParameter>, Parameter<DomainParameter, String>
    {
@@ -48,9 +48,9 @@ public interface IDomain extends Parameterized<IDomain, DomainParameter, String>
    public class DomainParameter extends ParameterBuilder<DomainParameter, String> implements IDomainParameter
    {
       private final IDomain parent;
-      private final PatternParameter capture;
+      private final ParameterizedPatternParserParameter capture;
 
-      public DomainParameter(IDomain path, PatternParameter capture)
+      public DomainParameter(IDomain path, ParameterizedPatternParserParameter capture)
       {
          super(capture);
          this.parent = path;
@@ -95,7 +95,7 @@ public interface IDomain extends Parameterized<IDomain, DomainParameter, String>
       }
 
       @Override
-      public RegexParameterizedPattern getDomainExpression()
+      public ParameterizedPatternParser getDomainExpression()
       {
          return parent.getDomainExpression();
       }
