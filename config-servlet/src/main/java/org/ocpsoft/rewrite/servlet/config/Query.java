@@ -120,7 +120,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL());
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL()).decode();
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();
@@ -165,7 +165,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL());
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL()).decode();
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();

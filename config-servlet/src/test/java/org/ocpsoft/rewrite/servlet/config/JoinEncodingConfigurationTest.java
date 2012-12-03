@@ -158,8 +158,6 @@ public class JoinEncodingConfigurationTest extends RewriteTest
     * is rewritten to a path containing the space encoded as %20.
     */
    @Test
-   // TODO: fix me
-   @Ignore
    public void testOutboundRewritingSpaceCharacter() throws Exception
    {
       String url = "/encoding.html?param=foo+bar";
@@ -172,8 +170,6 @@ public class JoinEncodingConfigurationTest extends RewriteTest
     * Ampersands have to be encoded in a query string but not in a path component.
     */
    @Test
-   // TODO: fix me
-   @Ignore
    public void testOutboundRewritingAmpersandCharacter() throws Exception
    {
       String url = "/encoding.html?param=foo%26bar";
