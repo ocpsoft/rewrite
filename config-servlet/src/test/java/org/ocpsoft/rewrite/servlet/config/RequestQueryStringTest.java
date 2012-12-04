@@ -15,12 +15,12 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import junit.framework.Assert;
-
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -48,6 +48,25 @@ public class RequestQueryStringTest extends RewriteTest
    {
       HttpAction<HttpGet> action = get("/something?");
       Assert.assertEquals(209, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   // TODO: fix this bug
+   @Ignore
+   public void testCanParseAmpersandCharactersInParameterValue() throws Exception
+   {
+      /*
+       * Contains a query parameter with an correctly encoded ampersand.
+       */
+      HttpAction<HttpGet> action = get("/ampersand?param=foo%26bar"); // foo&bar
+
+      /*
+       * Rule #1 should match. But actually HttpInboundRewriteImpl.getURL() decodes the query string to
+       * '?param=foo&bar' which QueryStringBuilder cannot parse any more. Therefore rule #2 matches which
+       * is not correct!
+       */
+      Assert.assertEquals(209, action.getResponse().getStatusLine().getStatusCode());
+
    }
 
 }
