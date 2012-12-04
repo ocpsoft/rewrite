@@ -49,7 +49,21 @@ public class RequestQueryStringConfigurationProvider extends HttpConfigurationPr
                .addRule()
                .when(Path.matches("/something")
                         .and(Query.matches("")))
-               .perform(SendStatus.code(209));
+               .perform(SendStatus.code(209))
+
+               /*
+                * #1: Test for correct handling of & characters
+                */
+               .addRule()
+               .when(Path.matches("/ampersand").and(Query.valueExists("foo&bar")))
+               .perform(SendStatus.code(209))
+
+               /*
+                * #2: Shows that requests to /ampersand?param=foo%26bar are not parsed correctly
+                */
+               .addRule()
+               .when(Path.matches("/ampersand").and(Query.parameterExists("bar")))
+               .perform(SendStatus.code(210));
 
       return config;
    }
