@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public final class PrettyFacesTestBase extends RewriteTest
+public abstract class PrettyFacesTestBase extends RewriteTest
 {
    public static WebArchive getDeployment()
    {

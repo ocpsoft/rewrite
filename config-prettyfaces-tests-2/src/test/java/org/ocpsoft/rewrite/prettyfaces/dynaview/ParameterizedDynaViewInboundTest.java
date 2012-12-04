@@ -22,8 +22,7 @@ public class ParameterizedDynaViewInboundTest extends RewriteTestBase
                .addClass(ParameterizedDynaViewQueryParamBean.class)
                .addClass(ParameterizedDynaViewValidator.class)
                .addAsWebResource("dynaview/parameterized-index.xhtml", "index.xhtml")
-               .addAsWebResource("dynaview/parameterized-correct.xhtml", "correct.xhtml")
-               .addAsWebResource("dynaview/parameterized-wrong.xhtml", "wrong.xhtml");
+               .addAsWebResource("dynaview/parameterized-correct.xhtml", "correct.xhtml");
    }
 
    @Test
