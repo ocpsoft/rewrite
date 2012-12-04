@@ -209,26 +209,6 @@ public class RewriteTest extends RewriteTestBase
       return archive;
    }
 
-   protected static JavaArchive getRewriteCDIArchive()
-   {
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-cdi.jar")
-
-               .addAsResource(new File("../integration-cdi/target/classes/org"))
-               .addAsResource(new File("../integration-cdi/target/classes/META-INF"));
-
-      return archive;
-   }
-
-   protected static JavaArchive getRewriteConfigArchive()
-   {
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-config-servlet.jar")
-
-               .addAsResource(new File("../config-servlet/target/classes/org"))
-               .addAsResource(new File("../config-servlet/target/classes/META-INF"));
-
-      return archive;
-   }
-
    protected static JavaArchive getRewriteAnnotationsArchive()
    {
       File classes = new File("../config-annotations/target/classes/org");
@@ -251,5 +231,35 @@ public class RewriteTest extends RewriteTestBase
       }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");
+   }
+
+   protected static JavaArchive getRewriteCDIArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-cdi.jar")
+
+               .addAsResource(new File("../integration-cdi/target/classes/org"))
+               .addAsResource(new File("../integration-cdi/target/classes/META-INF"));
+
+      return archive;
+   }
+
+   protected static JavaArchive getRewriteConfigArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-config-servlet.jar")
+
+               .addAsResource(new File("../config-servlet/target/classes/org"))
+               .addAsResource(new File("../config-servlet/target/classes/META-INF"));
+
+      return archive;
+   }
+
+   protected static JavaArchive getRewriteFacesArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-faces.jar")
+
+               .addAsResource(new File("../integration-faces/target/classes/org"))
+               .addAsResource(new File("../integration-faces/target/classes/META-INF"));
+
+      return archive;
    }
 }

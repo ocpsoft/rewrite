@@ -32,7 +32,7 @@
    <rewrite match="^/virtual/rewrite/substitute$" substitute="/virtuální" redirect="301" />
    
    <!-- Rewrite using new URL -->
-   <rewrite match="^/virtual/rewrite/url$" url="/test/virtuální" redirect="301" />
+   <rewrite match="^/virtual/rewrite/url$" url="/rewrite-test/virtuální" redirect="301" />
 
    <!-- 
    <rewrite match="^/virtualencoded$" url="/virtu%C3%A1ln%C3%AD" redirect="301" />

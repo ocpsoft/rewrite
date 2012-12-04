@@ -66,6 +66,7 @@ public class LazyBeanNameFinder
       }
 
       // find resolvers via ServiceLoader
+      @SuppressWarnings("unchecked")
       Iterator<BeanNameResolver> beanNameFinderIterator = ServiceLoader.load(BeanNameResolver.class).iterator();
 
       // call init() method on all resolvers
