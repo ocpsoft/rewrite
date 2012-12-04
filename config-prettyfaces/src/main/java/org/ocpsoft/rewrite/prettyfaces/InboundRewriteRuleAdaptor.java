@@ -21,8 +21,6 @@
  */
 package org.ocpsoft.rewrite.prettyfaces;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;

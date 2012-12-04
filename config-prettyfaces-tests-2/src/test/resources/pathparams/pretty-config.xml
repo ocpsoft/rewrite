@@ -1,0 +1,17 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://ocpsoft.com/prettyfaces/4.0.0
+                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-4.0.0.xsd">
+
+
+   <url-mapping id="index">
+      <pattern value="/default/#{digits}"></pattern>
+      <view-id>/index.jsf</view-id>
+   </url-mapping>
+
+   <url-mapping id="index">
+      <pattern value="/digits/#{/\\d+/ digits}"></pattern>
+      <view-id>/index.jsf</view-id>
+   </url-mapping>
+
+</pretty-config>

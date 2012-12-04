@@ -71,7 +71,7 @@ public class PrettyContext implements Serializable
    {
       Assert.notNull(request, "HttpServletRequest argument was null");
 
-      config = (PrettyConfig) request.getAttribute(CONFIG_KEY);
+      config = (PrettyConfig) request.getServletContext().getAttribute(CONFIG_KEY);
       if (config == null)
       {
          config = new PrettyConfig();

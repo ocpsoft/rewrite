@@ -21,7 +21,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
@@ -46,7 +45,7 @@ public class RewriteTest extends RewriteTestBase
       return archive;
    }
 
-   public static LibraryContainer<WebArchive> getDeploymentWithCDI()
+   public static WebArchive getDeploymentWithCDI()
    {
       WebArchive archive = getDeployment();
       archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
@@ -68,7 +67,7 @@ public class RewriteTest extends RewriteTestBase
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api"))
                .addAsLibraries(getRewriteArchive())
-               .addAsLibraries(getRewriteConfingArchive())
+               .addAsLibraries(getRewriteConfigArchive())
                .addAsLibraries(getRewriteAnnotationsArchive())
                .addAsLibraries(getContainerArchive())
                .addAsLibraries(getCurrentArchive());
@@ -210,7 +209,17 @@ public class RewriteTest extends RewriteTestBase
       return archive;
    }
 
-   protected static JavaArchive getRewriteConfingArchive()
+   protected static JavaArchive getRewriteCDIArchive()
+   {
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-cdi.jar")
+
+               .addAsResource(new File("../integration-cdi/target/classes/org"))
+               .addAsResource(new File("../integration-cdi/target/classes/META-INF"));
+
+      return archive;
+   }
+
+   protected static JavaArchive getRewriteConfigArchive()
    {
       JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-config-servlet.jar")
 
