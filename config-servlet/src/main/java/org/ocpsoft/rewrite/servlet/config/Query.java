@@ -176,7 +176,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
                tempBindable.bindsTo(Evaluation.property(name));
                for (String value : paramValues) {
 
-                  if (pattern.matcher(value).matches())
+                  if (value != null && pattern.matcher(value).matches())
                   {
                      Maps.addArrayValue(map, tempBindable, value);
                      values.add(value);
