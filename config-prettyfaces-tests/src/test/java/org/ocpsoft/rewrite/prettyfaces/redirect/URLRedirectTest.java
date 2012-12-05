@@ -17,11 +17,16 @@
 package org.ocpsoft.rewrite.prettyfaces.redirect;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 @RunWith(Arquillian.class)
 public class URLRedirectTest extends RewriteTestBase
@@ -35,52 +40,35 @@ public class URLRedirectTest extends RewriteTestBase
                .addAsWebInfResource("redirect/redirect-pretty-config.xml", "pretty-config.xml");
    }
 
-   // TODO FIXME these tests need to be rewritten, probably using arquillian Drone
-   // @Test
-   // public void testRefreshEncodesValuesPropertly() throws Exception
-   // {
-   // String expected = "/1 1/2 2";
-   //
-   // HttpAction<HttpGet> action = get(expected);
-   //
-   // JSFClientSession client = jsfSession.getJSFClientSession();
-   //
-   // FacesContext context = server.getFacesContext();
-   // PrettyContext prettyContext = PrettyContext.getCurrentInstance(context);
-   //
-   // client.click("refresh");
-   //
-   // String actual = prettyContext.getRequestURL().toString();
-   // assertEquals(expected, actual);
-   // }
-   //
-   // @Test
-   // public void testRedirectEncodesValuesPropertly() throws Exception
-   // {
-   // String requestURL = "/foo/%20%3F%20?que=ora.+es";
-   //
-   // JSFSession jsfSession = new JSFSession(requestURL);
-   // JSFServerSession server = jsfSession.getJSFServerSession();
-   //
-   // JSFClientSession client = jsfSession.getJSFClientSession();
-   //
-   // FacesContext context = server.getFacesContext();
-   // PrettyContext prettyContext = PrettyContext.getCurrentInstance(context);
-   //
-   // String attribute = client.getElement("form").getAttribute("action");
-   // client.click("redirect");
-   //
-   // // doesn't seem to work. But I think our code is correct. Perhaps a HTTPUnit problem?
-   // // String browserURL = client.getContentPage().getUrl().toString();
-   // // assertTrue(browserURL.contains(requestURL));
-   //
-   // String expected = "/foo/" + RedirectBean.PATH_VALUE;
-   // String actual = prettyContext.getRequestURL().toString();
-   // assertEquals(expected, actual);
-   //
-   // // TODO QueryString should probably separate encoding from default behavior
-   // // String expectedQuery = "?que=" + RedirectBean.QUERY_VALUE;
-   // // String actualQuery = prettyContext.getRequestQueryString().toString();
-   // // assertEquals(expectedQuery, actualQuery);
-   // }
+   @Drone
+   WebDriver browser;
+
+   @Test
+   public void testRefreshEncodesValuesPropertly() throws Exception
+   {
+      browser.get(getBaseURL() + getContextPath() + "/1 1/2 2");
+      String expected = browser.getCurrentUrl();
+      browser.findElement(By.id("refresh")).click();
+      Assert.assertEquals(expected, browser.getCurrentUrl());
+   }
+
+   @Test
+   public void testRedirectEncodesValuesPropertly() throws Exception
+   {
+      browser.get(getBaseURL() + getContextPath() + "/foo/%20%3F%20?que=ora.+es");
+      String action = browser.findElement(By.id("form")).getAttribute("action");
+      browser.findElement(By.id("redirect")).click();
+
+      // doesn't seem to work. But I think our code is correct. Perhaps a HTTPUnit problem?
+      // String browserURL = client.getContentPage().getUrl().toString();
+      // assertTrue(browserURL.contains(requestURL));
+
+      Assert.assertTrue(action.contains("/foo/" + RedirectBean.PATH_VALUE));
+      Assert.assertTrue(browser.getPageSource().contains("/foo/" + RedirectBean.PATH_VALUE));
+
+      // TODO QueryString should probably separate encoding from default behavior
+      // String expectedQuery = "?que=" + RedirectBean.QUERY_VALUE;
+      // String actualQuery = prettyContext.getRequestQueryString().toString();
+      // assertEquals(expectedQuery, actualQuery);
+   }
 }

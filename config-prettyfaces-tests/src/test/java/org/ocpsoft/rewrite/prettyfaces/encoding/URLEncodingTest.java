@@ -20,6 +20,7 @@ import junit.framework.Assert;
 
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
@@ -27,6 +28,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 @RunWith(Arquillian.class)
 public class URLEncodingTest extends RewriteTestBase
@@ -107,16 +110,15 @@ public class URLEncodingTest extends RewriteTestBase
       Assert.assertTrue(action.getResponseContent().contains("/custom/form"));
    }
 
+   @Drone
+   WebDriver browser;
+
    @Test
    public void testURLDecoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo Bar");
-
-      Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo Bar"));
-      Assert.assertTrue(action.getResponseContent().contains("/custom/form"));
-
-      // Test a managed bean
-      Assert.assertTrue(action.getResponseContent().contains("beanPathText=Vračar"));
+      browser.get(getBaseURL() + getContextPath() + "/encoding/Vračar?dis=Fooo Bar");
+      Assert.assertTrue(browser.getPageSource().contains("/encoding/Vračar?dis=Fooo+Bar"));
+      Assert.assertTrue(browser.getPageSource().contains("beanPathText=Vračar"));
    }
 
    @Test
@@ -125,47 +127,40 @@ public class URLEncodingTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo%20Bar");
 
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo%20Bar"));
-      Assert.assertTrue(action.getResponseContent().contains("/custom/form"));
-
-      // Test a managed bean
+      Assert.assertTrue(action.getResponseContent().contains("/encoding/Vračar?dis=Fooo+Bar"));
       Assert.assertTrue(action.getResponseContent().contains("beanQueryText=Fooo Bar"));
    }
 
    @Test
    public void testQueryWithGermanUmlaut() throws Exception
    {
-      // query parameter contains a German 'ü' encoded with UTF8
       HttpAction<HttpGet> action = get("/encoding/Vračar?dis=%C3%BC");
-
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=%C3%BC"));
       Assert.assertTrue(action.getResponseContent().contains("/rewrite-test/encoding/Vračar?dis=%C3%BC"));
-
-      // Test a managed bean
       Assert.assertTrue(action.getResponseContent().contains("beanQueryText=\u00fc"));
    }
 
    @Test
    public void testPatternDecoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/hard encoding/Vračar");
-      Assert.assertEquals(200, action.getStatusCode());
+      browser.get(getBaseURL() + getContextPath() + "/hard encoding/Vračar");
+      Assert.assertNotNull(browser.findElement(By.id("form")));
    }
 
    @Test
    public void testEncodedURLMatchesNonEncodedPattern() throws Exception
    {
-      HttpAction<HttpGet> action = get("/URL%20ENCODED");
-      Assert.assertEquals(200, action.getStatusCode());
+      browser.get(getBaseURL() + getContextPath() + "/URL%20ENCODED");
+      Assert.assertNotNull(browser.findElement(By.id("form")));
    }
 
-   // public void testNoDecodeOnSubmitDoesNotCrash() throws Exception
-   // {
-   // JSFSession jsfSession = new JSFSession("/decodequery");
-   // JSFServerSession server = jsfSession.getJSFServerSession();
-   // JSFClientSession client = jsfSession.getJSFClientSession();
-   // assertEquals("encoding.jsf", server.getCurrentViewID());
-   //
-   // client.setValue("input1", "%");
-   // client.click("submit");
-   // }
+   public void testNoDecodeOnSubmitDoesNotCrash() throws Exception
+   {
+      browser.get(getBaseURL() + getContextPath() + "/decodequery");
+
+      Assert.assertTrue(browser.getPageSource().contains("viewId=encoding.jsf"));
+      browser.findElement(By.id("input1")).sendKeys("%");
+      browser.findElement(By.id("submit")).click();
+      Assert.assertTrue(browser.getPageSource().contains("viewId=encoding.jsf"));
+   }
 }

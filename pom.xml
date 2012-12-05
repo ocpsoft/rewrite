@@ -254,6 +254,13 @@
             <type>pom</type>
             <scope>import</scope>
          </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-bom</artifactId>
+            <version>${version.arquillian}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
       </dependencies>
    </dependencyManagement>
 
