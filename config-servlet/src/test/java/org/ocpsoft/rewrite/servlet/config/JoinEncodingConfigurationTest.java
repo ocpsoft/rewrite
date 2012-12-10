@@ -33,7 +33,6 @@ import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.common.util.Streams;
@@ -116,8 +115,6 @@ public class JoinEncodingConfigurationTest extends RewriteTest
     * (encoded as '+') into a space character in the path segment (encoded as %20).
     */
    @Test
-   // TODO: fix me
-   @Ignore
    public void testInboundCorrectionSpaceCharacter() throws Exception
    {
       HttpAction<HttpGet> action = get("/encoding.html?param=foo+bar");
@@ -131,8 +128,6 @@ public class JoinEncodingConfigurationTest extends RewriteTest
     * Make sure that this works.
     */
    @Test
-   // TODO: fix me
-   @Ignore
    public void testInboundCorrectionAmpersandCharacter() throws Exception
    {
       HttpAction<HttpGet> action = get("/encoding.html?param=foo%26bar");
