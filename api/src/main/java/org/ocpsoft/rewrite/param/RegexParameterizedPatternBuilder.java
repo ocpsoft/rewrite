@@ -43,7 +43,7 @@ import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
  */
 public class RegexParameterizedPatternBuilder implements ParameterizedPatternBuilder
 {
-   public interface Transposition
+   private interface Transposition
    {
       public Bindable<?> getBindable(RegexGroup capture);
    }

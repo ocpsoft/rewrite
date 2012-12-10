@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -41,11 +40,6 @@ import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
  */
 public class RegexParameterizedPatternParser implements ParameterizedPatternParser
 {
-   public interface Transposition
-   {
-      public Bindable<?> getBindable(RegexGroup capture);
-   }
-
    private static final String DEFAULT_PARAMETER_PATTERN = ".*";
    private Pattern compiledPattern;
    private String pattern;
