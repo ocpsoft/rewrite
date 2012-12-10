@@ -32,6 +32,7 @@ import org.ocpsoft.rewrite.bind.DefaultBindable;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
+import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
@@ -86,7 +87,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
                queryString = event.getRequestQueryString();
             else if (event instanceof HttpOutboundServletRewrite)
             {
-               queryString = QueryStringBuilder.extractQuery(event.getURL());
+               queryString = QueryStringBuilder.extractQuery(getEncodedURL(event));
             }
 
             if (pattern.matcher(queryString == null ? "" : queryString).matches())
@@ -99,6 +100,17 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
             return false;
          }
       };
+   }
+
+   /**
+    * Temporary solution to get {@link HttpServletRewrite#getURL()} in encoded form.
+    */
+   private static String getEncodedURL(HttpServletRewrite event)
+   {
+      if (event instanceof HttpInboundServletRewrite) {
+         return event.getRequest().getRequestURI() + "?" + event.getRequest().getQueryString();
+      }
+      return event.getURL();
    }
 
    /**
@@ -120,7 +132,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL());
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(getEncodedURL(event)).decode();
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();
@@ -165,7 +177,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getURL());
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(getEncodedURL(event)).decode();
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();

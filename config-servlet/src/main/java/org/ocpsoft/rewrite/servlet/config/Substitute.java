@@ -21,9 +21,11 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.Transformations;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -81,7 +83,11 @@ public class Substitute extends HttpOperation implements ISubstitute
       }
       else if (event instanceof HttpOutboundServletRewrite)
       {
-         String target = location.getBuilder().build(event, context, parameters);
+         ParameterizedPatternBuilder builder = location.getBuilder();
+         for(SubstituteParameter param : parameters.values()) {
+            builder.where(param.getName()).transformedBy(Transformations.encodePath());
+         }
+         String target = builder.build(event, context, parameters);
          if (((HttpOutboundServletRewrite) event).getOutboundURL().startsWith(event.getContextPath())
                   && target.startsWith("/")
                   && !target.startsWith(event.getContextPath()))
@@ -109,4 +115,5 @@ public class Substitute extends HttpOperation implements ISubstitute
    {
       return location;
    }
+
 }
