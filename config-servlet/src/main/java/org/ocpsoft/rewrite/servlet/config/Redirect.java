@@ -27,6 +27,8 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.Transformations;
+import org.ocpsoft.rewrite.servlet.config.ISubstitute.SubstituteParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -58,6 +60,9 @@ public class Redirect extends HttpOperation implements IRedirect
    {
       if (event instanceof HttpInboundServletRewrite)
       {
+         for(RedirectParameter param : parameters.values()) {
+            location.where(param.getName()).transformedBy(Transformations.encodePath());
+         }
          String target = location.build(event, context, parameters);
          switch (type)
          {
