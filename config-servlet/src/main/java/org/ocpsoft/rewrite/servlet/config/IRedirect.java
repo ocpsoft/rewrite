@@ -58,7 +58,7 @@ public interface IRedirect extends Parameterized<IRedirect, RedirectParameter, S
       @Override
       public IRedirectParameter matches(String regex)
       {
-         parameter.constrainedBy(new RegexConstraint(regex));
+         parameter.matches(regex);
          return this;
       }
 
