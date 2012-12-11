@@ -51,7 +51,8 @@ public class Redirect extends HttpOperation implements IRedirect
       this.type = type;
 
       for (ParameterizedPatternBuilderParameter parameter : this.location.getParameterMap().values()) {
-         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
+         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()))
+                  .transformedBy(Transformations.encodePath());
       }
    }
 
@@ -60,9 +61,6 @@ public class Redirect extends HttpOperation implements IRedirect
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         for(RedirectParameter param : parameters.values()) {
-            location.where(param.getName()).transformedBy(Transformations.encodePath());
-         }
          String target = location.build(event, context, parameters);
          switch (type)
          {
