@@ -57,16 +57,15 @@ public class JoinEncodingConfigurationProvider extends HttpConfigurationProvider
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
                      StringBuilder result = new StringBuilder();
-                     result.append("url: ");
+                     result.append("HttpServletRequest.getRequestPath() = ");
                      result.append(event.getRequestPath());
                      result.append("\n");
 
-                     Map<String, String[]> parameterMap = event.getRequest().getParameterMap();
-                     for (String key : parameterMap.keySet()) {
-                        result.append("query: ");
+                     for (String key : event.getRequest().getParameterMap().keySet()) {
+                        result.append("getParameter('");
                         result.append(key);
-                        result.append("=");
-                        result.append(parameterMap.get(key)[0]);
+                        result.append("') = ");
+                        result.append(event.getRequest().getParameter(key));
                         result.append("\n");
                      }
 

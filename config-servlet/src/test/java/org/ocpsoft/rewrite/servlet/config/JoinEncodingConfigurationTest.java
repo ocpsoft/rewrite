@@ -65,8 +65,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("url: /encoding.html"));
-      assertThat(responseContent, containsString("query: param=foo"));
+      assertThat(responseContent, containsString("getRequestPath() = /encoding.html"));
+      assertThat(responseContent, containsString("getParameter('param') = foo"));
    }
 
    /**
@@ -79,8 +79,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("url: /encoding.html"));
-      assertThat(responseContent, containsString("query: param=foo bar"));
+      assertThat(responseContent, containsString("getRequestPath() = /encoding.html"));
+      assertThat(responseContent, containsString("getParameter('param') = foo bar"));
    }
 
    /**
@@ -90,12 +90,12 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testJoinEncodingAmpersandCharacter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/foo%26bar");
+      HttpAction<HttpGet> action = get("/encoding/foo&bar");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("url: /encoding.html"));
-      assertThat(responseContent, containsString("query: param=foo&bar"));
+      assertThat(responseContent, containsString("getRequestPath() = /encoding.html"));
+      assertThat(responseContent, containsString("getParameter('param') = foo&bar"));
    }
 
    /**
@@ -137,7 +137,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    }
 
    /**
-    * Basic test for outbould rewriting
+    * Basic test for outbound rewriting
     */
    @Test
    public void testOutboundRewritingSimpleString() throws Exception
