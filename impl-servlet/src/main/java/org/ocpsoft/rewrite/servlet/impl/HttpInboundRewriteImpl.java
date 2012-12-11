@@ -72,7 +72,7 @@ public class HttpInboundRewriteImpl extends BaseHttpRewrite implements HttpInbou
       try
       {
          URLBuilder builder = URLBuilder.createFrom(url);
-         String path = builder.decode().toPath();
+         String path = builder.toPath();
 
          return response.encodeRedirectURL(path
                   + builder.getQueryStringBuilder().encode().toQueryString());
