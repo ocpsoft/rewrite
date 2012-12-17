@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -69,19 +69,7 @@ public class HttpInboundRewriteImpl extends BaseHttpRewrite implements HttpInbou
 
    private String encodeRedirectUrl(final HttpServletResponse response, final String url)
    {
-      try
-      {
-         URLBuilder builder = URLBuilder.createFrom(url);
-         String path = builder.toPath();
-
-         return response.encodeRedirectURL(path
-                  + builder.getQueryStringBuilder().encode().toQueryString());
-      }
-      catch (Exception e)
-      {
-         log.warn("Failed to encode URL [" + url + "]", e);
-         return response.encodeRedirectURL(url);
-      }
+      return response.encodeRedirectURL(url);
    }
 
    @Override
@@ -154,15 +142,15 @@ public class HttpInboundRewriteImpl extends BaseHttpRewrite implements HttpInbou
    }
 
    @Override
-   public String getURL()
+   public Address getAddress()
    {
-      return getRequestURL();
+      return getInboundAddress();
    }
 
    @Override
    public String toString()
    {
-      return "InboundRewrite [" + getRequest().getMethod() + " url=" + getURL() + ", flow=" + getFlow()
+      return "InboundRewrite [" + getRequest().getMethod() + " url=" + getAddress() + ", flow=" + getFlow()
                + ", dispatchResource=" + getDispatchResource()
                + "]";
    }

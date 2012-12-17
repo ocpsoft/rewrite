@@ -3,12 +3,11 @@ package org.ocpsoft.rewrite.servlet.impl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
+import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * Base class for Http {@link Rewrite} events.
@@ -23,10 +22,7 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
     * For caching and performance purposes only.
     */
    private String requestContextPath;
-   private String requestPath;
-   private String requestQueryString;
-   private String requestQueryStringSeparator;
-   private String requestUrl;
+   private Address address;
 
    public BaseHttpRewrite(HttpServletRequest request, HttpServletResponse response)
    {
@@ -42,52 +38,34 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
    }
 
    @Override
-   public String getRequestPath()
+   public Address getAddress()
    {
-      if (this.requestPath == null)
-      {
-         String url = getRequest().getRequestURI();
-         if (url.startsWith(getContextPath()))
-         {
-            url = url.substring(getContextPath().length());
-         }
-
-         this.requestPath = URLBuilder.createFrom(url).decode().toURL();
-      }
-      return this.requestPath;
+      return getInboundAddress();
    }
 
    @Override
-   public String getRequestQueryStringSeparator()
+   public Address getInboundAddress()
    {
-      if (this.requestQueryStringSeparator == null)
+      if (this.address == null)
       {
-         String queryString = getRequestQueryString();
-         if ((queryString != null) && !queryString.isEmpty())
-            this.requestQueryStringSeparator = "?";
-         else
-            return this.requestQueryStringSeparator = "";
+         this.address = AddressBuilder.begin()
+                  .protocol(getRequest().getProtocol())
+                  .host(getRequest().getServerName())
+                  .port(getRequest().getServerPort())
+                  .path(getRequestPath())
+                  .queryLiteral(getRequest().getQueryString()).build();
       }
-      return this.requestQueryStringSeparator;
+      return this.address;
    }
 
-   @Override
-   public String getRequestQueryString()
+   private String getRequestPath()
    {
-      if (this.requestQueryString == null)
+      String path = getRequest().getRequestURI();
+      if (path.startsWith(getContextPath()))
       {
-         String query = getRequest().getQueryString();
-         this.requestQueryString = Strings.isNullOrEmpty(query) ? "" : QueryStringBuilder.createFromEncoded(query)
-                  .decode().toQueryString().substring(1);
+         path = path.substring(getContextPath().length());
       }
-      return this.requestQueryString;
-   }
 
-   @Override
-   public String getRequestURL()
-   {
-      if (this.requestUrl == null)
-         this.requestUrl = getRequestPath() + getRequestQueryStringSeparator() + getRequestQueryString();
-      return this.requestUrl;
+      return path;
    }
 }

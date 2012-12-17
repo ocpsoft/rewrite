@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.spi.RewriteProvider;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface RewriteLifecycleContext<C> extends Context
+public interface RewriteLifecycleContext<CONTEXTTYPE> extends Context
 {
    public static final String LIFECYCLE_CONTEXT_KEY = "_com.ocpsoft.rewrite.RequestContext";
 
@@ -50,7 +50,7 @@ public interface RewriteLifecycleContext<C> extends Context
    /**
     * Get all available {@link org.ocpsoft.rewrite.spi.RewriteProvider} instances.
     */
-   List<RewriteProvider<C, Rewrite>> getRewriteProviders();
+   List<RewriteProvider<CONTEXTTYPE, Rewrite>> getRewriteProviders();
 
    /**
     * Get all available {@link org.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer} instances.

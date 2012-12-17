@@ -24,14 +24,15 @@ import org.ocpsoft.common.services.NonEnriching;
 
 import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
 public class HttpOutboundRewriteProducer implements
-        OutboundRewriteProducer<HttpServletRequest, HttpServletResponse, String>,
-NonEnriching
+         OutboundRewriteProducer<HttpServletRequest, HttpServletResponse, Address>,
+         NonEnriching
 {
    @Override
    public int priority()
@@ -40,17 +41,17 @@ NonEnriching
    }
 
    @Override
-   public boolean handles(ServletResponse request)
+   public boolean handles(Address address)
    {
-      return request instanceof HttpServletRequest;
+      return address instanceof Address;
    }
 
    @Override
-   public OutboundServletRewrite<HttpServletRequest, HttpServletResponse> createOutboundRewrite(
+   public OutboundServletRewrite<HttpServletRequest, HttpServletResponse, Address> createOutboundRewrite(
             final ServletRequest request,
-            final ServletResponse response, String payload)
-            {
+            final ServletResponse response, Address payload)
+   {
       return new HttpOutboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response, payload);
-            }
+   }
 
 }

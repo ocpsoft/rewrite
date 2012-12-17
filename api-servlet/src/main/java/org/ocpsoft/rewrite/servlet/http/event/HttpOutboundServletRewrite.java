@@ -19,25 +19,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface HttpOutboundServletRewrite extends
-         OutboundServletRewrite<HttpServletRequest, HttpServletResponse>, HttpServletRewrite
+         OutboundServletRewrite<HttpServletRequest, HttpServletResponse, Address>, HttpServletRewrite
 {
    /**
-    * Get the outbound URL to be rewritten.
+    * Set the new outbound {@link Address}.
     */
-   public String getOutboundURL();
+   public void setOutboundAddress(final Address address);
 
    /**
-    * Set the new outbound URL.
+    * Get the original outbound {@link Address} (before any modifications.)
     */
-   public void setOutboundURL(final String url);
-
-   /**
-    * Get the original outbound URL (before any modifications.)
-    */
-   String getOriginalOutboundURL();
+   Address getOriginalOutboundAddress();
 }

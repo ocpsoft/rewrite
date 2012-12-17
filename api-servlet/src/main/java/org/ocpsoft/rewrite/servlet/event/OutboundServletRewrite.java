@@ -23,7 +23,11 @@ import org.ocpsoft.rewrite.event.OutboundRewrite;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface OutboundServletRewrite<IN extends ServletRequest, OUT extends ServletResponse> extends
-        OutboundRewrite, ServletRewrite<IN, OUT>
+public interface OutboundServletRewrite<IN extends ServletRequest, OUT extends ServletResponse, PAYLOADTYPE> extends
+         OutboundRewrite, ServletRewrite<IN, OUT>
 {
+   /**
+    * Returns the outbound resource.
+    */
+   public PAYLOADTYPE getOutboundResource();
 }

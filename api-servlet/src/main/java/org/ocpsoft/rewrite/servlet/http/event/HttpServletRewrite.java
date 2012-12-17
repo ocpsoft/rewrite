@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -33,34 +34,15 @@ public interface HttpServletRewrite extends
    public String getContextPath();
 
    /**
-    * Get the full URL of the current request.
+    * Get the full {@link Address} of the current request.
     */
-   String getRequestURL();
+   Address getInboundAddress();
 
    /**
-    * Portion of the request URL representing request path within the application. The context path is not included, and
-    * should be retrieved using {@link #getContextPath()}
-    */
-   public String getRequestPath();
-
-   /**
-    * Portion of the request URL representing the query string.
-    */
-   public String getRequestQueryString();
-
-   /**
-    * Portion of the request URL joining the {@link #getRequestPath()} and {@link #getRequestQueryString()}. If
-    * {@link #getRequestQueryString()} is valued, this will return "?"; otherwise, if {@link #getRequestQueryString()}
-    * is empty, this too will return an empty string.
-    */
-   String getRequestQueryStringSeparator();
-
-   /**
-    * For {@link HttpInboundServletRewrite} events, return the request URL excluding context path, but including query
-    * string: {@link #getRequestPath()} + {@link #getRequestQueryStringSeparator()} + {@link #getRequestQueryString()}
+    * For {@link HttpInboundServletRewrite} events, return the request {@link Address}.
     * <p>
     * For {@link HttpOutboundServletRewrite} events, this method returns
-    * {@link HttpOutboundServletRewrite#getOutboundURL()}
+    * {@link HttpOutboundServletRewrite#getOutboundResource()}
     */
-   public String getURL();
+   public Address getAddress();
 }

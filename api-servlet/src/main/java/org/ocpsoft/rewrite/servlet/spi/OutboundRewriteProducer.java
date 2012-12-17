@@ -24,14 +24,16 @@ import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 
 /**
  * SPI for creating {@link OutboundRewriteEvent} instances.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface OutboundRewriteProducer<IN extends ServletRequest, OUT extends ServletResponse, P> extends
-Specialized<ServletResponse>, Weighted
+public interface OutboundRewriteProducer<IN extends ServletRequest, OUT extends ServletResponse, PAYLOADTYPE> extends
+         Specialized<PAYLOADTYPE>, Weighted
 {
    /**
     * Create an {@link OutboundServletRewrite} instance.
     */
-   OutboundServletRewrite<IN, OUT> createOutboundRewrite(ServletRequest request, ServletResponse response, P payload);
+   OutboundServletRewrite<IN, OUT, PAYLOADTYPE> createOutboundRewrite(ServletRequest request, ServletResponse response,
+            PAYLOADTYPE payload);
 }

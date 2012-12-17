@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -26,46 +27,46 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
  */
 public class HttpOutboundRewriteImpl extends BaseHttpRewrite implements HttpOutboundServletRewrite
 {
-   private String url;
-   private final String originalURL;
+   private Address address;
+   private final Address originalAddress;
 
    public HttpOutboundRewriteImpl(final HttpServletRequest request,
             final HttpServletResponse response,
-            final String url)
+            final Address address)
    {
       super(request, response);
-      this.url = url;
-      this.originalURL = url;
+      this.address = address;
+      this.originalAddress = address;
    }
 
    @Override
-   public String getOutboundURL()
+   public Address getOutboundResource()
    {
-      return url;
+      return address;
    }
 
    @Override
-   public void setOutboundURL(final String url)
+   public void setOutboundAddress(final Address address)
    {
-      this.url = url;
+      this.address = address;
    }
 
    @Override
    public String toString()
    {
-      return "OutboundRewrite [flow=" + flow + ", outboundURL=" + getOutboundURL() + ", dispatchResource="
+      return "OutboundRewrite [flow=" + flow + ", outboundURL=" + getOutboundResource() + ", dispatchResource="
                + dispatchResource + "]";
    }
 
    @Override
-   public String getURL()
+   public Address getAddress()
    {
-      return getOutboundURL();
+      return getOutboundResource();
    }
 
    @Override
-   public String getOriginalOutboundURL()
+   public Address getOriginalOutboundAddress()
    {
-      return originalURL;
+      return originalAddress;
    }
 }

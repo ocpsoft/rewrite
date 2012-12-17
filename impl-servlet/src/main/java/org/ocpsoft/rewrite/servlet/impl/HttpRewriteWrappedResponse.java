@@ -28,11 +28,13 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.util.Streams;
+import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
@@ -41,10 +43,13 @@ import org.ocpsoft.rewrite.servlet.config.response.ResponseContent;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
-import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
+import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -52,6 +57,8 @@ import org.ocpsoft.rewrite.spi.RewriteProvider;
 public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 {
    private final HttpServletRequest request;
+
+   private static final Logger log = Logger.getLogger(HttpRewriteWrappedResponse.class);
 
    public HttpRewriteWrappedResponse(final HttpServletRequest request, final HttpServletResponse response)
    {
@@ -303,57 +310,75 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeRedirectURL(final String url)
    {
-      HttpOutboundServletRewrite event = new HttpOutboundRewriteImpl(request, this, url);
-      rewrite(event);
+      Address address = AddressBuilder.create(url);
+      OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
       {
-         return event.getOutboundURL();
+         return event.getOutboundResource().toString();
       }
-
-      return super.encodeRedirectURL(event.getOutboundURL());
+      return super.encodeRedirectURL(event.getOutboundResource().toString());
    }
 
    @Override
    public String encodeURL(final String url)
    {
-      HttpOutboundServletRewrite event = new HttpOutboundRewriteImpl(request, this, url);
-      rewrite(event);
+      Address address = AddressBuilder.create(url);
+      OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
       {
-         return event.getOutboundURL();
+         return event.getOutboundResource().toString();
       }
-
-      return super.encodeURL(event.getOutboundURL());
+      return super.encodeURL(event.getOutboundResource().toString());
    }
 
-   private void rewrite(final HttpOutboundServletRewrite event)
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   private OutboundServletRewrite<ServletRequest, ServletResponse, Address> rewrite(Address address)
    {
-      @SuppressWarnings("unchecked")
       RewriteLifecycleContext<ServletContext> context = (RewriteLifecycleContext<ServletContext>) request
                .getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY);
-      for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
-      {
-         listener.beforeOutboundRewrite(event);
-      }
-      
-      for (RewriteProvider<ServletContext, Rewrite> p : context.getRewriteProviders())
-      {
-         if (p.handles(event))
+
+      OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = null;
+      for (OutboundRewriteProducer producer : context.getOutboundProducers()) {
+         if (producer.handles(address))
          {
-            p.rewrite(event);
-            if (event.getFlow().is(Flow.HANDLED))
-            {
-               break;
-            }
+            event = ((OutboundRewriteProducer<ServletRequest, ServletResponse, Address>) producer)
+                     .createOutboundRewrite(request, getResponse(), address);
          }
       }
 
-      for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
+      if (event == null)
       {
-         listener.afterOutboundRewrite(event);
+         log.warn("No instance of [" + OutboundServletRewrite.class
+                  + "] was produced. Rewriting is disabled on this outbound event.");
       }
+      else
+      {
+
+         for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
+         {
+            listener.beforeOutboundRewrite(event);
+         }
+
+         for (RewriteProvider<ServletContext, Rewrite> p : context.getRewriteProviders())
+         {
+            if (p.handles(event))
+            {
+               p.rewrite(event);
+               if (event.getFlow().is(Flow.HANDLED))
+               {
+                  break;
+               }
+            }
+         }
+
+         for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
+         {
+            listener.afterOutboundRewrite(event);
+         }
+      }
+      return event;
    }
 
    @Override

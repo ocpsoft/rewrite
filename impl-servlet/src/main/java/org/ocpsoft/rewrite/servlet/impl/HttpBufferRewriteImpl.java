@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 public class HttpBufferRewriteImpl extends BaseHttpRewrite implements HttpServletRewrite
 {
@@ -22,26 +23,8 @@ public class HttpBufferRewriteImpl extends BaseHttpRewrite implements HttpServle
    }
 
    @Override
-   public String getRequestPath()
+   public Address getAddress()
    {
-      return delegate.getRequestPath();
-   }
-
-   @Override
-   public String getRequestQueryString()
-   {
-      return delegate.getRequestQueryString();
-   }
-
-   @Override
-   public String getRequestQueryStringSeparator()
-   {
-      return delegate.getRequestQueryStringSeparator();
-   }
-
-   @Override
-   public String getURL()
-   {
-      return delegate.getURL();
+      return delegate.getAddress();
    }
 }
