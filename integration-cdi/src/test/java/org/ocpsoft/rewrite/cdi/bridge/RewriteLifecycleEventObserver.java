@@ -21,6 +21,7 @@ import javax.enterprise.event.Observes;
 import org.ocpsoft.rewrite.cdi.events.AfterInboundRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -31,7 +32,7 @@ public class RewriteLifecycleEventObserver
 {
    public void rewriteInbound2(@Observes final HttpInboundServletRewrite event)
    {
-      if (event.getRequestPath().equals("/redirect-301"))
+      if (event.getInboundAddress().getPath().equals("/redirect-301"))
       {
          event.redirectTemporary(event.getContextPath() + "/outbound");
       }
@@ -44,15 +45,15 @@ public class RewriteLifecycleEventObserver
 
    public void rewriteOutbound(@Observes final HttpOutboundServletRewrite event)
    {
-      if (event.getOutboundURL().equals(event.getContextPath() + "/outbound"))
+      if (event.getOutboundResource().equals(event.getContextPath() + "/outbound"))
       {
-         event.setOutboundURL(event.getContextPath() + "/outbound-rewritten");
+         event.setOutboundAddress(AddressBuilder.create(event.getContextPath() + "/outbound-rewritten"));
       }
    }
 
    public void rewriteInbound(@Observes final HttpInboundServletRewrite event)
    {
-      String requestURL = event.getRequestPath();
+      String requestURL = event.getInboundAddress().getPath();
       if ("/success".equals(requestURL))
          event.sendStatusCode(200);
       else if ("/outbound-rewritten".equals(requestURL))

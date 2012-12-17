@@ -31,7 +31,6 @@ import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getScheme()}
@@ -65,7 +64,8 @@ public class Scheme extends HttpCondition implements IScheme
     *    ... and so on
     * </code>
     * <p>
-    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See also {@link #where(String)}
+    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See
+    * also {@link #where(String)}
     */
    public static Scheme matches(final String pattern)
    {
@@ -91,9 +91,7 @@ public class Scheme extends HttpCondition implements IScheme
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         String url = event.getURL();
-         URLBuilder builder = URLBuilder.createFrom(url);
-         scheme = builder.toURI().getScheme();
+         scheme = event.getAddress().getProtocol();
          if (scheme == null)
             scheme = event.getRequest().getScheme();
       }

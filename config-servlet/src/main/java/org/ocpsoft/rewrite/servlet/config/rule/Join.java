@@ -26,7 +26,7 @@ import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.ParameterizedPattern;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.IPath;
@@ -218,7 +218,7 @@ public class Join implements IJoin
       {
          List<String> parameters = getPathRequestParameters();
 
-         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
+         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundResource().toString();
          QueryStringBuilder query = QueryStringBuilder.createNew();
          if (outboundURL.contains("?"))
          {
@@ -311,13 +311,13 @@ public class Join implements IJoin
    }
 
    @Override
-   public ParameterizedPattern getPathExpression()
+   public ParameterizedPatternParser getPathExpression()
    {
       return requestPath.getPathExpression();
    }
 
    @Override
-   public ParameterizedPattern getResourcexpression()
+   public ParameterizedPatternParser getResourcexpression()
    {
       return resourcePath.getPathExpression();
    }

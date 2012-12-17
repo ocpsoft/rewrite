@@ -15,8 +15,8 @@ public interface ParameterizedPattern<IMPLTYPE extends ParameterizedPattern<IMPL
          extends Parameterized<IMPLTYPE, PARAMTYPE, String>
 {
    /**
-    * Get the {@link ParameterizedPatternBuilderParameter} with the given name. Return null if no such parameter exists
-    * in this {@link ParameterizedPattern}.
+    * Get the {@link ParameterizedPatternParameter} with the given name. Return null if no such parameter exists in this
+    * {@link ParameterizedPattern}.
     */
    PARAMTYPE getParameter(String string);
 

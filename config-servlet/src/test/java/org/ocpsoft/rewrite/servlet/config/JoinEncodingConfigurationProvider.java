@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -58,7 +57,7 @@ public class JoinEncodingConfigurationProvider extends HttpConfigurationProvider
                   {
                      StringBuilder result = new StringBuilder();
                      result.append("HttpServletRequest.getRequestPath() = ");
-                     result.append(event.getRequestPath());
+                     result.append(event.getInboundAddress().getPath());
                      result.append("\n");
 
                      for (String key : event.getRequest().getParameterMap().keySet()) {

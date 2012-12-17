@@ -84,7 +84,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
          {
             String queryString = null;
             if (event instanceof InboundRewrite)
-               queryString = event.getRequestQueryString();
+               queryString = event.getInboundAddress().getQuery();
             else if (event instanceof HttpOutboundServletRewrite)
             {
                queryString = QueryStringBuilder.extractQuery(getEncodedURL(event));
@@ -103,14 +103,14 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
    }
 
    /**
-    * Temporary solution to get {@link HttpServletRewrite#getURL()} in encoded form.
+    * Temporary solution to get {@link HttpServletRewrite#getAddress()} in encoded form.
     */
    private static String getEncodedURL(HttpServletRewrite event)
    {
       if (event instanceof HttpInboundServletRewrite) {
          return event.getRequest().getRequestURI() + "?" + event.getRequest().getQueryString();
       }
-      return event.getURL();
+      return event.getAddress().toString();
    }
 
    /**

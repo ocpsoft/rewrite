@@ -96,7 +96,7 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
-                     Response.addHeader("InboundURL", event.getURL())
+                     Response.addHeader("InboundURL", event.getAddress().toString())
                               .and(Response.addHeader("OutboundURL", event.getResponse().encodeURL(
                                        "/12345-query.xhtml?foo=bar&other=cab&kitty=meow")))
                               .and(SendStatus.code(207))

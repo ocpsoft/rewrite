@@ -69,13 +69,13 @@ public class SchemeChangeTest extends RewriteTest
          {
             throw new IllegalStateException("Not implemented.");
          }
-         
+
       });
       try {
          get(client, "/login");
       }
       catch (Exception e) {
-         if (!e.getMessage().equals("Success!"))
+         if (!"Success!".equals(e.getMessage()))
             Assert.fail();
       }
    }

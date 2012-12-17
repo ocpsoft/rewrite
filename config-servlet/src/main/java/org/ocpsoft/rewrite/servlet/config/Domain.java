@@ -32,7 +32,6 @@ import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getServerName()}
@@ -89,9 +88,7 @@ public class Domain extends HttpCondition implements IDomain
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         String url = event.getURL();
-         URLBuilder builder = URLBuilder.createFrom(url);
-         hostName = builder.toURI().getHost();
+         hostName = event.getAddress().getHost();
          if (hostName == null)
             hostName = event.getRequest().getServerName();
       }

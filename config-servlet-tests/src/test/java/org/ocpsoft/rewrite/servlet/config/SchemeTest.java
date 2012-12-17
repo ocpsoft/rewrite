@@ -27,6 +27,7 @@ import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,7 +47,8 @@ public class SchemeTest
                .thenReturn("https");
 
       inbound = new HttpInboundRewriteImpl(request, null);
-      outbound = new HttpOutboundRewriteImpl(request, null, "http://example.com:8080/path?query=value");
+      outbound = new HttpOutboundRewriteImpl(request, null,
+               AddressBuilder.create("http://example.com:8080/path?query=value"));
    }
 
    @Test

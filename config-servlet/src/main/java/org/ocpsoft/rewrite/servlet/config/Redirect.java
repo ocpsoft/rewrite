@@ -25,10 +25,9 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.Transformations;
-import org.ocpsoft.rewrite.servlet.config.ISubstitute.SubstituteParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -78,7 +77,7 @@ public class Redirect extends HttpOperation implements IRedirect
 
    /**
     * Issue a permanent redirect ( 301 {@link HttpServletResponse#SC_MOVED_PERMANENTLY} ) to the given location. If the
-    * given location is not the same as {@link HttpServletRewrite#getURL()}, this will change the browser {@link URL}
+    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL}
     * and result in a new request. Note that in order to redirect within the {@link ServletContext}, you must prepend
     * the {@link ServletContext#getContextPath()} manually.
     * <p>
@@ -101,7 +100,7 @@ public class Redirect extends HttpOperation implements IRedirect
 
    /**
     * Issue a temporary redirect ( 302 {@link HttpServletResponse#SC_MOVED_TEMPORARILY} ) to the given location. If the
-    * given location is not the same as {@link HttpServletRewrite#getURL()}, this will change the browser {@link URL}
+    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL}
     * and result in a new request. Note that in order to redirect within the {@link ServletContext}, you must prepend
     * the {@link ServletContext#getContextPath()} manually.
     * <p>

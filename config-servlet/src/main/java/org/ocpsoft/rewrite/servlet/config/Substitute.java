@@ -29,11 +29,12 @@ import org.ocpsoft.rewrite.param.Transformations;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * Responsible for substituting inbound/outbound URLs with a replacement. For {@link org.ocpsoft.rewrite.event.InboundRewrite} events, this
  * {@link Operation} calls {@link HttpInboundServletRewrite#forward(String)}, and for {@link org.ocpsoft.rewrite.event.OutboundRewrite} events,
- * this method calls {@link HttpOutboundServletRewrite#setOutboundURL(String)}
+ * this method calls {@link HttpOutboundServletRewrite#setOutboundAddress(String)}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -88,13 +89,13 @@ public class Substitute extends HttpOperation implements ISubstitute
             builder.where(param.getName()).transformedBy(Transformations.encodePath());
          }
          String target = builder.build(event, context, parameters);
-         if (((HttpOutboundServletRewrite) event).getOutboundURL().startsWith(event.getContextPath())
+         if (((HttpOutboundServletRewrite) event).getOutboundResource().getPath().startsWith(event.getContextPath())
                   && target.startsWith("/")
                   && !target.startsWith(event.getContextPath()))
          {
             target = event.getContextPath() + target;
          }
-         ((HttpOutboundServletRewrite) event).setOutboundURL(target);
+         ((HttpOutboundServletRewrite) event).setOutboundAddress(AddressBuilder.create(target));
       }
    }
 

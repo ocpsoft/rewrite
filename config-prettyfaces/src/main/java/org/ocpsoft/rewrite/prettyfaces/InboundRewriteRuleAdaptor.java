@@ -59,9 +59,9 @@ public class InboundRewriteRuleAdaptor implements Rule
       if ((event instanceof HttpInboundServletRewrite)
                && PFUtil.isRewritingEnabled(event)
                && rule.isInbound()
-               && rule.matches(URL.build(((HttpServletRewrite) event).getRequestPath()).decode().toURL()
-                        + QueryString.build(((HttpServletRewrite) event).getRequestQueryStringSeparator()
-                                 + ((HttpServletRewrite) event).getRequestQueryString()).toQueryString()))
+               && rule.matches(URL.build(((HttpServletRewrite) event).getInboundAddress().getPath()).decode().toURL()
+                        + QueryString.build(((HttpServletRewrite) event).getInboundAddress().getQuery())
+                                 .toQueryString()))
       {
          return true;
       }
@@ -72,9 +72,7 @@ public class InboundRewriteRuleAdaptor implements Rule
    public void perform(final Rewrite event, final EvaluationContext context)
    {
       RewriteEngine engine = new RewriteEngine();
-      String originalUrl = URL.build(((HttpServletRewrite) event).getRequestPath()).decode().toURL()
-               + QueryString.build(((HttpServletRewrite) event).getRequestQueryStringSeparator()
-                        + ((HttpServletRewrite) event).getRequestQueryString()).toQueryString();
+      String originalUrl = ((HttpServletRewrite) event).getInboundAddress().toString();
       String newUrl = engine.processInbound(((HttpServletRewrite) event).getRequest(),
                ((HttpServletRewrite) event).getResponse(), rule, originalUrl);
 

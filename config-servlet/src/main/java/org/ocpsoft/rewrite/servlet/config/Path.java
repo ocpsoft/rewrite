@@ -104,26 +104,12 @@ public class Path extends HttpCondition implements IPath
       String url = null;
 
       if (event instanceof HttpOutboundServletRewrite)
-      {
-         /*
-          * Performance optimized - think carefully and run a profiler if you chance this.
-          */
-         url = ((HttpOutboundServletRewrite) event).getOutboundURL();
-         if (url != null)
-         {
-            int index = url.indexOf('?');
-            if (index >= 0)
-            {
-               url = url.substring(0, index);
-            }
-            if (url.startsWith(event.getContextPath()))
-            {
-               url = url.substring(event.getContextPath().length());
-            }
-         }
-      }
+         url = ((HttpOutboundServletRewrite) event).getOutboundResource().getPath();
       else
-         url = event.getRequestPath();
+         url = event.getInboundAddress().getPath();
+
+      if (url.startsWith(event.getContextPath()))
+         url = url.substring(event.getContextPath().length());
 
       if (expression.matches(event, context, url))
       {

@@ -24,9 +24,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.RegexConstraint;
-import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.config.IRedirect.RedirectParameter;
 
 /**

@@ -17,8 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
@@ -117,7 +115,7 @@ public class URL extends HttpCondition implements IURL
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         requestURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
+         requestURL = ((HttpOutboundServletRewrite) event).getOutboundResource().toString();
          if (requestURL.startsWith(event.getContextPath()))
          {
             requestURL = requestURL.substring(event.getContextPath().length());
@@ -125,10 +123,7 @@ public class URL extends HttpCondition implements IURL
       }
       else
       {
-         HttpServletRequest request = event.getRequest();
-         requestURL = event.getContextPath() + event.getURL();
-         requestURL = request.getScheme() + "://" + request.getServerName()
-                  + (request.getServerPort() != 80 ? ":" + request.getServerPort() : "") + requestURL;
+         requestURL = event.getAddress().toString();
       }
 
       if (expression.matches(event, context, requestURL))

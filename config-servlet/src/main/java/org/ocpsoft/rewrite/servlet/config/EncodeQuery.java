@@ -33,6 +33,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 import org.ocpsoft.rewrite.util.Maps;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * Encodes any or many query-parameters into a single parameter using the given {@link ChecksumStrategy} and
@@ -130,7 +131,7 @@ public class EncodeQuery implements Operation
          HttpInboundServletRewrite in = (HttpInboundServletRewrite) event;
 
          QueryStringBuilder query = QueryStringBuilder.createNew();
-         query.addParameters(in.getRequestQueryString());
+         query.addParameters(in.getInboundAddress().getQuery());
 
          String token = query.decode().getParameter(tokenName);
          if (token != null)
@@ -156,9 +157,9 @@ public class EncodeQuery implements Operation
          }
          else if (!query.isEmpty() && inboundCorrection)
          {
-            String encoded = checksumStrategy.embedChecksum(in.getRequestQueryString());
+            String encoded = checksumStrategy.embedChecksum(in.getInboundAddress().getQuery());
             encoded = encodingStrategy.encode(encoded);
-            in.redirectTemporary(in.getContextPath() + in.getURL());
+            in.redirectTemporary(in.getContextPath() + in.getAddress());
          }
       }
 
@@ -166,7 +167,7 @@ public class EncodeQuery implements Operation
       {
          HttpOutboundServletRewrite out = (HttpOutboundServletRewrite) event;
 
-         String outboundURL = out.getOutboundURL();
+         String outboundURL = out.getOutboundResource().toString();
          URLBuilder url = URLBuilder.createFrom(outboundURL);
 
          url.getQueryStringBuilder().removeParameter(tokenName);
@@ -178,7 +179,7 @@ public class EncodeQuery implements Operation
                String encoded = checksumStrategy.embedChecksum(url.getQueryStringBuilder().toQueryString());
                encoded = encodingStrategy.encode(encoded);
 
-               out.setOutboundURL(url.toPath() + "?" + tokenName + "=" + encoded);
+               out.setOutboundAddress(AddressBuilder.create(url.toPath() + "?" + tokenName + "=" + encoded));
             }
          }
       }

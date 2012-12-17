@@ -66,6 +66,7 @@ public class RewriteTest extends RewriteTestBase
                .create(WebArchive.class, name)
                .addPackages(true, MockBinding.class.getPackage())
                .addAsLibraries(resolveDependencies("org.ocpsoft.logging:logging-api"))
+               .addAsLibraries(resolveDependencies("org.ocpsoft:addressbuilder:1.0.0-SNAPSHOT"))
                .addAsLibraries(getRewriteArchive())
                .addAsLibraries(getRewriteConfigArchive())
                .addAsLibraries(getRewriteAnnotationsArchive())

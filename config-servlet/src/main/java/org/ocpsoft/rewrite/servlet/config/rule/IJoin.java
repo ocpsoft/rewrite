@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPattern;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
 
@@ -44,9 +44,9 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
     */
    public IJoin to(String resource);
 
-   public ParameterizedPattern getPathExpression();
+   public ParameterizedPatternParser getPathExpression();
 
-   public ParameterizedPattern getResourcexpression();
+   public ParameterizedPatternParser getResourcexpression();
 
    /**
     * Define additional {@link Operation} instances to be performed when this rule matches successfully.
@@ -133,13 +133,13 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       }
 
       @Override
-      public ParameterizedPattern getPathExpression()
+      public ParameterizedPatternParser getPathExpression()
       {
          return parent.getPathExpression();
       }
 
       @Override
-      public ParameterizedPattern getResourcexpression()
+      public ParameterizedPatternParser getResourcexpression()
       {
          return parent.getResourcexpression();
       }

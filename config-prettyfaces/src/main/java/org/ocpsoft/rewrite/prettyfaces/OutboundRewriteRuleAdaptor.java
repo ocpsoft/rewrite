@@ -26,6 +26,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
 import com.ocpsoft.pretty.faces.rewrite.RewriteEngine;
@@ -67,7 +68,7 @@ public class OutboundRewriteRuleAdaptor implements Rule
    {
       if ((event instanceof HttpOutboundServletRewrite)
                && rule.isOutbound()
-               && rule.matches(((HttpOutboundServletRewrite) event).getOutboundURL()))
+               && rule.matches(((HttpOutboundServletRewrite) event).getOutboundResource().toString()))
       {
          return true;
       }
@@ -79,7 +80,7 @@ public class OutboundRewriteRuleAdaptor implements Rule
    {
       RewriteEngine engine = new RewriteEngine();
       HttpOutboundServletRewrite outbound = (HttpOutboundServletRewrite) event;
-      String url = outbound.getOutboundURL();
+      String url = outbound.getOutboundResource().toString();
       String strippedUrl = stripContextPath(outbound.getContextPath(), url);
 
       String result = "";
@@ -91,7 +92,7 @@ public class OutboundRewriteRuleAdaptor implements Rule
                ((HttpServletRewrite) event).getResponse(), rule, strippedUrl);
       result += strippedUrl;
 
-      outbound.setOutboundURL(result);
+      outbound.setOutboundAddress(AddressBuilder.create(result));
    }
 
 }

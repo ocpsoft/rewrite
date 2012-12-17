@@ -35,6 +35,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 import com.ocpsoft.pretty.PrettyContext;
 import com.ocpsoft.pretty.faces.config.PrettyConfig;
@@ -132,7 +133,7 @@ public class UrlMappingRuleAdaptor implements Rule
       }
       else if ((event instanceof HttpOutboundServletRewrite)
                && mapping.isOutbound()) {
-         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundURL();
+         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundResource().toString();
          if (outboundURL.startsWith(((HttpServletRewrite) event).getContextPath()))
          {
             outboundURL = outboundURL.substring(((HttpServletRewrite) event).getContextPath().length());
@@ -185,8 +186,8 @@ public class UrlMappingRuleAdaptor implements Rule
       {
          HttpOutboundServletRewrite outboundRewrite = (HttpOutboundServletRewrite) event;
          String newUrl = rewritePrettyMappings(context.getConfig(), ((HttpServletRewrite) event).getContextPath(),
-                  outboundRewrite.getOutboundURL());
-         outboundRewrite.setOutboundURL(newUrl);
+                  outboundRewrite.getOutboundResource().toString());
+         outboundRewrite.setOutboundAddress(AddressBuilder.create(newUrl));
       }
 
    }
