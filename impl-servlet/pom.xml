@@ -34,9 +34,8 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>org.ocpsoft</groupId>
-         <artifactId>addressbuilder</artifactId>
-         <version>1.0.0-SNAPSHOT</version>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-addressbuilder</artifactId>
       </dependency>
 
       <dependency>

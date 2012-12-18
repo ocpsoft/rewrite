@@ -54,6 +54,7 @@
       <module>config-trie</module>
       <module>config-tuckey</module>
       <module>config-typesafe</module>
+      <module>addressbuilder</module>
       <module>api-el</module>
       <module>api-servlet</module>
       <module>impl-servlet</module>
@@ -172,6 +173,11 @@
             <version>${project.version}</version>
             <scope>provided</scope>
             <classifier>sources</classifier>
+         </dependency>
+         <dependency>
+            <groupId>org.ocpsoft.rewrite</groupId>
+            <artifactId>rewrite-addressbuilder</artifactId>
+            <version>${project.version}</version>
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
