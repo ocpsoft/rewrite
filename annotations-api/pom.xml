@@ -16,8 +16,4 @@
          <artifactId>rewrite-api</artifactId>
       </dependency>
    </dependencies>
-   
-   <build>
-      <finalName>annotations-api</finalName>
-   </build>
 </project>

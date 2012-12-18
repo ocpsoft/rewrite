@@ -31,8 +31,4 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
-   
-   <build>
-      <finalName>config-jodatime</finalName>
-   </build>
 </project>

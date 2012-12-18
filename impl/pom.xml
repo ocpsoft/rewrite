@@ -20,7 +20,5 @@
          <artifactId>rewrite-test-harness</artifactId>
          <scope>test</scope>
       </dependency>
-
    </dependencies>
-
 </project>

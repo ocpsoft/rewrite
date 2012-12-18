@@ -18,6 +18,8 @@
       <relativePath>../</relativePath>
    </parent>
    
+   <artifactId>rewrite-api</artifactId>
+   
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.common</groupId>
@@ -28,7 +30,5 @@
          <artifactId>logging-api</artifactId>
       </dependency>
    </dependencies>
-   
-   <artifactId>rewrite-api</artifactId>
 
 </project>

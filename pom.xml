@@ -51,7 +51,6 @@
       <module>config-prettyfaces-tests</module>
       <module>config-servlet</module>
       <module>config-servlet-tests</module>
-      <module>config-trie</module>
       <module>config-tuckey</module>
       <module>config-typesafe</module>
       <module>addressbuilder</module>

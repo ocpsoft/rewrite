@@ -11,10 +11,6 @@
 
    <artifactId>rewrite-integration-faces-annotations</artifactId>
 
-   <build>
-      <finalName>integration-faces-annotations</finalName>
-   </build>
-
    <dependencies>
 
       <dependency>
@@ -61,7 +57,5 @@
          <artifactId>cdi-api</artifactId>
          <scope>test</scope>
       </dependency>
-
    </dependencies>
-
 </project>

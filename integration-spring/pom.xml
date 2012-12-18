@@ -15,7 +15,6 @@
    </properties>
 
    <dependencies>
-
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-config-servlet</artifactId>
@@ -28,7 +27,6 @@
          <version>${version.spring}</version>
          <scope>provided</scope>
       </dependency>
-
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
@@ -40,7 +38,5 @@
          <artifactId>rewrite-test-harness</artifactId>
          <scope>test</scope>
       </dependency>
-
    </dependencies>
-
 </project>

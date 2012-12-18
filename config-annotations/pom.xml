@@ -11,10 +11,6 @@
 
    <artifactId>rewrite-config-annotations</artifactId>
 
-   <build>
-      <finalName>config-annotations</finalName>
-   </build>
-
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
@@ -37,5 +33,4 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
-
 </project>

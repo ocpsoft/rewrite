@@ -217,7 +217,5 @@
          <version>${project.version}</version>
          <classifier>sources</classifier>
       </dependency>
-
    </dependencies>
-
 </project>

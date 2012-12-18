@@ -12,7 +12,6 @@
    <artifactId>rewrite-transform-minify</artifactId>
 
    <dependencies>
-
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-transform</artifactId>
@@ -29,7 +28,6 @@
          <artifactId>yuicompressor</artifactId>
          <version>2.4.6</version>
       </dependency>
-
       <dependency>
          <groupId>rhino</groupId>
          <artifactId>js</artifactId>
@@ -46,13 +44,10 @@
          <artifactId>rewrite-config-servlet</artifactId>
          <scope>test</scope>
       </dependency>
-
    </dependencies>
-
 
    <build>
       <plugins>
-
          <!-- yuicompressor requires a very old version of Mozilla Rhino 
             and doesn't work with new ones. The other rewrite-transform modules require 
             a recent version of Rhino. Therefore we shade yuicompressor and the old Rhino 
