@@ -203,9 +203,14 @@ public class RewriteTest extends RewriteTestBase
                .addAsResource(new File("../impl/target/classes/org"))
                .addAsResource(new File("../impl/target/classes/META-INF"))
                .addAsResource(new File("../addressbuilder/target/classes/org"))
-               .addAsResource(new File("../api-servlet/target/classes/org"))
-               .addAsResource(new File("../impl-servlet/target/classes/org"))
-               .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
+               .addAsResource(new File("../api-servlet/target/classes/org"));
+
+      File implClasses = new File("../impl-servlet/target/classes/org");
+		if(implClasses.exists())
+		{
+          archive.addAsResource(implClasses)
+                 .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
+		}
 
       return archive;
    }

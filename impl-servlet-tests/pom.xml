@@ -8,33 +8,28 @@
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-impl-servlet</artifactId>
+   <artifactId>rewrite-impl-servlet-tests</artifactId>
 
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-api</artifactId>
+         <artifactId>rewrite-impl-servlet</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-api-el</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-impl</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-api-servlet</artifactId>
+         <artifactId>rewrite-config-servlet</artifactId>
+         <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-addressbuilder</artifactId>
+         <scope>test</scope>
       </dependency>
    </dependencies>
 </project>

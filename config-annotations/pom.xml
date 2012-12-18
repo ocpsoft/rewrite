@@ -27,6 +27,11 @@
          <scope>test</scope>
       </dependency>
       <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-integration-cdi</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
          <scope>test</scope>

@@ -18,7 +18,7 @@
    <parent>
       <groupId>org.ocpsoft</groupId>
       <artifactId>ocpsoft-parent</artifactId>
-      <version>6</version>
+      <version>9</version>
    </parent>
 
    <properties>
@@ -43,6 +43,7 @@
       <module>api</module>
       <module>api-tests</module>
       <module>impl</module>
+      <module>impl-tests</module>
       <module>annotations-api</module>
       <module>annotations-impl</module>
       <module>config-annotations</module>
@@ -57,6 +58,7 @@
       <module>api-el</module>
       <module>api-servlet</module>
       <module>impl-servlet</module>
+      <module>impl-servlet-tests</module>
       <module>transform</module>
       <module>transform-less</module>
       <module>transform-minify</module>
