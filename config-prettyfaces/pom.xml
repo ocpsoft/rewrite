@@ -11,6 +11,10 @@
 
    <artifactId>rewrite-config-prettyfaces</artifactId>
 
+   <properties>
+      <version.digester>2.0</version.digester>
+   </properties>
+
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
@@ -31,7 +35,7 @@
       <dependency>
          <groupId>commons-digester</groupId>
          <artifactId>commons-digester</artifactId>
-         <version>2.0</version>
+         <version>${version.digester}</version>
       </dependency>
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -60,7 +64,7 @@
          <version>1.1.2</version>
          <scope>provided</scope>
       </dependency>
-      
+
       <!-- Test dependencies -->
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
@@ -99,23 +103,36 @@
    </dependencies>
 
    <build>
-      <finalName>config-prettyfaces</finalName>
-   </build>
-
-   <profiles>
-      <profile>
-         <id>JETTY_EMBEDDED_8.X</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
                   <configuration>
-                     <forkMode>always</forkMode>
+                     <createSourcesJar>true</createSourcesJar>
+                     <artifactSet>
+                        <includes>
+                           <include>commons-digester</include>
+                           <include>commons-beanutils</include>
+                           <include>commons-logging</include>
+                        </includes>
+                     </artifactSet>
+                     <relocations>
+                        <relocation>
+                           <pattern>org.apache.commons</pattern>
+                           <shadedPattern>org.ocpsoft.shade.org.apache.commons</shadedPattern>
+                        </relocation>
+                     </relocations>
                   </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-   </profiles>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
 </project>

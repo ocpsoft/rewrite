@@ -59,6 +59,25 @@
          </includes>
       </dependencySet>
 
+      <!-- annotations modules -->
+      <dependencySet>
+         <outputDirectory>/annotations</outputDirectory>
+         <useProjectArtifact>false</useProjectArtifact>
+         <includes>
+            <include>org.ocpsoft.rewrite:rewrite-annotations-*:jar</include>
+         </includes>
+         <excludes>
+            <exclude>org.ocpsoft.rewrite:*:*:sources</exclude>
+         </excludes>
+      </dependencySet>
+      <dependencySet>
+         <outputDirectory>/annotations</outputDirectory>
+         <useProjectArtifact>false</useProjectArtifact>
+         <includes>
+            <include>org.ocpsoft.rewrite:rewrite-annotations-*:jar:sources</include>
+         </includes>
+      </dependencySet>
+
       <!-- integration modules -->
       <dependencySet>
          <outputDirectory>/integration</outputDirectory>
@@ -75,6 +94,25 @@
          <useProjectArtifact>false</useProjectArtifact>
          <includes>
             <include>org.ocpsoft.rewrite:rewrite-integration-*:jar:sources</include>
+         </includes>
+      </dependencySet>
+
+      <!-- transform modules -->
+      <dependencySet>
+         <outputDirectory>/transform</outputDirectory>
+         <useProjectArtifact>false</useProjectArtifact>
+         <includes>
+            <include>org.ocpsoft.rewrite:rewrite-transform-*:jar</include>
+         </includes>
+         <excludes>
+            <exclude>org.ocpsoft.rewrite:*:*:sources</exclude>
+         </excludes>
+      </dependencySet>
+      <dependencySet>
+         <outputDirectory>/transform</outputDirectory>
+         <useProjectArtifact>false</useProjectArtifact>
+         <includes>
+            <include>org.ocpsoft.rewrite:rewrite-transform-*:jar:sources</include>
          </includes>
       </dependencySet>
 
