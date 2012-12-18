@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.util.Timer;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class ConfigurationCacheProviderTest extends RewriteTest
 {
@@ -58,7 +58,7 @@ public class ConfigurationCacheProviderTest extends RewriteTest
    {
       Timer timer = Timer.getTimer().start();
 
-      int MAX = 50;
+      int MAX = 5;
       for (int i = 0; i < MAX; i++) {
          new Thread(request).start();
       }
