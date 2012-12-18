@@ -87,7 +87,7 @@ public class OutboundRewriteRuleAdaptor implements Rule
    {
       RewriteEngine engine = new RewriteEngine();
       HttpOutboundServletRewrite outbound = (HttpOutboundServletRewrite) event;
-      String url = outbound.getOutboundResource().toString();
+      String url = outbound.getOutboundAddress().toString();
       String strippedUrl = stripContextPath(outbound.getContextPath(), url);
 
       String result = "";

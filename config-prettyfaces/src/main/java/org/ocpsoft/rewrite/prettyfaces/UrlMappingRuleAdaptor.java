@@ -133,7 +133,7 @@ public class UrlMappingRuleAdaptor implements Rule
       }
       else if ((event instanceof HttpOutboundServletRewrite)
                && mapping.isOutbound()) {
-         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundResource().toString();
+         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundAddress().toString();
          if (outboundURL.startsWith(((HttpServletRewrite) event).getContextPath()))
          {
             outboundURL = outboundURL.substring(((HttpServletRewrite) event).getContextPath().length());
@@ -186,7 +186,7 @@ public class UrlMappingRuleAdaptor implements Rule
       {
          HttpOutboundServletRewrite outboundRewrite = (HttpOutboundServletRewrite) event;
          String newUrl = rewritePrettyMappings(context.getConfig(), ((HttpServletRewrite) event).getContextPath(),
-                  outboundRewrite.getOutboundResource().toString());
+                  outboundRewrite.getOutboundAddress().toString());
          outboundRewrite.setOutboundAddress(AddressBuilder.create(newUrl));
       }
 

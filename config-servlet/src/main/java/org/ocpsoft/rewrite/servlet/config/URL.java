@@ -115,7 +115,7 @@ public class URL extends HttpCondition implements IURL
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         requestURL = ((HttpOutboundServletRewrite) event).getOutboundResource().toString();
+         requestURL = ((HttpOutboundServletRewrite) event).getOutboundAddress().toString();
          if (requestURL.startsWith(event.getContextPath()))
          {
             requestURL = requestURL.substring(event.getContextPath().length());

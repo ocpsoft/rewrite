@@ -315,9 +315,9 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
       {
-         return event.getOutboundResource().toString();
+         return event.getOutboundAddress().toString();
       }
-      return super.encodeRedirectURL(event.getOutboundResource().toString());
+      return super.encodeRedirectURL(event.getOutboundAddress().toString());
    }
 
    @Override
@@ -328,9 +328,9 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
       {
-         return event.getOutboundResource().toString();
+         return event.getOutboundAddress().toString();
       }
-      return super.encodeURL(event.getOutboundResource().toString());
+      return super.encodeURL(event.getOutboundAddress().toString());
    }
 
    @SuppressWarnings({ "unchecked", "rawtypes" })

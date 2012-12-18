@@ -45,7 +45,7 @@ public class RewriteLifecycleEventObserver
 
    public void rewriteOutbound(@Observes final HttpOutboundServletRewrite event)
    {
-      if (event.getOutboundResource().getPath().equals(event.getContextPath() + "/outbound"))
+      if (event.getOutboundAddress().getPath().equals(event.getContextPath() + "/outbound"))
       {
          event.setOutboundAddress(AddressBuilder.create(event.getContextPath() + "/outbound-rewritten"));
       }

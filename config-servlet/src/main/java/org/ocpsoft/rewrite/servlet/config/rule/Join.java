@@ -218,7 +218,7 @@ public class Join implements IJoin
       {
          List<String> parameters = getPathRequestParameters();
 
-         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundResource().toString();
+         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundAddress().toString();
          QueryStringBuilder query = QueryStringBuilder.createNew();
          if (outboundURL.contains("?"))
          {

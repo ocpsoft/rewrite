@@ -40,7 +40,7 @@ public class HttpOutboundRewriteImpl extends BaseHttpRewrite implements HttpOutb
    }
 
    @Override
-   public Address getOutboundResource()
+   public Address getOutboundAddress()
    {
       return address;
    }
@@ -54,14 +54,14 @@ public class HttpOutboundRewriteImpl extends BaseHttpRewrite implements HttpOutb
    @Override
    public String toString()
    {
-      return "OutboundRewrite [flow=" + flow + ", outboundURL=" + getOutboundResource() + ", dispatchResource="
+      return "OutboundRewrite [flow=" + flow + ", outboundURL=" + getOutboundAddress() + ", dispatchResource="
                + dispatchResource + "]";
    }
 
    @Override
    public Address getAddress()
    {
-      return getOutboundResource();
+      return getOutboundAddress();
    }
 
    @Override

@@ -29,5 +29,5 @@ public interface OutboundServletRewrite<IN extends ServletRequest, OUT extends S
    /**
     * Returns the outbound resource.
     */
-   public PAYLOADTYPE getOutboundResource();
+   public PAYLOADTYPE getOutboundAddress();
 }

@@ -86,7 +86,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
                queryString = event.getInboundAddress().getQuery();
             else if (event instanceof HttpOutboundServletRewrite)
             {
-               queryString = ((HttpOutboundServletRewrite) event).getOutboundResource().getQuery();
+               queryString = ((HttpOutboundServletRewrite) event).getOutboundAddress().getQuery();
             }
 
             if (pattern.matcher(queryString == null ? "" : queryString).matches())

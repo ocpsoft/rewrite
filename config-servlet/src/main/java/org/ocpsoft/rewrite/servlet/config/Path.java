@@ -105,7 +105,7 @@ public class Path extends HttpCondition implements IPath
       String url = null;
 
       if (event instanceof HttpOutboundServletRewrite)
-         url = ((HttpOutboundServletRewrite) event).getOutboundResource().getPath();
+         url = ((HttpOutboundServletRewrite) event).getOutboundAddress().getPath();
       else
          url = URLBuilder.createFrom(event.getInboundAddress().getPath()).decode().toPath();
 

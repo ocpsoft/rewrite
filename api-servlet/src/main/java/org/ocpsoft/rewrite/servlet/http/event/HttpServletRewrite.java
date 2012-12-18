@@ -42,7 +42,7 @@ public interface HttpServletRewrite extends
     * For {@link HttpInboundServletRewrite} events, return the request {@link Address}.
     * <p>
     * For {@link HttpOutboundServletRewrite} events, this method returns
-    * {@link HttpOutboundServletRewrite#getOutboundResource()}
+    * {@link HttpOutboundServletRewrite#getOutboundAddress()}
     */
    public Address getAddress();
 }

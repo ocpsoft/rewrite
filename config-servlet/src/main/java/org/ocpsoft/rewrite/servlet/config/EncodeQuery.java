@@ -165,7 +165,7 @@ public class EncodeQuery implements Operation
       {
          HttpOutboundServletRewrite out = (HttpOutboundServletRewrite) event;
 
-         String outboundURL = out.getOutboundResource().toString();
+         String outboundURL = out.getOutboundAddress().toString();
          URLBuilder url = URLBuilder.createFrom(outboundURL);
 
          url.getQueryStringBuilder().removeParameter(tokenName);

@@ -89,7 +89,7 @@ public class Substitute extends HttpOperation implements ISubstitute
             builder.where(param.getName()).transformedBy(Transformations.encodePath());
          }
          String target = builder.build(event, context, parameters);
-         if (((HttpOutboundServletRewrite) event).getOutboundResource().getPath().startsWith(event.getContextPath())
+         if (((HttpOutboundServletRewrite) event).getOutboundAddress().getPath().startsWith(event.getContextPath())
                   && target.startsWith("/")
                   && !target.startsWith(event.getContextPath()))
          {
