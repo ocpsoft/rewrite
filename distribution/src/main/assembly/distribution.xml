@@ -102,6 +102,7 @@
          <outputDirectory>/transform</outputDirectory>
          <useProjectArtifact>false</useProjectArtifact>
          <includes>
+            <include>org.ocpsoft.rewrite:rewrite-transform:jar</include>
             <include>org.ocpsoft.rewrite:rewrite-transform-*:jar</include>
          </includes>
          <excludes>
@@ -112,6 +113,7 @@
          <outputDirectory>/transform</outputDirectory>
          <useProjectArtifact>false</useProjectArtifact>
          <includes>
+            <include>org.ocpsoft.rewrite:rewrite-transform:jar:sources</include>
             <include>org.ocpsoft.rewrite:rewrite-transform-*:jar:sources</include>
          </includes>
       </dependencySet>

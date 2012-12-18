@@ -186,6 +186,17 @@
       <!-- Transform -->
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-transform</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-transform</artifactId>
+         <version>${project.version}</version>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-transform-less</artifactId>
          <version>${project.version}</version>
       </dependency>
