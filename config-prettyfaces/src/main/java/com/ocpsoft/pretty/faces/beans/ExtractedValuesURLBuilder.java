@@ -74,22 +74,19 @@ public class ExtractedValuesURLBuilder
             Converter converter = context.getApplication().createConverter(value.getClass());
             if (converter != null)
             {
-               String valueAsString = converter.getAsString(context, new NullComponent(), value);
-               if (valueAsString == null)
+               String convertedValue = converter.getAsString(context, new NullComponent(), value);
+               if (convertedValue == null)
                {
                   throw new PrettyException("PrettyFaces: The converter <" + converter.getClass().getName()
-                        + "> returned null while converting the object <" + value.toString() + ">!");
+                           + "> returned null while converting the object <" + value.toString() + ">!");
                }
-               parameterValues.add(valueAsString);
+               value = convertedValue;
             }
-            else
-            {
-               parameterValues.add(value.toString());
-            }
-            
+
+            parameterValues.add(value.toString());
          }
 
-         result = parser.getMappedURL(parameterValues);
+         result = parser.getMappedURL(parameterValues).encode();
       }
       catch (ELException e)
       {

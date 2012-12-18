@@ -65,7 +65,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = /encoding.html"));
+      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
       assertThat(responseContent, containsString("getParameter('param') = foo"));
    }
 
@@ -79,13 +79,13 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = /encoding.html"));
+      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
       assertThat(responseContent, containsString("getParameter('param') = foo bar"));
    }
 
    /**
-    * Ampersands don't have to be encoded in the path segment (rfc2396, section 3.3). 
-    * Make sure this works when transforming it into a query parameter.
+    * Ampersands don't have to be encoded in the path segment (rfc2396, section 3.3). Make sure this works when
+    * transforming it into a query parameter.
     */
    @Test
    public void testJoinEncodingAmpersandCharacter() throws Exception
@@ -94,7 +94,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = /encoding.html"));
+      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
       assertThat(responseContent, containsString("getParameter('param') = foo&bar"));
    }
 
@@ -111,8 +111,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    }
 
    /**
-    * Inbound correction should transform the space character of a query parameter 
-    * (encoded as '+') into a space character in the path segment (encoded as %20).
+    * Inbound correction should transform the space character of a query parameter (encoded as '+') into a space
+    * character in the path segment (encoded as %20).
     */
    @Test
    public void testInboundCorrectionSpaceCharacter() throws Exception
@@ -124,8 +124,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    }
 
    /**
-    * Ampersands have to be encoded in the query string but not in the path component.
-    * Make sure that this works.
+    * Ampersands have to be encoded in the query string but not in the path component. Make sure that this works.
     */
    @Test
    public void testInboundCorrectionAmpersandCharacter() throws Exception
@@ -149,8 +148,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    }
 
    /**
-    * Make sure that an URL containing a space in the query string (encoded as '+')
-    * is rewritten to a path containing the space encoded as %20.
+    * Make sure that an URL containing a space in the query string (encoded as '+') is rewritten to a path containing
+    * the space encoded as %20.
     */
    @Test
    public void testOutboundRewritingSpaceCharacter() throws Exception

@@ -32,7 +32,7 @@ public class RewriteLifecycleEventObserver
 {
    public void rewriteInbound2(@Observes final HttpInboundServletRewrite event)
    {
-      if (event.getInboundAddress().getPath().equals("/redirect-301"))
+      if (event.getInboundAddress().getPath().equals(event.getContextPath() + "/redirect-301"))
       {
          event.redirectTemporary(event.getContextPath() + "/outbound");
       }
@@ -45,7 +45,7 @@ public class RewriteLifecycleEventObserver
 
    public void rewriteOutbound(@Observes final HttpOutboundServletRewrite event)
    {
-      if (event.getOutboundResource().equals(event.getContextPath() + "/outbound"))
+      if (event.getOutboundResource().getPath().equals(event.getContextPath() + "/outbound"))
       {
          event.setOutboundAddress(AddressBuilder.create(event.getContextPath() + "/outbound-rewritten"));
       }
@@ -54,9 +54,9 @@ public class RewriteLifecycleEventObserver
    public void rewriteInbound(@Observes final HttpInboundServletRewrite event)
    {
       String requestURL = event.getInboundAddress().getPath();
-      if ("/success".equals(requestURL))
+      if ((event.getContextPath() + "/success").equals(requestURL))
          event.sendStatusCode(200);
-      else if ("/outbound-rewritten".equals(requestURL))
+      else if ((event.getContextPath() + "/outbound-rewritten").equals(requestURL))
          event.sendStatusCode(200);
    }
 }

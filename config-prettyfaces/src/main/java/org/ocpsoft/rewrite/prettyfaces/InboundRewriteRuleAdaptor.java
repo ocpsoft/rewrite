@@ -26,6 +26,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 import com.ocpsoft.pretty.faces.config.rewrite.Redirect;
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
@@ -56,14 +57,21 @@ public class InboundRewriteRuleAdaptor implements Rule
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      if ((event instanceof HttpInboundServletRewrite)
-               && PFUtil.isRewritingEnabled(event)
-               && rule.isInbound()
-               && rule.matches(URL.build(((HttpServletRewrite) event).getInboundAddress().getPath()).decode().toURL()
-                        + QueryString.build(((HttpServletRewrite) event).getInboundAddress().getQuery())
-                                 .toQueryString()))
+      if (event instanceof HttpInboundServletRewrite && rule.isInbound() && PFUtil.isRewritingEnabled(event))
       {
-         return true;
+         HttpServletRewrite httpRewrite = (HttpServletRewrite) event;
+         String path = httpRewrite.getInboundAddress().getPath();
+
+         String url = URL.build(path).decode().toURL()
+                  + QueryString.build(httpRewrite.getInboundAddress().getQuery()).toQueryString();
+
+         if (url.startsWith(httpRewrite.getContextPath()))
+            url = url.substring(httpRewrite.getContextPath().length());
+
+         if (rule.matches(url))
+         {
+            return true;
+         }
       }
       return false;
    }
@@ -72,7 +80,15 @@ public class InboundRewriteRuleAdaptor implements Rule
    public void perform(final Rewrite event, final EvaluationContext context)
    {
       RewriteEngine engine = new RewriteEngine();
-      String originalUrl = ((HttpServletRewrite) event).getInboundAddress().toString();
+      HttpServletRewrite httpRewrite = (HttpServletRewrite) event;
+      String originalUrl = httpRewrite.getInboundAddress().getPath();
+
+      originalUrl = URL.build(originalUrl).decode().toURL()
+               + QueryString.build(httpRewrite.getInboundAddress().getQuery()).toQueryString();
+
+      if (originalUrl.startsWith(((HttpServletRewrite) event).getContextPath()))
+         originalUrl = originalUrl.substring(((HttpServletRewrite) event).getContextPath().length());
+
       String newUrl = engine.processInbound(((HttpServletRewrite) event).getRequest(),
                ((HttpServletRewrite) event).getResponse(), rule, originalUrl);
 
@@ -105,6 +121,9 @@ public class InboundRewriteRuleAdaptor implements Rule
             redirectURL = newUrl.trim();
          }
 
+         URLBuilder encodedRedirectUrl = URLBuilder.createFrom(redirectURL).encode();
+         redirectURL = encodedRedirectUrl.toString();
+
          if (redirectURL != null)
          {
             if (Redirect.PERMANENT.equals(rule.getRedirect()))
@@ -113,12 +132,10 @@ public class InboundRewriteRuleAdaptor implements Rule
                ((HttpInboundServletRewrite) event).redirectTemporary(redirectURL);
          }
       }
-      else {
-         if (!originalUrl.equals(newUrl))
-         {
-            PFUtil.setRewriteOccurred(event);
-            ((HttpInboundServletRewrite) event).forward(newUrl);
-         }
+      else if (!originalUrl.equals(newUrl))
+      {
+         PFUtil.setRewriteOccurred(event);
+         ((HttpInboundServletRewrite) event).forward(newUrl);
       }
    }
 

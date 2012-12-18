@@ -23,6 +23,7 @@ import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -96,7 +97,8 @@ public class JoinConfigurationProvider extends HttpConfigurationProvider
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
-                     Response.addHeader("InboundURL", event.getAddress().toString())
+                     Address address = event.getAddress();
+                     Response.addHeader("InboundURL", address.getPath() + "?" + address.getQuery())
                               .and(Response.addHeader("OutboundURL", event.getResponse().encodeURL(
                                        "/12345-query.xhtml?foo=bar&other=cab&kitty=meow")))
                               .and(SendStatus.code(207))

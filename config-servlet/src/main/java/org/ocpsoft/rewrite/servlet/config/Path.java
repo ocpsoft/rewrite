@@ -30,6 +30,7 @@ import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
@@ -106,7 +107,7 @@ public class Path extends HttpCondition implements IPath
       if (event instanceof HttpOutboundServletRewrite)
          url = ((HttpOutboundServletRewrite) event).getOutboundResource().getPath();
       else
-         url = event.getInboundAddress().getPath();
+         url = URLBuilder.createFrom(event.getInboundAddress().getPath()).decode().toPath();
 
       if (url.startsWith(event.getContextPath()))
          url = url.substring(event.getContextPath().length());

@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+import org.ocpsoft.urlbuilder.util.Encoder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -63,12 +64,8 @@ public class URLRedirectTest extends RewriteTestBase
       // String browserURL = client.getContentPage().getUrl().toString();
       // assertTrue(browserURL.contains(requestURL));
 
-      Assert.assertTrue(action.contains("/foo/" + RedirectBean.PATH_VALUE));
-      Assert.assertTrue(browser.getPageSource().contains("/foo/" + RedirectBean.PATH_VALUE));
-
-      // TODO QueryString should probably separate encoding from default behavior
-      // String expectedQuery = "?que=" + RedirectBean.QUERY_VALUE;
-      // String actualQuery = prettyContext.getRequestQueryString().toString();
-      // assertEquals(expectedQuery, actualQuery);
+      Assert.assertTrue(action.contains("/foo/" + Encoder.path(RedirectBean.PATH_VALUE)));
+      Assert.assertTrue(browser.getPageSource().contains("/foo/" + Encoder.path(RedirectBean.PATH_VALUE)));
+      Assert.assertTrue(browser.getPageSource().contains("?que=" + Encoder.query(RedirectBean.QUERY_VALUE)));
    }
 }

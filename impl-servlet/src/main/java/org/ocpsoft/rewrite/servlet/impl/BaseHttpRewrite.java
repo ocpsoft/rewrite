@@ -49,23 +49,13 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
       if (this.address == null)
       {
          this.address = AddressBuilder.begin()
-                  .protocol(getRequest().getProtocol())
+                  .protocol(getRequest().getScheme())
                   .host(getRequest().getServerName())
                   .port(getRequest().getServerPort())
-                  .path(getRequestPath())
+                  .pathEncoded(getRequest().getRequestURI())
                   .queryLiteral(getRequest().getQueryString()).build();
       }
       return this.address;
    }
 
-   private String getRequestPath()
-   {
-      String path = getRequest().getRequestURI();
-      if (path.startsWith(getContextPath()))
-      {
-         path = path.substring(getContextPath().length());
-      }
-
-      return path;
-   }
 }

@@ -32,7 +32,6 @@ import org.ocpsoft.rewrite.bind.DefaultBindable;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
-import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
@@ -87,7 +86,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
                queryString = event.getInboundAddress().getQuery();
             else if (event instanceof HttpOutboundServletRewrite)
             {
-               queryString = QueryStringBuilder.extractQuery(getEncodedURL(event));
+               queryString = ((HttpOutboundServletRewrite) event).getOutboundResource().getQuery();
             }
 
             if (pattern.matcher(queryString == null ? "" : queryString).matches())
@@ -99,18 +98,13 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
             }
             return false;
          }
-      };
-   }
 
-   /**
-    * Temporary solution to get {@link HttpServletRewrite#getAddress()} in encoded form.
-    */
-   private static String getEncodedURL(HttpServletRewrite event)
-   {
-      if (event instanceof HttpInboundServletRewrite) {
-         return event.getRequest().getRequestURI() + "?" + event.getRequest().getQueryString();
-      }
-      return event.getAddress().toString();
+         @Override
+         public String toString()
+         {
+            return "Query.matches(" + queryPattern + ")";
+         }
+      };
    }
 
    /**
@@ -122,17 +116,18 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
-   public static Query parameterExists(final String nameRegex)
+   public static Query parameterExists(final String namePattern)
    {
-      Assert.notNull(nameRegex, "Parameter name pattern must not be null.");
-      final Pattern pattern = Pattern.compile(nameRegex);
+      Assert.notNull(namePattern, "Parameter name pattern must not be null.");
+      final Pattern pattern = Pattern.compile(namePattern);
 
       return new Query() {
          @Override
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(getEncodedURL(event)).decode();
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getAddress().getQuery())
+                     .decode();
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();
@@ -148,12 +143,19 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
                }
             }
 
-            map.put(bindable, values.toArray(new String[] {}));
-
             if (!values.isEmpty())
+               map.put(bindable, values.toArray(new String[] {}));
+
+            if (!map.isEmpty())
                return Bindings.enqueuePreOperationSubmissions(event, context, map);
 
             return false;
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Query.parameterExists(" + namePattern + ")";
          }
       };
    }
@@ -167,17 +169,18 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
-   public static Query valueExists(final String valueRegex)
+   public static Query valueExists(final String valuePattern)
    {
-      Assert.notNull(valueRegex, "Parameter value pattern must not be null.");
-      final Pattern pattern = Pattern.compile(valueRegex);
+      Assert.notNull(valuePattern, "Parameter value pattern must not be null.");
+      final Pattern pattern = Pattern.compile(valuePattern);
 
       return new Query() {
          @Override
          @SuppressWarnings({ "rawtypes" })
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
-            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(getEncodedURL(event)).decode();
+            QueryStringBuilder queryString = QueryStringBuilder.createFromEncoded(event.getAddress().getQuery())
+                     .decode();
 
             List<String> values = new ArrayList<String>();
             Map<DefaultBindable, String[]> map = new LinkedHashMap<DefaultBindable, String[]>();
@@ -202,6 +205,12 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
                return Bindings.enqueuePreOperationSubmissions(event, context, map);
 
             return false;
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Query.valueExists(" + valuePattern + ")";
          }
       };
    }

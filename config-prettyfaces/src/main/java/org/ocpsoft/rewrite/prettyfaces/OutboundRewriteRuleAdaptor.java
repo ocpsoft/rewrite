@@ -26,10 +26,12 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
 import com.ocpsoft.pretty.faces.rewrite.RewriteEngine;
+import com.ocpsoft.pretty.faces.url.URL;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -66,11 +68,16 @@ public class OutboundRewriteRuleAdaptor implements Rule
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      if ((event instanceof HttpOutboundServletRewrite)
-               && rule.isOutbound()
-               && rule.matches(((HttpOutboundServletRewrite) event).getOutboundResource().toString()))
+      if ((event instanceof HttpOutboundServletRewrite) && rule.isOutbound())
       {
-         return true;
+         Address outboundResource = ((HttpOutboundServletRewrite) event).getAddress();
+         String outboundUrl = outboundResource.toString();
+
+         if (outboundUrl.startsWith(((HttpServletRewrite) event).getContextPath()))
+            outboundUrl = outboundUrl.substring(((HttpServletRewrite) event).getContextPath().length());
+
+         if (rule.matches(URL.build(outboundUrl).decode().toURL()))
+            return true;
       }
       return false;
    }

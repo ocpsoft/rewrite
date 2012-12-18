@@ -45,4 +45,10 @@ public class DefaultBindable<T extends Bindable<T>> implements Bindable<T>
    {
       return bindings;
    }
+
+   @Override
+   public String toString()
+   {
+      return "DefaultBindable [bindings=" + bindings + "]";
+   }
 }

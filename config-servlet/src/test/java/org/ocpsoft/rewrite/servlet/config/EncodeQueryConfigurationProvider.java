@@ -40,7 +40,14 @@ public class EncodeQueryConfigurationProvider extends HttpConfigurationProvider
 
                .addRule().when(Direction.isInbound().and(Query.parameterExists("c")))
                .perform(SendStatus.code(210))
+
                .addRule().when(Path.matches("/encodequery")).perform(EncodeQuery.params().to("c"))
+
+               .addRule().when(Path.matches("/encodequeryexcluding"))
+               .perform(EncodeQuery.params().to("c").excluding("keep"))
+
+               .addRule().when(Path.matches("/encodequeryspecific"))
+               .perform(EncodeQuery.params("encode1", "encode2").to("c"))
 
       ;
 

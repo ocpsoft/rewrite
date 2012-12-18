@@ -58,7 +58,7 @@ public class ConfigurationCacheProviderTest extends RewriteTest
    {
       Timer timer = Timer.getTimer().start();
 
-      int MAX = 1000;
+      int MAX = 50;
       for (int i = 0; i < MAX; i++) {
          new Thread(request).start();
       }

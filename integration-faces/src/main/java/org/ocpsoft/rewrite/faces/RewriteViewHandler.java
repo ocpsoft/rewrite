@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.faces;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +28,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.rewrite.faces.spi.FacesActionUrlProvider;
@@ -38,8 +40,7 @@ public class RewriteViewHandler extends ViewHandler
 {
    protected ViewHandler parent;
    private final ThreadLocal<Boolean> bookmarkable = new ThreadLocal<Boolean>();
-   @SuppressWarnings("unchecked")
-   private List<FacesActionUrlProvider> providers = Iterators.asList(ServiceLoader.load(FacesActionUrlProvider.class));
+   private List<FacesActionUrlProvider> providers;
 
    /**
     * <b>NOTE:</b> This method should only be used by the getBookmarkableURL and getActionURL methods, for the purposes
@@ -118,7 +119,7 @@ public class RewriteViewHandler extends ViewHandler
           * When rendering a form URL, Faces only provides the bare view-id, sans any bookmarkable parameters from the request. 
           * We need to restore those ourselves. 
           */
-         for (FacesActionUrlProvider provider : providers) {
+         for (FacesActionUrlProvider provider : getProviders()) {
             result = provider.getActionURL(context, viewId);
             if (result != null)
                break;
@@ -127,6 +128,17 @@ public class RewriteViewHandler extends ViewHandler
       if (result == null)
          result = parent.getActionURL(context, viewId);
       return result;
+   }
+
+   @SuppressWarnings("unchecked")
+   public List<FacesActionUrlProvider> getProviders()
+   {
+      if(providers == null)
+      {
+      providers = Iterators.asList(ServiceLoader.load(FacesActionUrlProvider.class));
+      Collections.sort(providers, new WeightedComparator());
+      }
+      return providers;
    }
 
    @Override

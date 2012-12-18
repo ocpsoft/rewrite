@@ -157,9 +157,7 @@ public class EncodeQuery implements Operation
          }
          else if (!query.isEmpty() && inboundCorrection)
          {
-            String encoded = checksumStrategy.embedChecksum(in.getInboundAddress().getQuery());
-            encoded = encodingStrategy.encode(encoded);
-            in.redirectTemporary(in.getContextPath() + in.getAddress());
+            in.redirectTemporary(in.getAddress().getPathAndQuery());
          }
       }
 
@@ -172,6 +170,23 @@ public class EncodeQuery implements Operation
 
          url.getQueryStringBuilder().removeParameter(tokenName);
 
+         QueryStringBuilder newQuery = QueryStringBuilder.createNew();
+         for (String param : excludedParams) {
+            newQuery.addParameter(param, url.getQueryStringBuilder().removeParameter(param).toArray(new String[] {}));
+         }
+
+         if (!params.isEmpty())
+         {
+            for (String param : url.getQueryStringBuilder().getParameterNames())
+            {
+               if (!params.contains(param))
+               {
+                  newQuery.addParameter(param,
+                           url.getQueryStringBuilder().removeParameter(param).toArray(new String[] {}));
+               }
+            }
+         }
+
          if (outboundURL.contains("?") && (outboundURL.startsWith(out.getContextPath()) || outboundURL.startsWith("/")))
          {
             if (!url.getQueryStringBuilder().isEmpty())
@@ -179,7 +194,8 @@ public class EncodeQuery implements Operation
                String encoded = checksumStrategy.embedChecksum(url.getQueryStringBuilder().toQueryString());
                encoded = encodingStrategy.encode(encoded);
 
-               out.setOutboundAddress(AddressBuilder.create(url.toPath() + "?" + tokenName + "=" + encoded));
+               newQuery.addParameter(tokenName, encoded);
+               out.setOutboundAddress(AddressBuilder.create(url.toPath() + newQuery.toQueryString()));
             }
          }
       }

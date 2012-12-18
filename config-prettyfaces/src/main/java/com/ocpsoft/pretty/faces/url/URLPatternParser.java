@@ -32,9 +32,9 @@ import com.ocpsoft.pretty.faces.el.Expressions;
  */
 public class URLPatternParser
 {
-	
+
    private static final Pattern EL_REGEX_PATTERN = Pattern.compile(Expressions.EL_REGEX);
-	
+
    private final String originalPattern;
    private boolean elPattern;
    private URL urlPattern = null;
@@ -43,10 +43,8 @@ public class URLPatternParser
    private List<PathParameter> pathParameters = new ArrayList<PathParameter>();
 
    /**
-    * Set the pattern for which this parser will match. Find and replace all el
-    * expressions with regular expressions to extract values from parsed URLs.
-    * Also extract all parameter names from expressions, and replace with valid
-    * EL
+    * Set the pattern for which this parser will match. Find and replace all el expressions with regular expressions to
+    * extract values from parsed URLs. Also extract all parameter names from expressions, and replace with valid EL
     * 
     * @param pattern Pattern to use as a parse template
     */
@@ -85,7 +83,6 @@ public class URLPatternParser
        * Extract path segments, overlaying regexes found during parameter
        * discovery.
        */
-      int segmentIndex = 0;
       for (String segmentPattern : segmentedPattern.getSegments())
       {
          Segment segment = new Segment();
@@ -104,7 +101,6 @@ public class URLPatternParser
 
          segment.setRegex(regex.toString());
          pathSegments.add(segment);
-         segmentIndex++;
       }
 
       List<String> regexSegments = new ArrayList<String>();
@@ -127,7 +123,8 @@ public class URLPatternParser
    {
       if (elPattern) {
          return urlElPattern.matcher(target.toURL()).matches();
-      } else {
+      }
+      else {
          return urlPattern.toURL().equals(target.toURL());
       }
    }
@@ -151,9 +148,8 @@ public class URLPatternParser
    }
 
    /**
-    * Builds a list of PathParameters for this UrlPattern, extracted from the
-    * provided URL (assuming a match is found). This list excludes duplicate
-    * named parameters.
+    * Builds a list of PathParameters for this UrlPattern, extracted from the provided URL (assuming a match is found).
+    * This list excludes duplicate named parameters.
     */
    public List<PathParameter> parse(final URL url)
    {
@@ -197,7 +193,7 @@ public class URLPatternParser
             else
             {
                throw new PrettyException("Error parsing url: <" + url
-                           + ">, a parameter did not match compiled segment in pattern: " + originalPattern);
+                        + ">, a parameter did not match compiled segment in pattern: " + originalPattern);
             }
          }
       }
@@ -212,20 +208,15 @@ public class URLPatternParser
    /**
     * URL encoding/decoding is not a concern of this method.
     * 
-    * @param params Array of Object parameters, in order, to be substituted for
-    *           mapping pattern values or el expressions. This method will call
-    *           the toString() method on each object provided.
+    * @param params Array of Object parameters, in order, to be substituted for mapping pattern values or el
+    *           expressions. This method will call the toString() method on each object provided.
     *           <p>
-    *           If only one param is specified and it is an instance of List,
-    *           the list items will be used as parameters instead. An empty list
-    *           or a single null parameter are both treated as if no parameters
-    *           were specified.
+    *           If only one param is specified and it is an instance of List, the list items will be used as parameters
+    *           instead. An empty list or a single null parameter are both treated as if no parameters were specified.
     *           </p>
-    *           E.g: getMappedUrl(12,55,"foo","bar") for a pattern of
-    *           /#{el.one}/#{el.two}/#{el.three}/#{el.four}/ will return the
-    *           String: "/12/55/foo/bar/"
-    * @return A URL based on this object's urlPatten, with values substituted
-    *         for el expressions in the order provided
+    *           E.g: getMappedUrl(12,55,"foo","bar") for a pattern of /#{el.one}/#{el.two}/#{el.three}/#{el.four}/ will
+    *           return the String: "/12/55/foo/bar/"
+    * @return A URL based on this object's urlPatten, with values substituted for el expressions in the order provided
     */
    public URL getMappedURL(final Object... params)
    {
@@ -308,8 +299,7 @@ public class URLPatternParser
    }
 
    /**
-    * Get the number of URL parameters that this parser expects to find in any
-    * given input string
+    * Get the number of URL parameters that this parser expects to find in any given input string
     * 
     * @return Number of parameters
     */

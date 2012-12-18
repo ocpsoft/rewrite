@@ -46,7 +46,7 @@ public class QueryEncodingTest
       request = Mockito.mock(HttpServletRequest.class);
 
       Mockito.when(request.getQueryString())
-               .thenReturn("foo=bar&one=1&my%20cat=al∂ve");
+               .thenReturn("foo=bar&one=1&my+cat=al∂ve");
 
       Mockito.when(request.getRequestURI())
                .thenReturn("/context/application/path");
@@ -115,7 +115,7 @@ public class QueryEncodingTest
       Assert.assertTrue(mockBinding.isConverted());
       Assert.assertTrue(mockBinding.isValidated());
       Assert.assertTrue(mockBinding.isSubmitted());
-      Assert.assertEquals("foo=bar&one=1&my cat=al∂ve", mockBinding.getBoundValue());
+      Assert.assertEquals("foo=bar&one=1&my+cat=al∂ve", mockBinding.getBoundValue());
    }
 
    @Test
