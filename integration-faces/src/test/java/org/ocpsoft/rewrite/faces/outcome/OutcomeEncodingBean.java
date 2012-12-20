@@ -45,18 +45,18 @@ public class OutcomeEncodingBean
 
    public String redirectWithSpace()
    {
-      return "/page.xhtml?faces-redirect=true&param=foo+bar&query=foo+bar";
+      return "/page.xhtml?faces-redirect=true&param=foo bar&query=foo bar";
    }
 
    public String redirectWithEqual()
    {
 
-      return "/page.xhtml?faces-redirect=true&param=foo%3Dbar&query=foo%3Dbar";
+      return "/page.xhtml?faces-redirect=true&param=foo=bar&query=foo=bar";
    }
 
    public String redirectWithAmpersand()
    {
-      return "/page.xhtml?faces-redirect=true&param=foo%26bar&query=foo%26bar";
+      return "/page.xhtml?faces-redirect=true&param=foo&bar&query=foo&bar";
    }
 
 }

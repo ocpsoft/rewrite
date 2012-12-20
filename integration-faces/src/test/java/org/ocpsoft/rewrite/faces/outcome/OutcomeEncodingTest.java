@@ -56,8 +56,6 @@ public class OutcomeEncodingTest extends RewriteTestBase
    }
 
    @Test
-   // TODO: Fix this
-   @Ignore
    public void testOutcomeRedirectWithSpace() throws Exception
    {
 
@@ -69,7 +67,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
    }
 
    @Test
-   // TODO: Fix this
+   // TODO: Why doesn't this work
    @Ignore
    public void testOutcomeRedirectWithEqual() throws Exception
    {
@@ -82,7 +80,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
    }
 
    @Test
-   // TODO: Fix this
+   // Seems like ampersands are not really supported by JSF outcomes
    @Ignore
    public void testOutcomeRedirectWithAmpersand() throws Exception
    {
