@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.navigate;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -102,9 +100,9 @@ public class Navigate
 
             outcome.append(first ? '?' : '&');
 
-            outcome.append(encodeQuery(param.getKey()));
+            outcome.append(param.getKey());
             outcome.append('=');
-            outcome.append(encodeQuery(value));
+            outcome.append(value);
 
             first = false;
 
@@ -114,16 +112,6 @@ public class Navigate
 
       return outcome.toString();
 
-   }
-
-   private static String encodeQuery(String str)
-   {
-      try {
-         return URLEncoder.encode(str, "UTF-8");
-      }
-      catch (UnsupportedEncodingException e) {
-         throw new IllegalArgumentException(e);
-      }
    }
 
    @Override

@@ -60,8 +60,6 @@ public class NavigateEncodingTest extends RewriteTestBase
    }
 
    @Test
-   // TODO: Fix this
-   @Ignore
    public void testNavigateStringWithSpace() throws Exception
    {
 
@@ -79,7 +77,7 @@ public class NavigateEncodingTest extends RewriteTestBase
     * TODO: we should also test '&', but I think it is encoded when written to the page
     */
    @Test
-   // TODO: Fix this
+   // Seems like this cannot work as JSF outcomes are not encoded
    @Ignore
    public void testNavigateProblematicCharacters() throws Exception
    {
