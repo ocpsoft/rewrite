@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.faces.navigate;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NavigateTest
@@ -87,6 +88,8 @@ public class NavigateTest
    }
 
    @Test
+   // Navigate class doesn't do encoding any more
+   @Ignore
    public void testParameterEncoding()
    {
       assertEquals("/faces/some-view.xhtml?faces-redirect=true&param=a+b+%C3%A4",
