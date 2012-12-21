@@ -122,6 +122,11 @@ public class WebClassesFinder extends AbstractClassFinder
             // get full URL for this entry
             URL entryUrl = servletContext.getResource(relativePath.toString());
 
+            // Seems to happen in some weird situations
+            if (entryUrl == null) {
+               continue;
+            }
+
             // if this URL ends with .class it is a Java class
             if (entryUrl.getPath().endsWith(".class"))
             {
