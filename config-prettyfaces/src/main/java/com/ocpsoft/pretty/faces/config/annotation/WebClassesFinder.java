@@ -127,12 +127,15 @@ public class WebClassesFinder extends AbstractClassFinder
                continue;
             }
 
+            // we are using toString() instead of getPath() because AS7 doesn't handle # characters correctly
+            String entryName = entryUrl.toString();
+
             // if this URL ends with .class it is a Java class
-            if (entryUrl.getPath().endsWith(".class"))
+            if (entryName.endsWith(".class"))
             {
 
                // the name of the entry relative to the '/WEB-INF/classes/' folder
-               String entryRelativeName = getPathRelativeToClassesFolder(entryUrl.getPath(), classesFolderPath);
+               String entryRelativeName = getPathRelativeToClassesFolder(entryName, classesFolderPath);
 
                // build class name from relative name
                String className = getClassName(entryRelativeName);
@@ -193,7 +196,7 @@ public class WebClassesFinder extends AbstractClassFinder
             }
 
             // if this URL ends with a slash, its a directory
-            if (entryUrl.getPath().endsWith("/"))
+            if (entryName.endsWith("/"))
             {
 
                // walk down the directory
