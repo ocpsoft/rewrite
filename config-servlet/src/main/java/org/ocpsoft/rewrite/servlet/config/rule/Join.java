@@ -49,7 +49,6 @@ import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 public class Join implements IJoin
 {
    private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
-   private static final String JOIN_DISABLED_RESET_NEXT_KEY = Join.class.getName() + "_DISABLED_RESET_NEXT";
 
    private static final String CURRENT_JOIN = Join.class.getName() + "_current";
 

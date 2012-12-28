@@ -89,12 +89,18 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          final List<Rule> list = provider.get(cacheKey);
          if (list != null && !list.isEmpty())
          {
-            for (Rule rule : list) {
+            log.debug("Using cached ruleset for event [" + event + "] from provider [" + provider + "].");
+            for (int j = 0; j < rules.size(); j++)
+            {
+               context.clear();
+               Rule rule = rules.get(j);
                if (rule.evaluate(event, context))
                {
+                  log.debug("Rule [" + rule + "] matched and will be performed.");
+
                   List<Operation> preOperations = ((EvaluationContextImpl) context).getPreOperations();
-                  for (int j = 0; j < preOperations.size(); j++) {
-                     preOperations.get(j).perform(event, context);
+                  for (int k = 0; k < preOperations.size(); k++) {
+                     preOperations.get(k).perform(event, context);
                   }
 
                   if (event.getFlow().is(Flow.HANDLED))
@@ -135,10 +141,11 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          Rule rule = rules.get(i);
          if (rule.evaluate(event, context))
          {
+            log.debug("Rule [" + rule + "] matched and will be performed.");
             cacheable.add(rule);
             List<Operation> preOperations = context.getPreOperations();
-            for (int j = 0; j < preOperations.size(); j++) {
-               preOperations.get(j).perform(event, context);
+            for (int k = 0; k < preOperations.size(); k++) {
+               preOperations.get(k).perform(event, context);
             }
 
             if (event.getFlow().is(Flow.HANDLED))
