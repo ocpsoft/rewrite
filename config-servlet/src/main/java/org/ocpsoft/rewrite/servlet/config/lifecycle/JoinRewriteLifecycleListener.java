@@ -23,15 +23,11 @@ public class JoinRewriteLifecycleListener implements RewriteLifecycleListener<Ht
    }
 
    @Override
-   public void beforeInboundRewrite(HttpServletRewrite event)
-   {}
-
-   @Override
-   public void afterInboundLifecycle(HttpServletRewrite event)
-   {}
-
-   @Override
    public void beforeInboundLifecycle(HttpServletRewrite event)
+   {}
+
+   @Override
+   public void beforeInboundRewrite(HttpServletRewrite event)
    {}
 
    @Override
@@ -47,6 +43,10 @@ public class JoinRewriteLifecycleListener implements RewriteLifecycleListener<Ht
          event.getRewriteContext().put(JOIN_DISABLED_RESET_NEXT_KEY, true);
       }
    }
+
+   @Override
+   public void afterInboundLifecycle(HttpServletRewrite event)
+   {}
 
    @Override
    public void beforeOutboundRewrite(HttpServletRewrite event)

@@ -24,22 +24,24 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
+import org.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleContext;
 import org.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
+import org.ocpsoft.rewrite.spi.RewriteResultHandler;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
-public class HttpRewriteContextImpl implements RewriteLifecycleContext<ServletContext>
+public class HttpRewriteContextImpl implements HttpRewriteLifecycleContext
 {
    private final Map<Object, Object> map = new HashMap<Object, Object>();
 
    private final List<RewriteProvider<ServletContext, Rewrite>> providers;
+   private final List<RewriteResultHandler> resultHandlers;
    private final List<RewriteLifecycleListener<Rewrite>> listeners;
    private final List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;
    private final List<InboundRewriteProducer<ServletRequest, ServletResponse>> inboundProducers;
@@ -48,6 +50,7 @@ public class HttpRewriteContextImpl implements RewriteLifecycleContext<ServletCo
    public HttpRewriteContextImpl(final List<InboundRewriteProducer<ServletRequest, ServletResponse>> inboundProducers,
             final List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> outboundProducers,
             final List<RewriteLifecycleListener<Rewrite>> listeners,
+            List<RewriteResultHandler> resultHandlers,
             final List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers,
             final List<RewriteProvider<ServletContext, Rewrite>> providers)
    {
@@ -56,6 +59,7 @@ public class HttpRewriteContextImpl implements RewriteLifecycleContext<ServletCo
       this.listeners = listeners;
       this.wrappers = wrappers;
       this.providers = providers;
+      this.resultHandlers = resultHandlers;
    }
 
    @Override
@@ -74,6 +78,12 @@ public class HttpRewriteContextImpl implements RewriteLifecycleContext<ServletCo
    public List<RewriteProvider<ServletContext, Rewrite>> getRewriteProviders()
    {
       return providers;
+   }
+
+   @Override
+   public List<RewriteResultHandler> getResultHandlers()
+   {
+      return resultHandlers;
    }
 
    @Override

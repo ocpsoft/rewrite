@@ -38,7 +38,7 @@ public class JoinConstrainedTargetTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
-   private Context context = new HttpRewriteContextImpl(null, null, null, null, null);
+   private Context context = new HttpRewriteContextImpl(null, null, null, null, null, null);
 
    @Before
    public void before()
@@ -46,16 +46,16 @@ public class JoinConstrainedTargetTest
       request = Mockito.mock(HttpServletRequest.class);
 
       Mockito.when(request.getServerName())
-      .thenReturn("me.example.com");
+               .thenReturn("me.example.com");
 
       Mockito.when(request.getRequestURI())
-      .thenReturn("/context/application/path");
+               .thenReturn("/context/application/path");
 
       Mockito.when(request.getContextPath())
-      .thenReturn("/context");
-      
+               .thenReturn("/context");
+
       Mockito.when(request.getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY))
-      .thenReturn(context );
+               .thenReturn(context);
 
       rewrite = new HttpInboundRewriteImpl(request, null);
    }

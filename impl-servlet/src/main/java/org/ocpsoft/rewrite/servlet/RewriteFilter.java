@@ -26,7 +26,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
@@ -39,6 +38,7 @@ import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
+import org.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpRewriteContextImpl;
 import org.ocpsoft.rewrite.servlet.spi.ContextListener;
 import org.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
@@ -49,6 +49,7 @@ import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 import org.ocpsoft.rewrite.spi.InvocationResultHandler;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
+import org.ocpsoft.rewrite.spi.RewriteResultHandler;
 import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
@@ -63,6 +64,7 @@ public class RewriteFilter implements Filter
    private List<RewriteLifecycleListener<Rewrite>> listeners;
    private List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;
    private List<RewriteProvider<ServletContext, Rewrite>> providers;
+   private List<RewriteResultHandler> resultHandlers;
    private List<InboundRewriteProducer<ServletRequest, ServletResponse>> inbound;
    private List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> outbound;
 
@@ -75,18 +77,21 @@ public class RewriteFilter implements Filter
       listeners = Iterators.asList(ServiceLoader.load(RewriteLifecycleListener.class));
       wrappers = Iterators.asList(ServiceLoader.load(RequestCycleWrapper.class));
       providers = Iterators.asList(ServiceLoader.load(RewriteProvider.class));
+      resultHandlers = Iterators.asList(ServiceLoader.load(RewriteResultHandler.class));
       inbound = Iterators.asList(ServiceLoader.load(InboundRewriteProducer.class));
       outbound = Iterators.asList(ServiceLoader.load(OutboundRewriteProducer.class));
 
       Collections.sort(listeners, new WeightedComparator());
       Collections.sort(wrappers, new WeightedComparator());
       Collections.sort(providers, new WeightedComparator());
+      Collections.sort(resultHandlers, new WeightedComparator());
       Collections.sort(inbound, new WeightedComparator());
       Collections.sort(outbound, new WeightedComparator());
 
       ServiceLogger.logLoadedServices(log, RewriteLifecycleListener.class, listeners);
       ServiceLogger.logLoadedServices(log, RequestCycleWrapper.class, wrappers);
       ServiceLogger.logLoadedServices(log, RewriteProvider.class, providers);
+      ServiceLogger.logLoadedServices(log, RewriteResultHandler.class, resultHandlers);
       ServiceLogger.logLoadedServices(log, InboundRewriteProducer.class, inbound);
       ServiceLogger.logLoadedServices(log, OutboundRewriteProducer.class, outbound);
 
@@ -154,8 +159,8 @@ public class RewriteFilter implements Filter
       {
          if (request.getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY) == null)
          {
-            RewriteLifecycleContext<ServletContext> context = new HttpRewriteContextImpl(inbound, outbound, listeners,
-                     wrappers, providers);
+            HttpRewriteLifecycleContext context = new HttpRewriteContextImpl(inbound, outbound, listeners,
+                     resultHandlers, wrappers, providers);
             request.setAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY, context);
          }
 
@@ -239,40 +244,11 @@ public class RewriteFilter implements Filter
             listener.afterInboundRewrite(event);
       }
 
-      if (event.getFlow().is(BaseRewrite.Flow.ABORT_REQUEST))
+      int handlerCount = resultHandlers.size();
+      for (int i = 0; i < handlerCount; i++)
       {
-         if (event.getFlow().is(BaseRewrite.Flow.FORWARD))
-         {
-            log.debug("Issuing internal FORWARD to [{}].", event.getDispatchResource());
-            event.getRequest().getRequestDispatcher(event.getDispatchResource())
-                     .forward(event.getRequest(), event.getResponse());
-         }
-         else if (event.getFlow().is(BaseRewrite.Flow.REDIRECT_PERMANENT))
-         {
-            log.debug("Issuing 301 permanent REDIRECT to [{}].", event.getDispatchResource());
-            HttpServletResponse response = (HttpServletResponse) event.getResponse();
-            response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-            response.setHeader("Location", event.getDispatchResource());
-            response.flushBuffer();
-         }
-         else if (event.getFlow().is(BaseRewrite.Flow.REDIRECT_TEMPORARY))
-         {
-            log.debug("Issuing 302 temporary REDIRECT to [{}].", event.getDispatchResource());
-            HttpServletResponse response = (HttpServletResponse) event.getResponse();
-            response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-            response.setHeader("Location", event.getDispatchResource());
-            response.flushBuffer();
-         }
-         else
-         {
-            log.debug("ABORT requested. Terminating request NOW.");
-         }
-      }
-      else if (event.getFlow().is(BaseRewrite.Flow.INCLUDE))
-      {
-         log.debug("Issuing internal INCLUDE to [{}].", event.getDispatchResource());
-         event.getRequest().getRequestDispatcher(event.getDispatchResource())
-                  .include(event.getRequest(), event.getResponse());
+         if (resultHandlers.get(i).handles(event))
+            resultHandlers.get(i).handleResult(event);
       }
    }
 

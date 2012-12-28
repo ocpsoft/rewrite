@@ -1,6 +1,7 @@
 package org.ocpsoft.rewrite.faces;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
@@ -13,10 +14,13 @@ import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.faces.config.PhaseAction;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
+import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.event.SubflowTask;
+import org.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.spi.RewriteResultHandler;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -72,16 +76,7 @@ public class RewritePhaseListener implements PhaseListener
             if (operation.getBeforePhases().contains(event.getPhaseId())
                      || operation.getBeforePhases().contains(PhaseId.ANY_PHASE))
             {
-               Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
-                        new SubflowTask() {
-
-                           @Override
-                           public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
-                           {
-                              operation.performOperation((HttpServletRewrite) rewriteEvent, context);
-                           }
-
-                        });
+               Flow flow = handlePhaseOperation(operation);
 
                if (flow.is(Flow.ABORT_REQUEST))
                {
@@ -108,33 +103,46 @@ public class RewritePhaseListener implements PhaseListener
             if (operation.getAfterPhases().contains(event.getPhaseId())
                      || operation.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
-               try {
-                  Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
-                           new SubflowTask() {
+               Flow flow = handlePhaseOperation(operation);
 
-                              @Override
-                              public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
-                              {
-                                 operation.performOperation((HttpServletRewrite) rewriteEvent, context);
-                              }
-
-                           });
-
-                  if (flow.is(Flow.ABORT_REQUEST))
-                  {
-                     event.getFacesContext().responseComplete();
-                  }
-                  if (flow.is(Flow.HANDLED))
-                  {
-                     break;
-                  }
+               if (flow.is(Flow.ABORT_REQUEST))
+               {
+                  event.getFacesContext().responseComplete();
                }
-               catch (Exception e) {
-                  e.printStackTrace();
+               if (flow.is(Flow.HANDLED))
+               {
+                  break;
                }
             }
          }
       }
+   }
+
+   private Flow handlePhaseOperation(final PhaseOperation<?> operation)
+   {
+      Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
+               new SubflowTask() {
+
+                  @Override
+                  public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
+                  {
+                     operation.performOperation((HttpServletRewrite) rewriteEvent, context);
+
+                     List<RewriteResultHandler> resultHandlers = ((HttpRewriteLifecycleContext) ((HttpServletRewrite) rewriteEvent)
+                              .getRequest().getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY))
+                              .getResultHandlers();
+
+                     int handlerCount = resultHandlers.size();
+                     for (int i = 0; i < handlerCount; i++)
+                     {
+                        RewriteResultHandler handler = resultHandlers.get(i);
+                        if (handler.handles(operation.getEvent()))
+                           handler.handleResult(operation.getEvent());
+                     }
+                  }
+
+               });
+      return flow;
    }
 
    public void handleNavigation(final PhaseEvent event)
