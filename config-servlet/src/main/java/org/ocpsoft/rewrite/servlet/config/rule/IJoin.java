@@ -39,11 +39,6 @@ import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
  */
 public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
 {
-   /**
-    * The internal server resource (real or virtual) to be served.
-    */
-   public IJoin to(String resource);
-
    public ParameterizedPatternParser getPathExpression();
 
    public ParameterizedPatternParser getResourcexpression();
@@ -160,12 +155,6 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public IJoin withInboundCorrection()
       {
          return parent.withInboundCorrection();
-      }
-
-      @Override
-      public IJoin to(String resource)
-      {
-         return parent.to(resource);
       }
 
       @Override

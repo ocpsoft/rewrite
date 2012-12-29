@@ -46,7 +46,7 @@ import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Join implements IJoin
+public class Join implements IJoin, IJoinPath
 {
    private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
 
@@ -84,7 +84,7 @@ public class Join implements IJoin
     * build the outbound URL by extracting values from the query string
     * <code>"?n=value"<code>. To disable request parameter binding and outbound URL rewriting, instead use {@link #nonBindingPath(String)}
     */
-   public static IJoin path(final String pattern)
+   public static IJoinPath path(final String pattern)
    {
       return new Join(pattern, true);
    }
