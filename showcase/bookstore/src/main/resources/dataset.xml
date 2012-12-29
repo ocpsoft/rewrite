@@ -1,0 +1,13 @@
+<dataset>
+
+   <category id="1" name="Thriller" seo_key="thriller"
+      description="Thriller is a broad genre of literature, film, and television programming that uses suspense, tension and excitement as the main elements. Thrillers heavily stimulate the viewer's moods giving them a high level of anticipation, ultra-heightened expectation, uncertainty, surprise, anxiety and/or terror." />
+   <book id="101" category_id="1" price="8.99" stock="3" year="2012" title="The Bubble Gum Thief" author="Jeff Miller"
+      isbn="9781612184838" />
+   <book id="102" category_id="1" price="15.99" stock="1" year="2012" title="May We Be Forgiven: A Novel" author="A. M. Homes"
+      isbn="9780670025480" />
+
+   <category id="2" name="Fantasy" seo_key="fantasy"
+      description="Fantasy is a genre of fiction that commonly uses magic and other supernatural phenomena as a primary element of plot, theme, or setting. Many works within the genre take place in imaginary worlds where magic is common." />
+
+</dataset>

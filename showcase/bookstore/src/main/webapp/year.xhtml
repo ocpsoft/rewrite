@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<ui:composition template="/WEB-INF/templates/template.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+
+  <ui:define name="content">
+
+    <f:metadata>
+      <f:viewParam name="year" value="#{yearBean.year}" />
+      <f:event type="preRenderView" listener="#{yearBean.preRenderView}" />
+    </f:metadata>
+
+    <h:dataTable var="book" value="#{yearBean.books}" rendered="#{ not empty yearBean.books }" styleClass="book-table"
+      columnClasses="title,author,year,stock,price">
+
+      <h:column>
+        <f:facet name="header">Title</f:facet>
+
+        <h:link outcome="/book.xhtml">
+          <f:param name="isbn" value="#{book.isbn}" />
+          #{book.title}
+        </h:link>
+
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">Author</f:facet>
+        #{book.author}
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">Year</f:facet>
+        #{book.year}
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">Shippable</f:facet>
+        <h:graphicImage value="/images/led_green.png" rendered="#{book.stock gt 0}" title="#{book.stock} Exemplar(e) auf Lager" />
+        <h:graphicImage value="/images/led_orange.png" rendered="#{book.stock eq 0}" title="Momentan nicht lieferbar" />
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">Price</f:facet>
+        $<h:outputText value="#{book.price}">
+          <f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+        </h:outputText>
+      </h:column>
+
+    </h:dataTable>
+
+  </ui:define>
+
+</ui:composition>

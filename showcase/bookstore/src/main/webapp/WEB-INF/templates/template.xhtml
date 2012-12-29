@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core">
+
+<head>
+<title>Rewrite Bookstore</title>
+<link href="#{request.contextPath}/styles/bootstrap.css" rel="stylesheet" />
+<link href="#{request.contextPath}/styles/style.css" rel="stylesheet" />
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="fill">
+      <div class="container">
+        <h:link outcome="/home.xhtml" styleClass="brand">Rewrite Bookstore</h:link>
+        <ul class="nav">
+          <li><a href="#{request.contextPath}">Home</a></li>
+          <li><h:link outcome="/search.xhtml">Search</h:link></li>
+          <li><h:link outcome="/cart.xhtml">Cart (#{cart.numberOfBooks})</h:link></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="content">
+      <div class="page-header">
+        <h1>
+          Page name <small>Supporting text or tagline</small>
+        </h1>
+      </div>
+      <div class="row">
+        <div class="span16">
+          <ui:insert name="content" />
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div style="width: 100%; text-align: center;">
+        <p>Rewrite Bookstore</p>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+
+</html>

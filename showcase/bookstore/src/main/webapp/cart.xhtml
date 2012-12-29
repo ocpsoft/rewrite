@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ui:composition template="/WEB-INF/templates/template.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core">
+
+   <ui:define name="content">
+
+      <h:dataTable var="book" value="#{cartBean.books}" rendered="#{ not empty cartBean.books }"
+         styleClass="book-table" columnClasses="title,author,price">
+
+         <h:column>
+            <f:facet name="header">Title</f:facet>
+            #{book.title}
+         </h:column>
+
+         <h:column>
+            <f:facet name="header">Author</f:facet>
+            #{book.author}
+         </h:column>
+
+         <h:column>
+            <f:facet name="header">Price</f:facet>
+            $<h:outputText value="#{book.price}">
+               <f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+            </h:outputText>
+            <f:facet name="footer">
+            </f:facet>
+         </h:column>
+
+      </h:dataTable>
+      
+      <div id="cart-sum">
+         Total: 
+         $<h:outputText value="#{cartBean.sum}">
+            <f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+         </h:outputText>
+      </div>
+
+   </ui:define>
+
+</ui:composition>

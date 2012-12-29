@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ui:composition template="/WEB-INF/templates/template.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+
+  <ui:define name="content">
+
+    <h:dataTable var="category" value="#{homeBean.categories}" styleClass="category-table" columnClasses="main,link">
+
+      <h:column>
+        <h3>#{category.name}</h3>
+        <p>#{category.description}</p>
+      </h:column>
+
+      <h:column>
+
+        <h:link outcome="/category.xhtml">
+          <f:param name="seoKey" value="#{category.seoKey}" />
+          Show books
+        </h:link>
+
+      </h:column>
+
+    </h:dataTable>
+
+  </ui:define>
+
+</ui:composition>

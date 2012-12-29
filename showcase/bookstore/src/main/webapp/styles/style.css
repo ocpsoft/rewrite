@@ -1,0 +1,108 @@
+/*
+ * Book table
+ */
+table.book-table {
+  width: 100%;
+}
+
+table.book-table td.author {
+  
+}
+
+table.book-table td.year {
+  text-align: center;
+}
+
+table.book-table td.stock {
+  text-align: center;
+}
+
+table.book-table td.price {
+  text-align: right;
+}
+
+/*
+ * Book details
+ */
+#book-image {
+  float: left;
+}
+
+#book-details {
+  margin-top: 10px;
+  margin-left: 230px;
+}
+
+#book-details #title {
+  font-size: 30px;
+  line-height: 36px;
+  margin-bottom: 16px;
+  font-weight: bold;
+  color: #404040;
+}
+
+#book-details #author {
+  font-size: 14px;
+  margin-bottom: 12px;
+  font-weight: bold;
+  color: #404040;
+}
+
+#book-details .book-details-table {
+  width: 70%;
+  margin: 20px 0;
+}
+
+#book-details .book-details-table .name {
+  font-weight: bold;
+  width: 130px;
+}
+
+#book-details .book-details-table .value {
+  white-space: nowrap;
+}
+
+/*
+ * Search
+ */
+#search {
+  width: 500px;
+  margin: 10px auto;
+}
+
+#search h1 {
+  text-align: center;
+}
+
+#search input[type='text'] {
+  width: 80%;
+}
+
+#search input[type='submit'] {
+  margin-left: 10px;
+}
+
+/*
+ * Cart
+ */
+#cart-sum {
+  width: 800px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.category-table {
+  width: 700px;
+  margin: 0 auto;
+}
+
+.category-table td.main {
+  width: 70%;
+}
+
+.category-table td.link {
+  width: 30%;
+  text-align: center;
+  vertical-align: middle;
+}

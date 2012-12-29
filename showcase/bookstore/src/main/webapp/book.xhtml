@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<ui:composition template="/WEB-INF/templates/template.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+
+  <ui:define name="content">
+
+    <div id="book-image">
+      <img src="#{request.contextPath}/images/book/#{bookBean.book.isbn}.jpg" alt="image" width="200" />
+    </div>
+
+    <div id="book-details">
+
+      <div id="title">#{bookBean.book.title}</div>
+
+      <div id="author">by #{bookBean.book.author}</div>
+
+      <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+        magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
+        gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing
+        elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+        accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+        amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
+        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
+        gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+
+      <table class="book-details-table">
+        <tr>
+          <td class="name">Title</td>
+          <td class="value">#{bookBean.book.title}</td>
+        </tr>
+        <tr>
+          <td class="name">Author</td>
+          <td class="value">#{bookBean.book.author}</td>
+        </tr>
+        <tr>
+          <td class="name">ISBN</td>
+          <td class="value">#{bookBean.book.isbn}</td>
+        </tr>
+        <tr>
+          <td class="name">Publication date</td>
+          <td class="value"><h:link outcome="/year.xhtml">
+              <f:param name="year" value="#{bookBean.book.year}" />
+              #{bookBean.book.year}
+            </h:link></td>
+        </tr>
+        <tr>
+          <td class="name">Available</td>
+          <td class="value">#{bookBean.book.stock}</td>
+        </tr>
+      </table>
+
+      <div>
+
+        <h:form>
+          <h:commandButton action="#{bookBean.addToCart}" styleClass="btn primary" value="Add to cart" />
+        </h:form>
+
+      </div>
+
+    </div>
+
+  </ui:define>
+
+</ui:composition>
