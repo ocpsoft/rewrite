@@ -23,7 +23,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -142,12 +141,6 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
          return parameters.where(param, new RequestParameterParameter(this, nameParam, valueParam));
       }
       throw new IllegalArgumentException("No such parameter [" + param + "] exists.");
-   }
-
-   @Override
-   public RequestParameterParameter where(String param, Binding binding)
-   {
-      return where(param, binding);
    }
 
    public ParameterizedPatternParser getNameExpression()

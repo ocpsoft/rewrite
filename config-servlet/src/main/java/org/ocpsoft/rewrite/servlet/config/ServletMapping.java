@@ -23,12 +23,11 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
 
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -106,12 +105,6 @@ public class ServletMapping extends HttpCondition implements IServletMapping
    public ServletMappingParameter where(String param)
    {
       return parameters.where(param, new ServletMappingParameter(this, resource.getParameter(param)));
-   }
-
-   @Override
-   public ServletMappingParameter where(String param, Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override

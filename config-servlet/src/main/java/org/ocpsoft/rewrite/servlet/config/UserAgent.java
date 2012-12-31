@@ -20,7 +20,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -143,12 +142,6 @@ public abstract class UserAgent extends HttpCondition
       public UserAgentParameter where(final String param)
       {
          return parameters.where(param, new UserAgentParameter(this, expression.getParameter(param)));
-      }
-
-      @Override
-      public UserAgentParameter where(final String param, final Binding binding)
-      {
-         return where(param).bindsTo(binding);
       }
 
       @Override

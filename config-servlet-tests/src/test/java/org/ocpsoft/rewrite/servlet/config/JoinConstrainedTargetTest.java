@@ -65,7 +65,7 @@ public class JoinConstrainedTargetTest
    {
       Assert.assertTrue(Join.path("/application/path").to("/{domain}/path")
                .where("domain").matches("me")
-               .when(Domain.matches("{domain}.example.com")).evaluate(rewrite, new MockEvaluationContext()));
+               .when(Hostname.matches("{domain}.example.com")).evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Ignore
@@ -74,6 +74,6 @@ public class JoinConstrainedTargetTest
    {
       Assert.assertFalse(Join.path("/application/path").to("/{domain}/path")
                .where("domain").matches("you")
-               .when(Domain.matches("{domain}.example.com")).evaluate(rewrite, new MockEvaluationContext()));
+               .when(Hostname.matches("{domain}.example.com")).evaluate(rewrite, new MockEvaluationContext()));
    }
 }

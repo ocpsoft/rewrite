@@ -19,7 +19,6 @@ import org.ocpsoft.rewrite.annotation.Hostname;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
-import org.ocpsoft.rewrite.servlet.config.Domain;
 
 public class HostnameHandler implements AnnotationHandler<Hostname>
 {
@@ -39,7 +38,7 @@ public class HostnameHandler implements AnnotationHandler<Hostname>
    @Override
    public void process(ClassContext context, Hostname annotation, HandlerChain chain)
    {
-      context.getRuleBuilder().when(Domain.matches(annotation.value()));
+      context.getRuleBuilder().when(org.ocpsoft.rewrite.servlet.config.Hostname.matches(annotation.value()));
       chain.proceed();
    }
 }

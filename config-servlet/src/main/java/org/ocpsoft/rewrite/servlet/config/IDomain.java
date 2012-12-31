@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -80,12 +79,6 @@ public interface IDomain extends Parameterized<IDomain, DomainParameter, String>
       public DomainParameter where(String param)
       {
          return parent.where(param);
-      }
-
-      @Override
-      public DomainParameter where(String param, Binding binding)
-      {
-         return parent.where(param, binding);
       }
 
       @Override

@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
@@ -260,12 +259,6 @@ public class Join implements IJoin, IJoinPath
       }
 
       throw new IllegalArgumentException("No such parameter [" + parameter + "] exists.");
-   }
-
-   @Override
-   public JoinParameter where(final String param, final Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override

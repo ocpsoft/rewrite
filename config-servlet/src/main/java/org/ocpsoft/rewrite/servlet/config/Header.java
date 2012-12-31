@@ -21,7 +21,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -134,11 +133,5 @@ public class Header extends HttpCondition implements IHeader
       ParameterizedPatternParserParameter valueParam = value.getParameterNames().contains(param) ? value
                .getParameter(param) : null;
       return parameters.where(param, new HeaderParameter(this, nameParam, valueParam));
-   }
-
-   @Override
-   public HeaderParameter where(String param, Binding binding)
-   {
-      return where(param, binding);
    }
 }

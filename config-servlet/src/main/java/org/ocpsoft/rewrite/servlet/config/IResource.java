@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.bind.Bindable;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -71,12 +70,6 @@ public interface IResource extends Parameterized<IResource, ResourceParameter, S
       public ResourceParameter where(String param)
       {
          return parent.where(param);
-      }
-
-      @Override
-      public ResourceParameter where(String param, Binding binding)
-      {
-         return parent.where(param, binding);
       }
 
       @Override

@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.util.Map;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -146,11 +145,5 @@ public class Path extends HttpCondition implements IPath
    public PathParameter where(String param)
    {
       return parameters.where(param, new PathParameter(this, expression.getParameter(param)));
-   }
-
-   @Override
-   public PathParameter where(String param, Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 }

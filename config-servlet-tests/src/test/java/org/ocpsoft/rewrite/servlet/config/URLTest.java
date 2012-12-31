@@ -80,7 +80,7 @@ public class URLTest
       IURL url = URL.matches("{prefix}/application/{seg}{suffix}")
                .where("prefix").matches(".*")
                .where("suffix").matches("\\?.*")
-               .where("seg", mockBinding);
+               .where("seg").bindsTo(mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
 
@@ -102,7 +102,7 @@ public class URLTest
    {
       MockBinding mockBinding = new MockBinding();
       IURL url = URL.captureIn("foo")
-               .where("foo", mockBinding);
+               .where("foo").bindsTo(mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
 

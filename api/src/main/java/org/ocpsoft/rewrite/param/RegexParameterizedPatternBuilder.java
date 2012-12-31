@@ -323,12 +323,6 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    }
 
    @Override
-   public ParameterizedPatternBuilderParameter where(String param, Binding binding)
-   {
-      return where(param).bindsTo(binding);
-   }
-
-   @Override
    public ParameterizedPatternBuilderParameter getParameter(String param)
    {
       return where(param);

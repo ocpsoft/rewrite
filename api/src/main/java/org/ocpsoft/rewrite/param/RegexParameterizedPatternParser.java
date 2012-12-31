@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.util.Maps;
@@ -261,12 +260,6 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    public ParameterizedPatternParserParameter where(String param)
    {
       return parameters.get(param);
-   }
-
-   @Override
-   public ParameterizedPatternParserParameter where(String param, Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override

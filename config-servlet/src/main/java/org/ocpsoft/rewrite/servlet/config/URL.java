@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.util.Map;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -100,12 +99,6 @@ public class URL extends HttpCondition implements IURL
    public URLParameter where(final String param)
    {
       return parameters.where(param, new URLParameter(this, expression.getParameter(param)));
-   }
-
-   @Override
-   public URLParameter where(final String param, final Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override

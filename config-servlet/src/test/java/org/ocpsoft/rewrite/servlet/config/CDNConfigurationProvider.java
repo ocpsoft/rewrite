@@ -54,13 +54,13 @@ public class CDNConfigurationProvider extends HttpConfigurationProvider
                 * Set up our rule (This does the work.)
                 */
                .addRule(CDN.relocate("{p}jquery{s}.js")
+                        .to("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
                         .where("p").matches(".*")
-                        .where("s").matches(".*")
-                        .to("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"))
+                        .where("s").matches(".*"))
                .addRule(CDN.relocate("{p}foo-{version}.js")
+                        .to("http://mycdn.com/foo-{version}.js")
                         .where("p").matches(".*")
-                        .where("version").matches(".*")
-                        .to("http://mycdn.com/foo-{version}.js"))
+                        .where("version").matches(".*"))
 
                /*
                 * Now send a response to our test case containing the relocated resource.

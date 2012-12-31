@@ -20,7 +20,6 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
@@ -88,12 +87,6 @@ public class Forward extends HttpOperation implements IForward
    public ForwardParameter where(final String param)
    {
       return parameters.where(param, new ForwardParameter(this, location.getParameter(param)));
-   }
-
-   @Override
-   public ForwardParameter where(final String param, final Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override

@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Bindable;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -78,12 +77,6 @@ public interface IHeader extends Parameterized<IHeader, HeaderParameter, String>
       public HeaderParameter where(String param)
       {
          return parent.where(param);
-      }
-
-      @Override
-      public HeaderParameter where(String param, Binding binding)
-      {
-         return parent.where(param, binding);
       }
 
       @Override

@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Bindable;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
@@ -38,11 +37,6 @@ import org.ocpsoft.rewrite.servlet.config.rule.ICDN.CDNParameter;
  */
 public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, ConditionBuilder
 {
-   /**
-    * The new resource (real or virtual) to be served, either from a local context or remote CDN.
-    */
-   public ICDN to(String location);
-
    public ParameterizedPatternParser getLocationExpression();
 
    public ParameterizedPatternParser getResourcExpression();
@@ -109,12 +103,6 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
       }
 
       @Override
-      public CDNParameter where(String param, Binding binding)
-      {
-         return parent.where(param, binding);
-      }
-
-      @Override
       public boolean evaluate(Rewrite event, EvaluationContext context)
       {
          return parent.evaluate(event, context);
@@ -166,12 +154,6 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
       public void perform(Rewrite event, EvaluationContext context)
       {
          parent.perform(event, context);
-      }
-
-      @Override
-      public ICDN to(String location)
-      {
-         return parent.to(location);
       }
 
       @Override

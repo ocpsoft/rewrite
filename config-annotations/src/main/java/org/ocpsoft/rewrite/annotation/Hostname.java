@@ -22,11 +22,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.ocpsoft.rewrite.servlet.config.Domain;
-
 /**
  * <p>
- * Adds a {@link Domain} condition to the current rule. This allows to restrict the rule to a specific hostname or to
+ * Adds a {@link org.ocpsoft.rewrite.servlet.config.Hostname} condition to the current rule. This allows to restrict the rule to a specific hostname or to
  * bind a substring of the hostname to a bean property.
  * </p>
  * 

@@ -10,7 +10,7 @@ import org.ocpsoft.rewrite.config.jodatime.JodaTime;
 import org.ocpsoft.rewrite.config.jodatime.TimeCondition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
-import org.ocpsoft.rewrite.servlet.config.Domain;
+import org.ocpsoft.rewrite.servlet.config.Hostname;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpCondition;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
@@ -45,8 +45,8 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                   {
                      if (Direction
                               .isInbound()
-                              .andNot(Domain.matches("localhost").or(
-                                       Domain.matches("{1}rhcloud{2}").where("1").matches(".*").where("2")
+                              .andNot(Hostname.matches("localhost").or(
+                                       Hostname.matches("{1}rhcloud{2}").where("1").matches(".*").where("2")
                                                 .matches(".*")))
                               .evaluate(event, context))
                         return false;

@@ -20,7 +20,6 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -137,12 +136,6 @@ public class Redirect extends HttpOperation implements IRedirect
    public RedirectParameter where(final String param)
    {
       return parameters.where(param, new RedirectParameter(this, location.getParameter(param)));
-   }
-
-   @Override
-   public RedirectParameter where(final String param, final Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override

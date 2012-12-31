@@ -20,7 +20,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -38,12 +37,12 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Domain extends HttpCondition implements IDomain
+public class Hostname extends HttpCondition implements IDomain
 {
    private final ParameterizedPatternParser expression;
    private final ParameterStore<DomainParameter> parameters = new ParameterStore<DomainParameter>();
 
-   private Domain(final String pattern)
+   private Hostname(final String pattern)
    {
       Assert.notNull(pattern, "Domain must not be null.");
       this.expression = new RegexParameterizedPatternParser(pattern);
@@ -64,21 +63,15 @@ public class Domain extends HttpCondition implements IDomain
     * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See
     * also {@link #where(String)}
     */
-   public static Domain matches(final String pattern)
+   public static Hostname matches(final String pattern)
    {
-      return new Domain(pattern);
+      return new Hostname(pattern);
    }
 
    @Override
    public DomainParameter where(final String param)
    {
       return parameters.where(param, new DomainParameter(this, expression.getParameter(param)));
-   }
-
-   @Override
-   public DomainParameter where(final String param, final Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override
@@ -113,7 +106,7 @@ public class Domain extends HttpCondition implements IDomain
    }
 
    /**
-    * Get the underlying {@link RegexParameterizedPatternBuilder} for this {@link Domain}
+    * Get the underlying {@link RegexParameterizedPatternBuilder} for this {@link Hostname}
     * <p>
     * See also: {@link #where(String)}
     */

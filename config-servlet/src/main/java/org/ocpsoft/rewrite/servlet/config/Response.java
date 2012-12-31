@@ -15,12 +15,18 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
@@ -138,6 +144,47 @@ public abstract class Response extends HttpOperation
          public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
             event.getResponse().setStatus(code);
+         }
+      };
+   }
+
+   // TODO Write tests
+   public static Response write(final byte... bytes)
+   {
+      return write(new ByteArrayInputStream(bytes));
+   }
+
+   // TODO Write tests
+   public static Response write(final Object value)
+   {
+      return new Response() {
+         @Override
+         public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+         {
+            try {
+               if (value != null)
+                  event.getResponse().getWriter().write(value.toString());
+            }
+            catch (IOException e) {
+               throw new RewriteException("Could not write value [" + value + "] to response stream.", e);
+            }
+         }
+      };
+   }
+
+   // TODO Write tests
+   public static Response write(final InputStream stream)
+   {
+      return new Response() {
+         @Override
+         public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+         {
+            try {
+               Streams.copy(stream, event.getResponse().getOutputStream());
+            }
+            catch (IOException e) {
+               throw new RewriteException("Could not write stream [" + stream + "] to response stream.", e);
+            }
          }
       };
    }

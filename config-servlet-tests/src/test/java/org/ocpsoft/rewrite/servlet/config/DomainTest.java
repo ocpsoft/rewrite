@@ -54,14 +54,14 @@ public class DomainTest
    @Test
    public void testDomainMatchesInbound()
    {
-      Assert.assertTrue(Domain.matches("example.com").evaluate(inbound, new MockEvaluationContext()));
+      Assert.assertTrue(Hostname.matches("example.com").evaluate(inbound, new MockEvaluationContext()));
    }
 
    @Test
    public void testCanConvertAndValidateDomain() throws Exception
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Domain.matches("{p}.com").where("p").convertedBy(new DomainConverter()).evaluate(inbound, context);
+      Hostname.matches("{p}.com").where("p").convertedBy(new DomainConverter()).evaluate(inbound, context);
 
       Assert.assertEquals("example", Evaluation.property("p").retrieve(inbound, context));
       Assert.assertEquals(new DomainConvertedType("example"),
@@ -72,7 +72,7 @@ public class DomainTest
    public void testDomainMatchesBindsInbound()
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Assert.assertTrue(Domain.matches("{domain}.com").where("domain").bindsTo(Request.attribute("domain"))
+      Assert.assertTrue(Hostname.matches("{domain}.com").where("domain").bindsTo(Request.attribute("domain"))
                .evaluate(inbound, context));
 
       // Invoke the binding.
@@ -84,18 +84,18 @@ public class DomainTest
    @Test
    public void testDomainNotMatchesInbound()
    {
-      Assert.assertFalse(Domain.matches("other.com").evaluate(inbound, new MockEvaluationContext()));
+      Assert.assertFalse(Hostname.matches("other.com").evaluate(inbound, new MockEvaluationContext()));
    }
 
    @Test
    public void testDomainMatchesOutbound()
    {
-      Assert.assertTrue(Domain.matches("example.com").evaluate(outbound, new MockEvaluationContext()));
+      Assert.assertTrue(Hostname.matches("example.com").evaluate(outbound, new MockEvaluationContext()));
    }
 
    @Test
    public void testDomainNotMatchesOutbound()
    {
-      Assert.assertFalse(Domain.matches("other.com").evaluate(outbound, new MockEvaluationContext()));
+      Assert.assertFalse(Hostname.matches("other.com").evaluate(outbound, new MockEvaluationContext()));
    }
 }

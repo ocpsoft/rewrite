@@ -25,9 +25,7 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.BindingBuilder;
-import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Retrieval;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -47,7 +45,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
     * Create a new EL Method binding using distinct expressions to submit and retrieve values. The method intended for
     * use in submission must accept a single parameter of the expected type.
     */
-   public static El methodBinding(final String retrieve, final String submit)
+   public static El method(final String retrieve, final String submit)
    {
       return new ElMethod(new ConstantExpression(retrieve), new ConstantExpression(submit));
    }
@@ -68,18 +66,6 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    {
       return new ElMethod(new TypeBasedExpression(method.getDeclaringClass(), method.getName()), null);
    }
-   
-   /**
-    * Create a new EL Method binding to retrieve values. The method must return a value of the expected type. Use the
-    * given {@link Converter} when retrieving any values.
-    */
-   public static El retrievalMethod(final String expression,
-            final Class<? extends Converter<?>> converterType)
-   {
-      ElMethod el = new ElMethod(new ConstantExpression(expression), null);
-      el.convertedBy(converterType);
-      return el;
-   }
 
    /**
     * Create a new EL Method binding to submit values. The method must accept a single parameter of the expected type.
@@ -87,33 +73,6 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    public static El submissionMethod(final String expression)
    {
       return new ElMethod(null, new ConstantExpression(expression));
-   }
-
-   /**
-    * Create a new EL Method binding to submit values. The method must accept a single parameter of the expected type.
-    * Use the given {@link Converter} before submitting any values.
-    */
-   public static El submissionMethod(final String expression,
-            final Class<? extends Converter<?>> converterType)
-   {
-      ElMethod el = new ElMethod(null, new ConstantExpression(expression));
-      el.convertedBy(converterType);
-      return el;
-   }
-
-   /**
-    * Create a new EL Method binding to submit values. The method must accept a single parameter of the expected type.
-    * Use the given {@link Validator} before attempting to submit any values. Use the given {@link Converter} before
-    * submitting any values.
-    */
-   public static El submissionMethod(final String expression,
-            final Class<? extends Converter<?>> converterType,
-                     final Class<? extends Validator<?>> validatorType)
-   {
-      ElMethod el = new ElMethod(null, new ConstantExpression(expression));
-      el.convertedBy(converterType);
-      el.validatedBy(validatorType);
-      return el;
    }
 
    /**
@@ -133,32 +92,6 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    public static El property(final Field field)
    {
       return new ElProperty(new TypeBasedExpression(field.getDeclaringClass(), field.getName()));
-   }
-
-   /**
-    * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
-    * either be public, or have a publicly defined getter/setter. Use the given {@link Converter} before submitting any
-    * values.
-    */
-   public static El property(final String expression, final Class<? extends Converter<?>> type)
-   {
-      ElProperty el = new ElProperty(new ConstantExpression(expression));
-      el.convertedBy(type);
-      return el;
-   }
-
-   /**
-    * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
-    * either be public, or have a publicly defined getter/setter. Use the given {@link Validator} before attempting to
-    * submit any values. Use the given {@link Converter} when submitting any values.
-    */
-   public static El property(final String expression, final Class<? extends Converter<?>> converterType,
-            final Class<? extends Validator<?>> validatorType)
-   {
-      ElProperty el = new ElProperty(new ConstantExpression(expression));
-      el.convertedBy(converterType);
-      el.validatedBy(validatorType);
-      return el;
    }
 
    @SuppressWarnings("unchecked")

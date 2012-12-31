@@ -3,8 +3,6 @@ package org.ocpsoft.rewrite.param;
 import java.util.List;
 import java.util.Map;
 
-import org.ocpsoft.rewrite.bind.Binding;
-
 /**
  * {@link Parameter} for {@link ParameterizedPattern}.
  * 
@@ -70,12 +68,6 @@ public abstract class ParameterizedPatternParameter<IMPLTYPE extends Parameteriz
    public IMPLTYPE where(String param)
    {
       return parent.where(param);
-   }
-
-   @Override
-   public IMPLTYPE where(String param, Binding binding)
-   {
-      return parent.where(param, binding);
    }
 
    @Override

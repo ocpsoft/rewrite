@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Bindable;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
@@ -113,12 +112,6 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public JoinParameter where(String param)
       {
          return parent.where(param);
-      }
-
-      @Override
-      public JoinParameter where(String param, Binding binding)
-      {
-         return parent.where(param, binding);
       }
 
       @Override

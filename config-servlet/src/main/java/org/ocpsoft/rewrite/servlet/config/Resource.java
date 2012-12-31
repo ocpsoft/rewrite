@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.util.Map;
 
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -88,12 +87,6 @@ public class Resource extends HttpCondition implements IResource
    public ResourceParameter where(String param)
    {
       return parameters.where(param, new ResourceParameter(this, resource.getParameter(param)));
-   }
-
-   @Override
-   public ResourceParameter where(String param, Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override

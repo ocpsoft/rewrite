@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
@@ -31,10 +30,10 @@ import org.ocpsoft.rewrite.servlet.config.Substitute;
 /**
  * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
  * and an internal server resource URL
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CDN implements ICDN
+public class CDN implements ICDN, ICDNRelocate
 {
    private String id;
 
@@ -52,7 +51,7 @@ public class CDN implements ICDN
    /**
     * The outward facing URL path to which this {@link CDN} will apply.
     */
-   public static ICDN relocate(final String pattern)
+   public static ICDNRelocate relocate(final String pattern)
    {
       return new CDN(pattern);
    }
@@ -83,12 +82,6 @@ public class CDN implements ICDN
    public CDNParameter where(final String parameter)
    {
       return new CDNParameter(this, resource.getPathExpression().getParameter(parameter));
-   }
-
-   @Override
-   public CDNParameter where(final String param, final Binding binding)
-   {
-      return where(param).bindsTo(binding);
    }
 
    @Override
