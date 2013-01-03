@@ -17,22 +17,89 @@ package org.ocpsoft.rewrite.faces.navigate;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.ocpsoft.rewrite.faces.RewriteNavigationHandler;
 
+/**
+ * Test method names:
+ * 
+ * <ul>
+ * <li>testRedirect*(): redirect outcome processed by {@link RewriteNavigationHandler}</li>
+ * <li>testNavigatiom*(): standard JSF 2.0 implicit navigation outcome without redirect</li>
+ * </ul>
+ * 
+ * @author ck
+ * 
+ */
 public class NavigateTest
 {
 
    @Test
-   public void testViewWithoutParameters()
+   public void testRedirectWithoutParameters()
    {
-      assertEquals("/faces/some-view.xhtml?faces-redirect=true",
+      assertEquals("rewrite-redirect:/faces/some-view.xhtml",
                Navigate.to("/faces/some-view.xhtml")
                         .build());
    }
 
    @Test
-   public void testViewWithoutRedirect()
+   public void testRedirectWithSingleParameter()
+   {
+      assertEquals("rewrite-redirect:/faces/some-view.xhtml?param=value",
+               Navigate.to("/faces/some-view.xhtml")
+                        .with("param", "value")
+                        .build());
+   }
+
+   @Test
+   public void testRedirectWithSingleIntegerParameter()
+   {
+      assertEquals("rewrite-redirect:/faces/some-view.xhtml?param=123",
+               Navigate.to("/faces/some-view.xhtml")
+                        .with("param", 123)
+                        .build());
+   }
+
+   @Test
+   public void testRedirectWithMultipleParameters()
+   {
+      assertEquals("rewrite-redirect:/faces/some-view.xhtml?param=123&param=456",
+               Navigate.to("/faces/some-view.xhtml")
+                        .with("param", 123)
+                        .with("param", 456)
+                        .build());
+   }
+
+   @Test
+   public void testRedirectWithEmptyStringParameters()
+   {
+      assertEquals("rewrite-redirect:/faces/some-view.xhtml?param=&param2=",
+               Navigate.to("/faces/some-view.xhtml")
+                        .with("param", "")
+                        .with("param2", "")
+                        .build());
+   }
+
+   @Test
+   public void testRedirectWithNullParameter()
+   {
+      assertEquals("rewrite-redirect:/faces/some-view.xhtml",
+               Navigate.to("/faces/some-view.xhtml")
+                        .with("param", null)
+                        .build());
+   }
+
+   @Test
+   public void testRedirectParameterEncoding()
+   {
+      assertEquals("rewrite-redirect:/faces/some-view.xhtml?param=a+b+%C3%A4",
+               Navigate.to("/faces/some-view.xhtml")
+                        .with("param", "a b \u00e4")
+                        .build());
+   }
+
+   @Test
+   public void testNavigationWithoutParameters()
    {
       assertEquals("/faces/some-view.xhtml",
                Navigate.to("/faces/some-view.xhtml")
@@ -41,59 +108,63 @@ public class NavigateTest
    }
 
    @Test
-   public void testViewWithSingleParameter()
+   public void testNavigationWithSingleParameter()
    {
-      assertEquals("/faces/some-view.xhtml?faces-redirect=true&param=value",
+      assertEquals("/faces/some-view.xhtml?param=value",
                Navigate.to("/faces/some-view.xhtml")
+                        .withoutRedirect()
                         .with("param", "value")
                         .build());
    }
 
    @Test
-   public void testViewWithSingleIntegerParameter()
+   public void testNavigationWithSingleIntegerParameter()
    {
-      assertEquals("/faces/some-view.xhtml?faces-redirect=true&param=123",
+      assertEquals("/faces/some-view.xhtml?param=123",
                Navigate.to("/faces/some-view.xhtml")
+                        .withoutRedirect()
                         .with("param", 123)
                         .build());
    }
 
    @Test
-   public void testViewWithMultipleParameters()
+   public void testNavigationWithMultipleParameters()
    {
-      assertEquals("/faces/some-view.xhtml?faces-redirect=true&param=123&param=456",
+      assertEquals("/faces/some-view.xhtml?param=123&param=456",
                Navigate.to("/faces/some-view.xhtml")
+                        .withoutRedirect()
                         .with("param", 123)
                         .with("param", 456)
                         .build());
    }
 
    @Test
-   public void testViewWithEmptyStringParameters()
+   public void testNavigationWithEmptyStringParameters()
    {
-      assertEquals("/faces/some-view.xhtml?faces-redirect=true&param=&param2=",
+      assertEquals("/faces/some-view.xhtml?param=&param2=",
                Navigate.to("/faces/some-view.xhtml")
+                        .withoutRedirect()
                         .with("param", "")
                         .with("param2", "")
                         .build());
    }
 
    @Test
-   public void testViewWithNullParameter()
+   public void testNavigationWithNullParameter()
    {
-      assertEquals("/faces/some-view.xhtml?faces-redirect=true",
+      assertEquals("/faces/some-view.xhtml",
                Navigate.to("/faces/some-view.xhtml")
+                        .withoutRedirect()
                         .with("param", null)
                         .build());
    }
 
    @Test
-   // Navigate class doesn't do encoding any more
-   @Ignore
-   public void testParameterEncoding()
+   public void testNavigationParameterEncoding()
    {
-      assertEquals("/faces/some-view.xhtml?faces-redirect=true&param=a+b+%C3%A4",
+      assertEquals("/faces/some-view.xhtml?param=a b \u00e4",
                Navigate.to("/faces/some-view.xhtml")
+                        .withoutRedirect()
                         .with("param", "a b \u00e4")
                         .build());
    }

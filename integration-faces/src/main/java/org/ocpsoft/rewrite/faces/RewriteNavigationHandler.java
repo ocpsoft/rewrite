@@ -33,6 +33,7 @@ import org.ocpsoft.rewrite.exception.RewriteException;
 public class RewriteNavigationHandler extends ConfigurableNavigationHandler
 {
    private static final String REWRITE_PREFIX = "rewrite:";
+   public static final String REDIRECT_PREFIX = "rewrite-redirect:";
    private static final String IN_NAVIGATION = RewriteNavigationHandler.class.getName() + "_inNavigation";
    private final ConfigurableNavigationHandler parent;
 
@@ -108,7 +109,40 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
          }
       }
 
+      // outcomes created by Navigate for redirects
+      else if (outcome != null && outcome.startsWith(REDIRECT_PREFIX)) {
+
+         // strip the prefix to get the context-relative URL
+         String url = outcome.substring(REDIRECT_PREFIX.length());
+
+         // rewrite the URL
+         String encodedUrl = externalContext.encodeActionURL(url);
+
+         // send the redirect
+         try {
+            String absoluteUrl = prependContextPath(externalContext, encodedUrl);
+            externalContext.redirect(absoluteUrl);
+            return true;
+         }
+         catch (IOException e) {
+            throw new RewriteException("Could not redirect to [" + encodedUrl + "]", e);
+         }
+
+      }
+
       return false;
+   }
+
+   /**
+    * Adds the context path to the given context-relative URL.
+    */
+   private String prependContextPath(ExternalContext externalContext, String url)
+   {
+      String contextPath = externalContext.getRequestContextPath();
+      if ("/".equals(contextPath)) {
+         return url;
+      }
+      return contextPath + url;
    }
 
    @Override

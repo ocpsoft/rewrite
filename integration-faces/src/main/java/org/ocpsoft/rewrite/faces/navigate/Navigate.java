@@ -20,7 +20,10 @@ import java.util.Map.Entry;
 
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.faces.RewriteNavigationHandler;
 import org.ocpsoft.rewrite.servlet.spi.ResourcePathResolver;
+import org.ocpsoft.urlbuilder.AddressBuilder;
+import org.ocpsoft.urlbuilder.AddressBuilderPath;
 
 /**
  * Helper class to build JSF action outcomes.
@@ -83,18 +86,38 @@ public class Navigate
 
    public String build()
    {
-
-      ParameterMap query = parameters.copy();
-
       if (redirect) {
-         query.put("faces-redirect", "true");
+         return buildRedirectOutcome();
       }
+      else {
+         return buildStandardOutcome();
+      }
+   }
 
+   /**
+    * Builds a special outcome processed by {@link RewriteNavigationHandler}
+    */
+   private String buildRedirectOutcome()
+   {
+      AddressBuilderPath builderPath = AddressBuilder.begin().path(viewId);
+      for (Entry<String, List<String>> param : parameters.entrySet()) {
+         String[] values = param.getValue().toArray(new String[param.getValue().size()]);
+         builderPath.query(param.getKey(), (Object[]) values);
+      }
+      String url = builderPath.toString();
+      return RewriteNavigationHandler.REDIRECT_PREFIX + url;
+   }
+
+   /**
+    * Builds a standard JSF 2.0 implicit navigation outcome
+    */
+   private String buildStandardOutcome()
+   {
       StringBuilder outcome = new StringBuilder();
       outcome.append(viewId);
 
       boolean first = true;
-      for (Entry<String, List<String>> param : query.entrySet()) {
+      for (Entry<String, List<String>> param : parameters.entrySet()) {
 
          for (String value : param.getValue()) {
 
@@ -111,7 +134,6 @@ public class Navigate
       }
 
       return outcome.toString();
-
    }
 
    @Override
