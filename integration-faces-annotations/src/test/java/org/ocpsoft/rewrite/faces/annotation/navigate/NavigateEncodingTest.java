@@ -22,7 +22,6 @@ import static org.junit.Assert.assertThat;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.faces.annotation.RewriteFacesAnnotationsTest;
@@ -73,12 +72,7 @@ public class NavigateEncodingTest extends RewriteTestBase
 
    }
 
-   /**
-    * TODO: we should also test '&', but I think it is encoded when written to the page
-    */
    @Test
-   // Seems like this cannot work as JSF outcomes are not encoded
-   @Ignore
    public void testNavigateProblematicCharacters() throws Exception
    {
 
