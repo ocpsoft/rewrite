@@ -26,6 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -83,6 +84,11 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
          String viewId = context.getViewRoot().getViewId();
          NavigationCase navigationCase = parent.getNavigationCase(context, fromAction, viewId);
          return navigationCase;
+      }
+      else if (outcome != null && outcome.startsWith(REDIRECT_PREFIX)) {
+         String url = outcome.substring(REDIRECT_PREFIX.length());
+         String viewId = AddressBuilder.create(url).getPath();
+         return parent.getNavigationCase(context, fromAction, viewId);
       }
       else
       {
