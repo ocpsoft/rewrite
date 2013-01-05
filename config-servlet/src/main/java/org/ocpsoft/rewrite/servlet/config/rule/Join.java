@@ -37,7 +37,9 @@ import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
@@ -81,7 +83,7 @@ public class Join implements IJoin, IJoinPath
     * The client-facing URL path to which this {@link Join} will apply. Parameters of the form <code>"{n}"</code> will
     * be bound by name to the request parameter map via {@link Request#parameter(String)}, and subsequently used to
     * build the outbound URL by extracting values from the query string
-    * <code>"?n=value"<code>. To disable request parameter binding and outbound URL rewriting, instead use {@link #nonBindingPath(String)}
+    * <code>"?n=value"<code>. To disable request parameter binding and outbound URL rewriting, instead use {@link #pathNonBinding(String)}
     */
    public static IJoinPath path(final String pattern)
    {
@@ -92,7 +94,7 @@ public class Join implements IJoin, IJoinPath
     * The client-facing URL path to which this {@link Join} will apply. Parameters will not be bound to the request
     * parameter map. To enable request parameter binding and outbound URL rewriting, instead use {@link #path(String)}.
     */
-   public static Join nonBindingPath(String pattern)
+   public static IJoinPath pathNonBinding(String pattern)
    {
       return new Join(pattern, false);
    }
@@ -230,8 +232,20 @@ public class Join implements IJoin, IJoinPath
             }
          }
 
+         Address outboundAddress = ((HttpOutboundServletRewrite) event).getOutboundAddress();
          Substitute.with(requestPattern + query.toQueryString()).perform(event, context);
-         if (chainingDisabled)
+
+         Address rewrittenAddress = ((HttpOutboundServletRewrite) event).getOutboundAddress();
+         String rewrittenPath = rewrittenAddress.getPath();
+         if (rewrittenPath.startsWith(((HttpServletRewrite) event).getContextPath()))
+            rewrittenPath = rewrittenPath.substring(((HttpServletRewrite) event).getContextPath().length());
+
+         if (!outboundAddress.equals(rewrittenAddress)
+                  && !requestPath.getPathExpression().matches(event, context, rewrittenPath))
+         {
+            ((HttpOutboundServletRewrite) event).setOutboundAddress(outboundAddress);
+         }
+         else if (chainingDisabled)
          {
             ((HttpOutboundServletRewrite) event).handled();
          }
