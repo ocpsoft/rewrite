@@ -29,18 +29,12 @@ import org.ocpsoft.rewrite.servlet.spi.ContextListener;
  */
 public class RewriteServletContextListener implements ServletContextListener
 {
-   private final List<ContextListener> listeners;
-
-   @SuppressWarnings("unchecked")
-   public RewriteServletContextListener()
-   {
-      this.listeners = Iterators.asList(ServiceLoader.load(ContextListener.class));
-   }
+   private List<ContextListener> listeners;
 
    @Override
    public void contextInitialized(final ServletContextEvent event)
    {
-      for (ContextListener listener : listeners) {
+      for (ContextListener listener : getListeners()) {
          listener.contextInitialized(event);
       }
    }
@@ -48,9 +42,16 @@ public class RewriteServletContextListener implements ServletContextListener
    @Override
    public void contextDestroyed(final ServletContextEvent event)
    {
-      for (ContextListener listener : listeners) {
+      for (ContextListener listener : getListeners()) {
          listener.contextDestroyed(event);
       }
+   }
+
+   private List<ContextListener> getListeners()
+   {
+      if (listeners == null)
+         listeners = Iterators.asList(ServiceLoader.loadTypesafe(ContextListener.class));
+      return listeners;
    }
 
 }
