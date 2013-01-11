@@ -69,7 +69,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
    @Override
    public void rewriteHttp(final HttpServletRewrite event)
    {
-      ServletContext servletContext = event.getRequest().getServletContext();
+      ServletContext servletContext = event.getServletContext();
       if (loader == null)
          synchronized (servletContext) {
             if (loader == null)

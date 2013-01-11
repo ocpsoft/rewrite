@@ -57,7 +57,7 @@ public class Resource extends HttpCondition implements IResource
       {
          String file = resource.getBuilder().build(event, context, parameters);
          try {
-            if (event.getRequest().getServletContext().getResource(file) != null)
+            if (event.getServletContext().getResource(file) != null)
             {
                Map<ParameterizedPatternParserParameter, String[]> parameters = resource.parse(event, context, file);
                for (ParameterizedPatternParserParameter capture : parameters.keySet()) {

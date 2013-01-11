@@ -59,7 +59,7 @@ public class ServletMapping extends HttpCondition implements IServletMapping
          String path = resource.build(event, context, parameters);
          try {
 
-            for (Entry<String, ? extends ServletRegistration> entry : event.getRequest().getServletContext()
+            for (Entry<String, ? extends ServletRegistration> entry : event.getServletContext()
                      .getServletRegistrations().entrySet())
             {
                ServletRegistration servlet = entry.getValue();
@@ -83,7 +83,7 @@ public class ServletMapping extends HttpCondition implements IServletMapping
                }
             }
 
-            return event.getRequest().getServletContext().getResource(path) != null;
+            return event.getServletContext().getResource(path) != null;
          }
          catch (MalformedURLException e) {
             log.debug("Invalid file format [{}]", path);
