@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,22 +93,25 @@ public class Header extends HttpCondition implements IHeader
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
-      for (String header : Collections.<String>list(request.getHeaderNames()))
-      {
-         if (name.matches(event, context, header) && matchesValue(event, context, request, header))
+      Enumeration<String> headerNames = request.getHeaderNames();
+      if (headerNames != null) {
+         for (String header : Collections.list(headerNames))
          {
-            Map<ParameterizedPatternParserParameter, String[]> parameterValues = name.parse(event, context, header);
-            for (ParameterizedPatternParserParameter parameter : parameterValues.keySet()) {
-               if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
-                  return false;
-            }
-            parameterValues = value.parse(event, context, header);
-            for (ParameterizedPatternParserParameter parameter : parameterValues.keySet()) {
-               if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
-                  return false;
-            }
+            if (name.matches(event, context, header) && matchesValue(event, context, request, header))
+            {
+               Map<ParameterizedPatternParserParameter, String[]> parameterValues = name.parse(event, context, header);
+               for (ParameterizedPatternParserParameter parameter : parameterValues.keySet()) {
+                  if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
+                     return false;
+               }
+               parameterValues = value.parse(event, context, header);
+               for (ParameterizedPatternParserParameter parameter : parameterValues.keySet()) {
+                  if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
+                     return false;
+               }
 
-            return true;
+               return true;
+            }
          }
       }
       return false;
@@ -117,11 +121,14 @@ public class Header extends HttpCondition implements IHeader
    private boolean matchesValue(Rewrite event, EvaluationContext context, final HttpServletRequest request,
             final String header)
    {
-      for (String contents : Collections.<String>list(request.getHeaders(header)))
-      {
-         if (value.matches(event, context, contents))
+      Enumeration<String> headers = request.getHeaders(header);
+      if (headers != null) {
+         for (String contents : Collections.list(headers))
          {
-            return true;
+            if (value.matches(event, context, contents))
+            {
+               return true;
+            }
          }
       }
       return false;
