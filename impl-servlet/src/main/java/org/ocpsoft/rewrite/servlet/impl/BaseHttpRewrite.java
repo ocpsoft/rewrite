@@ -1,5 +1,6 @@
 package org.ocpsoft.rewrite.servlet.impl;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,9 +25,9 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
    private String requestContextPath;
    private Address address;
 
-   public BaseHttpRewrite(HttpServletRequest request, HttpServletResponse response)
+   public BaseHttpRewrite(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
    {
-      super(request, response);
+      super(request, response, servletContext);
    }
 
    @Override

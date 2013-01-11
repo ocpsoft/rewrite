@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.test;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -31,11 +32,13 @@ public class MockServletRewrite implements ServletRewrite<ServletRequest, Servle
    private Flow flow;
    private final ServletRequest request;
    private final ServletResponse response;
+   private final ServletContext servletContext;
 
-   public MockServletRewrite(ServletRequest request, ServletResponse response)
+   public MockServletRewrite(ServletRequest request, ServletResponse response, ServletContext servletContext)
    {
       this.request = request;
       this.response = response;
+      this.servletContext = servletContext;
    }
 
    @Override
@@ -54,6 +57,12 @@ public class MockServletRewrite implements ServletRewrite<ServletRequest, Servle
    public ServletResponse getResponse()
    {
       return response;
+   }
+
+   @Override
+   public ServletContext getServletContext()
+   {
+      return servletContext;
    }
 
    @Override

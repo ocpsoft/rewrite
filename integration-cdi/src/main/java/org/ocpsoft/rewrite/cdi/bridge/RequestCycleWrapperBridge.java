@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.cdi.bridge;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +34,8 @@ public class RequestCycleWrapperBridge extends HttpRequestCycleWrapper
    private BeanManager manager;
 
    @Override
-   public HttpServletRequest wrapRequest(HttpServletRequest request, HttpServletResponse response)
+   public HttpServletRequest wrapRequest(HttpServletRequest request, HttpServletResponse response,
+            ServletContext servletContext)
    {
       WrapRequest wrap = new WrapRequest(request, response);
       manager.fireEvent(wrap);
@@ -41,7 +43,8 @@ public class RequestCycleWrapperBridge extends HttpRequestCycleWrapper
    }
 
    @Override
-   public HttpServletResponse wrapResponse(HttpServletRequest request, HttpServletResponse response)
+   public HttpServletResponse wrapResponse(HttpServletRequest request, HttpServletResponse response,
+            ServletContext servletContext)
    {
       WrapResponse wrap = new WrapResponse(request, response);
       manager.fireEvent(wrap);

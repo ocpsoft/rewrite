@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.event;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -32,6 +33,8 @@ public interface ServletRewrite<IN extends ServletRequest, OUT extends ServletRe
    public IN getRequest();
 
    public OUT getResponse();
+
+   public ServletContext getServletContext();
 
    /**
     * Marks the current {@link ServletRewrite} as handled and terminates further handling. Control of the request is

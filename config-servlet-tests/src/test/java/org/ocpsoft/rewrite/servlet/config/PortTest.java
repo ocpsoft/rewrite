@@ -41,7 +41,7 @@ public class PortTest
       Mockito.when(request.getServerPort())
                .thenReturn(8080);
 
-      rewrite = new HttpInboundRewriteImpl(request, null);
+      rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
 
    @Test

@@ -46,8 +46,8 @@ public class SchemeTest
       Mockito.when(request.getScheme())
                .thenReturn("https");
 
-      inbound = new HttpInboundRewriteImpl(request, null);
-      outbound = new HttpOutboundRewriteImpl(request, null,
+      inbound = new HttpInboundRewriteImpl(request, null, null);
+      outbound = new HttpOutboundRewriteImpl(request, null, null,
                AddressBuilder.create("http://example.com:8080/path?query=value"));
    }
 

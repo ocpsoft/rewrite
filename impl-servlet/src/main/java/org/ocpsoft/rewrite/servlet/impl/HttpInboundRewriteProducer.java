@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -46,10 +47,9 @@ public class HttpInboundRewriteProducer implements
 
    @Override
    public InboundServletRewrite<HttpServletRequest, HttpServletResponse> createInboundRewrite(
-            final ServletRequest request,
-            final ServletResponse response)
+            final ServletRequest request, final ServletResponse response, final ServletContext servletContext)
    {
-      return new HttpInboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response);
+      return new HttpInboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response, servletContext);
    }
 
 }

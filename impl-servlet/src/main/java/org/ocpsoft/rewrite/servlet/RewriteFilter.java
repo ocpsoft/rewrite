@@ -68,11 +68,15 @@ public class RewriteFilter implements Filter
    private List<InboundRewriteProducer<ServletRequest, ServletResponse>> inbound;
    private List<OutboundRewriteProducer<ServletRequest, ServletResponse, Object>> outbound;
 
+   private ServletContext servletContext;
+
    @Override
    @SuppressWarnings("unchecked")
    public void init(final FilterConfig filterConfig) throws ServletException
    {
       log.info("RewriteFilter starting up...");
+
+      servletContext = filterConfig.getServletContext();
 
       listeners = Iterators.asList(ServiceLoader.load(RewriteLifecycleListener.class));
       wrappers = Iterators.asList(ServiceLoader.load(RequestCycleWrapper.class));
@@ -174,8 +178,8 @@ public class RewriteFilter implements Filter
          {
             if (wrapper.handles(event))
             {
-               event.setRequest(wrapper.wrapRequest(event.getRequest(), event.getResponse()));
-               event.setResponse(wrapper.wrapResponse(event.getRequest(), event.getResponse()));
+               event.setRequest(wrapper.wrapRequest(event.getRequest(), event.getResponse(), servletContext));
+               event.setResponse(wrapper.wrapResponse(event.getRequest(), event.getResponse(), servletContext));
             }
          }
 
@@ -202,7 +206,7 @@ public class RewriteFilter implements Filter
       for (InboundRewriteProducer<ServletRequest, ServletResponse> producer : inbound)
       {
          InboundServletRewrite<ServletRequest, ServletResponse> event = producer
-                  .createInboundRewrite(request, response);
+                  .createInboundRewrite(request, response, servletContext);
          if (event != null)
             return event;
       }

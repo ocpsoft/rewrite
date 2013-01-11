@@ -1,5 +1,6 @@
 package org.ocpsoft.rewrite.servlet.impl;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,10 +11,10 @@ public class HttpBufferRewriteImpl extends BaseHttpRewrite implements HttpServle
 {
    private HttpInboundRewriteImpl delegate;
 
-   public HttpBufferRewriteImpl(HttpServletRequest request, HttpServletResponse response)
+   public HttpBufferRewriteImpl(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
    {
-      super(request, response);
-      this.delegate = new HttpInboundRewriteImpl(request, response);
+      super(request, response, servletContext);
+      this.delegate = new HttpInboundRewriteImpl(request, response, servletContext);
    }
 
    @Override

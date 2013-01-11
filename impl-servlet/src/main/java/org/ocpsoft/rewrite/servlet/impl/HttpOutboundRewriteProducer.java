@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -48,10 +49,10 @@ public class HttpOutboundRewriteProducer implements
 
    @Override
    public OutboundServletRewrite<HttpServletRequest, HttpServletResponse, Address> createOutboundRewrite(
-            final ServletRequest request,
-            final ServletResponse response, Address payload)
+            final ServletRequest request, final ServletResponse response, ServletContext servletContext, Address payload)
    {
-      return new HttpOutboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response, payload);
+      return new HttpOutboundRewriteImpl((HttpServletRequest) request, (HttpServletResponse) response, servletContext,
+               payload);
    }
 
 }

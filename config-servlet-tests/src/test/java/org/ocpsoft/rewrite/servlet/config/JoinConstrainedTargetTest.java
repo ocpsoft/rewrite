@@ -57,7 +57,7 @@ public class JoinConstrainedTargetTest
       Mockito.when(request.getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY))
                .thenReturn(context);
 
-      rewrite = new HttpInboundRewriteImpl(request, null);
+      rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
 
    @Test

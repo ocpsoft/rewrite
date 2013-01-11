@@ -55,7 +55,7 @@ public class PathTest
       Mockito.when(request.getContextPath())
       .thenReturn("/context");
 
-      rewrite = new HttpInboundRewriteImpl(request, null);
+      rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
 
    @Test

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,7 +48,8 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
    }
 
    @Override
-   public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response)
+   public HttpServletRequest wrapRequest(final HttpServletRequest request, final HttpServletResponse response,
+            final ServletContext servletContext)
    {
       HttpServletRequest result = request;
       if (HttpRewriteWrappedRequest.getCurrentInstance(request) == null) {
@@ -67,11 +69,12 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
    }
 
    @Override
-   public HttpServletResponse wrapResponse(final HttpServletRequest request, final HttpServletResponse response)
+   public HttpServletResponse wrapResponse(final HttpServletRequest request, final HttpServletResponse response,
+            final ServletContext servletContext)
    {
       HttpServletResponse result = response;
       if (HttpRewriteWrappedResponse.getCurrentInstance(request) == null)
-         result = new HttpRewriteWrappedResponse(request, response);
+         result = new HttpRewriteWrappedResponse(request, response, servletContext);
       return result;
    }
 

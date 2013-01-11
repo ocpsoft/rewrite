@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.spi;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -35,5 +36,5 @@ public interface OutboundRewriteProducer<IN extends ServletRequest, OUT extends 
     * Create an {@link OutboundServletRewrite} instance.
     */
    OutboundServletRewrite<IN, OUT, PAYLOADTYPE> createOutboundRewrite(ServletRequest request, ServletResponse response,
-            PAYLOADTYPE payload);
+            ServletContext servletContext, PAYLOADTYPE payload);
 }

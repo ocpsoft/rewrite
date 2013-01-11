@@ -45,8 +45,8 @@ public class EvaluationBindingTest
       Mockito.when(request.getServerName())
                .thenReturn("example.com");
 
-      inbound = new HttpInboundRewriteImpl(request, null);
-      outbound = new HttpOutboundRewriteImpl(request, null,
+      inbound = new HttpInboundRewriteImpl(request, null, null);
+      outbound = new HttpOutboundRewriteImpl(request, null, null,
                AddressBuilder.create("http://example.com:8080/path?query=value"));
    }
 

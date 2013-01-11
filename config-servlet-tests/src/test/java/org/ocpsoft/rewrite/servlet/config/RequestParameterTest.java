@@ -57,7 +57,7 @@ public class RequestParameterTest
       Mockito.when(request.getParameter("baz"))
       .thenReturn("cab");
 
-      rewrite = new HttpInboundRewriteImpl(request, null);
+      rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
 
    @Test

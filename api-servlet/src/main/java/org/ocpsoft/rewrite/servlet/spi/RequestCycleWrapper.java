@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.spi;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -35,10 +36,10 @@ public interface RequestCycleWrapper<IN extends ServletRequest, OUT extends Serv
    /**
     * Wrap the inbound {@link IN} object.
     */
-   IN wrapRequest(IN request, OUT response);
+   IN wrapRequest(IN request, OUT response, ServletContext servletContext);
 
    /**
     * Wrap the outbound {@link OUT} object.
     */
-   OUT wrapResponse(IN request, OUT response);
+   OUT wrapResponse(IN request, OUT response, ServletContext servletContext);
 }

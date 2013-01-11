@@ -51,7 +51,7 @@ public class HeaderTest
       Mockito.when(request.getHeaders("Accept-Charset"))
       .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
 
-      rewrite = new HttpInboundRewriteImpl(request, null);
+      rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
 
    @Test

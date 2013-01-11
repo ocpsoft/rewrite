@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.event;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -36,9 +37,11 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    protected Flow flow;
    protected String dispatchResource;
    private Context context;
+   private ServletContext servletContext;
 
-   public BaseRewrite(final IN request, final OUT response)
+   public BaseRewrite(final IN request, final OUT response, final ServletContext servletContext)
    {
+      this.servletContext = servletContext;
       flow = Flow.UN_HANDLED;
       this.request = request;
       this.response = response;
@@ -123,6 +126,14 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    public String getDispatchResource()
    {
       return dispatchResource;
+   }
+
+   /**
+    * Get the current {@link ServletContext} object.
+    */
+   public ServletContext getServletContext()
+   {
+      return servletContext;
    }
 
    /**

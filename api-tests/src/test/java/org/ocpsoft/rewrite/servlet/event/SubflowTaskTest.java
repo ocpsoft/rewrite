@@ -16,7 +16,7 @@ public class SubflowTaskTest
    @Before
    public void before()
    {
-      rewrite = new MockServletRewrite(null, null);
+      rewrite = new MockServletRewrite(null, null, null);
    }
 
    @Test

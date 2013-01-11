@@ -41,7 +41,7 @@ public class MethodTest
       Mockito.when((request.getMethod()))
                .thenReturn("HEAD");
 
-      rewrite = new HttpInboundRewriteImpl(request, null);
+      rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
 
    @Test

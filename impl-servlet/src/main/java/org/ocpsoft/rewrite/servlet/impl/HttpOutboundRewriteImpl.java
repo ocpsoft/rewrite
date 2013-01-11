@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,10 +32,10 @@ public class HttpOutboundRewriteImpl extends BaseHttpRewrite implements HttpOutb
    private final Address originalAddress;
 
    public HttpOutboundRewriteImpl(final HttpServletRequest request,
-            final HttpServletResponse response,
+            final HttpServletResponse response, ServletContext servletContext,
             final Address address)
    {
-      super(request, response);
+      super(request, response, servletContext);
       this.address = address;
       this.originalAddress = address;
    }

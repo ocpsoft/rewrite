@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.servlet.impl;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,9 +33,10 @@ public class HttpInboundRewriteImpl extends BaseHttpRewrite implements HttpInbou
 {
    Logger log = Logger.getLogger(HttpInboundRewriteImpl.class);
 
-   public HttpInboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response)
+   public HttpInboundRewriteImpl(final HttpServletRequest request, final HttpServletResponse response,
+            final ServletContext servletContext)
    {
-      super(request, response);
+      super(request, response, servletContext);
    }
 
    @Override

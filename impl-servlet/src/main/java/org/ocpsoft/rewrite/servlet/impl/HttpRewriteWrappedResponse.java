@@ -58,12 +58,16 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 {
    private final HttpServletRequest request;
 
+   private final ServletContext servletContext;
+
    private static final Logger log = Logger.getLogger(HttpRewriteWrappedResponse.class);
 
-   public HttpRewriteWrappedResponse(final HttpServletRequest request, final HttpServletResponse response)
+   public HttpRewriteWrappedResponse(final HttpServletRequest request, final HttpServletResponse response,
+            final ServletContext servletContext)
    {
       super(request, response);
       this.request = request;
+      this.servletContext = servletContext;
 
       if (getCurrentInstance(request) == null) {
          super.setCurrentInstance(this);
@@ -138,7 +142,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
             ResponseContent buffer = new ResponseContentImpl(bufferedResponseContent.toByteArray(),
                      Charset.forName(getCharacterEncoding()));
             new ResponseContentInterceptorChainImpl(responseContentInterceptors).begin(new HttpBufferRewriteImpl(
-                     request, this), buffer);
+                     request, this, servletContext), buffer);
 
             if (!Charset.forName(getCharacterEncoding()).equals(buffer.getCharset()))
                setCharacterEncoding(buffer.getCharset().name());
@@ -208,7 +212,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 
          if (isResponseStreamWrapped())
          {
-            HttpServletRewrite event = new HttpBufferRewriteImpl(request, this);
+            HttpServletRewrite event = new HttpBufferRewriteImpl(request, this, servletContext);
             OutputStream wrapped = outputStream;
             for (ResponseStreamWrapper wrapper : responseStreamWrappers) {
                wrapped = wrapper.wrap(event, wrapped);
@@ -344,7 +348,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          if (producer.handles(address))
          {
             event = ((OutboundRewriteProducer<ServletRequest, ServletResponse, Address>) producer)
-                     .createOutboundRewrite(request, getResponse(), address);
+                     .createOutboundRewrite(request, getResponse(), servletContext, address);
          }
       }
 
