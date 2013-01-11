@@ -60,11 +60,11 @@ public class JoinEncodingConfigurationProvider extends HttpConfigurationProvider
                      result.append(event.getInboundAddress().getPath());
                      result.append("\n");
 
-                     for (String key : event.getRequest().getParameterMap().keySet()) {
+                     for (Object key : event.getRequest().getParameterMap().keySet()) {
                         result.append("getParameter('");
                         result.append(key);
                         result.append("') = ");
-                        result.append(event.getRequest().getParameter(key));
+                        result.append(event.getRequest().getParameter(key.toString()));
                         result.append("\n");
                      }
 

@@ -95,10 +95,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
-      for (String parameter : Collections.list(request.getParameterNames()))
+      for (String parameter : Collections.<String>list(request.getParameterNames()))
       {
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
@@ -161,10 +162,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
       }
 
       @Override
+      @SuppressWarnings("unchecked")
       public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
       {
          HttpServletRequest request = event.getRequest();
-         for (String name : Collections.list(request.getParameterNames()))
+         for (String name : Collections.<String>list(request.getParameterNames()))
          {
             if (getNameExpression().matches(event, context, name))
             {

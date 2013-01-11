@@ -88,10 +88,11 @@ public class Header extends HttpCondition implements IHeader
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
-      for (String header : Collections.list(request.getHeaderNames()))
+      for (String header : Collections.<String>list(request.getHeaderNames()))
       {
          if (name.matches(event, context, header) && matchesValue(event, context, request, header))
          {
@@ -112,10 +113,11 @@ public class Header extends HttpCondition implements IHeader
       return false;
    }
 
+   @SuppressWarnings("unchecked")
    private boolean matchesValue(Rewrite event, EvaluationContext context, final HttpServletRequest request,
             final String header)
    {
-      for (String contents : Collections.list(request.getHeaders(header)))
+      for (String contents : Collections.<String>list(request.getHeaders(header)))
       {
          if (value.matches(event, context, contents))
          {
