@@ -58,6 +58,8 @@
       <module>api-el</module>
       <module>api-servlet</module>
       <module>impl-servlet</module>
+      <module>impl-servlet-2.5</module>
+      <module>impl-servlet-3.0</module>
       <module>impl-servlet-tests</module>
       <module>transform</module>
       <module>transform-less</module>
