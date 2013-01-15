@@ -49,7 +49,7 @@ public class Servlet25DispatcherTypeProviderTest
    public void testShouldReturnIncludeDispatcherTypeWithCorrectAttributeSet()
    {
 
-      // GIVEN a request without any attributes set
+      // GIVEN a request with the INCLUDE attribute set
       HttpServletRequest request = mock(HttpServletRequest.class);
       when(request.getAttribute("javax.servlet.include.request_uri")).thenReturn("/some/url");
 
@@ -66,7 +66,7 @@ public class Servlet25DispatcherTypeProviderTest
    public void testShouldReturnForwardDispatcherTypeWithCorrectAttributeSet()
    {
 
-      // GIVEN a request without any attributes set
+      // GIVEN a request with the FORWARD attribute set
       HttpServletRequest request = mock(HttpServletRequest.class);
       when(request.getAttribute("javax.servlet.forward.request_uri")).thenReturn("/some/url");
 
