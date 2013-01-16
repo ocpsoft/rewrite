@@ -17,18 +17,24 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.net.MalformedURLException;
 import java.util.Collection;
-import java.util.Map.Entry;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletRegistration;
+import javax.servlet.ServletContext;
 
+import org.ocpsoft.common.pattern.WeightedComparator;
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.servlet.ServletRegistration;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for comparing URLs to Servlet Mappings.
@@ -41,6 +47,8 @@ public class ServletMapping extends HttpCondition implements IServletMapping
 
    private final RegexParameterizedPatternBuilder resource;
    private final ParameterStore<ServletMappingParameter> parameters = new ParameterStore<ServletMappingParameter>();
+
+   private List<ServletRegistrationProvider> servletRegistrationProviders = null;
 
    private ServletMapping(final String resource)
    {
@@ -59,11 +67,9 @@ public class ServletMapping extends HttpCondition implements IServletMapping
          String path = resource.build(event, context, parameters);
          try {
 
-            for (Entry<String, ? extends ServletRegistration> entry : event.getServletContext()
-                     .getServletRegistrations().entrySet())
+            for (ServletRegistration registration : getServletRegistration(event.getServletContext()))
             {
-               ServletRegistration servlet = entry.getValue();
-               Collection<String> mappings = servlet.getMappings();
+               Collection<String> mappings = registration.getMappings();
 
                for (String mapping : mappings) {
                   if (path.startsWith("/") && !mapping.startsWith("/"))
@@ -90,6 +96,33 @@ public class ServletMapping extends HttpCondition implements IServletMapping
          }
       }
       return false;
+   }
+
+   /**
+    * Obtains the list of registered Servlets using the {@link ServletRegistrationProvider} SPI.
+    */
+   private List<ServletRegistration> getServletRegistration(ServletContext context)
+   {
+      for (ServletRegistrationProvider provider : getServletRegistrationProviders()) {
+         List<ServletRegistration> registrations = provider.getServletRegistrations(context);
+         if (registrations != null) {
+            return registrations;
+         }
+      }
+      throw new IllegalStateException("Unable to find the Servlet registrations of the application");
+   }
+
+   /**
+    * Returns the list of {@link ServletRegistrationProvider} implementations.
+    */
+   private List<ServletRegistrationProvider> getServletRegistrationProviders()
+   {
+      if (servletRegistrationProviders == null) {
+         servletRegistrationProviders = Iterators.asList(
+                  ServiceLoader.loadTypesafe(ServletRegistrationProvider.class).iterator());
+         Collections.sort(servletRegistrationProviders, new WeightedComparator());
+      }
+      return servletRegistrationProviders;
    }
 
    /**
