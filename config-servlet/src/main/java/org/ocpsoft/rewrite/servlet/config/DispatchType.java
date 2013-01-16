@@ -15,17 +15,22 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.common.pattern.WeightedComparator;
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.bind.DefaultBindable;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.servlet.DispatcherType;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider;
 
 /**
  * Responsible for asserting on the {@link HttpServletRequest#getDispatcherType()} property.
@@ -39,20 +44,42 @@ public class DispatchType extends HttpCondition implements Bindable<DispatchType
    @SuppressWarnings("rawtypes")
    private final DefaultBindable<?> bindable = new DefaultBindable();
 
+   private final List<DispatcherTypeProvider> providers;
+
    private DispatchType(final DispatcherType type)
    {
       this.type = type;
+
+      // for performance reasons only create the list of providers once
+      providers = Iterators.asList(
+               ServiceLoader.loadTypesafe(DispatcherTypeProvider.class).iterator());
+      Collections.sort(providers, new WeightedComparator());
+
    }
 
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      if (this.type.equals(event.getRequest().getDispatcherType()))
+      if (this.type.equals(getDispatcherType(event)))
       {
          Bindings.enqueueSubmission(event, context, bindable, type);
          return true;
       }
       return false;
+   }
+
+   /**
+    * Determines the {@link DispatcherType} of the current request using the {@link DispatcherTypeProvider} SPI.
+    */
+   private DispatcherType getDispatcherType(final HttpServletRewrite event)
+   {
+      for (DispatcherTypeProvider provider : providers) {
+         DispatcherType dispatcherType = provider.getDispatcherType(event.getRequest(), event.getServletContext());
+         if (dispatcherType != null) {
+            return dispatcherType;
+         }
+      }
+      throw new IllegalStateException("Unable to determine dispatcher type of current request");
    }
 
    /**
