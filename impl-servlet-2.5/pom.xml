@@ -26,8 +26,14 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-test-harness</artifactId>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.mockito</groupId>
+         <artifactId>mockito-all</artifactId>
+         <version>1.9.0-rc1</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
