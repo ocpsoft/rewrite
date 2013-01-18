@@ -18,14 +18,11 @@ package com.ocpsoft.pretty.faces.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -38,17 +35,8 @@ import com.ocpsoft.pretty.faces.config.spi.DefaultXMLConfigurationProvider;
  */
 public class PrettyConfiguratorTest
 {
-   private final static Map servlets = new HashMap<String, MockFacesServletRegistration>();
-
    final ClassLoader mockResourceLoader = new MockClassLoader(mockPrettyConfigURL());
    final ClassLoader mockEmptyResourceLoader = new MockClassLoader();
-
-   @BeforeClass
-   @SuppressWarnings("unchecked")
-   public static void beforeClass()
-   {
-      servlets.put("Faces Servlet", new MockFacesServletRegistration());
-   }
 
    @Test
    public void testMETAINFConfiguration() throws SAXException, IOException
@@ -56,9 +44,7 @@ public class PrettyConfiguratorTest
       final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
 
       EasyMock.expect(servletContext.getMajorVersion()).andReturn(3).anyTimes();
-      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(servlets).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn(null).anyTimes();
-      EasyMock.expect(servletContext.getClassLoader()).andReturn(mockResourceLoader).anyTimes();
       EasyMock.expect(servletContext.getResourceAsStream(DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG)).andReturn(null).anyTimes();
 
       final PrettyConfigurator configurator = new PrettyConfigurator(servletContext);
@@ -70,14 +56,11 @@ public class PrettyConfiguratorTest
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testInitParameterLocationConfiguration() throws SAXException, IOException
    {
       final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
 
       EasyMock.expect(servletContext.getMajorVersion()).andReturn(3).anyTimes();
-      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(servlets).anyTimes();
-      EasyMock.expect(servletContext.getClassLoader()).andReturn(mockEmptyResourceLoader).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn("car.xml, cdr.xml").anyTimes();
       EasyMock.expect(servletContext.getInitParameter(ClassLoaderConfigurationProvider.CLASSPATH_CONFIG_ENABLED)).andReturn("false").anyTimes();
       EasyMock.expect(servletContext.getResourceAsStream("car.xml")).andReturn(mockPrettyConfigInputStream()).anyTimes();

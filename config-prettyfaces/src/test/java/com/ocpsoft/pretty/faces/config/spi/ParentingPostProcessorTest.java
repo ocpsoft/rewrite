@@ -22,20 +22,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 
 import org.easymock.EasyMock;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.ocpsoft.pretty.PrettyContext;
 import com.ocpsoft.pretty.faces.config.DigesterPrettyConfigParser;
 import com.ocpsoft.pretty.faces.config.MockClassLoader;
-import com.ocpsoft.pretty.faces.config.MockFacesServletRegistration;
 import com.ocpsoft.pretty.faces.config.PrettyConfig;
 import com.ocpsoft.pretty.faces.config.PrettyConfigBuilder;
 import com.ocpsoft.pretty.faces.config.PrettyConfigurator;
@@ -45,16 +41,7 @@ import com.ocpsoft.pretty.faces.config.PrettyConfigurator;
  */
 public class ParentingPostProcessorTest
 {
-   @SuppressWarnings("rawtypes")
-   private final static Map servlets = new HashMap<String, MockFacesServletRegistration>();
    final ClassLoader mockResourceLoader = new MockClassLoader();
-
-   @BeforeClass
-   @SuppressWarnings("unchecked")
-   public static void beforeClass()
-   {
-      servlets.put("Faces Servlet", new MockFacesServletRegistration());
-   }
 
    private final Enumeration<String> initParameterNames = Collections.enumeration(new ArrayList<String>());
 
@@ -74,14 +61,11 @@ public class ParentingPostProcessorTest
    }
 
    @Test
-   @SuppressWarnings("unchecked")
    public void testParentIdInheritsPatterns() throws SAXException, IOException
    {
       final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
 
       EasyMock.expect(servletContext.getMajorVersion()).andReturn(3).anyTimes();
-      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(servlets).anyTimes();
-      EasyMock.expect(servletContext.getClassLoader()).andReturn(mockResourceLoader).anyTimes();
       EasyMock.expect(servletContext.getInitParameterNames()).andReturn(initParameterNames).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn(null).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(ClassLoaderConfigurationProvider.CLASSPATH_CONFIG_ENABLED))

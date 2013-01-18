@@ -50,7 +50,7 @@ public class PrettyFacesRewriteLifecycleListener extends HttpRewriteLifecycleLis
       }
       
       HttpServletRequest request = event.getRequest();
-      ServletContext servletContext = request.getServletContext();
+      ServletContext servletContext = event.getServletContext();
 
       reloader.reloadIfNecessary(servletContext);
       if (request.getAttribute(PrettyContext.CONFIG_KEY) == null)
