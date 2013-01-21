@@ -25,13 +25,20 @@
       </dependency>
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
-         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+         <artifactId>jboss-servlet-api_2.5_spec</artifactId>
          <scope>provided</scope>
       </dependency>
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-test-harness</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- The tests are using Servlet 3.0 APIs -->
+      <dependency>
+         <groupId>org.jboss.spec.javax.servlet</groupId>
+         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
          <scope>test</scope>
       </dependency>
    </dependencies>
