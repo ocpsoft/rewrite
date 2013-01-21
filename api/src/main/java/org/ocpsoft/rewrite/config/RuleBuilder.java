@@ -45,9 +45,15 @@ public class RuleBuilder implements CacheableRule, RelocatableRule
    /**
     * Returns a new {@link RuleBuilder} instance wrapping the given {@link Rule}.
     */
-   public static RuleBuilder wrap(Rule rule)
+   public static RuleBuilder wrap(final Rule rule)
    {
-      return new RuleBuilder().withId(rule.getId()).when(rule).perform(rule);
+      return new RuleBuilder().withId(rule.getId()).when(rule).perform(rule).otherwise(new Operation() {
+         @Override
+         public void perform(Rewrite event, EvaluationContext context)
+         {
+            rule.otherwise(event, context);
+         }
+      });
    }
 
    /**
