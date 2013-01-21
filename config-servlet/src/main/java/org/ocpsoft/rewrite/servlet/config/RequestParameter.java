@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * A {@link Condition} that inspects values returned by {@link HttpServletRequest#getParameterMap()}
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RequestParameter extends HttpCondition implements IRequestParameter
@@ -56,7 +56,7 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
     * Return a {@link Header} condition that matches against both header name and values.
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
-    * 
+    *
     * @param name Regular expression matching the header name
     * @param value Regular expression matching the header value
     */
@@ -75,7 +75,7 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
     * given pattern. The header value is ignored.
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
-    * 
+    *
     * @param name Regular expression matching the header name
     */
    public static RequestParameter exists(final String name)
@@ -86,7 +86,7 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    /**
     * Return a {@link Header} condition that matches only against the existence of a header with value matching the
     * given pattern. The header name is ignored.
-    * 
+    *
     * @param value Regular expression matching the header value
     */
    public static RequestParameter valueExists(final String value)
@@ -95,11 +95,10 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
-      for (String parameter : Collections.<String>list(request.getParameterNames()))
+      for (String parameter : Collections.<String> list(request.getParameterNames()))
       {
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
@@ -162,11 +161,10 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
       }
 
       @Override
-      @SuppressWarnings("unchecked")
       public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
       {
          HttpServletRequest request = event.getRequest();
-         for (String name : Collections.<String>list(request.getParameterNames()))
+         for (String name : Collections.<String> list(request.getParameterNames()))
          {
             if (getNameExpression().matches(event, context, name))
             {

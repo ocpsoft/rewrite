@@ -163,6 +163,12 @@ public interface ICDN extends Parameterized<ICDN, CDNParameter, String>, Rule, C
       }
 
       @Override
+      public void otherwise(Rewrite event, EvaluationContext context)
+      {
+         parent.otherwise(event, context);
+      }
+
+      @Override
       public ICDN when(Condition condition)
       {
          return parent.when(condition);

@@ -32,9 +32,9 @@ import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.rule.IJoin.JoinParameter;
 
 /**
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
 {
@@ -142,6 +142,12 @@ public interface IJoin extends Parameterized<IJoin, JoinParameter, String>, Rule
       public void perform(Rewrite event, EvaluationContext context)
       {
          parent.perform(event, context);
+      }
+
+      @Override
+      public void otherwise(Rewrite event, EvaluationContext context)
+      {
+         parent.otherwise(event, context);
       }
 
       @Override

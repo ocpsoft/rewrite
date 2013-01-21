@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,15 +22,22 @@ import java.util.List;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class EvaluationContextImpl extends ContextBase implements EvaluationContext
 {
    private final List<Operation> preOperations = new ArrayList<Operation>();
    private final List<Operation> postOperations = new ArrayList<Operation>();
+
+   @SuppressWarnings("rawtypes")
+   public EvaluationContextImpl()
+   {
+      put(ParameterStore.class, new ParameterStore());
+   }
 
    @Override
    public void addPreOperation(final Operation operation)

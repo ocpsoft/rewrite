@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class RuleBuilderTest
 {
@@ -48,25 +48,28 @@ public class RuleBuilderTest
    {
       Rule rule = new Rule() {
          @Override
-         public void perform(Rewrite event, EvaluationContext context)
-         {
-         }
-         
-         @Override
          public String getId()
          {
             return null;
          }
-         
+
          @Override
          public boolean evaluate(Rewrite event, EvaluationContext context)
          {
             return false;
          }
+
+         @Override
+         public void perform(Rewrite event, EvaluationContext context)
+         {}
+
+         @Override
+         public void otherwise(Rewrite event, EvaluationContext context)
+         {}
       };
-      
+
       RuleBuilder ruleBuilder = RuleBuilder.wrap(rule);
-      
+
       Assert.assertEquals(null, ruleBuilder.getId());
       Assert.assertEquals(0, ruleBuilder.priority());
    }

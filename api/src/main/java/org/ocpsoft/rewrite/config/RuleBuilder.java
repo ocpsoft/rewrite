@@ -20,15 +20,16 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Builder for fluently defining new composite {@link Rule} instances.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RuleBuilder implements RelocatableRule
+public class RuleBuilder implements CacheableRule, RelocatableRule
 {
    private Integer priority = null;
    private String id = "";
    private Condition condition = new True();
    private Operation operation;
+   private Operation otherwise;
 
    protected RuleBuilder()
    {}
@@ -87,11 +88,20 @@ public class RuleBuilder implements RelocatableRule
    }
 
    /**
-    * Perform the given {@link Operation} when this {@link Rule} is executed.
+    * Perform the given {@link Operation} when the conditions set in this {@link Rule} are met.
     */
    public RuleBuilder perform(final Operation operation)
    {
       this.operation = DefaultOperationBuilder.wrap(this.operation).and(operation);
+      return this;
+   }
+
+   /**
+    * Perform the given {@link Operation} when the conditions set in this {@link Rule} fail to be met.
+    */
+   public RuleBuilder otherwise(final Operation otherwise)
+   {
+      this.otherwise = DefaultOperationBuilder.wrap(this.otherwise).and(otherwise);
       return this;
    }
 
@@ -106,6 +116,13 @@ public class RuleBuilder implements RelocatableRule
    {
       if (operation != null)
          operation.perform(event, context);
+   }
+
+   @Override
+   public void otherwise(Rewrite event, EvaluationContext context)
+   {
+      if (otherwise != null)
+         otherwise.perform(event, context);
    }
 
    @Override
@@ -154,7 +171,7 @@ public class RuleBuilder implements RelocatableRule
 
    /**
     * This method will call the supplied visitor for all conditions attached to the rule builder.
-    * 
+    *
     * @param visitor visitor to process
     */
    public void accept(Visitor<Condition> visitor)
@@ -167,6 +184,24 @@ public class RuleBuilder implements RelocatableRule
    {
       return "RuleBuilder [priority=" + priority + ", id=" + id + ", condition=" + condition + ", operation="
                + operation + "]";
+   }
+
+   @Override
+   public Condition getCondition()
+   {
+      return condition;
+   }
+
+   @Override
+   public Operation getOperation()
+   {
+      return operation;
+   }
+
+   @Override
+   public Operation getOtherwise()
+   {
+      return otherwise;
    }
 
 }

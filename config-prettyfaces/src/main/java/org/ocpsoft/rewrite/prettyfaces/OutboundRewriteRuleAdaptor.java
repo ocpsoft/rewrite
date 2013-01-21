@@ -35,7 +35,7 @@ import com.ocpsoft.pretty.faces.url.URL;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class OutboundRewriteRuleAdaptor implements Rule
 {
@@ -101,5 +101,9 @@ public class OutboundRewriteRuleAdaptor implements Rule
 
       outbound.setOutboundAddress(AddressBuilder.create(result));
    }
+
+   @Override
+   public void otherwise(Rewrite event, EvaluationContext context)
+   {}
 
 }

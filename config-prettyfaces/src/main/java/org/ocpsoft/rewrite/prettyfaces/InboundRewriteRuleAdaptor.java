@@ -37,7 +37,7 @@ import com.ocpsoft.pretty.faces.util.StringUtils;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class InboundRewriteRuleAdaptor implements Rule
 {
@@ -138,6 +138,10 @@ public class InboundRewriteRuleAdaptor implements Rule
          ((HttpInboundServletRewrite) event).forward(newUrl);
       }
    }
+
+   @Override
+   public void otherwise(Rewrite event, EvaluationContext context)
+   {}
 
    @Override
    public String toString()

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,9 +31,9 @@ import org.ocpsoft.rewrite.exception.RewriteException;
 
 /**
  * Utility class for interacting with {@link Bindable} instances.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class Bindings
@@ -47,17 +47,17 @@ public abstract class Bindings
    {
       Map<Bindable, Object> map = new LinkedHashMap<Bindable, Object>();
       map.put(bindable, value);
-      return enqueuePreOperationSubmissions(event, context, map);
+      return enqueueSubmissions(event, context, map);
    }
 
    /**
     * Submit the given value to all registered {@link Binding} instances of all given {@link Bindable} instances.
     * Perform this by adding individual {@link BindingOperation} instances via
     * {@link EvaluationContext#addPreOperation(org.ocpsoft.rewrite.config.Operation)}
-    * 
+    *
     * @return false if validation fails.
     */
-   public static boolean enqueuePreOperationSubmissions(final Rewrite event, final EvaluationContext context,
+   public static boolean enqueueSubmissions(final Rewrite event, final EvaluationContext context,
             final Map<? extends Bindable, ? extends Object> map)
    {
       List<Operation> operations = new ArrayList<Operation>();
@@ -116,7 +116,7 @@ public abstract class Bindings
     */
    public static List<Object> performRetrieval(final Rewrite event, final EvaluationContext context,
             final Bindable<?> bindable)
-            {
+   {
       List<Object> result = new ArrayList<Object>();
 
       for (Binding binding : bindable.getBindings())
@@ -125,7 +125,7 @@ public abstract class Bindings
          result.add(boundValue);
       }
       return result;
-            }
+   }
 
    /**
     * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
@@ -304,7 +304,7 @@ public abstract class Bindings
 
    /**
     * Used to store bindings until all conditions have been met.
-    * 
+    *
     * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
     */
    private static class BindingOperation implements Operation

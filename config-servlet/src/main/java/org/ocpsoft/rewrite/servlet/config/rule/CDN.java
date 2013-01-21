@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.config.Substitute;
 /**
  * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
  * and an internal server resource URL
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class CDN implements ICDN, ICDNRelocate
@@ -77,6 +77,10 @@ public class CDN implements ICDN, ICDNRelocate
       if (Direction.isOutbound().evaluate(event, context))
          location.and(operation).perform(event, context);
    }
+
+   @Override
+   public void otherwise(Rewrite event, EvaluationContext context)
+   {}
 
    @Override
    public CDNParameter where(final String parameter)

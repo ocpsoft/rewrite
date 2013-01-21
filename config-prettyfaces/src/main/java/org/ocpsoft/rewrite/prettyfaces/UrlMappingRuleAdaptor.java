@@ -47,7 +47,7 @@ import com.ocpsoft.pretty.faces.util.PrettyURLBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class UrlMappingRuleAdaptor implements Rule
 {
@@ -160,7 +160,7 @@ public class UrlMappingRuleAdaptor implements Rule
       {
          ((HttpServletRewrite) event).getRequest().setAttribute(REWRITE_MAPPING_ID_KEY,
                   REWRITE_MAPPING_ID_KEY + ":" + mapping.getId());
-         
+
          URL url = context.getRequestURL();
          if (context.shouldProcessDynaview())
          {
@@ -181,16 +181,18 @@ public class UrlMappingRuleAdaptor implements Rule
             }
          }
       }
-      else if ((event instanceof HttpOutboundServletRewrite)
-               && mapping.isOutbound())
+      else if ((event instanceof HttpOutboundServletRewrite) && mapping.isOutbound())
       {
          HttpOutboundServletRewrite outboundRewrite = (HttpOutboundServletRewrite) event;
          String newUrl = rewritePrettyMappings(context.getConfig(), ((HttpServletRewrite) event).getContextPath(),
                   outboundRewrite.getOutboundAddress().toString());
          outboundRewrite.setOutboundAddress(AddressBuilder.create(newUrl));
       }
-
    }
+
+   @Override
+   public void otherwise(Rewrite event, EvaluationContext context)
+   {}
 
    @Override
    public String toString()

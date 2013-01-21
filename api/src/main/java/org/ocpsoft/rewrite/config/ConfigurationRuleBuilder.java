@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class ConfigurationRuleBuilder extends ConfigurationBuilder
 {
@@ -54,12 +54,20 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    /**
-    * Specify the {@link Operation} to be performed when this {@link Rule} is invoked. (May be a composite
-    * {@link Operation})
+    * Perform the given {@link Operation} when the conditions set in this {@link Rule} are met.
     */
    public ConfigurationRuleBuilder perform(final Operation operation)
    {
       rule.perform(operation);
+      return this;
+   }
+
+   /**
+    * Perform the given {@link Operation} when the conditions set in this {@link Rule} fail to be met.
+    */
+   public ConfigurationRuleBuilder otherwise(final Operation operation)
+   {
+      rule.otherwise(operation);
       return this;
    }
 

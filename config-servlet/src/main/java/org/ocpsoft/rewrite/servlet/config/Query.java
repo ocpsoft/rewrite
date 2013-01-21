@@ -147,7 +147,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
                map.put(bindable, values.toArray(new String[] {}));
 
             if (!map.isEmpty())
-               return Bindings.enqueuePreOperationSubmissions(event, context, map);
+               return Bindings.enqueueSubmissions(event, context, map);
 
             return false;
          }
@@ -202,7 +202,7 @@ public abstract class Query extends HttpCondition implements Bindable<Query>
             map.put(bindable, values.toArray(new String[] {}));
 
             if (!values.isEmpty())
-               return Bindings.enqueuePreOperationSubmissions(event, context, map);
+               return Bindings.enqueueSubmissions(event, context, map);
 
             return false;
          }
