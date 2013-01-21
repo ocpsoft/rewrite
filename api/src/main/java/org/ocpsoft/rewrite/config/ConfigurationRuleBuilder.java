@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,18 @@ package org.ocpsoft.rewrite.config;
 import java.util.List;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * An intermediate stage {@link Rule} configuration.
  *
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ConfigurationRuleBuilder extends ConfigurationBuilder
+public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
+         ConfigurationRuleBuilderCustom,
+         ConfigurationRuleBuilderWhen,
+         ConfigurationRuleBuilderPerform,
+         ConfigurationRuleBuilderOtherwise,
+         ConfigurationRuleBuilderWithId,
+         ConfigurationRuleBuilderWithPriority,
+         ConfigurationRuleBuilderWithPriorityAndId
 {
    private final ConfigurationBuilder wrapped;
    private final RuleBuilder rule;
@@ -39,7 +47,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    @Override
-   public ConfigurationRuleBuilder addRule()
+   public ConfigurationRuleBuilderCustom addRule()
    {
       return wrapped.addRule();
    }
@@ -47,6 +55,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    /**
     * Set the {@link Condition} of this {@link Rule} instance.
     */
+   @Override
    public ConfigurationRuleBuilder when(final Condition condition)
    {
       rule.when(condition);
@@ -56,6 +65,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    /**
     * Perform the given {@link Operation} when the conditions set in this {@link Rule} are met.
     */
+   @Override
    public ConfigurationRuleBuilder perform(final Operation operation)
    {
       rule.perform(operation);
@@ -65,6 +75,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    /**
     * Perform the given {@link Operation} when the conditions set in this {@link Rule} fail to be met.
     */
+   @Override
    public ConfigurationRuleBuilder otherwise(final Operation operation)
    {
       rule.otherwise(operation);
@@ -76,6 +87,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
     * {@link ConfigurationProvider} from which this rule was returned, then relocate this rule to its new priority
     * position in the compiled rule set.
     */
+   @Override
    public ConfigurationRuleBuilder withPriority(int priority)
    {
       rule.withPriority(priority);
@@ -83,8 +95,9 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    /**
-    * Set the ID for the current rule.
+    * Set the ID for the current {@link Rule}. This may be used in logging and for rule lookup purposes.
     */
+   @Override
    public ConfigurationRuleBuilder withId(String id)
    {
       rule.withId(id);
@@ -92,7 +105,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder
    }
 
    /**
-    * Provides access to the rule builder for the current rule.
+    * Provides access to the {@link RuleBuilder} for the current {@link Rule}.
     */
    public RuleBuilder getRuleBuilder()
    {

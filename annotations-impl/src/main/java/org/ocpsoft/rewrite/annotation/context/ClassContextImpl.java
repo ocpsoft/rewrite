@@ -6,6 +6,8 @@ import org.ocpsoft.rewrite.config.ConfigurationRuleBuilder;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.context.ContextBase;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 
 public class ClassContextImpl extends ContextBase implements ClassContext
 {
@@ -31,7 +33,27 @@ public class ClassContextImpl extends ContextBase implements ClassContext
    public RuleBuilder getRuleBuilder()
    {
       if (configurationRuleBuilder == null) {
-         configurationRuleBuilder = config.addRule();
+         configurationRuleBuilder = config.addRule(new Rule() {
+            @Override
+            public void otherwise(Rewrite event, EvaluationContext context)
+            {}
+
+            @Override
+            public void perform(Rewrite event, EvaluationContext context)
+            {}
+
+            @Override
+            public boolean evaluate(Rewrite event, EvaluationContext context)
+            {
+               return true;
+            }
+
+            @Override
+            public String getId()
+            {
+               return null;
+            }
+         });
       }
       return configurationRuleBuilder.getRuleBuilder();
    }

@@ -173,4 +173,71 @@ public class ConfigurationBuilderTest
       Assert.assertTrue(performedOtherwise);
    }
 
+   @Test
+   public void testFluentAPI() throws Exception
+   {
+      ConfigurationBuilder.begin()
+               .addRule()
+               .perform(operation).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .perform(operation)
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .perform(operation)
+               .withId("id")
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .perform(operation)
+               .otherwise(otherwise)
+               .withId("id")
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new False())
+               .perform(operation)
+               .otherwise(otherwise)
+               .withId("id")
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new False())
+               .perform(operation)
+               .otherwise(otherwise)
+               .withPriority(0)
+               .withId("id").addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new False())
+               .otherwise(otherwise)
+               .withPriority(0)
+               .withId("id").addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new False())
+               .otherwise(otherwise)
+               .withId("id")
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new False())
+               .otherwise(otherwise)
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new False())
+               .otherwise(otherwise).addRule();
+   }
+
 }
