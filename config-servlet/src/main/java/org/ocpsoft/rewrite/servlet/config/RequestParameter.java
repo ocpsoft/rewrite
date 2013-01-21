@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,8 +98,10 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
-      for (String parameter : Collections.<String> list(request.getParameterNames()))
+      Enumeration<?> parameterNames = request.getParameterNames();
+      while (parameterNames.hasMoreElements())
       {
+         String parameter = parameterNames.nextElement().toString();
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
             Map<ParameterizedPatternParserParameter, String[]> parameterValues = new HashMap<ParameterizedPatternParserParameter, String[]>();
@@ -164,8 +166,10 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
       public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
       {
          HttpServletRequest request = event.getRequest();
-         for (String name : Collections.<String> list(request.getParameterNames()))
+         Enumeration<?> parameterNames = request.getParameterNames();
+         while (parameterNames.hasMoreElements())
          {
+            String name = parameterNames.nextElement().toString();
             if (getNameExpression().matches(event, context, name))
             {
                if (matchesValues(event, context, request, name))
