@@ -17,6 +17,8 @@ package org.ocpsoft.rewrite.config;
 
 import java.util.List;
 
+import org.ocpsoft.rewrite.param.Parameter;
+
 /**
  * An intermediate stage {@link Rule} configuration.
  *
@@ -50,6 +52,15 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    public ConfigurationRuleBuilderCustom addRule()
    {
       return wrapped.addRule();
+   }
+
+   /**
+    * Configure the {@link Parameter} with the given name.
+    */
+   @Override
+   public ConfigurationRuleParameterBuilder where(String parameter)
+   {
+      return new ConfigurationRuleParameterBuilder(this, parameter);
    }
 
    /**

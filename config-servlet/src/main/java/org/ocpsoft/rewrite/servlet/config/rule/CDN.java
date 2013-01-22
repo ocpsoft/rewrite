@@ -20,6 +20,7 @@ import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.config.Operation;
+import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
@@ -33,7 +34,7 @@ import org.ocpsoft.rewrite.servlet.config.Substitute;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CDN implements ICDN, ICDNRelocate
+public class CDN implements Rule, CDNRelocate
 {
    private String id;
 
@@ -51,7 +52,7 @@ public class CDN implements ICDN, ICDNRelocate
    /**
     * The outward facing URL path to which this {@link CDN} will apply.
     */
-   public static ICDNRelocate relocate(final String pattern)
+   public static CDNRelocate relocate(final String pattern)
    {
       return new CDN(pattern);
    }

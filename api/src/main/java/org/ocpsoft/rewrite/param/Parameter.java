@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,18 +16,35 @@
 package org.ocpsoft.rewrite.param;
 
 import org.ocpsoft.rewrite.bind.Bindable;
+import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.bind.HasBindings;
 import org.ocpsoft.rewrite.bind.HasConverter;
 import org.ocpsoft.rewrite.bind.HasValidator;
+import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 
 /**
  * An type specific {@link org.ocpsoft.rewrite.bind.Bindable}.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE, PARAMTYPE>, PARAMTYPE> extends Bindable<IMPLTYPE>, Constrainable<IMPLTYPE, PARAMTYPE>, Transformable<IMPLTYPE, PARAMTYPE>,
-Converter<Object>, Validator<Object>, HasValidator<IMPLTYPE>, HasConverter<IMPLTYPE>
+public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE, VALUETYPE>, VALUETYPE> extends
+         Bindable<IMPLTYPE>,
+         Convertable<IMPLTYPE>,
+         Validatable<IMPLTYPE>,
+
+         Constrainable<IMPLTYPE, VALUETYPE>,
+         Transformable<IMPLTYPE, VALUETYPE>,
+
+         HasConstraints<VALUETYPE>,
+         HasTransforms<VALUETYPE>,
+         HasValidator,
+         HasConverter,
+         HasBindings,
+
+         Converter<Object>,
+         Validator<Object>
 {
    /**
     * Get the name of this {@link Parameter}

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,11 +20,11 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
-import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -33,22 +33,17 @@ import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 /**
  * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via
  * {@link org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite#forward(String)}
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Forward extends HttpOperation implements IForward
+public class Forward extends HttpOperation implements Parameterized<ParameterizedPatternParameter, String>
 {
    private final ParameterizedPatternBuilder location;
-   private final ParameterStore<ForwardParameter> parameters = new ParameterStore<ForwardParameter>();
 
    private Forward(final String location)
    {
       Assert.notNull(location, "Location must not be null.");
       this.location = new RegexParameterizedPatternBuilder(CaptureType.BRACE, "[^/]+", location);
-
-      for (ParameterizedPatternBuilderParameter parameter : this.location.getParameterMap().values()) {
-         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
-      }
    }
 
    /**
@@ -78,15 +73,9 @@ public class Forward extends HttpOperation implements IForward
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, parameters);
+         String target = location.build(event, context);
          ((HttpInboundServletRewrite) event).forward(target);
       }
-   }
-
-   @Override
-   public ForwardParameter where(final String param)
-   {
-      return parameters.where(param, new ForwardParameter(this, location.getParameter(param)));
    }
 
    @Override
@@ -95,9 +84,14 @@ public class Forward extends HttpOperation implements IForward
       return location.toString();
    }
 
-   @Override
    public ParameterizedPatternBuilder getTargetExpression()
    {
       return location;
+   }
+
+   @Override
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   {
+      return location.getParameterStore();
    }
 }

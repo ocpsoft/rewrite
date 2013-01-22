@@ -40,11 +40,14 @@ public class SpringFeaturesConfigProvider extends HttpConfigurationProvider
       return ConfigurationBuilder
                .begin()
                .addRule()
-               .when(Path.matches("/name-{name}")
-                        .where("name").bindsTo(El.property("springFeaturesBean.name")))
+               .when(Path.matches("/name-{name}"))
                .perform(Invoke.binding(El.retrievalMethod("springFeaturesBean.action()"))
-                        .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")
-                                 .where("name").bindsTo(El.property("springFeaturesBean.uppercase"))))
+                        .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")))
+               .where("name")
+
+               // FIXME This needs to bind to a binding that supports separate retrieval and submission
+               .bindsTo(El.property("springFeaturesBean.uppercase"))
+               .bindsTo(El.property("springFeaturesBean.name"))
 
                .addRule()
                .when(Path.matches("/hello/{name}"))

@@ -15,13 +15,14 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * An intermediate stage {@link Rule} configuration.
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationRuleBuilderPerform extends ConfigurationBuilderRoot
+public interface ConfigurationRuleBuilderPerform extends ConfigurationBuilderRoot, ConfigurationRuleParameterWhere
 {
 
    /**
@@ -40,4 +41,9 @@ public interface ConfigurationRuleBuilderPerform extends ConfigurationBuilderRoo
     * position in the compiled rule set.
     */
    ConfigurationRuleBuilderWithPriority withPriority(int priority);
+
+   /**
+    * Configure the {@link Parameter} with the given name.
+    */
+   ConfigurationRuleParameterPerform where(String string);
 }

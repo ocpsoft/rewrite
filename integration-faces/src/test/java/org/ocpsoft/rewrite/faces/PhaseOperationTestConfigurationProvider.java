@@ -80,10 +80,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                 * PhaseBinding deferral
                 */
                .addRule()
-               .when(Path.matches("/binding/{value}").where("value")
-                        .bindsTo(PhaseBinding.to(Request.parameter("v"))
-                                 .after(PhaseId.RESTORE_VIEW))
-                        .and(DispatchType.isRequest()))
+               .when(Path.matches("/binding/{value}").and(DispatchType.isRequest()))
                .perform(Forward.to("/empty.xhtml")
 
                         .and(PhaseOperation.enqueue(new HttpOperation() {
@@ -108,26 +105,24 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                                  SendStatus.code(505).perform(event, context);
                            }
                         }).before(PhaseId.RENDER_RESPONSE)))
+               .where("value").bindsTo(PhaseBinding.to(Request.parameter("v")).after(PhaseId.RESTORE_VIEW))
 
                /*
                 * Defer validation with binding.
                 */
                .addRule()
-               .when(Path.matches("/defer_validation/{value}")
-                        .where("value")
-                        .bindsTo(PhaseBinding.to(Request.parameter("v").validatedBy(validator)).after(
-                                 PhaseId.RESTORE_VIEW))
-                        .and(DispatchType.isRequest()))
+               .when(Path.matches("/defer_validation/{value}").and(DispatchType.isRequest()))
                .perform(Forward.to("/empty.xhtml"))
+               .where("value").bindsTo(PhaseBinding.to(Request.parameter("v").validatedBy(validator)).after(
+                        PhaseId.RESTORE_VIEW))
 
                /*
                 * Perform eager validation.
                 */
                .addRule()
-               .when(Path.matches("/eager_validation/{value}")
-                        .where("value")
-                        .validatedBy(validator))
-               .perform(Forward.to("/empty.xhtml"));
+               .when(Path.matches("/eager_validation/{value}"))
+               .perform(Forward.to("/empty.xhtml"))
+               .where("value").validatedBy(validator);
    }
 
    @Override

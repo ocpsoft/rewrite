@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class RequestParameterTest
 {
@@ -87,14 +87,14 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterMatches()
    {
-      Assert.assertTrue(RequestParameter.matches("foo", "{value}").where("value").matches("(bar|baz)")
+      Assert.assertTrue(RequestParameter.matches("foo", "{value}").getParameterStore().get("value").matches("(bar|baz)")
                .evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterMatchesAll()
    {
-      Assert.assertTrue(RequestParameter.matchesAll("baz", "{value}").where("value").matches("(cab|caz)")
+      Assert.assertTrue(RequestParameter.matchesAll("baz", "{value}").getParameterStore().get("value").matches("(cab|caz)")
                .evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -108,21 +108,21 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterMatchesAllNamesNotValues()
    {
-      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").where("value").matches("nothing")
+      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").getParameterStore().get("value").matches("nothing")
                .evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterMatchesAllNotName()
    {
-      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").where("name").matches("nothing")
+      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").getParameterStore().get("name").matches("nothing")
                .evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterMatchesAllInvalid()
    {
-      Assert.assertFalse(RequestParameter.matchesAll("baz", "{value}").where("value").matches("(cab|xxx)")
+      Assert.assertFalse(RequestParameter.matchesAll("baz", "{value}").getParameterStore().get("value").matches("(cab|xxx)")
                .evaluate(rewrite, new MockEvaluationContext()));
    }
 

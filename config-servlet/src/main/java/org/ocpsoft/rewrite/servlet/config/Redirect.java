@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,8 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.ParameterizedPatternBuilderParameter;
+import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.Transformations;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -33,23 +34,22 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 /**
  * An {@link Operation} that performs redirects via {@link HttpInboundServletRewrite#redirectPermanent(String)} and
  * {@link org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite#redirectTemporary(String)}
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Redirect extends HttpOperation implements IRedirect
+public class Redirect extends HttpOperation implements Parameterized<ParameterizedPatternParameter, String>
 {
    private final RedirectType type;
 
    private final RegexParameterizedPatternBuilder location;
-   private final ParameterStore<RedirectParameter> parameters = new ParameterStore<RedirectParameter>();
 
    private Redirect(final String location, final RedirectType type)
    {
       this.location = new RegexParameterizedPatternBuilder("[^/]+", location);
       this.type = type;
 
-      for (ParameterizedPatternBuilderParameter parameter : this.location.getParameterMap().values()) {
-         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()))
+      for (ParameterizedPatternParameter parameter : this.location.getParameterStore().values()) {
+         parameter.bindsTo(Evaluation.property(parameter.getName()))
                   .transformedBy(Transformations.encodePath());
       }
    }
@@ -59,7 +59,7 @@ public class Redirect extends HttpOperation implements IRedirect
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, parameters);
+         String target = location.build(event, context);
          switch (type)
          {
          case PERMANENT:
@@ -76,9 +76,9 @@ public class Redirect extends HttpOperation implements IRedirect
 
    /**
     * Issue a permanent redirect ( 301 {@link HttpServletResponse#SC_MOVED_PERMANENTLY} ) to the given location. If the
-    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL}
-    * and result in a new request. Note that in order to redirect within the {@link ServletContext}, you must prepend
-    * the {@link ServletContext#getContextPath()} manually.
+    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser
+    * {@link URL} and result in a new request. Note that in order to redirect within the {@link ServletContext}, you
+    * must prepend the {@link ServletContext#getContextPath()} manually.
     * <p>
     * The given location may be parameterized using the following format:
     * <p>
@@ -99,9 +99,9 @@ public class Redirect extends HttpOperation implements IRedirect
 
    /**
     * Issue a temporary redirect ( 302 {@link HttpServletResponse#SC_MOVED_TEMPORARILY} ) to the given location. If the
-    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL}
-    * and result in a new request. Note that in order to redirect within the {@link ServletContext}, you must prepend
-    * the {@link ServletContext#getContextPath()} manually.
+    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser
+    * {@link URL} and result in a new request. Note that in order to redirect within the {@link ServletContext}, you
+    * must prepend the {@link ServletContext#getContextPath()} manually.
     * <p>
     * The given location may be parameterized using the following format:
     * <p>
@@ -132,13 +132,6 @@ public class Redirect extends HttpOperation implements IRedirect
       TEMPORARY
    }
 
-   @Override
-   public RedirectParameter where(final String param)
-   {
-      return parameters.where(param, new RedirectParameter(this, location.getParameter(param)));
-   }
-
-   @Override
    public RegexParameterizedPatternBuilder getTargetExpression()
    {
       return location;
@@ -147,8 +140,13 @@ public class Redirect extends HttpOperation implements IRedirect
    @Override
    public String toString()
    {
-      return "Redirect [type=" + type + ", location=" + location + ", parameters=" + parameters + "]";
+      return "Redirect [type=" + type + ", location=" + location + "]";
    }
 
-   
+   @Override
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   {
+      return location.getParameterStore();
+   }
+
 }

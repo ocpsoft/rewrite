@@ -35,35 +35,34 @@ import org.ocpsoft.rewrite.exception.RewriteException;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class Bindings
 {
    /**
-    * Submit the given value to all registered {@link Binding} instances of the given {@link Bindable}. Perform this by
-    * adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
+    * Submit the given value to all registered {@link Binding} instances of the given {@link HasBindings}. Perform this
+    * by adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
     */
    public static boolean enqueueSubmission(final Rewrite event, final EvaluationContext context,
-            final Bindable bindable, final Object value)
+            final HasBindings bindable, final Object value)
    {
-      Map<Bindable, Object> map = new LinkedHashMap<Bindable, Object>();
+      Map<HasBindings, Object> map = new LinkedHashMap<HasBindings, Object>();
       map.put(bindable, value);
       return enqueueSubmissions(event, context, map);
    }
 
    /**
-    * Submit the given value to all registered {@link Binding} instances of all given {@link Bindable} instances.
+    * Submit the given value to all registered {@link Binding} instances of all given {@link HasBindings} instances.
     * Perform this by adding individual {@link BindingOperation} instances via
     * {@link EvaluationContext#addPreOperation(org.ocpsoft.rewrite.config.Operation)}
     *
     * @return false if validation fails.
     */
    public static boolean enqueueSubmissions(final Rewrite event, final EvaluationContext context,
-            final Map<? extends Bindable, ? extends Object> map)
+            final Map<? extends HasBindings, ? extends Object> map)
    {
       List<Operation> operations = new ArrayList<Operation>();
-      for (Entry<? extends Bindable, ? extends Object> entry : map.entrySet()) {
+      for (Entry<? extends HasBindings, ? extends Object> entry : map.entrySet()) {
 
-         Bindable parameter = entry.getKey();
+         HasBindings parameter = entry.getKey();
          Object value = entry.getValue();
 
          List<Binding> bindings = parameter.getBindings();
@@ -115,7 +114,7 @@ public abstract class Bindings
     * Extract bound values from configured {@link Bindable} instances. Return a {@link List} of the extracted values.
     */
    public static List<Object> performRetrieval(final Rewrite event, final EvaluationContext context,
-            final Bindable<?> bindable)
+            final HasBindings bindable)
    {
       List<Object> result = new ArrayList<Object>();
 

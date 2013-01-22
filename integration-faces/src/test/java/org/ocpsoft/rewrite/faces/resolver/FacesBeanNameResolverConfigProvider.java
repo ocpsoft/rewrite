@@ -45,13 +45,12 @@ public class FacesBeanNameResolverConfigProvider extends HttpConfigurationProvid
          Field nameField = FacesBeanNameResolverBean.class.getDeclaredField("name");
          Method actionMethod = FacesBeanNameResolverBean.class.getMethod("action");
 
-         return ConfigurationBuilder
-                  .begin()
+         return ConfigurationBuilder.begin()
                   .addRule()
-                  .when(Path.matches("/name/{name}")
-                           .where("name").bindsTo(PhaseBinding.to(El.property(nameField)).after(PhaseId.RESTORE_VIEW)))
+                  .when(Path.matches("/name/{name}"))
                   .perform(PhaseAction.retrieveFrom(El.retrievalMethod(actionMethod)).after(PhaseId.RESTORE_VIEW)
-                           .and(Forward.to("/resolver.xhtml")));
+                           .and(Forward.to("/resolver.xhtml")))
+                  .where("name").bindsTo(PhaseBinding.to(El.property(nameField)).after(PhaseId.RESTORE_VIEW));
       }
       catch (Exception e) {
          throw new IllegalStateException(e);

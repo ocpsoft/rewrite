@@ -15,15 +15,17 @@
  */
 package org.ocpsoft.rewrite.bind;
 
+import java.util.List;
+
 /**
- * An object that can hold a {@link Validator}.
+ * Represents an object that can be bound to a storage location.
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface HasValidator
+public interface HasBindings
 {
    /**
-    * Get the {@link Validator} with which this {@link Binding} value will be validated.
+    * Retrieve all values of the given {@link Binding}
     */
-   public Validator<?> getValidator();
+   List<Binding> getBindings();
 }

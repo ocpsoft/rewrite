@@ -1,24 +1,17 @@
 package org.ocpsoft.rewrite.param;
 
-import java.util.List;
-
 /**
  * An object which can be constrained.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * @param <C> The type containing the value to be constrained.
- * @param <T> The type of the value to be constrained.
+ * @param <IMPLTYPE> The type implementing {@link Constrainable}.
+ * @param <VALUETYPE> The type of the value to be constrained.
  */
-public interface Constrainable<C, T>
+public interface Constrainable<IMPLTYPE, VALUETYPE>
 {
    /**
-    * Add a constraint to which this object {@link C} must match.
+    * Add a constraint to which this object {@link IMPLTYPE} must match.
     */
-   public C constrainedBy(Constraint<T> pattern);
-
-   /**
-    * Get the underlying {@link List} of all {@link Constraint} objects currently registered to this {@link C}
-    */
-   List<Constraint<T>> getConstraints();
+   public IMPLTYPE constrainedBy(Constraint<VALUETYPE> pattern);
 
 }

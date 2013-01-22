@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,11 +25,11 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.transform.Transform;
 
 /**
- * 
+ *
  * {@link ConfigurationProvider} for {@link CssMinifyTest}.
- * 
+ *
  * @author Christian Kaltepoth
- * 
+ *
  */
 public class CssMinifyTestProvider extends HttpConfigurationProvider
 {
@@ -45,8 +45,9 @@ public class CssMinifyTestProvider extends HttpConfigurationProvider
       return ConfigurationBuilder
                .begin()
                .addRule()
-               .when(Path.matches("{something}.css").where("something").matches(".*"))
-               .perform(Transform.with(CssMinify.class));
+               .when(Path.matches("{something}.css"))
+               .perform(Transform.with(CssMinify.class))
+               .where("something").matches(".*");
 
    }
 

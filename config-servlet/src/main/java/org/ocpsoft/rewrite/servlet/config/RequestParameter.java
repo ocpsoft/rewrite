@@ -27,9 +27,11 @@ import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.CompositeParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -38,11 +40,10 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RequestParameter extends HttpCondition implements IRequestParameter
+public class RequestParameter extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
 {
    private final ParameterizedPatternParser name;
    private final ParameterizedPatternParser value;
-   private final ParameterStore<RequestParameterParameter> parameters = new ParameterStore<RequestParameterParameter>();
 
    private RequestParameter(final String name, final String value)
    {
@@ -104,11 +105,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
          String parameter = parameterNames.nextElement().toString();
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
-            Map<ParameterizedPatternParserParameter, String[]> parameterValues = new HashMap<ParameterizedPatternParserParameter, String[]>();
+            Map<ParameterizedPatternParameter, String[]> parameterValues = new HashMap<ParameterizedPatternParameter, String[]>();
             parameterValues.putAll(name.parse(event, context, parameter));
             parameterValues.putAll(value.parse(event, context, request.getParameter(parameter)));
 
-            for (ParameterizedPatternParserParameter capture : parameterValues.keySet()) {
+            for (ParameterizedPatternParameter capture : parameterValues.keySet()) {
                if (!Bindings.enqueueSubmission(event, context, capture, parameterValues.get(capture)))
                   return false;
             }
@@ -129,20 +130,6 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
          }
       }
       return false;
-   }
-
-   @Override
-   public RequestParameterParameter where(String param)
-   {
-      ParameterizedPatternParserParameter nameParam = name.getParameterNames().contains(param) ? name
-               .getParameter(param) : null;
-      ParameterizedPatternParserParameter valueParam = value.getParameterNames().contains(param) ? value
-               .getParameter(param) : null;
-
-      if (nameParam != null || valueParam != null) {
-         return parameters.where(param, new RequestParameterParameter(this, nameParam, valueParam));
-      }
-      throw new IllegalArgumentException("No such parameter [" + param + "] exists.");
    }
 
    public ParameterizedPatternParser getNameExpression()
@@ -174,11 +161,11 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
             {
                if (matchesValues(event, context, request, name))
                {
-                  Map<ParameterizedPatternParserParameter, String[]> parameters = getNameExpression().parse(event,
+                  Map<ParameterizedPatternParameter, String[]> parameters = getNameExpression().parse(event,
                            context, name);
                   parameters.putAll(getValueExpression().parse(event, context, name));
 
-                  for (ParameterizedPatternParserParameter capture : parameters.keySet()) {
+                  for (ParameterizedPatternParameter capture : parameters.keySet()) {
                      if (!Bindings.enqueueSubmission(event, context, capture, parameters.get(capture)))
                         return false;
                   }
@@ -206,6 +193,12 @@ public class RequestParameter extends HttpCondition implements IRequestParameter
    @Override
    public String toString()
    {
-      return "RequestParameter [name=" + name + ", value=" + value + ", parameters=" + parameters + "]";
+      return "RequestParameter [name=" + name + ", value=" + value + "]";
+   }
+
+   @Override
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   {
+      return new CompositeParameterStore(name.getParameterStore(), value.getParameterStore());
    }
 }

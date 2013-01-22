@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import org.ocpsoft.rewrite.param.Parameter;
+
 /**
  * An intermediate stage {@link Rule} configuration.
  *
@@ -34,4 +36,9 @@ public interface ConfigurationRuleBuilderOtherwise extends ConfigurationBuilderR
     * position in the compiled rule set.
     */
    ConfigurationRuleBuilderWithPriority withPriority(int priority);
+
+   /**
+    * Configure the {@link Parameter} with the given name.
+    */
+   ConfigurationRuleParameterOtherwise where(String string);
 }

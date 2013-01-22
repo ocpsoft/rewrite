@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
@@ -34,13 +34,12 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getServerName()}
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Hostname extends HttpCondition implements IDomain
+public class Hostname extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
 {
    private final ParameterizedPatternParser expression;
-   private final ParameterStore<DomainParameter> parameters = new ParameterStore<DomainParameter>();
 
    private Hostname(final String pattern)
    {
@@ -69,12 +68,6 @@ public class Hostname extends HttpCondition implements IDomain
    }
 
    @Override
-   public DomainParameter where(final String param)
-   {
-      return parameters.where(param, new DomainParameter(this, expression.getParameter(param)));
-   }
-
-   @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       String hostName = null;
@@ -90,13 +83,9 @@ public class Hostname extends HttpCondition implements IDomain
 
       if (hostName != null && expression.matches(event, context, hostName))
       {
-         Map<ParameterizedPatternParserParameter, String[]> parameters = expression.parse(event, context, hostName);
+         Map<ParameterizedPatternParameter, String[]> parameters = expression.parse(event, context, hostName);
 
-         for (ParameterizedPatternParserParameter parameter : this.expression.getParameterMap().values()) {
-            where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
-         }
-
-         for (ParameterizedPatternParserParameter capture : parameters.keySet()) {
+         for (ParameterizedPatternParameter capture : parameters.keySet()) {
             if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                return false;
          }
@@ -121,18 +110,22 @@ public class Hostname extends HttpCondition implements IDomain
       return expression.toString();
    }
 
-   @Override
-   public IDomain withRequestBinding()
+   public Hostname withRequestBinding()
    {
-      for (ParameterizedPatternParserParameter parameter : expression.getParameterMap().values()) {
-         where(parameter.getName()).bindsTo(Request.parameter(parameter.getName()));
+      for (ParameterizedPatternParameter parameter : expression.getParameterStore().values()) {
+         parameter.bindsTo(Request.parameter(parameter.getName()));
       }
       return this;
    }
 
-   @Override
    public ParameterizedPatternParser getDomainExpression()
    {
       return expression;
+   }
+
+   @Override
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   {
+      return expression.getParameterStore();
    }
 }

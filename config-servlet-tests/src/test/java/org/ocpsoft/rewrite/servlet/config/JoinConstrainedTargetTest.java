@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,13 +32,13 @@ import org.ocpsoft.rewrite.servlet.impl.HttpRewriteContextImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class JoinConstrainedTargetTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
-   private Context context = new HttpRewriteContextImpl(null, null, null, null, null, null);
+   private final Context context = new HttpRewriteContextImpl(null, null, null, null, null, null);
 
    @Before
    public void before()
@@ -64,7 +64,7 @@ public class JoinConstrainedTargetTest
    public void testConstrainTargetSuccess() throws Exception
    {
       Assert.assertTrue(Join.path("/application/path").to("/{domain}/path")
-               .where("domain").matches("me")
+               .getParameterStore().get("domain").matches("me")
                .when(Hostname.matches("{domain}.example.com")).evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -73,7 +73,7 @@ public class JoinConstrainedTargetTest
    public void testConstrainTargetFails() throws Exception
    {
       Assert.assertFalse(Join.path("/application/path").to("/{domain}/path")
-               .where("domain").matches("you")
+               .getParameterStore().get("domain").matches("you")
                .when(Hostname.matches("{domain}.example.com")).evaluate(rewrite, new MockEvaluationContext()));
    }
 }

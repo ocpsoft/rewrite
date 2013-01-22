@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,34 +20,29 @@ import java.util.Map;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for determining existence of resources within the web root
  * of the servlet container.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Resource extends HttpCondition implements IResource
+public class Resource extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
    private final ParameterizedPatternParser resource;
-   private final ParameterStore<ResourceParameter> parameters = new ParameterStore<ResourceParameter>();
 
    private Resource(final String resource)
    {
       this.resource = new RegexParameterizedPatternParser(resource);
-
-      for (ParameterizedPatternParserParameter parameter : this.resource.getParameterMap().values()) {
-         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
-      }
    }
 
    @Override
@@ -55,12 +50,12 @@ public class Resource extends HttpCondition implements IResource
    {
       if (resource != null)
       {
-         String file = resource.getBuilder().build(event, context, parameters);
+         String file = resource.getBuilder().build(event, context);
          try {
             if (event.getServletContext().getResource(file) != null)
             {
-               Map<ParameterizedPatternParserParameter, String[]> parameters = resource.parse(event, context, file);
-               for (ParameterizedPatternParserParameter capture : parameters.keySet()) {
+               Map<ParameterizedPatternParameter, String[]> parameters = resource.parse(event, context, file);
+               for (ParameterizedPatternParameter capture : parameters.keySet()) {
                   if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                      return false;
                }
@@ -83,16 +78,15 @@ public class Resource extends HttpCondition implements IResource
       return new Resource(resource);
    }
 
-   @Override
-   public ResourceParameter where(String param)
-   {
-      return parameters.where(param, new ResourceParameter(this, resource.getParameter(param)));
-   }
-
-   @Override
    public ParameterizedPatternParser getResourceExpression()
    {
       return resource;
+   }
+
+   @Override
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   {
+      return resource.getParameterStore();
    }
 
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class RestRewriteConfiguration extends HttpConfigurationProvider
 {
@@ -57,11 +57,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                 * Define the inbound conditions and conversion mechanisms to be used when handling inbound requests.
                 */
                .when(Method.isGet()
-                        .and(Path.matches("/store/product/{pid}")
-                                 .where("pid").matches("\\d+")
-                                 .constrainedBy(new IntegerConstraint())
-                                 .convertedBy(ProductConverter.class)
-                                 .validatedBy(ProductValidator.class)))
+                        .and(Path.matches("/store/product/{pid}")))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -93,7 +89,10 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                      event.getResponse().setContentType("application/xml");
                      ((HttpInboundServletRewrite) event).sendStatusCode(200);
                   }
-               })
+               }).where("pid").matches("\\d+")
+               .constrainedBy(new IntegerConstraint())
+               .convertedBy(ProductConverter.class)
+               .validatedBy(ProductValidator.class)
 
                .addRule()
                .when(Path.matches("/store/products").and(Method.isGet()))
@@ -125,7 +124,8 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                         /**
                          * Just for fun, set a response header containing the URL to the newly created Product.
                          */
-                        String location = new RegexParameterizedPatternBuilder(event.getContextPath() + "/store/product/{pid}")
+                        String location = new RegexParameterizedPatternBuilder(event.getContextPath()
+                                 + "/store/product/{pid}")
                                  .build(product.getId());
                         Response.addHeader("Location", location).perform(event, context);
 

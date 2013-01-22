@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.bind;
+package org.ocpsoft.rewrite.servlet.config.rule;
 
 /**
- * An object that can hold a {@link Validator}.
- *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface HasValidator
+public interface JoinPath
 {
    /**
-    * Get the {@link Validator} with which this {@link Binding} value will be validated.
+    * The internal server resource (real or virtual) to be served.
     */
-   public Validator<?> getValidator();
+   public Join to(String resource);
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class DomainTest
 {
@@ -61,7 +61,8 @@ public class DomainTest
    public void testCanConvertAndValidateDomain() throws Exception
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Hostname.matches("{p}.com").where("p").convertedBy(new DomainConverter()).evaluate(inbound, context);
+      Hostname.matches("{p}.com").getParameterStore().get("p").convertedBy(new DomainConverter())
+               .evaluate(inbound, context);
 
       Assert.assertEquals("example", Evaluation.property("p").retrieve(inbound, context));
       Assert.assertEquals(new DomainConvertedType("example"),
@@ -72,7 +73,8 @@ public class DomainTest
    public void testDomainMatchesBindsInbound()
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Assert.assertTrue(Hostname.matches("{domain}.com").where("domain").bindsTo(Request.attribute("domain"))
+      Assert.assertTrue(Hostname.matches("{domain}.com").getParameterStore().get("domain")
+               .bindsTo(Request.attribute("domain"))
                .evaluate(inbound, context));
 
       // Invoke the binding.

@@ -18,10 +18,10 @@ package org.ocpsoft.rewrite.servlet.config.rule;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface IJoinPath
+public interface CDNRelocate
 {
    /**
-    * The internal server resource (real or virtual) to be served.
+    * The new resource (real or virtual) to be served, either from a local context or remote CDN.
     */
-   public IJoin to(String resource);
+   public CDN to(String location);
 }

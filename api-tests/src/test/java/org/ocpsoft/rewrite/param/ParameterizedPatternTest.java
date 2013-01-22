@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class ParameterizedPatternTest
 {
@@ -51,17 +51,17 @@ public class ParameterizedPatternTest
 
       ParameterizedPatternParser parameterizedPattern = new RegexParameterizedPatternParser(
                "{prefix}/application/{seg}{suffix}");
-      parameterizedPattern.getParameter("prefix").matches(".*");
-      parameterizedPattern.getParameter("seg").matches("[^/]+");
-      parameterizedPattern.getParameter("suffix").matches("\\?.*");
+      parameterizedPattern.getParameterStore().get("prefix").matches(".*");
+      parameterizedPattern.getParameterStore().get("seg").matches("[^/]+");
+      parameterizedPattern.getParameterStore().get("suffix").matches("\\?.*");
 
       Assert.assertTrue(parameterizedPattern.matches(rewrite, new MockEvaluationContext(), url));
 
       int index = 0;
       String[] expected = new String[] { "http://domain.com:8080/context", "pathy", "?foo=bar&baz=bazaar" };
-      Map<ParameterizedPatternParserParameter, String[]> parsed = parameterizedPattern.parse(rewrite,
+      Map<ParameterizedPatternParameter, String[]> parsed = parameterizedPattern.parse(rewrite,
                new MockEvaluationContext(), url);
-      for (Entry<ParameterizedPatternParserParameter, String[]> entry : parsed.entrySet()) {
+      for (Entry<ParameterizedPatternParameter, String[]> entry : parsed.entrySet()) {
          String[] value = entry.getValue();
          for (int i = 0; i < value.length; i++) {
             Assert.assertEquals(expected[index++], value[0]);
@@ -74,7 +74,7 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(CaptureType.BRACE, ".*");
 
-      Assert.assertEquals(0, path.getParameterMap().size());
+      Assert.assertEquals(0, path.getParameterStore().size());
       Assert.assertFalse(path.matches(rewrite, context, "/omg/doesnt/matter"));
    }
 
@@ -83,9 +83,9 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(CaptureType.BRACE, "");
 
-      Assert.assertEquals(0, path.getParameterMap().size());
+      Assert.assertEquals(0, path.getParameterStore().size());
       Assert.assertTrue(path.matches(rewrite, context, ""));
-      Map<ParameterizedPatternParserParameter, String[]> results = path.parse(rewrite, context, "");
+      Map<ParameterizedPatternParameter, String[]> results = path.parse(rewrite, context, "");
       Assert.assertNotNull(results);
    }
 
@@ -94,9 +94,9 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(CaptureType.BRACE, "");
 
-      Assert.assertEquals(0, path.getParameterMap().size());
+      Assert.assertEquals(0, path.getParameterStore().size());
       Assert.assertTrue(path.matches(rewrite, context, ""));
-      Map<ParameterizedPatternParserParameter, String[]> results = path.parse("");
+      Map<ParameterizedPatternParameter, String[]> results = path.parse("");
       Assert.assertNotNull(results);
    }
 
@@ -105,10 +105,10 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("/");
 
-      Assert.assertEquals(0, path.getParameterMap().size());
+      Assert.assertEquals(0, path.getParameterStore().size());
       Assert.assertTrue(path.matches(rewrite, context, "/"));
 
-      Map<ParameterizedPatternParserParameter, String[]> results = path.parse(rewrite, context, "/");
+      Map<ParameterizedPatternParameter, String[]> results = path.parse(rewrite, context, "/");
       Assert.assertNotNull(results);
    }
 
@@ -117,14 +117,14 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", "/{customer}/orders/{id}");
 
-      Map<String, ParameterizedPatternParserParameter> parameters = path.getParameterMap();
+      ParameterStore<ParameterizedPatternParameter> parameters = path.getParameterStore();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<ParameterizedPatternParserParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24");
-      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
-      Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
+      Map<ParameterizedPatternParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24");
+      Assert.assertEquals("lincoln", results.get(path.getParameterStore().get("customer"))[0]);
+      Assert.assertEquals("24", results.get(path.getParameterStore().get("id"))[0]);
    }
 
    @Test
@@ -132,14 +132,14 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", "/{customer}/orders/{id}");
 
-      Map<String, ParameterizedPatternParserParameter> parameters = path.getParameterMap();
+      Map<String, ParameterizedPatternParameter> parameters = path.getParameterStore();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<ParameterizedPatternParserParameter, String[]> results = path.parse("/lincoln/orders/24");
-      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
-      Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
+      Map<ParameterizedPatternParameter, String[]> results = path.parse("/lincoln/orders/24");
+      Assert.assertEquals("lincoln", results.get(path.getParameterStore().get("customer"))[0]);
+      Assert.assertEquals("24", results.get(path.getParameterStore().get("id"))[0]);
    }
 
    @Test
@@ -162,13 +162,15 @@ public class ParameterizedPatternTest
    public void testAccessNonExistentParameterThrowsException()
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", ".*/{customer}/");
-      path.where("foo");
+      path.getParameterStore().get("something else");
    }
 
    @Test
    public void testParametersUsedMultipleRequireSingleConfiguration()
    {
-      ParameterizedPatternParser path = new RegexParameterizedPatternParser("/{*}/{*}/").where("*").matches("foo");
+      ParameterizedPatternParser path = new RegexParameterizedPatternParser("/{*}/{*}/");
+      path.getParameterStore().get("*").matches("foo");
+
       Assert.assertTrue(path.matches(rewrite, context, "/foo/foo/"));
       Assert.assertFalse(path.matches(rewrite, context, "/foo/bar/"));
    }
@@ -178,27 +180,28 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(".*", "/{customer}/");
 
-      Map<String, ParameterizedPatternParserParameter> parameters = path.getParameterMap();
+      ParameterStore<ParameterizedPatternParameter> parameters = path.getParameterStore();
       Assert.assertEquals(1, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
 
-      Map<ParameterizedPatternParserParameter, String[]> results = path.parse(rewrite, context, "/lincoln/");
-      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
+      Map<ParameterizedPatternParameter, String[]> results = path.parse(rewrite, context, "/lincoln/");
+      Assert.assertEquals("lincoln", results.get(path.getParameterStore().get("customer"))[0]);
    }
 
    @Test
    public void testMatchesWithParametersAndTrailingSlash()
    {
-      ParameterizedPatternParser path = new RegexParameterizedPatternBuilder("[^/]+", "/{customer}/orders/{id}/").getParser();
+      ParameterizedPatternParser path = new RegexParameterizedPatternBuilder("[^/]+", "/{customer}/orders/{id}/")
+               .getParser();
 
-      Map<String, ParameterizedPatternParserParameter> parameters = path.getParameterMap();
+      ParameterStore<ParameterizedPatternParameter> parameters = path.getParameterStore();
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
       Assert.assertEquals("id", parameters.get("id").getName());
 
-      Map<ParameterizedPatternParserParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24/");
-      Assert.assertEquals("lincoln", results.get(path.getParameter("customer"))[0]);
-      Assert.assertEquals("24", results.get(path.getParameter("id"))[0]);
+      Map<ParameterizedPatternParameter, String[]> results = path.parse(rewrite, context, "/lincoln/orders/24/");
+      Assert.assertEquals("lincoln", results.get(path.getParameterStore().get("customer"))[0]);
+      Assert.assertEquals("24", results.get(path.getParameterStore().get("id"))[0]);
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -225,7 +228,8 @@ public class ParameterizedPatternTest
    @Test
    public void testBuildWithMapParameters()
    {
-      ParameterizedPatternBuilder path = new RegexParameterizedPatternParser("[^/]*", "/{customer}/orders/{id}").getBuilder();
+      ParameterizedPatternBuilder path = new RegexParameterizedPatternParser("[^/]*", "/{customer}/orders/{id}")
+               .getBuilder();
       Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
       Maps.addListValue(map, "customer", "lincoln");
       Maps.addListValue(map, "id", "24");

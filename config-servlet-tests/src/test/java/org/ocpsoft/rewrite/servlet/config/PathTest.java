@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,12 +32,12 @@ import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class PathTest
 {
@@ -50,10 +50,10 @@ public class PathTest
       request = Mockito.mock(HttpServletRequest.class);
 
       Mockito.when(request.getRequestURI())
-      .thenReturn("/context/application/path");
+               .thenReturn("/context/application/path");
 
       Mockito.when(request.getContextPath())
-      .thenReturn("/context");
+               .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
@@ -74,7 +74,8 @@ public class PathTest
    public void testAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      IPath path = Path.matches("/application/{seg}").where("seg").bindsTo(mockBinding);
+      Path path = Path.matches("/application/{seg}");
+      path.getParameterStore().get("seg").bindsTo(mockBinding);
 
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(path.evaluate(rewrite, context));
@@ -119,16 +120,16 @@ public class PathTest
    @Test
    public void testMultipleWhereInvocationsReturnSameParam()
    {
-      IPath path = Path.matches("/something/#{param}");
-      PathParameter p1 = path.where("param");
-      PathParameter p2 = path.where("param");
+      Path path = Path.matches("/something/#{param}");
+      ParameterizedPatternParameter p1 = path.getParameterStore().get("param");
+      ParameterizedPatternParameter p2 = path.getParameterStore().get("param");
       assertTrue(p1 == p2);
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testUnknownParameterNameWhenInvokingWhere()
    {
-      Path.matches("/something/#{param}").where("notexisting");
+      Path.matches("/something/#{param}").getParameterStore().get("notexisting");
    }
 
 }

@@ -39,14 +39,12 @@ public class ExpressionLanguageConfigProvider extends HttpConfigurationProvider
       return ConfigurationBuilder
                .begin()
                .addRule()
-               .when(Path
-                        .matches("/name/{name}")
-                        .where("name")
-                        .bindsTo(PhaseBinding.to(El.property("#{expressionLanguageBean.name}"))
-                                 .after(PhaseId.RESTORE_VIEW)))
+               .when(Path.matches("/name/{name}"))
                .perform(PhaseAction.retrieveFrom(El.retrievalMethod("#{expressionLanguageBean.action}"))
                         .after(PhaseId.RESTORE_VIEW)
-                        .and(Forward.to("/expression-language.xhtml")));
+                        .and(Forward.to("/expression-language.xhtml")))
+               .where("name").bindsTo(PhaseBinding.to(El.property("#{expressionLanguageBean.name}"))
+                        .after(PhaseId.RESTORE_VIEW));
    }
 
    @Override

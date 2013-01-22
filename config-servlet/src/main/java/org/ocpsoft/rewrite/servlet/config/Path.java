@@ -19,11 +19,11 @@ import java.util.Map;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParserParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
@@ -37,20 +37,15 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition implements IPath
+public class Path extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
 {
    private final ParameterizedPatternParser expression;
-   private final ParameterStore<PathParameter> parameters = new ParameterStore<PathParameter>();
    private boolean withRequestBinding = false;
 
    private Path(final String pattern)
    {
       Assert.notNull(pattern, "Path must not be null.");
       this.expression = new RegexParameterizedPatternParser("[^/]+", pattern);
-
-      for (ParameterizedPatternParserParameter parameter : this.expression.getParameterMap().values()) {
-         where(parameter.getName()).bindsTo(Evaluation.property(parameter.getName()));
-      }
    }
 
    /**
@@ -67,15 +62,15 @@ public class Path extends HttpCondition implements IPath
     * By default, matching parameter values are bound only to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
     * See also {@link #where(String)}
     */
-   public static IPath matches(final String pattern)
+   public static Path matches(final String pattern)
    {
       return new Path(pattern);
    }
 
-   public static IPath captureIn(final String param)
+   public static Path captureIn(final String param)
    {
       Path path = new Path("{" + param + "}");
-      path.where(param).matches(".*");
+      path.expression.getParameterStore().get(param).matches(".*");
       return path;
    }
 
@@ -85,13 +80,12 @@ public class Path extends HttpCondition implements IPath
     * <p>
     * See also {@link #where(String)}
     */
-   @Override
-   public IPath withRequestBinding()
+   public Path withRequestBinding()
    {
       if (!withRequestBinding)
       {
-         for (ParameterizedPatternParserParameter capture : expression.getParameterMap().values()) {
-            where(capture.getName()).bindsTo(Request.parameter(capture.getName()));
+         for (ParameterizedPatternParameter parameter : expression.getParameterStore().values()) {
+            parameter.bindsTo(Request.parameter(parameter.getName()));
          }
          withRequestBinding = true;
       }
@@ -113,9 +107,9 @@ public class Path extends HttpCondition implements IPath
 
       if (expression.matches(event, context, url))
       {
-         Map<ParameterizedPatternParserParameter, String[]> parameters = expression.parse(event, context, url);
+         Map<ParameterizedPatternParameter, String[]> parameters = expression.parse(event, context, url);
 
-         for (ParameterizedPatternParserParameter capture : parameters.keySet()) {
+         for (ParameterizedPatternParameter capture : parameters.keySet()) {
             if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
                return false;
          }
@@ -129,7 +123,6 @@ public class Path extends HttpCondition implements IPath
     * <p>
     * See also: {@link #where(String)}
     */
-   @Override
    public ParameterizedPatternParser getPathExpression()
    {
       return expression;
@@ -142,8 +135,8 @@ public class Path extends HttpCondition implements IPath
    }
 
    @Override
-   public PathParameter where(String param)
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
    {
-      return parameters.where(param, new PathParameter(this, expression.getParameter(param)));
+      return expression.getParameterStore();
    }
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.param;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,17 +33,17 @@ import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
 
 /**
  * An {@link org.ocpsoft.rewrite.param.Parameterized} regular expression {@link Pattern}.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RegexParameterizedPatternParser implements ParameterizedPatternParser
 {
    private static final String DEFAULT_PARAMETER_PATTERN = ".*";
    private Pattern compiledPattern;
-   private String pattern;
+   private final String pattern;
    private final char[] chars;
    private final List<RegexGroup> groups = new ArrayList<RegexGroup>();
-   private final ParameterStore<ParameterizedPatternParserParameter> parameters = new ParameterStore<ParameterizedPatternParserParameter>();
+   private final ParameterStore<ParameterizedPatternParameter> parameters = new ParameterStore<ParameterizedPatternParameter>();
    private RegexParameterizedPatternBuilder builder;
 
    RegexParameterizedPatternParser(String pattern, RegexParameterizedPatternBuilder builder)
@@ -104,7 +103,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
                groups.add(new RegexGroup(group, parameterIndex++));
                String parameterName = new String(group.getCaptured());
                parameters.where(parameterName,
-                        new ParameterizedPatternParserParameter(this, parameterName).matches(parameterPattern));
+                        new ParameterizedPatternParameter(parameterName).matches(parameterPattern));
 
                break;
 
@@ -115,12 +114,6 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
             cursor++;
          }
       }
-   }
-
-   @Override
-   public Map<String, ParameterizedPatternParserParameter> getParameterMap()
-   {
-      return Collections.unmodifiableMap(parameters);
    }
 
    @Override
@@ -198,9 +191,9 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    }
 
    @Override
-   public Map<ParameterizedPatternParserParameter, String[]> parse(String value)
+   public Map<ParameterizedPatternParameter, String[]> parse(String value)
    {
-      Map<ParameterizedPatternParserParameter, String[]> values = new LinkedHashMap<ParameterizedPatternParserParameter, String[]>();
+      Map<ParameterizedPatternParameter, String[]> values = new LinkedHashMap<ParameterizedPatternParameter, String[]>();
 
       Matcher matcher = getMatcher(value);
       if (matcher.matches())
@@ -212,11 +205,12 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       return values;
    }
 
-   public Map<ParameterizedPatternParserParameter, String[]> parse(final Rewrite event,
+   @Override
+   public Map<ParameterizedPatternParameter, String[]> parse(final Rewrite event,
             final EvaluationContext context,
             final String value)
    {
-      Map<ParameterizedPatternParserParameter, String[]> values = new LinkedHashMap<ParameterizedPatternParserParameter, String[]>();
+      Map<ParameterizedPatternParameter, String[]> values = new LinkedHashMap<ParameterizedPatternParameter, String[]>();
 
       Matcher matcher = getMatcher(value);
       if (matcher.matches())
@@ -231,7 +225,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    }
 
    private String applyTransforms(final Rewrite event, final EvaluationContext context,
-            ParameterizedPatternParserParameter param, String value)
+            ParameterizedPatternParameter param, String value)
    {
       String result = value;
       for (Transform<String> t : param.getTransforms()) {
@@ -241,31 +235,9 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    }
 
    @Override
-   public List<String> getParameterNames()
-   {
-      ArrayList<String> result = new ArrayList<String>();
-      for (RegexGroup group : groups) {
-         result.add(group.getName());
-      }
-      return result;
-   }
-
-   @Override
    public String toString()
    {
       return new String(chars);
-   }
-
-   @Override
-   public ParameterizedPatternParserParameter where(String param)
-   {
-      return parameters.get(param);
-   }
-
-   @Override
-   public ParameterizedPatternParserParameter getParameter(String param)
-   {
-      return where(param);
    }
 
    class RegexGroup
@@ -315,5 +287,11 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
          builder = new RegexParameterizedPatternBuilder(pattern, this);
       }
       return builder;
+   }
+
+   @Override
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   {
+      return parameters;
    }
 }

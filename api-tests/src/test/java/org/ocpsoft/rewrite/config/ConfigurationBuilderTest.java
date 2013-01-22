@@ -20,9 +20,14 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.servlet.config.JAASRoles;
+import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.SendStatus;
+import org.ocpsoft.rewrite.servlet.config.SendStatus.SendError;
 import org.ocpsoft.rewrite.test.MockInboundRewrite;
 
 /**
@@ -171,6 +176,36 @@ public class ConfigurationBuilderTest
 
       Assert.assertFalse(performed);
       Assert.assertTrue(performedOtherwise);
+   }
+
+   @Test
+   public void testSubsetAPI() throws Exception
+   {
+      ConfigurationBuilder.begin()
+
+               .addRule()
+               .when(Path.matches("/admin"))
+               .perform(Subset.when(JAASRoles.required("admin"))
+                        .otherwise(SendError.code(401)))
+               .otherwise(SendStatus.code(201));
+   }
+
+   @Test
+   public void testWhereAPI() throws Exception
+   {
+      ConfigurationBuilder.begin()
+
+               .addRule()
+               .when(new True())
+               .perform(operation)
+               .where("p").bindsTo(El.property("whee.glee")).matches("blah")
+               .where("s").matches("oh").bindsTo(El.property("ee.flee"))
+
+               .addRule()
+               .when(new True())
+               .otherwise(operation)
+               .where("p").matches("blah").bindsTo(El.property("whee.glee"))
+               .where("s").matches("oh").bindsTo(El.property("ee.flee"));
    }
 
    @Test

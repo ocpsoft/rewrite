@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.config.SendStatus;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class BindingValidationTestProvider extends HttpConfigurationProvider
 {
@@ -48,20 +48,22 @@ public class BindingValidationTestProvider extends HttpConfigurationProvider
                .begin()
                .addRule()
                .when(Direction.isInbound().and(
-                        Path.matches("/v/{param}").where("param")
-                                 .bindsTo(Evaluation.property("param").validatedBy(new Validator() {
-                                    @Override
-                                    public boolean validate(final Rewrite event, final EvaluationContext context,
-                                             final Object value)
-                                    {
-                                       return "valid".equals(value);
-                                    }
-                                 }))))
+                        Path.matches("/v/{param}")))
                .perform(SendStatus.code(205))
+               .where("param")
+               .bindsTo(Evaluation.property("param").validatedBy(new Validator() {
+                  @Override
+                  public boolean validate(final Rewrite event, final EvaluationContext context,
+                           final Object value)
+                  {
+                     return "valid".equals(value);
+                  }
+               }))
 
                .addRule()
-               .when(Direction.isInbound().and(Path.matches("/v/{param}").where("param").matches("[a-zA-Z]+")))
-               .perform(SendStatus.code(206));
+               .when(Direction.isInbound().and(Path.matches("/v/{param}")))
+               .perform(SendStatus.code(206))
+               .where("param").matches("[a-zA-Z]+");
 
       return config;
    }

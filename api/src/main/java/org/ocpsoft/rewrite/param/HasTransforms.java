@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.bind;
+package org.ocpsoft.rewrite.param;
+
+import java.util.List;
 
 /**
- * An object that can hold a {@link Validator}.
+ * Defines a class which can be transformed by a {@link Transform}
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * @param <VALUETYPE> The type of the value to be transformed.
  */
-public interface HasValidator
+public interface HasTransforms<VALUETYPE>
 {
    /**
-    * Get the {@link Validator} with which this {@link Binding} value will be validated.
+    * Get the underlying {@link List} of all {@link Transform} objects currently registered to this isntance
     */
-   public Validator<?> getValidator();
+   List<Transform<VALUETYPE>> getTransforms();
 }

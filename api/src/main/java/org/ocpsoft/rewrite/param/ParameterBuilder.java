@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,10 +21,13 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.DefaultBindable;
+import org.ocpsoft.rewrite.bind.HasBindings;
 import org.ocpsoft.rewrite.bind.HasConverter;
 import org.ocpsoft.rewrite.bind.HasValidator;
+import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -32,11 +35,11 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
 
 /**
  * An base implementation of {@link Parameter}
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class ParameterBuilder<PARAMTYPE extends ParameterBuilder<PARAMTYPE, VALUETYPE>, VALUETYPE> extends DefaultBindable<PARAMTYPE>
-implements Parameter<PARAMTYPE, VALUETYPE>
+         implements Parameter<PARAMTYPE, VALUETYPE>
 {
    private final List<Transform<VALUETYPE>> transforms = new ArrayList<Transform<VALUETYPE>>();
    private final List<Constraint<VALUETYPE>> constraints = new ArrayList<Constraint<VALUETYPE>>();
@@ -75,13 +78,13 @@ implements Parameter<PARAMTYPE, VALUETYPE>
    @Override
    public PARAMTYPE bindsTo(Binding binding)
    {
-      if (binding instanceof HasConverter && converter != null)
+      if (binding instanceof Convertable && converter != null)
       {
-         ((HasConverter<?>) binding).convertedBy(converter);
+         ((Convertable<?>) binding).convertedBy(converter);
       }
-      if (binding instanceof HasValidator && validator != null)
+      if (binding instanceof Validatable && validator != null)
       {
-         ((HasValidator<?>) binding).validatedBy(validator);
+         ((Validatable<?>) binding).validatedBy(validator);
       }
 
       for (Object delegate : delegates) {
@@ -100,20 +103,20 @@ implements Parameter<PARAMTYPE, VALUETYPE>
    {
       this.converter = ValueHolderUtil.resolveConverter(type);
       for (Binding binding : getBindings()) {
-         if (binding instanceof HasConverter)
+         if (binding instanceof Convertable)
          {
-            ((HasConverter<?>) binding).convertedBy(converter);
+            ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
          }
       }
 
       for (Object delegate : delegates) {
-         if (delegate instanceof Bindable)
+         if (delegate instanceof HasBindings)
          {
-            Bindable<?> bindable = (Bindable<?>) delegate;
+            HasBindings bindable = (HasBindings) delegate;
             for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof HasConverter)
+               if (binding instanceof Convertable)
                {
-                  ((HasConverter<?>) binding).convertedBy(converter);
+                  ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
                }
             }
          }
@@ -128,20 +131,20 @@ implements Parameter<PARAMTYPE, VALUETYPE>
    {
       this.converter = converter;
       for (Binding binding : getBindings()) {
-         if (binding instanceof HasConverter)
+         if (binding instanceof Convertable)
          {
-            ((HasConverter<?>) binding).convertedBy(converter);
+            ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
          }
       }
 
       for (Object delegate : delegates) {
-         if (delegate instanceof Bindable)
+         if (delegate instanceof HasBindings)
          {
-            Bindable<?> bindable = (Bindable<?>) delegate;
+            HasBindings bindable = (HasBindings) delegate;
             for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof HasConverter)
+               if (binding instanceof Convertable)
                {
-                  ((HasConverter<?>) binding).convertedBy(converter);
+                  ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
                }
             }
          }
@@ -162,20 +165,20 @@ implements Parameter<PARAMTYPE, VALUETYPE>
    {
       this.validator = ValueHolderUtil.resolveValidator(type);
       for (Binding binding : getBindings()) {
-         if (binding instanceof HasValidator)
+         if (binding instanceof Validatable)
          {
-            ((HasValidator<?>) binding).validatedBy(validator);
+            ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
          }
       }
 
       for (Object delegate : delegates) {
-         if (delegate instanceof Bindable)
+         if (delegate instanceof HasBindings)
          {
-            Bindable<?> bindable = (Bindable<?>) delegate;
+            HasBindings bindable = (HasBindings) delegate;
             for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof HasValidator)
+               if (binding instanceof Validatable)
                {
-                  ((HasValidator<?>) binding).validatedBy(validator);
+                  ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
                }
             }
          }
@@ -190,20 +193,20 @@ implements Parameter<PARAMTYPE, VALUETYPE>
    {
       this.validator = validator;
       for (Binding binding : getBindings()) {
-         if (binding instanceof HasValidator)
+         if (binding instanceof Validatable)
          {
-            ((HasValidator<?>) binding).validatedBy(validator);
+            ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
          }
       }
 
       for (Object delegate : delegates) {
          if (delegate instanceof Bindable)
          {
-            Bindable<?> bindable = (Bindable<?>) delegate;
+            HasBindings bindable = (HasBindings) delegate;
             for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof HasValidator)
+               if (binding instanceof Validatable)
                {
-                  ((HasValidator<?>) binding).validatedBy(validator);
+                  ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
                }
             }
          }

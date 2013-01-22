@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.servlet.config.rule;
-
+package org.ocpsoft.rewrite.bind;
 
 /**
+ * An object that can hold {@link Converter} instances.
+ *
+ * @param <IMPLTYPE> The type implementing {@link Convertable}.
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ICDNRelocate
+public interface Convertable<IMPLTYPE>
 {
    /**
-    * The new resource (real or virtual) to be served, either from a local context or remote CDN.
+    * Set the {@link Converter} type with which this {@link Binding} value will be converted.
     */
-   public ICDN to(String location);
+   public <X extends Converter<?>> IMPLTYPE convertedBy(final Class<X> type);
+
+   /**
+    * Set the {@link Converter} with which this {@link Binding} value will be converted.
+    */
+   public IMPLTYPE convertedBy(final Converter<?> converter);
+
 }

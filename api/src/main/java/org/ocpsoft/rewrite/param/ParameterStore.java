@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * {@link Parameter} store which retains the order, bindings, and names of parameters contained within.
  */
-public class ParameterStore<T extends ParameterBuilder<T, ?>> implements Map<String, T>
+public class ParameterStore<T extends Parameter<T, ?>> implements Map<String, T>
 {
    private final Map<String, T> parameters = new LinkedHashMap<String, T>();
 

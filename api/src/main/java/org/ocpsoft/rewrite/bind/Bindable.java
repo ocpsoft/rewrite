@@ -15,22 +15,16 @@
  */
 package org.ocpsoft.rewrite.bind;
 
-import java.util.List;
 
 /**
  * Represents an object that can be bound to a storage location.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Bindable<T extends Bindable<T>>
+public interface Bindable<IMPLTYPE extends Bindable<IMPLTYPE>>
 {
    /**
     * Store the value of the given {@link Binding}
     */
-   T bindsTo(Binding binding);
-
-   /**
-    * Retrieve all values of the given {@link Binding}
-    */
-   List<Binding> getBindings();
+   IMPLTYPE bindsTo(Binding binding);
 }

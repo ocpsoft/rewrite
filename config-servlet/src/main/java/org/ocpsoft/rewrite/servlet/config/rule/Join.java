@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
+import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
-import org.ocpsoft.rewrite.servlet.config.IPath;
-import org.ocpsoft.rewrite.servlet.config.IPath.PathParameter;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
@@ -47,7 +45,7 @@ import org.ocpsoft.urlbuilder.Address;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Join implements IJoin, IJoinPath
+public class Join implements Rule, JoinPath
 {
    private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
 
@@ -57,8 +55,8 @@ public class Join implements IJoin, IJoinPath
 
    private final String requestPattern;
    private String resourcePattern;
-   private final IPath requestPath;
-   private IPath resourcePath;
+   private final Path requestPath;
+   private Path resourcePath;
 
    private Operation operation;
    private Condition condition;
@@ -85,7 +83,7 @@ public class Join implements IJoin, IJoinPath
     * build the outbound URL by extracting values from the query string
     * <code>"?n=value"<code>. To disable request parameter binding and outbound URL rewriting, instead use {@link #pathNonBinding(String)}
     */
-   public static IJoinPath path(final String pattern)
+   public static JoinPath path(final String pattern)
    {
       return new Join(pattern, true);
    }
@@ -94,7 +92,7 @@ public class Join implements IJoin, IJoinPath
     * The client-facing URL path to which this {@link Join} will apply. Parameters will not be bound to the request
     * parameter map. To enable request parameter binding and outbound URL rewriting, instead use {@link #path(String)}.
     */
-   public static IJoinPath pathNonBinding(String pattern)
+   public static JoinPath pathNonBinding(String pattern)
    {
       return new Join(pattern, false);
    }
@@ -108,7 +106,7 @@ public class Join implements IJoin, IJoinPath
    }
 
    @Override
-   public IJoin to(final String resource)
+   public Join to(final String resource)
    {
       if (this.resourcePattern != null)
       {
@@ -130,8 +128,7 @@ public class Join implements IJoin, IJoinPath
       return this;
    }
 
-   @Override
-   public IJoin withInboundCorrection()
+   public Join withInboundCorrection()
    {
       this.inboundCorrection = true;
       return this;
@@ -262,48 +259,9 @@ public class Join implements IJoin, IJoinPath
    }
 
    @Override
-   public JoinParameter where(final String parameter)
-   {
-      List<PathParameter> params = new ArrayList<PathParameter>();
-      if (requestPath.getPathExpression().getParameterMap().containsKey(parameter)) {
-         params.add(requestPath.where(parameter));
-      }
-      if (resourcePath.getPathExpression().getParameterMap().containsKey(parameter)) {
-         params.add(resourcePath.where(parameter));
-      }
-
-      if (!params.isEmpty()) {
-         return new JoinParameter(this, params.toArray(new PathParameter[params.size()]));
-      }
-
-      throw new IllegalArgumentException("No such parameter [" + parameter + "] exists.");
-   }
-
-   @Override
    public String getId()
    {
       return id;
-   }
-
-   @Override
-   public IJoin when(final Condition condition)
-   {
-      this.condition = condition;
-      return this;
-   }
-
-   @Override
-   public IJoin perform(final Operation operation)
-   {
-      this.operation = operation;
-      return this;
-   }
-
-   @Override
-   public IJoin withId(final String id)
-   {
-      this.id = id;
-      return this;
    }
 
    @Override
@@ -313,23 +271,19 @@ public class Join implements IJoin, IJoinPath
                + inboundCorrection + "]";
    }
 
-   @Override
-   public IJoin withChaining()
+   public Join withChaining()
    {
       this.chainingDisabled = false;
       return this;
    }
 
-   @Override
    public ParameterizedPatternParser getPathExpression()
    {
       return requestPath.getPathExpression();
    }
 
-   @Override
    public ParameterizedPatternParser getResourcexpression()
    {
       return resourcePath.getPathExpression();
    }
-
 }
