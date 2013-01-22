@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
 import com.ocpsoft.pretty.PrettyContext;
-import com.ocpsoft.pretty.faces.config.PrettyConfigurator;
+import com.ocpsoft.pretty.faces.config.PrettyConfig;
 import com.ocpsoft.pretty.faces.config.reload.PrettyConfigReloader;
 
 /**
@@ -44,20 +44,25 @@ public class PrettyFacesRewriteLifecycleListener extends HttpRewriteLifecycleLis
    @Override
    public void beforeInboundLifecycle(final HttpServletRewrite event)
    {
-      if (event.getRequest().getAttribute(UrlMappingRuleAdaptor.REWRITE_MAPPING_ID_KEY) == null) {
-         PrettyContext context = PrettyContext.newDetachedInstance((HttpServletRequest) event.getRequest());
-         PrettyContext.setCurrentContext(event.getRequest(), context);
-      }
-      
       HttpServletRequest request = event.getRequest();
       ServletContext servletContext = event.getServletContext();
 
+      // we may need to reload the configuration if in development mode
       reloader.reloadIfNecessary(servletContext);
+
+      // we need the PrettyConfig later, so save it as a request attribute
       if (request.getAttribute(PrettyContext.CONFIG_KEY) == null)
       {
-         new PrettyConfigurator(servletContext).configure();
-         request.setAttribute(PrettyContext.CONFIG_KEY, servletContext.getAttribute(PrettyContext.CONFIG_KEY));
+         PrettyConfig config = (PrettyConfig) servletContext.getAttribute(PrettyContext.CONFIG_KEY);
+         request.setAttribute(PrettyContext.CONFIG_KEY, config);
       }
+
+      // build the PrettyContext and attach it to the request
+      if (request.getAttribute(UrlMappingRuleAdaptor.REWRITE_MAPPING_ID_KEY) == null) {
+         PrettyContext context = PrettyContext.newDetachedInstance(request);
+         PrettyContext.setCurrentContext(event.getRequest(), context);
+      }
+
    }
 
    @Override

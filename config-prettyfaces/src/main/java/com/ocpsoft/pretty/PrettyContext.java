@@ -71,7 +71,10 @@ public class PrettyContext implements Serializable
    {
       Assert.notNull(request, "HttpServletRequest argument was null");
 
-      config = (PrettyConfig) request.getServletContext().getAttribute(CONFIG_KEY);
+      // attribute is set by PrettyFacesRewriteLifecycleListener before
+      config = (PrettyConfig) request.getAttribute(CONFIG_KEY);
+
+      // not sure if this can happen any more, but we'll keep it for now
       if (config == null)
       {
          config = new PrettyConfig();
