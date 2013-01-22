@@ -22,6 +22,7 @@ public class ConfigurationRuleParameterBuilder
          Transformable<ConfigurationRuleParameterBuilder, String>,
 
          ConfigurationRuleParameter,
+         ConfigurationRuleParameterMatches,
          ConfigurationRuleParameterPerform,
          ConfigurationRuleParameterWhere,
          ConfigurationRuleParameterOtherwise
