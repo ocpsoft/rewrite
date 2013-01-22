@@ -16,10 +16,8 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.net.MalformedURLException;
-import java.util.Map;
 
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
@@ -52,15 +50,7 @@ public class Resource extends HttpCondition implements Parameterized<Parameteriz
       {
          String file = resource.getBuilder().build(event, context);
          try {
-            if (event.getServletContext().getResource(file) != null)
-            {
-               Map<ParameterizedPatternParameter, String[]> parameters = resource.parse(event, context, file);
-               for (ParameterizedPatternParameter capture : parameters.keySet()) {
-                  if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
-                     return false;
-               }
-               return true;
-            }
+            return (event.getServletContext().getResource(file) != null);
          }
          catch (MalformedURLException e) {
             log.debug("Invalid file format [{}]", file);

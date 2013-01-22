@@ -61,8 +61,9 @@ public class DomainTest
    public void testCanConvertAndValidateDomain() throws Exception
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Hostname.matches("{p}.com").getParameterStore().get("p").convertedBy(new DomainConverter())
-               .evaluate(inbound, context);
+      Hostname hostname = Hostname.matches("{p}.com");
+      hostname.getParameterStore().get("p").convertedBy(new DomainConverter());
+      hostname.evaluate(inbound, context);
 
       Assert.assertEquals("example", Evaluation.property("p").retrieve(inbound, context));
       Assert.assertEquals(new DomainConvertedType("example"),
@@ -73,8 +74,9 @@ public class DomainTest
    public void testDomainMatchesBindsInbound()
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Assert.assertTrue(Hostname.matches("{domain}.com").getParameterStore().get("domain")
-               .bindsTo(Request.attribute("domain"))
+      Hostname hostname = Hostname.matches("{domain}.com");
+      hostname.getParameterStore().get("domain").bindsTo(Request.attribute("domain"));
+      Assert.assertTrue(hostname
                .evaluate(inbound, context));
 
       // Invoke the binding.

@@ -23,10 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
-import org.ocpsoft.rewrite.bind.Bindable;
-import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.DefaultBindable;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.DispatcherType;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -37,12 +33,9 @@ import org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class DispatchType extends HttpCondition implements Bindable<DispatchType>
+public class DispatchType extends HttpCondition
 {
    private final DispatcherType type;
-
-   @SuppressWarnings("rawtypes")
-   private final DefaultBindable<?> bindable = new DefaultBindable();
 
    private final List<DispatcherTypeProvider> providers;
 
@@ -62,7 +55,6 @@ public class DispatchType extends HttpCondition implements Bindable<DispatchType
    {
       if (this.type.equals(getDispatcherType(event)))
       {
-         Bindings.enqueueSubmission(event, context, bindable, type);
          return true;
       }
       return false;
@@ -131,13 +123,6 @@ public class DispatchType extends HttpCondition implements Bindable<DispatchType
    public String toString()
    {
       return type == null ? "unknown" : type.toString();
-   }
-
-   @Override
-   public DispatchType bindsTo(final Binding binding)
-   {
-      bindable.bindsTo(binding);
-      return this;
    }
 
 }

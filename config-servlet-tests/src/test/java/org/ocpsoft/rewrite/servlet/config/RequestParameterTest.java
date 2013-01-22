@@ -43,19 +43,19 @@ public class RequestParameterTest
    {
       request = Mockito.mock(HttpServletRequest.class);
       Mockito.when(request.getParameterNames())
-      .thenReturn(Collections.enumeration(Arrays.asList("foo", "baz")));
+               .thenReturn(Collections.enumeration(Arrays.asList("foo", "baz")));
 
       Mockito.when(request.getParameterValues("foo"))
-      .thenReturn(new String[] { "bar" });
+               .thenReturn(new String[] { "bar" });
 
       Mockito.when(request.getParameterValues("baz"))
-      .thenReturn(new String[] { "cab", "caz" });
+               .thenReturn(new String[] { "cab", "caz" });
 
       Mockito.when(request.getParameter("foo"))
-      .thenReturn("bar");
+               .thenReturn("bar");
 
       Mockito.when(request.getParameter("baz"))
-      .thenReturn("cab");
+               .thenReturn("cab");
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
@@ -87,15 +87,17 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterMatches()
    {
-      Assert.assertTrue(RequestParameter.matches("foo", "{value}").getParameterStore().get("value").matches("(bar|baz)")
-               .evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter requestParam = RequestParameter.matches("foo", "{value}");
+      requestParam.getParameterStore().get("value").matches("(bar|baz)");
+      Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterMatchesAll()
    {
-      Assert.assertTrue(RequestParameter.matchesAll("baz", "{value}").getParameterStore().get("value").matches("(cab|caz)")
-               .evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter requestParam = RequestParameter.matchesAll("baz", "{value}");
+      requestParam.getParameterStore().get("value").matches("(cab|caz)");
+      Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
@@ -108,22 +110,25 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterMatchesAllNamesNotValues()
    {
-      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").getParameterStore().get("value").matches("nothing")
-               .evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter requestParam = RequestParameter.matchesAll("{name}", "{value}");
+      requestParam.getParameterStore().get("value").matches("nothing");
+      Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterMatchesAllNotName()
    {
-      Assert.assertFalse(RequestParameter.matchesAll("{name}", "{value}").getParameterStore().get("name").matches("nothing")
-               .evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter requestParam = RequestParameter.matchesAll("{name}", "{value}");
+      requestParam.getParameterStore().get("name").matches("nothing");
+      Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testRequestParameterMatchesAllInvalid()
    {
-      Assert.assertFalse(RequestParameter.matchesAll("baz", "{value}").getParameterStore().get("value").matches("(cab|xxx)")
-               .evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter requestParam = RequestParameter.matchesAll("baz", "{value}");
+      requestParam.getParameterStore().get("value").matches("(cab|xxx)");
+      Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test

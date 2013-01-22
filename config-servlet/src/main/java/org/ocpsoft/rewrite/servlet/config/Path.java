@@ -15,10 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.Map;
-
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
@@ -105,17 +102,7 @@ public class Path extends HttpCondition implements Parameterized<ParameterizedPa
       if (url.startsWith(event.getContextPath()))
          url = url.substring(event.getContextPath().length());
 
-      if (expression.matches(event, context, url))
-      {
-         Map<ParameterizedPatternParameter, String[]> parameters = expression.parse(event, context, url);
-
-         for (ParameterizedPatternParameter capture : parameters.keySet()) {
-            if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
-               return false;
-         }
-         return true;
-      }
-      return false;
+      return (expression.matches(event, context, url));
    }
 
    /**

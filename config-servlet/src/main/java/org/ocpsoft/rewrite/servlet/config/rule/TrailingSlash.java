@@ -15,15 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
-import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.Direction;
-import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.OutboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -37,9 +33,6 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public abstract class TrailingSlash implements Rule
 {
    private String id;
-
-   protected Operation operation;
-   protected Condition condition;
 
    /**
     * Return a new {@link TrailingSlash} instance that will remove trailing slashes from all matching request and
@@ -64,40 +57,25 @@ public abstract class TrailingSlash implements Rule
       @Override
       public boolean evaluate(final Rewrite event, final EvaluationContext context)
       {
-         if ((condition == null) || condition.evaluate(event, context))
+         if (event instanceof HttpServletRewrite)
          {
-            if (Direction.isInbound().and(Path.matches("/{path}").where("path").matches(".*[^/]"))
-                     .evaluate(event, context))
-            {
-               if (operation != null)
-                  context.addPreOperation(operation);
-
-               return true;
-            }
-            else if (Direction.isOutbound().and(Path.matches("/{path}").where("path").matches(".*[^/]"))
-                     .evaluate(event, context))
-            {
-               if (operation != null)
-                  context.addPreOperation(operation);
-
-               return true;
-            }
+            return (!((HttpServletRewrite) event).getAddress().getPath().endsWith("/"));
          }
-
          return false;
       }
 
       @Override
       public void perform(final Rewrite event, final EvaluationContext context)
       {
+         String url = ((HttpServletRewrite) event).getAddress().getPath() + "/";
          if (event instanceof InboundRewrite)
          {
-            Redirect.permanent(((HttpServletRewrite) event).getContextPath() + "/{path}/").perform(event, context);
+            Redirect.permanent(url).perform(event, context);
          }
 
          else if (event instanceof OutboundRewrite)
          {
-            Substitute.with(((HttpServletRewrite) event).getContextPath() + "/{path}/").perform(event, context);
+            Substitute.with(url).perform(event, context);
          }
       }
 
@@ -111,40 +89,26 @@ public abstract class TrailingSlash implements Rule
       @Override
       public boolean evaluate(final Rewrite event, final EvaluationContext context)
       {
-         if ((condition == null) || condition.evaluate(event, context))
+         if (event instanceof HttpServletRewrite)
          {
-            if (Direction.isInbound().and(Path.matches("/{path}/").where("path").matches(".*"))
-                     .evaluate(event, context))
-            {
-               if (operation != null)
-                  context.addPreOperation(operation);
-
-               return true;
-            }
-            else if (Direction.isOutbound().and(Path.matches("/{path}/").where("path").matches(".*"))
-                     .evaluate(event, context))
-            {
-               if (operation != null)
-                  context.addPreOperation(operation);
-
-               return true;
-            }
+            return (((HttpServletRewrite) event).getAddress().getPath().endsWith("/"));
          }
-
          return false;
       }
 
       @Override
       public void perform(final Rewrite event, final EvaluationContext context)
       {
+         String path = ((HttpServletRewrite) event).getAddress().getPath();
+         String url = path.substring(0, path.length() - 1);
          if (event instanceof InboundRewrite)
          {
-            Redirect.permanent(((HttpServletRewrite) event).getContextPath() + "/{path}").perform(event, context);
+            Redirect.permanent(url).perform(event, context);
          }
 
          else if (event instanceof OutboundRewrite)
          {
-            Substitute.with(((HttpServletRewrite) event).getContextPath() + "/{path}").perform(event, context);
+            Substitute.with(url).perform(event, context);
          }
       }
 
@@ -157,18 +121,6 @@ public abstract class TrailingSlash implements Rule
    public String getId()
    {
       return id;
-   }
-
-   public TrailingSlash when(final Condition condition)
-   {
-      this.condition = condition;
-      return this;
-   }
-
-   public TrailingSlash performInbound(final Operation operation)
-   {
-      this.operation = operation;
-      return this;
    }
 
    /**

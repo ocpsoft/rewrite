@@ -161,14 +161,6 @@ public class RequestParameter extends HttpCondition implements Parameterized<Par
             {
                if (matchesValues(event, context, request, name))
                {
-                  Map<ParameterizedPatternParameter, String[]> parameters = getNameExpression().parse(event,
-                           context, name);
-                  parameters.putAll(getValueExpression().parse(event, context, name));
-
-                  for (ParameterizedPatternParameter capture : parameters.keySet()) {
-                     if (!Bindings.enqueueSubmission(event, context, capture, parameters.get(capture)))
-                        return false;
-                  }
                   return true;
                }
             }

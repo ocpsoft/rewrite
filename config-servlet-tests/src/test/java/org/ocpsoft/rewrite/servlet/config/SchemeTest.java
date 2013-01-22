@@ -61,8 +61,9 @@ public class SchemeTest
    public void testShemeMatchesBindsInbound()
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Assert.assertTrue(Scheme.matches("{scheme}").getParameterStore().get("scheme").bindsTo(Request.attribute("scheme"))
-               .evaluate(inbound, context));
+      Scheme scheme = Scheme.matches("{scheme}");
+      scheme.getParameterStore().get("scheme").bindsTo(Request.attribute("scheme"));
+      Assert.assertTrue(scheme.evaluate(inbound, context));
 
       // Invoke the binding.
       context.getPreOperations().get(0).perform(inbound, context);

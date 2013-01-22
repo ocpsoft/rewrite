@@ -43,13 +43,13 @@ public class HeaderTest
    {
       request = Mockito.mock(HttpServletRequest.class);
       Mockito.when(request.getHeaderNames())
-      .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
+               .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
 
       Mockito.when(request.getHeaders("Content-Length"))
-      .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
+               .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
 
       Mockito.when(request.getHeaders("Accept-Charset"))
-      .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
+               .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
@@ -81,9 +81,9 @@ public class HeaderTest
    @Test
    public void testHeaderMatches()
    {
-      Assert.assertTrue(Header.matches("Accept-Charset", "{enc}").getParameterStore().get("enc").matches("(ISO|UTF)-\\d+")
-               .evaluate(rewrite,
-                        new MockEvaluationContext()));
+      Header header = Header.matches("Accept-Charset", "{enc}");
+      header.getParameterStore().get("enc").matches("(ISO|UTF)-\\d+");
+      Assert.assertTrue(header.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test

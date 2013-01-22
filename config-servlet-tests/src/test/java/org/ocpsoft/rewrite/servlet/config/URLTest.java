@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class URLTest
 {
@@ -46,22 +46,22 @@ public class URLTest
       request = Mockito.mock(HttpServletRequest.class);
 
       Mockito.when(request.getRequestURI())
-      .thenReturn("/context/application/path");
+               .thenReturn("/context/application/path");
 
       Mockito.when(request.getContextPath())
-      .thenReturn("/context");
+               .thenReturn("/context");
 
       Mockito.when(request.getQueryString())
-      .thenReturn("foo=bar&baz=bazaar");
+               .thenReturn("foo=bar&baz=bazaar");
 
       Mockito.when(request.getScheme())
-      .thenReturn("http");
+               .thenReturn("http");
 
       Mockito.when(request.getServerName())
-      .thenReturn("domain.com");
+               .thenReturn("domain.com");
 
       Mockito.when(request.getServerPort())
-      .thenReturn(8080);
+               .thenReturn(8080);
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
    }
@@ -77,10 +77,10 @@ public class URLTest
    public void testAttemptsToBindParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      IURL url = URL.matches("{prefix}/application/{seg}{suffix}")
-               .where("prefix").matches(".*")
-               .where("suffix").matches("\\?.*")
-               .where("seg").bindsTo(mockBinding);
+      URL url = URL.matches("{prefix}/application/{seg}{suffix}");
+      url.getParameterStore().get("prefix").matches(".*");
+      url.getParameterStore().get("suffix").matches("\\?.*");
+      url.getParameterStore().get("seg").bindsTo(mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
 
@@ -101,8 +101,8 @@ public class URLTest
    public void testCaptureInBindsParameters()
    {
       MockBinding mockBinding = new MockBinding();
-      IURL url = URL.captureIn("foo")
-               .where("foo").bindsTo(mockBinding);
+      URL url = URL.captureIn("foo");
+      url.getParameterStore().get("foo").bindsTo(mockBinding);
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
 

@@ -15,12 +15,9 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
@@ -80,17 +77,7 @@ public class Scheme extends HttpCondition implements Parameterized<Parameterized
       else
          scheme = event.getRequest().getScheme();
 
-      if (scheme != null && expression.matches(event, context, scheme))
-      {
-         Map<ParameterizedPatternParameter, String[]> parameters = expression.parse(event, context, scheme);
-
-         for (ParameterizedPatternParameter capture : parameters.keySet()) {
-            if (!Bindings.enqueueSubmission(event, context, where(capture.getName()), parameters.get(capture)))
-               return false;
-         }
-         return true;
-      }
-      return false;
+      return (scheme != null && expression.matches(event, context, scheme));
    }
 
    /**

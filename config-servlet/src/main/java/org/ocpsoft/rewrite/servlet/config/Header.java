@@ -17,14 +17,13 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.CompositeParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
@@ -88,7 +87,6 @@ public class Header extends HttpCondition implements Parameterized<Parameterized
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
@@ -96,27 +94,12 @@ public class Header extends HttpCondition implements Parameterized<Parameterized
       if (headerNames != null) {
          for (String header : Collections.list(headerNames))
          {
-            if (name.matches(event, context, header) && matchesValue(event, context, request, header))
-            {
-               Map<ParameterizedPatternParameter, String[]> parameterValues = name.parse(event, context, header);
-               for (ParameterizedPatternParameter parameter : parameterValues.keySet()) {
-                  if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
-                     return false;
-               }
-               parameterValues = value.parse(event, context, header);
-               for (ParameterizedPatternParameter parameter : parameterValues.keySet()) {
-                  if (!Bindings.enqueueSubmission(event, context, parameter, parameterValues.get(parameter)))
-                     return false;
-               }
-
-               return true;
-            }
+            return (name.matches(event, context, header) && matchesValue(event, context, request, header));
          }
       }
       return false;
    }
 
-   @SuppressWarnings("unchecked")
    private boolean matchesValue(Rewrite event, EvaluationContext context, final HttpServletRequest request,
             final String header)
    {

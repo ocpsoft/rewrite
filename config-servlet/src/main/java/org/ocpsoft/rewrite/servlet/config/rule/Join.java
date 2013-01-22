@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config.rule;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,6 +26,9 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.CompositeParameterStore;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
@@ -65,7 +69,7 @@ public class Join implements Rule, JoinPath
 
    private boolean chainingDisabled = true;
 
-   private List<String> pathRequestParameters;
+   private Set<String> pathRequestParameters;
 
    private ConditionBuilder outboundConditionCache;
 
@@ -115,12 +119,11 @@ public class Join implements Rule, JoinPath
       this.resourcePattern = resource;
       this.resourcePath = Path.matches(resource);
 
-      List<String> parameters = getPathRequestParameters();
+      Set<String> parameters = getPathRequestParameters();
       if (outboundConditionCache == null)
       {
          this.outboundConditionCache = resourcePath;
-         for (int i = 0; i < parameters.size(); i++) {
-            String name = parameters.get(i);
+         for (String name : parameters) {
             outboundConditionCache = outboundConditionCache.and(Query.parameterExists(name));
          }
       }
@@ -150,7 +153,7 @@ public class Join implements Rule, JoinPath
                   && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context)
                   && ((condition == null) || condition.evaluate(event, context)))
          {
-            List<String> parameters = getPathRequestParameters();
+            Set<String> parameters = getPathRequestParameters();
             for (String param : parameters) {
                if (!Query.parameterExists(param).evaluate(event, context))
                {
@@ -182,15 +185,15 @@ public class Join implements Rule, JoinPath
       return Boolean.TRUE.equals(event.getRewriteContext().get(JOIN_DISABLED_KEY));
    }
 
-   private List<String> getPathRequestParameters()
+   private Set<String> getPathRequestParameters()
    {
       /*
        * For performance purposes - think and profile this if changed.
        */
       if (pathRequestParameters == null)
       {
-         List<String> nonQueryParameters = resourcePath.getPathExpression().getParameterNames();
-         List<String> queryParameters = requestPath.getPathExpression().getParameterNames();
+         Set<String> nonQueryParameters = resourcePath.getPathExpression().getParameterStore().keySet();
+         Set<String> queryParameters = requestPath.getPathExpression().getParameterStore().keySet();
          queryParameters.removeAll(nonQueryParameters);
          pathRequestParameters = queryParameters;
       }
@@ -213,7 +216,7 @@ public class Join implements Rule, JoinPath
 
       else if (event instanceof HttpOutboundServletRewrite)
       {
-         List<String> parameters = getPathRequestParameters();
+         Set<String> parameters = getPathRequestParameters();
 
          String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundAddress().toString();
          QueryStringBuilder query = QueryStringBuilder.createNew();
@@ -285,5 +288,10 @@ public class Join implements Rule, JoinPath
    public ParameterizedPatternParser getResourcexpression()
    {
       return resourcePath.getPathExpression();
+   }
+
+   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   {
+      return new CompositeParameterStore(requestPath.getParameterStore(), resourcePath.getParameterStore());
    }
 }
