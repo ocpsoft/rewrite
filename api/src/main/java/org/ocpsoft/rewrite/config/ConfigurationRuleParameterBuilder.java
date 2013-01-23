@@ -8,8 +8,11 @@ import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.config.ConditionParameterEnricher.Enricher;
 import org.ocpsoft.rewrite.param.Constrainable;
 import org.ocpsoft.rewrite.param.Constraint;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.param.Transformable;
 
@@ -63,59 +66,99 @@ public class ConfigurationRuleParameterBuilder
    }
 
    @Override
-   public ConfigurationRuleParameterBuilder matches(String pattern)
+   public ConfigurationRuleParameterBuilder matches(final String pattern)
    {
-      // TODO Auto-generated method stub
+      return constrainedBy(new RegexConstraint(pattern));
+   }
+
+   @Override
+   public ConfigurationRuleParameterBuilder transformedBy(final Transform<String> transform)
+   {
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.transformedBy(transform);
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
    @Override
-   public ConfigurationRuleParameterBuilder transformedBy(Transform<String> transform)
+   public ConfigurationRuleParameterBuilder constrainedBy(final Constraint<String> constraint)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.constrainedBy(constraint);
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
+      return this;
    }
 
    @Override
-   public ConfigurationRuleParameterBuilder constrainedBy(Constraint<String> pattern)
+   public <X extends Validator<?>> ConfigurationRuleParameterBuilder validatedBy(final Class<X> type)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.validatedBy(type);
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
+      return this;
    }
 
    @Override
-   public <X extends Validator<?>> ConfigurationRuleParameterBuilder validatedBy(Class<X> type)
+   public ConfigurationRuleParameterBuilder validatedBy(final Validator<?> validator)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.validatedBy(validator);
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
+      return this;
    }
 
    @Override
-   public ConfigurationRuleParameterBuilder validatedBy(Validator<?> validator)
+   public <X extends Converter<?>> ConfigurationRuleParameterBuilder convertedBy(final Class<X> type)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.convertedBy(type);
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
+      return this;
    }
 
    @Override
-   public <X extends Converter<?>> ConfigurationRuleParameterBuilder convertedBy(Class<X> type)
+   public ConfigurationRuleParameterBuilder convertedBy(final Converter<?> converter)
    {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   @Override
-   public ConfigurationRuleParameterBuilder convertedBy(Converter<?> converter)
-   {
-      // TODO Auto-generated method stub
-      return null;
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.convertedBy(converter);
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
+      return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder bindsTo(Binding binding)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return this;
    }
 
 }
