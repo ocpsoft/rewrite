@@ -9,7 +9,6 @@ import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
-import org.ocpsoft.rewrite.config.ConditionParameterEnricher.Enricher;
 import org.ocpsoft.rewrite.param.Constrainable;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
@@ -36,19 +35,18 @@ public class ConfigurationRuleParameterBuilder
    private final String parameter;
 
    public ConfigurationRuleParameterBuilder(ConfigurationRuleBuilder parent,
-            String parameter)
+            final String parameter)
    {
       this.parent = parent;
       this.parameter = parameter;
 
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
-         public void enrich(Parameter<?, String> parameter)
+         public void enrich(Parameter<?, String> param)
          {
-            parameter.bindsTo(Evaluation.property(ConfigurationRuleParameterBuilder.this.parameter));
+            param.bindsTo(Evaluation.property(parameter));
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
 
    }
 
@@ -85,99 +83,107 @@ public class ConfigurationRuleParameterBuilder
    @Override
    public ConfigurationRuleParameterBuilder transformedBy(final Transform<String> transform)
    {
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
          public void enrich(Parameter<?, String> parameter)
          {
             parameter.transformedBy(transform);
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder constrainedBy(final Constraint<String> constraint)
    {
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
          public void enrich(Parameter<?, String> parameter)
          {
             parameter.constrainedBy(constraint);
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
    @Override
    public <X extends Validator<?>> ConfigurationRuleParameterBuilder validatedBy(final Class<X> type)
    {
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
          public void enrich(Parameter<?, String> parameter)
          {
             parameter.validatedBy(type);
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder validatedBy(final Validator<?> validator)
    {
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
          public void enrich(Parameter<?, String> parameter)
          {
             parameter.validatedBy(validator);
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
    @Override
    public <X extends Converter<?>> ConfigurationRuleParameterBuilder convertedBy(final Class<X> type)
    {
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
          public void enrich(Parameter<?, String> parameter)
          {
             parameter.convertedBy(type);
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder convertedBy(final Converter<?> converter)
    {
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
          public void enrich(Parameter<?, String> parameter)
          {
             parameter.convertedBy(converter);
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder bindsTo(final Binding binding)
    {
-      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+      enrichParameters(new ParameterEnricher() {
          @Override
          public void enrich(Parameter<?, String> parameter)
          {
             parameter.bindsTo(binding);
          }
       });
-      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
+   }
+
+   private void enrichParameters(ParameterEnricher enricher)
+   {
+
+      RuleBuilder ruleBuilder = parent.getRuleBuilder();
+
+      // enrich conditions
+      Visitor<Condition> conditionVisitor = new ConditionParameterEnricher(parameter, enricher);
+      new ConditionVisit(ruleBuilder.getCondition()).accept(conditionVisitor);
+
+      // enrich operations
+      Visitor<Operation> operationVisitor = new OperationParameterEnricher(parameter, enricher);
+      new OperationVisit(ruleBuilder.getOperation()).accept(operationVisitor);
+
    }
 
 }

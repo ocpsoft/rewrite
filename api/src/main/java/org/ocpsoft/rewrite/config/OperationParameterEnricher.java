@@ -21,19 +21,19 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
- * {@link Visitor} implementation for {@link Condition}s that executes a given callback for all conditions that provide
+ * {@link Visitor} implementation for {@link Operation}s that executes a given callback for all operations that provide
  * a specific parameter.
  * 
  * @author Christian Kaltepoth
  */
-class ConditionParameterEnricher implements Visitor<Condition>
+class OperationParameterEnricher implements Visitor<Operation>
 {
 
    private final String param;
 
    private final ParameterEnricher callback;
 
-   public ConditionParameterEnricher(String param, ParameterEnricher callback)
+   public OperationParameterEnricher(String param, ParameterEnricher callback)
    {
       this.param = param;
       this.callback = callback;
@@ -41,15 +41,15 @@ class ConditionParameterEnricher implements Visitor<Condition>
 
    @Override
    @SuppressWarnings({ "rawtypes", "unchecked" })
-   public void visit(Condition condition)
+   public void visit(Operation operation)
    {
-      if (condition instanceof Parameterized) {
-         ParameterStore store = ((Parameterized) condition).getParameterStore();
+      if (operation instanceof Parameterized) {
+         ParameterStore store = ((Parameterized) operation).getParameterStore();
 
          if (store.containsKey(param)) {
 
             Parameter<?, String> parameter = store.where(param, null);
-            Assert.notNull(parameter, "Didn't find parameter [" + param + "] in:" + condition);
+            Assert.notNull(parameter, "Didn't find parameter [" + param + "] in:" + operation);
 
             callback.enrich(parameter);
 
