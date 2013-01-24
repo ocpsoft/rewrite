@@ -156,8 +156,16 @@ public class ConfigurationRuleParameterBuilder
    }
 
    @Override
-   public ConfigurationRuleParameterBuilder bindsTo(Binding binding)
+   public ConfigurationRuleParameterBuilder bindsTo(final Binding binding)
    {
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.bindsTo(binding);
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
       return this;
    }
 
