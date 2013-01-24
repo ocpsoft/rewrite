@@ -6,6 +6,7 @@ import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.ConditionParameterEnricher.Enricher;
@@ -39,6 +40,16 @@ public class ConfigurationRuleParameterBuilder
    {
       this.parent = parent;
       this.parameter = parameter;
+
+      Visitor<Condition> visitor = new ConditionParameterEnricher(parameter, new Enricher() {
+         @Override
+         public void enrich(Parameter<?, String> parameter)
+         {
+            parameter.bindsTo(Evaluation.property(ConfigurationRuleParameterBuilder.this.parameter));
+         }
+      });
+      new ConditionVisit(parent.getRuleBuilder().getCondition()).accept(visitor);
+
    }
 
    @Override
