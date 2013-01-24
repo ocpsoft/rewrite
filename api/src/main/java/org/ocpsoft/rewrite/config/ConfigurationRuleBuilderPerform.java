@@ -45,5 +45,5 @@ public interface ConfigurationRuleBuilderPerform extends ConfigurationBuilderRoo
    /**
     * Configure the {@link Parameter} with the given name.
     */
-   ConfigurationRuleParameterPerform where(String string);
+   ConfigurationRuleParameterBuilder where(String string);
 }

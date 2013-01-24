@@ -42,7 +42,7 @@ public class ConfigurationRuleParameterBuilder
    }
 
    @Override
-   public ConfigurationRuleParameter where(String parameter)
+   public ConfigurationRuleParameterBuilder where(String parameter)
    {
       return parent.where(parameter);
    }
