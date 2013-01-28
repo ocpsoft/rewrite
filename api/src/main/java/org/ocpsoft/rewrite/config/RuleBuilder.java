@@ -15,21 +15,23 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Builder for fluently defining new composite {@link Rule} instances.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RuleBuilder implements CacheableRule, RelocatableRule
+public class RuleBuilder implements RelocatableRule, CompositeCondition, CompositeOperation
 {
    private Integer priority = null;
    private String id = "";
    private Condition condition = new True();
    private Operation operation;
-   private Operation otherwise;
 
    protected RuleBuilder()
    {}
@@ -47,13 +49,7 @@ public class RuleBuilder implements CacheableRule, RelocatableRule
     */
    public static RuleBuilder wrap(final Rule rule)
    {
-      return new RuleBuilder().withId(rule.getId()).when(rule).perform(rule).otherwise(new Operation() {
-         @Override
-         public void perform(Rewrite event, EvaluationContext context)
-         {
-            rule.otherwise(event, context);
-         }
-      });
+      return new RuleBuilder().withId(rule.getId()).when(rule).perform(rule);
    }
 
    /**
@@ -102,15 +98,6 @@ public class RuleBuilder implements CacheableRule, RelocatableRule
       return this;
    }
 
-   /**
-    * Perform the given {@link Operation} when the conditions set in this {@link Rule} fail to be met.
-    */
-   public RuleBuilder otherwise(final Operation otherwise)
-   {
-      this.otherwise = DefaultOperationBuilder.wrap(this.otherwise).and(otherwise);
-      return this;
-   }
-
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
@@ -122,13 +109,6 @@ public class RuleBuilder implements CacheableRule, RelocatableRule
    {
       if (operation != null)
          operation.perform(event, context);
-   }
-
-   @Override
-   public void otherwise(Rewrite event, EvaluationContext context)
-   {
-      if (otherwise != null)
-         otherwise.perform(event, context);
    }
 
    @Override
@@ -177,7 +157,7 @@ public class RuleBuilder implements CacheableRule, RelocatableRule
 
    /**
     * This method will call the supplied visitor for all conditions attached to the rule builder.
-    *
+    * 
     * @param visitor visitor to process
     */
    public void accept(Visitor<Condition> visitor)
@@ -193,21 +173,19 @@ public class RuleBuilder implements CacheableRule, RelocatableRule
    }
 
    @Override
-   public Condition getCondition()
+   public List<Operation> getOperations()
    {
-      return condition;
+      if (operation instanceof CompositeOperation)
+         return ((CompositeOperation) operation).getOperations();
+      return Collections.emptyList();
    }
 
    @Override
-   public Operation getOperation()
+   public List<Condition> getConditions()
    {
-      return operation;
-   }
-
-   @Override
-   public Operation getOtherwise()
-   {
-      return otherwise;
+      if (condition instanceof CompositeCondition)
+         return ((CompositeCondition) condition).getConditions();
+      return Collections.emptyList();
    }
 
 }

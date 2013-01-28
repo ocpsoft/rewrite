@@ -21,7 +21,7 @@ import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * An intermediate stage {@link Rule} configuration.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
@@ -89,7 +89,10 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    @Override
    public ConfigurationRuleBuilder otherwise(final Operation operation)
    {
-      rule.otherwise(operation);
+      wrapped.addRule()
+               .when(Not.any(rule))
+               .perform(operation);
+
       return this;
    }
 

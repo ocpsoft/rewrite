@@ -26,7 +26,8 @@ import java.util.List;
 public interface CompositeCondition extends Condition
 {
    /**
-    * Return all {@link Condition} objects contained within this {@link CompositeCondition}.
+    * Returns all {@link Condition} objects contained within this {@link CompositeCondition}; otherwise, returns an
+    * empty {@link List}.
     */
    public List<Condition> getConditions();
 }

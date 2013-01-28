@@ -78,10 +78,6 @@ public abstract class TrailingSlash implements Rule
             Substitute.with(url).perform(event, context);
          }
       }
-
-      @Override
-      public void otherwise(Rewrite event, EvaluationContext context)
-      {}
    }
 
    private static class RemoveTrailingSlash extends TrailingSlash
@@ -111,10 +107,6 @@ public abstract class TrailingSlash implements Rule
             Substitute.with(url).perform(event, context);
          }
       }
-
-      @Override
-      public void otherwise(Rewrite event, EvaluationContext context)
-      {}
    }
 
    @Override

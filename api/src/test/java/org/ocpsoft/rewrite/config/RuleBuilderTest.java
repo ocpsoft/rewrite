@@ -62,10 +62,6 @@ public class RuleBuilderTest
          @Override
          public void perform(Rewrite event, EvaluationContext context)
          {}
-
-         @Override
-         public void otherwise(Rewrite event, EvaluationContext context)
-         {}
       };
 
       RuleBuilder ruleBuilder = RuleBuilder.wrap(rule);

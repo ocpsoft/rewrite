@@ -20,7 +20,7 @@ package org.ocpsoft.rewrite.config;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Rule extends Condition, Operation, Otherwise
+public interface Rule extends Condition, Operation
 {
    /**
     * Get the ID for this {@link Rule}

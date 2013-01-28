@@ -191,10 +191,6 @@ public class UrlMappingRuleAdaptor implements Rule
    }
 
    @Override
-   public void otherwise(Rewrite event, EvaluationContext context)
-   {}
-
-   @Override
    public String toString()
    {
       return "UrlMappingRuleAdaptor [mapping=" + mapping + "]";

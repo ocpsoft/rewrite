@@ -25,11 +25,10 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 /**
  * A {@link org.ocpsoft.rewrite.spi.RewriteProvider} that only operates on {@link HttpServletRequest} and
  * {@link HttpServletResponse} request cycle types.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class HttpRewriteProvider extends
-         ServletRewriteProvider<HttpServletRewrite>
+public abstract class HttpRewriteProvider extends ServletRewriteProvider<HttpServletRewrite>
 {
    @Override
    public boolean handles(final Rewrite event)

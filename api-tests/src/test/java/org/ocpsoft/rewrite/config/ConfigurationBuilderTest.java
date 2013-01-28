@@ -32,7 +32,7 @@ import org.ocpsoft.rewrite.test.MockInboundRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class ConfigurationBuilderTest
 {
@@ -64,12 +64,12 @@ public class ConfigurationBuilderTest
       };
    }
 
-   private void execute(Rule rule)
+   private void execute(Configuration config)
    {
-      if (rule.evaluate(rewrite, context))
-         rule.perform(rewrite, context);
-      else
-         rule.otherwise(rewrite, context);
+      for (Rule rule : config.getRules()) {
+         if (rule.evaluate(rewrite, context))
+            rule.perform(rewrite, context);
+      }
    }
 
    @Test
@@ -82,8 +82,7 @@ public class ConfigurationBuilderTest
                .when(And.all(Direction.isInbound(), new True()))
                .perform(operation);
 
-      Rule rule = config.getRules().get(0);
-      execute(rule);
+      execute(config);
 
       Assert.assertTrue(performed);
       Assert.assertFalse(performedOtherwise);
@@ -99,8 +98,7 @@ public class ConfigurationBuilderTest
                .when(And.all(new False()))
                .perform(operation);
 
-      Rule rule = config.getRules().get(0);
-      execute(rule);
+      execute(config);
 
       Assert.assertFalse(performed);
       Assert.assertFalse(performedOtherwise);
@@ -116,8 +114,7 @@ public class ConfigurationBuilderTest
                .when(new False())
                .otherwise(otherwise);
 
-      Rule rule = config.getRules().get(0);
-      execute(rule);
+      execute(config);
 
       Assert.assertFalse(performed);
       Assert.assertTrue(performedOtherwise);
@@ -133,8 +130,7 @@ public class ConfigurationBuilderTest
                .when(new True())
                .otherwise(otherwise);
 
-      Rule rule = config.getRules().get(0);
-      execute(rule);
+      execute(config);
 
       Assert.assertFalse(performed);
       Assert.assertFalse(performedOtherwise);
@@ -152,8 +148,7 @@ public class ConfigurationBuilderTest
                .perform(operation)
                .otherwise(otherwise);
 
-      Rule rule = config.getRules().get(0);
-      execute(rule);
+      execute(config);
 
       Assert.assertTrue(performed);
       Assert.assertFalse(performedOtherwise);
@@ -171,8 +166,7 @@ public class ConfigurationBuilderTest
                .perform(operation)
                .otherwise(otherwise);
 
-      Rule rule = config.getRules().get(0);
-      execute(rule);
+      execute(config);
 
       Assert.assertFalse(performed);
       Assert.assertTrue(performedOtherwise);
@@ -181,13 +175,19 @@ public class ConfigurationBuilderTest
    @Test
    public void testSubsetAPI() throws Exception
    {
-      ConfigurationBuilder.begin()
+      Configuration config = ConfigurationBuilder.begin()
 
                .addRule()
-               .when(Path.matches("/admin"))
-               .perform(Subset.when(JAASRoles.required("admin"))
-                        .otherwise(SendError.code(401)))
-               .otherwise(SendStatus.code(201));
+               .when(new False())
+               .otherwise(Subset.when(ConfigurationBuilder.begin()
+                        .addRule()
+                        .when(new True())
+                        .perform(operation)));
+
+      execute(config);
+
+      Assert.assertTrue(performed);
+      Assert.assertFalse(performedOtherwise);
    }
 
    @Test

@@ -19,14 +19,15 @@ import java.util.List;
 
 /**
  * An {@link Operation} that aggregates one or more operations.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public interface CompositeOperation extends Operation
 {
    /**
-    * Return all {@link Operation} objects contained within this {@link CompositeOperation}.
+    * Returns all {@link Operation} objects contained within this {@link CompositeOperation}; otherwise, returns an
+    * empty {@link List}.
     */
    public List<Operation> getOperations();
 }

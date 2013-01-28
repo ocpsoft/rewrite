@@ -72,10 +72,6 @@ public class CDN implements Rule, CDNRelocate
    }
 
    @Override
-   public void otherwise(Rewrite event, EvaluationContext context)
-   {}
-
-   @Override
    public String getId()
    {
       return id;

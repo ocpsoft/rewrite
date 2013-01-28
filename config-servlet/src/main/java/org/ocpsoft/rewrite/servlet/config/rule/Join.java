@@ -252,10 +252,6 @@ public class Join implements Rule, JoinPath
       }
    }
 
-   @Override
-   public void otherwise(Rewrite event, EvaluationContext context)
-   {};
-
    private void saveCurrentJoin(final HttpServletRequest request)
    {
       request.setAttribute(CURRENT_JOIN, this);

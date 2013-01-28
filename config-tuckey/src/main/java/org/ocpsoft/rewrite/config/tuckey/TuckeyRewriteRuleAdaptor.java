@@ -86,10 +86,6 @@ public class TuckeyRewriteRuleAdaptor implements Rule
    }
 
    @Override
-   public void otherwise(Rewrite event, EvaluationContext context)
-   {}
-
-   @Override
    public String getId()
    {
       return "tuckey-" + hashCode();

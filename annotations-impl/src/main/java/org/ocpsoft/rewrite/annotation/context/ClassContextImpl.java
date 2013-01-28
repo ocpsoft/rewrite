@@ -35,10 +35,6 @@ public class ClassContextImpl extends ContextBase implements ClassContext
       if (configurationRuleBuilder == null) {
          configurationRuleBuilder = config.addRule(new Rule() {
             @Override
-            public void otherwise(Rewrite event, EvaluationContext context)
-            {}
-
-            @Override
             public void perform(Rewrite event, EvaluationContext context)
             {}
 

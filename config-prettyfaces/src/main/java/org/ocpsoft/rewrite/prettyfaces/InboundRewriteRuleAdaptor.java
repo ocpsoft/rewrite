@@ -140,10 +140,6 @@ public class InboundRewriteRuleAdaptor implements Rule
    }
 
    @Override
-   public void otherwise(Rewrite event, EvaluationContext context)
-   {}
-
-   @Override
    public String toString()
    {
       return "InboundRewriteRuleAdaptor [rule=" + rule + "]";

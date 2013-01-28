@@ -102,8 +102,4 @@ public class OutboundRewriteRuleAdaptor implements Rule
       outbound.setOutboundAddress(AddressBuilder.create(result));
    }
 
-   @Override
-   public void otherwise(Rewrite event, EvaluationContext context)
-   {}
-
 }

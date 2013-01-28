@@ -178,11 +178,11 @@ public class ConfigurationRuleParameterBuilder
 
       // enrich conditions
       Visitor<Condition> conditionVisitor = new ConditionParameterEnricher(parameter, enricher);
-      new ConditionVisit(ruleBuilder.getCondition()).accept(conditionVisitor);
+      new ConditionVisit(ruleBuilder).accept(conditionVisitor);
 
       // enrich operations
       Visitor<Operation> operationVisitor = new OperationParameterEnricher(parameter, enricher);
-      new OperationVisit(ruleBuilder.getOperation()).accept(operationVisitor);
+      new OperationVisit(ruleBuilder).accept(operationVisitor);
 
    }
 

@@ -24,7 +24,6 @@ import org.ocpsoft.common.services.NonEnriching;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.config.CacheableRule;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationLoader;
 import org.ocpsoft.rewrite.config.Operation;
@@ -37,7 +36,7 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements NonEnriching
 {
@@ -57,7 +56,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
 
       if (ruleCacheProviders == null)
          synchronized (this) {
-            ruleCacheProviders = Iterators
+            ruleCacheProviders = (List<RuleCacheProvider>) Iterators
                      .asList(ServiceLoader.load(RuleCacheProvider.class));
 
             ServiceLogger.logLoadedServices(log, RuleCacheProvider.class, ruleCacheProviders);
@@ -95,43 +94,39 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
             {
                context.clear();
                Rule rule = rules.get(j);
-
-               boolean matched = rule.evaluate(event, context);
-
-               if (!event.getFlow().is(Flow.HANDLED))
+               if (rule.evaluate(event, context))
                {
-                  List<Operation> preOperations = context.getPreOperations();
+                  log.debug("Rule [" + rule + "] matched and will be performed.");
+
+                  List<Operation> preOperations = ((EvaluationContextImpl) context).getPreOperations();
                   for (int k = 0; k < preOperations.size(); k++) {
                      preOperations.get(k).perform(event, context);
                   }
 
-                  if (!event.getFlow().is(Flow.HANDLED))
+                  if (event.getFlow().is(Flow.HANDLED))
                   {
-                     if (matched)
-                     {
-                        log.debug("Rule [" + rule + "] matched and perform() will be executed.");
-                        rule.perform(event, context);
-                     }
-                     else
-                     {
-                        log.debug("Rule [" + rule + "] did not match and otherwise() will be executed.");
-                        rule.otherwise(event, context);
-                     }
+                     return;
+                  }
 
-                     if (!event.getFlow().is(Flow.HANDLED))
-                     {
-                        List<Operation> postOperations = context.getPostOperations();
-                        for (int k = 0; k < postOperations.size(); k++) {
-                           postOperations.get(k).perform(event, context);
-                        }
-                     }
+                  rule.perform(event, context);
+
+                  if (event.getFlow().is(Flow.HANDLED))
+                  {
+                     return;
+                  }
+
+                  List<Operation> postOperations = ((EvaluationContextImpl) context).getPostOperations();
+                  for (int k = 0; k < postOperations.size(); k++) {
+                     postOperations.get(k).perform(event, context);
+                  }
+
+                  if (event.getFlow().is(Flow.HANDLED))
+                  {
+                     return;
                   }
                }
-
-               if (event.getFlow().is(Flow.HANDLED))
-               {
-                  return;
-               }
+               else
+                  break;
             }
          }
       }
@@ -144,48 +139,36 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
       {
          context.clear();
          Rule rule = rules.get(i);
-
-         boolean matched = rule.evaluate(event, context);
-
-         if (!event.getFlow().is(Flow.HANDLED))
+         if (rule.evaluate(event, context))
          {
+            log.debug("Rule [" + rule + "] matched and will be performed.");
+            cacheable.add(rule);
             List<Operation> preOperations = context.getPreOperations();
             for (int k = 0; k < preOperations.size(); k++) {
                preOperations.get(k).perform(event, context);
             }
 
-            if (!event.getFlow().is(Flow.HANDLED))
+            if (event.getFlow().is(Flow.HANDLED))
             {
-               if (matched)
-               {
-                  log.debug("Rule [" + rule + "] matched and perform() will be executed.");
-                  rule.perform(event, context);
-
-                  if (rule instanceof CacheableRule)
-                     cacheable.add(rule);
-               }
-               else
-               {
-                  log.debug("Rule [" + rule + "] did not match and otherwise() will be executed.");
-                  rule.otherwise(event, context);
-
-                  if (rule instanceof CacheableRule && ((CacheableRule) rule).getOtherwise() != null)
-                     cacheable.add(rule);
-               }
-
-               if (!event.getFlow().is(Flow.HANDLED))
-               {
-                  List<Operation> postOperations = context.getPostOperations();
-                  for (int k = 0; k < postOperations.size(); k++) {
-                     postOperations.get(k).perform(event, context);
-                  }
-               }
+               break;
             }
-         }
 
-         if (event.getFlow().is(Flow.HANDLED))
-         {
-            break;
+            rule.perform(event, context);
+
+            if (event.getFlow().is(Flow.HANDLED))
+            {
+               break;
+            }
+
+            List<Operation> postOperations = context.getPostOperations();
+            for (int k = 0; k < postOperations.size(); k++) {
+               postOperations.get(k).perform(event, context);
+            }
+
+            if (event.getFlow().is(Flow.HANDLED))
+            {
+               break;
+            }
          }
       }
 
