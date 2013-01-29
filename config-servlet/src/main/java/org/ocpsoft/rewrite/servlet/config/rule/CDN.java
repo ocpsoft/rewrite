@@ -15,10 +15,15 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
@@ -26,10 +31,10 @@ import org.ocpsoft.rewrite.servlet.config.Substitute;
 /**
  * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
  * and an internal server resource URL
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CDN implements Rule, CDNRelocate
+public class CDN implements Rule, CDNRelocate, Parameterized
 {
    private String id;
 
@@ -99,6 +104,22 @@ public class CDN implements Rule, CDNRelocate
    public ParameterizedPatternParser getResourcExpression()
    {
       return resource.getPathExpression();
+   }
+
+   @Override
+   public Set<String> getRequiredParameterNames()
+   {
+      Set<String> result = new HashSet<String>();
+      result.addAll(resource.getRequiredParameterNames());
+      result.addAll(location.getRequiredParameterNames());
+      return result;
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      resource.setParameterStore(store);
+      location.setParameterStore(store);
    }
 
 }

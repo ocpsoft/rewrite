@@ -224,7 +224,12 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
 
       for (RegexGroup group : groups)
       {
-         String value = store.getValue(parameters.get(group.getName()));
+         Parameter<?> parameter = parameters.get(group.getName());
+         String value = store.get(parameter);
+
+         if (value == null)
+            throw new IllegalStateException("Required parameter [" + group.getName() + "] value was null.");
+
          result.put(group.getName(), value);
       }
       return result;
@@ -281,6 +286,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       if (parser == null)
       {
          parser = new RegexParameterizedPatternParser(pattern, this);
+         parser.setParameterStore(parameters);
       }
       return parser;
    }

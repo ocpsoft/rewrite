@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class RequestBindingProvider extends HttpConfigurationProvider
 {
@@ -48,7 +48,7 @@ public class RequestBindingProvider extends HttpConfigurationProvider
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
                   {
                      String one = event.getRequest().getParameter("one");
-                     String two = ((String[]) event.getRequest().getAttribute("two"))[0];
+                     String two = (String) event.getRequest().getAttribute("two");
 
                      Response.addHeader("one", one).perform(event, context);
                      Response.addHeader("two", two).perform(event, context);

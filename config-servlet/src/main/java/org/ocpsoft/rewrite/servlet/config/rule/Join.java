@@ -21,9 +21,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
-import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -61,9 +59,6 @@ public class Join implements Rule, JoinPath, Parameterized
    private final Path requestPath;
    private Path resourcePath;
 
-   private Operation operation;
-   private Condition condition;
-
    private boolean inboundCorrection = false;
 
    private boolean chainingDisabled = true;
@@ -71,6 +66,8 @@ public class Join implements Rule, JoinPath, Parameterized
    private Set<String> pathRequestParameters;
 
    private ConditionBuilder outboundConditionCache;
+
+   private ParameterStore store;
 
    protected Join(final String pattern, boolean requestBinding)
    {
@@ -150,37 +147,32 @@ public class Join implements Rule, JoinPath, Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         if (!isChainingDisabled(event) && requestPath.evaluate(event, context)
-                  && ((condition == null) || condition.evaluate(event, context)))
+         if (!isChainingDisabled(event) && requestPath.evaluate(event, context))
          {
-            if (operation != null)
-               context.addPreOperation(operation);
             return true;
          }
-         else if (inboundCorrection
-                  && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context)
-                  && ((condition == null) || condition.evaluate(event, context)))
+         else if (inboundCorrection && resourcePath.andNot(DispatchType.isForward()).evaluate(event, context))
          {
             Set<String> parameters = getPathRequestParameters();
             for (String param : parameters) {
-               if (!Query.parameterExists(param).evaluate(event, context))
+               Query query = Query.parameterExists(param);
+               query.setParameterStore(store);
+               if (!query.evaluate(event, context))
                {
                   return false;
                }
             }
-            context.addPreOperation(Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
-                     + requestPattern));
+            Redirect redirect = Redirect.permanent(((HttpInboundServletRewrite) event).getContextPath()
+                     + requestPattern);
+            redirect.setParameterStore(store);
+            context.addPreOperation(redirect);
             return true;
          }
       }
       else if ((event instanceof HttpOutboundServletRewrite))
       {
-         if (outboundConditionCache.evaluate(event, context)
-                  && ((condition == null) || condition.evaluate(event, context)))
+         if (outboundConditionCache.evaluate(event, context))
          {
-            if (operation != null)
-               context.addPreOperation(operation);
-
             return true;
          }
       }
@@ -219,7 +211,9 @@ public class Join implements Rule, JoinPath, Parameterized
          {
             event.getRewriteContext().put(JOIN_DISABLED_KEY, true);
          }
-         Forward.to(resourcePattern).perform(event, context);
+         Forward forward = Forward.to(resourcePattern);
+         forward.setParameterStore(store);
+         forward.perform(event, context);
       }
 
       else if (event instanceof HttpOutboundServletRewrite)
@@ -241,7 +235,11 @@ public class Join implements Rule, JoinPath, Parameterized
          }
 
          Address outboundAddress = ((HttpOutboundServletRewrite) event).getOutboundAddress();
-         Substitute.with(requestPattern + query.toQueryString()).perform(event, context);
+
+         Substitute substitute = Substitute.with(requestPattern + query.toQueryString());
+         substitute.setParameterStore(store);
+
+         substitute.perform(event, context);
 
          Address rewrittenAddress = ((HttpOutboundServletRewrite) event).getOutboundAddress();
          String rewrittenPath = rewrittenAddress.getPath();
@@ -290,6 +288,7 @@ public class Join implements Rule, JoinPath, Parameterized
    @Override
    public void setParameterStore(ParameterStore store)
    {
+      this.store = store;
       requestPath.setParameterStore(store);
       resourcePath.setParameterStore(store);
    }

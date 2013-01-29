@@ -15,18 +15,13 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
@@ -64,24 +59,12 @@ public class QueryEncodingTest
    }
 
    @Test
-   public void testQueryStringAttemptsToBindParameters()
+   public void testQueryStringMatchesWithRegex()
    {
-      MockBinding mockBinding = new MockBinding();
-      Query query = Query.valueExists(".*∂ve.*")
-               .bindsTo(mockBinding);
+      // FIXME remove regex support
+      Query query = Query.valueExists(".*∂ve.*");
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(query.evaluate(rewrite, context));
-
-      List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(1, operations.size());
-      for (Operation operation : operations) {
-         operation.perform(rewrite, context);
-      }
-
-      Assert.assertTrue(mockBinding.isConverted());
-      Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isSubmitted());
-      Assert.assertEquals("al∂ve", mockBinding.getBoundValue());
    }
 
    @Test
@@ -99,23 +82,11 @@ public class QueryEncodingTest
    @Test
    public void testQueryStringBindsToEntireValue()
    {
-      MockBinding mockBinding = new MockBinding();
-      Query query = Query.matches(".*&one=1.*").bindsTo(mockBinding);
+      Query query = Query.matches(".*&one=1.*");
       Assert.assertTrue(query.evaluate(rewrite, new MockEvaluationContext()));
 
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(query.evaluate(rewrite, context));
-
-      List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(1, operations.size());
-      for (Operation operation : operations) {
-         operation.perform(rewrite, context);
-      }
-
-      Assert.assertTrue(mockBinding.isConverted());
-      Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isSubmitted());
-      Assert.assertEquals("foo=bar&one=1&my+cat=al∂ve", mockBinding.getBoundValue());
    }
 
    @Test

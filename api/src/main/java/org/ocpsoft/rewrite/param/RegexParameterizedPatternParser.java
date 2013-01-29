@@ -277,6 +277,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       if (builder == null)
       {
          builder = new RegexParameterizedPatternBuilder(pattern, this);
+         builder.setParameterStore(parameters);
       }
       return builder;
    }

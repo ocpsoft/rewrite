@@ -16,17 +16,12 @@
 package org.ocpsoft.rewrite.param;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.DefaultBindable;
-import org.ocpsoft.rewrite.bind.HasBindings;
-import org.ocpsoft.rewrite.bind.HasConverter;
-import org.ocpsoft.rewrite.bind.HasValidator;
 import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -193,8 +188,8 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    @Override
    public String toString()
    {
-      return "ParameterBuilder [transforms=" + transforms + ", constraints=" + constraints + ", bindings="
-               + getBindings() + ", converter=" + converter + ", validator=" + validator + "]";
+      return "ParameterBuilder [" + name + " -> transforms=" + transforms + ", constraints=" + constraints
+               + ", bindings=" + getBindings() + ", converter=" + converter + ", validator=" + validator + "]";
    }
 
 }

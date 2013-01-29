@@ -16,16 +16,17 @@
 package org.ocpsoft.rewrite.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A fluent builder for defining {@link Configuration} objects.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationBuilder implements Configuration, ConfigurationBuilderRoot
 {
-   private final List<Rule> rules = new ArrayList<Rule>();
+   private final List<RuleBuilder> rules = new ArrayList<RuleBuilder>();
 
    ConfigurationBuilder()
    {}
@@ -33,7 +34,12 @@ public class ConfigurationBuilder implements Configuration, ConfigurationBuilder
    @Override
    public List<Rule> getRules()
    {
-      return rules;
+      return Collections.<Rule> unmodifiableList(rules);
+   }
+
+   public List<RuleBuilder> getRuleBuilders()
+   {
+      return Collections.unmodifiableList(rules);
    }
 
    /**

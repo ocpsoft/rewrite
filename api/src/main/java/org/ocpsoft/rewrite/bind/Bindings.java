@@ -16,11 +16,9 @@
 package org.ocpsoft.rewrite.bind;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
@@ -31,9 +29,9 @@ import org.ocpsoft.rewrite.exception.RewriteException;
 
 /**
  * Utility class for interacting with {@link Bindable} instances.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public abstract class Bindings
 {
@@ -44,69 +42,50 @@ public abstract class Bindings
    public static boolean enqueueSubmission(final Rewrite event, final EvaluationContext context,
             final HasBindings bindable, final Object value)
    {
+      if (value == null)
+         return true;
+
       Map<HasBindings, Object> map = new LinkedHashMap<HasBindings, Object>();
       map.put(bindable, value);
-      return enqueueSubmissions(event, context, map);
-   }
 
-   /**
-    * Submit the given value to all registered {@link Binding} instances of all given {@link HasBindings} instances.
-    * Perform this by adding individual {@link BindingOperation} instances via
-    * {@link EvaluationContext#addPreOperation(org.ocpsoft.rewrite.config.Operation)}
-    *
-    * @return false if validation fails.
-    */
-   public static boolean enqueueSubmissions(final Rewrite event, final EvaluationContext context,
-            final Map<? extends HasBindings, ? extends Object> map)
-   {
       List<Operation> operations = new ArrayList<Operation>();
-      for (Entry<? extends HasBindings, ? extends Object> entry : map.entrySet()) {
-
-         HasBindings parameter = entry.getKey();
-         Object value = entry.getValue();
-
-         List<Binding> bindings = parameter.getBindings();
+      List<Binding> bindings = bindable.getBindings();
+      for (Binding binding : bindings) {
          try {
-            for (Binding binding : bindings) {
-               try {
-                  if (binding instanceof Evaluation)
-                  {
-                     /*
-                      * Binding to the EvaluationContext is available immediately.
-                      */
-                     Object convertedValue = binding.convert(event, context, value);
-                     if (binding.validate(event, context, convertedValue))
-                     {
-                        binding.submit(event, context, value);
-                     }
-                     else
-                        return false;
-                  }
-                  else
-                  {
-                     Object convertedValue = binding.convert(event, context, value);
-                     if (binding.validate(event, context, convertedValue))
-                     {
-                        convertedValue = binding.convert(event, context, convertedValue);
-                        operations.add(new BindingOperation(binding, convertedValue));
-                     }
-                     else
-                        return false;
-                  }
+            if (binding instanceof Evaluation)
+            {
+               /*
+                * Binding to the EvaluationContext is available immediately.
+                */
+               Object convertedValue = binding.convert(event, context, value);
+               if (binding.validate(event, context, convertedValue))
+               {
+                  binding.submit(event, context, value);
                }
-               catch (Exception e) {
-                  throw new RewriteException("Failed to bind value [" + value + "] to binding [" + binding + "]", e);
+               else
+                  return false;
+            }
+            else
+            {
+               Object convertedValue = binding.convert(event, context, value);
+               if (binding.validate(event, context, convertedValue))
+               {
+                  convertedValue = binding.convert(event, context, convertedValue);
+                  operations.add(new BindingOperation(binding, convertedValue));
                }
+               else
+                  return false;
             }
          }
-         catch (ConcurrentModificationException e) {
-            e.printStackTrace();
+         catch (Exception e) {
+            throw new RewriteException("Failed to bind value [" + value + "] to binding [" + binding + "]", e);
          }
       }
 
       for (Operation operation : operations) {
          context.addPreOperation(operation);
       }
+
       return true;
    }
 
@@ -303,7 +282,7 @@ public abstract class Bindings
 
    /**
     * Used to store bindings until all conditions have been met.
-    *
+    * 
     * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
     */
    private static class BindingOperation implements Operation

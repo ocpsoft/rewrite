@@ -1,14 +1,41 @@
 package org.ocpsoft.rewrite.param;
 
-public class ParameterValueStore
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+public class ParameterValueStore implements Iterable<Entry<Parameter<?>, String>>
 {
+   Map<Parameter<?>, String> map = new HashMap<Parameter<?>, String>();
+
    public boolean submit(Parameter<?> param, String value)
    {
-      return false;
+      boolean result = false;
+      String stored = map.get(param);
+
+      if (stored == value)
+      {
+         result = true;
+      }
+      else if (stored == null)
+      {
+         // FIXME handle constraints and transforms
+         map.put(param, value);
+         result = true;
+      }
+
+      return result;
    }
 
-   public String getValue(Parameter<?> parameter)
+   public String get(Parameter<?> parameter)
    {
-      return null;
+      return map.get(parameter);
+   }
+
+   @Override
+   public Iterator<Entry<Parameter<?>, String>> iterator()
+   {
+      return map.entrySet().iterator();
    }
 }

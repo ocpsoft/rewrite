@@ -18,6 +18,7 @@ package org.ocpsoft.rewrite.config;
 import java.util.List;
 import java.util.Set;
 
+import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
@@ -39,7 +40,6 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
 {
    private final ConfigurationBuilder wrapped;
    private final RuleBuilder rule;
-   private final ParameterStore store = new ParameterStore();
 
    ConfigurationRuleBuilder(final ConfigurationBuilder config, final RuleBuilder rule)
    {
@@ -66,7 +66,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    public ConfigurationRuleParameterBuilder where(String name)
    {
       ConfigurationRuleParameterBuilder parameter = new ConfigurationRuleParameterBuilder(this, name);
-      store.put(name, parameter);
+      rule.getParameterStore().put(name, parameter);
       return parameter;
    }
 
@@ -136,16 +136,19 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    @Override
    public List<Rule> getRules()
    {
-      for (Rule rule : wrapped.getRules()) {
+      for (final RuleBuilder rule : wrapped.getRuleBuilders()) {
 
          ParameterizedCallback callback = new ParameterizedCallback() {
             @Override
             public void call(Parameterized parameterized)
             {
                Set<String> names = parameterized.getRequiredParameterNames();
+               ParameterStore store = rule.getParameterStore();
+
                for (String name : names) {
-                  if (!store.contains(name))
-                     store.put(name, new DefaultParameter(name));
+                  if (!store.contains(name)) {
+                     store.put(name, new DefaultParameter(name).bindsTo(Evaluation.property(name)));
+                  }
                }
 
                parameterized.setParameterStore(store);

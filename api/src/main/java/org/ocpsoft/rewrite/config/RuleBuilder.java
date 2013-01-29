@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
 
 /**
  * Builder for fluently defining new composite {@link Rule} instances.
@@ -28,6 +29,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public class RuleBuilder implements RelocatableRule, CompositeCondition, CompositeOperation
 {
+   private final ParameterStore store = new ParameterStore();
+
    private Integer priority = null;
    private String id = "";
    private Condition condition = new True();
@@ -101,6 +104,7 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
+      context.put(ParameterStore.class, store);
       return condition == null || condition.evaluate(event, context);
    }
 
@@ -186,6 +190,11 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
       if (condition instanceof CompositeCondition)
          return ((CompositeCondition) condition).getConditions();
       return Collections.emptyList();
+   }
+
+   public ParameterStore getParameterStore()
+   {
+      return store;
    }
 
 }

@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.servlet.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletContext;
 
@@ -24,10 +25,14 @@ import org.ocpsoft.common.services.NonEnriching;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationLoader;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -92,10 +97,16 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
             log.debug("Using cached ruleset for event [" + event + "] from provider [" + provider + "].");
             for (int j = 0; j < rules.size(); j++)
             {
-               context.clear();
                Rule rule = rules.get(j);
+
+               context.clear();
+               context.put(ParameterValueStore.class, new ParameterValueStore());
+
                if (rule.evaluate(event, context))
                {
+                  if (!handleBindings(event, context))
+                     break;
+
                   log.debug("Rule [" + rule + "] matched and will be performed.");
 
                   List<Operation> preOperations = ((EvaluationContextImpl) context).getPreOperations();
@@ -137,10 +148,16 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
       List<Rule> cacheable = new ArrayList<Rule>();
       for (int i = 0; i < rules.size(); i++)
       {
-         context.clear();
          Rule rule = rules.get(i);
+
+         context.clear();
+         context.put(ParameterValueStore.class, new ParameterValueStore());
+
          if (rule.evaluate(event, context))
          {
+            if (!handleBindings(event, context))
+               break;
+
             log.debug("Rule [" + rule + "] matched and will be performed.");
             cacheable.add(rule);
             List<Operation> preOperations = context.getPreOperations();
@@ -176,6 +193,25 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          for (int i = 0; i < ruleCacheProviders.size(); i++) {
             ruleCacheProviders.get(i).put(cacheKey, cacheable);
          }
+   }
+
+   private boolean handleBindings(final HttpServletRewrite event, final EvaluationContextImpl context)
+   {
+      boolean result = true;
+      ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
+      ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
+
+      for (Entry<String, Parameter<?>> entry : store) {
+         Parameter<?> parameter = entry.getValue();
+         String value = values.get(parameter);
+
+         if (!Bindings.enqueueSubmission(event, context, parameter, value))
+         {
+            result = false;
+            break;
+         }
+      }
+      return result;
    }
 
    @Override
