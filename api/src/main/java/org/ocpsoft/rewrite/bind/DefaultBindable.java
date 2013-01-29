@@ -20,16 +20,17 @@ import java.util.List;
 
 /**
  * Base {@link Bindable} implementation.
- *
+ * 
  * @param IMPLTYPE The type extending from {@link DefaultBindable}
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class DefaultBindable<IMPLTYPE extends DefaultBindable<IMPLTYPE>> implements Bindable<IMPLTYPE>, HasBindings
 {
    private final List<Binding> bindings = new ArrayList<Binding>();
 
    @Override
+   @SuppressWarnings("unchecked")
    public IMPLTYPE bindsTo(final Binding binding)
    {
       /*

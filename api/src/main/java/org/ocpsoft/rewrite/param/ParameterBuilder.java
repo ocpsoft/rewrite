@@ -35,32 +35,30 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
 
 /**
  * An base implementation of {@link Parameter}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterBuilder<PARAMTYPE extends ParameterBuilder<PARAMTYPE, VALUETYPE>, VALUETYPE> extends DefaultBindable<PARAMTYPE>
-         implements Parameter<PARAMTYPE, VALUETYPE>
+public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYPE>> extends DefaultBindable<IMPLTYPE>
+         implements Parameter<IMPLTYPE>
 {
-   private final List<Transform<VALUETYPE>> transforms = new ArrayList<Transform<VALUETYPE>>();
-   private final List<Constraint<VALUETYPE>> constraints = new ArrayList<Constraint<VALUETYPE>>();
+   private final List<Transform<String>> transforms = new ArrayList<Transform<String>>();
+   private final List<Constraint<String>> constraints = new ArrayList<Constraint<String>>();
    private Converter<?> converter = null;
    private Validator<?> validator = null;
-   private List<Object> delegates = new ArrayList<Object>(0);
+   private String name;
 
    /**
-    * Create a new {@link ParameterBuilder} instance.
+    * Create a new {@link ParameterBuilder} instance with the given name.
     */
-   public ParameterBuilder()
-   {}
-
-   /**
-    * Create a {@link ParameterBuilder} with the given delegates to which all operations must also be applied if any
-    * applicable interfaces are implemented. Potential interfaces include: {@link Constrainable}, {@link Transformable},
-    * {@link Bindable}, {@link HasValidator}, {@link HasConverter}
-    */
-   public ParameterBuilder(Object... delegates)
+   protected ParameterBuilder(String name)
    {
-      this.delegates = Arrays.asList(delegates);
+      this.name = name;
+   }
+
+   @Override
+   public String getName()
+   {
+      return name;
    }
 
    @Override
@@ -76,7 +74,7 @@ public abstract class ParameterBuilder<PARAMTYPE extends ParameterBuilder<PARAMT
    }
 
    @Override
-   public PARAMTYPE bindsTo(Binding binding)
+   public IMPLTYPE bindsTo(Binding binding)
    {
       if (binding instanceof Convertable && converter != null)
       {
@@ -87,70 +85,37 @@ public abstract class ParameterBuilder<PARAMTYPE extends ParameterBuilder<PARAMT
          ((Validatable<?>) binding).validatedBy(validator);
       }
 
-      for (Object delegate : delegates) {
-         if (delegate instanceof Bindable)
-         {
-            ((Bindable<?>) delegate).bindsTo(binding);
-         }
-      }
-
       return super.bindsTo(binding);
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public <X extends Converter<?>> PARAMTYPE convertedBy(Class<X> type)
+   public <X extends Converter<?>> IMPLTYPE convertedBy(Class<X> type)
    {
       this.converter = ValueHolderUtil.resolveConverter(type);
       for (Binding binding : getBindings()) {
          if (binding instanceof Convertable)
          {
-            ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
+            ((Convertable<IMPLTYPE>) binding).convertedBy(converter);
          }
       }
 
-      for (Object delegate : delegates) {
-         if (delegate instanceof HasBindings)
-         {
-            HasBindings bindable = (HasBindings) delegate;
-            for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof Convertable)
-               {
-                  ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
-               }
-            }
-         }
-      }
-
-      return (PARAMTYPE) this;
+      return (IMPLTYPE) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public PARAMTYPE convertedBy(Converter<?> converter)
+   public IMPLTYPE convertedBy(Converter<?> converter)
    {
       this.converter = converter;
       for (Binding binding : getBindings()) {
          if (binding instanceof Convertable)
          {
-            ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
+            ((Convertable<IMPLTYPE>) binding).convertedBy(converter);
          }
       }
 
-      for (Object delegate : delegates) {
-         if (delegate instanceof HasBindings)
-         {
-            HasBindings bindable = (HasBindings) delegate;
-            for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof Convertable)
-               {
-                  ((Convertable<PARAMTYPE>) binding).convertedBy(converter);
-               }
-            }
-         }
-      }
-
-      return (PARAMTYPE) this;
+      return (IMPLTYPE) this;
    }
 
    @Override
@@ -161,58 +126,32 @@ public abstract class ParameterBuilder<PARAMTYPE extends ParameterBuilder<PARAMT
 
    @Override
    @SuppressWarnings("unchecked")
-   public <X extends Validator<?>> PARAMTYPE validatedBy(Class<X> type)
+   public <X extends Validator<?>> IMPLTYPE validatedBy(Class<X> type)
    {
       this.validator = ValueHolderUtil.resolveValidator(type);
       for (Binding binding : getBindings()) {
          if (binding instanceof Validatable)
          {
-            ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
+            ((Validatable<IMPLTYPE>) binding).validatedBy(validator);
          }
       }
 
-      for (Object delegate : delegates) {
-         if (delegate instanceof HasBindings)
-         {
-            HasBindings bindable = (HasBindings) delegate;
-            for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof Validatable)
-               {
-                  ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
-               }
-            }
-         }
-      }
-
-      return (PARAMTYPE) this;
+      return (IMPLTYPE) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public PARAMTYPE validatedBy(Validator<?> validator)
+   public IMPLTYPE validatedBy(Validator<?> validator)
    {
       this.validator = validator;
       for (Binding binding : getBindings()) {
          if (binding instanceof Validatable)
          {
-            ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
+            ((Validatable<IMPLTYPE>) binding).validatedBy(validator);
          }
       }
 
-      for (Object delegate : delegates) {
-         if (delegate instanceof Bindable)
-         {
-            HasBindings bindable = (HasBindings) delegate;
-            for (Binding binding : bindable.getBindings()) {
-               if (binding instanceof Validatable)
-               {
-                  ((Validatable<PARAMTYPE>) binding).validatedBy(validator);
-               }
-            }
-         }
-      }
-
-      return (PARAMTYPE) this;
+      return (IMPLTYPE) this;
    }
 
    @Override
@@ -223,44 +162,30 @@ public abstract class ParameterBuilder<PARAMTYPE extends ParameterBuilder<PARAMT
 
    @Override
    @SuppressWarnings("unchecked")
-   public PARAMTYPE constrainedBy(Constraint<VALUETYPE> constraint)
+   public IMPLTYPE constrainedBy(Constraint<String> constraint)
    {
       this.constraints.add(constraint);
 
-      for (Object delegate : delegates) {
-         if (delegate instanceof Constrainable)
-         {
-            ((Constrainable<PARAMTYPE, VALUETYPE>) delegate).constrainedBy(constraint);
-         }
-      }
-
-      return (PARAMTYPE) this;
+      return (IMPLTYPE) this;
    }
 
    @Override
-   public List<Constraint<VALUETYPE>> getConstraints()
+   public List<Constraint<String>> getConstraints()
    {
       return constraints;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public PARAMTYPE transformedBy(Transform<VALUETYPE> transform)
+   public IMPLTYPE transformedBy(Transform<String> transform)
    {
       this.transforms.add(transform);
 
-      for (Object delegate : delegates) {
-         if (delegate instanceof Transformable)
-         {
-            ((Transformable<PARAMTYPE, VALUETYPE>) delegate).transformedBy(transform);
-         }
-      }
-
-      return (PARAMTYPE) this;
+      return (IMPLTYPE) this;
    }
 
    @Override
-   public List<Transform<VALUETYPE>> getTransforms()
+   public List<Transform<String>> getTransforms()
    {
       return transforms;
    }

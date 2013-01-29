@@ -27,11 +27,13 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class HeaderTest
 {
@@ -82,14 +84,24 @@ public class HeaderTest
    public void testHeaderMatches()
    {
       Header header = Header.matches("Accept-Charset", "{enc}");
-      header.getParameterStore().get("enc").matches("(ISO|UTF)-\\d+");
+
+      ParameterStore parameters = new ParameterStore();
+      ParameterStore.initialize(parameters, header);
+
+      parameters.get("enc").constrainedBy(new RegexConstraint("(ISO|UTF)-\\d+"));
+
       Assert.assertTrue(header.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test
    public void testCannotUseRegexes()
    {
-      Assert.assertFalse(Header.matches(".*Accept-Charset", "blah").evaluate(rewrite, new MockEvaluationContext()));
+      Header header = Header.matches(".*Accept-Charset", "blah");
+
+      ParameterStore parameters = new ParameterStore();
+      ParameterStore.initialize(parameters, header);
+
+      Assert.assertFalse(header.evaluate(rewrite, new MockEvaluationContext()));
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -113,6 +125,11 @@ public class HeaderTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Header.exists("Accept-Charset").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      Header header = Header.exists("Accept-Charset");
+
+      ParameterStore parameters = new ParameterStore();
+      ParameterStore.initialize(parameters, header);
+
+      Assert.assertFalse(header.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

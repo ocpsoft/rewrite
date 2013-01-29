@@ -17,30 +17,27 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.CompositeParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * A {@link Condition} that inspects values returned by {@link HttpServletRequest#getParameterMap()}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RequestParameter extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
+public class RequestParameter extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser name;
    private final ParameterizedPatternParser value;
@@ -57,7 +54,7 @@ public class RequestParameter extends HttpCondition implements Parameterized<Par
     * Return a {@link Header} condition that matches against both header name and values.
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
-    *
+    * 
     * @param name Regular expression matching the header name
     * @param value Regular expression matching the header value
     */
@@ -76,7 +73,7 @@ public class RequestParameter extends HttpCondition implements Parameterized<Par
     * given pattern. The header value is ignored.
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
-    *
+    * 
     * @param name Regular expression matching the header name
     */
    public static RequestParameter exists(final String name)
@@ -87,7 +84,7 @@ public class RequestParameter extends HttpCondition implements Parameterized<Par
    /**
     * Return a {@link Header} condition that matches only against the existence of a header with value matching the
     * given pattern. The header name is ignored.
-    *
+    * 
     * @param value Regular expression matching the header value
     */
    public static RequestParameter valueExists(final String value)
@@ -105,14 +102,6 @@ public class RequestParameter extends HttpCondition implements Parameterized<Par
          String parameter = parameterNames.nextElement().toString();
          if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
          {
-            Map<ParameterizedPatternParameter, String[]> parameterValues = new HashMap<ParameterizedPatternParameter, String[]>();
-            parameterValues.putAll(name.parse(event, context, parameter));
-            parameterValues.putAll(value.parse(event, context, request.getParameter(parameter)));
-
-            for (ParameterizedPatternParameter capture : parameterValues.keySet()) {
-               if (!Bindings.enqueueSubmission(event, context, capture, parameterValues.get(capture)))
-                  return false;
-            }
             return true;
          }
       }
@@ -189,8 +178,18 @@ public class RequestParameter extends HttpCondition implements Parameterized<Par
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return new CompositeParameterStore(name.getParameterStore(), value.getParameterStore());
+      Set<String> result = new HashSet<String>();
+      result.addAll(name.getRequiredParameterNames());
+      result.addAll(value.getRequiredParameterNames());
+      return result;
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      name.setParameterStore(store);
+      value.setParameterStore(store);
    }
 }

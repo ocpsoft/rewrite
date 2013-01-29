@@ -17,41 +17,35 @@ package org.ocpsoft.rewrite.param;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.DefaultBindable;
-import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.HasBindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.util.Maps;
 import org.ocpsoft.rewrite.util.ParseTools;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
 
 /**
  * An {@link org.ocpsoft.rewrite.param.Parameterized} regular expression {@link Pattern}.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RegexParameterizedPatternBuilder implements ParameterizedPatternBuilder
 {
-   private interface Transposition
-   {
-      public HasBindings getBindable(RegexGroup capture);
-   }
 
    private static final String DEFAULT_PARAMETER_PATTERN = ".*";
    private final String pattern;
    private final char[] chars;
    private final List<RegexGroup> groups = new ArrayList<RegexGroup>();
-   private final ParameterStore<ParameterizedPatternParameter> parameters = new ParameterStore<ParameterizedPatternParameter>();
+   private String defaultParameterPattern;
+   private ParameterStore parameters;
 
    private RegexParameterizedPatternParser parser = null;
 
@@ -89,9 +83,12 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    /**
     * Create a new {@link RegexParameterizedPatternBuilder} instance.
     */
-   public RegexParameterizedPatternBuilder(final CaptureType type, final String parameterPattern, final String pattern)
+   public RegexParameterizedPatternBuilder(final CaptureType type, final String defaultParameterPattern,
+            final String pattern)
    {
       Assert.notNull(pattern, "Pattern must not be null");
+
+      this.defaultParameterPattern = defaultParameterPattern;
 
       this.pattern = pattern;
       chars = pattern.toCharArray();
@@ -110,9 +107,6 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
                cursor = group.getEnd();
 
                groups.add(new RegexGroup(group, parameterIndex++));
-               String parameterName = new String(group.getCaptured());
-               parameters.where(parameterName,
-                        new ParameterizedPatternParameter(parameterName).matches(parameterPattern));
 
                break;
 
@@ -132,20 +126,13 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    @Override
    public String build(final Rewrite event, final EvaluationContext context)
    {
-      return build(extractBoundValues(event, context, new Transposition() {
-         @Override
-         @SuppressWarnings("rawtypes")
-         public HasBindings getBindable(RegexGroup capture)
-         {
-            return new DefaultBindable().bindsTo(Evaluation.property(capture.getName()));
-         }
-      }));
+      return build(extractBoundValues(event, context));
    }
 
    @Override
-   public String build(final Object... values)
+   public String build(final List<Object> values)
    {
-      if ((values == null) || (groups.size() != values.length))
+      if ((values == null && groups.size() != 0) || (groups.size() != values.size()))
       {
          throw new IllegalArgumentException("Must supply [" + groups.size() + "] values to build output string.");
       }
@@ -167,7 +154,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
             builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
          }
 
-         builder.append(values[index++]);
+         builder.append(values.get(index++));
 
          last = capture;
       }
@@ -185,7 +172,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    }
 
    @Override
-   public String build(final Map<String, List<String>> values)
+   public String build(final Map<String, Object> values)
    {
       if ((values == null) || (groups.size() != values.size()))
       {
@@ -194,7 +181,6 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
 
       StringBuilder builder = new StringBuilder();
       CapturingGroup last = null;
-      Map<String, Integer> pointers = new LinkedHashMap<String, Integer>();
 
       for (RegexGroup param : groups)
       {
@@ -209,10 +195,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
             builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
          }
 
-         String name = param.getName();
-         int index = pointers.get(name) == null ? 0 : pointers.get(name);
-         builder.append(Maps.getListValue(values, name, index));
-         pointers.put(name, index++);
+         builder.append(values.get(param.getName()));
 
          last = capture;
       }
@@ -229,49 +212,20 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       return builder.toString();
    }
 
-   private String applyTransforms(final Rewrite event, final EvaluationContext context,
-            ParameterizedPatternParameter param, String value)
-   {
-      String result = value;
-      for (Transform<String> t : param.getTransforms()) {
-         result = t.transform(event, context, value);
-      }
-      return result;
-   }
-
    /**
     * Extract bound values from configured {@link Binding} instances. Return a {@link Map} of the extracted key-value
     * pairs.
     */
-   private Map<String, List<String>> extractBoundValues(final Rewrite event, final EvaluationContext context,
-            final Transposition transpose)
+   private Map<String, Object> extractBoundValues(final Rewrite event, final EvaluationContext context)
    {
-      Map<String, List<String>> result = new LinkedHashMap<String, List<String>>();
+      Map<String, Object> result = new LinkedHashMap<String, Object>();
+
+      ParameterValueStore store = (ParameterValueStore) context.get(ParameterValueStore.class);
 
       for (RegexGroup group : groups)
       {
-         List<Object> values = Bindings.performRetrieval(event, context, transpose.getBindable(group));
-
-         for (Object boundValue : values) {
-
-            String name = group.getName();
-            if (boundValue.getClass().isArray())
-            {
-               for (Object temp : (Object[]) boundValue)
-               {
-                  Maps.addListValue(result, name,
-                           applyTransforms(event, context, parameters.get(name)
-                                    , temp == null ? null : temp.toString()));
-               }
-            }
-            else
-            {
-               Maps.addListValue(result, name,
-                        applyTransforms(event, context, parameters.get(name),
-                                 boundValue == null ? null : boundValue.toString()));
-            }
-         }
-
+         String value = store.getValue(parameters.get(group.getName()));
+         result.put(group.getName(), value);
       }
       return result;
    }
@@ -332,8 +286,18 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return parameters;
+      Set<String> result = new HashSet<String>();
+      for (RegexGroup group : groups) {
+         result.add(group.getName());
+      }
+      return result;
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      this.parameters = store;
    }
 }

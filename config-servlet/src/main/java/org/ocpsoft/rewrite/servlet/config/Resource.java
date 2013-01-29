@@ -16,12 +16,12 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.net.MalformedURLException;
+import java.util.Set;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -29,10 +29,10 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for determining existence of resources within the web root
  * of the servlet container.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Resource extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
+public class Resource extends HttpCondition implements Parameterized
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
@@ -74,9 +74,15 @@ public class Resource extends HttpCondition implements Parameterized<Parameteriz
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return resource.getParameterStore();
+      return resource.getRequiredParameterNames();
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      resource.setParameterStore(store);
    }
 
 }

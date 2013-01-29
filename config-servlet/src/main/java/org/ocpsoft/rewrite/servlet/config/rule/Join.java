@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,10 +27,8 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.CompositeParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -46,10 +45,10 @@ import org.ocpsoft.urlbuilder.Address;
 /**
  * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
  * and an internal server resource URL
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Join implements Rule, JoinPath
+public class Join implements Rule, JoinPath, Parameterized
 {
    private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
 
@@ -137,6 +136,15 @@ public class Join implements Rule, JoinPath
       return this;
    }
 
+   /**
+    * Enable the 'to' target of this {@link Join} to be intercepted by the 'path' of another Join.
+    */
+   public Join withChaining()
+   {
+      this.chainingDisabled = false;
+      return this;
+   }
+
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
@@ -192,8 +200,8 @@ public class Join implements Rule, JoinPath
        */
       if (pathRequestParameters == null)
       {
-         Set<String> nonQueryParameters = resourcePath.getPathExpression().getParameterStore().keySet();
-         Set<String> queryParameters = requestPath.getPathExpression().getParameterStore().keySet();
+         Set<String> nonQueryParameters = resourcePath.getRequiredParameterNames();
+         Set<String> queryParameters = requestPath.getRequiredParameterNames();
          queryParameters.removeAll(nonQueryParameters);
          pathRequestParameters = queryParameters;
       }
@@ -270,24 +278,20 @@ public class Join implements Rule, JoinPath
                + inboundCorrection + "]";
    }
 
-   public Join withChaining()
+   @Override
+   public Set<String> getRequiredParameterNames()
    {
-      this.chainingDisabled = false;
-      return this;
+      Set<String> result = new HashSet<String>();
+      result.addAll(requestPath.getRequiredParameterNames());
+      result.addAll(resourcePath.getRequiredParameterNames());
+      return result;
    }
 
-   public ParameterizedPatternParser getPathExpression()
+   @Override
+   public void setParameterStore(ParameterStore store)
    {
-      return requestPath.getPathExpression();
+      requestPath.setParameterStore(store);
+      resourcePath.setParameterStore(store);
    }
 
-   public ParameterizedPatternParser getResourcexpression()
-   {
-      return resourcePath.getPathExpression();
-   }
-
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
-   {
-      return new CompositeParameterStore(requestPath.getParameterStore(), resourcePath.getParameterStore());
-   }
 }

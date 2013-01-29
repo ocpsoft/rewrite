@@ -15,11 +15,12 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.util.Set;
+
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
@@ -30,12 +31,13 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
  * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestPath()}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class URL extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
+public class URL extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
+   private boolean requestBinding;
 
    private URL(final String pattern)
    {
@@ -80,9 +82,7 @@ public class URL extends HttpCondition implements Parameterized<ParameterizedPat
     */
    public URL withRequestBinding()
    {
-      for (ParameterizedPatternParameter capture : expression.getParameterStore().values()) {
-         capture.bindsTo(Request.parameter(capture.getName()));
-      }
+      this.requestBinding = true;
       return this;
    }
 
@@ -129,8 +129,22 @@ public class URL extends HttpCondition implements Parameterized<ParameterizedPat
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return expression.getParameterStore();
+      return expression.getRequiredParameterNames();
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      // TODO verify that this is the correct place to perform this type of behavior.
+      if (requestBinding)
+      {
+         for (String param : getRequiredParameterNames()) {
+            store.get(param).bindsTo(Request.parameter(param));
+         }
+      }
+
+      expression.setParameterStore(store);
    }
 }

@@ -17,27 +17,23 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class PathTest
 {
@@ -71,26 +67,16 @@ public class PathTest
    }
 
    @Test
-   public void testAttemptsToBindParameters()
+   public void testAttemptsMatchesParameters()
    {
-      MockBinding mockBinding = new MockBinding();
       Path path = Path.matches("/application/{seg}");
-      path.getParameterStore().get("seg").bindsTo(mockBinding);
+
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, path);
 
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(path.evaluate(rewrite, context));
 
-      List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(1, operations.size());
-      for (Operation operation : operations) {
-         operation.perform(rewrite, context);
-      }
-
-      Assert.assertTrue(mockBinding.isConverted());
-      Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isSubmitted());
-      Assert.assertEquals("path", mockBinding.getBoundValue());
-      Assert.assertEquals("path", Evaluation.property("seg").retrieve(rewrite, context));
    }
 
    @Test
@@ -118,18 +104,15 @@ public class PathTest
    }
 
    @Test
-   public void testMultipleWhereInvocationsReturnSameParam()
+   public void testMultipleParameterStoreInvocationsReturnSameParam()
    {
       Path path = Path.matches("/something/#{param}");
-      ParameterizedPatternParameter p1 = path.getParameterStore().get("param");
-      ParameterizedPatternParameter p2 = path.getParameterStore().get("param");
-      assertTrue(p1 == p2);
-   }
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, path);
 
-   @Test(expected = IllegalArgumentException.class)
-   public void testUnknownParameterNameWhenInvokingWhere()
-   {
-      Path.matches("/something/#{param}").getParameterStore().get("notexisting");
+      Parameter<?> p1 = store.get("param");
+      Parameter<?> p2 = store.get("param");
+      assertTrue(p1 == p2);
    }
 
 }

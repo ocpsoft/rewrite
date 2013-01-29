@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
@@ -30,7 +31,6 @@ import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.ServletRegistration;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -38,10 +38,10 @@ import org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for comparing URLs to Servlet Mappings.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ServletMapping extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
+public class ServletMapping extends HttpCondition implements Parameterized
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
@@ -135,8 +135,14 @@ public class ServletMapping extends HttpCondition implements Parameterized<Param
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return resource.getParameterStore();
+      return resource.getRequiredParameterNames();
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      resource.setParameterStore(store);
    }
 }

@@ -15,16 +15,23 @@
  */
 package org.ocpsoft.rewrite.param;
 
+import java.util.Set;
+
 /**
  * Represents an object which may be parameterized and bound.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
-public interface Parameterized<PARAMTYPE extends Parameter<PARAMTYPE, VALUETYPE>, VALUETYPE>
+public interface Parameterized
 {
    /**
-    * Get all the currently configured {@link Parameter} instances for this {@link Parameterized} instance.
+    * Get all required {@link Parameter} names for this {@link Parameterized} instance.
     */
-   ParameterStore<PARAMTYPE> getParameterStore();
+   Set<String> getRequiredParameterNames();
+
+   /**
+    * Initialize this {@link Parameterized} instance with the global {@link ParameterStore}.
+    */
+   void setParameterStore(ParameterStore store);
 }

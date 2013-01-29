@@ -21,17 +21,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class DomainTest
 {
@@ -62,27 +61,11 @@ public class DomainTest
    {
       MockEvaluationContext context = new MockEvaluationContext();
       Hostname hostname = Hostname.matches("{p}.com");
-      hostname.getParameterStore().get("p").convertedBy(new DomainConverter());
-      hostname.evaluate(inbound, context);
 
-      Assert.assertEquals("example", Evaluation.property("p").retrieve(inbound, context));
-      Assert.assertEquals(new DomainConvertedType("example"),
-               Evaluation.property("p").retrieveConverted(inbound, context));
-   }
+      ParameterStore parameters = new ParameterStore();
+      ParameterStore.initialize(parameters, hostname);
 
-   @Test
-   public void testDomainMatchesBindsInbound()
-   {
-      MockEvaluationContext context = new MockEvaluationContext();
-      Hostname hostname = Hostname.matches("{domain}.com");
-      hostname.getParameterStore().get("domain").bindsTo(Request.attribute("domain"));
-      Assert.assertTrue(hostname
-               .evaluate(inbound, context));
-
-      // Invoke the binding.
-      context.getPreOperations().get(0).perform(inbound, context);
-
-      Assert.assertEquals("example", Evaluation.property("domain").retrieve(inbound, context));
+      Assert.assertTrue(hostname.evaluate(inbound, context));
    }
 
    @Test

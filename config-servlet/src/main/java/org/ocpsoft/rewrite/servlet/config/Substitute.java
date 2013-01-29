@@ -15,13 +15,14 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.util.Set;
+
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.Transformations;
@@ -35,10 +36,10 @@ import org.ocpsoft.urlbuilder.AddressBuilder;
  * {@link org.ocpsoft.rewrite.event.InboundRewrite} events, this {@link Operation} calls
  * {@link HttpInboundServletRewrite#forward(String)}, and for {@link org.ocpsoft.rewrite.event.OutboundRewrite} events,
  * this method calls {@link HttpOutboundServletRewrite#setOutboundAddress(String)}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Substitute extends HttpOperation implements Parameterized<ParameterizedPatternParameter, String>
+public class Substitute extends HttpOperation implements Parameterized
 {
    private final ParameterizedPatternParser location;
 
@@ -46,10 +47,6 @@ public class Substitute extends HttpOperation implements Parameterized<Parameter
    {
       Assert.notNull(location, "Location must not be null.");
       this.location = new RegexParameterizedPatternParser("[^/]+", location);
-
-      for (ParameterizedPatternParameter param : getParameterStore().values()) {
-         param.transformedBy(Transformations.encodePath());
-      }
    }
 
    /**
@@ -102,8 +99,19 @@ public class Substitute extends HttpOperation implements Parameterized<Parameter
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return location.getParameterStore();
+      return location.getRequiredParameterNames();
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      // TODO Verify that this is the correct place to do configuration-specific tasks.
+      for (String param : getRequiredParameterNames()) {
+         store.get(param).transformedBy(Transformations.encodePath());
+      }
+
+      location.setParameterStore(store);
    }
 }

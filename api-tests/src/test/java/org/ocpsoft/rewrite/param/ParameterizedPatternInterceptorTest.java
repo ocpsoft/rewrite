@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.param;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -25,8 +24,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
-import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
-import org.ocpsoft.rewrite.util.Maps;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -60,9 +57,9 @@ public class ParameterizedPatternInterceptorTest
    {
       RegexParameterizedPatternBuilder path = new RegexParameterizedPatternBuilder("[^/]+",
                "/{i18n:customer}/{customer}/orders/{id}");
-      Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-      Maps.addListValue(map, "customer", "lincoln");
-      Maps.addListValue(map, "id", "24");
+      Map<String, Object> map = new LinkedHashMap<String, Object>();
+      map.put("customer", "lincoln");
+      map.put("id", "24");
       Assert.assertEquals("/cust/lincoln/orders/24", path.build(map));
    }
 

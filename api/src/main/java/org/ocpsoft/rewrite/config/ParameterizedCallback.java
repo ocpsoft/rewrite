@@ -15,14 +15,15 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
- * Callback used by {@link ConditionParameterEnricher}.
+ * Callback used by {@link ParameterizedConditionVisitor}.
  * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-interface ParameterEnricher
+interface ParameterizedCallback
 {
-   void enrich(Parameter<?, String> parameter);
+   void call(Parameterized parameterized);
 }

@@ -27,11 +27,13 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class RequestParameterTest
 {
@@ -88,7 +90,11 @@ public class RequestParameterTest
    public void testRequestParameterMatches()
    {
       RequestParameter requestParam = RequestParameter.matches("foo", "{value}");
-      requestParam.getParameterStore().get("value").matches("(bar|baz)");
+
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, requestParam);
+
+      store.get("value").constrainedBy(new RegexConstraint("(bar|baz)"));
       Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -96,7 +102,11 @@ public class RequestParameterTest
    public void testRequestParameterMatchesAll()
    {
       RequestParameter requestParam = RequestParameter.matchesAll("baz", "{value}");
-      requestParam.getParameterStore().get("value").matches("(cab|caz)");
+
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, requestParam);
+
+      store.get("value").constrainedBy(new RegexConstraint("(cab|caz)"));
       Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -111,7 +121,10 @@ public class RequestParameterTest
    public void testRequestParameterMatchesAllNamesNotValues()
    {
       RequestParameter requestParam = RequestParameter.matchesAll("{name}", "{value}");
-      requestParam.getParameterStore().get("value").matches("nothing");
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, requestParam);
+
+      store.get("value").constrainedBy(new RegexConstraint("nothing"));
       Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -119,7 +132,10 @@ public class RequestParameterTest
    public void testRequestParameterMatchesAllNotName()
    {
       RequestParameter requestParam = RequestParameter.matchesAll("{name}", "{value}");
-      requestParam.getParameterStore().get("name").matches("nothing");
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, requestParam);
+
+      store.get("name").constrainedBy(new RegexConstraint("nothing"));
       Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -127,7 +143,10 @@ public class RequestParameterTest
    public void testRequestParameterMatchesAllInvalid()
    {
       RequestParameter requestParam = RequestParameter.matchesAll("baz", "{value}");
-      requestParam.getParameterStore().get("value").matches("(cab|xxx)");
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, requestParam);
+
+      store.get("value").constrainedBy(new RegexConstraint("(cab|xxx)"));
       Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 

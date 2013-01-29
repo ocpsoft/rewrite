@@ -17,6 +17,8 @@ package org.ocpsoft.rewrite.showcase.rest;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -25,6 +27,8 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
@@ -37,10 +41,47 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class RestRewriteConfiguration extends HttpConfigurationProvider
 {
+
+   private final class PostOperation extends HttpOperation implements Parameterized
+   {
+      @Override
+      public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+      {
+         try {
+            Product product = XMLUtil.streamToObject(Product.class, event.getRequest().getInputStream());
+            product = products.add(product);
+
+            /**
+             * Just for fun, set a response header containing the URL to the newly created Product.
+             */
+            String location = new RegexParameterizedPatternBuilder(event.getContextPath()
+                     + "/store/product/{pid}").build(Arrays.<Object> asList(product.getId()));
+            Response.addHeader("Location", location).perform(event, context);
+
+            event.getResponse().setContentType("text/html");
+            ((HttpInboundServletRewrite) event).sendStatusCode(200);
+         }
+         catch (Exception e) {
+            throw new RuntimeException(e);
+         }
+      }
+
+      @Override
+      public Set<String> getRequiredParameterNames()
+      {
+         return null;
+      }
+
+      @Override
+      public void setParameterStore(ParameterStore store)
+      {
+
+      }
+   }
 
    @Inject
    private ProductRegistry products;
@@ -113,30 +154,7 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
 
                .addRule()
                .when(Path.matches("/store/products").and(Method.isPost()))
-               .perform(new HttpOperation() {
-                  @Override
-                  public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
-                  {
-                     try {
-                        Product product = XMLUtil.streamToObject(Product.class, event.getRequest().getInputStream());
-                        product = products.add(product);
-
-                        /**
-                         * Just for fun, set a response header containing the URL to the newly created Product.
-                         */
-                        String location = new RegexParameterizedPatternBuilder(event.getContextPath()
-                                 + "/store/product/{pid}")
-                                 .build(product.getId());
-                        Response.addHeader("Location", location).perform(event, context);
-
-                        event.getResponse().setContentType("text/html");
-                        ((HttpInboundServletRewrite) event).sendStatusCode(200);
-                     }
-                     catch (Exception e) {
-                        throw new RuntimeException(e);
-                     }
-                  }
-               })
+               .perform(new PostOperation())
 
                .addRule().when(Path.matches("/")).perform(new HttpOperation() {
 

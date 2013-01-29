@@ -15,25 +15,22 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.mock.MockBinding;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class URLTest
 {
@@ -74,51 +71,30 @@ public class URLTest
    }
 
    @Test
-   public void testAttemptsToBindParameters()
+   public void testUrlMatchesWithParameters()
    {
-      MockBinding mockBinding = new MockBinding();
       URL url = URL.matches("{prefix}/application/{seg}{suffix}");
-      url.getParameterStore().get("prefix").matches(".*");
-      url.getParameterStore().get("suffix").matches("\\?.*");
-      url.getParameterStore().get("seg").bindsTo(mockBinding);
+
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, url);
+
+      store.get("prefix").constrainedBy(new RegexConstraint(".*"));
+      store.get("suffix").constrainedBy(new RegexConstraint("\\?.*"));
+
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
-
-      List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(1, operations.size());
-      for (Operation operation : operations) {
-         operation.perform(rewrite, context);
-      }
-
-      Assert.assertTrue(mockBinding.isConverted());
-      Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isSubmitted());
-      Assert.assertEquals("path", mockBinding.getBoundValue());
-      Assert.assertEquals("path", Evaluation.property("seg").retrieve(rewrite, context));
    }
 
    @Test
-   public void testCaptureInBindsParameters()
+   public void testCaptureMatches()
    {
-      MockBinding mockBinding = new MockBinding();
       URL url = URL.captureIn("foo");
-      url.getParameterStore().get("foo").bindsTo(mockBinding);
+
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, url);
+
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
-
-      List<Operation> operations = context.getPreOperations();
-      Assert.assertEquals(1, operations.size());
-      for (Operation operation : operations) {
-         operation.perform(rewrite, context);
-      }
-
-      Assert.assertTrue(mockBinding.isConverted());
-      Assert.assertTrue(mockBinding.isValidated());
-      Assert.assertTrue(mockBinding.isSubmitted());
-      Assert.assertEquals("http://domain.com:8080/context/application/path?foo=bar&baz=bazaar",
-               mockBinding.getBoundValue());
-      Assert.assertEquals("http://domain.com:8080/context/application/path?foo=bar&baz=bazaar",
-               Evaluation.property("foo").retrieve(rewrite, context));
    }
 
    @Test

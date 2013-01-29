@@ -22,6 +22,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * Defines the methods necessary to perform {@link Binding} value retrieval.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ *         TODO Should this be validated and reverse-converted as well?
  */
 public interface Retrieval
 {

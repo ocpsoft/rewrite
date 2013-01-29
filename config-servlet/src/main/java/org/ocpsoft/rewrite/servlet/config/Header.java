@@ -17,26 +17,26 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.CompositeParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * Responsible for asserting on {@link HttpServletRequest#getHeader(String)} values.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Header extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
+public class Header extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser name;
    private final ParameterizedPatternParser value;
@@ -53,7 +53,7 @@ public class Header extends HttpCondition implements Parameterized<Parameterized
     * Return a {@link Header} condition that matches against both header name and values.
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
-    *
+    * 
     * @param name Regular expression matching the header name
     * @param value Regular expression matching the header value
     */
@@ -67,7 +67,7 @@ public class Header extends HttpCondition implements Parameterized<Parameterized
     * given pattern. The header value is ignored.
     * <p>
     * See also: {@link HttpServletRequest#getHeader(String)}
-    *
+    * 
     * @param name Regular expression matching the header name
     */
    public static Header exists(final String name)
@@ -78,7 +78,7 @@ public class Header extends HttpCondition implements Parameterized<Parameterized
    /**
     * Return a {@link Header} condition that matches only against the existence of a header with value matching the
     * given pattern. The header name is ignored.
-    *
+    * 
     * @param value Regular expression matching the header value
     */
    public static Header valueExists(final String value)
@@ -94,7 +94,10 @@ public class Header extends HttpCondition implements Parameterized<Parameterized
       if (headerNames != null) {
          for (String header : Collections.list(headerNames))
          {
-            return (name.matches(event, context, header) && matchesValue(event, context, request, header));
+            if (name.matches(event, context, header) && matchesValue(event, context, request, header))
+            {
+               return true;
+            }
          }
       }
       return false;
@@ -117,8 +120,18 @@ public class Header extends HttpCondition implements Parameterized<Parameterized
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return new CompositeParameterStore(name.getParameterStore(), value.getParameterStore());
+      Set<String> result = new HashSet<String>();
+      result.addAll(name.getRequiredParameterNames());
+      result.addAll(value.getRequiredParameterNames());
+      return result;
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      name.setParameterStore(store);
+      value.setParameterStore(store);
    }
 }

@@ -15,19 +15,20 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getScheme()}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class UserAgent extends HttpCondition
@@ -102,8 +103,7 @@ public abstract class UserAgent extends HttpCondition
       }
    }
 
-   private static class PatternUserAgent extends UserAgent implements
-            Parameterized<ParameterizedPatternParameter, String>
+   private static class PatternUserAgent extends UserAgent implements Parameterized
    {
       private final RegexParameterizedPatternParser expression;
 
@@ -127,9 +127,15 @@ public abstract class UserAgent extends HttpCondition
       }
 
       @Override
-      public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+      public Set<String> getRequiredParameterNames()
       {
-         return expression.getParameterStore();
+         return expression.getRequiredParameterNames();
+      }
+
+      @Override
+      public void setParameterStore(ParameterStore store)
+      {
+         expression.setParameterStore(store);
       }
    }
 }

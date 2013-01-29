@@ -15,29 +15,34 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
  * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestPath()}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
+public class Path extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
    private boolean withRequestBinding = false;
+   private String captureIn;
 
    private Path(final String pattern)
    {
@@ -64,10 +69,13 @@ public class Path extends HttpCondition implements Parameterized<ParameterizedPa
       return new Path(pattern);
    }
 
+   /**
+    * Capture the entire path portion of the inbound {@link Address} into the given parameter.
+    */
    public static Path captureIn(final String param)
    {
       Path path = new Path("{" + param + "}");
-      path.expression.getParameterStore().get(param).matches(".*");
+      path.captureIn = param;
       return path;
    }
 
@@ -79,13 +87,7 @@ public class Path extends HttpCondition implements Parameterized<ParameterizedPa
     */
    public Path withRequestBinding()
    {
-      if (!withRequestBinding)
-      {
-         for (ParameterizedPatternParameter parameter : expression.getParameterStore().values()) {
-            parameter.bindsTo(Request.parameter(parameter.getName()));
-         }
-         withRequestBinding = true;
-      }
+      withRequestBinding = true;
       return this;
    }
 
@@ -122,8 +124,31 @@ public class Path extends HttpCondition implements Parameterized<ParameterizedPa
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return expression.getParameterStore();
+      Set<String> result = new HashSet<String>();
+      if (captureIn != null)
+         result.add(captureIn);
+      else
+         result.addAll(expression.getRequiredParameterNames());
+      return result;
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      if (captureIn != null)
+      {
+         store.get(captureIn).constrainedBy(new RegexConstraint(".*"));
+      }
+      if (withRequestBinding)
+      {
+         for (String param : getRequiredParameterNames()) {
+            store.get(param).bindsTo(Request.parameter(param));
+         }
+         withRequestBinding = true;
+      }
+
+      expression.setParameterStore(store);
    }
 }

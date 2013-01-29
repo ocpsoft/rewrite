@@ -21,17 +21,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class SchemeTest
 {
@@ -58,17 +57,15 @@ public class SchemeTest
    }
 
    @Test
-   public void testShemeMatchesBindsInbound()
+   public void testShemeMatchesInboundParameterized()
    {
       MockEvaluationContext context = new MockEvaluationContext();
       Scheme scheme = Scheme.matches("{scheme}");
-      scheme.getParameterStore().get("scheme").bindsTo(Request.attribute("scheme"));
+
+      ParameterStore store = new ParameterStore();
+      ParameterStore.initialize(store, scheme);
+
       Assert.assertTrue(scheme.evaluate(inbound, context));
-
-      // Invoke the binding.
-      context.getPreOperations().get(0).perform(inbound, context);
-
-      Assert.assertEquals("https", Evaluation.property("scheme").retrieve(inbound, context));
    }
 
    @Test

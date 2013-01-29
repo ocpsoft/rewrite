@@ -78,8 +78,11 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
           * It also provides access to a parameter which is named like the parameter that
           * the AddBindingVisitor is expecting.
           */
-         Condition requestParameter = RequestParameter.matches("{name}", "{" + param + "}")
-                  .where("name").matches(param);
+
+         // FIXME Commented out until this can be resolved via other means
+         Condition requestParameter = RequestParameter.matches("{name}", "{" + param + "}");
+         // .where("name").matches(param);
+         // FIXME End compilation comment-out
 
          /*
           * Add the query parameter condition to the condition tree. We must make sure that
@@ -141,7 +144,9 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
             // check if the parameter is present here
             Parameter parameter = null;
             try {
-               parameter = parameterized.getParameterStore().get(param);
+               // FIXME commented out until it can be resolved via other means
+               // parameter = parameterized.getParameterStore().get(param);
+               // FIXME end comment-out
             }
             catch (IllegalArgumentException e) {
                if (log.isTraceEnabled()) {

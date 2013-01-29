@@ -15,26 +15,26 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getServerName()}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Hostname extends HttpCondition implements Parameterized<ParameterizedPatternParameter, String>
+public class Hostname extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
 
@@ -97,22 +97,21 @@ public class Hostname extends HttpCondition implements Parameterized<Parameteriz
       return expression.toString();
    }
 
-   public Hostname withRequestBinding()
-   {
-      for (ParameterizedPatternParameter parameter : expression.getParameterStore().values()) {
-         parameter.bindsTo(Request.parameter(parameter.getName()));
-      }
-      return this;
-   }
-
    public ParameterizedPatternParser getDomainExpression()
    {
       return expression;
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return expression.getParameterStore();
+      return expression.getRequiredParameterNames();
    }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      expression.setParameterStore(store);
+   }
+
 }

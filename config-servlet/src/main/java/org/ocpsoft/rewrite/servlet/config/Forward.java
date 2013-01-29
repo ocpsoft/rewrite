@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.net.URL;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +25,6 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
-import org.ocpsoft.rewrite.param.ParameterizedPatternParameter;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -33,10 +33,10 @@ import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 /**
  * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via
  * {@link org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite#forward(String)}
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Forward extends HttpOperation implements Parameterized<ParameterizedPatternParameter, String>
+public class Forward extends HttpOperation implements Parameterized
 {
    private final ParameterizedPatternBuilder location;
 
@@ -90,8 +90,15 @@ public class Forward extends HttpOperation implements Parameterized<Parameterize
    }
 
    @Override
-   public ParameterStore<ParameterizedPatternParameter> getParameterStore()
+   public Set<String> getRequiredParameterNames()
    {
-      return location.getParameterStore();
+      return location.getRequiredParameterNames();
    }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      location.setParameterStore(store);
+   }
+
 }

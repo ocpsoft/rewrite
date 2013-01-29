@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
@@ -26,36 +23,21 @@ import org.ocpsoft.rewrite.param.Parameterized;
  * 
  * @author Christian Kaltepoth
  */
-class ConditionParameterEnricher implements Visitor<Condition>
+class ParameterizedConditionVisitor implements Visitor<Condition>
 {
+   private final ParameterizedCallback callback;
 
-   private final String param;
-
-   private final ParameterEnricher callback;
-
-   public ConditionParameterEnricher(String param, ParameterEnricher callback)
+   public ParameterizedConditionVisitor(ParameterizedCallback callback)
    {
-      this.param = param;
       this.callback = callback;
    }
 
    @Override
-   @SuppressWarnings({ "rawtypes", "unchecked" })
    public void visit(Condition condition)
    {
       if (condition instanceof Parameterized) {
-         ParameterStore store = ((Parameterized) condition).getParameterStore();
-
-         if (store.containsKey(param)) {
-
-            Parameter<?, String> parameter = store.where(param, null);
-            Assert.notNull(parameter, "Didn't find parameter [" + param + "] in:" + condition);
-
-            callback.enrich(parameter);
-
-         }
+         callback.call((Parameterized) condition);
       }
-
    }
 
 }

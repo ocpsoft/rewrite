@@ -9,14 +9,13 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- *
+ * 
  * A {@link Parameterized} regular expression {@link Pattern}.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
-public interface ParameterizedPatternBuilder extends
-         ParameterizedPattern<ParameterizedPatternBuilder>
+public interface ParameterizedPatternBuilder extends ParameterizedPattern
 {
    /**
     * Return the {@link ParameterizedPatternParser} corresponding to the pattern with which this
@@ -31,14 +30,13 @@ public interface ParameterizedPatternBuilder extends
    String build(Rewrite event, EvaluationContext context);
 
    /**
-    * Use this expression to build a {@link String} from the given pattern and values. Does not apply any configured
-    * {@link Transform} instances.
+    * Use this expression to build a {@link String} from given values.
     */
-   String build(Map<String, List<String>> parameters);
+   String build(Map<String, Object> parameters);
 
    /**
     * Use this expression's pattern to build a {@link String} from the given values. Enforces that the number of values
     * passed must equal the number of expression parameters. Does not apply any configured {@link Transform} instances.
     */
-   String build(Object... values);
+   String build(List<Object> values);
 }

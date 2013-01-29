@@ -11,12 +11,12 @@ import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.param.Constrainable;
 import org.ocpsoft.rewrite.param.Constraint;
-import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.param.Transformable;
 
-public class ConfigurationRuleParameterBuilder
+public class ConfigurationRuleParameterBuilder extends ParameterBuilder<ConfigurationRuleParameterBuilder>
          implements
          Bindable<ConfigurationRuleParameterBuilder>,
          Convertable<ConfigurationRuleParameterBuilder>,
@@ -32,22 +32,14 @@ public class ConfigurationRuleParameterBuilder
 {
 
    private final ConfigurationRuleBuilder parent;
-   private final String parameter;
 
    public ConfigurationRuleParameterBuilder(ConfigurationRuleBuilder parent,
-            final String parameter)
+            final String name)
    {
+      super(name);
       this.parent = parent;
-      this.parameter = parameter;
 
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> param)
-         {
-            param.bindsTo(Evaluation.property(parameter));
-         }
-      });
-
+      this.bindsTo(Evaluation.property(name));
    }
 
    @Override
@@ -77,113 +69,49 @@ public class ConfigurationRuleParameterBuilder
    @Override
    public ConfigurationRuleParameterBuilder matches(final String pattern)
    {
-      return constrainedBy(new RegexConstraint(pattern));
+      return super.constrainedBy(new RegexConstraint(pattern));
    }
 
    @Override
    public ConfigurationRuleParameterBuilder transformedBy(final Transform<String> transform)
    {
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> parameter)
-         {
-            parameter.transformedBy(transform);
-         }
-      });
-      return this;
+      return super.transformedBy(transform);
    }
 
    @Override
    public ConfigurationRuleParameterBuilder constrainedBy(final Constraint<String> constraint)
    {
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> parameter)
-         {
-            parameter.constrainedBy(constraint);
-         }
-      });
-      return this;
+      return super.constrainedBy(constraint);
    }
 
    @Override
    public <X extends Validator<?>> ConfigurationRuleParameterBuilder validatedBy(final Class<X> type)
    {
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> parameter)
-         {
-            parameter.validatedBy(type);
-         }
-      });
-      return this;
+      return super.validatedBy(type);
    }
 
    @Override
    public ConfigurationRuleParameterBuilder validatedBy(final Validator<?> validator)
    {
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> parameter)
-         {
-            parameter.validatedBy(validator);
-         }
-      });
-      return this;
+      return super.validatedBy(validator);
    }
 
    @Override
    public <X extends Converter<?>> ConfigurationRuleParameterBuilder convertedBy(final Class<X> type)
    {
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> parameter)
-         {
-            parameter.convertedBy(type);
-         }
-      });
-      return this;
+      return super.convertedBy(type);
    }
 
    @Override
    public ConfigurationRuleParameterBuilder convertedBy(final Converter<?> converter)
    {
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> parameter)
-         {
-            parameter.convertedBy(converter);
-         }
-      });
-      return this;
+      return super.convertedBy(converter);
    }
 
    @Override
    public ConfigurationRuleParameterBuilder bindsTo(final Binding binding)
    {
-      enrichParameters(new ParameterEnricher() {
-         @Override
-         public void enrich(Parameter<?, String> parameter)
-         {
-            parameter.bindsTo(binding);
-         }
-      });
-      return this;
-   }
-
-   private void enrichParameters(ParameterEnricher enricher)
-   {
-
-      RuleBuilder ruleBuilder = parent.getRuleBuilder();
-
-      // enrich conditions
-      Visitor<Condition> conditionVisitor = new ConditionParameterEnricher(parameter, enricher);
-      new ConditionVisit(ruleBuilder).accept(conditionVisitor);
-
-      // enrich operations
-      Visitor<Operation> operationVisitor = new OperationParameterEnricher(parameter, enricher);
-      new OperationVisit(ruleBuilder).accept(operationVisitor);
-
+      return super.bindsTo(binding);
    }
 
 }

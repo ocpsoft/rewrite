@@ -16,8 +16,12 @@
 package org.ocpsoft.rewrite.config;
 
 import java.util.List;
+import java.util.Set;
 
+import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
  * An intermediate stage {@link Rule} configuration.
@@ -35,6 +39,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
 {
    private final ConfigurationBuilder wrapped;
    private final RuleBuilder rule;
+   private final ParameterStore store = new ParameterStore();
 
    ConfigurationRuleBuilder(final ConfigurationBuilder config, final RuleBuilder rule)
    {
@@ -58,9 +63,11 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
     * Configure the {@link Parameter} with the given name.
     */
    @Override
-   public ConfigurationRuleParameterBuilder where(String parameter)
+   public ConfigurationRuleParameterBuilder where(String name)
    {
-      return new ConfigurationRuleParameterBuilder(this, parameter);
+      ConfigurationRuleParameterBuilder parameter = new ConfigurationRuleParameterBuilder(this, name);
+      store.put(name, parameter);
+      return parameter;
    }
 
    /**
@@ -129,7 +136,30 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    @Override
    public List<Rule> getRules()
    {
+      for (Rule rule : wrapped.getRules()) {
+
+         ParameterizedCallback callback = new ParameterizedCallback() {
+            @Override
+            public void call(Parameterized parameterized)
+            {
+               Set<String> names = parameterized.getRequiredParameterNames();
+               for (String name : names) {
+                  if (!store.contains(name))
+                     store.put(name, new DefaultParameter(name));
+               }
+
+               parameterized.setParameterStore(store);
+            }
+         };
+
+         Visitor<Condition> conditionVisitor = new ParameterizedConditionVisitor(callback);
+         new ConditionVisit(rule).accept(conditionVisitor);
+
+         Visitor<Operation> operationVisitor = new ParameterizedOperationVisitor(callback);
+         new OperationVisit(rule).accept(operationVisitor);
+
+      }
+
       return wrapped.getRules();
    }
-
 }

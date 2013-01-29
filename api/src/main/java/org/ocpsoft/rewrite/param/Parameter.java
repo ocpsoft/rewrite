@@ -26,19 +26,19 @@ import org.ocpsoft.rewrite.bind.Validator;
 
 /**
  * An type specific {@link org.ocpsoft.rewrite.bind.Bindable}.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE, VALUETYPE>, VALUETYPE> extends
+public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>> extends
          Bindable<IMPLTYPE>,
          Convertable<IMPLTYPE>,
          Validatable<IMPLTYPE>,
 
-         Constrainable<IMPLTYPE, VALUETYPE>,
-         Transformable<IMPLTYPE, VALUETYPE>,
+         Constrainable<IMPLTYPE, String>,
+         Transformable<IMPLTYPE, String>,
 
-         HasConstraints<VALUETYPE>,
-         HasTransforms<VALUETYPE>,
+         HasConstraints<String>,
+         HasTransforms<String>,
          HasValidator,
          HasConverter,
          HasBindings,

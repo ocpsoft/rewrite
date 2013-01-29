@@ -1,20 +1,32 @@
 package org.ocpsoft.rewrite.param;
 
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * {@link Parameter} store which retains the order, bindings, and names of parameters contained within.
  */
-public class ParameterStore<T extends Parameter<T, ?>> implements Map<String, T>
+public class ParameterStore implements Iterable<Entry<String, Parameter<?>>>
 {
-   private final Map<String, T> parameters = new LinkedHashMap<String, T>();
+   private final Map<String, Parameter<?>> parameters = new LinkedHashMap<String, Parameter<?>>();
 
-   public T where(final String param, T deflt)
+   public static void initialize(ParameterStore store, Parameterized parameterized)
    {
-      T parameter = null;
+      Set<String> names = parameterized.getRequiredParameterNames();
+      for (String name : names) {
+         if (!store.contains(name))
+            store.put(name, new DefaultParameter(name));
+      }
+
+      parameterized.setParameterStore(store);
+   }
+
+   public Parameter<?> where(final String param, Parameter<?> deflt)
+   {
+      Parameter<?> parameter = null;
       if (parameters.get(param) != null)
       {
          parameter = parameters.get(param);
@@ -27,77 +39,36 @@ public class ParameterStore<T extends Parameter<T, ?>> implements Map<String, T>
       return parameter;
    }
 
-   @Override
-   public void clear()
-   {
-      parameters.clear();
-   }
-
-   @Override
-   public boolean containsKey(Object key)
-   {
-      return parameters.get(key) != null;
-   }
-
-   @Override
-   public boolean containsValue(Object value)
-   {
-      return parameters.containsValue(value);
-   }
-
-   @Override
-   public Set<java.util.Map.Entry<String, T>> entrySet()
-   {
-      return parameters.entrySet();
-   }
-
-   @Override
-   public T get(Object key)
+   public Parameter<?> get(String key)
    {
       if (!parameters.containsKey(key))
          throw new IllegalArgumentException("No such parameter [" + key + "] exists.");
       return parameters.get(key);
    }
 
-   @Override
    public boolean isEmpty()
    {
       return parameters.isEmpty();
    }
 
-   @Override
-   public Set<String> keySet()
-   {
-      return parameters.keySet();
-   }
-
-   @Override
-   public T put(String key, T value)
+   public Parameter<?> put(String key, Parameter<?> value)
    {
       return parameters.put(key, value);
    }
 
-   @Override
-   public void putAll(Map<? extends String, ? extends T> map)
-   {
-      parameters.putAll(map);
-   }
-
-   @Override
-   public T remove(Object key)
-   {
-      return parameters.remove(key);
-   }
-
-   @Override
    public int size()
    {
       return parameters.size();
    }
 
    @Override
-   public Collection<T> values()
+   public Iterator<Entry<String, Parameter<?>>> iterator()
    {
-      return parameters.values();
+      return parameters.entrySet().iterator();
+   }
+
+   public boolean contains(String name)
+   {
+      return parameters.containsKey(name);
    }
 }

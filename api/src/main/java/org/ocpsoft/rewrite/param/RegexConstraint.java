@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.param;
 
+import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -34,6 +35,7 @@ public class RegexConstraint implements Constraint<String>
     */
    public RegexConstraint(String pattern)
    {
+      Assert.notNull(pattern, "Pattern must not be null.");
       this.pattern = pattern;
    }
 
@@ -45,6 +47,11 @@ public class RegexConstraint implements Constraint<String>
 
    @Override
    public String toString()
+   {
+      return pattern;
+   }
+
+   public String getPattern()
    {
       return pattern;
    }
