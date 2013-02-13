@@ -90,4 +90,50 @@ public class ParseToolsTest
       Assert.assertFalse(ParseTools.isEscaped("/foo{bar\\\\}}".toCharArray(), 10));
    }
 
+
+   @Test
+   public void testBalancedCaptureNested1()
+   {
+      CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 0, 28,
+               CaptureType.PAREN);
+      Assert.assertEquals(28, group.getEnd());
+      Assert.assertArrayEquals("one(two)(three(four(five)))".toCharArray(), group.getCaptured());
+   }
+
+   @Test
+   public void testBalancedCaptureNested2()
+   {
+      CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 4, 28,
+               CaptureType.PAREN);
+      Assert.assertEquals(8, group.getEnd());
+      Assert.assertArrayEquals("two".toCharArray(), group.getCaptured());
+   }
+
+   @Test
+   public void testBalancedCaptureNested3()
+   {
+      CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 9, 28,
+               CaptureType.PAREN);
+      Assert.assertEquals(27, group.getEnd());
+      Assert.assertArrayEquals("three(four(five))".toCharArray(), group.getCaptured());
+   }
+
+   @Test
+   public void testBalancedCaptureNested4()
+   {
+      CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 15, 28,
+               CaptureType.PAREN);
+      Assert.assertEquals(26, group.getEnd());
+      Assert.assertArrayEquals("four(five)".toCharArray(), group.getCaptured());
+   }
+
+   @Test
+   public void testBalancedCaptureNested5()
+   {
+      CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 20, 28,
+               CaptureType.PAREN);
+      Assert.assertEquals(25, group.getEnd());
+      Assert.assertArrayEquals("five".toCharArray(), group.getCaptured());
+   }
+
 }
