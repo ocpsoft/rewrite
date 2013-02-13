@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Collections;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,7 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
@@ -50,10 +52,10 @@ public abstract class Query extends HttpCondition implements Parameterized
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
-   public static Query matches(final String queryPattern)
+   public static Query matches(final String query)
    {
-      Assert.notNull(queryPattern, "URL pattern must not be null.");
-      final Pattern pattern = Pattern.compile(queryPattern);
+      Assert.notNull(query, "URL pattern must not be null.");
+      final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(".*", query);
 
       return new Query() {
          private ParameterStore store;
@@ -71,10 +73,12 @@ public abstract class Query extends HttpCondition implements Parameterized
                queryString = ((HttpOutboundServletRewrite) event).getOutboundAddress().getQuery();
             }
 
-            if (pattern.matcher(queryString == null ? "" : queryString).matches())
+            if (pattern.matches(event, context, queryString == null ? "" : queryString))
             {
                ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-               values.submit(store.get(queryPattern), queryString);
+               for (Entry<Parameter<?>, String> entry : pattern.parse(event, context, query).entrySet()) {
+                  values.submit(store.get(entry.getKey().getName()), entry.getValue());
+               }
                return true;
             }
             return false;
@@ -83,18 +87,19 @@ public abstract class Query extends HttpCondition implements Parameterized
          @Override
          public String toString()
          {
-            return "Query.matches(" + queryPattern + ")";
+            return "Query.matches(" + query + ")";
          }
 
          @Override
          public Set<String> getRequiredParameterNames()
          {
-            return Collections.emptySet();
+            return pattern.getRequiredParameterNames();
          }
 
          @Override
          public void setParameterStore(ParameterStore store)
          {
+            pattern.setParameterStore(store);
             this.store = store;
          }
       };
