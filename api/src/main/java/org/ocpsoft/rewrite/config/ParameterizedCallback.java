@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.param.Parameterized;
  * @author Christian Kaltepoth
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-interface ParameterizedCallback
+public interface ParameterizedCallback
 {
    void call(Parameterized parameterized);
 }

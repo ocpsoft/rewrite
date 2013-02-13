@@ -28,6 +28,8 @@ import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
@@ -107,10 +109,10 @@ public abstract class Query extends HttpCondition implements Parameterized
     * <p>
     * See also: {@link #bindsTo(Binding)}
     */
-   public static Query parameterExists(final String namePattern)
+   public static Query parameterExists(final String name)
    {
-      Assert.notNull(namePattern, "Parameter name pattern must not be null.");
-      final Pattern pattern = Pattern.compile(namePattern);
+      Assert.notNull(name, "Parameter name pattern must not be null.");
+      final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(name, name);
 
       return new Query() {
          private ParameterStore store;
@@ -122,10 +124,10 @@ public abstract class Query extends HttpCondition implements Parameterized
                      .decode();
 
             for (String name : queryString.getParameterNames()) {
-               if (pattern.matcher(name).matches())
+               if (pattern.matches(event, context, name))
                {
                   ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                  values.submit(store.get(name), queryString.getParameter(namePattern));
+                  values.submit(store.get(name), queryString.getParameter(name));
                   return true;
                }
             }
@@ -136,18 +138,19 @@ public abstract class Query extends HttpCondition implements Parameterized
          @Override
          public String toString()
          {
-            return "Query.parameterExists(" + namePattern + ")";
+            return "Query.parameterExists(" + name + ")";
          }
 
          @Override
          public Set<String> getRequiredParameterNames()
          {
-            return Collections.emptySet();
+            return pattern.getRequiredParameterNames();
          }
 
          @Override
          public void setParameterStore(ParameterStore store)
          {
+            pattern.setParameterStore(store);
             this.store = store;
          }
       };

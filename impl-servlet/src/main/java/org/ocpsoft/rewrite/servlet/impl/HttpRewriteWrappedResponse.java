@@ -47,6 +47,7 @@ import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
+import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
 import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
@@ -314,7 +315,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeRedirectURL(final String url)
    {
-      Address address = AddressBuilder.create(url);
+      Address address = AddressBuilder.create(URLBuilder.createFrom(url).encode().toURL());
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
@@ -327,7 +328,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeURL(final String url)
    {
-      Address address = AddressBuilder.create(url);
+      Address address = AddressBuilder.create(URLBuilder.createFrom(url).encode().toURL());
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))

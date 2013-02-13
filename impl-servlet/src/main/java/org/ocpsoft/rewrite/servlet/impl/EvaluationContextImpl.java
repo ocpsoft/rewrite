@@ -26,14 +26,13 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class EvaluationContextImpl extends ContextBase implements EvaluationContext
 {
    private final List<Operation> preOperations = new ArrayList<Operation>();
    private final List<Operation> postOperations = new ArrayList<Operation>();
 
-   @SuppressWarnings("rawtypes")
    public EvaluationContextImpl()
    {
       put(ParameterStore.class, new ParameterStore());

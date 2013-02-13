@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.param.Parameterized;
  * 
  * @author Christian Kaltepoth
  */
-class ParameterizedConditionVisitor implements Visitor<Condition>
+public class ParameterizedConditionVisitor implements Visitor<Condition>
 {
    private final ParameterizedCallback callback;
 

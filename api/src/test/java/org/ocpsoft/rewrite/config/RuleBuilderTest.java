@@ -23,14 +23,41 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class RuleBuilderTest
 {
+   private EvaluationContext context = new EvaluationContext() {
+
+      @Override
+      public void put(Object key, Object value)
+      {}
+
+      @Override
+      public Object get(Object key)
+      {
+         return null;
+      }
+
+      @Override
+      public boolean containsKey(Object key)
+      {
+         return false;
+      }
+
+      @Override
+      public void addPreOperation(Operation operation)
+      {}
+
+      @Override
+      public void addPostOperation(Operation operation)
+      {}
+   };
+
    @Test
    public void testRuleBuilderDefaultsToAlwaysPerform()
    {
-      Assert.assertTrue(RuleBuilder.define().evaluate(null, null));
+      Assert.assertTrue(RuleBuilder.define().evaluate(null, context));
    }
 
    @Test

@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.param.Parameterized;
  * 
  * @author Christian Kaltepoth
  */
-class ParameterizedOperationVisitor implements Visitor<Operation>
+public class ParameterizedOperationVisitor implements Visitor<Operation>
 {
    private final ParameterizedCallback callback;
 

@@ -22,6 +22,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.config.ConditionVisit;
+import org.ocpsoft.rewrite.config.ParameterizedCallback;
+import org.ocpsoft.rewrite.config.ParameterizedConditionVisitor;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -120,7 +123,8 @@ public class Join implements Rule, JoinPath, Parameterized
       {
          this.outboundConditionCache = resourcePath;
          for (String name : parameters) {
-            outboundConditionCache = outboundConditionCache.and(Query.parameterExists(name));
+            Query parameter = Query.parameterExists(name);
+            outboundConditionCache = outboundConditionCache.and(parameter);
          }
       }
 
@@ -279,18 +283,42 @@ public class Join implements Rule, JoinPath, Parameterized
    @Override
    public Set<String> getRequiredParameterNames()
    {
-      Set<String> result = new HashSet<String>();
+      final Set<String> result = new HashSet<String>();
       result.addAll(requestPath.getRequiredParameterNames());
       result.addAll(resourcePath.getRequiredParameterNames());
+      if (outboundConditionCache != null)
+      {
+         ParameterizedConditionVisitor visitor = new ParameterizedConditionVisitor(new ParameterizedCallback() {
+            @Override
+            public void call(Parameterized parameterized)
+            {
+               result.addAll(parameterized.getRequiredParameterNames());
+            }
+         });
+
+         new ConditionVisit(outboundConditionCache).accept(visitor);
+      }
       return result;
    }
 
    @Override
-   public void setParameterStore(ParameterStore store)
+   public void setParameterStore(final ParameterStore store)
    {
       this.store = store;
       requestPath.setParameterStore(store);
       resourcePath.setParameterStore(store);
+      if (outboundConditionCache != null)
+      {
+         ParameterizedConditionVisitor visitor = new ParameterizedConditionVisitor(new ParameterizedCallback() {
+            @Override
+            public void call(Parameterized parameterized)
+            {
+               parameterized.setParameterStore(store);
+            }
+         });
+
+         new ConditionVisit(outboundConditionCache).accept(visitor);
+      }
    }
 
 }
