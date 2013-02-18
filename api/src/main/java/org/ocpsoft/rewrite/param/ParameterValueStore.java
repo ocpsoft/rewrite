@@ -14,7 +14,7 @@ public class ParameterValueStore implements Iterable<Entry<Parameter<?>, String>
       boolean result = false;
       String stored = map.get(param);
 
-      if (stored == value)
+      if (stored == value || (stored != null && stored.equals(value)))
       {
          result = true;
       }
