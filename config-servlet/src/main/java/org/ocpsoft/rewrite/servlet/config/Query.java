@@ -120,6 +120,7 @@ public abstract class Query extends HttpCondition implements Parameterized
 
       return new Query() {
          final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(name, "{" + name + "}");
+         final String parameterName = name;
 
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -132,7 +133,7 @@ public abstract class Query extends HttpCondition implements Parameterized
                {
                   ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
                   ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                  return values.submit(store.get(name), queryString.getParameter(name));
+                  return values.submit(store.get(parameterName), queryString.getParameter(name));
                }
             }
 
