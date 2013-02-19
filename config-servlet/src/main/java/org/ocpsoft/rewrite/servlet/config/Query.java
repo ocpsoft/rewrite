@@ -119,7 +119,7 @@ public abstract class Query extends HttpCondition implements Parameterized
       Assert.notNull(name, "Parameter name pattern must not be null.");
 
       return new Query() {
-         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(name, "{" + name + "}");
+         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(".*", "{" + name + "}");
          final String parameterName = name;
 
          @Override
@@ -129,11 +129,16 @@ public abstract class Query extends HttpCondition implements Parameterized
                      .decode();
 
             for (String name : queryString.getParameterNames()) {
-               if (pattern.matches(name))
-               {
-                  ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
-                  ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                  return values.submit(store.get(parameterName), queryString.getParameter(name));
+               String[] parameterValues = queryString.getParameterValues(name);
+               for (String value : parameterValues) {
+
+                  if (parameterName.equals(name) && pattern.matches(value))
+                  {
+                     ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
+                     ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
+                     return values.submit(store.get(parameterName), value);
+                  }
+
                }
             }
 
