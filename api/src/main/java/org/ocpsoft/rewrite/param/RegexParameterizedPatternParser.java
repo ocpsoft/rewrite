@@ -119,6 +119,12 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    }
 
    @Override
+   public boolean matches(String value)
+   {
+      return getMatcher(parameters, value).matches();
+   }
+
+   @Override
    public boolean matches(final Rewrite event, final EvaluationContext context, final String value)
    {
       Matcher matcher = getMatcher(parameters, value);

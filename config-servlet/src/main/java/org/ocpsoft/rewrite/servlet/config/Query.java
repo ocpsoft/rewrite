@@ -55,10 +55,10 @@ public abstract class Query extends HttpCondition implements Parameterized
    public static Query matches(final String query)
    {
       Assert.notNull(query, "URL pattern must not be null.");
-      final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(".*", query);
 
       return new Query() {
          private ParameterStore store;
+         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(".*", query);
 
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -117,10 +117,9 @@ public abstract class Query extends HttpCondition implements Parameterized
    public static Query parameterExists(final String name)
    {
       Assert.notNull(name, "Parameter name pattern must not be null.");
-      final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(name, name);
 
       return new Query() {
-         private ParameterStore store;
+         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(name, "{" + name + "}");
 
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -129,11 +128,11 @@ public abstract class Query extends HttpCondition implements Parameterized
                      .decode();
 
             for (String name : queryString.getParameterNames()) {
-               if (pattern.matches(event, context, name))
+               if (pattern.matches(name))
                {
+                  ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
                   ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                  values.submit(store.get(name), queryString.getParameter(name));
-                  return true;
+                  return values.submit(store.get(name), queryString.getParameter(name));
                }
             }
 
@@ -156,7 +155,6 @@ public abstract class Query extends HttpCondition implements Parameterized
          public void setParameterStore(ParameterStore store)
          {
             pattern.setParameterStore(store);
-            this.store = store;
          }
       };
    }
@@ -173,10 +171,9 @@ public abstract class Query extends HttpCondition implements Parameterized
    public static Query valueExists(final String valuePattern)
    {
       Assert.notNull(valuePattern, "Parameter value pattern must not be null.");
-      final Pattern pattern = Pattern.compile(valuePattern);
 
       return new Query() {
-         private ParameterStore store;
+         final Pattern pattern = Pattern.compile(valuePattern);
 
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -189,8 +186,7 @@ public abstract class Query extends HttpCondition implements Parameterized
                for (String value : queryString.getParameterValues(name)) {
                   if (value != null && pattern.matcher(value).matches())
                   {
-                     ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                     values.submit(store.get(name), value);
+                     return true;
                   }
                }
             }
@@ -212,9 +208,7 @@ public abstract class Query extends HttpCondition implements Parameterized
 
          @Override
          public void setParameterStore(ParameterStore store)
-         {
-            this.store = store;
-         }
+         {}
       };
    }
 

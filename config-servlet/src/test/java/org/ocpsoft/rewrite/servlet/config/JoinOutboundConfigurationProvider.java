@@ -55,8 +55,8 @@ public class JoinOutboundConfigurationProvider extends HttpConfigurationProvider
                .addRule()
                .when(Direction.isInbound().and(
                         Path.matches("/success"))
-                        .andNot(Query.parameterExists("{1}"))
-                        .andNot(Query.parameterExists("{3}")))
+                        .andNot(Query.parameterExists("1"))
+                        .andNot(Query.parameterExists("3")))
                .perform(SendStatus.code(200))
 
                /*

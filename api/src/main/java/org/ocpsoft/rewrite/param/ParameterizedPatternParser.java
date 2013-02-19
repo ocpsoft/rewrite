@@ -24,6 +24,11 @@ public interface ParameterizedPatternParser extends ParameterizedPattern
    /**
     * Return true if this expression matches the given {@link String}.
     */
+   boolean matches(String name);
+
+   /**
+    * Return true if this expression matches the given {@link String}.
+    */
    boolean matches(Rewrite rewrite, EvaluationContext context, String value);
 
    /**
@@ -37,4 +42,5 @@ public interface ParameterizedPatternParser extends ParameterizedPattern
     * map of parsed values.
     */
    Map<Parameter<?>, String> parse(Rewrite rewrite, EvaluationContext context, String value);
+
 }

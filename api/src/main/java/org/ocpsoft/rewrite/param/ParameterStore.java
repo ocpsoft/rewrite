@@ -71,4 +71,10 @@ public class ParameterStore implements Iterable<Entry<String, Parameter<?>>>
    {
       return parameters.containsKey(name);
    }
+   
+   @Override
+   public String toString()
+   {
+      return parameters.keySet().toString();
+   }
 }

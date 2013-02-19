@@ -38,4 +38,10 @@ public class ParameterValueStore implements Iterable<Entry<Parameter<?>, String>
    {
       return map.entrySet().iterator();
    }
+   
+   @Override
+   public String toString()
+   {
+      return map.keySet().toString();
+   }
 }
