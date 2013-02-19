@@ -58,7 +58,7 @@ public abstract class Query extends HttpCondition implements Parameterized
 
       return new Query() {
          private ParameterStore store;
-         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(".*", query);
+         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(query);
 
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -119,7 +119,7 @@ public abstract class Query extends HttpCondition implements Parameterized
       Assert.notNull(name, "Parameter name pattern must not be null.");
 
       return new Query() {
-         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(".*", "{" + name + "}");
+         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser("{" + name + "}");
          final String parameterName = name;
 
          @Override

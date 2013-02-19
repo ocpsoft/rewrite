@@ -78,7 +78,7 @@ public class RequestParameter extends HttpCondition implements Parameterized
     */
    public static RequestParameter exists(final String name)
    {
-      return new RequestParameter(name, "{" + RequestParameter.class.getName() + "_value}");
+      return new RequestParameter(name, "{" + RequestParameter.class.getName() + "_" + name + "_value}");
    }
 
    /**
@@ -89,7 +89,7 @@ public class RequestParameter extends HttpCondition implements Parameterized
     */
    public static RequestParameter valueExists(final String value)
    {
-      return new RequestParameter("{" + RequestParameter.class.getName() + "_name}", value);
+      return new RequestParameter("{" + RequestParameter.class.getName() + "_" + value + "_name}", value);
    }
 
    @Override
