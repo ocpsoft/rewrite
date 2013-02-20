@@ -25,9 +25,9 @@ public interface ParameterizedPatternBuilder extends ParameterizedPattern
 
    /**
     * Use this expression to build a {@link String} from the given pattern. Extract needed values from registered
-    * {@link Binding} instances.
+    * {@link Binding} instances and applies the supplied {@link Transform} for them.
     */
-   String build(Rewrite event, EvaluationContext context);
+   String build(Rewrite event, EvaluationContext context, Transform<String> transform);
 
    /**
     * Use this expression to build a {@link String} from given values.

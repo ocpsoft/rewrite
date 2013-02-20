@@ -48,4 +48,15 @@ public class Transformations
       };
    }
 
+   public static Transform<String> identity()
+   {
+      return new Transform<String>() {
+         @Override
+         public String transform(Rewrite event, EvaluationContext context, String value)
+         {
+            return value;
+         }
+      };
+   }
+
 }

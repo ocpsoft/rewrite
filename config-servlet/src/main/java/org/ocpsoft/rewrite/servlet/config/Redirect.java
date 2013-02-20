@@ -53,7 +53,7 @@ public class Redirect extends HttpOperation implements Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context);
+         String target = location.build(event, context, Transformations.encodePath());
          switch (type)
          {
          case PERMANENT:

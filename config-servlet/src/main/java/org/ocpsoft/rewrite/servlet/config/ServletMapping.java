@@ -32,6 +32,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.Transformations;
 import org.ocpsoft.rewrite.servlet.ServletRegistration;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider;
@@ -59,7 +60,7 @@ public class ServletMapping extends HttpCondition implements Parameterized
    {
       if (resource != null)
       {
-         String path = resource.build(event, context);
+         String path = resource.build(event, context, Transformations.encodePath());
          try {
 
             for (ServletRegistration registration : getServletRegistration(event.getServletContext()))

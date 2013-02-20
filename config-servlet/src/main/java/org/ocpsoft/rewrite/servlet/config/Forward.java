@@ -26,6 +26,7 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.Transformations;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
@@ -73,7 +74,7 @@ public class Forward extends HttpOperation implements Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context);
+         String target = location.build(event, context, Transformations.encodePath());
          ((HttpInboundServletRewrite) event).forward(target);
       }
    }
