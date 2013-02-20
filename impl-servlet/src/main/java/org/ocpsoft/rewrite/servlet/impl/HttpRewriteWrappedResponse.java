@@ -315,7 +315,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeRedirectURL(final String url)
    {
-      Address address = AddressBuilder.create(URLBuilder.createFrom(url).encode().toURL());
+      Address address = AddressBuilder.create(URLBuilder.createFrom(url).toURL());
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
@@ -328,7 +328,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeURL(final String url)
    {
-      Address address = AddressBuilder.create(URLBuilder.createFrom(url).encode().toURL());
+      Address address = AddressBuilder.create(URLBuilder.createFrom(url).toURL());
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(Flow.ABORT_REQUEST))
