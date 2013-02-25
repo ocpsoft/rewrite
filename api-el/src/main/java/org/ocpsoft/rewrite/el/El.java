@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.exception.RewriteException;
 
 /**
  * Responsible for binding to EL expressions.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class El extends BindingBuilder<El, Object> implements Retrieval
@@ -83,7 +83,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    {
       return new ElProperty(new ConstantExpression(expression));
    }
-   
+
    /**
     * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
     * either be public, or have a publicly defined getter/setter. Instead of an EL expression this method expects a
@@ -92,6 +92,27 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
    public static El property(final Field field)
    {
       return new ElProperty(new TypeBasedExpression(field.getDeclaringClass(), field.getName()));
+   }
+
+   /**
+    * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
+    * either be public, or have a publicly defined getter/setter.
+    */
+   public static El properties(final String submit, final String retrieve)
+   {
+      return new ElProperties(new ConstantExpression(submit),
+               new ConstantExpression(retrieve));
+   }
+
+   /**
+    * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
+    * either be public, or have a publicly defined getter/setter. Instead of an EL expression this method expects a
+    * {@link Field} argument. The EL expression will be automatically created at runtime.
+    */
+   public static El properties(final Field submit, final Field retrieve)
+   {
+      return new ElProperties(new TypeBasedExpression(submit.getDeclaringClass(), submit.getName()),
+               new TypeBasedExpression(retrieve.getDeclaringClass(), retrieve.getName()));
    }
 
    @SuppressWarnings("unchecked")
@@ -297,6 +318,94 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       public String toString()
       {
          return "ElProperty [ " + expression + " ]";
+      }
+
+   }
+
+   public static class ElProperties extends El
+   {
+
+      private Expression submit;
+      private Expression retrieve;
+
+      public ElProperties(final Expression submit, final Expression retrieve)
+      {
+         this.submit = submit;
+         this.retrieve = retrieve;
+      }
+
+      @Override
+      public Object retrieve(final Rewrite event, final EvaluationContext context)
+      {
+         Object value = null;
+         for (ExpressionLanguageProvider provider : getProviders()) {
+
+            try
+            {
+               value = provider.retrieveValue(retrieve.getExpression());
+               break;
+            }
+            catch (UnsupportedOperationException e)
+            {
+               log.debug("El provider [" + provider.getClass().getName() + "] could not extract value from property ["
+                        + retrieve + "]", e);
+            }
+            catch (Exception e) {
+               throw new RewriteException("El provider [" + provider.getClass().getName()
+                        + "] could not extract value from property ["
+                        + retrieve + "]", e);
+            }
+
+            if (value != null)
+            {
+               break;
+            }
+         }
+
+         return value;
+      }
+
+      @Override
+      public boolean supportsRetrieval()
+      {
+         return true;
+      }
+
+      @Override
+      public boolean supportsSubmission()
+      {
+         return true;
+      }
+
+      @Override
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      {
+         for (ExpressionLanguageProvider provider : getProviders()) {
+            try
+            {
+               provider.submitValue(submit.getExpression(), value);
+               break;
+            }
+            catch (UnsupportedOperationException e)
+            {
+               log.debug("El provider [" + provider.getClass().getName()
+                        + "] could not inject property [" + submit
+                        + "} with value [" + value + "]", e);
+            }
+            catch (Exception e) {
+               throw new RewriteException("El provider [" + provider.getClass().getName()
+                        + "] could not inject property [" + submit
+                        + "} with value [" + value + "]", e);
+            }
+         }
+
+         return null;
+      }
+
+      @Override
+      public String toString()
+      {
+         return "ElProperties [ submitTo =>" + submit + ", retrieveFrom=>" + retrieve + " ]";
       }
 
    }

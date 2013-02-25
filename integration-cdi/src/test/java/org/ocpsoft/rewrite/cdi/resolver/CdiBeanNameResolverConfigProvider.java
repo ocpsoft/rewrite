@@ -53,8 +53,7 @@ public class CdiBeanNameResolverConfigProvider extends HttpConfigurationProvider
                            .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")))
 
                   // FIXME this needs to bind to a dual retrieval/submission binding
-                  .where("name").bindsTo(El.property(nameField))
-                  .where("name").bindsTo(El.property(uppercaseField))
+                  .where("name").bindsTo(El.properties(nameField, uppercaseField))
 
                   .addRule()
                   .when(Path.matches("/hello/{name}"))

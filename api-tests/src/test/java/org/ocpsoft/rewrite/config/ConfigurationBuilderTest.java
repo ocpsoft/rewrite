@@ -172,7 +172,7 @@ public class ConfigurationBuilderTest
    @Test
    public void testSubsetAPI() throws Exception
    {
-      Configuration config = ConfigurationBuilder.begin()
+      ConfigurationBuilder.begin()
 
                .addRule()
                .when(new False())
@@ -180,11 +180,6 @@ public class ConfigurationBuilderTest
                         .addRule()
                         .when(new True())
                         .perform(operation)));
-
-      execute(config);
-
-      Assert.assertTrue(performed);
-      Assert.assertFalse(performedOtherwise);
    }
 
    @Test
