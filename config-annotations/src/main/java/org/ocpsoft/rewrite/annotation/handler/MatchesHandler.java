@@ -20,7 +20,7 @@ import org.ocpsoft.rewrite.annotation.Matches;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
-import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 
 public class MatchesHandler extends FieldAnnotationHandler<Matches>
@@ -40,23 +40,23 @@ public class MatchesHandler extends FieldAnnotationHandler<Matches>
    }
 
    @Override
-   @SuppressWarnings({ "rawtypes", "unchecked" })
    public void process(FieldContext context, Matches annotation, HandlerChain chain)
    {
 
       // obtain the parameter for the current field
-      Parameter parameter = (Parameter) context.get(Parameter.class);
-      if (parameter == null) {
+      ConfigurationRuleParameterBuilder parameterBuilder =
+               (ConfigurationRuleParameterBuilder) context.get(ConfigurationRuleParameterBuilder.class);
+      if (parameterBuilder == null) {
          throw new IllegalStateException("Cound not find any binding for field: " +
                   context.getJavaField().getName());
       }
 
       // add a corresponding RegexConstraint
       String expr = annotation.value();
-      parameter.constrainedBy(new RegexConstraint(expr));
+      parameterBuilder.constrainedBy(new RegexConstraint(expr));
 
       if (log.isTraceEnabled()) {
-         log.trace("Parameter [{}] has been constrained by [{}]", parameter.getName(), expr);
+         log.trace("Parameter [{}] has been constrained by [{}]", parameterBuilder.getName(), expr);
       }
 
       // proceed with the chain
