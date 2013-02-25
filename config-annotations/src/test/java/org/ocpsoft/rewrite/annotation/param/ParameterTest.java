@@ -1,6 +1,7 @@
 package org.ocpsoft.rewrite.annotation.param;
 
 import org.apache.http.client.methods.HttpGet;
+import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -34,7 +35,7 @@ public class ParameterTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/param/christian/");
       Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("Value: [christian]"));
+      Assert.assertThat(action.getResponseContent(), Matchers.containsString("Value: [christian]"));
    }
 
 }
