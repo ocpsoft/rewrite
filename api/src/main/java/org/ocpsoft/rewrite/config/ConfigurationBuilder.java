@@ -18,6 +18,12 @@ package org.ocpsoft.rewrite.config;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
+import org.ocpsoft.rewrite.bind.Evaluation;
+import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
  * A fluent builder for defining {@link Configuration} objects.

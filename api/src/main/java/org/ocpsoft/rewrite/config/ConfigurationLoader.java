@@ -21,11 +21,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.bind.Evaluation;
+import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
  * Responsible for loading all {@link ConfigurationProvider} instances, and building a single unified
@@ -160,14 +165,39 @@ public class ConfigurationLoader
          }
       }
 
-      Configuration result = ConfigurationBuilder.begin();
+      ConfigurationBuilder result = ConfigurationBuilder.begin();
       ArrayList<Integer> sortedKeys = new ArrayList<Integer>(priorityMap.keySet());
       Collections.sort(sortedKeys);
 
       for (Integer integer : sortedKeys) {
          List<Rule> list = priorityMap.get(integer);
-         for (Rule rule : list) {
-            ((ConfigurationBuilder) result).addRule(rule);
+         for (final Rule rule : list) {
+            result.addRule(rule);
+            
+            if(rule instanceof RuleBuilder) {
+               ParameterizedCallback callback = new ParameterizedCallback() {
+                  @Override
+                  public void call(Parameterized parameterized)
+                  {
+                     Set<String> names = parameterized.getRequiredParameterNames();
+                     ParameterStore store = ((RuleBuilder) rule).getParameterStore();
+
+                     for (String name : names) {
+                        if (!store.contains(name)) {
+                           store.put(name, new DefaultParameter(name).bindsTo(Evaluation.property(name)));
+                        }
+                     }
+
+                     parameterized.setParameterStore(store);
+                  }
+               };
+
+               Visitor<Condition> conditionVisitor = new ParameterizedConditionVisitor(callback);
+               new ConditionVisit(rule).accept(conditionVisitor);
+
+               Visitor<Operation> operationVisitor = new ParameterizedOperationVisitor(callback);
+               new OperationVisit(rule).accept(operationVisitor);
+            }
          }
       }
 

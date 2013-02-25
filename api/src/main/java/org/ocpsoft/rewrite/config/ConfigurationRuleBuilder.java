@@ -16,13 +16,8 @@
 package org.ocpsoft.rewrite.config;
 
 import java.util.List;
-import java.util.Set;
 
-import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
  * An intermediate stage {@link Rule} configuration.
@@ -65,9 +60,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    @Override
    public ConfigurationRuleParameterBuilder where(String name)
    {
-      ConfigurationRuleParameterBuilder parameter = new ConfigurationRuleParameterBuilder(this, name);
-      rule.getParameterStore().put(name, parameter);
-      return parameter;
+      return new ConfigurationRuleParameterBuilder(this, rule.where(name));
    }
 
    /**
@@ -136,33 +129,6 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    @Override
    public List<Rule> getRules()
    {
-      for (final RuleBuilder rule : wrapped.getRuleBuilders()) {
-
-         ParameterizedCallback callback = new ParameterizedCallback() {
-            @Override
-            public void call(Parameterized parameterized)
-            {
-               Set<String> names = parameterized.getRequiredParameterNames();
-               ParameterStore store = rule.getParameterStore();
-
-               for (String name : names) {
-                  if (!store.contains(name)) {
-                     store.put(name, new DefaultParameter(name).bindsTo(Evaluation.property(name)));
-                  }
-               }
-
-               parameterized.setParameterStore(store);
-            }
-         };
-
-         Visitor<Condition> conditionVisitor = new ParameterizedConditionVisitor(callback);
-         new ConditionVisit(rule).accept(conditionVisitor);
-
-         Visitor<Operation> operationVisitor = new ParameterizedOperationVisitor(callback);
-         new OperationVisit(rule).accept(operationVisitor);
-
-      }
-
       return wrapped.getRules();
    }
 }

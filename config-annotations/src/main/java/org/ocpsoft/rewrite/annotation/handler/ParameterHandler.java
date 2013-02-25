@@ -23,9 +23,9 @@ import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.config.ConfigurationRuleBuilder;
-import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
+import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.el.El;
+import org.ocpsoft.rewrite.param.ParameterBuilder;
 
 public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite.annotation.Parameter>
 {
@@ -62,11 +62,11 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       }
 
       // FIXME: We need the ConfigurationRuleBuilder here
-      ConfigurationRuleBuilder ruleBuilder = (ConfigurationRuleBuilder) context.get("");
-      ConfigurationRuleParameterBuilder parameterBuilder = ruleBuilder.where(param);
+      RuleBuilder ruleBuilder = context.getRuleBuilder();
+      ParameterBuilder<?> parameterBuilder = ruleBuilder.where(param);
 
       // subsequent handlers need the builder to configure the parameter
-      context.put(ConfigurationRuleParameterBuilder.class, parameterBuilder);
+      context.put(ParameterBuilder.class, parameterBuilder);
 
       // create the binding and publish it in the context
       Binding rawBinding = El.property(field);
@@ -81,7 +81,7 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       parameterBuilder.bindsTo(enrichedBinding);
 
       // FIXME: hack to trigger ParameterStore attachment
-      parameterBuilder.getRules();
+      // parameterBuilder.getRules();
 
       //
       //

@@ -32,14 +32,16 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
 {
 
    private final ConfigurationRuleBuilder parent;
+   private ParameterBuilder<?> param;
 
    public ConfigurationRuleParameterBuilder(ConfigurationRuleBuilder parent,
-            final String name)
+            final ParameterBuilder<?> param)
    {
-      super(name);
+      super(param.getName());
       this.parent = parent;
+      this.param = param;
 
-      this.bindsTo(Evaluation.property(name));
+      this.bindsTo(Evaluation.property(param.getName()));
    }
 
    @Override
@@ -69,49 +71,57 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
    @Override
    public ConfigurationRuleParameterBuilder matches(final String pattern)
    {
-      return super.constrainedBy(new RegexConstraint(pattern));
+      param.constrainedBy(new RegexConstraint(pattern));
+      return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder transformedBy(final Transform<String> transform)
    {
-      return super.transformedBy(transform);
+      param.transformedBy(transform);
+      return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder constrainedBy(final Constraint<String> constraint)
    {
-      return super.constrainedBy(constraint);
+      param.constrainedBy(constraint);
+      return this;
    }
 
    @Override
    public <X extends Validator<?>> ConfigurationRuleParameterBuilder validatedBy(final Class<X> type)
    {
-      return super.validatedBy(type);
+      param.validatedBy(type);
+      return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder validatedBy(final Validator<?> validator)
    {
-      return super.validatedBy(validator);
+      param.validatedBy(validator);
+      return this;
    }
 
    @Override
    public <X extends Converter<?>> ConfigurationRuleParameterBuilder convertedBy(final Class<X> type)
    {
-      return super.convertedBy(type);
+      param.convertedBy(type);
+      return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder convertedBy(final Converter<?> converter)
    {
-      return super.convertedBy(converter);
+      param.convertedBy(converter);
+      return this;
    }
 
    @Override
    public ConfigurationRuleParameterBuilder bindsTo(final Binding binding)
    {
-      return super.bindsTo(binding);
+      param.bindsTo(binding);
+      return this;
    }
 
 }

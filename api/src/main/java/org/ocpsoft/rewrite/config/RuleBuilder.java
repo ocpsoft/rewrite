@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.ParameterStore;
 
 /**
@@ -195,6 +196,14 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
    public ParameterStore getParameterStore()
    {
       return store;
+   }
+
+   @SuppressWarnings({ "rawtypes", "unchecked" })
+   public ParameterBuilder<?> where(String name)
+   {
+      ParameterBuilder<?> parameter = new ParameterBuilder(name) {};
+      getParameterStore().put(name, parameter);
+      return parameter;
    }
 
 }
