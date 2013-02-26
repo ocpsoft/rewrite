@@ -202,8 +202,8 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
    public ParameterBuilder<?> where(String name)
    {
       ParameterBuilder<?> parameter = new ParameterBuilder(name) {};
-      getParameterStore().put(name, parameter);
-      return parameter;
+      // FIXME: This cast isn't very nice.
+      return (ParameterBuilder<?>) getParameterStore().where(name, parameter);
    }
 
 }
