@@ -23,7 +23,6 @@ import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 
@@ -61,9 +60,8 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
          log.trace("Binding parameter [{}] to field [{}]", param, field);
       }
 
-      // FIXME: We need the ConfigurationRuleBuilder here
-      RuleBuilder ruleBuilder = context.getRuleBuilder();
-      ParameterBuilder<?> parameterBuilder = ruleBuilder.where(param);
+      // builder for this parameter
+      ParameterBuilder<?> parameterBuilder = context.getRuleBuilder().where(param);
 
       // subsequent handlers need the builder to configure the parameter
       context.put(ParameterBuilder.class, parameterBuilder);

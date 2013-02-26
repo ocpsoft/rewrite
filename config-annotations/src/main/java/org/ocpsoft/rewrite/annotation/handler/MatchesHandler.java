@@ -20,7 +20,7 @@ import org.ocpsoft.rewrite.annotation.Matches;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
-import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
+import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 
 public class MatchesHandler extends FieldAnnotationHandler<Matches>
@@ -44,8 +44,8 @@ public class MatchesHandler extends FieldAnnotationHandler<Matches>
    {
 
       // obtain the parameter for the current field
-      ConfigurationRuleParameterBuilder parameterBuilder =
-               (ConfigurationRuleParameterBuilder) context.get(ConfigurationRuleParameterBuilder.class);
+      ParameterBuilder<?> parameterBuilder =
+               (ParameterBuilder<?>) context.get(ParameterBuilder.class);
       if (parameterBuilder == null) {
          throw new IllegalStateException("Cound not find any binding for field: " +
                   context.getJavaField().getName());
