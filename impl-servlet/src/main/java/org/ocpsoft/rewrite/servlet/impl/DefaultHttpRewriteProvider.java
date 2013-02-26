@@ -33,6 +33,7 @@ import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
+import org.ocpsoft.rewrite.param.ParameterValueStoreImpl;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -100,11 +101,12 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                Rule rule = rules.get(j);
 
                context.clear();
-               context.put(ParameterValueStore.class, new ParameterValueStore());
+               ParameterValueStoreImpl values = new ParameterValueStoreImpl();
+               context.put(ParameterValueStore.class, values);
 
                if (rule.evaluate(event, context))
                {
-                  if (!handleBindings(event, context))
+                  if (!handleBindings(event, context, values))
                      break;
 
                   log.debug("Rule [" + rule + "] matched and will be performed.");
@@ -151,11 +153,12 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          Rule rule = rules.get(i);
 
          context.clear();
-         context.put(ParameterValueStore.class, new ParameterValueStore());
+         ParameterValueStoreImpl values = new ParameterValueStoreImpl();
+         context.put(ParameterValueStore.class, values);
 
          if (rule.evaluate(event, context))
          {
-            if (!handleBindings(event, context))
+            if (!handleBindings(event, context, values))
                break;
 
             log.debug("Rule [" + rule + "] matched and will be performed.");
@@ -195,11 +198,11 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          }
    }
 
-   private boolean handleBindings(final HttpServletRewrite event, final EvaluationContextImpl context)
+   private boolean handleBindings(final HttpServletRewrite event, final EvaluationContextImpl context,
+            ParameterValueStoreImpl values)
    {
       boolean result = true;
       ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
-      ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
 
       for (Entry<String, Parameter<?>> entry : store) {
          Parameter<?> parameter = entry.getValue();

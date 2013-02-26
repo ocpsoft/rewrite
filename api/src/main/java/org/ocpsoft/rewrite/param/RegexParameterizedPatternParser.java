@@ -49,9 +49,10 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    private String defaultParameterPattern;
    private ParameterStore parameters;
 
-   RegexParameterizedPatternParser(String pattern, RegexParameterizedPatternBuilder builder)
+   RegexParameterizedPatternParser(RegexParameterizedPatternBuilder builder,
+            String defaultParameterPattern, String pattern)
    {
-      this(pattern);
+      this(defaultParameterPattern, pattern);
       this.builder = builder;
    }
 

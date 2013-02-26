@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.bind;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,16 +93,34 @@ public abstract class Bindings
    /**
     * Extract bound values from configured {@link Bindable} instances. Return a {@link List} of the extracted values.
     */
-   public static List<Object> performRetrieval(final Rewrite event, final EvaluationContext context,
+   public static Object performRetrieval(final Rewrite event, final EvaluationContext context,
             final HasBindings bindable)
    {
-      List<Object> result = new ArrayList<Object>();
+      Object result = null;
 
-      for (Binding binding : bindable.getBindings())
+      List<Binding> bindings = new ArrayList<Binding>(bindable.getBindings());
+      Collections.reverse(bindings);
+      // FIXME Should not have to worry about order here.
+
+      for (Binding binding : bindings)
       {
-         Object boundValue = binding.retrieve(event, context);
-         result.add(boundValue);
+         if (result == null && !(binding instanceof Evaluation))
+         {
+            result = binding.retrieve(event, context);
+         }
       }
+
+      for (Binding binding : bindings)
+      {
+         if (binding instanceof Evaluation)
+         {
+            if (((Evaluation) binding).hasValue(event, context))
+            {
+               result = binding.retrieve(event, context);
+            }
+         }
+      }
+
       return result;
    }
 

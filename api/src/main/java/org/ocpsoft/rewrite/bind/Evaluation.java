@@ -81,6 +81,11 @@ public class Evaluation extends BindingBuilder<Evaluation, Object>
       context.put(getParameterConvertedName(property), convert(event, context, value));
    }
 
+   public boolean hasValue(final Rewrite event, final EvaluationContext context)
+   {
+      return context.get(getParameterUnconvertedName(property)) != null;
+   }
+
    private String getParameterUnconvertedName(final CharSequence parameter)
    {
       return Evaluation.class.getName() + "_" + parameter;

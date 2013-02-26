@@ -1,47 +1,17 @@
 package org.ocpsoft.rewrite.param;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
+import org.ocpsoft.rewrite.bind.Binding;
 
-public class ParameterValueStore implements Iterable<Entry<Parameter<?>, String>>
+/**
+ * Used to submit {@link Parameter} values in {@link String} form. These values will subsequently be passed through
+ * {@link Constraint}, {@link Transform} and {@link Binding} processing.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
+public interface ParameterValueStore
 {
-   Map<Parameter<?>, String> map = new HashMap<Parameter<?>, String>();
-
-   public boolean submit(Parameter<?> param, String value)
-   {
-      boolean result = false;
-      String stored = map.get(param);
-
-      if (stored == value || (stored != null && stored.equals(value)))
-      {
-         result = true;
-      }
-      else if (stored == null)
-      {
-         // FIXME handle constraints and transforms
-         map.put(param, value);
-         result = true;
-      }
-
-      return result;
-   }
-
-   public String get(Parameter<?> parameter)
-   {
-      return map.get(parameter);
-   }
-
-   @Override
-   public Iterator<Entry<Parameter<?>, String>> iterator()
-   {
-      return map.entrySet().iterator();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return map.keySet().toString();
-   }
+   /**
+    * Submit the value for the given bindings.
+    */
+   public boolean submit(Parameter<?> param, String value);
 }

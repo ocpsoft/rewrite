@@ -50,10 +50,11 @@ public class CdiBeanNameResolverConfigProvider extends HttpConfigurationProvider
                   .addRule()
                   .when(Path.matches("/name/{name}"))
                   .perform(Invoke.binding(El.retrievalMethod(actionMethod))
-                           .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")))
+                           .and(Redirect.permanent(context.getContextPath() + "/hello/{uppercase}")))
 
                   // FIXME this needs to bind to a dual retrieval/submission binding
-                  .where("name").bindsTo(El.properties(nameField, uppercaseField))
+                  .where("name").bindsTo(El.property(nameField))
+                  .where("uppercase").bindsTo(El.property(uppercaseField))
 
                   .addRule()
                   .when(Path.matches("/hello/{name}"))

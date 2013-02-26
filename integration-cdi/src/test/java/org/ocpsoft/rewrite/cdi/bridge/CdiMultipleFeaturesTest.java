@@ -84,7 +84,7 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    public void testParameterExpressionBinding() throws Exception
    {
       HttpAction<HttpGet> action = get("/one/2");
-      Assert.assertEquals("/2/one", action.getCurrentContextRelativeURL());
+      Assert.assertEquals("/result/2/one", action.getCurrentContextRelativeURL());
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
    }
 

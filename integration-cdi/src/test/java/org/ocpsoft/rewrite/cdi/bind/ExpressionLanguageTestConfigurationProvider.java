@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.servlet.config.SendStatus;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class ExpressionLanguageTestConfigurationProvider extends HttpConfigurationProvider
 {
@@ -41,13 +41,16 @@ public class ExpressionLanguageTestConfigurationProvider extends HttpConfigurati
                .addRule()
                .when(Path.matches("/{one}/{two}"))
                .perform(Invoke.binding(El.retrievalMethod("bindingBean.action()"))
-                        .and(Redirect.permanent(context.getContextPath() + "/{one}/{two}")))
+                        .and(Redirect.permanent(context.getContextPath() + "/result/{b.one}/{b.two}")))
 
-               .where("one").bindsTo(El.property("bindingBean.one"))
-               .where("two").matches("[0-9]{1}").bindsTo(El.property("bindingBean.two"))
+               .where("one").bindsTo(El.property("bindingBean.one")).matches("[a-z]+")
+               .where("two").bindsTo(El.property("bindingBean.two")).matches("\\d{1}")
+
+               .where("b.one").bindsTo(El.property("bindingBean.two")).matches("\\d{1}")
+               .where("b.two").bindsTo(El.property("bindingBean.one")).matches("[a-z]+")
 
                .addRule()
-               .when(Path.matches("/2/one"))
+               .when(Path.matches("/result/2/one"))
                .perform(SendStatus.code(200));
    }
 

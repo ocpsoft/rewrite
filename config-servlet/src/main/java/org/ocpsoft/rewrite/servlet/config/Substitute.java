@@ -25,7 +25,6 @@ import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
-import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.param.Transformations;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
@@ -115,4 +114,11 @@ public class Substitute extends HttpOperation implements Parameterized
 
       location.setParameterStore(store);
    }
+
+   @Override
+   public String toString()
+   {
+      return "Substitute [location=" + location + "]";
+   }
+
 }

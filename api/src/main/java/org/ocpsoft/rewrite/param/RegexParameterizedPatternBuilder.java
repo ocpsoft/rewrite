@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.util.ParseTools;
@@ -168,7 +169,14 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
          builder.append(chars);
       }
 
-      return builder.toString();
+      String result = builder.toString();
+
+      // if (!getParser().matches(result))
+      // {
+      // throw new IllegalStateException("Generated a value that does not match constraints.");
+      // }
+
+      return result;
    }
 
    @Override
@@ -209,28 +217,34 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
          builder.append(chars);
       }
 
-      return builder.toString();
+      String result = builder.toString();
+
+//      if (!getParser().matches(result))
+//      {
+//         throw new IllegalStateException("Generated a value that does not match constraints.");
+//      }
+
+      return result;
    }
 
    /**
     * Extract bound values from configured {@link Binding} instances. Return a {@link Map} of the extracted key-value
     * pairs. Before storing the values in the map, this method applies the supplied {@link Transform} instance.
     */
-   private Map<String, Object> extractBoundValues(final Rewrite event, final EvaluationContext context, Transform<String> transform)
+   private Map<String, Object> extractBoundValues(final Rewrite event, final EvaluationContext context,
+            Transform<String> transform)
    {
       Map<String, Object> result = new LinkedHashMap<String, Object>();
-
-      ParameterValueStore store = (ParameterValueStore) context.get(ParameterValueStore.class);
 
       for (RegexGroup group : groups)
       {
          Parameter<?> parameter = parameters.get(group.getName());
-         String value = store.get(parameter);
+         Object value = Bindings.performRetrieval(event, context, parameter);
 
          if (value == null)
             throw new IllegalStateException("Required parameter [" + group.getName() + "] value was null.");
 
-         result.put(group.getName(), transform.transform(event, context, value));
+         result.put(group.getName(), transform.transform(event, context, value.toString()));
       }
       return result;
    }
@@ -285,7 +299,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    {
       if (parser == null)
       {
-         parser = new RegexParameterizedPatternParser(pattern, this);
+         parser = new RegexParameterizedPatternParser(this, defaultParameterPattern, pattern);
          parser.setParameterStore(parameters);
       }
       return parser;

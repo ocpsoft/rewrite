@@ -80,9 +80,6 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       Assert.notNull(enrichedBinding, "BindingBuilder was removed from the context");
       parameterBuilder.bindsTo(enrichedBinding);
 
-      // FIXME: hack to trigger ParameterStore attachment
-      // parameterBuilder.getRules();
-
       //
       //
       // // add bindings to conditions by walking over the condition tree
