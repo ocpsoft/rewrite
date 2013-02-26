@@ -23,8 +23,13 @@ import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConditionBuilder;
+import org.ocpsoft.rewrite.config.Or;
+import org.ocpsoft.rewrite.config.True;
 import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
+import org.ocpsoft.rewrite.servlet.config.RequestParameter;
 
 public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite.annotation.Parameter>
 {
@@ -78,47 +83,15 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       Assert.notNull(enrichedBinding, "BindingBuilder was removed from the context");
       parameterBuilder.bindsTo(enrichedBinding);
 
-      //
-      //
-      // // add bindings to conditions by walking over the condition tree
-      // AddBindingVisitor visitor = new AddBindingVisitor(context, chain, param, field);
-      // context.getRuleBuilder().accept(visitor);
-      // if (!visitor.isFound())
-      // {
-      //
-      // /*
-      // * Creates a condition that matches the query parameter we are looking for.
-      // * It also provides access to a parameter which is named like the parameter that
-      // * the AddBindingVisitor is expecting.
-      // */
-      //
-      // // FIXME Commented out until this can be resolved via other means
-      // Condition requestParameter = RequestParameter.matches("{name}", "{" + param + "}");
-      // // .where("name").matches(param);
-      // // FIXME End compilation comment-out
-      //
-      // /*
-      // * Add the query parameter condition to the condition tree. We must make sure that
-      // * the condition is evaluated even if the existing part of the tree evaluates to true.
-      // */
-      // ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
-      // Or.any(requestParameter, True.create()));
-      // context.getRuleBuilder().when(composite);
-      //
-      // /*
-      // * This new visitor will definitely find the expected parameter and add the binding.
-      // */
-      // AddBindingVisitor fallback = new AddBindingVisitor(context, chain, param, field);
-      // context.getRuleBuilder().accept(fallback);
-      //
-      // Assert.assertTrue(fallback.isFound(),
-      // "The parameter [" + param + "] bound to Field [" + field.getDeclaringClass().getName() + "."
-      // + field.getName() + "] was not found in any condition.");
-      //
-      // }
-      //
-      // // continue
-      // chain.proceed();
+      /*
+      * Add the query parameter condition to the condition tree that will capture a 
+      * corresponding query parameter. We must make sure that
+      * the condition is evaluated even if the existing part of the tree evaluates to true.
+      */
+      Condition requestParameter = RequestParameter.matches("{name}", "{" + param + "}");
+      ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
+               Or.any(requestParameter, True.create()));
+      context.getRuleBuilder().when(composite);
 
    }
 

@@ -1,9 +1,10 @@
 package org.ocpsoft.rewrite.annotation.query;
 
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.apache.http.client.methods.HttpGet;
+import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -36,7 +37,7 @@ public class QueryParameterTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/query?q=foo");
       assertEquals(200, action.getStatusCode());
-      assertTrue(action.getResponseContent().contains("Log: [foo]"));
+      assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
    }
 
 }
