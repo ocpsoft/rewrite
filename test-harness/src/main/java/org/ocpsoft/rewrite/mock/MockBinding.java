@@ -1,14 +1,13 @@
 package org.ocpsoft.rewrite.mock;
 
-import org.ocpsoft.rewrite.bind.BindingBuilder;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 
-public class MockBinding extends BindingBuilder<MockBinding, Object>
+public class MockBinding implements Binding
 {
    private boolean submitted;
-   private boolean validated;
-   private boolean converted;
    private boolean extracted;
    private Object value;
 
@@ -30,33 +29,9 @@ public class MockBinding extends BindingBuilder<MockBinding, Object>
       this.value = value;
    }
 
-   @Override
-   public boolean validate(final Rewrite event, final EvaluationContext context, final Object value)
-   {
-      validated = true;
-      return true;
-   }
-
-   @Override
-   public Object convert(final Rewrite event, final EvaluationContext context, final Object value)
-   {
-      converted = true;
-      return value;
-   }
-
-   public boolean isConverted()
-   {
-      return converted;
-   }
-
    public boolean isSubmitted()
    {
       return submitted;
-   }
-
-   public boolean isValidated()
-   {
-      return validated;
    }
 
    public boolean isExtracted()
@@ -65,7 +40,7 @@ public class MockBinding extends BindingBuilder<MockBinding, Object>
    }
 
    @Override
-   public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+   public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter, final Object value)
    {
       if (value.getClass().isArray())
       {
@@ -84,7 +59,7 @@ public class MockBinding extends BindingBuilder<MockBinding, Object>
    }
 
    @Override
-   public Object retrieve(final Rewrite event, final EvaluationContext context)
+   public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
    {
       extracted = true;
       return value;
@@ -105,13 +80,6 @@ public class MockBinding extends BindingBuilder<MockBinding, Object>
    public Object getBoundValue()
    {
       return value;
-   }
-
-   @Override
-   public String toString()
-   {
-      return "MockBinding [submitted=" + submitted + ", validated=" + validated + ", converted=" + converted
-               + ", extracted=" + extracted + ", value=" + value + ", returnOnSubmit=" + returnOnSubmit + "]";
    }
 
 }

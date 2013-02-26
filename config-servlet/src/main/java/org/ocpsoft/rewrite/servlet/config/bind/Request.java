@@ -19,11 +19,10 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.ocpsoft.rewrite.bind.BindingBuilder;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.servlet.RewriteWrappedRequest;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -36,7 +35,7 @@ import org.ocpsoft.rewrite.util.Maps;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class Request extends BindingBuilder<Request, String>
+public abstract class Request implements Binding
 {
    /**
     * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map.
@@ -47,51 +46,11 @@ public abstract class Request extends BindingBuilder<Request, String>
    }
 
    /**
-    * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map. Use the given
-    * {@link org.ocpsoft.rewrite.bind.Converter} when retrieving any values.
-    */
-   public static Request attribute(final String property, final Class<? extends Converter<?>> type)
-   {
-      return attribute(property).convertedBy(type);
-   }
-
-   /**
-    * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map. Use the given
-    * {@link org.ocpsoft.rewrite.bind.Validator} before attempting to submit any values. Use the given {@link Converter}
-    * when retrieving any values.
-    */
-   public static Request attribute(final String property, final Class<Converter<?>> converterType,
-            final Class<? extends Validator<?>> validatorType)
-   {
-      return attribute(property, converterType).validatedBy(validatorType);
-   }
-
-   /**
     * Bind a value to the {@link ServletRequest#getParameterMap()}.
     */
    public static Request parameter(final String property)
    {
       return new RequestParameterBinding(property);
-   }
-
-   /**
-    * Bind a value to the {@link ServletRequest#getParameterMap()} map. Use the given {@link Converter} when retrieving
-    * any values.
-    */
-   public static Request parameter(final String property, final Class<? extends Converter<?>> type)
-   {
-      return parameter(property).convertedBy(type);
-   }
-
-   /**
-    * Bind a value to the {@link ServletRequest#getParameterMap()} map. Use the given
-    * {@link org.ocpsoft.rewrite.bind.Validator} before attempting to submit any values. Use the given {@link Converter}
-    * when retrieving any values.
-    */
-   public static Request parameter(final String property, final Class<Converter<?>> converterType,
-            final Class<? extends Validator<?>> validatorType)
-   {
-      return parameter(property, converterType).validatedBy(validatorType);
    }
 
    @Override
@@ -108,15 +67,16 @@ public abstract class Request extends BindingBuilder<Request, String>
 
    private static class RequestParameterBinding extends Request
    {
-      private final String parameter;
+      private final String name;
 
       public RequestParameterBinding(final String parameter)
       {
-         this.parameter = parameter;
+         this.name = parameter;
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter,
+               final Object value)
       {
          ServletRequest request = ((ServletRewrite<?, ?>) event).getRequest();
          RewriteWrappedRequest wrapper = RewriteWrappedRequest.getCurrentInstance(request);
@@ -126,51 +86,52 @@ public abstract class Request extends BindingBuilder<Request, String>
          {
             Object[] values = (Object[]) value;
             for (Object object : values) {
-               Maps.addArrayValue(modifiableParameters, parameter, object.toString());
+               Maps.addArrayValue(modifiableParameters, name, object.toString());
             }
          }
          else
          {
-            Maps.addArrayValue(modifiableParameters, parameter, value.toString());
+            Maps.addArrayValue(modifiableParameters, name, value.toString());
          }
 
          return null;
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context)
+      public Object retrieve(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter)
       {
-         return ((HttpServletRewrite) event).getRequest().getParameter(parameter);
+         return ((HttpServletRewrite) event).getRequest().getParameter(name);
       }
 
       @Override
       public String toString()
       {
-         return "RequestParameterBinding [parameter=" + parameter + "]";
+         return "RequestParameterBinding [parameter=" + name + "]";
       }
    }
 
    private static class RequestAttributeBinding extends Request
    {
-      private final String parameter;
+      private final String name;
 
       public RequestAttributeBinding(final String attribute)
       {
-         this.parameter = attribute;
+         this.name = attribute;
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter,
+               final Object value)
       {
-         ((HttpServletRewrite) event).getRequest().setAttribute(parameter, value);
+         ((HttpServletRewrite) event).getRequest().setAttribute(name, value);
          return null;
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context)
+      public Object retrieve(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter)
       {
          if (event instanceof HttpServletRewrite)
-            return ((HttpServletRewrite) event).getRequest().getParameter(parameter);
+            return ((HttpServletRewrite) event).getRequest().getParameter(name);
 
          else
             return null;
@@ -179,7 +140,7 @@ public abstract class Request extends BindingBuilder<Request, String>
       @Override
       public String toString()
       {
-         return "RequestAttributeBinding [parameter=" + parameter + "]";
+         return "RequestAttributeBinding [parameter=" + name + "]";
       }
 
    }

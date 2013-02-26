@@ -87,6 +87,7 @@ public class Header extends HttpCondition implements Parameterized
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
       HttpServletRequest request = event.getRequest();
@@ -103,6 +104,7 @@ public class Header extends HttpCondition implements Parameterized
       return false;
    }
 
+   @SuppressWarnings("unchecked")
    private boolean matchesValue(Rewrite event, EvaluationContext context, final HttpServletRequest request,
             final String header)
    {

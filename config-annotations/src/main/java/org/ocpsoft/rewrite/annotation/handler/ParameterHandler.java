@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Or;
 import org.ocpsoft.rewrite.config.True;
 import org.ocpsoft.rewrite.el.El;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.servlet.config.RequestParameter;
 
@@ -68,19 +69,22 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       // builder for this parameter
       ParameterBuilder<?> parameterBuilder = context.getRuleBuilder().where(param);
 
+      // subsequent handlers need the binding to configure deferred behavior
+      El binding = El.property(field);
+      context.put(Binding.class, binding);
+
       // subsequent handlers need the builder to configure the parameter
       context.put(ParameterBuilder.class, parameterBuilder);
 
       // create the binding and publish it in the context
-      Binding rawBinding = El.property(field);
-      context.put(Binding.class, rawBinding);
+      context.put(Parameter.class, parameterBuilder);
 
       // run subsequent handler to enrich the parameter and wrap the binding
       chain.proceed();
 
       // add the enriched binding to the parameter
       Binding enrichedBinding = (Binding) context.get(Binding.class);
-      Assert.notNull(enrichedBinding, "BindingBuilder was removed from the context");
+      Assert.notNull(enrichedBinding, "Binding was removed from the context");
       parameterBuilder.bindsTo(enrichedBinding);
 
       /*
@@ -92,7 +96,6 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
                Or.any(requestParameter, True.create()));
       context.getRuleBuilder().when(composite);
-
    }
 
 }

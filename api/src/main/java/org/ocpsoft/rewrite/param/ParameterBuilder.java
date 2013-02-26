@@ -19,10 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.DefaultBindable;
-import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -71,15 +69,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    @Override
    public IMPLTYPE bindsTo(Binding binding)
    {
-      if (binding instanceof Convertable && converter != null)
-      {
-         ((Convertable<?>) binding).convertedBy(converter);
-      }
-      if (binding instanceof Validatable && validator != null)
-      {
-         ((Validatable<?>) binding).validatedBy(validator);
-      }
-
       return super.bindsTo(binding);
    }
 
@@ -88,13 +77,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public <X extends Converter<?>> IMPLTYPE convertedBy(Class<X> type)
    {
       this.converter = ValueHolderUtil.resolveConverter(type);
-      for (Binding binding : getBindings()) {
-         if (binding instanceof Convertable)
-         {
-            ((Convertable<IMPLTYPE>) binding).convertedBy(converter);
-         }
-      }
-
       return (IMPLTYPE) this;
    }
 
@@ -103,13 +85,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public IMPLTYPE convertedBy(Converter<?> converter)
    {
       this.converter = converter;
-      for (Binding binding : getBindings()) {
-         if (binding instanceof Convertable)
-         {
-            ((Convertable<IMPLTYPE>) binding).convertedBy(converter);
-         }
-      }
-
       return (IMPLTYPE) this;
    }
 
@@ -124,13 +99,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public <X extends Validator<?>> IMPLTYPE validatedBy(Class<X> type)
    {
       this.validator = ValueHolderUtil.resolveValidator(type);
-      for (Binding binding : getBindings()) {
-         if (binding instanceof Validatable)
-         {
-            ((Validatable<IMPLTYPE>) binding).validatedBy(validator);
-         }
-      }
-
       return (IMPLTYPE) this;
    }
 
@@ -139,13 +107,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public IMPLTYPE validatedBy(Validator<?> validator)
    {
       this.validator = validator;
-      for (Binding binding : getBindings()) {
-         if (binding instanceof Validatable)
-         {
-            ((Validatable<IMPLTYPE>) binding).validatedBy(validator);
-         }
-      }
-
       return (IMPLTYPE) this;
    }
 
@@ -160,7 +121,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public IMPLTYPE constrainedBy(Constraint<String> constraint)
    {
       this.constraints.add(constraint);
-
       return (IMPLTYPE) this;
    }
 
@@ -175,7 +135,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public IMPLTYPE transformedBy(Transform<String> transform)
    {
       this.transforms.add(transform);
-
       return (IMPLTYPE) this;
    }
 

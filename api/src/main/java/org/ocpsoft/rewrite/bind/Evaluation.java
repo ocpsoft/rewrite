@@ -20,11 +20,12 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Evaluation extends BindingBuilder<Evaluation, Object>
+public class Evaluation implements Binding
 {
    private final CharSequence property;
 
@@ -38,30 +39,20 @@ public class Evaluation extends BindingBuilder<Evaluation, Object>
       return new Evaluation(property);
    }
 
-   public static Evaluation property(final CharSequence property, final Class<? extends Converter<Object>> type)
-   {
-      return property(property).convertedBy(type);
-   }
-
-   public static Evaluation property(final CharSequence property, final Class<Converter<Object>> converterType,
-            final Class<? extends Validator<Object>> validatorType)
-   {
-      return property(property, converterType).validatedBy(validatorType);
-   }
-
    @Override
-   public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+   public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter, final Object value)
    {
+      String unconvertedName = getParameterUnconvertedName(property);
       if (!context.containsKey(property))
       {
          if (value.getClass().isArray())
-            storeValue(event, context, value);
+            storeValue(event, context, unconvertedName, value);
          else
-            storeValue(event, context, new Object[] { value });
+            storeValue(event, context, unconvertedName, new Object[] { value });
       }
       else
       {
-         Object[] values = (Object[]) context.get(getParameterUnconvertedName(property));
+         Object[] values = (Object[]) context.get(unconvertedName);
          List<Object> list = Arrays.asList(values);
 
          if (value.getClass().isArray())
@@ -69,16 +60,42 @@ public class Evaluation extends BindingBuilder<Evaluation, Object>
          else
             list.add(value);
 
-         storeValue(event, context, list.toArray());
+         storeValue(event, context, unconvertedName, list.toArray());
       }
 
       return null;
    }
 
-   private void storeValue(final Rewrite event, final EvaluationContext context, final Object value)
+   public Object submitConverted(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
+            final Object value)
    {
-      context.put(getParameterUnconvertedName(property), value);
-      context.put(getParameterConvertedName(property), convert(event, context, value));
+      String convertedName = getParameterConvertedName(property);
+      if (!context.containsKey(property))
+      {
+         if (value.getClass().isArray())
+            storeValue(event, context, convertedName, value);
+         else
+            storeValue(event, context, convertedName, new Object[] { value });
+      }
+      else
+      {
+         Object[] values = (Object[]) context.get(convertedName);
+         List<Object> list = Arrays.asList(values);
+
+         if (value.getClass().isArray())
+            list.addAll(Arrays.asList((Object[]) value));
+         else
+            list.add(value);
+
+         storeValue(event, context, convertedName, list.toArray());
+      }
+
+      return null;
+   }
+
+   private void storeValue(final Rewrite event, final EvaluationContext context, final String key, final Object value)
+   {
+      context.put(key, value);
    }
 
    public boolean hasValue(final Rewrite event, final EvaluationContext context)
@@ -97,12 +114,12 @@ public class Evaluation extends BindingBuilder<Evaluation, Object>
    }
 
    @Override
-   public Object retrieve(final Rewrite event, final EvaluationContext context)
+   public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
    {
       return retrieveFromProperty(context, getParameterUnconvertedName(property));
    }
 
-   public Object retrieveConverted(Rewrite inbound, EvaluationContext context)
+   public Object retrieveConverted(Rewrite inbound, EvaluationContext context, Parameter<?> parameter)
    {
       return retrieveFromProperty(context, getParameterConvertedName(property));
    }

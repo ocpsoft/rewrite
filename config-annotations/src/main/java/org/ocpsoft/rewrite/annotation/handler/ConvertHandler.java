@@ -25,11 +25,10 @@ import org.ocpsoft.rewrite.annotation.Convert;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
-import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.spi.ConverterProvider;
 
 /**
@@ -54,18 +53,12 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
    }
 
    @Override
-   @SuppressWarnings({ "rawtypes", "unchecked" })
    public void process(FieldContext context, Convert annotation, HandlerChain chain)
    {
       Field field = context.getJavaField();
 
-      // locate the binding previously created by @ParameterBinding
-      Binding binding = (Binding) context.get(Binding.class);
-      if (binding != null) {
-
-         Assert.assertTrue(binding instanceof BindingBuilder,
-                  "Found Binding which is not a BindingBuilder but: " + binding.getClass().getSimpleName());
-         BindingBuilder bindingBuilder = (BindingBuilder) binding;
+      Parameter<?> parameter = (Parameter<?>) context.get(Parameter.class);
+      if (parameter != null) {
 
          Converter<?> converter = null;
 
@@ -84,7 +77,7 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
             converter = LazyConverterAdapter.forTargetType(field.getType());
          }
 
-         bindingBuilder.convertedBy(converter);
+         parameter.convertedBy(converter);
 
          if (log.isTraceEnabled()) {
             log.trace("Attached converter to field [{}] of class [{}]: ", new Object[] {

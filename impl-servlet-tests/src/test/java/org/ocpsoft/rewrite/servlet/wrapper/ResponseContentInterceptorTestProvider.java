@@ -26,7 +26,7 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Response;
-import org.ocpsoft.rewrite.servlet.config.SendStatus.SendError;
+import org.ocpsoft.rewrite.servlet.config.SendStatus;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.impl.HttpRewriteWrappedResponse;
@@ -101,7 +101,7 @@ public class ResponseContentInterceptorTestProvider extends HttpConfigurationPro
                         Response.withOutputInterceptedBy(new ResponseToLowercase()).perform(event, context);
                      }
                      catch (IllegalStateException e) {
-                        SendError.code(503).perform(event, context);
+                        SendStatus.error(503).perform(event, context);
                      }
                      catch (IOException e)
                      {

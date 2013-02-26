@@ -17,18 +17,17 @@ package org.ocpsoft.rewrite.bind;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * Defines the methods necessary to perform {@link Binding} value retrieval.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
- *         TODO Should this be validated and reverse-converted as well?
  */
 public interface Retrieval
 {
    /**
     * Retrieve the value from its storage location.
     */
-   Object retrieve(Rewrite event, EvaluationContext context);
+   Object retrieve(Rewrite event, EvaluationContext context, Parameter<?> parameter);
 }

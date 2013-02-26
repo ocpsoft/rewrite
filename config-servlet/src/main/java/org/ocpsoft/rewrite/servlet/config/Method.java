@@ -20,21 +20,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
-import org.ocpsoft.rewrite.bind.DefaultBindable;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * Responsible for asserting on the {@link HttpServletRequest#getMethod()} property.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class Method extends HttpCondition implements Bindable<Method>
 {
    private final HttpMethod method;
 
-   @SuppressWarnings("rawtypes")
-   private final DefaultBindable<?> bindable = new DefaultBindable();
+   private final DefaultParameter bindable = new DefaultParameter(this.toString());
 
    private enum HttpMethod
    {

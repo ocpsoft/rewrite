@@ -142,7 +142,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
                String paramValue = matcher.group(group++);
 
                Parameter<?> globalParam = parameters.get(param.getName());
-               if (!valueStore.submit(globalParam, paramValue))
+               if (!valueStore.submit(event, context, globalParam, paramValue))
                {
                   result = false;
                   break;

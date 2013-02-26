@@ -136,7 +136,7 @@ public class FacesExpressionLanguageProvider implements ExpressionLanguageProvid
       if (facesContext == null) {
          throw new IllegalArgumentException(
                   "FacesContext.getCurrentInstance() returned null. EL expressions can only be evaluated in the JSF lifecycle. "
-                           + "You should use PhaseAction and PhaseBinding to perform an deferred operation instead.");
+                           + "You should use PhaseAction and PhaseBinding to perform a deferred operation instead.");
       }
       return facesContext;
    }

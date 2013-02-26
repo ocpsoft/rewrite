@@ -52,11 +52,11 @@ public class SpringBeanNameResolverConfigProvider extends HttpConfigurationProvi
                   .addRule()
                   .when(Path.matches("/name/{name}"))
                   .perform(Invoke.binding(El.retrievalMethod(actionMethod))
-                           .and(Redirect.permanent(context.getContextPath() + "/hello/{name}")))
+                           .and(Redirect.permanent(context.getContextPath() + "/hello/{b.name}")))
 
                   // FIXME This needs to bind to a binding that supports separate retrieval and submission
                   .where("name").bindsTo(El.property(nameField))
-                  .where("name").bindsTo(El.property(uppercaseField))
+                  .where("b.name").bindsTo(El.property(uppercaseField))
 
                   .addRule()
                   .when(Path.matches("/hello/{name}"))

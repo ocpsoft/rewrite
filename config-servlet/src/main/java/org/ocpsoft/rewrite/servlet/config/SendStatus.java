@@ -32,7 +32,7 @@ public class SendStatus extends HttpOperation
 {
    private final int code;
 
-   public SendStatus(final int code)
+   private SendStatus(final int code)
    {
       this.code = code;
    }
@@ -62,7 +62,7 @@ public class SendStatus extends HttpOperation
       return new SendError(code);
    }
 
-   public static class SendError extends SendStatus
+   private static class SendError extends SendStatus
    {
       public SendError(final int code)
       {

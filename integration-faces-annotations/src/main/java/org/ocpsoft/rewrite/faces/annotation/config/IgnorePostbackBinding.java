@@ -21,6 +21,7 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * A wrapper for an existing binding that will only delegate to the wrapped binding if the current request is a JSF
@@ -39,37 +40,19 @@ public class IgnorePostbackBinding implements Binding
    }
 
    @Override
-   public Object retrieve(Rewrite event, EvaluationContext context)
+   public Object retrieve(Rewrite event, EvaluationContext context, Parameter<?> parameter)
    {
       if (!isPostback()) {
-         return delegate.retrieve(event, context);
+         return delegate.retrieve(event, context, parameter);
       }
       return null;
    }
 
    @Override
-   public Object submit(Rewrite event, EvaluationContext context, Object value)
+   public Object submit(Rewrite event, EvaluationContext context, Parameter<?> parameter, Object value)
    {
       if (!isPostback()) {
-         return delegate.submit(event, context, value);
-      }
-      return null;
-   }
-
-   @Override
-   public boolean validate(Rewrite event, EvaluationContext context, Object value)
-   {
-      if (!isPostback()) {
-         return delegate.validate(event, context, value);
-      }
-      return true;
-   }
-
-   @Override
-   public Object convert(Rewrite event, EvaluationContext context, Object value)
-   {
-      if (!isPostback()) {
-         return delegate.convert(event, context, value);
+         return delegate.submit(event, context, parameter, value);
       }
       return null;
    }

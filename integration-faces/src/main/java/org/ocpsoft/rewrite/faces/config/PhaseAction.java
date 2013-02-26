@@ -12,9 +12,9 @@ import org.ocpsoft.rewrite.config.Invoke;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.event.SubflowTask;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.spi.InvocationResultHandler;
@@ -75,18 +75,17 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
          public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
          {
             Object result = null;
-            if ((submission == null) && (retrieval != null))
+            if (retrieval != null)
             {
-               result = retrieval.retrieve(event, context);
-               log.debug("Invoked binding [" + retrieval + "] returned value [" + result + "]");
-            }
-            else if (retrieval != null)
-            {
-               Object converted = submission.convert(event, context, retrieval.retrieve(event, context));
-               result = submission.submit(event, context, converted);
+               result = retrieval.retrieve(event, context, null);
                log.debug("Invoked binding [" + submission + "] returned value [" + result + "]");
             }
-            else
+            if (submission != null)
+            {
+               result = submission.submit(event, context, null, result);
+               log.debug("Invoked binding [" + retrieval + "] returned value [" + result + "]");
+            }
+            if (retrieval == null && submission == null)
             {
                log.warn("No binding specified for Invocation.");
             }

@@ -1,6 +1,8 @@
 package org.ocpsoft.rewrite.param;
 
 import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Used to submit {@link Parameter} values in {@link String} form. These values will subsequently be passed through
@@ -13,5 +15,5 @@ public interface ParameterValueStore
    /**
     * Submit the value for the given bindings.
     */
-   public boolean submit(Parameter<?> param, String value);
+   boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value);
 }

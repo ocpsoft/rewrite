@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.config.SendStatus;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class BindingValidationTestProvider extends HttpConfigurationProvider
 {
@@ -47,18 +47,16 @@ public class BindingValidationTestProvider extends HttpConfigurationProvider
       Configuration config = ConfigurationBuilder
                .begin()
                .addRule()
-               .when(Direction.isInbound().and(
-                        Path.matches("/v/{param}")))
+               .when(Direction.isInbound().and(Path.matches("/v/{param}")))
                .perform(SendStatus.code(205))
-               .where("param")
-               .bindsTo(Evaluation.property("param").validatedBy(new Validator() {
+               .where("param").bindsTo(Evaluation.property("param")).validatedBy(new Validator() {
                   @Override
                   public boolean validate(final Rewrite event, final EvaluationContext context,
                            final Object value)
                   {
                      return "valid".equals(value);
                   }
-               }))
+               })
 
                .addRule()
                .when(Direction.isInbound().and(Path.matches("/v/{param}")))

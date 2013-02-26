@@ -113,7 +113,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                .addRule()
                .when(Path.matches("/defer_validation/{value}").and(DispatchType.isRequest()))
                .perform(Forward.to("/empty.xhtml"))
-               .where("value").bindsTo(PhaseBinding.to(Request.parameter("v").validatedBy(validator)).after(
+               .where("value").bindsTo(PhaseBinding.to(Request.parameter("v")).validatedBy(validator).after(
                         PhaseId.RESTORE_VIEW))
 
                /*

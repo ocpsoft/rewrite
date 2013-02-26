@@ -25,11 +25,10 @@ import org.ocpsoft.rewrite.annotation.Validate;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
-import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.BindingBuilder;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.spi.ValidatorProvider;
 
 /**
@@ -54,18 +53,12 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
    }
 
    @Override
-   @SuppressWarnings({ "rawtypes", "unchecked" })
    public void process(FieldContext context, Validate annotation, HandlerChain chain)
    {
       Field field = context.getJavaField();
 
-      // locate the binding previously created by @ParameterBinding
-      Binding binding = (Binding) context.get(Binding.class);
-      if (binding != null) {
-
-         Assert.assertTrue(binding instanceof BindingBuilder,
-                  "Found Binding which is not a BindingBuilder but: " + binding.getClass().getSimpleName());
-         BindingBuilder bindingBuilder = (BindingBuilder) binding;
+      Parameter<?> parameter = (Parameter<?>) context.get(Parameter.class);
+      if (parameter != null) {
 
          Validator<?> validator = null;
 
@@ -84,7 +77,7 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
             validator = LazyValidatorAdapter.forTargetType(field.getType());
          }
 
-         bindingBuilder.validatedBy(validator);
+         parameter.validatedBy(validator);
 
          if (log.isTraceEnabled()) {
             log.trace("Attached validator to field [{}] of class [{}]: ", new Object[] {

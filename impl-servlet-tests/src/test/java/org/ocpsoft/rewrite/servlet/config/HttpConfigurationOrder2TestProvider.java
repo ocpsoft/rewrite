@@ -20,7 +20,6 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Direction;
-import org.ocpsoft.rewrite.servlet.config.SendStatus.SendError;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 /**
@@ -48,6 +47,6 @@ public class HttpConfigurationOrder2TestProvider extends HttpConfigurationProvid
                .addRule(Join.path("/myProfile").to("/test.html"))
                .addRule()
                .when(Direction.isInbound().and(DispatchType.isRequest()))
-               .perform(SendError.code(403));
+               .perform(SendStatus.error(403));
    }
 }

@@ -2,7 +2,9 @@ package org.ocpsoft.rewrite.config.typesafe;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -12,12 +14,17 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.spi.InstanceProvider;
 import org.ocpsoft.rewrite.util.Instances;
+import org.ocpsoft.rewrite.util.ValueHolderUtil;
 
-public class Typesafe implements Operation
+public class Typesafe implements Operation, Parameterized
 {
-   private final List<String> parameters = new ArrayList<String>();
+   private ParameterStore store;
+   private final List<String> argNames = new ArrayList<String>();
 
    private Method method;
    private Object[] args;
@@ -31,7 +38,7 @@ public class Typesafe implements Operation
    public <T> T invoke(Class<T> type)
    {
       try {
-         Object o = Enhancer.create(type, new RouteMethodInterceptor(this));
+         Object o = Enhancer.create(type, new TypesafeMethodInterceptor(this));
          return (T) o;
       }
       catch (Exception e) {
@@ -39,11 +46,11 @@ public class Typesafe implements Operation
       }
    }
 
-   private static class RouteMethodInterceptor implements MethodInterceptor
+   private static class TypesafeMethodInterceptor implements MethodInterceptor
    {
       private final Typesafe typesafe;
 
-      public RouteMethodInterceptor(Typesafe typesafe)
+      public TypesafeMethodInterceptor(Typesafe typesafe)
       {
          this.typesafe = typesafe;
       }
@@ -63,23 +70,27 @@ public class Typesafe implements Operation
       performInvoke(buildArguments(event, context));
    }
 
-   public Object[] buildArguments(Rewrite event, EvaluationContext context)
+   private Object[] buildArguments(Rewrite event, EvaluationContext context)
    {
       Class<?> type = method.getDeclaringClass();
 
-      if (parameters.size() != args.length)
+      if (argNames.size() != args.length)
       {
          throw new IllegalStateException("Invalid number of parameters specified in "
                   + Typesafe.class.getSimpleName() + " method invocation [" + buildSignature(type, method)
-                  + "]. Expected [" + args.length + "] but got [" + parameters.size() + "]");
+                  + "]. Expected [" + args.length + "] but got [" + argNames.size() + "]");
       }
 
       Object[] values = new Object[args.length];
 
       for (int i = 0; i < args.length; i++) {
-         String arg = parameters.get(i);
-         if (arg != null)
-            values[i] = Evaluation.property(arg).retrieveConverted(event, context);
+         String arg = argNames.get(i);
+         if (arg != null) {
+            Parameter<?> parameter = store.get(arg);
+            values[i] = ValueHolderUtil.convert(
+                     event, context, parameter, Evaluation.property(arg).retrieve(event, context, parameter)
+                     );
+         }
          else
             values[i] = args[i];
       }
@@ -146,7 +157,7 @@ public class Typesafe implements Operation
       if (type != null && (short.class.isAssignableFrom(type)))
          result = (T) new Short("0");
 
-      this.parameters.add(name);
+      this.argNames.add(name);
       return result;
    }
 
@@ -177,5 +188,17 @@ public class Typesafe implements Operation
    public Method getMethod()
    {
       return method;
+   }
+
+   @Override
+   public Set<String> getRequiredParameterNames()
+   {
+      return new HashSet<String>(argNames);
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      this.store = store;
    }
 }

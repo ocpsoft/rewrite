@@ -23,6 +23,8 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -142,8 +144,8 @@ public class TypesafeInvocationTest
    @Test
    public void testInvokeTypesafeWithNamedParams()
    {
-      Evaluation.property("bool").submit(rewrite, context, true);
-      Evaluation.property("int").submit(rewrite, context, 15);
+      Evaluation.property("bool").submit(rewrite, context, new DefaultParameter("bool"), true);
+      Evaluation.property("int").submit(rewrite, context, new DefaultParameter("bool"), 15);
 
       Typesafe typesafe = Typesafe.method();
       DummyObject object = typesafe.invoke(DummyObject.class);
@@ -155,7 +157,15 @@ public class TypesafeInvocationTest
       Assert.assertFalse(DummyObject.invoked);
       Assert.assertNull(DummyObject.number);
       Assert.assertNull(DummyObject.bool);
+
+      ParameterStore store = new ParameterStore();
+      typesafe.setParameterStore(store);
+      for (String name : typesafe.getRequiredParameterNames()) {
+         store.put(name, new DefaultParameter(name));
+      }
+
       typesafe.perform(rewrite, context);
+
       Assert.assertEquals(15, DummyObject.number);
       Assert.assertEquals(true, DummyObject.bool);
       Assert.assertTrue(DummyObject.invoked);
@@ -170,6 +180,13 @@ public class TypesafeInvocationTest
       boolean param = typesafe.param(boolean.class);
 
       object.doSomething(param, null);
+
+      ParameterStore store = new ParameterStore();
+      typesafe.setParameterStore(store);
+      for (String name : typesafe.getRequiredParameterNames()) {
+         store.put(name, new DefaultParameter(name));
+      }
+
       typesafe.perform(rewrite, context);
       Assert.fail();
    }

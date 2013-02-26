@@ -22,9 +22,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.urlbuilder.AddressBuilder;
@@ -54,14 +54,14 @@ public class EvaluationBindingTest
    public void testCannotAccessNonexistentEvaluationContextPropertyInbound() throws Exception
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Evaluation.property("property").retrieve(inbound, context);
+      Evaluation.property("property").retrieve(inbound, context, new DefaultParameter("property"));
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testCannotAccessNonexistentEvaluationContextPropertyOutbound() throws Exception
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Evaluation.property("property").retrieve(outbound, context);
+      Evaluation.property("property").retrieve(outbound, context, new DefaultParameter("property"));
    }
 
    @Test
@@ -69,13 +69,13 @@ public class EvaluationBindingTest
    {
       MockEvaluationContext context = new MockEvaluationContext();
       try {
-         Evaluation.property("property").retrieve(inbound, context);
+         Evaluation.property("property").retrieve(inbound, context, new DefaultParameter("property"));
          Assert.fail();
       }
       catch (IllegalArgumentException e) {}
 
-      Evaluation.property("property").submit(inbound, context, "Foo");
-      Object value = Evaluation.property("property").retrieve(inbound, context);
+      Evaluation.property("property").submit(inbound, context, new DefaultParameter("property"), "Foo");
+      Object value = Evaluation.property("property").retrieve(inbound, context, new DefaultParameter("property"));
 
       Assert.assertEquals("Foo", value);
    }
@@ -85,51 +85,15 @@ public class EvaluationBindingTest
    {
       MockEvaluationContext context = new MockEvaluationContext();
       try {
-         Evaluation.property("property").retrieve(outbound, context);
+         Evaluation.property("property").retrieve(outbound, context, new DefaultParameter("property"));
          Assert.fail();
       }
       catch (IllegalArgumentException e) {}
 
-      Evaluation.property("property").submit(outbound, context, "Foo");
-      Object value = Evaluation.property("property").retrieve(outbound, context);
+      Evaluation.property("property").submit(outbound, context, new DefaultParameter("property"), "Foo");
+      Object value = Evaluation.property("property").retrieve(outbound, context, new DefaultParameter("property"));
 
       Assert.assertEquals("Foo", value);
-   }
-
-   @Test
-   public void testCanAccessEvaluationContextConvertedPropertyInbound() throws Exception
-   {
-      MockEvaluationContext context = new MockEvaluationContext();
-
-      Converter<String> converter = new Converter<String>() {
-         @Override
-         public String convert(Rewrite event, EvaluationContext context, Object value)
-         {
-            return "Bar";
-         }
-      };
-
-      Evaluation.property("property").convertedBy(converter).submit(inbound, context, "Foo");
-      Assert.assertEquals("Foo", Evaluation.property("property").retrieve(inbound, context));
-      Assert.assertEquals("Bar", Evaluation.property("property").retrieveConverted(inbound, context));
-   }
-
-   @Test
-   public void testCanAccessEvaluationContextConvertedPropertyOutbound() throws Exception
-   {
-      MockEvaluationContext context = new MockEvaluationContext();
-
-      Converter<String> converter = new Converter<String>() {
-         @Override
-         public String convert(Rewrite event, EvaluationContext context, Object value)
-         {
-            return "Bar";
-         }
-      };
-
-      Evaluation.property("property").convertedBy(converter).submit(outbound, context, "Foo");
-      Assert.assertEquals("Foo", Evaluation.property("property").retrieve(outbound, context));
-      Assert.assertEquals("Bar", Evaluation.property("property").retrieveConverted(outbound, context));
    }
 
 }

@@ -21,12 +21,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.util.ValueHolderUtil;
 
 /**
  * Utility class for interacting with {@link Bindable} instances.
@@ -34,23 +34,23 @@ import org.ocpsoft.rewrite.exception.RewriteException;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public abstract class Bindings
+public final class Bindings
 {
    /**
     * Submit the given value to all registered {@link Binding} instances of the given {@link HasBindings}. Perform this
     * by adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
     */
    public static boolean enqueueSubmission(final Rewrite event, final EvaluationContext context,
-            final HasBindings bindable, final Object value)
+            final Parameter<?> parameter, final Object value)
    {
       if (value == null)
          return true;
 
       Map<HasBindings, Object> map = new LinkedHashMap<HasBindings, Object>();
-      map.put(bindable, value);
+      map.put(parameter, value);
 
       List<Operation> operations = new ArrayList<Operation>();
-      List<Binding> bindings = bindable.getBindings();
+      List<Binding> bindings = parameter.getBindings();
       for (Binding binding : bindings) {
          try {
             if (binding instanceof Evaluation)
@@ -58,21 +58,22 @@ public abstract class Bindings
                /*
                 * Binding to the EvaluationContext is available immediately.
                 */
-               Object convertedValue = binding.convert(event, context, value);
-               if (binding.validate(event, context, convertedValue))
+               Object convertedValue = ValueHolderUtil.convert(event, context, parameter.getConverter(), value);
+               if (ValueHolderUtil.validates(event, context, parameter.getValidator(), convertedValue))
                {
-                  binding.submit(event, context, value);
+                  Evaluation evaluation = (Evaluation) binding;
+                  evaluation.submit(event, context, parameter, value);
+                  evaluation.submitConverted(event, context, parameter, convertedValue);
                }
                else
                   return false;
             }
             else
             {
-               Object convertedValue = binding.convert(event, context, value);
-               if (binding.validate(event, context, convertedValue))
+               Object convertedValue = ValueHolderUtil.convert(event, context, parameter.getConverter(), value);
+               if (ValueHolderUtil.validates(event, context, parameter.getValidator(), convertedValue))
                {
-                  convertedValue = binding.convert(event, context, convertedValue);
-                  operations.add(new BindingOperation(binding, convertedValue));
+                  operations.add(new BindingOperation(parameter, binding, convertedValue));
                }
                else
                   return false;
@@ -94,11 +95,11 @@ public abstract class Bindings
     * Extract bound values from configured {@link Bindable} instances. Return a {@link List} of the extracted values.
     */
    public static Object performRetrieval(final Rewrite event, final EvaluationContext context,
-            final HasBindings bindable)
+            final Parameter<?> parameter)
    {
       Object result = null;
 
-      List<Binding> bindings = new ArrayList<Binding>(bindable.getBindings());
+      List<Binding> bindings = new ArrayList<Binding>(parameter.getBindings());
       Collections.reverse(bindings);
       // FIXME Should not have to worry about order here.
 
@@ -106,7 +107,7 @@ public abstract class Bindings
       {
          if (result == null && !(binding instanceof Evaluation))
          {
-            result = binding.retrieve(event, context);
+            result = binding.retrieve(event, context, parameter);
          }
       }
 
@@ -116,187 +117,12 @@ public abstract class Bindings
          {
             if (((Evaluation) binding).hasValue(event, context))
             {
-               result = binding.retrieve(event, context);
+               result = binding.retrieve(event, context, parameter);
             }
          }
       }
 
       return result;
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
-    * {@link Binding} value. This evaluates to true when the values are equal.
-    */
-   public static DefaultConditionBuilder equals(final Object expected, final Retrieval binding)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            Object actual = binding.retrieve(event, context);
-            return compare(expected, actual);
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
-    * {@link Binding} value. This evaluates to true when the values are equal.
-    */
-   public static DefaultConditionBuilder equals(final Object expected, final Submission binding, final Object submission)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            Object actual = binding.submit(event, context, submission);
-            return compare(expected, actual);
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the value of two {@link Retrieval} {@link Binding} instances. This
-    * evaluates to true when the values are equal.
-    */
-   public static DefaultConditionBuilder equals(final Retrieval left, final Retrieval right)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            return compare(left.retrieve(event, context), right.retrieve(event, context));
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the values of each given {@link Retrieval} and {@link Submission}
-    * {@link Binding} instance, respectively. This evaluates to true when the values are equal.
-    */
-   public static DefaultConditionBuilder equals(final Retrieval left, final Submission right, final Object submission)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            return compare(left.retrieve(event, context), right.submit(event, context, submission));
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
-    * evaluates to true when the values are equal.
-    */
-   public static DefaultConditionBuilder equals(final Submission left, final Object leftSubmission,
-            final Submission right,
-            final Object rightSubmission)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            return compare(left.submit(event, context, leftSubmission), right.submit(event, context, rightSubmission));
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Retrieval}
-    * {@link Binding} value. This evaluates to true when the values are not equal.
-    */
-   public static DefaultConditionBuilder notEquals(final Object expected, final Retrieval binding)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            Object actual = binding.retrieve(event, context);
-            return !compare(expected, actual);
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the expected value against the actual retrieved {@link Submission}
-    * {@link Binding} value. This evaluates to true when the values are not equal.
-    */
-   public static DefaultConditionBuilder notEquals(final Object expected, final Submission binding,
-            final Object submission)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            Object actual = binding.submit(event, context, submission);
-            return !compare(expected, actual);
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the value of two {@link Retrieval} {@link Binding} instances. This
-    * evaluates to true when the values are not equal.
-    */
-   public static DefaultConditionBuilder notEquals(final Retrieval left, final Retrieval right)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            return !compare(left.retrieve(event, context), right.retrieve(event, context));
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the values of each given {@link Retrieval} and {@link Submission}
-    * {@link Binding} instance, respectively. This evaluates to true when the values are not equal.
-    */
-   public static DefaultConditionBuilder notEquals(final Retrieval left, final Submission right, final Object submission)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            return !compare(left.retrieve(event, context), right.submit(event, context, submission));
-         }
-      };
-   }
-
-   /**
-    * Return a new {@link Condition} which compares the value of two {@link Submission} {@link Binding} instances. This
-    * evaluates to true when the values are not equal.
-    */
-   public static DefaultConditionBuilder notEquals(final Submission left, final Object leftSubmission,
-            final Submission right,
-            final Object rightSubmission)
-   {
-      return new DefaultConditionBuilder() {
-         @Override
-         public boolean evaluate(final Rewrite event, final EvaluationContext context)
-         {
-            return !compare(left.submit(event, context, leftSubmission), right.submit(event, context, rightSubmission));
-         }
-      };
-   }
-
-   /**
-    * Return true if the two values are equal.
-    */
-   private static boolean compare(final Object expected, final Object actual)
-   {
-      if (expected == actual)
-      {
-         return true;
-      }
-      else if ((expected != null) && expected.equals(actual))
-      {
-         return true;
-      }
-      return false;
    }
 
    /**
@@ -306,11 +132,13 @@ public abstract class Bindings
     */
    private static class BindingOperation implements Operation
    {
+      private final Parameter<?> parameter;
       private final Binding binding;
       private final Object value;
 
-      public BindingOperation(final Binding binding, final Object value)
+      public BindingOperation(final Parameter<?> parameter, final Binding binding, final Object value)
       {
+         this.parameter = parameter;
          this.binding = binding;
          this.value = value;
       }
@@ -318,7 +146,7 @@ public abstract class Bindings
       @Override
       public void perform(final Rewrite event, final EvaluationContext context)
       {
-         binding.submit(event, context, value);
+         binding.submit(event, context, parameter, value);
       }
 
       @Override

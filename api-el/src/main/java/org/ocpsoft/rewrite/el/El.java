@@ -24,19 +24,20 @@ import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.bind.BindingBuilder;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Retrieval;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * Responsible for binding to EL expressions.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class El extends BindingBuilder<El, Object> implements Retrieval
+public abstract class El implements Binding, Retrieval
 {
    private static final Logger log = Logger.getLogger(El.class);
    private static volatile List<ExpressionLanguageProvider> _providers;
@@ -155,7 +156,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context)
+      public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
       {
 
          if (!supportsRetrieval())
@@ -187,7 +188,8 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
+               final Object value)
       {
          if (!supportsSubmission())
             throw new RewriteException("Method binding expression supports retrieval only [" + getExpression
@@ -247,7 +249,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context)
+      public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
       {
          Object value = null;
          for (ExpressionLanguageProvider provider : getProviders()) {
@@ -290,7 +292,8 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
+               final Object value)
       {
          for (ExpressionLanguageProvider provider : getProviders()) {
             try
@@ -335,7 +338,7 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context)
+      public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
       {
          Object value = null;
          for (ExpressionLanguageProvider provider : getProviders()) {
@@ -378,7 +381,8 @@ public abstract class El extends BindingBuilder<El, Object> implements Retrieval
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
+               final Object value)
       {
          for (ExpressionLanguageProvider provider : getProviders()) {
             try

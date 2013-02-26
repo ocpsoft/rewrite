@@ -110,7 +110,9 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                       * bindings such as {@link El}, the value will be bound directly to the type of the referenced
                       * property type, and this array downcast is not necessary.
                       */
-                     Product product = (Product) Evaluation.property("pid").retrieveConverted(event, context);
+                     ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
+                     Product product = (Product) Evaluation.property("pid").retrieveConverted(event, context,
+                              store.get("pid"));
 
                      /**
                       * Marshal the Product into XML using JAXB. This has been extracted into a utility class.

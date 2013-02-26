@@ -48,15 +48,12 @@ public class IgnorePostbackHandler implements AnnotationHandler<IgnorePostback>
        * Must be executed after @Deferred but before all others so that the IgnorePostback wrappers
        * are deferred but also wrap everything else
        */
-      return HandlerWeights.WEIGHT_TYPE_ENRICHING - 5;
+      return HandlerWeights.WEIGHT_TYPE_ENRICHING + 5;
    }
 
    @Override
    public void process(ClassContext context, IgnorePostback annotation, HandlerChain chain)
    {
-
-      // first let subsequent handlers wrap or enrich the binding/operation
-      chain.proceed();
 
       if (context instanceof MethodContext) {
          Operation operation = (Operation) context.get(Operation.class);
@@ -73,6 +70,9 @@ public class IgnorePostbackHandler implements AnnotationHandler<IgnorePostback>
             context.put(Binding.class, new IgnorePostbackBinding(binding));
          }
       }
+
+      // first let subsequent handlers wrap or enrich the binding/operation
+      chain.proceed();
 
    }
 }

@@ -77,7 +77,7 @@ public abstract class Query extends HttpCondition implements Parameterized
             {
                ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
                for (Entry<Parameter<?>, String> entry : pattern.parse(event, context, query).entrySet()) {
-                  values.submit(store.get(entry.getKey().getName()), entry.getValue());
+                  values.submit(event, context, store.get(entry.getKey().getName()), entry.getValue());
                }
                return true;
             }
@@ -144,7 +144,7 @@ public abstract class Query extends HttpCondition implements Parameterized
                         {
                            ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
                            ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                           return values.submit(store.get(parameterName), value);
+                           return values.submit(event, context, store.get(parameterName), value);
                         }
                      }
                   }

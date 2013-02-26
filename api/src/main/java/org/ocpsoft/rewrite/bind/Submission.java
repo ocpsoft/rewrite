@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.bind;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * Defines the methods necessary to perform, converted, validated {@link Binding} value submission.
@@ -24,11 +25,11 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Submission extends Validator<Object>, Converter<Object>
+public interface Submission
 {
    /**
     * Store a value into the designated storage location. Return any value that is produces as a result of this
     * operation.
     */
-   Object submit(Rewrite event, EvaluationContext context, Object value);
+   Object submit(Rewrite event, EvaluationContext context, Parameter<?> parameter, Object value);
 }

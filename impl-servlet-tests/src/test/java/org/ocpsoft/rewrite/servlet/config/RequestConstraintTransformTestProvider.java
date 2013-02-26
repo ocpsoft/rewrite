@@ -24,6 +24,7 @@ import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Constraint;
+import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -73,8 +74,9 @@ public class RequestConstraintTransformTestProvider extends HttpConfigurationPro
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
                   {
-                     String one = ((String) Evaluation.property("1").retrieve(event, context));
-                     String two = ((String) Evaluation.property("2").retrieve(event, context));
+                     ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
+                     String one = ((String) Evaluation.property("1").retrieve(event, context, store.get("1")));
+                     String two = ((String) Evaluation.property("2").retrieve(event, context, store.get("1")));
                      String three = event.getResponse().encodeRedirectURL(event.getContextPath() + "/outbound/THREE");
 
                      Response.addHeader("one", one).perform(event, context);

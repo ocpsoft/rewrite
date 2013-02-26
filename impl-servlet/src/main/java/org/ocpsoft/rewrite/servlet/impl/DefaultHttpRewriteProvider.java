@@ -106,40 +106,42 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
 
                if (rule.evaluate(event, context))
                {
-                  if (!handleBindings(event, context, values))
-                     break;
-
-                  log.debug("Rule [" + rule + "] matched and will be performed.");
-
-                  List<Operation> preOperations = ((EvaluationContextImpl) context).getPreOperations();
-                  for (int k = 0; k < preOperations.size(); k++) {
-                     preOperations.get(k).perform(event, context);
-                  }
-
-                  if (event.getFlow().is(Flow.HANDLED))
+                  if (handleBindings(event, context, values))
                   {
-                     return;
-                  }
+                     log.debug("Rule [" + rule + "] matched and will be performed.");
 
-                  rule.perform(event, context);
+                     List<Operation> preOperations = ((EvaluationContextImpl) context).getPreOperations();
+                     for (int k = 0; k < preOperations.size(); k++) {
+                        preOperations.get(k).perform(event, context);
+                     }
 
-                  if (event.getFlow().is(Flow.HANDLED))
-                  {
-                     return;
-                  }
+                     if (event.getFlow().is(Flow.HANDLED))
+                     {
+                        return;
+                     }
 
-                  List<Operation> postOperations = ((EvaluationContextImpl) context).getPostOperations();
-                  for (int k = 0; k < postOperations.size(); k++) {
-                     postOperations.get(k).perform(event, context);
-                  }
+                     rule.perform(event, context);
 
-                  if (event.getFlow().is(Flow.HANDLED))
-                  {
-                     return;
+                     if (event.getFlow().is(Flow.HANDLED))
+                     {
+                        return;
+                     }
+
+                     List<Operation> postOperations = ((EvaluationContextImpl) context).getPostOperations();
+                     for (int k = 0; k < postOperations.size(); k++) {
+                        postOperations.get(k).perform(event, context);
+                     }
+
+                     if (event.getFlow().is(Flow.HANDLED))
+                     {
+                        return;
+                     }
                   }
                }
                else
+               {
                   break;
+               }
             }
          }
       }
@@ -158,36 +160,36 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
 
          if (rule.evaluate(event, context))
          {
-            if (!handleBindings(event, context, values))
-               break;
-
-            log.debug("Rule [" + rule + "] matched and will be performed.");
-            cacheable.add(rule);
-            List<Operation> preOperations = context.getPreOperations();
-            for (int k = 0; k < preOperations.size(); k++) {
-               preOperations.get(k).perform(event, context);
-            }
-
-            if (event.getFlow().is(Flow.HANDLED))
+            if (handleBindings(event, context, values))
             {
-               break;
-            }
+               log.debug("Rule [" + rule + "] matched and will be performed.");
+               cacheable.add(rule);
+               List<Operation> preOperations = context.getPreOperations();
+               for (int k = 0; k < preOperations.size(); k++) {
+                  preOperations.get(k).perform(event, context);
+               }
 
-            rule.perform(event, context);
+               if (event.getFlow().is(Flow.HANDLED))
+               {
+                  break;
+               }
 
-            if (event.getFlow().is(Flow.HANDLED))
-            {
-               break;
-            }
+               rule.perform(event, context);
 
-            List<Operation> postOperations = context.getPostOperations();
-            for (int k = 0; k < postOperations.size(); k++) {
-               postOperations.get(k).perform(event, context);
-            }
+               if (event.getFlow().is(Flow.HANDLED))
+               {
+                  break;
+               }
 
-            if (event.getFlow().is(Flow.HANDLED))
-            {
-               break;
+               List<Operation> postOperations = context.getPostOperations();
+               for (int k = 0; k < postOperations.size(); k++) {
+                  postOperations.get(k).perform(event, context);
+               }
+
+               if (event.getFlow().is(Flow.HANDLED))
+               {
+                  break;
+               }
             }
          }
       }
