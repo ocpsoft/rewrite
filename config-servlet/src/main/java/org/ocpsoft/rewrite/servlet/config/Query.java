@@ -130,15 +130,24 @@ public abstract class Query extends HttpCondition implements Parameterized
 
             for (String name : queryString.getParameterNames()) {
                String[] parameterValues = queryString.getParameterValues(name);
-               for (String value : parameterValues) {
-
-                  if (parameterName.equals(name) && pattern.matches(value))
+               if (parameterName.equals(name))
+               {
+                  if (parameterValues == null || (parameterValues.length == 0))
                   {
-                     ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
-                     ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                     return values.submit(store.get(parameterName), value);
+                     return pattern.matches("");
                   }
+                  else
+                  {
+                     for (String value : parameterValues) {
 
+                        if (pattern.matches(value))
+                        {
+                           ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
+                           ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
+                           return values.submit(store.get(parameterName), value);
+                        }
+                     }
+                  }
                }
             }
 

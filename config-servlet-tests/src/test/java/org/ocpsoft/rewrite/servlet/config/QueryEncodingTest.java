@@ -24,6 +24,11 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterValueStore;
+import org.ocpsoft.rewrite.param.ParameterValueStoreImpl;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
@@ -34,6 +39,8 @@ public class QueryEncodingTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
+   private MockEvaluationContext context;
+   private ParameterStore store;
 
    @Before
    public void before()
@@ -50,12 +57,17 @@ public class QueryEncodingTest
                .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
+      context = new MockEvaluationContext();
+      context.put(ParameterValueStore.class, new ParameterValueStoreImpl());
+      store = new ParameterStore();
+      context.put(ParameterStore.class, store);
    }
 
    @Test
    public void testQueryStringMatchesWithParameters()
    {
-      Assert.assertTrue(Query.parameterExists("my cat").evaluate(rewrite, new MockEvaluationContext()));
+      store.where("my cat", new DefaultParameter("my cat"));
+      Assert.assertTrue(Query.parameterExists("my cat").evaluate(rewrite, context));
    }
 
    @Test
@@ -63,27 +75,31 @@ public class QueryEncodingTest
    {
       // FIXME remove regex support
       Query query = Query.valueExists(".*∂ve.*");
-      MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(query.evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringMatchesPattern()
    {
-      Assert.assertTrue(Query.matches(".*&one=1.*").evaluate(rewrite, new MockEvaluationContext()));
+      store.where("x", new DefaultParameter("x")).constrainedBy(new RegexConstraint(".*&one=1.*"));
+      Query query = Query.matches("{x}");
+      query.setParameterStore(store);
+      Assert.assertTrue(query.evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringBindsToEntireValue()
    {
-      Query query = Query.matches(".*&one=1.*");
-      Assert.assertTrue(query.evaluate(rewrite, new MockEvaluationContext()));
+      store.where("x", new DefaultParameter("x")).constrainedBy(new RegexConstraint(".*&one=1.*"));
+      Query query = Query.matches("{x}");
+      query.setParameterStore(store);
+      Assert.assertTrue(query.evaluate(rewrite, context));
 
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(query.evaluate(rewrite, context));
@@ -92,7 +108,7 @@ public class QueryEncodingTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Query.matches(".*").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      Assert.assertFalse(Query.matches(".*").evaluate(new MockRewrite(), context));
    }
 
    @Test(expected = IllegalArgumentException.class)

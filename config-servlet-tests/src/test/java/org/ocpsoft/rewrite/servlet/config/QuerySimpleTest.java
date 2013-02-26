@@ -25,6 +25,11 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterValueStore;
+import org.ocpsoft.rewrite.param.ParameterValueStoreImpl;
+import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
 /**
@@ -35,6 +40,8 @@ public class QuerySimpleTest
 {
    private Rewrite rewrite;
    private HttpServletRequest request;
+   private MockEvaluationContext context;
+   private ParameterStore store;
 
    @Before
    public void before()
@@ -51,48 +58,61 @@ public class QuerySimpleTest
                .thenReturn("/context");
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
+      context = new MockEvaluationContext();
+      context.put(ParameterValueStore.class, new ParameterValueStoreImpl());
+      store = new ParameterStore();
+      context.put(ParameterStore.class, store);
    }
 
    @Test
    public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(Query.matches("foo=bar&bar=baz&ee").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.matches("foo=bar&bar=baz&ee").evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringMatchesPattern()
    {
-      Assert.assertTrue(Query.matches("foo=bar.*").evaluate(rewrite, new MockEvaluationContext()));
+      store.where("t", new DefaultParameter("t"));
+      Query query = Query.matches("foo=bar{t}");
+      query.setParameterStore(store);
+      Assert.assertTrue(query.evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringParameterExists()
    {
-      Assert.assertTrue(Query.parameterExists(".oo").evaluate(rewrite, new MockEvaluationContext()));
+      Query query = Query.parameterExists("foo");
+      query.setParameterStore(store);
+      store.where("foo", new DefaultParameter("foo"));
+      Assert.assertTrue(query.evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringUnvaluedParameterExists()
    {
-      Assert.assertTrue(Query.parameterExists("ee").evaluate(rewrite, new MockEvaluationContext()));
+      Query query = Query.parameterExists("ee");
+      query.setParameterStore(store);
+      store.where("ee", new DefaultParameter("ee"));
+      Assert.assertTrue(query.evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringParameterDoesNotExist()
    {
-      Assert.assertFalse(Query.parameterExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertFalse(Query.parameterExists("nothing").evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringValueExists()
    {
-      Assert.assertTrue(Query.valueExists(".ar").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(Query.valueExists(".ar").evaluate(rewrite, context));
    }
 
    @Test
    public void testQueryStringValueDoesNotExist()
    {
-      Assert.assertFalse(Query.valueExists("nothing").evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertFalse(Query.valueExists("nothing").evaluate(rewrite, context));
    }
 
    @Test
@@ -104,7 +124,7 @@ public class QuerySimpleTest
          {
             return null;
          }
-      }, new MockEvaluationContext()));
+      }, context));
    }
 
    @Test(expected = IllegalArgumentException.class)
