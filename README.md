@@ -11,7 +11,7 @@ A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applicat
  * JavaServer Pages (JSP)
  * Struts
  * Wicket
- * Groovy on Grails
+ * Grails
  * Spring Roo
  * Spring Web Flow
  * Any servlet & web framework!
@@ -50,8 +50,8 @@ Get Started
            {
              return ConfigurationBuilder.begin()
                .defineRule()
-                 .when(Direction.isInbound().and(Path.matches("/some/page/.*/")))
-                 .perform(Forward.to("/new-page/"));
+                 .when(Direction.isInbound().and(Path.matches("/some/page/{p}/")))
+                 .perform(Forward.to("/new-page/{p}.html"));
             }
         }
 
