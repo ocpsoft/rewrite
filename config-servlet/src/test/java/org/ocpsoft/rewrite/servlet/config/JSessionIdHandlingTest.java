@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * @see https://github.com/ocpsoft/rewrite/issues/82
- * 
+ *
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
@@ -47,9 +47,23 @@ public class JSessionIdHandlingTest extends RewriteTest
    }
 
    @Test
+   public void testPathRuleMatchesWithRedirectedSessionId() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/getsession");
+      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+   };
+
+   @Test
    public void testPathRuleMatchesWithoutSessionId() throws Exception
    {
       HttpAction<HttpGet> action = get("/path");
+      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testPathRuleMatchesWithMissingSessionId() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/path;jsessionid=");
       Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
    }
 
