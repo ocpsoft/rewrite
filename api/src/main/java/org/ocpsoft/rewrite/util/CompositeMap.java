@@ -62,7 +62,7 @@ public class CompositeMap<KEYTYPE, VALUETYPE> implements Map<KEYTYPE, VALUETYPE>
       for (Map<KEYTYPE, VALUETYPE> delegate : delegates) {
          entries.addAll(delegate.entrySet());
       }
-      return null;
+      return entries;
    }
 
    @Override

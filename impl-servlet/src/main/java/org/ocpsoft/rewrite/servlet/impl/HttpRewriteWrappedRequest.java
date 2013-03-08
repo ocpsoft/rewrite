@@ -25,7 +25,7 @@ import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.servlet.RewriteWrappedRequest;
-import org.ocpsoft.rewrite.servlet.util.CompositeMap;
+import org.ocpsoft.rewrite.util.CompositeMap;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -50,12 +50,14 @@ public class HttpRewriteWrappedRequest extends RewriteWrappedRequest
       setCurrentInstance(this);
    }
 
+   @SuppressWarnings("unchecked")
    public Map<String, String[]> getNativeParameters()
    {
       return super.getParameterMap();
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public Map<String, String[]> getParameterMap()
    {
       allParameters = new CompositeMap<String, String[]>()

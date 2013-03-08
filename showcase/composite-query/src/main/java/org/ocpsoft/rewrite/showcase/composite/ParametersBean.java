@@ -21,9 +21,12 @@ public class ParametersBean
       HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
                .getRequest();
       Map<String, String[]> parameterMap = request.getParameterMap();
-      for (Entry<String, String[]> param : parameterMap.entrySet()) {
-         String values = Strings.join(Arrays.asList(param.getValue()), ", ");
-         result.add(param.getKey() + ": " + values);
+      if (!parameterMap.isEmpty())
+      {
+         for (Entry<String, String[]> param : parameterMap.entrySet()) {
+            String values = Strings.join(Arrays.asList(param.getValue()), ", ");
+            result.add(param.getKey() + ": " + values);
+         }
       }
       return result;
    }
