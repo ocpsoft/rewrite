@@ -13,6 +13,12 @@ public class ParameterValueStoreImpl implements ParameterValueStore, Iterable<En
    Map<Parameter<?>, String> map = new HashMap<Parameter<?>, String>();
 
    @Override
+   public String retrieve(Parameter<?> parameter)
+   {
+      return map.get(parameter);
+   }
+
+   @Override
    public boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
    {
       boolean result = false;

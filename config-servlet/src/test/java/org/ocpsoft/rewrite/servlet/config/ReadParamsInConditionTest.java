@@ -47,7 +47,6 @@ public class ReadParamsInConditionTest extends RewriteTest
    }
 
    @Test
-   @Ignore
    public void testParamReadsForMatchingCondition() throws Exception
    {
       HttpAction<HttpGet> action = get("/exists.txt");
@@ -55,7 +54,6 @@ public class ReadParamsInConditionTest extends RewriteTest
    }
 
    @Test
-   @Ignore
    public void testParamReadsForNotMatchingCondition() throws Exception
    {
       HttpAction<HttpGet> action = get("/missing.txt");

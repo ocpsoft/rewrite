@@ -17,15 +17,23 @@ package org.ocpsoft.rewrite.context;
 
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Operation;
+import org.ocpsoft.rewrite.config.Rule;
 
 /**
- * Context object spanning the lifecycle of a single rule evaluation. This includes both {@link Condition} evaluation
- * and {@link Operation} invocation.
+ * Context object spanning the lifecycle of a single {@link Rule} evaluation. This includes both {@link Condition}
+ * evaluation and {@link Operation} invocation.
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface EvaluationContext extends Context
 {
+   /**
+    * Return the current {@link RewriteState} for this {@link EvaluationContext}. During {@link Condition} evaluation,
+    * this will return {@link RewriteState#EVALUATING}. While performing configured {@link Operation} instances, this
+    * will return {@link RewriteState#PERFORMING}.
+    */
+   RewriteState getState();
+
    /**
     * Add a new {@link org.ocpsoft.rewrite.config.Operation} to be performed if all conditions of this rule are met.
     * Pre-Operation instances are performed before the standard {@link Operation}.

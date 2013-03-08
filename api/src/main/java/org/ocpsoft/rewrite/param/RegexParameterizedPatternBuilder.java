@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
 
 /**
  * An {@link org.ocpsoft.rewrite.param.Parameterized} regular expression {@link Pattern}.
- * 
+ *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RegexParameterizedPatternBuilder implements ParameterizedPatternBuilder
@@ -45,7 +45,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    private final String pattern;
    private final char[] chars;
    private final List<RegexGroup> groups = new ArrayList<RegexGroup>();
-   private String defaultParameterPattern;
+   private final String defaultParameterPattern;
    private ParameterStore parameters;
 
    private RegexParameterizedPatternParser parser = null;
@@ -219,10 +219,10 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
 
       String result = builder.toString();
 
-//      if (!getParser().matches(result))
-//      {
-//         throw new IllegalStateException("Generated a value that does not match constraints.");
-//      }
+      // if (!getParser().matches(result))
+      // {
+      // throw new IllegalStateException("Generated a value that does not match constraints.");
+      // }
 
       return result;
    }
@@ -240,6 +240,9 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       {
          Parameter<?> parameter = parameters.get(group.getName());
          Object value = Bindings.performRetrieval(event, context, parameter);
+
+         if (value == null && context.getState().isEvaluating())
+            value = ((ParameterValueStore) context.get(ParameterValueStore.class)).retrieve(parameter);
 
          if (value == null)
             throw new IllegalStateException("Required parameter [" + group.getName() + "] value was null.");

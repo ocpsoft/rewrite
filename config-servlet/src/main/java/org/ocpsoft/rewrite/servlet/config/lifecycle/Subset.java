@@ -15,6 +15,7 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
@@ -26,7 +27,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class Subset extends DefaultOperationBuilder implements CompositeOperation
 {
    private static Logger log = Logger.getLogger(Subset.class);
-   private Configuration config;
+   private final Configuration config;
 
    private Subset(Configuration config)
    {
@@ -180,6 +181,12 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
       {
          this.postOperations.clear();
          this.postOperations.clear();
+      }
+
+      @Override
+      public RewriteState getState()
+      {
+         throw new IllegalStateException("not implemented");
       }
    }
 }

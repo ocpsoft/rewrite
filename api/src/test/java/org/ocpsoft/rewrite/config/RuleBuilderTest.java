@@ -19,15 +19,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class RuleBuilderTest
 {
-   private EvaluationContext context = new EvaluationContext() {
+   private final EvaluationContext context = new EvaluationContext() {
 
       @Override
       public void put(Object key, Object value)
@@ -52,6 +53,12 @@ public class RuleBuilderTest
       @Override
       public void addPostOperation(Operation operation)
       {}
+
+      @Override
+      public RewriteState getState()
+      {
+         return null;
+      }
    };
 
    @Test

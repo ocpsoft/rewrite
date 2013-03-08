@@ -22,16 +22,18 @@ import java.util.List;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.param.ParameterStore;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class EvaluationContextImpl extends ContextBase implements EvaluationContext
 {
    private final List<Operation> preOperations = new ArrayList<Operation>();
    private final List<Operation> postOperations = new ArrayList<Operation>();
+   private RewriteState state;
 
    public EvaluationContextImpl()
    {
@@ -79,6 +81,17 @@ public class EvaluationContextImpl extends ContextBase implements EvaluationCont
    {
       this.postOperations.clear();
       this.postOperations.clear();
+      state = null;
    }
 
+   @Override
+   public RewriteState getState()
+   {
+      return state;
+   }
+
+   public void setState(RewriteState state)
+   {
+      this.state = state;
+   }
 }

@@ -30,6 +30,7 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationLoader;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
+import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
@@ -42,7 +43,7 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ *
  */
 public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements NonEnriching
 {
@@ -62,7 +63,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
 
       if (ruleCacheProviders == null)
          synchronized (this) {
-            ruleCacheProviders = (List<RuleCacheProvider>) Iterators
+            ruleCacheProviders = Iterators
                      .asList(ServiceLoader.load(RuleCacheProvider.class));
 
             ServiceLogger.logLoadedServices(log, RuleCacheProvider.class, ruleCacheProviders);
@@ -103,14 +104,16 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                context.clear();
                ParameterValueStoreImpl values = new ParameterValueStoreImpl();
                context.put(ParameterValueStore.class, values);
+               context.setState(RewriteState.EVALUATING);
 
                if (rule.evaluate(event, context))
                {
                   if (handleBindings(event, context, values))
                   {
+                     context.setState(RewriteState.PERFORMING);
                      log.debug("Rule [" + rule + "] matched and will be performed.");
 
-                     List<Operation> preOperations = ((EvaluationContextImpl) context).getPreOperations();
+                     List<Operation> preOperations = context.getPreOperations();
                      for (int k = 0; k < preOperations.size(); k++) {
                         preOperations.get(k).perform(event, context);
                      }
@@ -127,7 +130,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                         return;
                      }
 
-                     List<Operation> postOperations = ((EvaluationContextImpl) context).getPostOperations();
+                     List<Operation> postOperations = context.getPostOperations();
                      for (int k = 0; k < postOperations.size(); k++) {
                         postOperations.get(k).perform(event, context);
                      }
@@ -158,10 +161,12 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          ParameterValueStoreImpl values = new ParameterValueStoreImpl();
          context.put(ParameterValueStore.class, values);
 
+         context.setState(RewriteState.EVALUATING);
          if (rule.evaluate(event, context))
          {
             if (handleBindings(event, context, values))
             {
+               context.setState(RewriteState.PERFORMING);
                log.debug("Rule [" + rule + "] matched and will be performed.");
                cacheable.add(rule);
                List<Operation> preOperations = context.getPreOperations();
