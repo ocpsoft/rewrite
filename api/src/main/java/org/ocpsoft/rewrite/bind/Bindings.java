@@ -17,9 +17,7 @@ package org.ocpsoft.rewrite.bind;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -45,9 +43,6 @@ public final class Bindings
    {
       if (value == null)
          return true;
-
-      Map<HasBindings, Object> map = new LinkedHashMap<HasBindings, Object>();
-      map.put(parameter, value);
 
       List<Operation> operations = new ArrayList<Operation>();
       List<Binding> bindings = parameter.getBindings();

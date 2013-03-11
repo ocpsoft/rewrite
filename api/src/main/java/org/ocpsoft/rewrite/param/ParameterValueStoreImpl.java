@@ -37,7 +37,7 @@ public class ParameterValueStoreImpl implements ParameterValueStore, Iterable<En
                result = false;
             }
          }
-
+         // FIXME Transform processing will break multi-conditional matching
          if (result)
          {
             for (Transform<String> transform : param.getTransforms()) {

@@ -107,11 +107,6 @@ public class Substitute extends HttpOperation implements Parameterized
    @Override
    public void setParameterStore(ParameterStore store)
    {
-      // TODO Verify that this is the correct place to do configuration-specific tasks.
-      for (String param : getRequiredParameterNames()) {
-         store.get(param).transformedBy(Transformations.encodePath());
-      }
-
       location.setParameterStore(store);
    }
 
