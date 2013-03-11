@@ -22,7 +22,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -34,30 +33,44 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
-public class ReadParamsInConditionTest extends RewriteTest
+public class ResourceTest extends RewriteTest
 {
 
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeployment()
-               .addClass(ReadParamsInConditionProvider.class)
+               .addClass(ResourceTestProvider.class)
                .addAsWebResource(new StringAsset("some content"), "exists.txt")
-               .addAsServiceProvider(ConfigurationProvider.class, ReadParamsInConditionProvider.class);
+               .addAsWebResource(new StringAsset("some content"), "file.bah")
+               .addAsServiceProvider(ConfigurationProvider.class, ResourceTestProvider.class);
    }
 
    @Test
-   public void testParamReadsForMatchingCondition() throws Exception
+   public void testResourceParamForMatchingCondition() throws Exception
    {
       HttpAction<HttpGet> action = get("/exists.txt");
       Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
    }
 
    @Test
-   public void testParamReadsForNotMatchingCondition() throws Exception
+   public void testResourceParamNotMatchingCondition() throws Exception
    {
-      HttpAction<HttpGet> action = get("/missing.txt");
+      HttpAction<HttpGet> action = get("/missing.css");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
 
+   @Test
+   public void testResourceParamReadsForMissingParameter() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/file.bah");
+      Assert.assertEquals(211, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testResourceParamReadsForNotMatchingCondition() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/missing.bah");
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+   }
 }

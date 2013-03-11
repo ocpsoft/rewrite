@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
 
 /**
  * An {@link org.ocpsoft.rewrite.param.Parameterized} regular expression {@link Pattern}.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RegexParameterizedPatternBuilder implements ParameterizedPatternBuilder
@@ -120,22 +120,19 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       }
    }
 
-   /**
-    * Use this expression to build a {@link String} from the given compiledPattern. Extract needed values from the
-    * {@link EvaluationContext}.
-    */
    @Override
    public String build(final Rewrite event, final EvaluationContext context, final Transform<String> transform)
+            throws ParameterizationException
    {
       return build(extractBoundValues(event, context, transform));
    }
 
    @Override
-   public String build(final List<Object> values)
+   public String build(final List<Object> values) throws ParameterizationException
    {
       if ((values == null && groups.size() != 0) || (groups.size() != values.size()))
       {
-         throw new IllegalArgumentException("Must supply [" + groups.size() + "] values to build output string.");
+         throw new ParameterizationException("Must supply [" + groups.size() + "] values to build output string.");
       }
 
       StringBuilder builder = new StringBuilder();
@@ -180,11 +177,11 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    }
 
    @Override
-   public String build(final Map<String, Object> values)
+   public String build(final Map<String, Object> values) throws ParameterizationException
    {
       if ((values == null) || (groups.size() != values.size()))
       {
-         throw new IllegalArgumentException("Must supply [" + groups.size() + "] values to build output string.");
+         throw new ParameterizationException("Must supply [" + groups.size() + "] values to build output string.");
       }
 
       StringBuilder builder = new StringBuilder();
@@ -245,7 +242,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
             value = ((ParameterValueStore) context.get(ParameterValueStore.class)).retrieve(parameter);
 
          if (value == null)
-            throw new IllegalStateException("Required parameter [" + group.getName() + "] value was null.");
+            throw new ParameterizationException("Required parameter [" + group.getName() + "] value was null.");
 
          result.put(group.getName(), transform.transform(event, context, value.toString()));
       }

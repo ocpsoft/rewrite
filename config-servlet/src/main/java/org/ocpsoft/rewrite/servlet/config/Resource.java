@@ -21,6 +21,7 @@ import java.util.Set;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterizationException;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
@@ -49,12 +50,26 @@ public class Resource extends HttpCondition implements Parameterized
    {
       if (resource != null)
       {
-         String file = resource.getBuilder().build(event, context, Transformations.encodePath());
          try {
-            return (event.getServletContext().getResource(file) != null);
+            String file = resource.getBuilder().build(event, context, Transformations.encodePath());
+            try {
+               return (event.getServletContext().getResource(file) != null);
+            }
+            catch (MalformedURLException e) {
+               log.debug("Invalid file format [{}]", file);
+            }
          }
-         catch (MalformedURLException e) {
-            log.debug("Invalid file format [{}]", file);
+         catch (ParameterizationException e) {
+            // Parameter didn't exist, that's OK, switch to parsing mode.
+
+            @SuppressWarnings("unchecked")
+            Set<String> paths = event.getServletContext().getResourcePaths("/");
+            for (String path : paths) {
+               if (resource.matches(path))
+               {
+                  return true;
+               }
+            }
          }
       }
       return false;

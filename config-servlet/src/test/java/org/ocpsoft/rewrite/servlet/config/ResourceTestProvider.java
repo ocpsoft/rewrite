@@ -19,11 +19,12 @@ import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Or;
 
 /**
- * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ReadParamsInConditionProvider extends HttpConfigurationProvider
+public class ResourceTestProvider extends HttpConfigurationProvider
 {
 
    @Override
@@ -36,11 +37,18 @@ public class ReadParamsInConditionProvider extends HttpConfigurationProvider
    public Configuration getConfiguration(final ServletContext context)
    {
 
-      return ConfigurationBuilder.begin()
+      return ConfigurationBuilder
+               .begin()
 
                .addRule()
-               .when(Path.matches("/{file}.txt").and(Resource.exists("/{file}.txt")))
-               .perform(SendStatus.code(210));
+               .when(Or.any(Path.matches("/exists.txt"), Path.matches("/missing.txt"))
+                        .and(Resource.exists("/{file}.txt")))
+               .perform(SendStatus.code(210))
+
+               .addRule()
+               .when(Or.any(Path.matches("/{file}.css"), Path.matches("/file.bah")).and(
+                        Resource.exists("/{file}.bah")))
+               .perform(SendStatus.code(211));
 
    }
 }

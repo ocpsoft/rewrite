@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -24,19 +23,26 @@ public interface ParameterizedPatternBuilder extends ParameterizedPattern
    ParameterizedPatternParser getParser();
 
    /**
-    * Use this expression to build a {@link String} from the given pattern. Extract needed values from registered
-    * {@link Binding} instances and applies the supplied {@link Transform} for them.
+    * Use this expression to build a {@link String} from this expression's pattern. Extract needed values from the
+    * {@link EvaluationContext}.
+    * 
+    * @throws {@link ParameterizationException} when a required parameter is missing.
     */
-   String build(Rewrite event, EvaluationContext context, Transform<String> transform);
+   String build(Rewrite event, EvaluationContext context, Transform<String> transform)
+            throws ParameterizationException;
 
    /**
     * Use this expression to build a {@link String} from given values.
+    * 
+    * @throws {@link ParameterizationException} when a required parameter is missing.
     */
-   String build(Map<String, Object> parameters);
+   String build(Map<String, Object> parameters) throws ParameterizationException;
 
    /**
     * Use this expression's pattern to build a {@link String} from the given values. Enforces that the number of values
     * passed must equal the number of expression parameters. Does not apply any configured {@link Transform} instances.
+    * 
+    * @throws {@link ParameterizationException} when a required parameter is missing.
     */
-   String build(List<Object> values);
+   String build(List<Object> values) throws ParameterizationException;
 }
