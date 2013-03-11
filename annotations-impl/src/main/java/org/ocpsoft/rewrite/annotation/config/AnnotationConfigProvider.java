@@ -40,8 +40,8 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
 {
    private final Logger log = Logger.getLogger(AnnotationConfigProvider.class);
 
-   public static final String CONFIG_SCAN_LIB_DIR = "com.ocpsoft.pretty.SCAN_LIB_DIRECTORY";
-   public static final String CONFIG_BASE_PACKAGES = "com.ocpsoft.pretty.BASE_PACKAGES";
+   public static final String CONFIG_SCAN_LIB_DIR = "org.ocpsoft.rewrite.annotation.SCAN_LIB_DIRECTORY";
+   public static final String CONFIG_BASE_PACKAGES = "org.ocpsoft.rewrite.annotation.BASE_PACKAGES";
 
    @Override
    public int priority()
