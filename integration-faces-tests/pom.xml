@@ -8,7 +8,7 @@
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-integration-faces-annotations</artifactId>
+   <artifactId>rewrite-integration-faces-tests</artifactId>
 
    <dependencies>
 

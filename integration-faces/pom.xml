@@ -26,6 +26,11 @@
          <artifactId>rewrite-api-el</artifactId>
          <scope>provided</scope>
       </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-annotations-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
 
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
