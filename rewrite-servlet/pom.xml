@@ -13,6 +13,39 @@
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api</artifactId>
+         <scope>provided</scope>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api-el</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api-el</artifactId>
+         <scope>provided</scope>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-impl</artifactId>
+         <scope>provided</scope>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-config-servlet</artifactId>
          <scope>provided</scope>
       </dependency>
@@ -24,12 +57,56 @@
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api-servlet</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-api-servlet</artifactId>
+         <scope>provided</scope>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-impl-servlet</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-impl-servlet</artifactId>
+         <scope>provided</scope>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-annotations</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-config-annotations</artifactId>
+         <scope>provided</scope>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-annotations-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-annotations-api</artifactId>
+         <scope>provided</scope>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-annotations-impl</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-annotations-impl</artifactId>
          <scope>provided</scope>
          <classifier>sources</classifier>
       </dependency>
