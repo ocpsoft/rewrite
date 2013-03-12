@@ -33,12 +33,6 @@
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-integration-faces-annotations</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-config-annotations</artifactId>
       </dependency>
 
