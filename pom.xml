@@ -8,12 +8,11 @@
    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
    the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-parent</artifactId>
-   <version>2.0.0-SNAPSHOT</version>
+   <version>2.0.0.Alpha6</version>
    <packaging>pom</packaging>
 
    <parent>
@@ -492,9 +491,7 @@
                         <phase>process-test-classes</phase>
                         <configuration>
                            <target>
-                              <copy
-                                 file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml"
-                                 todir="${project.build.directory}/container/jboss-as-${version.jbossas}/standalone/configuration" />
+                              <copy file="${user.dir}/test-harness/src/main/resources/jbossas-managed-standalone.xml" todir="${project.build.directory}/container/jboss-as-${version.jbossas}/standalone/configuration" />
                            </target>
                         </configuration>
                         <goals>
@@ -566,31 +563,15 @@
                         <configuration>
                            <target>
                               <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}"
-                                 verbose="true" skipexisting="true"
-                                 src="http://download.java.net/glassfish/${version.glassfish}/release/glassfish-${version.glassfish}-web.zip" />
-                              <unzip
-                                 src="${container.download.dir}/glassfish-${version.glassfish}-web.zip"
-                                 dest="${project.build.directory}/container" />
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://download.java.net/glassfish/${version.glassfish}/release/glassfish-${version.glassfish}-web.zip" />
+                              <unzip src="${container.download.dir}/glassfish-${version.glassfish}-web.zip" dest="${project.build.directory}/container" />
                               <!-- Change all TCP ports from "xxxx" to "3xxxx" -->
-                              <replace
-                                 file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml"
-                                 token="port=&quot;8080&quot;" value="port=&quot;38080&quot;" />
-                              <replace
-                                 file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml"
-                                 token="port=&quot;8181&quot;" value="port=&quot;38181&quot;" />
-                              <replace
-                                 file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml"
-                                 token="port=&quot;4848&quot;" value="port=&quot;34848&quot;" />
-                              <replace
-                                 file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml"
-                                 token="port=&quot;3700&quot;" value="port=&quot;33700&quot;" />
-                              <replace
-                                 file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml"
-                                 token="port=&quot;8686&quot;" value="port=&quot;38686&quot;" />
-                              <replace
-                                 file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml"
-                                 token="port=&quot;7676&quot;" value="port=&quot;37676&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8080&quot;" value="port=&quot;38080&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8181&quot;" value="port=&quot;38181&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;4848&quot;" value="port=&quot;34848&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;3700&quot;" value="port=&quot;33700&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8686&quot;" value="port=&quot;38686&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;7676&quot;" value="port=&quot;37676&quot;" />
                            </target>
                         </configuration>
                      </execution>
@@ -650,28 +631,15 @@
                         <configuration>
                            <target>
                               <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}"
-                                 verbose="true" skipexisting="true"
-                                 src="http://archive.apache.org/dist/tomcat/tomcat-7/v${version.tomcat}/bin/apache-tomcat-${version.tomcat}.zip" />
-                              <unzip
-                                 src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip"
-                                 dest="${project.build.directory}/container" />
-                              <move
-                                 file="${project.build.directory}/container/apache-tomcat-${version.tomcat}"
-                                 tofile="${project.build.directory}/container/apache-tomcat-7" />
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://archive.apache.org/dist/tomcat/tomcat-7/v${version.tomcat}/bin/apache-tomcat-${version.tomcat}.zip" />
+                              <unzip src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip" dest="${project.build.directory}/container" />
+                              <move file="${project.build.directory}/container/apache-tomcat-${version.tomcat}" tofile="${project.build.directory}/container/apache-tomcat-7" />
                               <!-- Change all TCP ports from "xxxx" to "3xxxx" -->
-                              <replace
-                                 file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml"
-                                 token="port=&quot;8005&quot;" value="port=&quot;38005&quot;" />
-                              <replace
-                                 file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml"
-                                 token="port=&quot;8080&quot;" value="port=&quot;38080&quot;" />
-                              <replace
-                                 file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml"
-                                 token="port=&quot;8009&quot;" value="port=&quot;38009&quot;" />
+                              <replace file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml" token="port=&quot;8005&quot;" value="port=&quot;38005&quot;" />
+                              <replace file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml" token="port=&quot;8080&quot;" value="port=&quot;38080&quot;" />
+                              <replace file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml" token="port=&quot;8009&quot;" value="port=&quot;38009&quot;" />
                               <!-- Authentication for Tomcat Manager -->
-                              <echo
-                                 file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
+                              <echo file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
                                  <![CDATA[
                                  <?xml version="1.0" encoding="UTF-8"?>
                                  <tomcat-users>
@@ -779,7 +747,7 @@
       <connection>scm:git:git://github.com/ocpsoft/rewrite.git</connection>
       <developerConnection>scm:git:git@github.com:ocpsoft/rewrite.git</developerConnection>
       <url>http://github.com/ocpsoft/rewrite</url>
-      <tag>HEAD</tag>
+      <tag>2.0.0.Alpha6</tag>
    </scm>
 
    <issueManagement>
