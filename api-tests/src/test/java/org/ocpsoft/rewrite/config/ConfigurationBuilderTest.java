@@ -176,7 +176,7 @@ public class ConfigurationBuilderTest
 
                .addRule()
                .when(new False())
-               .otherwise(Subset.when(ConfigurationBuilder.begin()
+               .otherwise(Subset.evaluate(ConfigurationBuilder.begin()
                         .addRule()
                         .when(new True())
                         .perform(operation)));
