@@ -59,25 +59,6 @@
          </includes>
       </dependencySet>
 
-      <!-- annotations modules -->
-      <dependencySet>
-         <outputDirectory>/annotations</outputDirectory>
-         <useProjectArtifact>false</useProjectArtifact>
-         <includes>
-            <include>org.ocpsoft.rewrite:rewrite-annotations-*:jar</include>
-         </includes>
-         <excludes>
-            <exclude>org.ocpsoft.rewrite:*:*:sources</exclude>
-         </excludes>
-      </dependencySet>
-      <dependencySet>
-         <outputDirectory>/annotations</outputDirectory>
-         <useProjectArtifact>false</useProjectArtifact>
-         <includes>
-            <include>org.ocpsoft.rewrite:rewrite-annotations-*:jar:sources</include>
-         </includes>
-      </dependencySet>
-
       <!-- integration modules -->
       <dependencySet>
          <outputDirectory>/integration</outputDirectory>
