@@ -89,7 +89,7 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
     */
    public RuleBuilder when(final Condition condition)
    {
-      this.condition = DefaultConditionBuilder.wrap(this.condition).and(condition);
+      this.condition = Conditions.wrap(this.condition).and(condition);
       return this;
    }
 
@@ -98,7 +98,7 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
     */
    public RuleBuilder perform(final Operation operation)
    {
-      this.operation = DefaultOperationBuilder.wrap(this.operation).and(operation);
+      this.operation = Operations.wrap(this.operation).and(operation);
       return this;
    }
 
@@ -140,9 +140,9 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
    public DefaultConditionBuilder getConditionBuilder()
    {
       if (condition == null)
-         condition = DefaultConditionBuilder.create();
+         condition = Conditions.create();
       else if (!(condition instanceof DefaultConditionBuilder))
-         condition = DefaultConditionBuilder.wrap(condition);
+         condition = Conditions.wrap(condition);
 
       return (DefaultConditionBuilder) condition;
    }
@@ -153,9 +153,9 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
    public DefaultOperationBuilder getOperationBuilder()
    {
       if (operation == null)
-         operation = DefaultOperationBuilder.create();
+         operation = Operations.create();
       else if (!(operation instanceof DefaultOperationBuilder))
-         operation = DefaultOperationBuilder.wrap(operation);
+         operation = Operations.wrap(operation);
 
       return (DefaultOperationBuilder) operation;
    }

@@ -26,27 +26,6 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public abstract class DefaultConditionBuilder implements ConditionBuilder
 {
-   /**
-    * Return a new {@link DefaultConditionBuilder} that evaluates to {@link True} when
-    * {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
-    */
-   public static ConditionBuilder create()
-   {
-      return new True();
-   }
-
-   /**
-    * Wrap a given {@link Condition} as a new {@link DefaultConditionBuilder} that evaluates the the original
-    * {@link Condition} when {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
-    */
-   public static ConditionBuilder wrap(Condition condition)
-   {
-      if (condition == null)
-         return create();
-      if (condition instanceof ConditionBuilder)
-         return (ConditionBuilder) condition;
-      return And.all(condition);
-   }
 
    @Override
    public ConditionBuilder and(final Condition condition)

@@ -94,7 +94,7 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       */
       Condition requestParameter = RequestParameter.matches("{name}", "{" + param + "}");
       ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
-               Or.any(requestParameter, True.create()));
+               Or.any(requestParameter, new True()));
       context.getRuleBuilder().when(composite);
    }
 

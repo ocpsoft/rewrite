@@ -28,40 +28,6 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public abstract class DefaultOperationBuilder implements OperationBuilder
 {
-   public static class NoOp extends DefaultOperationBuilder
-   {
-      @Override
-      public void perform(Rewrite event, EvaluationContext context)
-      {}
-
-      @Override
-      public String toString()
-      {
-         return "NoOp";
-      }
-   }
-
-   /**
-    * Return a new {@link DefaultOperationBuilder} that takes no action when
-    * {@link #perform(Rewrite, EvaluationContext)} is invoked.
-    */
-   public static OperationBuilder create()
-   {
-      return new NoOp();
-   }
-
-   /**
-    * Wrap a given {@link Operation} as a new {@link DefaultOperationBuilder} that performs the action of the original
-    * {@link Operation} when {@link #perform(Rewrite, EvaluationContext)} is invoked.
-    */
-   public static OperationBuilder wrap(Operation operation)
-   {
-      if (operation == null)
-         return create();
-      if (operation instanceof OperationBuilder)
-         return (OperationBuilder) operation;
-      return new DefaultCompositeOperation(DefaultOperationBuilder.create(), operation);
-   }
 
    @Override
    public OperationBuilder and(final Operation other)
@@ -71,7 +37,7 @@ public abstract class DefaultOperationBuilder implements OperationBuilder
       return new DefaultCompositeOperation(this, other);
    }
 
-   private static class DefaultCompositeOperation extends DefaultOperationBuilder implements CompositeOperation
+   static class DefaultCompositeOperation extends DefaultOperationBuilder implements CompositeOperation
    {
       private final Operation left;
       private final Operation right;
