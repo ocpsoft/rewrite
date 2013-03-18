@@ -22,63 +22,65 @@ import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 
-public class Textile extends StringTransformer {
+public class Textile extends StringTransformer
+{
 
-    private final boolean completeDocument;
+   private final static String SCRIPT = "require 'redcloth'\n" +
+            "RedCloth.new(input).to_html\n";
 
-    public Textile() {
-        this(true);
-    }
+   private final boolean completeDocument;
 
-    public Textile(boolean completeDocument) {
-        this.completeDocument = completeDocument;
-    }
+   public Textile()
+   {
+      this(true);
+   }
 
-    @Override
-    public String transform(String input) {
+   public Textile(boolean completeDocument)
+   {
+      this.completeDocument = completeDocument;
+   }
 
-        // the script for rendering
-        StringBuilder script = new StringBuilder();
-        script.append("require 'redcloth'\n");
-        script.append("RedCloth.new('");
-        script.append(input);
-        script.append("').to_html\n");
+   @Override
+   public String transform(String input)
+   {
 
-        ScriptingContainer container = null;
-        try {
+      ScriptingContainer container = null;
+      try {
 
-            // prepare the scripting environment
-            container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
-            container.setLoadPaths(Arrays.asList("ruby/redcloth/lib"));
+         // prepare the scripting environment
+         container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
+         container.setLoadPaths(Arrays.asList("ruby/redcloth/lib"));
 
-            // run the transformation and return the result
-            Object fragment = container.runScriptlet(script.toString());
-            if (fragment != null) {
+         // run the transformation and return the result
+         container.put("input", input);
+         Object fragment = container.runScriptlet(SCRIPT);
+         if (fragment != null) {
 
-                // create complete HTML structure
-                if (completeDocument) {
-                    StringBuilder result = new StringBuilder();
-                    result.append("<!DOCTYPE html>\n");
-                    result.append("<html>\n<body>\n");
-                    result.append(fragment.toString());
-                    result.append("</body>\n</html>\n");
-                    return result.toString();
-                }
-
-                // output just the fragment
-                else {
-                    return fragment.toString();
-                }
-
+            // create complete HTML structure
+            if (completeDocument) {
+               StringBuilder result = new StringBuilder();
+               result.append("<!DOCTYPE html>\n");
+               result.append("<html>\n<body>\n");
+               result.append(fragment.toString());
+               result.append("</body>\n</html>\n");
+               return result.toString();
             }
-            return null;
 
-        } finally {
-            if (container != null) {
-                container.terminate();
+            // output just the fragment
+            else {
+               return fragment.toString();
             }
-        }
 
-    }
+         }
+         return null;
+
+      }
+      finally {
+         if (container != null) {
+            container.terminate();
+         }
+      }
+
+   }
 
 }

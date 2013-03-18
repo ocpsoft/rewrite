@@ -22,38 +22,39 @@ import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 
-public class Sass extends StringTransformer {
+public class Sass extends StringTransformer
+{
 
-    @Override
-    public String transform(String input) {
+   private static final String SCRIPT = "require 'sass'\n" +
+            "engine = Sass::Engine.new(input, :syntax => :scss, :cache => false)\n" +
+            "engine.render\n";
 
-        StringBuilder script = new StringBuilder();
-        script.append("require 'sass'\n");
-        script.append("engine = Sass::Engine.new('");
-        script.append(input);
-        script.append("', :syntax => :scss, :cache => false)\n");
-        script.append("engine.render");
+   @Override
+   public String transform(String input)
+   {
 
-        ScriptingContainer container = null;
-        try {
+      ScriptingContainer container = null;
+      try {
 
-            // prepare the scripting environment
-            container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
-            container.setLoadPaths(Arrays.asList("ruby/sass/lib"));
+         // prepare the scripting environment
+         container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
+         container.setLoadPaths(Arrays.asList("ruby/sass/lib"));
 
-            // run the transformation and return the result
-            Object result = container.runScriptlet(script.toString());
-            if (result != null) {
-                return result.toString();
-            }
-            return null;
+         // run the transformation and return the result
+         container.put("input", input);
+         Object result = container.runScriptlet(SCRIPT);
+         if (result != null) {
+            return result.toString();
+         }
+         return null;
 
-        } finally {
-            if (container != null) {
-                container.terminate();
-            }
-        }
+      }
+      finally {
+         if (container != null) {
+            container.terminate();
+         }
+      }
 
-    }
+   }
 
 }

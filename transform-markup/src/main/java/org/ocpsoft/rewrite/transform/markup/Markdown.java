@@ -22,53 +22,58 @@ import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 
-public class Markdown extends StringTransformer {
+public class Markdown extends StringTransformer
+{
 
-    private final boolean completeDocument;
+   private String script;
 
-    public Markdown() {
-        this(true);
-    }
+   public Markdown()
+   {
+      this(true);
+   }
 
-    public Markdown(boolean completeDocument) {
-        this.completeDocument = completeDocument;
-    }
+   public Markdown(boolean completeDocument)
+   {
 
-    @Override
-    public String transform(String input) {
+      StringBuilder builder = new StringBuilder();
+      builder.append("require 'maruku'\n");
+      builder.append("doc = Maruku.new(input)\n");
+      if (completeDocument) {
+         builder.append("doc.to_html_document");
+      }
+      else {
+         builder.append("doc.to_html");
+      }
+      this.script = builder.toString();
 
-        // the script for rendering
-        StringBuilder script = new StringBuilder();
-        script.append("require 'maruku'\n");
-        script.append("doc = Maruku.new('");
-        script.append(input);
-        script.append("')\n");
-        if (completeDocument) {
-            script.append("doc.to_html_document");
-        } else {
-            script.append("doc.to_html");
-        }
+   }
 
-        ScriptingContainer container = null;
-        try {
-            
-            // prepare the scripting environment
-            container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
-            container.setLoadPaths(Arrays.asList("ruby/maruku/lib"));
+   @Override
+   public String transform(String input)
+   {
 
-            // run the transformation and return the result
-            Object result = container.runScriptlet(script.toString());
-            if (result != null) {
-                return result.toString();
-            }
-            return null;
+      ScriptingContainer container = null;
+      try {
 
-        } finally {
-            if (container != null) {
-                container.terminate();
-            }
-        }
+         // prepare the scripting environment
+         container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
+         container.setLoadPaths(Arrays.asList("ruby/maruku/lib"));
 
-    }
+         // run the transformation and return the result
+         container.put("input", input);
+         Object result = container.runScriptlet(script);
+         if (result != null) {
+            return result.toString();
+         }
+         return null;
+
+      }
+      finally {
+         if (container != null) {
+            container.terminate();
+         }
+      }
+
+   }
 
 }
