@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 
-public class Markdown extends JRubyTransformer
+public class Markdown extends JRubyTransformer<Markdown>
 {
 
    private final static String SCRIPT = "require 'maruku'\n" +
@@ -62,6 +62,12 @@ public class Markdown extends JRubyTransformer
    {
       container.put("fullDocument", fullDocument);
       return container.runScriptlet(SCRIPT);
+   }
+
+   @Override
+   public Markdown self()
+   {
+      return this;
    }
 
 }

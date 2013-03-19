@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 
-public class Sass extends JRubyTransformer
+public class Sass extends JRubyTransformer<Sass>
 {
 
    private static final String SCRIPT = "require 'sass'\n" +
@@ -47,6 +47,12 @@ public class Sass extends JRubyTransformer
    public Object runScript(ScriptingContainer container)
    {
       return container.runScriptlet(SCRIPT);
+   }
+
+   @Override
+   public Sass self()
+   {
+      return this;
    }
 
 }

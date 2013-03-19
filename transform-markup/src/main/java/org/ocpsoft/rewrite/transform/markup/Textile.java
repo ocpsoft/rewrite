@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 
-public class Textile extends JRubyTransformer
+public class Textile extends JRubyTransformer<Textile>
 {
 
    private static final String SCRIPT = "require 'redcloth'\n" +
@@ -81,6 +81,12 @@ public class Textile extends JRubyTransformer
       }
       return null;
 
+   }
+
+   @Override
+   public Textile self()
+   {
+      return this;
    }
 
 }

@@ -2,6 +2,8 @@ package org.ocpsoft.rewrite.transform.markup;
 
 import java.util.List;
 
+import org.jruby.CompatVersion;
+import org.jruby.RubyInstanceConfig.CompileMode;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
@@ -13,8 +15,12 @@ import org.ocpsoft.rewrite.transform.Transformer;
  * 
  * @author Christian Kaltepoth
  */
-public abstract class JRubyTransformer extends StringTransformer
+public abstract class JRubyTransformer<T> extends StringTransformer
 {
+
+   private CompileMode compileMode = null;
+
+   private CompatVersion compatVersion = null;
 
    /**
     * Return the load paths to use for {@link ScriptingContainer#setLoadPaths(List)}.
@@ -27,6 +33,11 @@ public abstract class JRubyTransformer extends StringTransformer
     */
    public abstract Object runScript(ScriptingContainer container);
 
+   /**
+    * Just returns the current object as the correct type for make the fluent builder work with subclasses.
+    */
+   public abstract T self();
+
    @Override
    public final String transform(String input)
    {
@@ -36,6 +47,16 @@ public abstract class JRubyTransformer extends StringTransformer
 
          // as this container is only used locally, a single threaded transient one works fine
          container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
+
+         // the user may have set a custom CompileMode
+         if (compileMode != null) {
+            container.setCompileMode(compileMode);
+         }
+
+         // the user may have set a customn CompatVersion
+         if (compatVersion != null) {
+            container.setCompatVersion(compatVersion);
+         }
 
          // scripts typically need to set the load path for 3rd party gems
          List<String> loadPaths = getLoadPaths();
@@ -71,6 +92,24 @@ public abstract class JRubyTransformer extends StringTransformer
    protected void prepareContainer(ScriptingContainer container)
    {
       // nothing
+   }
+
+   /**
+    * Allows to customize the {@link CompileMode} used by the JRuby runtime.
+    */
+   public T compileMode(CompileMode compileMode)
+   {
+      this.compileMode = compileMode;
+      return self();
+   }
+
+   /**
+    * Allows to customize the {@link CompatVersion} used by the JRuby runtime.
+    */
+   public T compatVersion(CompatVersion compatVersion)
+   {
+      this.compatVersion = compatVersion;
+      return self();
    }
 
 }
