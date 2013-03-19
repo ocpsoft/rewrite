@@ -26,16 +26,28 @@ public class Textile extends JRubyTransformer
    private static final String SCRIPT = "require 'redcloth'\n" +
             "RedCloth.new(input).to_html\n";
 
-   private boolean fullDocument;
+   private boolean fullDocument = true;
 
-   public Textile()
+   private Textile()
    {
-      this(true);
+      // hide constructor
    }
 
-   public Textile(boolean fullDocument)
+   public static Textile transformer()
    {
-      this.fullDocument = fullDocument;
+      return new Textile();
+   }
+
+   public Textile fullDocument()
+   {
+      this.fullDocument = true;
+      return this;
+   }
+
+   public Textile partialDocument()
+   {
+      this.fullDocument = false;
+      return this;
    }
 
    @Override

@@ -26,7 +26,7 @@ public class TextileTest {
     public void testBoldText() {
 
         String textile = "This is *bold*!";
-        String html = new Textile(false).transform(textile);
+        String html = Textile.transformer().partialDocument().transform(textile);
 
         assertEquals("<p>This is <strong>bold</strong>!</p>", html);
 
@@ -36,7 +36,7 @@ public class TextileTest {
     public void testHeaders() {
 
         String textile = "h1. Header\n\nh2. Section\n\nSome text!";
-        String html = new Textile(false).transform(textile);
+        String html = Textile.transformer().partialDocument().transform(textile);
 
         assertEquals("<h1>Header</h1><h2>Section</h2><p>Some text!</p>", normalize(html));
 
@@ -46,7 +46,7 @@ public class TextileTest {
     public void testBlockquote() {
 
         String textile = "bq. Some quote";
-        String html = new Textile(false).transform(textile);
+        String html = Textile.transformer().partialDocument().transform(textile);
 
         assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
 
@@ -56,7 +56,7 @@ public class TextileTest {
     public void testLists() {
 
         String textile = "* One\n* Two";
-        String html = new Textile(false).transform(textile);
+        String html = Textile.transformer().partialDocument().transform(textile);
 
         assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html).replaceAll(" ", ""));
 
@@ -66,7 +66,7 @@ public class TextileTest {
     public void testCode() {
 
         String textile = "bc. private int n = 0;";
-        String html = new Textile(false).transform(textile);
+        String html = Textile.transformer().partialDocument().transform(textile);
 
         assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
 
@@ -76,7 +76,7 @@ public class TextileTest {
     public void testFullHtmlDocument() {
 
         String textile = "some text";
-        String html = new Textile(true).transform(textile);
+        String html = Textile.transformer().fullDocument().transform(textile);
 
         assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html"));
         assertTrue("html tag is missing", html.contains("<html"));

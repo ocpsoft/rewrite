@@ -27,6 +27,16 @@ public class Sass extends JRubyTransformer
             "engine = Sass::Engine.new(input, :syntax => :scss, :cache => false)\n" +
             "engine.render\n";
 
+   private Sass()
+   {
+      // hide constructor
+   }
+
+   public static Sass transformer()
+   {
+      return new Sass();
+   }
+
    @Override
    public List<String> getLoadPaths()
    {
