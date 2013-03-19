@@ -11,7 +11,7 @@
    <artifactId>rewrite-transform-markup</artifactId>
 
    <properties>
-      <jruby.version>1.7.3</jruby.version>
+      <jruby.version>1.6.8</jruby.version>
    </properties>
 
    <dependencies>
