@@ -16,70 +16,58 @@
 package org.ocpsoft.rewrite.transform.markup;
 
 import java.util.Arrays;
+import java.util.List;
 
-import org.jruby.embed.LocalContextScope;
-import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
-import org.ocpsoft.rewrite.transform.StringTransformer;
 
-public class Textile extends StringTransformer
+public class Textile extends JRubyTransformer
 {
 
-   private final static String SCRIPT = "require 'redcloth'\n" +
+   private static final String SCRIPT = "require 'redcloth'\n" +
             "RedCloth.new(input).to_html\n";
 
-   private final boolean completeDocument;
+   private boolean fullDocument;
 
    public Textile()
    {
       this(true);
    }
 
-   public Textile(boolean completeDocument)
+   public Textile(boolean fullDocument)
    {
-      this.completeDocument = completeDocument;
+      this.fullDocument = fullDocument;
    }
 
    @Override
-   public String transform(String input)
+   public List<String> getLoadPaths()
+   {
+      return Arrays.asList("ruby/redcloth/lib");
+   }
+
+   @Override
+   public Object runScript(ScriptingContainer container)
    {
 
-      ScriptingContainer container = null;
-      try {
+      Object fragment = container.runScriptlet(SCRIPT);
 
-         // prepare the scripting environment
-         container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
-         container.setLoadPaths(Arrays.asList("ruby/redcloth/lib"));
+      if (fragment != null) {
 
-         // run the transformation and return the result
-         container.put("input", input);
-         Object fragment = container.runScriptlet(SCRIPT);
-         if (fragment != null) {
-
-            // create complete HTML structure
-            if (completeDocument) {
-               StringBuilder result = new StringBuilder();
-               result.append("<!DOCTYPE html>\n");
-               result.append("<html>\n<body>\n");
-               result.append(fragment.toString());
-               result.append("</body>\n</html>\n");
-               return result.toString();
-            }
-
-            // output just the fragment
-            else {
-               return fragment.toString();
-            }
-
+         // create complete HTML structure
+         if (fullDocument) {
+            StringBuilder result = new StringBuilder();
+            result.append("<!DOCTYPE html>\n");
+            result.append("<html>\n<body>\n");
+            result.append(fragment.toString());
+            result.append("</body>\n</html>\n");
+            return result.toString();
          }
-         return null;
 
-      }
-      finally {
-         if (container != null) {
-            container.terminate();
+         // output just the fragment
+         else {
+            return fragment.toString();
          }
       }
+      return null;
 
    }
 

@@ -16,13 +16,11 @@
 package org.ocpsoft.rewrite.transform.markup;
 
 import java.util.Arrays;
+import java.util.List;
 
-import org.jruby.embed.LocalContextScope;
-import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
-import org.ocpsoft.rewrite.transform.StringTransformer;
 
-public class Sass extends StringTransformer
+public class Sass extends JRubyTransformer
 {
 
    private static final String SCRIPT = "require 'sass'\n" +
@@ -30,31 +28,15 @@ public class Sass extends StringTransformer
             "engine.render\n";
 
    @Override
-   public String transform(String input)
+   public List<String> getLoadPaths()
    {
+      return Arrays.asList("ruby/sass/lib");
+   }
 
-      ScriptingContainer container = null;
-      try {
-
-         // prepare the scripting environment
-         container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
-         container.setLoadPaths(Arrays.asList("ruby/sass/lib"));
-
-         // run the transformation and return the result
-         container.put("input", input);
-         Object result = container.runScriptlet(SCRIPT);
-         if (result != null) {
-            return result.toString();
-         }
-         return null;
-
-      }
-      finally {
-         if (container != null) {
-            container.terminate();
-         }
-      }
-
+   @Override
+   public Object runScript(ScriptingContainer container)
+   {
+      return container.runScriptlet(SCRIPT);
    }
 
 }
