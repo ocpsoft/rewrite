@@ -35,6 +35,7 @@
          <groupId>org.jruby</groupId>
          <artifactId>jruby-stdlib</artifactId>
          <version>${jruby.version}</version>
+         <scope>runtime</scope>
       </dependency>
 
       <dependency>
