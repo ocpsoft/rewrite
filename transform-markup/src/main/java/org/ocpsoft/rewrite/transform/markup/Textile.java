@@ -28,7 +28,7 @@ public class Textile extends JRubyTransformer<Textile>
 
    private boolean fullDocument = true;
 
-   private Textile()
+   public Textile()
    {
       // hide constructor
    }

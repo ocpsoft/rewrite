@@ -29,7 +29,7 @@ public class Markdown extends JRubyTransformer<Markdown>
 
    private boolean fullDocument = true;
 
-   private Markdown()
+   public Markdown()
    {
       // hide the constructor
    }
