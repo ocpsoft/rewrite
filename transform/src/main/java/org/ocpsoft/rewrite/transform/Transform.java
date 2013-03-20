@@ -21,61 +21,64 @@ import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
+/**
+ * HTTP operation that applies one or more {@link Transformer} implementations to the response.
+ * 
+ * @author Christian Kaltepoth
+ */
 public class Transform extends HttpOperation
 {
 
    private PipelineContentInterceptor pipeline = new PipelineContentInterceptor();
 
-   public static Transform with(Class<? extends Transformer> transformerType)
+   private Transform()
    {
-      return new Transform().apply(transformerType);
+      // hide default constructor
    }
 
-   public Transform apply(Class<? extends Transformer> transformerType)
+   /**
+    * Creates a transform instance that applies the given {@link Transformer}. Please note that the {@link Transformer}
+    * implementation has to provide a public default constructor.
+    */
+   public static Transform with(Class<? extends Transformer> transformer)
+   {
+      return new Transform().and(transformer);
+   }
+
+   /**
+    * Creates a transform instance that applies the given {@link Transformer}.
+    */
+   public static Transform with(Transformer transformer)
+   {
+      return new Transform().and(transformer);
+   }
+
+   /**
+    * Adds another {@link Transformer} implementation to the transformer pipeline. The supplied transformer will be
+    * executed AFTER all other transformer that have been added before. Please note that the {@link Transformer}
+    * implementation has to provide a public default constructor.
+    */
+   public Transform and(Class<? extends Transformer> transformerType)
    {
       try {
-         return apply(transformerType.newInstance());
+         return and(transformerType.newInstance());
       }
       catch (InstantiationException e) {
          throw new IllegalArgumentException(e);
       }
       catch (IllegalAccessException e) {
-         throw new IllegalArgumentException(e);
+         throw new IllegalArgumentException("The default constructor of " + transformerType.getName()
+                  + " is not accessible", e);
       }
    }
 
-   public Transform apply(Class<? extends Transformer> first, Class<? extends Transformer> second,
-            Class<? extends Transformer> third)
-   {
-      apply(first);
-      apply(second);
-      apply(third);
-      return this;
-   }
-
-   public Transform apply(Class<? extends Transformer> first, Class<? extends Transformer> second)
-   {
-      apply(first);
-      apply(second);
-      return this;
-   }
-
-   /*
-    * invoking this one will create compiler warnings :(
+   /**
+    * Adds another {@link Transformer} implementation to the transformer pipeline. The supplied transformer will be
+    * executed AFTER all other transformer that have been added before.
     */
-   public Transform apply(Class<? extends Transformer>... transformerTypes)
+   public Transform and(Transformer transformer)
    {
-      for (Class<? extends Transformer> transformerType : transformerTypes) {
-         apply(transformerType);
-      }
-      return this;
-   }
-
-   public Transform apply(Transformer... transformers)
-   {
-      for (Transformer transformer : transformers) {
-         pipeline.add(transformer);
-      }
+      pipeline.add(transformer);
       return this;
    }
 

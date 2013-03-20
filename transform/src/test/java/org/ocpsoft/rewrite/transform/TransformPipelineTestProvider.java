@@ -45,11 +45,6 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
       return ConfigurationBuilder
                .begin()
 
-               // no transformer added
-               .addRule()
-               .when(Path.matches("/{basename}.none"))
-               .perform(Forward.to("/{basename}.txt").and(new Transform()))
-
                // one single transformer
                .addRule()
                .when(Path.matches("/{basename}.one"))
@@ -59,7 +54,7 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
                .addRule()
                .when(Path.matches("/{basename}.two"))
                .perform(Forward.to("/{basename}.txt").and(
-                        Transform.with(FooBarTransformer.class).apply(UppercaseTransformer.class)))
+                        Transform.with(FooBarTransformer.class).and(UppercaseTransformer.class)))
 
       ;
    }

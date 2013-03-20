@@ -49,14 +49,6 @@ public class TransformPipelineTest extends RewriteTest
    }
 
    @Test
-   public void testPipelineWithoutTransformer() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/test.none");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      assertEquals("this is foo", action.getResponseContent());
-   }
-
-   @Test
    public void testPipelineWithOneTransformer() throws Exception
    {
       HttpAction<HttpGet> action = get("/test.one");
