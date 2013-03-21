@@ -48,13 +48,13 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
                // one single transformer
                .addRule()
                .when(Path.matches("/{basename}.one"))
-               .perform(Forward.to("/{basename}.txt").and(Transform.with(FooBarTransformer.class)))
+               .perform(Forward.to("/{basename}.txt").and(Transform.with(new FooBarTransformer())))
 
                // multiple transformers
                .addRule()
                .when(Path.matches("/{basename}.two"))
                .perform(Forward.to("/{basename}.txt").and(
-                        Transform.with(FooBarTransformer.class).and(UppercaseTransformer.class)))
+                        Transform.with(new FooBarTransformer()).and(new UppercaseTransformer())))
 
       ;
    }

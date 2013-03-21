@@ -25,11 +25,11 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.transform.Transform;
 
 /**
- *
+ * 
  * {@link ConfigurationProvider} for {@link JsMinifyTest}.
- *
+ * 
  * @author Christian Kaltepoth
- *
+ * 
  */
 public class JsMinifyTestProvider extends HttpConfigurationProvider
 {
@@ -46,7 +46,7 @@ public class JsMinifyTestProvider extends HttpConfigurationProvider
                .begin()
                .addRule()
                .when(Path.matches("{something}.js"))
-               .perform(Transform.with(JsMinify.class))
+               .perform(Transform.with(new JsMinify()))
                .where("something").matches(".*");
    }
 

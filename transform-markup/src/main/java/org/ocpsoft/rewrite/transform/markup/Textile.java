@@ -33,21 +33,18 @@ public class Textile extends JRubyTransformer<Textile>
       // hide constructor
    }
 
-   public static Textile transformer()
+   public static Textile fullDocument()
    {
-      return new Textile();
+      Textile textile = new Textile();
+      textile.fullDocument = true;
+      return textile;
    }
 
-   public Textile fullDocument()
+   public static Textile partialDocument()
    {
-      this.fullDocument = true;
-      return this;
-   }
-
-   public Textile partialDocument()
-   {
-      this.fullDocument = false;
-      return this;
+      Textile textile = new Textile();
+      textile.fullDocument = false;
+      return textile;
    }
 
    @Override

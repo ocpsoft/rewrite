@@ -37,39 +37,11 @@ public class Transform extends HttpOperation
    }
 
    /**
-    * Creates a transform instance that applies the given {@link Transformer}. Please note that the {@link Transformer}
-    * implementation has to provide a public default constructor.
-    */
-   public static Transform with(Class<? extends Transformer> transformer)
-   {
-      return new Transform().and(transformer);
-   }
-
-   /**
     * Creates a transform instance that applies the given {@link Transformer}.
     */
    public static Transform with(Transformer transformer)
    {
       return new Transform().and(transformer);
-   }
-
-   /**
-    * Adds another {@link Transformer} implementation to the transformer pipeline. The supplied transformer will be
-    * executed AFTER all other transformer that have been added before. Please note that the {@link Transformer}
-    * implementation has to provide a public default constructor.
-    */
-   public Transform and(Class<? extends Transformer> transformerType)
-   {
-      try {
-         return and(transformerType.newInstance());
-      }
-      catch (InstantiationException e) {
-         throw new IllegalArgumentException(e);
-      }
-      catch (IllegalAccessException e) {
-         throw new IllegalArgumentException("The default constructor of " + transformerType.getName()
-                  + " is not accessible", e);
-      }
    }
 
    /**

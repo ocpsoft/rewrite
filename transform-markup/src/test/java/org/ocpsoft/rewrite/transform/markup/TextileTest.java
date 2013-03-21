@@ -20,73 +20,81 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class TextileTest {
+public class TextileTest
+{
 
-    @Test
-    public void testBoldText() {
+   @Test
+   public void testBoldText()
+   {
 
-        String textile = "This is *bold*!";
-        String html = Textile.transformer().partialDocument().transform(textile);
+      String textile = "This is *bold*!";
+      String html = Textile.partialDocument().transform(textile);
 
-        assertEquals("<p>This is <strong>bold</strong>!</p>", html);
+      assertEquals("<p>This is <strong>bold</strong>!</p>", html);
 
-    }
+   }
 
-    @Test
-    public void testHeaders() {
+   @Test
+   public void testHeaders()
+   {
 
-        String textile = "h1. Header\n\nh2. Section\n\nSome text!";
-        String html = Textile.transformer().partialDocument().transform(textile);
+      String textile = "h1. Header\n\nh2. Section\n\nSome text!";
+      String html = Textile.partialDocument().transform(textile);
 
-        assertEquals("<h1>Header</h1><h2>Section</h2><p>Some text!</p>", normalize(html));
+      assertEquals("<h1>Header</h1><h2>Section</h2><p>Some text!</p>", normalize(html));
 
-    }
+   }
 
-    @Test
-    public void testBlockquote() {
+   @Test
+   public void testBlockquote()
+   {
 
-        String textile = "bq. Some quote";
-        String html = Textile.transformer().partialDocument().transform(textile);
+      String textile = "bq. Some quote";
+      String html = Textile.partialDocument().transform(textile);
 
-        assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
+      assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
 
-    }
+   }
 
-    @Test
-    public void testLists() {
+   @Test
+   public void testLists()
+   {
 
-        String textile = "* One\n* Two";
-        String html = Textile.transformer().partialDocument().transform(textile);
+      String textile = "* One\n* Two";
+      String html = Textile.partialDocument().transform(textile);
 
-        assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html).replaceAll(" ", ""));
+      assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html).replaceAll(" ", ""));
 
-    }
+   }
 
-    @Test
-    public void testCode() {
+   @Test
+   public void testCode()
+   {
 
-        String textile = "bc. private int n = 0;";
-        String html = Textile.transformer().partialDocument().transform(textile);
+      String textile = "bc. private int n = 0;";
+      String html = Textile.partialDocument().transform(textile);
 
-        assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
+      assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
 
-    }
+   }
 
-    @Test
-    public void testFullHtmlDocument() {
+   @Test
+   public void testFullHtmlDocument()
+   {
 
-        String textile = "some text";
-        String html = Textile.transformer().fullDocument().transform(textile);
+      String textile = "some text";
+      String html = Textile.fullDocument().transform(textile);
 
-        assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html"));
-        assertTrue("html tag is missing", html.contains("<html"));
-        assertTrue("body tag is missing", html.contains("<body>"));
-        assertTrue("Expected text missing", html.contains("<p>some text</p>"));
+      assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html"));
+      assertTrue("html tag is missing", html.contains("<html"));
+      assertTrue("body tag is missing", html.contains("<body>"));
+      assertTrue("Expected text missing", html.contains("<p>some text</p>"));
 
-    }
+   }
 
-    private static String normalize(String s) {
-        return s.replaceAll("\n", "").replaceAll("[\t ]+", " ").trim();
-    }
+   private static String normalize(String s)
+   {
+      return s.replaceAll("\n", "").replaceAll("[\t ]+", " ").trim();
+   }
 
 }

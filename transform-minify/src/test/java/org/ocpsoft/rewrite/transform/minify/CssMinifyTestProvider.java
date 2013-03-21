@@ -25,11 +25,11 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.transform.Transform;
 
 /**
- *
+ * 
  * {@link ConfigurationProvider} for {@link CssMinifyTest}.
- *
+ * 
  * @author Christian Kaltepoth
- *
+ * 
  */
 public class CssMinifyTestProvider extends HttpConfigurationProvider
 {
@@ -46,7 +46,7 @@ public class CssMinifyTestProvider extends HttpConfigurationProvider
                .begin()
                .addRule()
                .when(Path.matches("{something}.css"))
-               .perform(Transform.with(CssMinify.class))
+               .perform(Transform.with(new CssMinify()))
                .where("something").matches(".*");
 
    }

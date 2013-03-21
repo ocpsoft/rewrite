@@ -24,11 +24,11 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
 
 /**
- *
+ * 
  * {@link ConfigurationProvider} for {@link TransformIfModifiedSinceTest}.
- *
+ * 
  * @author Christian Kaltepoth
- *
+ * 
  */
 public class TransformIfModifiedSinceTestProvider extends HttpConfigurationProvider
 {
@@ -47,7 +47,7 @@ public class TransformIfModifiedSinceTestProvider extends HttpConfigurationProvi
                // one single transformer
                .addRule()
                .when(Path.matches("{something}.txt"))
-               .perform(Transform.with(UppercaseTransformer.class))
+               .perform(Transform.with(new UppercaseTransformer()))
                .where("something").matches(".*");
    }
 
