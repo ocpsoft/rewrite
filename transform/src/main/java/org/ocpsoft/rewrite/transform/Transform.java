@@ -41,14 +41,14 @@ public class Transform extends HttpOperation
     */
    public static Transform with(Transformer transformer)
    {
-      return new Transform().and(transformer);
+      return new Transform().then(transformer);
    }
 
    /**
     * Adds another {@link Transformer} implementation to the transformer pipeline. The supplied transformer will be
     * executed AFTER all other transformer that have been added before.
     */
-   public Transform and(Transformer transformer)
+   public Transform then(Transformer transformer)
    {
       pipeline.add(transformer);
       return this;

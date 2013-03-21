@@ -54,7 +54,7 @@ public class TransformPipelineTestProvider extends HttpConfigurationProvider
                .addRule()
                .when(Path.matches("/{basename}.two"))
                .perform(Forward.to("/{basename}.txt").and(
-                        Transform.with(new FooBarTransformer()).and(new UppercaseTransformer())))
+                        Transform.with(new FooBarTransformer()).then(new UppercaseTransformer())))
 
       ;
    }
