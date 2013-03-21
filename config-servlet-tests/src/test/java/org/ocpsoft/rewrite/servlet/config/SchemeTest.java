@@ -23,9 +23,11 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
+import org.ocpsoft.rewrite.util.ParameterStores;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
@@ -62,8 +64,8 @@ public class SchemeTest
       MockEvaluationContext context = new MockEvaluationContext();
       Scheme scheme = Scheme.matches("{scheme}");
 
-      ParameterStore store = new ParameterStore();
-      ParameterStore.initialize(store, scheme);
+      ParameterStore store = new DefaultParameterStore();
+      ParameterStores.initialize(store, scheme);
 
       Assert.assertTrue(scheme.evaluate(inbound, context));
    }

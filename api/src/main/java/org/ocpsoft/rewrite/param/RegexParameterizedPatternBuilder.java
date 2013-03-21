@@ -29,6 +29,7 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.exception.ParameterizationException;
 import org.ocpsoft.rewrite.util.ParseTools;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;

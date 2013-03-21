@@ -34,7 +34,7 @@ import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
-import org.ocpsoft.rewrite.param.ParameterValueStoreImpl;
+import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -102,7 +102,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                Rule rule = rules.get(j);
 
                context.clear();
-               ParameterValueStoreImpl values = new ParameterValueStoreImpl();
+               DefaultParameterValueStore values = new DefaultParameterValueStore();
                context.put(ParameterValueStore.class, values);
                context.setState(RewriteState.EVALUATING);
 
@@ -158,7 +158,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          Rule rule = rules.get(i);
 
          context.clear();
-         ParameterValueStoreImpl values = new ParameterValueStoreImpl();
+         DefaultParameterValueStore values = new DefaultParameterValueStore();
          context.put(ParameterValueStore.class, values);
 
          context.setState(RewriteState.EVALUATING);
@@ -206,7 +206,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
    }
 
    private boolean handleBindings(final HttpServletRewrite event, final EvaluationContextImpl context,
-            ParameterValueStoreImpl values)
+            DefaultParameterValueStore values)
    {
       boolean result = true;
       ParameterStore store = (ParameterStore) context.get(ParameterStore.class);

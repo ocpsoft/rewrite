@@ -20,16 +20,16 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * A condition that must be met in order for evaluation to return true. You may create custom {@link Condition}
- * implementations. If creating custom implementations, you should likely extend {@link DefaultConditionBuilder}, which adds
- * logical operators to any class extending it.
+ * implementations. If creating custom implementations, you should likely extend {@link DefaultConditionBuilder}, which
+ * adds logical operators to any class extending it.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Condition extends ConfigurationElement
+public interface Condition
 {
    /**
-    * Evaluate this condition against the given {@link org.ocpsoft.rewrite.event.Rewrite} event. If this condition does not apply to the given
-    * event, it must return false. If the condition applies and is satisfied, return true.
+    * Evaluate this condition against the given {@link org.ocpsoft.rewrite.event.Rewrite} event. If this condition does
+    * not apply to the given event, it must return false. If the condition applies and is satisfied, return true.
     */
    boolean evaluate(Rewrite event, EvaluationContext context);
 }

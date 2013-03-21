@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.exception.ParameterizationException;
 
 /**
  * 

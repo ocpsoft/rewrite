@@ -26,10 +26,12 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
+import org.ocpsoft.rewrite.util.ParameterStores;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -71,8 +73,8 @@ public class PathTest
    {
       Path path = Path.matches("/application/{seg}");
 
-      ParameterStore store = new ParameterStore();
-      ParameterStore.initialize(store, path);
+      ParameterStore store = new DefaultParameterStore();
+      ParameterStores.initialize(store, path);
 
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(path.evaluate(rewrite, context));
@@ -107,8 +109,8 @@ public class PathTest
    public void testMultipleParameterStoreInvocationsReturnSameParam()
    {
       Path path = Path.matches("/something/#{param}");
-      ParameterStore store = new ParameterStore();
-      ParameterStore.initialize(store, path);
+      ParameterStore store = new DefaultParameterStore();
+      ParameterStores.initialize(store, path);
 
       Parameter<?> p1 = store.get("param");
       Parameter<?> p2 = store.get("param");

@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import org.ocpsoft.rewrite.util.Visitor;
+
 /**
  * This class allows {@link Visitor}s to walk through a {@link Condition} tree which may contain
  * {@link CompositeCondition} elements.

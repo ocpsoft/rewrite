@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.param;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -37,6 +37,17 @@ public class ParameterizedPatternTest
    private MockEvaluationContext context = new MockEvaluationContext();
    private MockRewrite rewrite = new MockRewrite();
 
+   public static void initialize(ParameterStore store, Parameterized parameterized)
+   {
+      Set<String> names = parameterized.getRequiredParameterNames();
+      for (String name : names) {
+         if (!store.contains(name))
+            store.put(name, new DefaultParameter(name));
+      }
+
+      parameterized.setParameterStore(store);
+   }
+
    @After
    public void after()
    {
@@ -52,14 +63,14 @@ public class ParameterizedPatternTest
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(
                "{prefix}/application/{seg}{suffix}");
 
-      ParameterStore store = new ParameterStore();
-      ParameterStore.initialize(store, path);
+      DefaultParameterStore store = new DefaultParameterStore();
+      initialize(store, path);
 
       store.get("prefix").constrainedBy(new RegexConstraint(".*"));
       store.get("seg").constrainedBy(new RegexConstraint("[^/]+"));
       store.get("suffix").constrainedBy(new RegexConstraint("\\?.*"));
 
-      ParameterStore.initialize(store, path);
+      initialize(store, path);
 
       Assert.assertTrue(path.matches(rewrite, new MockEvaluationContext(), url));
 
@@ -122,9 +133,9 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", "/{customer}/orders/{id}");
 
-      ParameterStore parameters = new ParameterStore();
+      ParameterStore parameters = new DefaultParameterStore();
 
-      ParameterStore.initialize(parameters, path);
+      initialize(parameters, path);
 
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
@@ -140,8 +151,8 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", "/{customer}/orders/{id}");
 
-      ParameterStore parameters = new ParameterStore();
-      ParameterStore.initialize(parameters, path);
+      ParameterStore parameters = new DefaultParameterStore();
+      initialize(parameters, path);
 
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
@@ -157,8 +168,8 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(".*", "/{customer}/");
 
-      ParameterStore parameters = new ParameterStore();
-      ParameterStore.initialize(parameters, path);
+      ParameterStore parameters = new DefaultParameterStore();
+      initialize(parameters, path);
 
       Assert.assertTrue(path.matches(rewrite, context, "/lincoln/"));
       Assert.assertFalse(path.matches(rewrite, context, "/lincoln/foo"));
@@ -177,8 +188,8 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", ".*/{customer}/");
 
-      ParameterStore parameters = new ParameterStore();
-      ParameterStore.initialize(parameters, path);
+      ParameterStore parameters = new DefaultParameterStore();
+      initialize(parameters, path);
 
       Parameter<?> parameter = parameters.get("customer");
       Assert.assertNotNull(parameter);
@@ -189,8 +200,8 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", ".*/{customer}/");
 
-      ParameterStore parameters = new ParameterStore();
-      ParameterStore.initialize(parameters, path);
+      ParameterStore parameters = new DefaultParameterStore();
+      initialize(parameters, path);
 
       parameters.get("something else");
    }
@@ -200,8 +211,8 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("/{*}/{*}/");
 
-      ParameterStore parameters = new ParameterStore();
-      ParameterStore.initialize(parameters, path);
+      ParameterStore parameters = new DefaultParameterStore();
+      initialize(parameters, path);
 
       parameters.get("*").constrainedBy(new RegexConstraint("foo"));
 
@@ -214,8 +225,8 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(".*", "/{customer}/");
 
-      ParameterStore parameters = new ParameterStore();
-      ParameterStore.initialize(parameters, path);
+      ParameterStore parameters = new DefaultParameterStore();
+      initialize(parameters, path);
 
       Assert.assertEquals(1, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());
@@ -230,8 +241,8 @@ public class ParameterizedPatternTest
       ParameterizedPatternParser path = new RegexParameterizedPatternBuilder("[^/]+", "/{customer}/orders/{id}/")
                .getParser();
 
-      ParameterStore parameters = new ParameterStore();
-      ParameterStore.initialize(parameters, path);
+      ParameterStore parameters = new DefaultParameterStore();
+      initialize(parameters, path);
 
       Assert.assertEquals(2, parameters.size());
       Assert.assertEquals("customer", parameters.get("customer").getName());

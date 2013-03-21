@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.param.Constrainable;
 import org.ocpsoft.rewrite.param.Constraint;
@@ -19,8 +17,6 @@ import org.ocpsoft.rewrite.param.Transformable;
 public class ConfigurationRuleParameterBuilder extends ParameterBuilder<ConfigurationRuleParameterBuilder>
          implements
          Bindable<ConfigurationRuleParameterBuilder>,
-         Convertable<ConfigurationRuleParameterBuilder>,
-         Validatable<ConfigurationRuleParameterBuilder>,
          Constrainable<ConfigurationRuleParameterBuilder, String>,
          Transformable<ConfigurationRuleParameterBuilder, String>,
 

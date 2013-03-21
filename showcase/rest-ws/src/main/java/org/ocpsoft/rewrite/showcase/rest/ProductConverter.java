@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.convert.IntegerConverter;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**

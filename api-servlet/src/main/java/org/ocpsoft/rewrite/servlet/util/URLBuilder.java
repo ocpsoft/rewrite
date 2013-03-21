@@ -23,16 +23,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.ocpsoft.common.util.Strings;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * Utility for building URL strings. Also manages the URL query string with the help of {@link QueryStringBuilder}.
  * 
+ * @deprecated Use {@link AddressBuilder} instead. May be removed in subsequent releases.
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
+@Deprecated
 public class URLBuilder
 {
-
    private Metadata metadata = new Metadata();
 
    private final List<String> segments = new ArrayList<String>();

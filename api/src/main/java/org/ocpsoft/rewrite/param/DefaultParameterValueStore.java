@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
-public class ParameterValueStoreImpl implements ParameterValueStore, Iterable<Entry<Parameter<?>, String>>
+public class DefaultParameterValueStore implements ParameterValueStore, Iterable<Entry<Parameter<?>, String>>
 {
    Map<Parameter<?>, String> map = new HashMap<Parameter<?>, String>();
 

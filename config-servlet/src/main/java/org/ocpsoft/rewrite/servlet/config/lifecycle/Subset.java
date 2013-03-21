@@ -32,10 +32,11 @@ import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
+import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
-import org.ocpsoft.rewrite.param.ParameterValueStoreImpl;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
@@ -81,7 +82,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
          Rule rule = rules.get(i);
 
          subContext.clear();
-         ParameterValueStoreImpl values = new ParameterValueStoreImpl();
+         ParameterValueStore values = new DefaultParameterValueStore();
          subContext.put(ParameterValueStore.class, values);
 
          if (rule.evaluate(event, subContext))
@@ -122,14 +123,14 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
    }
 
    private boolean handleBindings(final HttpServletRewrite event, final EvaluationContextImpl context,
-            ParameterValueStoreImpl values)
+            ParameterValueStore values)
    {
       boolean result = true;
       ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
 
       for (Entry<String, Parameter<?>> entry : store) {
          Parameter<?> parameter = entry.getValue();
-         String value = values.get(parameter);
+         String value = values.retrieve(parameter);
 
          if (!Bindings.enqueueSubmission(event, context, parameter, value))
          {
@@ -157,7 +158,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
 
       public EvaluationContextImpl()
       {
-         put(ParameterStore.class, new ParameterStore());
+         put(ParameterStore.class, new DefaultParameterStore());
       }
 
       @Override

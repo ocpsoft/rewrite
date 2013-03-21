@@ -15,12 +15,12 @@
  */
 package org.ocpsoft.rewrite.param;
 
+import java.util.List;
+
 import org.ocpsoft.rewrite.bind.Bindable;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.HasBindings;
-import org.ocpsoft.rewrite.bind.HasConverter;
-import org.ocpsoft.rewrite.bind.HasValidator;
 import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 
@@ -37,12 +37,6 @@ public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>> extends
          Constrainable<IMPLTYPE, String>,
          Transformable<IMPLTYPE, String>,
 
-         HasConstraints<String>,
-         HasTransforms<String>,
-         HasValidator,
-         HasConverter,
-         HasBindings,
-
          Converter<Object>,
          Validator<Object>
 {
@@ -50,4 +44,29 @@ public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>> extends
     * Get the name of this {@link Parameter}
     */
    public String getName();
+
+   /**
+    * Retrieve all {@link Binding} instances to which this {@link Parameter} is bound.
+    */
+   List<Binding> getBindings();
+
+   /**
+    * Get the {@link Converter} with which this {@link Parameter} will be converted.
+    */
+   public Converter<?> getConverter();
+
+   /**
+    * Get the {@link Validator} with which this {@link Parameter} will be validated.
+    */
+   public Validator<?> getValidator();
+
+   /**
+    * Get the underlying {@link List} of all {@link Constraint} objects currently registered to this {@link Parameter}.
+    */
+   List<Constraint<String>> getConstraints();
+
+   /**
+    * Get the underlying {@link List} of all {@link Transform} objects currently registered to this {@link Parameter}.
+    */
+   List<Transform<String>> getTransforms();
 }

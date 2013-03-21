@@ -25,9 +25,10 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
+import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
-import org.ocpsoft.rewrite.param.ParameterValueStoreImpl;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 
@@ -58,8 +59,8 @@ public class QueryEncodingTest
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
       context = new MockEvaluationContext();
-      context.put(ParameterValueStore.class, new ParameterValueStoreImpl());
-      store = new ParameterStore();
+      context.put(ParameterValueStore.class, new DefaultParameterValueStore());
+      store = new DefaultParameterStore();
       context.put(ParameterStore.class, store);
    }
 

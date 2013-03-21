@@ -32,12 +32,16 @@ import java.util.Set;
 import org.ocpsoft.logging.Logger;
 
 import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * Utility for building URL query strings.
  * 
+ * @deprecated Use {@link AddressBuilder} instead. May be removed in subsequent releases.
+ * 
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
  */
+@Deprecated
 public class QueryStringBuilder
 {
    private final static Logger log = Logger.getLogger(QueryStringBuilder.class);

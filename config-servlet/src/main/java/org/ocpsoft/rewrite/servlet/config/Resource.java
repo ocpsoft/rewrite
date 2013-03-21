@@ -20,8 +20,8 @@ import java.util.Set;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.exception.ParameterizationException;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.ParameterizationException;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;

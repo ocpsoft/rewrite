@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.config;
 
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.util.Visitor;
 
 /**
  * {@link Visitor} implementation for {@link Operation}s that executes a given callback for all operations that provide

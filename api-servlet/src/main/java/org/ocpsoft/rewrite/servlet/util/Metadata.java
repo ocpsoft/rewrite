@@ -17,6 +17,13 @@ package org.ocpsoft.rewrite.servlet.util;
 
 import java.util.List;
 
+import org.ocpsoft.urlbuilder.AddressBuilder;
+
+/**
+ * @deprecated Use {@link AddressBuilder} instead. May be removed in subsequent releases.
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
+@Deprecated
 public class Metadata
 {
    private String encoding = "UTF-8";

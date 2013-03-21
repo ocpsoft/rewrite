@@ -23,6 +23,7 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 
 /**
@@ -37,7 +38,7 @@ public class EvaluationContextImpl extends ContextBase implements EvaluationCont
 
    public EvaluationContextImpl()
    {
-      put(ParameterStore.class, new ParameterStore());
+      put(ParameterStore.class, new DefaultParameterStore());
    }
 
    @Override

@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+import org.ocpsoft.rewrite.util.Visitor;
 
 public class ConditionVisitTest
 {

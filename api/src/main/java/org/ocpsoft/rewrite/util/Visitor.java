@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.bind;
-
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
+package org.ocpsoft.rewrite.util;
 
 /**
- * A no-operation {@link Validator} that returns true for any given value.
+ * General purpose visitor interface
  * 
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ * @author Christian Kaltepoth
  */
-public class DefaultValidator implements Validator<Object>
+public interface Visitor<E>
 {
 
-   @Override
-   public boolean validate(final Rewrite event, final EvaluationContext context, final Object value)
-   {
-      return true;
-   }
+   /**
+    * Visit the supplied object
+    */
+   void visit(E e);
 
 }

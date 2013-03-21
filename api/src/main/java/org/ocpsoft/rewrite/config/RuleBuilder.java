@@ -20,8 +20,10 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.util.Visitor;
 
 /**
  * Builder for fluently defining new composite {@link Rule} instances.
@@ -30,7 +32,7 @@ import org.ocpsoft.rewrite.param.ParameterStore;
  */
 public class RuleBuilder implements RelocatableRule, CompositeCondition, CompositeOperation
 {
-   private final ParameterStore store = new ParameterStore();
+   private final ParameterStore store = new DefaultParameterStore();
 
    private Integer priority = null;
    private String id = "";
@@ -198,7 +200,7 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
       return store;
    }
 
-   @SuppressWarnings({ "rawtypes", "unchecked" })
+   @SuppressWarnings({ "rawtypes" })
    public ParameterBuilder<?> where(String name)
    {
       ParameterBuilder<?> parameter = new ParameterBuilder(name) {};

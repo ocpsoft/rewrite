@@ -35,8 +35,8 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
 public final class Bindings
 {
    /**
-    * Submit the given value to all registered {@link Binding} instances of the given {@link HasBindings}. Perform this
-    * by adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
+    * Submit the given value to all registered {@link Binding} instances of the given {@link Parameter}. Perform this by
+    * adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
     */
    public static boolean enqueueSubmission(final Rewrite event, final EvaluationContext context,
             final Parameter<?> parameter, final Object value)
