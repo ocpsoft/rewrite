@@ -18,9 +18,9 @@ package org.ocpsoft.rewrite.param;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.DefaultBindable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -31,9 +31,10 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYPE>> extends DefaultBindable<IMPLTYPE>
-         implements Parameter<IMPLTYPE>
+public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYPE>>
+         implements Parameter<IMPLTYPE>, Bindable<IMPLTYPE>
 {
+   private final List<Binding> bindings = new ArrayList<Binding>();
    private final List<Transform<String>> transforms = new ArrayList<Transform<String>>();
    private final List<Constraint<String>> constraints = new ArrayList<Constraint<String>>();
    private Converter<?> converter = null;
@@ -48,6 +49,24 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
       this.name = name;
    }
 
+
+   @Override
+   @SuppressWarnings("unchecked")
+   public IMPLTYPE bindsTo(final Binding binding)
+   {
+      /*
+       * Bindings must be added to the front of the list, since we want the
+       * ability to override the default binding if necessary.
+       */
+      this.bindings.add(0, binding);
+      return (IMPLTYPE) this;
+   }
+
+   @Override
+   public List<Binding> getBindings()
+   {
+      return bindings;
+   }
    @Override
    public String getName()
    {
@@ -64,12 +83,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public boolean validate(Rewrite event, EvaluationContext context, Object value)
    {
       return ValueHolderUtil.validates(event, context, validator, value);
-   }
-
-   @Override
-   public IMPLTYPE bindsTo(Binding binding)
-   {
-      return super.bindsTo(binding);
    }
 
    @Override
