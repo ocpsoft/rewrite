@@ -149,23 +149,9 @@ public class PhaseBinding extends HttpOperation implements Binding, Convertable<
    }
 
    @Override
-   public <X extends Validator<?>> PhaseBinding validatedBy(Class<X> type)
-   {
-      validator = ValueHolderUtil.resolveValidator(type);
-      return this;
-   }
-
-   @Override
    public PhaseBinding validatedBy(Validator<?> validator)
    {
       this.validator = validator;
-      return this;
-   }
-
-   @Override
-   public <X extends Converter<?>> PhaseBinding convertedBy(Class<X> type)
-   {
-      converter = ValueHolderUtil.resolveConverter(type);
       return this;
    }
 

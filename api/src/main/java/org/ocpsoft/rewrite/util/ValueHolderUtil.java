@@ -1,70 +1,14 @@
 package org.ocpsoft.rewrite.util;
 
 import java.lang.reflect.Array;
-import java.util.Collection;
 
-import org.ocpsoft.common.services.ServiceLoader;
-import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.exception.RewriteException;
 
 public final class ValueHolderUtil
 {
-   private static final Logger log = Logger.getLogger(ValueHolderUtil.class);
-
-   public static Validator<?> resolveValidator(final Class<? extends Validator<?>> type)
-   {
-      try {
-         Collection<? extends Validator<?>> enriched = ServiceLoader.loadEnriched(type);
-         if (enriched != null)
-         {
-            if ((enriched.size() > 1) && log.isWarnEnabled())
-            {
-               log.warn("Multiple Validator instances available for type [" + type.getName() + "], using first of "
-                        + enriched + "");
-            }
-            for (Validator<?> validator : enriched) {
-               if (validator != null)
-               {
-                  return validator;
-               }
-            }
-         }
-         return null;
-      }
-      catch (Exception e) {
-         throw new RewriteException("Could not instantiate Validator of type [" + type.getName() + "]", e);
-      }
-   }
-
-   public static final Converter<?> resolveConverter(final Class<? extends Converter<?>> type)
-   {
-      try {
-         Collection<? extends Converter<?>> enriched = ServiceLoader.loadEnriched(type);
-         if (enriched != null)
-         {
-            if ((enriched.size() > 1) && log.isWarnEnabled())
-            {
-               log.warn("Multiple Converter instances available for type [" + type.getName() + "], using first of "
-                        + enriched + "");
-            }
-            for (Converter<?> converter : enriched) {
-               if (converter != null)
-               {
-                  return converter;
-               }
-            }
-         }
-         return null;
-      }
-      catch (Exception e) {
-         throw new RewriteException("Could not instantiate Converter of type [" + type.getName() + "]", e);
-      }
-   }
-
    @SuppressWarnings({ "unchecked", "rawtypes" })
    public static boolean validates(final Rewrite event, final EvaluationContext context, Validator<?> validator,
             final Object value)

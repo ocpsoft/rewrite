@@ -90,23 +90,9 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
    }
 
    @Override
-   public <X extends Validator<?>> ConfigurationRuleParameterBuilder validatedBy(final Class<X> type)
-   {
-      param.validatedBy(type);
-      return this;
-   }
-
-   @Override
    public ConfigurationRuleParameterBuilder validatedBy(final Validator<?> validator)
    {
       param.validatedBy(validator);
-      return this;
-   }
-
-   @Override
-   public <X extends Converter<?>> ConfigurationRuleParameterBuilder convertedBy(final Class<X> type)
-   {
-      param.convertedBy(type);
       return this;
    }
 

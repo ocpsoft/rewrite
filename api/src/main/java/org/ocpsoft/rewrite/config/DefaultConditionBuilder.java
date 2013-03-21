@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Used as a base class to create fluent relationships between {@link Condition} objects; this class adds logical

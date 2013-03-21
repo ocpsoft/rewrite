@@ -86,6 +86,12 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
    @Inject
    private ProductRegistry products;
 
+   @Inject
+   private ProductConverter productConverter;
+
+   @Inject
+   private ProductValidator productValidator;
+
    @Override
    public Configuration getConfiguration(final ServletContext context)
    {
@@ -134,8 +140,8 @@ public class RestRewriteConfiguration extends HttpConfigurationProvider
                   }
                }).where("pid").matches("\\d+")
                .constrainedBy(new IntegerConstraint())
-               .convertedBy(ProductConverter.class)
-               .validatedBy(ProductValidator.class)
+               .convertedBy(productConverter)
+               .validatedBy(productValidator)
 
                .addRule()
                .when(Path.matches("/store/products").and(Method.isGet()))

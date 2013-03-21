@@ -74,14 +74,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
 
    @Override
    @SuppressWarnings("unchecked")
-   public <X extends Converter<?>> IMPLTYPE convertedBy(Class<X> type)
-   {
-      this.converter = ValueHolderUtil.resolveConverter(type);
-      return (IMPLTYPE) this;
-   }
-
-   @Override
-   @SuppressWarnings("unchecked")
    public IMPLTYPE convertedBy(Converter<?> converter)
    {
       this.converter = converter;
@@ -92,14 +84,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public Converter<?> getConverter()
    {
       return converter;
-   }
-
-   @Override
-   @SuppressWarnings("unchecked")
-   public <X extends Validator<?>> IMPLTYPE validatedBy(Class<X> type)
-   {
-      this.validator = ValueHolderUtil.resolveValidator(type);
-      return (IMPLTYPE) this;
    }
 
    @Override

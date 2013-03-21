@@ -17,17 +17,12 @@ package org.ocpsoft.rewrite.bind;
 
 /**
  * An object that can hold {@link Converter} instances.
- *
+ * 
  * @param <IMPLTYPE> The type implementing {@link Convertable}.
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface Convertable<IMPLTYPE>
 {
-   /**
-    * Set the {@link Converter} type with which this {@link Binding} value will be converted.
-    */
-   public <X extends Converter<?>> IMPLTYPE convertedBy(final Class<X> type);
-
    /**
     * Set the {@link Converter} with which this {@link Binding} value will be converted.
     */
