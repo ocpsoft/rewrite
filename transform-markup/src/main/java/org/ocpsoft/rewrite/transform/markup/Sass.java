@@ -20,6 +20,11 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 
+/**
+ * Transformer that translates SASS files into CSS.
+ * 
+ * @author Christian Kaltepoth
+ */
 public class Sass extends JRubyTransformer<Sass>
 {
 

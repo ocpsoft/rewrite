@@ -29,6 +29,12 @@ import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptorChain;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
+/**
+ * This pipeline is responsible to apply the registered {@link Transformer} implementations to the intercepted response
+ * in the expected order.
+ * 
+ * @author Christian Kaltepoth
+ */
 class PipelineContentInterceptor implements ResponseContentInterceptor
 {
 

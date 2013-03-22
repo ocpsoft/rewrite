@@ -20,6 +20,11 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 
+/**
+ * Transformer that translates Markdown files into HTML.
+ * 
+ * @author Christian Kaltepoth
+ */
 public class Markdown extends JRubyTransformer<Markdown>
 {
 

@@ -20,6 +20,11 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 
+/**
+ * Transformer that translates Textile markup into HTML.
+ * 
+ * @author Christian Kaltepoth
+ */
 public class Textile extends JRubyTransformer<Textile>
 {
 

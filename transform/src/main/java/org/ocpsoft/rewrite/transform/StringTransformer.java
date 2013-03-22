@@ -23,6 +23,13 @@ import java.nio.charset.Charset;
 
 import org.ocpsoft.common.util.Streams;
 
+/**
+ * Base class for {@link Transformer} implementations that operate on strings. Please note that this classes assumes
+ * UTF8 encoding when building the string representation of the {@link InputStream} and when writing the transformed
+ * string to the {@link OutputStream}.
+ * 
+ * @author Christian Kaltepoth
+ */
 public abstract class StringTransformer implements Transformer
 {
 
@@ -37,7 +44,7 @@ public abstract class StringTransformer implements Transformer
       // read input stream and store it in a string
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       Streams.copy(inputStream, bos);
-      String input = new String(bos.toByteArray(), Charset.forName("UTF-8"));
+      String input = new String(bos.toByteArray(), UTF8);
 
       // perform internal transformation
       String output = transform(input);
