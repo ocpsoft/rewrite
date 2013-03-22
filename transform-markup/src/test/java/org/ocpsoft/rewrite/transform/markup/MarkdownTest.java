@@ -26,7 +26,7 @@ public class MarkdownTest {
     public void testBoldText() {
 
         String markdown = "This is **bold**!";
-        String html = Markdown.transformer().partialDocument().transform(markdown);
+        String html = Markdown.partialDocument().transform(markdown);
 
         assertEquals("<p>This is <strong>bold</strong>!</p>", html);
 
@@ -36,7 +36,7 @@ public class MarkdownTest {
     public void testHeaders() {
 
         String markdown = "# Header\n\n##Section\n\nSome text!";
-        String html = Markdown.transformer().partialDocument().transform(markdown);
+        String html = Markdown.partialDocument().transform(markdown);
 
         assertEquals("<h1 id='header'>Header</h1><h2 id='section'>Section</h2><p>Some text!</p>", normalize(html));
 
@@ -46,7 +46,7 @@ public class MarkdownTest {
     public void testBlockquote() {
 
         String markdown = "> Some quote";
-        String html = Markdown.transformer().partialDocument().transform(markdown);
+        String html = Markdown.partialDocument().transform(markdown);
 
         assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
 
@@ -56,7 +56,7 @@ public class MarkdownTest {
     public void testLists() {
 
         String markdown = "* One\n* Two";
-        String html = Markdown.transformer().partialDocument().transform(markdown);
+        String html = Markdown.partialDocument().transform(markdown);
 
         assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html));
 
@@ -66,7 +66,7 @@ public class MarkdownTest {
     public void testCode() {
 
         String markdown = "    private int n = 0;";
-        String html = Markdown.transformer().partialDocument().transform(markdown);
+        String html = Markdown.partialDocument().transform(markdown);
 
         assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
 
@@ -76,7 +76,7 @@ public class MarkdownTest {
     public void testFullHtmlDocument() {
 
         String markdown = "some text";
-        String html = Markdown.transformer().fullDocument().transform(markdown);
+        String html = Markdown.fullDocument().transform(markdown);
 
         assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html PUBLIC"));
         assertTrue("html tag is missing", html.contains("<html"));

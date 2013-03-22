@@ -32,12 +32,7 @@ public class Sass extends JRubyTransformer<Sass>
             "engine = Sass::Engine.new(input, :syntax => :scss, :cache => false)\n" +
             "engine.render\n";
 
-   public Sass()
-   {
-      // hide constructor
-   }
-
-   public static Sass transformer()
+   public static Sass create()
    {
       return new Sass();
    }

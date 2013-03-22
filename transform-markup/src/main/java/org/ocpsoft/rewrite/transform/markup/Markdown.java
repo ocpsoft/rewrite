@@ -32,28 +32,39 @@ public class Markdown extends JRubyTransformer<Markdown>
             "doc = Maruku.new(input)\n" +
             "fullDocument ? doc.to_html_document : doc.to_html\n";
 
-   private boolean fullDocument = true;
+   private final boolean fullDocument;
 
+   /**
+    * Creates a {@link Markdown} instance that renders a full HTML document.
+    */
    public Markdown()
    {
-      // hide the constructor
+      this(true);
    }
 
-   public static Markdown transformer()
+   /**
+    * Creates a {@link Markdown} instance.
+    */
+   public Markdown(boolean fullDocument)
    {
-      return new Markdown();
+      this.fullDocument = fullDocument;
    }
 
-   public Markdown fullDocument()
+   /**
+    * Creates a {@link Markdown} instance that renders a full HTML document structure.
+    */
+   public static Markdown fullDocument()
    {
-      this.fullDocument = true;
-      return this;
+      return new Markdown(true);
    }
 
-   public Markdown partialDocument()
+   /**
+    * Creates a {@link Markdown} instance that just renders the markdown without adding the HTML scaffold like a body or
+    * head.
+    */
+   public static Markdown partialDocument()
    {
-      this.fullDocument = false;
-      return this;
+      return new Markdown(false);
    }
 
    @Override

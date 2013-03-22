@@ -31,25 +31,39 @@ public class Textile extends JRubyTransformer<Textile>
    private static final String SCRIPT = "require 'redcloth'\n" +
             "RedCloth.new(input).to_html\n";
 
-   private boolean fullDocument = true;
+   private final boolean fullDocument;
 
+   /**
+    * Creates a {@link Textile} instance that renders a full HTML document structure.
+    */
    public Textile()
    {
-      // hide constructor
+      this(true);
    }
 
+   /**
+    * Creates a {@link Textile} instance.
+    */
+   public Textile(boolean fullDocument)
+   {
+      this.fullDocument = fullDocument;
+   }
+
+   /**
+    * Creates a {@link Textile} instance that renders a full HTML document structure.
+    */
    public static Textile fullDocument()
    {
-      Textile textile = new Textile();
-      textile.fullDocument = true;
-      return textile;
+      return new Textile(true);
    }
 
+   /**
+    * Creates a {@link Textile} instance that just renders the textile without adding the HTML scaffold like a body or
+    * head.
+    */
    public static Textile partialDocument()
    {
-      Textile textile = new Textile();
-      textile.fullDocument = false;
-      return textile;
+      return new Textile(false);
    }
 
    @Override
