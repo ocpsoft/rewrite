@@ -19,7 +19,7 @@ import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * An intermediate stage {@link Rule} configuration.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface ConfigurationRuleBuilderOtherwise extends ConfigurationBuilderRoot
@@ -40,5 +40,5 @@ public interface ConfigurationRuleBuilderOtherwise extends ConfigurationBuilderR
    /**
     * Configure the {@link Parameter} with the given name.
     */
-   ConfigurationRuleParameterOtherwise where(String string);
+   ConfigurationRuleParameterWhere where(String string);
 }

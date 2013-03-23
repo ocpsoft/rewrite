@@ -30,7 +30,8 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYPE>> implements Parameter<IMPLTYPE>
+public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYPE>> implements
+         ConfigurableParameter<IMPLTYPE>
 {
    private final List<Binding> bindings = new ArrayList<Binding>();
    private final List<Transform<String>> transforms = new ArrayList<Transform<String>>();

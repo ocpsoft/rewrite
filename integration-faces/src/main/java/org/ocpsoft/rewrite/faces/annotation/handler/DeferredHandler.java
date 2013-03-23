@@ -34,6 +34,7 @@ import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.Phase;
 import org.ocpsoft.rewrite.faces.config.PhaseBinding;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Parameter;
 
 public class DeferredHandler implements AnnotationHandler<Deferred>
@@ -61,7 +62,7 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
          Field field = ((FieldContext) context).getJavaField();
 
          // locate the parameter previously created by @Parameter
-         final Parameter<?> parameter = (Parameter<?>) context.get(Parameter.class);
+         final ConfigurableParameter<?> parameter = (ConfigurableParameter<?>) context.get(Parameter.class);
          if (parameter != null) {
 
             Binding binding = (Binding) context.get(Binding.class);

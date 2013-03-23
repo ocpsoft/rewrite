@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.spi.ValidatorProvider;
 
@@ -57,7 +58,7 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
    {
       Field field = context.getJavaField();
 
-      Parameter<?> parameter = (Parameter<?>) context.get(Parameter.class);
+      ConfigurableParameter<?> parameter = (ConfigurableParameter<?>) context.get(Parameter.class);
       if (parameter != null) {
 
          Validator<?> validator = null;

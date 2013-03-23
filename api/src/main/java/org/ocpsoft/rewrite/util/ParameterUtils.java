@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
@@ -92,7 +91,7 @@ public class ParameterUtils
    }
 
    /**
-    * Extract bound values from configured {@link Bindable} instances. Return a {@link List} of the extracted values.
+    * Extract bound values from configured {@link Parameter} instances. Return a {@link List} of the extracted values.
     */
    public static Object performRetrieval(final Rewrite event, final EvaluationContext context,
             final Parameter<?> parameter)

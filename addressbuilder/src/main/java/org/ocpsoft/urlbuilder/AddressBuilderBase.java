@@ -18,7 +18,7 @@ package org.ocpsoft.urlbuilder;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-class AddressBuilderBase
+public class AddressBuilderBase
 {
    private AddressBuilder parent;
 

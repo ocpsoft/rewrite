@@ -29,7 +29,7 @@ import org.ocpsoft.urlbuilder.util.ParseTools;
  */
 class AddressResult implements Address
 {
-   private final String scheme;
+   private final String protocol;
    private final String host;
    private final Integer port;
    private final String path;
@@ -40,9 +40,9 @@ class AddressResult implements Address
    public AddressResult(AddressBuilder parent)
    {
       if (isSet(parent.scheme))
-         scheme = parameterize(parent.parameters, parent.scheme).toString();
+         protocol = parameterize(parent.parameters, parent.scheme).toString();
       else
-         scheme = null;
+         protocol = null;
 
       if (isSet(parent.domain))
          host = parameterize(parent.parameters, parent.domain).toString();
@@ -260,13 +260,13 @@ class AddressResult implements Address
    @Override
    public String getScheme()
    {
-      return scheme;
+      return protocol;
    }
 
    @Override
    public boolean isSchemeSet()
    {
-      return isSet(scheme);
+      return isSet(protocol);
    }
 
    @Override

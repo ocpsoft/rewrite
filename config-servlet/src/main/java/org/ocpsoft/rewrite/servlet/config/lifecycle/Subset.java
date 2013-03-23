@@ -31,6 +31,7 @@ import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameter;
@@ -128,7 +129,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
       boolean result = true;
       ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
 
-      for (Entry<String, Parameter<?>> entry : store) {
+      for (Entry<String, ConfigurableParameter<?>> entry : store) {
          Parameter<?> parameter = entry.getValue();
          String value = values.retrieve(parameter);
 

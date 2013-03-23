@@ -30,6 +30,7 @@ import org.ocpsoft.rewrite.config.ConfigurationLoader;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.RewriteState;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
@@ -211,7 +212,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
       boolean result = true;
       ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
 
-      for (Entry<String, Parameter<?>> entry : store) {
+      for (Entry<String, ConfigurableParameter<?>> entry : store) {
          Parameter<?> parameter = entry.getValue();
          String value = values.get(parameter);
 

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.rewrite.param;
 
 import java.util.Iterator;
@@ -10,11 +25,11 @@ import java.util.Map.Entry;
  */
 public class DefaultParameterStore implements ParameterStore
 {
-   private final Map<String, Parameter<?>> parameters = new LinkedHashMap<String, Parameter<?>>();
+   private final Map<String, ConfigurableParameter<?>> parameters = new LinkedHashMap<String, ConfigurableParameter<?>>();
 
-   public Parameter<?> where(final String param, Parameter<?> deflt)
+   public ConfigurableParameter<?> where(final String param, ConfigurableParameter<?> deflt)
    {
-      Parameter<?> parameter = null;
+      ConfigurableParameter<?> parameter = null;
       if (parameters.get(param) != null)
       {
          parameter = parameters.get(param);
@@ -27,7 +42,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameter;
    }
 
-   public Parameter<?> get(String key)
+   public ConfigurableParameter<?> get(String key)
    {
       if (!parameters.containsKey(key))
          throw new IllegalArgumentException("No such parameter [" + key + "] exists.");
@@ -39,7 +54,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameters.isEmpty();
    }
 
-   public Parameter<?> put(String key, Parameter<?> value)
+   public ConfigurableParameter<?> put(String key, ConfigurableParameter<?> value)
    {
       return parameters.put(key, value);
    }
@@ -50,7 +65,7 @@ public class DefaultParameterStore implements ParameterStore
    }
 
    @Override
-   public Iterator<Entry<String, Parameter<?>>> iterator()
+   public Iterator<Entry<String, ConfigurableParameter<?>>> iterator()
    {
       return parameters.entrySet().iterator();
    }
