@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.param;
+package org.ocpsoft.rewrite.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Transform;
 
 /**
  * This class provides common implementations of the {@link Transform} interface.
