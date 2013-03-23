@@ -14,8 +14,8 @@ public class AddressBuilderTest
       Assert.assertEquals("http://example.com:8080/search/table?q=query+string#foo",
 
                AddressBuilder.begin()
-                        .protocol("http")
-                        .host("example.com")
+                        .scheme("http")
+                        .domain("example.com")
                         .port(8080)
                         .path("/{s}/{t}")
                         .set("s", "search")
@@ -31,8 +31,8 @@ public class AddressBuilderTest
       Assert.assertEquals("http://example.com:8080/search/table?q=query+string#foo",
 
                AddressBuilder.begin()
-                        .protocol("http")
-                        .host("example.com")
+                        .scheme("http")
+                        .domain("example.com")
                         .port(8080)
                         .path("/{s}/{t}")
                         .set("s", "search")
@@ -175,7 +175,7 @@ public class AddressBuilderTest
    {
       Assert.assertEquals("ocpsoft.org/store/23/buy",
                AddressBuilder.begin()
-                        .host("ocpsoft.org")
+                        .domain("ocpsoft.org")
                         .path("/store/{item}/{action}").set("item", 23).set("action", "buy").toString());
    }
 
@@ -183,7 +183,7 @@ public class AddressBuilderTest
    public void testBuildHostAndPathResult()
    {
       Assert.assertEquals("ocpsoft.org/store/23/buy",
-               AddressBuilder.begin().host("ocpsoft.org")
+               AddressBuilder.begin().domain("ocpsoft.org")
                         .path("/store/{item}/{action}").set("item", 23).set("action", "buy").build().toString());
    }
 
@@ -191,22 +191,22 @@ public class AddressBuilderTest
    public void testProtocolAndPort()
    {
       Assert.assertEquals("file://:80",
-               AddressBuilder.begin().protocol("file").port(80).toString());
+               AddressBuilder.begin().scheme("file").port(80).toString());
    }
 
    @Test
    public void testProtocolAndPortResult()
    {
       Assert.assertEquals("file://:80",
-               AddressBuilder.begin().protocol("file").port(80).build().toString());
+               AddressBuilder.begin().scheme("file").port(80).build().toString());
    }
 
    @Test
    public void testFromStringWithFullUrl()
    {
       Address address = AddressBuilder.create("http://www.google.com:80/search?q=foobar");
-      assertEquals("http", address.getProtocol());
-      assertEquals("www.google.com", address.getHost());
+      assertEquals("http", address.getScheme());
+      assertEquals("www.google.com", address.getDomain());
       assertEquals(Integer.valueOf(80), address.getPort());
       assertEquals("/search", address.getPath());
       assertEquals("q=foobar", address.getQuery());
@@ -217,8 +217,8 @@ public class AddressBuilderTest
    public void testFromStringWithoutPort()
    {
       Address address = AddressBuilder.create("http://www.google.com/search?q=foobar");
-      assertEquals("http", address.getProtocol());
-      assertEquals("www.google.com", address.getHost());
+      assertEquals("http", address.getScheme());
+      assertEquals("www.google.com", address.getDomain());
       assertEquals(null, address.getPort());
       assertEquals("/search", address.getPath());
       assertEquals("q=foobar", address.getQuery());
@@ -229,8 +229,8 @@ public class AddressBuilderTest
    public void testFromStringOnlyWithPathAndQuery()
    {
       Address address = AddressBuilder.create("/search?q=foobar");
-      assertEquals(null, address.getProtocol());
-      assertEquals(null, address.getHost());
+      assertEquals(null, address.getScheme());
+      assertEquals(null, address.getDomain());
       assertEquals(null, address.getPort());
       assertEquals("/search", address.getPath());
       assertEquals("q=foobar", address.getQuery());

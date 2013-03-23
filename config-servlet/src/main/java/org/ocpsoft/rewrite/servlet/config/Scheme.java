@@ -71,7 +71,7 @@ public class Scheme extends HttpCondition implements Parameterized
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         scheme = event.getAddress().getProtocol();
+         scheme = event.getAddress().getScheme();
          if (scheme == null)
             scheme = event.getRequest().getScheme();
       }

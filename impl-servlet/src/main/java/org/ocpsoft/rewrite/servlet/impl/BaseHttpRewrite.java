@@ -63,8 +63,8 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
          }
 
          this.address = AddressBuilder.begin()
-                  .protocol(getRequest().getScheme())
-                  .host(getRequest().getServerName())
+                  .scheme(getRequest().getScheme())
+                  .domain(getRequest().getServerName())
                   .port(getRequest().getServerPort())
                   .pathEncoded(requestURI)
                   .queryLiteral(getRequest().getQueryString()).build();

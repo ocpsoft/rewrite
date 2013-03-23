@@ -71,7 +71,7 @@ public class Hostname extends HttpCondition implements Parameterized
 
       if (event instanceof HttpOutboundServletRewrite)
       {
-         hostName = event.getAddress().getHost();
+         hostName = event.getAddress().getDomain();
          if (hostName == null)
             hostName = event.getRequest().getServerName();
       }

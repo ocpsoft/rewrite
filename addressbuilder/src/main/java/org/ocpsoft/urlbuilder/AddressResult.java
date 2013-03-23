@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.urlbuilder;
 
 import java.util.Map;
@@ -7,6 +22,11 @@ import org.ocpsoft.urlbuilder.util.CapturingGroup;
 import org.ocpsoft.urlbuilder.util.Encoder;
 import org.ocpsoft.urlbuilder.util.ParseTools;
 
+/**
+ * Implementation of {@link Address} created by {@link AddressBuilder}.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 class AddressResult implements Address
 {
    private final String protocol;
@@ -19,13 +39,13 @@ class AddressResult implements Address
 
    public AddressResult(AddressBuilder parent)
    {
-      if (isSet(parent.protocol))
-         protocol = parameterize(parent.parameters, parent.protocol).toString();
+      if (isSet(parent.scheme))
+         protocol = parameterize(parent.parameters, parent.scheme).toString();
       else
          protocol = null;
 
-      if (isSet(parent.host))
-         host = parameterize(parent.parameters, parent.host).toString();
+      if (isSet(parent.domain))
+         host = parameterize(parent.parameters, parent.domain).toString();
       else
          host = null;
 
@@ -94,11 +114,11 @@ class AddressResult implements Address
       {
          StringBuilder result = new StringBuilder();
 
-         if (isProtocolSet())
-            result.append(getProtocol()).append("://");
+         if (isSchemeSet())
+            result.append(getScheme()).append("://");
 
-         if (isHostSet())
-            result.append(getHost());
+         if (isDomainSet())
+            result.append(getDomain());
 
          if (isPortSet())
             result.append(":").append(getPort());
@@ -226,25 +246,25 @@ class AddressResult implements Address
    }
 
    @Override
-   public String getHost()
+   public String getDomain()
    {
       return host;
    }
 
    @Override
-   public boolean isHostSet()
+   public boolean isDomainSet()
    {
       return isSet(host);
    }
 
    @Override
-   public String getProtocol()
+   public String getScheme()
    {
       return protocol;
    }
 
    @Override
-   public boolean isProtocolSet()
+   public boolean isSchemeSet()
    {
       return isSet(protocol);
    }

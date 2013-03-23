@@ -16,15 +16,15 @@
 package org.ocpsoft.urlbuilder;
 
 /**
- * An {@link Address} with a port section.
+ * An {@link Address} with a scheme section.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class AddressBuilderPort
+public class AddressBuilderScheme
 {
    private AddressBuilder parent;
 
-   AddressBuilderPort(AddressBuilder parent)
+   AddressBuilderScheme(AddressBuilder parent)
    {
       this.parent = parent;
    }
@@ -35,6 +35,22 @@ public class AddressBuilderPort
    public Address build()
    {
       return parent.build();
+   }
+
+   /**
+    * Set the domain section of this {@link Address}.
+    */
+   public AddressBuilderDomain domain(CharSequence host)
+   {
+      return parent.domain(host);
+   }
+
+   /**
+    * Set the port section of this {@link Address}.
+    */
+   public AddressBuilderPort port(int port)
+   {
+      return parent.port(port);
    }
 
    /**

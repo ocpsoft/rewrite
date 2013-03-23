@@ -27,14 +27,14 @@ import org.ocpsoft.rewrite.param.Parameter;
  */
 public class Evaluation implements Binding
 {
-   private final CharSequence property;
+   private final String property;
 
-   private Evaluation(final CharSequence property)
+   private Evaluation(final String property)
    {
       this.property = property;
    }
 
-   public static Evaluation property(final CharSequence property)
+   public static Evaluation property(final String property)
    {
       return new Evaluation(property);
    }
@@ -103,12 +103,12 @@ public class Evaluation implements Binding
       return context.get(getParameterUnconvertedName(property)) != null;
    }
 
-   private String getParameterUnconvertedName(final CharSequence parameter)
+   private String getParameterUnconvertedName(final String parameter)
    {
       return Evaluation.class.getName() + "_" + parameter;
    }
 
-   private String getParameterConvertedName(final CharSequence parameter)
+   private String getParameterConvertedName(final String parameter)
    {
       return getParameterUnconvertedName(parameter) + "_converted";
    }
@@ -181,6 +181,34 @@ public class Evaluation implements Binding
    public String toString()
    {
       return "Evaluation [property=" + property + "]";
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((property == null) ? 0 : property.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      Evaluation other = (Evaluation) obj;
+      if (property == null) {
+         if (other.property != null)
+            return false;
+      }
+      else if (!property.equals(other.property))
+         return false;
+      return true;
    }
 
 }

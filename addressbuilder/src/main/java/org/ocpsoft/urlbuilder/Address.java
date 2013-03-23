@@ -61,22 +61,22 @@ public interface Address
    /**
     * Get the domain section of this {@link Address}, or <code>null</code> if no domain is set.
     */
-   String getHost();
+   String getDomain();
 
    /**
-    * Return <code>true</code> if this {@link Address} has a host section, otherwise return <code>false</code>.
+    * Return <code>true</code> if this {@link Address} has a domain section, otherwise return <code>false</code>.
     */
-   boolean isHostSet();
+   boolean isDomainSet();
 
    /**
-    * Get the protocol section of this {@link Address}, or null if no protocol is set.
+    * Get the scheme section of this {@link Address}, or null if no scheme is set.
     */
-   String getProtocol();
+   String getScheme();
 
    /**
-    * Return <code>true</code> if this {@link Address} has a protocol section, otherwise return <code>false</code>.
+    * Return <code>true</code> if this {@link Address} has a scheme section, otherwise return <code>false</code>.
     */
-   boolean isProtocolSet();
+   boolean isSchemeSet();
 
    /**
     * Get the query section of this {@link Address}, or <code>null</code> if no query is set.

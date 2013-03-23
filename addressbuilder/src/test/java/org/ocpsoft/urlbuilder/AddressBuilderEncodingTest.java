@@ -54,8 +54,8 @@ public class AddressBuilderEncodingTest
    {
       Assert.assertEquals("http://localhost/a%20b?q=a+b",
                AddressBuilder.begin()
-                        .protocol("http")
-                        .host("localhost")
+                        .scheme("http")
+                        .domain("localhost")
                         .path("/{p}")
                         .set("p", "a b")
                         .query("q", "a b")
@@ -67,8 +67,8 @@ public class AddressBuilderEncodingTest
    {
       Assert.assertEquals("http://localhost/a%20b?q=a+b",
                AddressBuilder.begin()
-                        .protocol("http")
-                        .host("localhost")
+                        .scheme("http")
+                        .domain("localhost")
                         .path("/{p}")
                         .set("p", "a b")
                         .query("q", "a b")
@@ -81,8 +81,8 @@ public class AddressBuilderEncodingTest
    {
       Assert.assertEquals("http://localhost/a%20b?q=a+b",
                AddressBuilder.begin()
-                        .protocol("http")
-                        .host("localhost")
+                        .scheme("http")
+                        .domain("localhost")
                         .path("/{p}")
                         .setEncoded("p", "a%20b")
                         .queryEncoded("q", "a+b")
@@ -94,8 +94,8 @@ public class AddressBuilderEncodingTest
    {
       Assert.assertEquals("http://localhost/a%20b?q=a+b",
                AddressBuilder.begin()
-                        .protocol("http")
-                        .host("localhost")
+                        .scheme("http")
+                        .domain("localhost")
                         .path("/{p}")
                         .setEncoded("p", "a%20b")
                         .queryEncoded("q", "a+b")
