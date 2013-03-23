@@ -26,7 +26,7 @@ import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.util.Transformations;
+import org.ocpsoft.rewrite.util.Transforms;
 
 /**
  * A {@link org.ocpsoft.rewrite.config.Condition} responsible for determining existence of resources within the web root
@@ -51,7 +51,7 @@ public class Resource extends HttpCondition implements Parameterized
       if (resource != null)
       {
          try {
-            String file = resource.getBuilder().build(event, context, Transformations.encodePath());
+            String file = resource.getBuilder().build(event, context, Transforms.encodePath());
             try {
                return (event.getServletContext().getResource(file) != null);
             }

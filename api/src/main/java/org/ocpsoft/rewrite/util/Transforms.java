@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.param.Transform;
  * 
  * @author Christian Kaltepoth
  */
-public class Transformations
+public class Transforms
 {
 
    public static Transform<String> encodePath()
