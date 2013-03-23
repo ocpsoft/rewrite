@@ -19,24 +19,14 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 
 /**
- * An type specific {@link org.ocpsoft.rewrite.bind.Bindable}.
- * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>> extends
          Bindable<IMPLTYPE>,
-         Convertable<IMPLTYPE>,
-         Validatable<IMPLTYPE>,
-
-         Constrainable<IMPLTYPE, String>,
-         Transformable<IMPLTYPE, String>,
-
          Converter<Object>,
          Validator<Object>
 {
@@ -51,9 +41,19 @@ public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>> extends
    List<Binding> getBindings();
 
    /**
+    * Set the {@link Converter} with which this {@link Parameter} value will be converted.
+    */
+   public IMPLTYPE convertedBy(final Converter<?> converter);
+
+   /**
     * Get the {@link Converter} with which this {@link Parameter} will be converted.
     */
    public Converter<?> getConverter();
+
+   /**
+    * Set the {@link Validator} with which this {@link Parameter} value will be validated.
+    */
+   public IMPLTYPE validatedBy(final Validator<?> validator);
 
    /**
     * Get the {@link Validator} with which this {@link Parameter} will be validated.
@@ -61,9 +61,19 @@ public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>> extends
    public Validator<?> getValidator();
 
    /**
+    * Add a constraint to which this object {@link IMPLTYPE} must match.
+    */
+   public IMPLTYPE constrainedBy(Constraint<String> pattern);
+
+   /**
     * Get the underlying {@link List} of all {@link Constraint} objects currently registered to this {@link Parameter}.
     */
    List<Constraint<String>> getConstraints();
+
+   /**
+    * Add a {@link Transform} to this {@link IMPLTYPE}; it will executed in the order in which it was added.
+    */
+   public IMPLTYPE transformedBy(Transform<String> transform);
 
    /**
     * Get the underlying {@link List} of all {@link Transform} objects currently registered to this {@link Parameter}.

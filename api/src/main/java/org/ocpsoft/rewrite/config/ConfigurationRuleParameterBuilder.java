@@ -7,18 +7,14 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.Validator;
-import org.ocpsoft.rewrite.param.Constrainable;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.param.Transform;
-import org.ocpsoft.rewrite.param.Transformable;
 
 public class ConfigurationRuleParameterBuilder extends ParameterBuilder<ConfigurationRuleParameterBuilder>
          implements
          Bindable<ConfigurationRuleParameterBuilder>,
-         Constrainable<ConfigurationRuleParameterBuilder, String>,
-         Transformable<ConfigurationRuleParameterBuilder, String>,
 
          ConfigurationRuleParameter,
          ConfigurationRuleParameterMatches,

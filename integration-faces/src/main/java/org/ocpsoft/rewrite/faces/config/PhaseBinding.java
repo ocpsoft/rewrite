@@ -24,10 +24,8 @@ import java.util.Set;
 import javax.faces.event.PhaseId;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Convertable;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Submission;
-import org.ocpsoft.rewrite.bind.Validatable;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.CompositeOperation;
 import org.ocpsoft.rewrite.config.Operation;
@@ -46,8 +44,7 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  */
-public class PhaseBinding extends HttpOperation implements Binding, Convertable<PhaseBinding>,
-         Validatable<PhaseBinding>, CompositeOperation
+public class PhaseBinding extends HttpOperation implements Binding, CompositeOperation
 {
    private final Set<PhaseId> beforePhases = new HashSet<PhaseId>();
    private final Set<PhaseId> afterPhases = new HashSet<PhaseId>();
@@ -148,14 +145,12 @@ public class PhaseBinding extends HttpOperation implements Binding, Convertable<
       return this;
    }
 
-   @Override
    public PhaseBinding validatedBy(Validator<?> validator)
    {
       this.validator = validator;
       return this;
    }
 
-   @Override
    public PhaseBinding convertedBy(Converter<?> converter)
    {
       this.converter = converter;
