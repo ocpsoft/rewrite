@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.param;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ocpsoft.rewrite.bind.Bindable;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Validator;
@@ -31,8 +30,7 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYPE>>
-         implements Parameter<IMPLTYPE>, Bindable<IMPLTYPE>
+public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYPE>> implements Parameter<IMPLTYPE>
 {
    private final List<Binding> bindings = new ArrayList<Binding>();
    private final List<Transform<String>> transforms = new ArrayList<Transform<String>>();
@@ -48,7 +46,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    {
       this.name = name;
    }
-
 
    @Override
    @SuppressWarnings("unchecked")
@@ -67,6 +64,7 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    {
       return bindings;
    }
+
    @Override
    public String getName()
    {

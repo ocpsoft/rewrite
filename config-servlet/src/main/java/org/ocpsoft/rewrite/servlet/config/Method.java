@@ -17,11 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.ocpsoft.rewrite.bind.Bindable;
-import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -29,11 +25,9 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Method extends HttpCondition implements Bindable<Method>
+public class Method extends HttpCondition
 {
    private final HttpMethod method;
-
-   private final DefaultParameter bindable = new DefaultParameter(this.toString());
 
    private enum HttpMethod
    {
@@ -106,17 +100,9 @@ public class Method extends HttpCondition implements Bindable<Method>
    {
       if (this.method.equals(HttpMethod.valueOf(event.getRequest().getMethod())))
       {
-         Bindings.enqueueSubmission(event, context, bindable, method.name());
          return true;
       }
       return false;
-   }
-
-   @Override
-   public Method bindsTo(final Binding binding)
-   {
-      bindable.bindsTo(binding);
-      return this;
    }
 
 }

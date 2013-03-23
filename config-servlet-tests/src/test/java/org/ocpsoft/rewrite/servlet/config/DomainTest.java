@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
-import org.ocpsoft.rewrite.util.ParameterStores;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
@@ -65,7 +65,7 @@ public class DomainTest
       Hostname hostname = Hostname.matches("{p}.com");
 
       ParameterStore parameters = new DefaultParameterStore();
-      ParameterStores.initialize(parameters, hostname);
+      ParameterUtils.initialize(parameters, hostname);
 
       Assert.assertTrue(hostname.evaluate(inbound, context));
    }

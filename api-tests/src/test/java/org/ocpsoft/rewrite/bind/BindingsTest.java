@@ -23,6 +23,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.test.MockRewrite;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -44,7 +45,7 @@ public class BindingsTest
       MockEvaluationContext context = new MockEvaluationContext();
 
       DefaultParameter parameter = new DefaultParameter("lincoln");
-      Assert.assertTrue(Bindings.enqueueSubmission(rewrite, context,
+      Assert.assertTrue(ParameterUtils.enqueueSubmission(rewrite, context,
                parameter.bindsTo(Evaluation.property("lincoln")), "baxter"));
       Assert.assertEquals("baxter", Evaluation.property("lincoln").retrieve(rewrite, context, parameter));
    }
@@ -62,7 +63,7 @@ public class BindingsTest
          }
       };
 
-      Assert.assertFalse(Bindings.enqueueSubmission(rewrite, context,
+      Assert.assertFalse(ParameterUtils.enqueueSubmission(rewrite, context,
                new DefaultParameter("lincoln").bindsTo(Evaluation.property("lincoln")).validatedBy(validator), "baxter"));
    }
 

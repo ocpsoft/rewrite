@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
-import org.ocpsoft.rewrite.util.ParameterStores;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -78,7 +78,7 @@ public class URLTest
       URL url = URL.matches("{prefix}/application/{seg}{suffix}");
 
       ParameterStore store = new DefaultParameterStore();
-      ParameterStores.initialize(store, url);
+      ParameterUtils.initialize(store, url);
 
       store.get("prefix").constrainedBy(new RegexConstraint(".*"));
       store.get("suffix").constrainedBy(new RegexConstraint("\\?.*"));
@@ -93,7 +93,7 @@ public class URLTest
       URL url = URL.captureIn("foo");
 
       ParameterStore store = new DefaultParameterStore();
-      ParameterStores.initialize(store, url);
+      ParameterUtils.initialize(store, url);
 
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));

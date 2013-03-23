@@ -25,25 +25,25 @@ import org.ocpsoft.common.services.NonEnriching;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationLoader;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.RewriteState;
+import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
-import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.spi.RuleCacheProvider;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements NonEnriching
 {
@@ -215,7 +215,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
          Parameter<?> parameter = entry.getValue();
          String value = values.get(parameter);
 
-         if (!Bindings.enqueueSubmission(event, context, parameter, value))
+         if (!ParameterUtils.enqueueSubmission(event, context, parameter, value))
          {
             result = false;
             break;

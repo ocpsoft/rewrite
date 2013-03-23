@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.config.CompositeOperation;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
@@ -39,6 +38,7 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 
 /**
  * Allows for conditional evaluation of {@link Rule} sets.
@@ -132,7 +132,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
          Parameter<?> parameter = entry.getValue();
          String value = values.retrieve(parameter);
 
-         if (!Bindings.enqueueSubmission(event, context, parameter, value))
+         if (!ParameterUtils.enqueueSubmission(event, context, parameter, value))
          {
             result = false;
             break;

@@ -1,39 +1,44 @@
-/*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.ocpsoft.rewrite.bind;
+package org.ocpsoft.rewrite.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
+import org.ocpsoft.rewrite.bind.Bindable;
+import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.util.ValueHolderUtil;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
- * Utility class for interacting with {@link Bindable} instances.
+ * Utility methods for interactive with {@link ParameterStore} instances.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public final class Bindings
+public class ParameterUtils
 {
+   /**
+    * Initialize the {@link Parameterized} instance with the given {@link ParameterStore}, also record required
+    * parameter names in the {@link ParameterStore} and initialize with a new {@link Parameter} instance.
+    */
+   public static void initialize(ParameterStore store, Parameterized parameterized)
+   {
+      Set<String> names = parameterized.getRequiredParameterNames();
+      for (String name : names) {
+         if (!store.contains(name))
+            store.put(name, new DefaultParameter(name));
+      }
+
+      parameterized.setParameterStore(store);
+   }
+
    /**
     * Submit the given value to all registered {@link Binding} instances of the given {@link Parameter}. Perform this by
     * adding individual {@link BindingOperation} instances via {@link EvaluationContext#addPreOperation(Operation)}
@@ -149,6 +154,5 @@ public final class Bindings
       {
          return "BindingOperation [binding=" + binding + ", value=" + value + "]";
       }
-
    }
 }

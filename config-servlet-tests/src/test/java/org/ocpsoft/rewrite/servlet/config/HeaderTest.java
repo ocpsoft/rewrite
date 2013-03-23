@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
-import org.ocpsoft.rewrite.util.ParameterStores;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -88,7 +88,7 @@ public class HeaderTest
       Header header = Header.matches("Accept-Charset", "{enc}");
 
       ParameterStore parameters = new DefaultParameterStore();
-      ParameterStores.initialize(parameters, header);
+      ParameterUtils.initialize(parameters, header);
 
       parameters.get("enc").constrainedBy(new RegexConstraint("(ISO|UTF)-\\d+"));
 
@@ -101,7 +101,7 @@ public class HeaderTest
       Header header = Header.matches(".*Accept-Charset", "blah");
 
       ParameterStore parameters = new DefaultParameterStore();
-      ParameterStores.initialize(parameters, header);
+      ParameterUtils.initialize(parameters, header);
 
       Assert.assertFalse(header.evaluate(rewrite, new MockEvaluationContext()));
    }
@@ -130,7 +130,7 @@ public class HeaderTest
       Header header = Header.exists("Accept-Charset");
 
       ParameterStore parameters = new DefaultParameterStore();
-      ParameterStores.initialize(parameters, header);
+      ParameterUtils.initialize(parameters, header);
 
       Assert.assertFalse(header.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }

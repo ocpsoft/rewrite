@@ -26,10 +26,10 @@ import java.util.regex.Pattern;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Bindings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.ParameterizationException;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.rewrite.util.ParseTools;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
@@ -237,7 +237,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       for (RegexGroup group : groups)
       {
          Parameter<?> parameter = parameters.get(group.getName());
-         Object value = Bindings.performRetrieval(event, context, parameter);
+         Object value = ParameterUtils.performRetrieval(event, context, parameter);
 
          if (value == null && context.getState().isEvaluating())
             value = ((ParameterValueStore) context.get(ParameterValueStore.class)).retrieve(parameter);
