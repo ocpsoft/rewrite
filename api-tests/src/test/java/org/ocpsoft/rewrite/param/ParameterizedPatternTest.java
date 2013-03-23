@@ -41,8 +41,7 @@ public class ParameterizedPatternTest
    {
       Set<String> names = parameterized.getRequiredParameterNames();
       for (String name : names) {
-         if (!store.contains(name))
-            store.put(name, new DefaultParameter(name));
+         store.get(name, new DefaultParameter(name));
       }
 
       parameterized.setParameterStore(store);

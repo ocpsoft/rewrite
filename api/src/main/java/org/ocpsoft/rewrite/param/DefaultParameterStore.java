@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.ocpsoft.common.util.Assert;
+
 /**
  * {@link Parameter} store which retains the order, bindings, and names of parameters contained within.
  */
@@ -27,26 +29,30 @@ public class DefaultParameterStore implements ParameterStore
 {
    private final Map<String, ConfigurableParameter<?>> parameters = new LinkedHashMap<String, ConfigurableParameter<?>>();
 
-   public ConfigurableParameter<?> where(final String param, ConfigurableParameter<?> deflt)
+   public ConfigurableParameter<?> get(final String name, ConfigurableParameter<?> deflt)
    {
       ConfigurableParameter<?> parameter = null;
-      if (parameters.get(param) != null)
+      if (parameters.get(name) != null)
       {
-         parameter = parameters.get(param);
+         parameter = parameters.get(name);
       }
       else
       {
          parameter = deflt;
-         parameters.put(param, parameter);
+         parameters.put(name, parameter);
       }
+
+      if (parameter == null)
+         throw new IllegalArgumentException("No such parameter [" + name + "] exists.");
+
       return parameter;
    }
 
-   public ConfigurableParameter<?> get(String key)
+   public ConfigurableParameter<?> get(String name)
    {
-      if (!parameters.containsKey(key))
-         throw new IllegalArgumentException("No such parameter [" + key + "] exists.");
-      return parameters.get(key);
+      if (!parameters.containsKey(name))
+         throw new IllegalArgumentException("No such parameter [" + name + "] exists.");
+      return parameters.get(name);
    }
 
    public boolean isEmpty()
@@ -54,9 +60,10 @@ public class DefaultParameterStore implements ParameterStore
       return parameters.isEmpty();
    }
 
-   public ConfigurableParameter<?> put(String key, ConfigurableParameter<?> value)
+   public ConfigurableParameter<?> store(ConfigurableParameter<?> value)
    {
-      return parameters.put(key, value);
+      Assert.notNull(value, "Parameter to store must not be null.");
+      return parameters.put(value.getName(), value);
    }
 
    public int size()

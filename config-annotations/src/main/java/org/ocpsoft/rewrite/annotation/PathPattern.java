@@ -22,11 +22,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.servlet.config.Path;
+
+/**
+ * Sets the {@link Path} to which the current {@link Rule} will match. Note, this annotation may be used without a
+ * corresponding {@link Rule} annotation.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PathPattern
 {
+   /**
+    * The path to which the current {@link Rule} will match.
+    */
    String value();
 }

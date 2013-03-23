@@ -190,6 +190,7 @@ public class ConfigurationBuilderTest
                .addRule()
                .when(new True())
                .perform(operation)
+               .otherwise(operation)
                .where("p").bindsTo(El.property("whee.glee")).matches("blah")
                .constrainedBy(null).convertedBy(null).transformedBy(null).validatedBy(null)
                .where("s").matches("oh").bindsTo(El.property("ee.flee"))

@@ -175,8 +175,8 @@ public class ConfigurationLoader
          List<Rule> list = priorityMap.get(integer);
          for (final Rule rule : list) {
             result.addRule(rule);
-            
-            if(rule instanceof RuleBuilder) {
+
+            if (rule instanceof RuleBuilder) {
                ParameterizedCallback callback = new ParameterizedCallback() {
                   @Override
                   public void call(Parameterized parameterized)
@@ -185,9 +185,7 @@ public class ConfigurationLoader
                      ParameterStore store = ((RuleBuilder) rule).getParameterStore();
 
                      for (String name : names) {
-                        if (!store.contains(name)) {
-                           store.put(name, new DefaultParameter(name).bindsTo(Evaluation.property(name)));
-                        }
+                        store.get(name, new DefaultParameter(name)).bindsTo(Evaluation.property(name));
                      }
 
                      parameterized.setParameterStore(store);

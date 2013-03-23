@@ -22,15 +22,34 @@ import java.util.Map.Entry;
  */
 public interface ParameterStore extends Iterable<Entry<String, ConfigurableParameter<?>>>
 {
-   public ConfigurableParameter<?> where(final String param, ConfigurableParameter<?> deflt);
+   /**
+    * Get the {@link Parameter} with the given name.
+    * 
+    * @throws IllegalArgumentException if the {@link Parameter} with the given name does not exist.
+    */
+   public ConfigurableParameter<?> get(String name) throws IllegalArgumentException;
 
-   public ConfigurableParameter<?> get(String key);
+   /**
+    * Retrieve the {@link Parameter} with the given name, otherwise use the default, if supplied.
+    * 
+    * @throws IllegalArgumentException if the {@link Parameter} with the given name does not exist and no default was
+    *            supplied.
+    */
+   public ConfigurableParameter<?> get(final String name, ConfigurableParameter<?> deflt);
 
+   /**
+    * Return <code>true</code> if this {@link ParameterStore} is empty, otherwise return <code>false</code>.
+    */
    public boolean isEmpty();
 
-   public ConfigurableParameter<?> put(String key, ConfigurableParameter<?> value);
-
+   /**
+    * Return the number of {@link Parameter} instances in this {@link ParameterStore}.
+    */
    public int size();
 
+   /**
+    * Return <code>true</code> if this {@link ParameterStore} contains a {@link Parameter} with the given name,
+    * otherwise return <code>false</code>.
+    */
    public boolean contains(String name);
 }

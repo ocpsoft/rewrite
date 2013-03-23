@@ -24,7 +24,6 @@ import org.ocpsoft.rewrite.param.Parameter;
  */
 public interface ConfigurationRuleBuilderOtherwise extends ConfigurationBuilderRoot
 {
-
    /**
     * Set the ID for the current {@link Rule}. This may be used in logging and for rule lookup purposes.
     */

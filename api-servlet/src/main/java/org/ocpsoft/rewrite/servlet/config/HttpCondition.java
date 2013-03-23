@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -28,8 +29,10 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public abstract class HttpCondition extends DefaultConditionBuilder
 {
    /**
-    * Evaluate this condition against the given {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite} event. If this condition does not apply to
-    * the given event, it must return false. If the condition applies and is satisfied, return true.
+    * Evaluate this {@link Condition} against the given
+    * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite} event. If this condition does not apply to the
+    * given event, it must return <code>false</code>. If the condition applies and is satisfied, return
+    * <code>true</code>.
     */
    public abstract boolean evaluateHttp(final HttpServletRewrite event, EvaluationContext context);
 

@@ -72,7 +72,7 @@ public class QuerySimpleTest
    @Test
    public void testQueryStringMatchesPattern()
    {
-      store.where("t", new DefaultParameter("t"));
+      store.get("t", new DefaultParameter("t"));
       Query query = Query.matches("foo=bar{t}");
       query.setParameterStore(store);
       Assert.assertTrue(query.evaluate(rewrite, context));
@@ -83,7 +83,7 @@ public class QuerySimpleTest
    {
       Query query = Query.parameterExists("foo");
       query.setParameterStore(store);
-      store.where("foo", new DefaultParameter("foo"));
+      store.get("foo", new DefaultParameter("foo"));
       Assert.assertTrue(query.evaluate(rewrite, context));
    }
 
@@ -92,7 +92,7 @@ public class QuerySimpleTest
    {
       Query query = Query.parameterExists("ee");
       query.setParameterStore(store);
-      store.where("ee", new DefaultParameter("ee"));
+      store.get("ee", new DefaultParameter("ee"));
       Assert.assertTrue(query.evaluate(rewrite, context));
    }
 

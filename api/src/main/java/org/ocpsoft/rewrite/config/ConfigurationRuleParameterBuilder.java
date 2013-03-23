@@ -36,7 +36,6 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
 
          ConfigurationRuleParameter,
          ConfigurationRuleParameterMatches,
-         ConfigurationRuleParameterPerform,
          ConfigurationRuleParameterWhere,
          ConfigurationRuleBuilderOtherwise
 {

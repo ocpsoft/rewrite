@@ -43,5 +43,8 @@ public abstract class HttpRewriteProvider extends ServletRewriteProvider<HttpSer
          rewriteHttp((HttpServletRewrite) event);
    }
 
+   /**
+    * Handle the current {@link HttpServletRewrite} event.
+    */
    public abstract void rewriteHttp(HttpServletRewrite event);
 }

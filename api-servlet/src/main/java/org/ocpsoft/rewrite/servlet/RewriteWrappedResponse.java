@@ -16,14 +16,19 @@
 package org.ocpsoft.rewrite.servlet;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
 
+/**
+ * A {@link HttpServletResponseWrapper} for the {@link Rewrite} framework.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 public abstract class RewriteWrappedResponse extends HttpServletResponseWrapper
 {
    protected final static String INSTANCE_KEY = RewriteWrappedResponse.class.getName() + "_instance";
@@ -38,41 +43,58 @@ public abstract class RewriteWrappedResponse extends HttpServletResponseWrapper
 
    private HttpServletRequest request;
 
+   /**
+    * Set the current {@link RewriteWrappedResponse} instance.
+    */
    protected void setCurrentInstance(RewriteWrappedResponse instance)
    {
       request.setAttribute(RewriteWrappedResponse.INSTANCE_KEY, instance);
    }
 
+   /**
+    * Create a new {@link RewriteWrappedResponse} instance.
+    */
    public RewriteWrappedResponse(HttpServletRequest request, HttpServletResponse response)
    {
       super(response);
       this.request = request;
    }
 
+   /**
+    * Get the {@link HttpServletRequest} to which this {@link RewriteWrappedResponse} is associated.
+    */
    public HttpServletRequest getRequest()
    {
       return request;
    }
 
-   @Override
-   public ServletResponse getResponse()
-   {
-      return super.getResponse();
-   }
-
-   @Override
-   public void setResponse(ServletResponse response)
-   {
-      super.setResponse(response);
-   }
-
+   /**
+    * Return <code>true</code> if any {@link ResponseContentInterceptor} instances have been registered on the current
+    * {@link HttpServletResponse}.
+    */
    abstract public boolean isResponseContentIntercepted();
 
+   /**
+    * Return <code>true</code> if any {@link ResponseStreamWrapper} instances have been registered on the current
+    * {@link HttpServletResponse}.
+    */
    abstract public boolean isResponseStreamWrapped();
 
+   /**
+    * Register a new {@link ResponseContentInterceptor} for the current {@link HttpServletResponse}. This method must be
+    * called before the {@link HttpServletRequest} has been passed to the underlying application..
+    */
    abstract public void addContentInterceptor(ResponseContentInterceptor stage);
 
+   /**
+    * Register a new {@link ResponseStreamWrapper} for the current {@link HttpServletResponse}. This method must be
+    * called before the {@link HttpServletRequest} has been passed to the underlying application..
+    */
    abstract public void addStreamWrapper(ResponseStreamWrapper wrapper);
 
+   /**
+    * Flush any content that may be buffered in registered {@link ResponseContentInterceptor} instances. This operation
+    * has no effect if no {@link ResponseContentInterceptor} instances are registered.
+    */
    abstract public void flushBufferedContent();
 }

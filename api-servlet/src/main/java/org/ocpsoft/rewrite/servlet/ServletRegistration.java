@@ -32,26 +32,41 @@ public class ServletRegistration
 
    private final List<String> mappings = new ArrayList<String>();
 
+   /**
+    * Get the {@link Class} name of this {@link ServletRegistration}.
+    */
    public String getClassName()
    {
       return className;
    }
 
+   /**
+    * Set the {@link Class} name of this {@link ServletRegistration}.
+    */
    public void setClassName(String className)
    {
       this.className = className;
    }
 
+   /**
+    * Get the mappings for this {@link ServletRegistration}.
+    */
    public List<String> getMappings()
    {
       return mappings;
    }
 
+   /**
+    * Add a mapping to this {@link ServletRegistration}.
+    */
    public void addMapping(String mapping)
    {
       this.mappings.add(mapping);
    }
 
+   /**
+    * Add all given mappings to this {@link ServletRegistration}.
+    */
    public void addMappings(Collection<String> mappings)
    {
       this.mappings.addAll(mappings);

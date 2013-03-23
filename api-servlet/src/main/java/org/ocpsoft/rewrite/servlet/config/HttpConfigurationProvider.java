@@ -20,9 +20,8 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 
 /**
- * Configuration provider for HTTP/Servlet environments.
+ * {@link ConfigurationProvider} for HTTP/Servlet environments.
  * 
- * @see org.ocpsoft.rewrite.config.ConfigurationProvider
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */

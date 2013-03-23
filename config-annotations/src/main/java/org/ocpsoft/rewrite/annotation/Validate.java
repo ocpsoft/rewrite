@@ -22,13 +22,27 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.bind.Validator;
+
+/**
+ * Specifies a {@link Validator} with which to validate the corresponding {@link Parameter}. Used in conjunction with
+ * elements annotated with {@link Parameter}.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 @Inherited
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Validate
 {
+   /**
+    * The {@link Validator} type, to perform type-based lookups..
+    */
    Class<?> with() default Object.class;
 
+   /**
+    * The {@link Validator} id, to perform name-based lookups.
+    */
    String id() default "";
 }

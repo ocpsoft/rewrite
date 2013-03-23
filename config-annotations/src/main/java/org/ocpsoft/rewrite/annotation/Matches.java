@@ -21,12 +21,20 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.regex.Pattern;
 
+/**
+ * Configure the regular expression {@link Pattern} to which an {@link Parameter} must match. Used in conjunction with
+ * elements annotated with {@link Parameter}.
+ */
 @Inherited
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Matches
 {
+   /**
+    * The regular expression to which the annotated element must match.
+    */
    String value();
 }
