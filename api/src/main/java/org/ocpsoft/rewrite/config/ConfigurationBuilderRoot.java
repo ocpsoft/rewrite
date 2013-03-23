@@ -21,12 +21,12 @@ package org.ocpsoft.rewrite.config;
 public interface ConfigurationBuilderRoot extends Configuration
 {
    /**
-    * Define a new fluent {@link Rule}
+    * Define a new fluent {@link Rule}.
     */
    public ConfigurationRuleBuilderCustom addRule();
 
    /**
-    * Add a pre-defined {@link Rule}
+    * Add a pre-defined {@link Rule}.
     */
    public ConfigurationRuleBuilder addRule(final Rule rule);
 }

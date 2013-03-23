@@ -19,7 +19,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Condition that always returns true.
+ * {@link Condition} that always returns <code>true</code>.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -30,7 +30,7 @@ public final class True extends DefaultConditionBuilder
    {
       return true;
    }
-   
+
    @Override
    public String toString()
    {

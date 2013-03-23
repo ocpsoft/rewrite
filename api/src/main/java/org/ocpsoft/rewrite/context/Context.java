@@ -16,14 +16,15 @@
 package org.ocpsoft.rewrite.context;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * An object capable of storing and retrieving values.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface Context
 {
    /**
-    * Get the value in the context map defined by the given key. Return null if no such key exists, or if they key maps
-    * to a null value.
+    * Get the value in the context map defined by the given key. Return <code>null</code> if no such key exists, or if
+    * they key maps to a <code>null</code> value.
     */
    Object get(Object key);
 
@@ -33,7 +34,7 @@ public interface Context
    void put(Object key, Object value);
 
    /**
-    * Return true if this context contains an entry with the given key.
+    * Return <code>true</code> if this context contains an entry with the given key.
     */
    boolean containsKey(Object key);
 }

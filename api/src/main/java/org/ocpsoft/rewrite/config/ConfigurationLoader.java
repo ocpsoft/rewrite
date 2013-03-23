@@ -31,6 +31,7 @@ import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
 import org.ocpsoft.rewrite.util.Visitor;
 
 /**

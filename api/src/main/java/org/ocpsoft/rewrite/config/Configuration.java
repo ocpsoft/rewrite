@@ -17,8 +17,10 @@ package org.ocpsoft.rewrite.config;
 
 import java.util.List;
 
+import org.ocpsoft.rewrite.event.Rewrite;
+
 /**
- * Base interface for all Rewrite configuration objects.
+ * Configuration for the {@link Rewrite} framework.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */

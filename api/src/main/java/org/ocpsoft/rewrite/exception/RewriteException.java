@@ -15,9 +15,12 @@
  */
 package org.ocpsoft.rewrite.exception;
 
+import org.ocpsoft.rewrite.event.Rewrite;
+
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Exception thrown by the {@link Rewrite} framework.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class RewriteException extends RuntimeException
 {

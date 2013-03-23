@@ -2,7 +2,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.ServletContext;
 
-import org.ocpsoft.rewrite.config.ConfigurationCacheProvider;
+import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
 
 /**
  * Configuration cache provider for HTTP/Servlet environments.

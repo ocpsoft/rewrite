@@ -29,8 +29,6 @@ public class Operations
    /**
     * Return a new {@link DefaultOperationBuilder} that takes no action when
     * {@link #perform(Rewrite, EvaluationContext)} is invoked.
-    * 
-    * TODO move to Operations.create()
     */
    public static OperationBuilder create()
    {
@@ -40,8 +38,6 @@ public class Operations
    /**
     * Wrap a given {@link Operation} as a new {@link DefaultOperationBuilder} that performs the action of the original
     * {@link Operation} when {@link #perform(Rewrite, EvaluationContext)} is invoked.
-    * 
-    * TODO move to Operations.wrap()
     */
    public static OperationBuilder wrap(Operation operation)
    {

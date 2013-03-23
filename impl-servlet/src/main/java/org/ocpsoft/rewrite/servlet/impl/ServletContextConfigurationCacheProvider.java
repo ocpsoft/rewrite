@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.servlet.impl;
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
-import org.ocpsoft.rewrite.config.ConfigurationCacheProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationCacheProvider;
+import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
 
 /**
  * Default implementation of {@link ConfigurationCacheProvider} that uses the {@link ServletContext} as an

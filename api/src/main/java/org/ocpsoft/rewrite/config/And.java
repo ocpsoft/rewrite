@@ -24,8 +24,9 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Evaluates all provided conditions. If all provided conditions return true, this condition returns true. If any
- * provided conditions return false, this condition returns false.
+ * Evaluates all provided {@link Condition} instances. If all provided conditions return <code>true</code>, this
+ * condition returns <code>true</code>. If any provided conditions return <code>false</code>, this condition returns
+ * <code>false</code>.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -39,8 +40,9 @@ public final class And extends DefaultConditionBuilder implements CompositeCondi
    }
 
    /**
-    * Creates a new {@link And} condition. If all provided conditions return true, this condition returns true. If any
-    * provided conditions return false, this condition returns false.
+    * Creates a new {@link And} condition. If all provided {@link Condition} instances return <code>true</code>, this
+    * condition returns <code>true</code>. If any provided conditions return <code>false</code>, this condition returns
+    * <code>false</code>.
     * 
     * @param conditions the array of conditions to be evaluated
     */

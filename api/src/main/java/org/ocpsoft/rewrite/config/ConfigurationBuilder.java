@@ -51,7 +51,7 @@ public class ConfigurationBuilder implements Configuration, ConfigurationBuilder
    }
 
    /**
-    * Define a new fluent {@link Rule}
+    * Add a new fluent {@link Rule}.
     */
    @Override
    public ConfigurationRuleBuilderCustom addRule()
@@ -62,7 +62,7 @@ public class ConfigurationBuilder implements Configuration, ConfigurationBuilder
    }
 
    /**
-    * Add a pre-defined {@link Rule}.
+    * Add a {@link Rule}.
     */
    @Override
    public ConfigurationRuleBuilder addRule(final Rule rule)

@@ -21,7 +21,7 @@ import org.ocpsoft.rewrite.event.OutboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Responsible for evaluating {@link Rewrite} events on whether they are {@link org.ocpsoft.rewrite.event.InboundRewrite} or
+ * Responsible for evaluating {@link Rewrite} events on whether they are {@link InboundRewrite} or
  * {@link OutboundRewrite} events.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -29,7 +29,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 public abstract class Direction extends DefaultConditionBuilder
 {
    /**
-    * Returns a new {@link Condition} that returns true when operating on an {@link org.ocpsoft.rewrite.event.InboundRewrite} event.
+    * Returns a new {@link Condition} that returns true when operating on an {@link InboundRewrite} event.
     */
    public static Direction isInbound()
    {
@@ -37,7 +37,7 @@ public abstract class Direction extends DefaultConditionBuilder
    }
 
    /**
-    * Returns a new {@link Condition} that returns true when operating on an {@link org.ocpsoft.rewrite.event.OutboundRewrite} event.
+    * Returns a new {@link Condition} that returns true when operating on an {@link OutboundRewrite} event.
     */
    public static Direction isOutbound()
    {

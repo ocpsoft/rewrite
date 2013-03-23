@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.config;
 
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.logging.Logger;
-
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Retrieval;
 import org.ocpsoft.rewrite.bind.Submission;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -27,8 +27,8 @@ import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**
- * Builds {@link Operation} instances used to directly invoke {@link org.ocpsoft.rewrite.bind.Binding} submission or
- * retrieval on {@link org.ocpsoft.rewrite.event.Rewrite} events.
+ * Builds {@link Operation} instances used to directly invoke {@link Binding} submission or
+ * retrieval on {@link Rewrite} events.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */

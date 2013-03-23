@@ -22,7 +22,11 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Evaluates all conditions.
+ * Evaluates all provided {@link Condition} instances. If all provided conditions return <code>true</code>, this
+ * condition returns <code>false</code>. If any provided conditions return <code>false</code>, this condition returns
+ * <code>true</code>.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -37,7 +41,9 @@ public final class Not extends DefaultConditionBuilder implements CompositeCondi
    }
 
    /**
-    * Return a new {@link Condition} that negates the given {@link Condition} instance.
+    * Evaluates all provided {@link Condition} instances. If all provided conditions return <code>true</code>, this
+    * condition returns <code>false</code>. If any provided conditions return <code>false</code>, this condition returns
+    * <code>true</code>.
     */
    public static Not any(final Condition condition)
    {
@@ -61,6 +67,5 @@ public final class Not extends DefaultConditionBuilder implements CompositeCondi
    {
       return "Not [" + condition + "]";
    }
-   
-   
+
 }

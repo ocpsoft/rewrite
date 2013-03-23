@@ -24,7 +24,9 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Evaluates all provided conditions. If any return true, this condition returns true.
+ * Evaluates all provided {@link Condition} instances. If any conditions return <code>true</code>, this condition
+ * returns <code>true</code>. If all provided conditions return <code>false</code>, this condition returns
+ * <code>false</code>.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */

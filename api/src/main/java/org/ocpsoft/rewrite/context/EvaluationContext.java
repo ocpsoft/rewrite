@@ -20,9 +20,9 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
 
 /**
- * Context object spanning the lifecycle of a single {@link Rule} evaluation. This includes both {@link Condition}
- * evaluation and {@link Operation} invocation.
- *
+ * {@link Context} object spanning the lifecycle of a single {@link Rule} evaluation. This includes both
+ * {@link Condition} evaluation and {@link Operation} invocation.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface EvaluationContext extends Context
@@ -35,14 +35,14 @@ public interface EvaluationContext extends Context
    RewriteState getState();
 
    /**
-    * Add a new {@link org.ocpsoft.rewrite.config.Operation} to be performed if all conditions of this rule are met.
-    * Pre-Operation instances are performed before the standard {@link Operation}.
+    * Add a new {@link Operation} to be performed if all conditions of this rule are met. Pre-Operation instances are
+    * performed before the standard {@link Operation}.
     */
    void addPreOperation(Operation operation);
 
    /**
-    * Add a new {@link org.ocpsoft.rewrite.config.Operation} to be performed if all conditions of this rule are met.
-    * Post-Operation instances are performed after the standard {@link Operation}.
+    * Add a new {@link Operation} to be performed if all conditions of this rule are met. Post-Operation instances are
+    * performed after the standard {@link Operation}.
     */
    void addPostOperation(Operation operation);
 }

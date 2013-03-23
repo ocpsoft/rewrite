@@ -24,8 +24,8 @@ package org.ocpsoft.rewrite.config;
 public interface OperationBuilder extends Operation
 {
    /**
-    * Join this instance with another {@link Operation} to be performed. All joined operations are guaranteed to be
-    * evaluated. Operations are evaluated in the order in which they are added.
+    * Join this instance with another {@link Operation}. All joined operations are guaranteed to be performed.
+    * {@link Operation} instances are evaluated in the order in which they are added.
     */
    public OperationBuilder and(final Operation other);
 }

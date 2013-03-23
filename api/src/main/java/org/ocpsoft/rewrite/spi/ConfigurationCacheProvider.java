@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.config;
+package org.ocpsoft.rewrite.spi;
 
 import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.rewrite.config.Configuration;
 
 /**
  * Provides {@link Configuration} caching strategies for the Rewrite runtime environment.

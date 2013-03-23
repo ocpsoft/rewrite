@@ -20,7 +20,8 @@ import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * An operation that is only performed if the current {@link org.ocpsoft.rewrite.event.Rewrite} event is an {@link org.ocpsoft.rewrite.event.InboundRewrite} event.
+ * An {@link Operation} that is only performed if the current {@link Rewrite} event is an
+ * {@link InboundRewrite} event.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 

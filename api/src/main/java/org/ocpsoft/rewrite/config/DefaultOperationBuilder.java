@@ -22,7 +22,8 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Abstract builder for fluently defining new composite {@link Operation} instances.
+ * Used as a base class to create fluent relationships between {@link Operation} objects; this class adds logical
+ * operators to any class extending it.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
