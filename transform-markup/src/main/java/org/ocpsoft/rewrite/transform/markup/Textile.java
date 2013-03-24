@@ -19,9 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
+import org.ocpsoft.rewrite.transform.Transformer;
 
 /**
- * Transformer that translates Textile markup into HTML.
+ * A {@link Transformer} that translates Textile markup into HTML.
  * 
  * @author Christian Kaltepoth
  */
@@ -34,23 +35,7 @@ public class Textile extends JRubyTransformer<Textile>
    private final boolean fullDocument;
 
    /**
-    * Creates a {@link Textile} instance that renders a full HTML document structure.
-    */
-   public Textile()
-   {
-      this(true);
-   }
-
-   /**
-    * Creates a {@link Textile} instance.
-    */
-   public Textile(boolean fullDocument)
-   {
-      this.fullDocument = fullDocument;
-   }
-
-   /**
-    * Creates a {@link Textile} instance that renders a full HTML document structure.
+    * Create a {@link Transformer} instance that renders a full HTML document structure.
     */
    public static Textile fullDocument()
    {
@@ -58,12 +43,16 @@ public class Textile extends JRubyTransformer<Textile>
    }
 
    /**
-    * Creates a {@link Textile} instance that just renders the textile without adding the HTML scaffold like a body or
-    * head.
+    * Create a {@link Transformer} instance that renders textile without adding HTML scaffold like a body or head.
     */
    public static Textile partialDocument()
    {
       return new Textile(false);
+   }
+
+   private Textile(boolean fullDocument)
+   {
+      this.fullDocument = fullDocument;
    }
 
    @Override

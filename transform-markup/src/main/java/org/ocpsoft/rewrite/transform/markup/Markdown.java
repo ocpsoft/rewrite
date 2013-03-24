@@ -19,9 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
+import org.ocpsoft.rewrite.transform.Transformer;
 
 /**
- * Transformer that translates Markdown files into HTML.
+ * A {@link Transformer} that translates Markdown files into HTML.
  * 
  * @author Christian Kaltepoth
  */
@@ -35,23 +36,7 @@ public class Markdown extends JRubyTransformer<Markdown>
    private final boolean fullDocument;
 
    /**
-    * Creates a {@link Markdown} instance that renders a full HTML document.
-    */
-   public Markdown()
-   {
-      this(true);
-   }
-
-   /**
-    * Creates a {@link Markdown} instance.
-    */
-   public Markdown(boolean fullDocument)
-   {
-      this.fullDocument = fullDocument;
-   }
-
-   /**
-    * Creates a {@link Markdown} instance that renders a full HTML document structure.
+    * Create a {@link Transformer} instance that renders a full markdown HTML document structure.
     */
    public static Markdown fullDocument()
    {
@@ -59,12 +44,19 @@ public class Markdown extends JRubyTransformer<Markdown>
    }
 
    /**
-    * Creates a {@link Markdown} instance that just renders the markdown without adding the HTML scaffold like a body or
-    * head.
+    * Create a {@link Transformer} instance that renders markdown without adding the HTML scaffold like a body or head.
     */
    public static Markdown partialDocument()
    {
       return new Markdown(false);
+   }
+
+   /**
+    * Creates a {@link Markdown} instance.
+    */
+   private Markdown(boolean fullDocument)
+   {
+      this.fullDocument = fullDocument;
    }
 
    @Override

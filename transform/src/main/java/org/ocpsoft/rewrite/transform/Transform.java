@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.rewrite.transform;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
@@ -22,13 +25,12 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * HTTP operation that applies one or more {@link Transformer} implementations to the response.
+ * An {@link Operation} that applies one or more {@link Transformer} implementations to the {@link HttpServletResponse}.
  * 
  * @author Christian Kaltepoth
  */
 public class Transform extends HttpOperation
 {
-
    private PipelineContentInterceptor pipeline = new PipelineContentInterceptor();
 
    private Transform()
@@ -37,7 +39,7 @@ public class Transform extends HttpOperation
    }
 
    /**
-    * Creates a transform instance that applies the given {@link Transformer}.
+    * Create a {@link Transform} instance that applies the given {@link Transformer}.
     */
    public static Transform with(Transformer transformer)
    {
@@ -45,8 +47,8 @@ public class Transform extends HttpOperation
    }
 
    /**
-    * Adds another {@link Transformer} implementation to the transformer pipeline. The supplied transformer will be
-    * executed AFTER all other transformer that have been added before.
+    * Add another {@link Transformer} implementation to the transformer pipeline. The supplied transformer will be
+    * executed AFTER all other previously added transformer instances.
     */
    public Transform then(Transformer transformer)
    {

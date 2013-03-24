@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.nio.charset.Charset;
 
 import org.ocpsoft.rewrite.transform.Transformer;
 
@@ -29,36 +28,25 @@ import com.yahoo.platform.yui.compressor.CssCompressor;
 
 /**
  * 
- * CSS compressor implementation based on yuicompressor
+ * A {@link Transformer} implementation that compresses CSS using yuicompressor.
  * 
  * @author Christian Kaltepoth
- * 
  */
-public class CssMinify implements Transformer
+public class CssMinify extends Minify implements Transformer
 {
-
-   private final Charset charset;
-
-   public CssMinify()
-   {
-      this(Charset.forName("UTF8"));
-   }
-
-   public CssMinify(Charset charset)
-   {
-      this.charset = charset;
-   }
+   CssMinify()
+   {}
 
    @Override
    public void transform(InputStream input, OutputStream output) throws IOException
    {
 
       // prepare input reader
-      Reader reader = new InputStreamReader(input, charset);
+      Reader reader = new InputStreamReader(input, getCharset());
       CssCompressor compressor = new CssCompressor(reader);
 
       // write compressed output
-      OutputStreamWriter writer = new OutputStreamWriter(output, charset);
+      OutputStreamWriter writer = new OutputStreamWriter(output, getCharset());
       compressor.compress(writer, 0);
       writer.flush();
 

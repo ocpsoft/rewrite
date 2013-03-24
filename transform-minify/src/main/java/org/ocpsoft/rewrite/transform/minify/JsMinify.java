@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.nio.charset.Charset;
 
 import org.ocpsoft.rewrite.transform.Transformer;
 
@@ -29,39 +28,27 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 
 /**
  * 
- * JavaScript compressor implementation based on yuicompressor
+ * A {@link Transformer} implementation that compresses JavaScript using yuicompressor.
  * 
  * @author Christian Kaltepoth
- * 
  */
-public class JsMinify implements Transformer
+public class JsMinify extends Minify implements Transformer
 {
-
-   private final Charset charset;
-
-   public JsMinify()
-   {
-      this(Charset.forName("UTF8"));
-   }
-
-   public JsMinify(Charset charset)
-   {
-      this.charset = charset;
-   }
+   JsMinify()
+   {}
 
    @Override
    public void transform(InputStream input, OutputStream output) throws IOException
    {
 
       // prepare input reader
-      Reader reader = new InputStreamReader(input, charset);
+      Reader reader = new InputStreamReader(input, getCharset());
       JavaScriptCompressor compressor = new JavaScriptCompressor(reader, null);
 
       // write compressed output
-      OutputStreamWriter writer = new OutputStreamWriter(output, charset);
+      OutputStreamWriter writer = new OutputStreamWriter(output, getCharset());
       compressor.compress(writer, 100, true, false, false, false);
       writer.flush();
-
    }
 
 }

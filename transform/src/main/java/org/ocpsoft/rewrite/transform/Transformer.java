@@ -19,20 +19,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
- * Implementations are able to transform streamed data. Classes implementing this interface can be added
- * to {@link Transform} to modify the intercepted response stream from the container.
+ * Implementations of this interface are able to transform streamed data. Classes implementing this interface can be
+ * added via {@link Transform} to modify an intercepted {@link HttpServletResponse#getOutputStream()}.
  * 
  * @see StringTransformer
  * @author Christian Kaltepoth
  */
 public interface Transformer
 {
-   
+
    /**
-    * Transform the given input stream and write it to the output stream.
+    * Transform the given {@link InputStream} and write it to the given {@link OutputStream}.
     */
    void transform(InputStream input, OutputStream output) throws IOException;
-
 
 }

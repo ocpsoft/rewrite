@@ -27,7 +27,7 @@ public class LessTest
    public void testCalculation()
    {
       String input = ".class { width: 1 + 1 }";
-      String output = new Less().transform(input);
+      String output = Less.compiler().transform(input);
       assertSameCSS(".class { width: 2; }", output);
    }
 
@@ -35,7 +35,7 @@ public class LessTest
    public void testVariables()
    {
       String input = "@nice-blue: #5B83AD;\n.myblue{ color: @nice-blue; }";
-      String output = new Less().transform(input);
+      String output = Less.compiler().transform(input);
       assertSameCSS(".myblue { color: #5B83AD; }", output);
    }
 
@@ -43,7 +43,7 @@ public class LessTest
    public void testMixins()
    {
       String input = ".bordered { border: 1px solid red; }\n.navigation { .bordered }\n";
-      String output = new Less().transform(input);
+      String output = Less.compiler().transform(input);
       assertSameCSS(".bordered{ border: 1px solid red; }\n.navigation{ border: 1px solid red; }\n", output);
    }
 

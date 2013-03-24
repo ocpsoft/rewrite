@@ -46,7 +46,7 @@ public class CssMinifyTestProvider extends HttpConfigurationProvider
                .begin()
                .addRule()
                .when(Path.matches("{something}.css"))
-               .perform(Transform.with(new CssMinify()))
+               .perform(Transform.with(Minify.css()))
                .where("something").matches(".*");
 
    }

@@ -23,9 +23,11 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.transform.StringTransformer;
+import org.ocpsoft.rewrite.transform.Transformer;
 
 /**
- * This transformer compiles LESS files into CSS. The implementation is based on Mozilla Rhino and LESS 1.3.0.
+ * A {@link Transformer} that compiles LESS files into CSS. This implementation is based on Mozilla Rhino and LESS
+ * 1.3.0.
  * 
  * @author Christian Kaltepoth
  */
@@ -34,7 +36,15 @@ public class Less extends StringTransformer
 
    private final String baseScript;
 
-   public Less()
+   /**
+    * Create a {@link Transformer} that compiles LESS files into CSS.
+    */
+   public static Less compiler()
+   {
+      return new Less();
+   }
+
+   private Less()
    {
       StringBuilder scriptBuilder = new StringBuilder();
       scriptBuilder.append("function print(s) {}"); // required by env.rhino

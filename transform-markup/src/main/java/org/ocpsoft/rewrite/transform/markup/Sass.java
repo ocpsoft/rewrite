@@ -19,9 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
+import org.ocpsoft.rewrite.transform.Transformer;
 
 /**
- * Transformer that translates SASS files into CSS.
+ * A {@link Transformer} that translates SASS files into CSS.
  * 
  * @author Christian Kaltepoth
  */
@@ -32,10 +33,16 @@ public class Sass extends JRubyTransformer<Sass>
             "engine = Sass::Engine.new(input, :syntax => :scss, :cache => false)\n" +
             "engine.render\n";
 
-   public static Sass create()
+   /**
+    * Create a {@link Transformer} that compiles SASS files into CSS.
+    */
+   public static Sass compiler()
    {
       return new Sass();
    }
+
+   private Sass()
+   {}
 
    @Override
    public List<String> getLoadPaths()

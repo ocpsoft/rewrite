@@ -27,11 +27,15 @@ import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContent;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptorChain;
+import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * This pipeline is responsible to apply the registered {@link Transformer} implementations to the intercepted response
  * in the expected order.
+ * <p>
+ * TODO An alternate implementation should probably be provided that uses a {@link ResponseStreamWrapper}.
+ * {@link Transformer} implementations would then need to select between stream wrapping or content interception.
  * 
  * @author Christian Kaltepoth
  */

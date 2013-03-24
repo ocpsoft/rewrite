@@ -15,7 +15,7 @@ import org.ocpsoft.rewrite.transform.Transformer;
  * 
  * @author Christian Kaltepoth
  */
-public abstract class JRubyTransformer<T> extends StringTransformer
+abstract class JRubyTransformer<T> extends StringTransformer
 {
 
    private CompileMode compileMode = null;

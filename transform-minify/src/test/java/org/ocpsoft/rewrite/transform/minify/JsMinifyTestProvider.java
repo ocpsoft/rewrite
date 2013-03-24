@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.transform.minify;
 
+import java.nio.charset.Charset;
+
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
@@ -46,7 +48,7 @@ public class JsMinifyTestProvider extends HttpConfigurationProvider
                .begin()
                .addRule()
                .when(Path.matches("{something}.js"))
-               .perform(Transform.with(new JsMinify()))
+               .perform(Transform.with(Minify.js().usingCharset(Charset.forName("UTF-8"))))
                .where("something").matches(".*");
    }
 
