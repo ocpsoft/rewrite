@@ -20,32 +20,35 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
-import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getServerName()}
+ * A {@link Condition} that inspects the value of {@link HttpServletRequest#getServerName()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Hostname extends HttpCondition implements Parameterized
+public class Domain extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
 
-   private Hostname(final String pattern)
+   private Domain(final String pattern)
    {
       Assert.notNull(pattern, "Domain must not be null.");
       this.expression = new RegexParameterizedPatternParser(pattern);
    }
 
    /**
-    * Inspect the current request domain, comparing against the given pattern.
+    * Create a {@link Domain} condition to inspect the current {@link Address#getDomain()}.
     * <p>
     * The given pattern may be parameterized using the following format:
     * <p>
@@ -56,12 +59,14 @@ public class Hostname extends HttpCondition implements Parameterized
     *    ... and so on
     * </code>
     * <p>
-    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See
-    * also {@link #where(String)}
+    * 
+    * @param pattern {@link ParameterizedPattern} matching the domain name.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)} {@link HttpServletRequest#getServerName()}
     */
-   public static Hostname matches(final String pattern)
+   public static Domain matches(final String pattern)
    {
-      return new Hostname(pattern);
+      return new Domain(pattern);
    }
 
    @Override
@@ -82,9 +87,7 @@ public class Hostname extends HttpCondition implements Parameterized
    }
 
    /**
-    * Get the underlying {@link RegexParameterizedPatternBuilder} for this {@link Hostname}
-    * <p>
-    * See also: {@link #where(String)}
+    * Get the underlying {@link ParameterizedPatternParser} for this {@link Domain}
     */
    public ParameterizedPatternParser getExpression()
    {
@@ -95,11 +98,6 @@ public class Hostname extends HttpCondition implements Parameterized
    public String toString()
    {
       return expression.toString();
-   }
-
-   public ParameterizedPatternParser getDomainExpression()
-   {
-      return expression;
    }
 
    @Override

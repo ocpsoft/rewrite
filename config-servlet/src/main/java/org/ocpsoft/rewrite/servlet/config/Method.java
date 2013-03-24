@@ -17,11 +17,12 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Responsible for asserting on the {@link HttpServletRequest#getMethod()} property.
+ * A {@link Condition} responsible for asserting on the {@link HttpServletRequest#getMethod()} property.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -40,7 +41,7 @@ public class Method extends HttpCondition
    }
 
    /**
-    * Return a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is of GET
+    * Create a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is GET
     */
    public static Method isGet()
    {
@@ -48,7 +49,7 @@ public class Method extends HttpCondition
    }
 
    /**
-    * Return a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is of POST
+    * Create a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is POST
     */
    public static Method isPost()
    {
@@ -56,7 +57,7 @@ public class Method extends HttpCondition
    }
 
    /**
-    * Return a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is of HEAD
+    * Create a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is HEAD
     */
    public static Method isHead()
    {
@@ -64,7 +65,7 @@ public class Method extends HttpCondition
    }
 
    /**
-    * Return a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is of OPTIONS
+    * Create a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is OPTIONS
     */
    public static Method isOptions()
    {
@@ -72,7 +73,7 @@ public class Method extends HttpCondition
    }
 
    /**
-    * Return a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is of PUT
+    * Create a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is PUT
     */
    public static Method isPut()
    {
@@ -80,7 +81,7 @@ public class Method extends HttpCondition
    }
 
    /**
-    * Return a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is of DELETE
+    * Create a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is DELETE
     */
    public static Method isDelete()
    {
@@ -88,7 +89,7 @@ public class Method extends HttpCondition
    }
 
    /**
-    * Return a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is of TRACE
+    * Create a {@link Method} condition that ensures the current {@link HttpServletRequest#getMethod()} is TRACE
     */
    public static Method isTrace()
    {

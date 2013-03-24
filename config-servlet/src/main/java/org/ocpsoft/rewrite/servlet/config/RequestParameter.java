@@ -24,10 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -51,12 +53,20 @@ public class RequestParameter extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a {@link Header} condition that matches against both header name and values.
+    * Create a {@link Condition} that matches against both request parameter names and values.
     * <p>
-    * See also: {@link HttpServletRequest#getHeader(String)}
+    * Parameter name and value expressions may be parameterized:
+    * <p>
+    * <code>
+    * RequestParameter.matches("username", "guest")<br/>
+    * RequestParameter.matches("username", "{name}")<br/>
+    * RequestParameter.matches("{anything}", "{value}")<br/>
+    * </code>
     * 
-    * @param name Regular expression matching the header name
-    * @param value Regular expression matching the header value
+    * @param name {@link ParameterizedPattern} matching the request parameter name.
+    * @param value {@link ParameterizedPattern} matching the request parameter value.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String) {@link HttpServletRequest#getParameterMap()}
     */
    public static RequestParameter matches(final String name, final String value)
    {
@@ -69,12 +79,20 @@ public class RequestParameter extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a {@link Header} condition that matches only against the existence of a header with a name matching the
-    * given pattern. The header value is ignored.
+    * Create a {@link Condition} that matches against the existence of a request parameter with a name matching the
+    * given pattern. The parameter value is ignored.
     * <p>
-    * See also: {@link HttpServletRequest#getHeader(String)}
+    * Parameter name expressions may be parameterized:
+    * <p>
+    * <code>
+    * RequestParameter.exists("username")<br/>
+    * RequestParameter.exists("{name}")<br/>
+    * ...
+    * </code>
     * 
-    * @param name Regular expression matching the header name
+    * @param name {@link ParameterizedPattern} matching the request parameter name.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String) {@link HttpServletRequest#getParameterMap()}
     */
    public static RequestParameter exists(final String name)
    {
@@ -82,10 +100,20 @@ public class RequestParameter extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a {@link Header} condition that matches only against the existence of a header with value matching the
-    * given pattern. The header name is ignored.
+    * Create a {@link Condition} that matches only against the existence of a request parameter value matching the given
+    * pattern. The parameter name is ignored.
+    * <p>
+    * Parameter value expressions may be parameterized:
+    * <p>
+    * <code>
+    * RequestParameter.valueExists("guest")<br/>
+    * RequestParameter.valueExists("{username}")<br/>
+    * ...
+    * </code>
     * 
-    * @param value Regular expression matching the header value
+    * @param name {@link ParameterizedPattern} matching the request parameter name.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String) {@link HttpServletRequest#getParameterMap()}
     */
    public static RequestParameter valueExists(final String value)
    {
@@ -109,9 +137,9 @@ public class RequestParameter extends HttpCondition implements Parameterized
    }
 
    private boolean matchesValue(Rewrite event, EvaluationContext context, final HttpServletRequest request,
-            final String header)
+            final String parameterName)
    {
-      for (String contents : Arrays.asList(request.getParameterValues(header)))
+      for (String contents : Arrays.asList(request.getParameterValues(parameterName)))
       {
          if (value.matches(event, context, contents))
          {
@@ -121,17 +149,23 @@ public class RequestParameter extends HttpCondition implements Parameterized
       return false;
    }
 
+   /**
+    * Get the {@link ParameterizedPattern} of the request parameter name.
+    */
    public ParameterizedPatternParser getNameExpression()
    {
       return name;
    }
 
+   /**
+    * Get the {@link ParameterizedPattern} of the request parameter value.
+    */
    public ParameterizedPatternParser getValueExpression()
    {
       return value;
    }
 
-   public static class AllRequestParameters extends RequestParameter
+   private static class AllRequestParameters extends RequestParameter
    {
       public AllRequestParameters(String name, String value)
       {

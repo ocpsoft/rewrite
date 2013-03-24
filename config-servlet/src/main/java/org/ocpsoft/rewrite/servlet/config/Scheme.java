@@ -20,17 +20,20 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
-import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getScheme()}
+ * A {@link Condition} that inspects the value of {@link HttpServletRequest#getScheme()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -45,19 +48,22 @@ public class Scheme extends HttpCondition implements Parameterized
    }
 
    /**
-    * Inspect the current request scheme, comparing against the given pattern.
+    * Create a {@link Condition} to inspect the current request scheme, comparing against the given pattern.
     * <p>
     * The given pattern may be parameterized using the following format:
     * <p>
     * <code>
-    *    https
-    *    {scheme}
+    *    https<br/>
+    *    mailto<br/>
+    *    {scheme}</br>
     *    {scheme}-custom <br>
-    *    ... and so on
+    *    ...
     * </code>
     * <p>
-    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}. See
-    * also {@link #where(String)}
+    * 
+    * @param pattern {@link ParameterizedPattern} specifying the {@link Scheme} of the current {@link Address}.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)}
     */
    public static Scheme matches(final String pattern)
    {
@@ -82,9 +88,7 @@ public class Scheme extends HttpCondition implements Parameterized
    }
 
    /**
-    * Get the underlying {@link RegexParameterizedPatternBuilder} for this {@link Scheme}
-    * <p>
-    * See also: {@link #where(String)}
+    * Get the underlying {@link ParameterizedPatternParser} for this {@link Scheme}
     */
    public ParameterizedPatternParser getExpression()
    {

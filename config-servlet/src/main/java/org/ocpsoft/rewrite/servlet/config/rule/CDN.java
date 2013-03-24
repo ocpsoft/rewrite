@@ -103,7 +103,7 @@ public class CDN implements Rule, CDNRelocate, Parameterized
 
    public ParameterizedPatternParser getResourcExpression()
    {
-      return resource.getPathExpression();
+      return resource.getExpression();
    }
 
    @Override

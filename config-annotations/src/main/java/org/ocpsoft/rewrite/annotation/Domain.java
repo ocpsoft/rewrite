@@ -22,34 +22,41 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
+
 /**
  * <p>
- * Adds a {@link org.ocpsoft.rewrite.servlet.config.Hostname} condition to the current rule. This allows to restrict the rule to a specific hostname or to
- * bind a substring of the hostname to a bean property.
+ * Adds a {@link org.ocpsoft.rewrite.servlet.config.Domain} condition to the current rule. This allows to restrict the
+ * rule to a specific domain or to bind a substring of the domain to a bean property via the {@link Parameter}
+ * annotation.
  * </p>
  * 
+ * 
  * <pre>
- * {@literal @}Hostname("{lang}.example.com")
+ * {@literal @}Domain("{lang}.example.com")
  * {@literal @}Join(path = "/something", to = "/some-page.html")
  * public class MyClass {
  * 
- *   {@literal @}ParameterBinding
+ *   {@literal @}Parameter
  *   private String lang;
  * 
  * }
  * </pre>
  * 
+ * @see {@link Parameter} {@link ParameterizedPattern}
+ * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Hostname
+public @interface Domain
 {
 
    /**
-    * The pattern used for matching the hostname.
+    * The {@link ParameterizedPattern} used for matching the domain.
     */
    String value();
 }

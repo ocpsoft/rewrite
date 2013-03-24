@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
@@ -10,9 +25,8 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Implementation of {@link Condition} that checks the subject's roles using
- * {@link HttpServletRequest#isUserInRole(String)}
- *
+ * A {@link Condition} that checks the current session roles using {@link HttpServletRequest#isUserInRole(String)}
+ * 
  * @author Christian Kaltepoth
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -21,7 +35,8 @@ public class JAASRoles extends HttpCondition
    private final Collection<String> roles;
 
    /**
-    * Create a new {@link JAASRoles} condition requiring the given roles in order for evaluation to return true.
+    * Create a new {@link JAASRoles} condition specifying the roles of which the current user must be a member for
+    * evaluation to return <code>true</code>.
     */
    public static JAASRoles required(String... roles)
    {

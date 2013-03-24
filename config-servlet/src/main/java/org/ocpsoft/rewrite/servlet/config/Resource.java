@@ -18,19 +18,26 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.net.MalformedURLException;
 import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.exception.ParameterizationException;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} responsible for determining existence of resources within the web root
- * of the servlet container.
+ * A {@link Condition} responsible for determining existence of resources within the
+ * {@link ServletContext#getResourcePaths(String)} of the servlet container.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -76,15 +83,32 @@ public class Resource extends HttpCondition implements Parameterized
    }
 
    /**
-    * Create a new {@link org.ocpsoft.rewrite.config.Condition} that returns true if the given resource exists relative
-    * to the web root of the current application.
+    * Create a {@link Condition} that returns <code>true</code> if the given resource exists in the
+    * {@link ServletContext#getResourcePaths(String)} of the current application.
+    * 
+    * <p>
+    * The given resource path may be parameterized:
+    * <p>
+    * <code>
+    *    /example/{param}.html <br>
+    *    /css/{value}.css <br>
+    *    ... 
+    * </code>
+    * <p>
+    * 
+    * @param location {@link ParameterizedPattern} specifying the {@link Address} of the internal resource.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)}
     */
    public static Resource exists(final String resource)
    {
       return new Resource(resource);
    }
 
-   public ParameterizedPatternParser getResourceExpression()
+   /**
+    * Get the {@link ParameterizedPattern} of this {@link Resource}.
+    */
+   public ParameterizedPatternParser getExpression()
    {
       return resource;
    }

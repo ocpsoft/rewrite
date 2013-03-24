@@ -15,25 +15,30 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.net.URL;
 import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
+import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.util.Transforms;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
+import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * An {@link org.ocpsoft.rewrite.config.Operation} that performs forwards via
- * {@link org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite#forward(String)}
+ * An {@link Operation} that forwards an inbound request to a configured internal resource {@link Address} via
+ * {@link InboundServletRewrite#forward(String)}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -48,21 +53,24 @@ public class Forward extends HttpOperation implements Parameterized
    }
 
    /**
-    * Forward the current request to the given location within the servlet container. This does not change the browser
-    * {@link URL}, all processing is handled within the current {@link HttpServletRequest}.
+    * Create a new {@link Operation} that forwards the current request to the given location within the servlet
+    * container. This does not change the browser {@link Address}, all processing is handled within the current
+    * {@link HttpServletRequest}.
     * <p>
-    * The given location may be parameterized using the following format:
+    * The given location may be parameterized:
     * <p>
     * <code>
-    *    /example/{param} <br>
+    *    /example/{param}.html <br>
     *    /example/{value}/sub/{value2} <br>
-    *    ... and so on
+    *    ... 
     * </code>
     * <p>
-    * Parameters may be bound. By default, matching parameter values are extracted from bindings in the
-    * {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * <p>
-    * See also {@link #where(String)}
+    * 
+    * @param location {@link ParameterizedPattern} specifying the {@link Address} of the internal resource.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)}
+    *      {@link HttpServletRequest#getRequestDispatcher(String)}
+    *      {@link RequestDispatcher#forward(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}
     */
    public static Forward to(final String location)
    {

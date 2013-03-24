@@ -33,11 +33,21 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 import org.ocpsoft.rewrite.util.Maps;
+import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
- * Encodes any or many query-parameters into a single parameter using the given {@link ChecksumStrategy} and
- * {@link EncodingStrategy}.
+ * An {@link Operation} that encodes any or many {@link Address} query-parameters into a single parameter using the
+ * given {@link ChecksumStrategy} and {@link EncodingStrategy}. This can be used to effectively encrypt or obfuscate
+ * inbound and outbound query-parameters. Additionally, encoded parameters contain a checksum which can be used to
+ * reveal tampering, allowing for appropriate action to be taken on checksum verification failure.
+ * 
+ * <p>
+ * For example:<br/>
+ * <code>?c=LTg1NDM0OTA1OSM&lang=en_US</code>
+ * <p>
+ * The above query string contains multiple parameters. The value of parameter 'c' has been encoded using
+ * {@link EncodeQuery#to(String)} and has specified that <code>lang</code> be excluded via {@link #excluding(String...)}.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -59,8 +69,9 @@ public class EncodeQuery implements Operation
    }
 
    /**
-    * Create a new {@link EncodeQuery} {@link Operation} for the given query-parameter names. Only encode those given
-    * parameters. If no parameter names are supplied, this will encode all query-parameters found in the URL.
+    * Create a new {@link EncodeQuery} operation for the given query-parameter names. Only encode those given
+    * parameters. If no parameter names are supplied, this will encode all query-parameters found in the {@link Address}
+    * .
     */
    public static EncodeQuery params(final String... params)
    {
@@ -87,7 +98,7 @@ public class EncodeQuery implements Operation
    }
 
    /**
-    * Use the given {@link ChecksumStrategy} when calculating and embedding checksums.
+    * Use the given {@link ChecksumStrategy} when verifying and embedding checksums.
     */
    public EncodeQuery withChecksumStrategy(final ChecksumStrategy strategy)
    {
@@ -96,7 +107,8 @@ public class EncodeQuery implements Operation
    }
 
    /**
-    * Redirect inbound requests to URLs containing matching query-parameters to the encoded URL.
+    * Redirect inbound requests to an {@link Address} containing matching query-parameters to the encoded
+    * {@link Address}.
     */
    public EncodeQuery withInboundCorrection(final boolean enable)
    {

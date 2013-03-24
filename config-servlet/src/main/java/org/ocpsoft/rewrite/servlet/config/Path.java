@@ -18,23 +18,28 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexConstraint;
-import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 import org.ocpsoft.urlbuilder.Address;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
- * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestPath()}
+ * A {@link Condition} that inspects the value of {@link HttpServletRewrite#getRequestPath()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -51,18 +56,20 @@ public class Path extends HttpCondition implements Parameterized
    }
 
    /**
-    * Inspect the current request URL, comparing against the given pattern.
+    * Create a {@link Condition} that compares the current {@link Address#getPath()} to the given pattern.
     * <p>
-    * The given pattern may be parameterized using the following format:
+    * The given pattern may be parameterized:
     * <p>
     * <code>
     *    /example/{param} <br>
-    *    /example/{value}/sub/{value2} <br>
-    *    ... and so on
+    *    /example/{param1}/sub/{param2} <br>
+    *    ...
     * </code>
     * <p>
-    * By default, matching parameter values are bound only to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * See also {@link #where(String)}
+    * 
+    * @param pattern {@link ParameterizedPattern} matching the path.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Path matches(final String pattern)
    {
@@ -70,7 +77,10 @@ public class Path extends HttpCondition implements Parameterized
    }
 
    /**
-    * Capture the entire path portion of the inbound {@link Address} into the given parameter.
+    * Capture the entire path portion of the {@link Address} into the given {@link Parameter}.
+    * 
+    * @param param the name of the {@link Parameter} to which the entire path portion of the {@link Address} will be
+    *           bound.
     */
    public static Path captureIn(final String param)
    {
@@ -80,10 +90,11 @@ public class Path extends HttpCondition implements Parameterized
    }
 
    /**
-    * Bind each path parameter to the corresponding request parameter by name. By default, matching values are bound
-    * only to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
+    * Bind each path {@link Parameter} to the corresponding request parameter by name.
     * <p>
-    * See also {@link #where(String)}
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)} {@link HttpServletRequest#getParameterMap()}
+    *      {@link RequestParameterProvider}
     */
    public Path withRequestBinding()
    {
@@ -108,11 +119,9 @@ public class Path extends HttpCondition implements Parameterized
    }
 
    /**
-    * Get the underlying {@link RegexParameterizedPatternBuilder} for this {@link Path}
-    * <p>
-    * See also: {@link #where(String)}
+    * Get the underlying {@link ParameterizedPattern} for this {@link Path}
     */
-   public ParameterizedPatternParser getPathExpression()
+   public ParameterizedPatternParser getExpression()
    {
       return expression;
    }

@@ -15,18 +15,18 @@
  */
 package org.ocpsoft.rewrite.annotation.handler;
 
-import org.ocpsoft.rewrite.annotation.Hostname;
+import org.ocpsoft.rewrite.annotation.Domain;
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 
-public class HostnameHandler implements AnnotationHandler<Hostname>
+public class DomainHandler implements AnnotationHandler<Domain>
 {
 
    @Override
-   public Class<Hostname> handles()
+   public Class<Domain> handles()
    {
-      return Hostname.class;
+      return Domain.class;
    }
 
    @Override
@@ -36,9 +36,9 @@ public class HostnameHandler implements AnnotationHandler<Hostname>
    }
 
    @Override
-   public void process(ClassContext context, Hostname annotation, HandlerChain chain)
+   public void process(ClassContext context, Domain annotation, HandlerChain chain)
    {
-      context.getRuleBuilder().when(org.ocpsoft.rewrite.servlet.config.Hostname.matches(annotation.value()));
+      context.getRuleBuilder().when(org.ocpsoft.rewrite.servlet.config.Domain.matches(annotation.value()));
       chain.proceed();
    }
 }

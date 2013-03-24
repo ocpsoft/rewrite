@@ -15,42 +15,49 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
- * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestQueryString()}
+ * A {@link Condition} that inspects the value of {@link HttpServletRewrite#getRequestQueryString()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class Query extends HttpCondition implements Parameterized
 {
    /**
-    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the entire
-    * {@link HttpServletRequest#getQueryString()}
+    * Create a {@link Condition} matching the current {@link Address#getQuery()}.
     * <p>
-    * This value may be bound using <code>{param}</code> statements.
+    * The given pattern may be parameterized:
     * <p>
-    * See also: {@link #bindsTo(Binding)}
+    * <code>
+    *    ?param=value <br>
+    *    ?param={param} <br>
+    *    ?param={param}&foo=bar <br>
+    *    ...
+    * </code>
+    * <p>
+    * 
+    * @param pattern {@link ParameterizedPattern} matching the query string of the current {@link Address}.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Query matches(final String query)
    {
@@ -106,13 +113,21 @@ public abstract class Query extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the existence of specific parameters
-    * within {@link HttpServletRequest#getQueryString()}
+    * Create a {@link Condition} asserting the existence of specific parameter names within the current
+    * {@link Address#getQuery()}
     * <p>
-    * The values of all matching parameters may be bound. By default, matching values are bound to the
-    * {@link org.ocpsoft.rewrite.context.EvaluationContext}, and are stored by parameter name.
+    * The given parameter name is automatically parameterized:
     * <p>
-    * See also: {@link #bindsTo(Binding)}
+    * <code>
+    *    Query.paramterExists("param") <br>
+    *    ...
+    * </code>
+    * <p>
+    * 
+    * @param pattern name of the {@link Parameter} matching query parameter names within the current
+    *           {@link Address#getQuery()}.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Query parameterExists(final String name)
    {
@@ -142,6 +157,7 @@ public abstract class Query extends HttpCondition implements Parameterized
 
                         if (pattern.matches(value))
                         {
+                           // FIXME this probably isn't required since .matches() does this.
                            ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
                            ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
                            return values.submit(event, context, store.get(parameterName), value);
@@ -175,20 +191,20 @@ public abstract class Query extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a new {@link org.ocpsoft.rewrite.config.Condition} matching against the existence of a parameter values
-    * within {@link HttpServletRequest#getQueryString()}
-    * <p>
-    * The values of all matching parameter values may be bound. By default, matching values are bound to the
-    * {@link EvaluationContext}.
-    * <p>
-    * See also: {@link #bindsTo(Binding)}
+    * Create a {@link Condition} asserting the existence of specific parameter values within the current
+    * {@link Address#getQuery()}.
+    * 
+    * @param pattern {@link ParameterizedPattern} matching query parameter values of the current
+    *           {@link Address#getQuery()}.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Query valueExists(final String valuePattern)
    {
       Assert.notNull(valuePattern, "Parameter value pattern must not be null.");
 
       return new Query() {
-         final Pattern pattern = Pattern.compile(valuePattern);
+         final ParameterizedPatternParser pattern = new RegexParameterizedPatternParser(valuePattern);
 
          @Override
          public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
@@ -199,7 +215,7 @@ public abstract class Query extends HttpCondition implements Parameterized
             for (String name : queryString.getParameterNames()) {
 
                for (String value : queryString.getParameterValues(name)) {
-                  if (value != null && pattern.matcher(value).matches())
+                  if (value != null && pattern.matches(event, context, value))
                   {
                      return true;
                   }
@@ -218,12 +234,14 @@ public abstract class Query extends HttpCondition implements Parameterized
          @Override
          public Set<String> getRequiredParameterNames()
          {
-            return Collections.emptySet();
+            return pattern.getRequiredParameterNames();
          }
 
          @Override
          public void setParameterStore(ParameterStore store)
-         {}
+         {
+            pattern.setParameterStore(store);
+         }
       };
    }
 

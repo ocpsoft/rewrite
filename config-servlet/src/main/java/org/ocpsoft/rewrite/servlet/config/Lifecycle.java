@@ -1,19 +1,35 @@
+/*
+ * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Responsible for controlling the Rewrite life-cycle itself.
+ * An {@link Operation} responsible for controlling the {@link Rewrite} life-cycle itself.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class Lifecycle extends HttpOperation
 {
    /**
-    * Calls {@link ServletRewrite#abort()}
+    * Create an {@link Operation} that calls {@link ServletRewrite#abort()}
     */
    public static Operation abort()
    {
@@ -27,7 +43,7 @@ public abstract class Lifecycle extends HttpOperation
    }
 
    /**
-    * Calls {@link ServletRewrite#handled()}
+    * Create an {@link Operation} that calls {@link ServletRewrite#handled()}
     */
    public static Operation handled()
    {
@@ -41,7 +57,7 @@ public abstract class Lifecycle extends HttpOperation
    }
 
    /**
-    * Calls {@link ServletRewrite#proceed()}
+    * Create an {@link Operation} that calls {@link ServletRewrite#proceed()}
     */
    public static Operation proceed()
    {

@@ -23,16 +23,19 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Responsible for asserting on {@link HttpServletRequest#getHeader(String)} values.
+ * A {@link Condition} responsible for asserting on specified values of {@link HttpServletRequest#getHeader(String)}.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -50,12 +53,21 @@ public class Header extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a {@link Header} condition that matches against both header name and values.
+    * Create a {@link Header} condition that matches against both header name and values.
     * <p>
-    * See also: {@link HttpServletRequest#getHeader(String)}
+    * The given name and value patterns may be parameterized:
+    * <p>
+    * <code>
+    *    Header.matches("Accept-Encoding", "{encoding}")<br>
+    *    Header.matches("Accept-{type}", "{value}")<br>
+    *    ... 
+    * </code>
+    * <p>
     * 
-    * @param name Regular expression matching the header name
-    * @param value Regular expression matching the header value
+    * @see {@link ConfigurationRuleParameterBuilder#where(String) {@link HttpServletRequest#getHeader(String)}
+    * 
+    * @param name {@link ParameterizedPattern} matching the header name.
+    * @param value {@link ParameterizedPattern} matching the header value.
     */
    public static Header matches(final String name, final String value)
    {
@@ -63,12 +75,22 @@ public class Header extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a {@link Header} condition that matches only against the existence of a header with a name matching the
+    * Create a {@link Header} condition that matches only against the existence of a header with a name matching the
     * given pattern. The header value is ignored.
     * <p>
-    * See also: {@link HttpServletRequest#getHeader(String)}
+    * The given name pattern may be parameterized:
+    * <p>
+    * <code>
+    *    Header.exists("Accept-Encoding")<br>
+    *    Header.exists("Accept-{acceptType}")<br>
+    *    Header.exists("{anything}")<br>
+    *    ... 
+    * </code>
+    * <p>
     * 
-    * @param name Regular expression matching the header name
+    * @see {@link ConfigurationRuleParameterBuilder#where(String) {@link HttpServletRequest#getHeader(String)}
+    * 
+    * @param name {@link ParameterizedPattern} matching the header name.
     */
    public static Header exists(final String name)
    {
@@ -76,10 +98,22 @@ public class Header extends HttpCondition implements Parameterized
    }
 
    /**
-    * Return a {@link Header} condition that matches only against the existence of a header with value matching the
+    * Create a {@link Header} condition that matches only against the existence of a header with value matching the
     * given pattern. The header name is ignored.
+    * <p>
+    * The given value pattern may be parameterized:
+    * <p>
+    * <code>
+    *    Header.valueExists("application/xml")<br>
+    *    Header.valueExists("application/{type}")<br>
+    *    Header.valueExists("{anything}")<br>
+    *    ... 
+    * </code>
+    * <p>
     * 
-    * @param value Regular expression matching the header value
+    * @see {@link ConfigurationRuleParameterBuilder#where(String) {@link HttpServletRequest#getHeader(String)}
+    * 
+    * @param value {@link ParameterizedPattern} matching the header value.
     */
    public static Header valueExists(final String value)
    {

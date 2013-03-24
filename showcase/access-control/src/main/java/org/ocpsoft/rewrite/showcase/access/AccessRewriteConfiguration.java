@@ -10,7 +10,7 @@ import org.ocpsoft.rewrite.config.jodatime.JodaTime;
 import org.ocpsoft.rewrite.config.jodatime.TimeCondition;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
-import org.ocpsoft.rewrite.servlet.config.Hostname;
+import org.ocpsoft.rewrite.servlet.config.Domain;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Lifecycle;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -36,7 +36,7 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                 * Domain based access control (only grants access to specific domains)
                 */
                .addRule(Join.path("/domain").to("/domain.xhtml").withInboundCorrection())
-               .when(Direction.isInbound().andNot(Hostname.matches("localhost").or(Hostname.matches("{1}rhcloud{2}"))))
+               .when(Direction.isInbound().andNot(Domain.matches("localhost").or(Domain.matches("{1}rhcloud{2}"))))
                .where("1").matches(".*").where("2").matches(".*")
 
                /*

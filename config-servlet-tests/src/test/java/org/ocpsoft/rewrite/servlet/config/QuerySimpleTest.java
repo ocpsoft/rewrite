@@ -105,7 +105,10 @@ public class QuerySimpleTest
    @Test
    public void testQueryStringValueExists()
    {
-      Assert.assertTrue(Query.valueExists(".ar").evaluate(rewrite, context));
+      Query query = Query.valueExists("{b}ar");
+      query.setParameterStore(store);
+      store.get("b", new DefaultParameter("b"));
+      Assert.assertTrue(query.evaluate(rewrite, context));
    }
 
    @Test

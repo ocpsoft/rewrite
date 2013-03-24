@@ -21,10 +21,12 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -32,7 +34,7 @@ import org.ocpsoft.rewrite.util.Transforms;
 
 /**
  * An {@link Operation} that performs redirects via {@link HttpInboundServletRewrite#redirectPermanent(String)} and
- * {@link org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite#redirectTemporary(String)}
+ * {@link HttpInboundServletRewrite#redirectTemporary(String)}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -69,22 +71,34 @@ public class Redirect extends HttpOperation implements Parameterized
    }
 
    /**
-    * Issue a permanent redirect ( 301 {@link HttpServletResponse#SC_MOVED_PERMANENTLY} ) to the given location. If the
-    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser
-    * {@link URL} and result in a new request. Note that in order to redirect within the {@link ServletContext}, you
-    * must prepend the {@link ServletContext#getContextPath()} manually.
+    * Create an {@link Operation} that issues a permanent {@link Redirect} ( 301
+    * {@link HttpServletResponse#SC_MOVED_PERMANENTLY} ) to the given location. If the given location is not the same as
+    * {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL} and result in a new request.
+    * 
     * <p>
-    * The given location may be parameterized using the following format:
+    * Note that in order to redirect to a resource within the {@link ServletContext}, you must prepend the
+    * {@link ServletContext#getContextPath()}.
+    * 
+    * <p>
+    * For example:<br/>
+    * <code>
+    *    Redirect.permanent(contextPath + "/example/location.html") <br>
+    * </code>
+    * 
+    * <p>
+    * The given location may be parameterized:
     * <p>
     * <code>
-    *    /example/{param} <br>
-    *    /example/{value}/sub/{value2} <br>
-    *    ... and so on
+    *    /store/global
+    *    /store/{category} <br>
+    *    /store/{category}/item/{itemId} <br>
+    *    ...
     * </code>
     * <p>
-    * By default, matching parameter values are bound to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * <p>
-    * See also {@link #where(String)}
+    * 
+    * @param location {@link ParameterizedPattern} specifying the target location.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Redirect permanent(final String location)
    {
@@ -92,22 +106,32 @@ public class Redirect extends HttpOperation implements Parameterized
    }
 
    /**
-    * Issue a temporary redirect ( 302 {@link HttpServletResponse#SC_MOVED_TEMPORARILY} ) to the given location. If the
-    * given location is not the same as {@link HttpServletRewrite#getAddress()}, this will change the browser
-    * {@link URL} and result in a new request. Note that in order to redirect within the {@link ServletContext}, you
-    * must prepend the {@link ServletContext#getContextPath()} manually.
+    * Create an {@link Operation} that issues a temporary {@link Redirect} ( 302
+    * {@link HttpServletResponse#SC_MOVED_TEMPORARILY} ) to the given location. If the given location is not the same as
+    * {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL} and result in a new request.
     * <p>
-    * The given location may be parameterized using the following format:
+    * Note that in order to redirect within the {@link ServletContext}, you must prepend the
+    * {@link ServletContext#getContextPath()}.
+    * <p>
+    * For example:<br/>
+    * <code>
+    *    Redirect.temporary(contextPath + "/example/location.html") <br>
+    * </code>
+    * 
+    * <p>
+    * The given location may be parameterized:
     * <p>
     * <code>
-    *    /example/{param} <br>
-    *    /example/{value}/sub/{value2} <br>
-    *    ... and so on
+    *    /store/global
+    *    /store/{category} <br>
+    *    /store/{category}/item/{itemId} <br>
+    *    ...
     * </code>
     * <p>
-    * By default, matching parameter values are bound to the {@link EvaluationContext}.
-    * <p>
-    * See also {@link #where(String)}
+    * 
+    * @param location {@link ParameterizedPattern} specifying the target location.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Redirect temporary(final String location)
    {
@@ -116,14 +140,20 @@ public class Redirect extends HttpOperation implements Parameterized
 
    private enum RedirectType
    {
-      /**
-       * 301
-       */
-      PERMANENT,
-      /**
-       * 302
-       */
-      TEMPORARY
+      PERMANENT(301),
+      TEMPORARY(302);
+
+      private int code;
+
+      private RedirectType(int code)
+      {
+         this.code = code;
+      }
+
+      public int getCode()
+      {
+         return code;
+      }
    }
 
    public RegexParameterizedPatternBuilder getTargetExpression()
@@ -134,7 +164,7 @@ public class Redirect extends HttpOperation implements Parameterized
    @Override
    public String toString()
    {
-      return "Redirect [type=" + type + ", location=" + location + "]";
+      return "Redirect [" + type.getCode() + "] " + type.name() + " to [" + location + "]";
    }
 
    @Override

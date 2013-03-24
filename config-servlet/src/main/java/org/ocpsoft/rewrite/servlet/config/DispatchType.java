@@ -23,20 +23,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.DispatcherType;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider;
 
 /**
- * Responsible for asserting on the {@link HttpServletRequest#getDispatcherType()} property.
- *
+ * A {@link Condition} that inspects the value of {@link HttpServletRequest#getDispatcherType()}.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class DispatchType extends HttpCondition
 {
    private final DispatcherType type;
-
    private final List<DispatcherTypeProvider> providers;
 
    private DispatchType(final DispatcherType type)
@@ -75,7 +75,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
+    * Create a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is a
     * {@link DispatcherType#FORWARD}
     */
    public static DispatchType isForward()
@@ -84,7 +84,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
+    * Create a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is a
     * {@link DispatcherType#REQUEST}
     */
    public static DispatchType isRequest()
@@ -93,7 +93,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
+    * Create a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is a
     * {@link DispatcherType#ERROR}
     */
    public static DispatchType isError()
@@ -102,7 +102,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
+    * Create a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is a
     * {@link DispatcherType#ASYNC}
     */
    public static DispatchType isAsync()
@@ -111,7 +111,7 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Return a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is of
+    * Create a {@link DispatchType} condition that ensures the current {@link HttpServletRewrite} is a
     * {@link DispatcherType#INCLUDE}
     */
    public static DispatchType isInclude()

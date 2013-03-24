@@ -15,11 +15,8 @@
  */
 package org.ocpsoft.rewrite.param;
 
-import java.util.regex.Pattern;
-
 /**
- * 
- * A {@link Parameterized} regular expression {@link Pattern}.
+ * A {@link Parameterized} pattern (template) that may be used to parse or generate {@link String} instances.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */

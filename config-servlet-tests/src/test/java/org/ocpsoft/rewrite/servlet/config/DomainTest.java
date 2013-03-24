@@ -55,14 +55,14 @@ public class DomainTest
    @Test
    public void testDomainMatchesInbound()
    {
-      Assert.assertTrue(Hostname.matches("example.com").evaluate(inbound, new MockEvaluationContext()));
+      Assert.assertTrue(Domain.matches("example.com").evaluate(inbound, new MockEvaluationContext()));
    }
 
    @Test
    public void testCanConvertAndValidateDomain() throws Exception
    {
       MockEvaluationContext context = new MockEvaluationContext();
-      Hostname hostname = Hostname.matches("{p}.com");
+      Domain hostname = Domain.matches("{p}.com");
 
       ParameterStore parameters = new DefaultParameterStore();
       ParameterUtils.initialize(parameters, hostname);
@@ -73,18 +73,18 @@ public class DomainTest
    @Test
    public void testDomainNotMatchesInbound()
    {
-      Assert.assertFalse(Hostname.matches("other.com").evaluate(inbound, new MockEvaluationContext()));
+      Assert.assertFalse(Domain.matches("other.com").evaluate(inbound, new MockEvaluationContext()));
    }
 
    @Test
    public void testDomainMatchesOutbound()
    {
-      Assert.assertTrue(Hostname.matches("example.com").evaluate(outbound, new MockEvaluationContext()));
+      Assert.assertTrue(Domain.matches("example.com").evaluate(outbound, new MockEvaluationContext()));
    }
 
    @Test
    public void testDomainNotMatchesOutbound()
    {
-      Assert.assertFalse(Hostname.matches("other.com").evaluate(outbound, new MockEvaluationContext()));
+      Assert.assertFalse(Domain.matches("other.com").evaluate(outbound, new MockEvaluationContext()));
    }
 }
