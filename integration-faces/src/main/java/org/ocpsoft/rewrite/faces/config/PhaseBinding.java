@@ -38,8 +38,9 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.ValueHolderUtil;
 
 /**
- * Wraps & holds a {@link Submission} until before or after a given JavaServer Faces {@link PhaseId}. This means that
- * validation and conversion are also deferred to within the Faces lifecycle.
+ * An {@link Operation} that wraps & holds a {@link Submission} until before or after a given JavaServer Faces
+ * {@link PhaseId}. Validation and conversion of the given {@link Submission} are also deferred to within the Faces
+ * lifecycle.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
@@ -63,11 +64,61 @@ public class PhaseBinding extends HttpOperation implements Binding, CompositeOpe
    }
 
    /**
-    * Process the given {@link Submission} during the Faces life-cycle.
+    * Create a {@link Binding} to process the given {@link Submission} during the Faces life-cycle.
     */
    public static PhaseBinding to(Submission submission)
    {
       return new PhaseBinding(submission);
+   }
+
+   /**
+    * Perform this {@link PhaseBinding} before the given phases (Except {@link PhaseId#RESTORE_VIEW}). The deferred
+    * {@link Submission} will be performed once for each {@link PhaseId} provided.
+    */
+   public PhaseBinding before(final PhaseId... phases)
+   {
+      if (phases != null)
+         this.beforePhases.addAll(Arrays.asList(phases));
+      return this;
+   }
+
+   /**
+    * Perform this {@link PhaseBinding} after the given phases (Except {@link PhaseId#RENDER_RESPONSE}). The deferred
+    * {@link Submission} will be performed once for each {@link PhaseId} provided.
+    */
+   public PhaseBinding after(final PhaseId... phases)
+   {
+      if (phases != null)
+         this.afterPhases.addAll(Arrays.asList(phases));
+      return this;
+   }
+
+   /**
+    * Validate the {@link Binding} value using the given {@link Validator}.
+    */
+   public PhaseBinding validatedBy(Validator<?> validator)
+   {
+      this.validator = validator;
+      return this;
+   }
+
+   /**
+    * Convert the {@link Binding} value using the given {@link Converter}.
+    */
+   public PhaseBinding convertedBy(Converter<?> converter)
+   {
+      this.converter = converter;
+      return this;
+   }
+
+   /**
+    * On validation failure, perform the given {@link Operation}; defaults to {@link SendStatus#code(int)} error code
+    * 404 unless otherwise specified.
+    */
+   public PhaseBinding onValidationFailure(Operation operation)
+   {
+      this.operation = operation;
+      return this;
    }
 
    @Override
@@ -121,50 +172,6 @@ public class PhaseBinding extends HttpOperation implements Binding, CompositeOpe
    public boolean supportsSubmission()
    {
       return true;
-   }
-
-   /**
-    * Perform this {@link PhaseBinding} before the given phases (Except {@link PhaseId#RESTORE_VIEW}). The deferred
-    * {@link Submission} will be performed once for each {@link PhaseId} provided.
-    */
-   public PhaseBinding before(final PhaseId... phases)
-   {
-      if (phases != null)
-         this.beforePhases.addAll(Arrays.asList(phases));
-      return this;
-   }
-
-   /**
-    * Perform this {@link PhaseBinding} after the given phases (Except {@link PhaseId#RENDER_RESPONSE}). The deferred
-    * {@link Submission} will be performed once for each {@link PhaseId} provided.
-    */
-   public PhaseBinding after(final PhaseId... phases)
-   {
-      if (phases != null)
-         this.afterPhases.addAll(Arrays.asList(phases));
-      return this;
-   }
-
-   public PhaseBinding validatedBy(Validator<?> validator)
-   {
-      this.validator = validator;
-      return this;
-   }
-
-   public PhaseBinding convertedBy(Converter<?> converter)
-   {
-      this.converter = converter;
-      return this;
-   }
-
-   /**
-    * On validation failure, perform the given {@link Operation}; defaults to {@link SendStatus#code(int)} error code
-    * 404 unless otherwise specified.
-    */
-   public PhaseBinding onValidationFailure(Operation operation)
-   {
-      this.operation = operation;
-      return this;
    }
 
    @Override

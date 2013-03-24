@@ -26,7 +26,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.faces.util.NullComponent;
 
 /**
- * Adapter class that allows to use JSF converters with Rewrite.
+ * Adapter class that allows to use JSF converters with {@link Rewrite} framework {@link Converter} instances.
  * 
  * @author Christian Kaltepoth
  */
@@ -43,7 +43,7 @@ public class FacesConverter<T> implements Converter<T>
    }
 
    /**
-    * Creates a converter adapter for the given target type. The converter will use
+    * Create a {@link Converter} adapter for the given target type. The converter will use
     * {@link Application#createConverter(Class)} to obtain the underlying JSF converter.
     */
    public static <T> FacesConverter<T> forType(Class<?> targetType)
@@ -52,28 +52,12 @@ public class FacesConverter<T> implements Converter<T>
    }
 
    /**
-    * Creates a converter with the given ID. The converter will use {@link Application#createConverter(String))} to
-    * obtain the underlying JSF converter.
+    * Create a {@link Converter} with the given ID. The converter will use {@link Application#createConverter(String))}
+    * to obtain the underlying JSF converter.
     */
    public static <T> FacesConverter<T> forId(String converterId)
    {
       return new FacesConverter<T>(converterId, null);
-   }
-
-   public FacesConverter(Class<?> targetType)
-   {
-      this.targetType = targetType;
-      this.converterId = null;
-   }
-
-   /**
-    * Create an adapter for the specified converter ID. The adapter will use {@link Application#createConverter(String)}
-    * to obtain the underlying JSF converter.
-    */
-   public FacesConverter(String converterId)
-   {
-      this.converterId = converterId;
-      this.targetType = null;
    }
 
    @Override

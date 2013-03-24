@@ -32,8 +32,8 @@ import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * This class encapsulates another operation that should be performed during the JSF lifecycle
- *
+ * An {@link Operation} that wraps another operation to be performed during the JavaServer Faces lifecycle.
+ * 
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -47,9 +47,42 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
    private final Set<PhaseId> afterPhases = new HashSet<PhaseId>();
 
    /**
-    * Perform operation before or after the specified phases.
+    * Perform the wrapped operation before or after the specified phases.
     */
    public abstract void performOperation(final HttpServletRewrite event, final EvaluationContext context);
+
+   /**
+    * Create an {@link Operation} that will defer a given {@link Operation} until one or more specified JavaServer Faces
+    * {@link PhaseId} instances specified via {@link #before(PhaseId...)} or {@link #after(PhaseId...)}.
+    */
+   public static PhaseOperation<?> enqueue(final Operation operation)
+   {
+      return enqueue(operation, 0);
+   }
+
+   /**
+    * Create an {@link Operation} that will enqueue a given {@link Operation} to be performed before or after one or
+    * more JavaServer Faces {@link PhaseId} instances specified via {@link #before(PhaseId...)} or
+    * {@link #after(PhaseId...)}.
+    */
+   @SuppressWarnings("rawtypes")
+   public static PhaseOperation<?> enqueue(final Operation operation, final int priority)
+   {
+      return new PhaseOperation() {
+
+         @Override
+         public int priority()
+         {
+            return priority;
+         }
+
+         @Override
+         public void performOperation(HttpServletRewrite event, EvaluationContext context)
+         {
+            operation.perform(event, context);
+         }
+      };
+   }
 
    /**
     * Get the phases before which this {@link PhaseOperation} will be performed.
@@ -91,9 +124,6 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
       return (T) this;
    }
 
-   /**
-    * Invoked during the rewrite process, just add "this" to a queue of deferred bindings in the request
-    */
    @Override
    public final void performHttp(HttpServletRewrite event, EvaluationContext context)
    {
@@ -131,36 +161,5 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
    public EvaluationContext getContext()
    {
       return context;
-   }
-
-   /**
-    * Defer the given {@link Operation} until the specified phases.
-    */
-   public static PhaseOperation<?> enqueue(final Operation operation)
-   {
-      return enqueue(operation, 0);
-   }
-
-   /**
-    * Enqueue an {@link org.ocpsoft.rewrite.config.Operation} to be performed before or after one or many JavaServer
-    * Faces life-cycle phases, specified via invoking {@link #before(PhaseId...)} or {@link #after(PhaseId...)}.
-    */
-   @SuppressWarnings("rawtypes")
-   public static PhaseOperation<?> enqueue(final Operation operation, final int priority)
-   {
-      return new PhaseOperation() {
-
-         @Override
-         public int priority()
-         {
-            return priority;
-         }
-
-         @Override
-         public void performOperation(HttpServletRewrite event, EvaluationContext context)
-         {
-            operation.perform(event, context);
-         }
-      };
    }
 }

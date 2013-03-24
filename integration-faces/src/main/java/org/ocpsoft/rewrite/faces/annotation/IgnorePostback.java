@@ -22,6 +22,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * Specifies that an element annotated with {@literal @}RequestAction should not be executed if the current
+ * {@link HttpServletRequest} is handling a JavaServer Faces form postback.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 @Inherited
 @Documented
 @Target({ ElementType.METHOD, ElementType.FIELD })

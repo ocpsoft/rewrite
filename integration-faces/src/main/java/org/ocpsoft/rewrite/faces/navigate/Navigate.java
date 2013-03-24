@@ -22,6 +22,7 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.faces.RewriteNavigationHandler;
 import org.ocpsoft.rewrite.servlet.spi.ResourcePathResolver;
+import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 import org.ocpsoft.urlbuilder.AddressBuilderPath;
 
@@ -32,11 +33,8 @@ import org.ocpsoft.urlbuilder.AddressBuilderPath;
  */
 public class Navigate
 {
-
    private final String viewId;
-
    private final ParameterMap parameters = new ParameterMap();
-
    private boolean redirect = true;
 
    private Navigate(String viewId)
@@ -44,12 +42,30 @@ public class Navigate
       this.viewId = viewId;
    }
 
+   /**
+    * Create a new {@link Navigate} instance that will invoke navigation to the specified View ID.
+    * <p>
+    * Query parameters to be provided to the destination View ID may be supplied via {@link #with(CharSequence, Object)}.
+    * 
+    * @param viewId the destination View ID
+    */
    public static Navigate to(String viewId)
    {
       Assert.notNull(viewId, "viewId must not be null");
       return new Navigate(viewId);
    }
 
+   /**
+    * Create a new {@link Navigate} instance that will invoke navigation to the specified {@link Class}. For instance,
+    * if the class specifies a {@literal @}Join rule, this would generate a navigation case targeting the
+    * {@link Address} for the defined resource.
+    * <p>
+    * Query parameters to be provided to the destination View ID may be supplied via {@link #with(CharSequence, Object)}.
+    * 
+    * @see ResourcePathResolver
+    * 
+    * @param clazz the target {@link Class}
+    */
    public static Navigate to(Class<?> clazz)
    {
 
@@ -66,9 +82,14 @@ public class Navigate
       }
 
       throw new IllegalArgumentException("Unable to find the resource path for: " + clazz.getName());
-
    }
 
+   /**
+    * Set a query parameter to be passed to the specified View Id.
+    * 
+    * @param The query parameter name.
+    * @param The query parameter value.
+    */
    public Navigate with(CharSequence name, Object value)
    {
       Assert.notNull(name, "name must not be null");
@@ -78,12 +99,18 @@ public class Navigate
       return this;
    }
 
+   /**
+    * Specify that navigation should be performed using JavaServer Faces non-redirecting navigation.
+    */
    public Navigate withoutRedirect()
    {
       redirect = false;
       return this;
    }
 
+   /**
+    * Build and return the fully constructed navigation {@link String}.
+    */
    public String build()
    {
       if (redirect) {

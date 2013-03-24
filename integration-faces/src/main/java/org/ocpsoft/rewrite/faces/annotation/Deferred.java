@@ -22,13 +22,24 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Specifies that an element annotated with {@literal @}RequestAction should be deferred to the given {@link Phase}.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 @Inherited
 @Documented
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Deferred
 {
+   /**
+    * The {@link Phase} before which the action should execute.
+    */
    Phase before() default Phase.NONE;
 
+   /**
+    * The {@link Phase} after which the action should execute.
+    */
    Phase after() default Phase.NONE;
 }

@@ -15,6 +15,13 @@
  */
 package org.ocpsoft.rewrite.faces.annotation;
 
+import javax.faces.event.PhaseId;
+
+/**
+ * Defines a type-safe handle to the {@link PhaseId} constant string values.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 public enum Phase
 {
 

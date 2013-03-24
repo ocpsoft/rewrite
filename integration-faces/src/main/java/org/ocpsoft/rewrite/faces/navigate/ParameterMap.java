@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * Multimap for storing multiple values for each parameter
+ * MultiMap for storing multiple values for each parameter
  * 
  * @author Christian Kaltepoth
  */

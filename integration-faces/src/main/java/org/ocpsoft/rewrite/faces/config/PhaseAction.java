@@ -20,7 +20,8 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**
- * Invoke an action before or after a given JavaServer Faces {@link PhaseId}. Has a {@link Weighted#priority()} of 0.
+ * An {@link Operation} that invokes an action before or after a given JavaServer Faces {@link PhaseId}. Has a
+ * {@link Weighted#priority()} of 0.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -31,8 +32,8 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
    private final Retrieval retrieval;
 
    /**
-    * Invoke the given {@link Retrieval} and process {@link InvocationResultHandler} instances on the result value (if
-    * any.)
+    * Create an {@link Operation} that invokes the given {@link Retrieval} and processes {@link InvocationResultHandler}
+    * instances on the result value (if any).
     * <p>
     * By default, this action is invoked after {@link PhaseId#RESTORE_VIEW}
     */
@@ -42,9 +43,10 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
    }
 
    /**
-    * Invoke {@link Submission#submit(org.ocpsoft.rewrite.event.Rewrite, EvaluationContext, Object)}, use the result of
+    * Create an {@link Operation} that invokes
+    * {@link Submission#submit(org.ocpsoft.rewrite.event.Rewrite, EvaluationContext, Object)}, and uses the result of
     * the given {@link Retrieval#retrieve(org.ocpsoft.rewrite.event.Rewrite, EvaluationContext)} as the value for this
-    * submission. Process {@link InvocationResultHandler} instances on the result value (if any.)
+    * submission. Process {@link InvocationResultHandler} instances on the result value (if any).
     * <p>
     * By default, this action is invoked after {@link PhaseId#RESTORE_VIEW}
     */
