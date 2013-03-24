@@ -15,19 +15,24 @@
  */
 package org.ocpsoft.rewrite.servlet.config.encodequery;
 
+import org.ocpsoft.rewrite.servlet.config.EncodeQuery;
+
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Strategy for encoding and decoding.
  * 
+ * @see EncodeQuery
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface EncodingStrategy
 {
    /**
-    * Encode the given value
+    * Encode the given value.
     */
    String encode(String value);
 
    /**
-    * Decode the given value
+    * Decode the given value.
     */
    String decode(String value);
 

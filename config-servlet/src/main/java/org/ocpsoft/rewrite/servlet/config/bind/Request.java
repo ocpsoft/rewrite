@@ -29,16 +29,15 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.Maps;
 
 /**
- * Responsible for binding to {@link ServletRequest#setAttribute(String, Object)} and
- * {@link ServletRequest#getParameterMap()} contexts.
+ * A {@link Binding} responsible for storing and retrieving {@link Parameter} values in the
+ * {@link ServletRequest#setAttribute(String, Object)} and {@link ServletRequest#getParameterMap()} contexts.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public abstract class Request implements Binding
 {
    /**
-    * Bind a value to the {@link ServletRequest#setAttribute(String, Object)} map.
+    * Create a {@link Binding} to the {@link ServletRequest#setAttribute(String, Object)} map.
     */
    public static Request attribute(final String property)
    {
@@ -46,7 +45,7 @@ public abstract class Request implements Binding
    }
 
    /**
-    * Bind a value to the {@link ServletRequest#getParameterMap()}.
+    * Create a {@link Binding} to the {@link ServletRequest#getParameterMap()}.
     */
    public static Request parameter(final String property)
    {

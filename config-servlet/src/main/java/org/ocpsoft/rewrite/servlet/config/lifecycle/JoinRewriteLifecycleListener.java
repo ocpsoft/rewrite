@@ -20,6 +20,11 @@ import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
 
+/**
+ * Implementation class for handling {@link Join} configuration instances.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 public class JoinRewriteLifecycleListener implements RewriteLifecycleListener<HttpServletRewrite>
 {
    private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";

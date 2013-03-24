@@ -27,10 +27,11 @@ import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
- * and an internal server resource URL
+ * A {@link Rule} that creates a bi-directional relationship between an externally facing {@link Address} and an
+ * internal server resource {@link Address} for the purposes of using a Content Distribution Network.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -47,7 +48,8 @@ public class CDN implements Rule, CDNRelocate, Parameterized
    }
 
    /**
-    * The outward facing URL path to which this {@link CDN} will apply.
+    * Create a {@link Rule} specifying the outward facing {@link Path} to which this {@link CDN} will apply. See
+    * {@link Path} for additional configuration details.
     */
    public static CDNRelocate relocate(final String pattern)
    {
@@ -98,7 +100,7 @@ public class CDN implements Rule, CDNRelocate, Parameterized
 
    public ParameterizedPatternParser getLocationExpression()
    {
-      return location.getTargetExpression();
+      return location.getExpression();
    }
 
    public ParameterizedPatternParser getResourcExpression()

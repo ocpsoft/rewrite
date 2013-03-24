@@ -19,11 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * Responsible for asserting on the {@link HttpServletRequest#getServerPort()}
+ * A {@link Condition} responsible for asserting on the {@link HttpServletRequest#getServerPort()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -46,7 +48,7 @@ public class ServerPort extends HttpCondition
    }
 
    /**
-    * Assert that the server port matches any of the given ports.
+    * Create a {@link Condition} to assert that the current {@link Address#getPort()} matches any of the given ports.
     */
    public static ServerPort is(final int... ports)
    {
@@ -56,7 +58,7 @@ public class ServerPort extends HttpCondition
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      int serverPort = event.getRequest().getServerPort();
+      int serverPort = event.getAddress().getPort();
       for (int port : ports) {
          if (serverPort == port)
             return true;

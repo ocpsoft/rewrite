@@ -18,24 +18,29 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.util.Set;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.InboundRewrite;
+import org.ocpsoft.rewrite.event.OutboundRewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
+import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
- * Responsible for substituting inbound/outbound URLs with a replacement. For
- * {@link org.ocpsoft.rewrite.event.InboundRewrite} events, this {@link Operation} calls
- * {@link HttpInboundServletRewrite#forward(String)}, and for {@link org.ocpsoft.rewrite.event.OutboundRewrite} events,
- * this method calls {@link HttpOutboundServletRewrite#setOutboundAddress(String)}
+ * An {@link Operation} responsible for substituting an inbound or outbound {@link Address} with a replacement. For
+ * {@link InboundRewrite} events, this calls {@link InboundServletRewrite#forward(String)}, and for
+ * {@link OutboundRewrite} events, this calls {@link HttpOutboundServletRewrite#setOutboundAddress(String)}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -50,20 +55,28 @@ public class Substitute extends HttpOperation implements Parameterized
    }
 
    /**
-    * Substitute the current URL with the given location.
+    * Substitute the current {@link Address} with the given location.
     * <p>
-    * The given location may be parameterized using the following format:
+    * The given location may be parameterized:
     * <p>
+    * INBOUND:<br/>
     * <code>
-    *    /example/{param} <br>
-    *    /example/{value}/sub/{value2} <br>
-    *    ... and so on
+    *    /example/{param}.html <br>
+    *    /css/{value}.css <br>
+    *    ... 
     * </code>
     * <p>
-    * Parameters may be bound. By default, matching parameter values are extracted from bindings in the
-    * {@link org.ocpsoft.rewrite.context.EvaluationContext}.
+    * OUTBOUND:<br/>
+    * <code>
+    *    www.example.com/path/file.html <br>
+    *    www.example.com/path/{resource}.html <br>
+    *    ... 
+    * </code>
     * <p>
-    * See also {@link #where(String)}
+    * 
+    * @param location {@link ParameterizedPattern} specifying the new {@link Address}.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)}
     */
    public static Substitute with(final String location)
    {
@@ -93,7 +106,10 @@ public class Substitute extends HttpOperation implements Parameterized
       }
    }
 
-   public ParameterizedPatternParser getTargetExpression()
+   /**
+    * Get the underlying {@link ParameterizedPatternParser} for this {@link Substitute}.
+    */
+   public ParameterizedPatternParser getExpression()
    {
       return location;
    }

@@ -15,13 +15,21 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import org.ocpsoft.rewrite.config.Rule;
+import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.Substitute;
+import org.ocpsoft.urlbuilder.Address;
+
 /**
+ * A partially configured {@link CDN} configuration {@link Rule}.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface CDNRelocate
 {
    /**
-    * The new resource (real or virtual) to be served, either from a local context or remote CDN.
+    * The new resource {@link Address} to serve as an external {@link Substitute} for the configured internal resource
+    * {@link Path}. See {@link Substitute} for additional configuration details.
     */
    public CDN to(String location);
 }

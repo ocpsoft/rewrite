@@ -28,17 +28,23 @@ import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.ServletRegistration;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider;
 import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} responsible for comparing URLs to Servlet Mappings.
+ * A {@link Condition} responsible for comparing the current {@link Address} to Servlet Mappings defined in the current
+ * {@link ServletContext}.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -53,6 +59,30 @@ public class ServletMapping extends HttpCondition implements Parameterized
    private ServletMapping(final String resource)
    {
       this.resource = new RegexParameterizedPatternBuilder(resource);
+   }
+
+   /**
+    * Create a {@link Condition} that returns <code>true</code> if the given resource is mapped by any {@link Servlet}
+    * instances registered within the current application, and returns <code>false</code> if no {@link Servlet} will
+    * handle the specified resource pattern.
+    * 
+    * <p>
+    * The given resource path may be parameterized:
+    * <p>
+    * <code>
+    *    /example/{param}.html <br>
+    *    /css/{value}.css <br>
+    *    ... 
+    * </code>
+    * <p>
+    * 
+    * @param location {@link ParameterizedPattern} specifying the {@link Address} of the internal resource.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)}
+    */
+   public static ServletMapping includes(final String resource)
+   {
+      return new ServletMapping(resource);
    }
 
    @Override
@@ -95,7 +125,7 @@ public class ServletMapping extends HttpCondition implements Parameterized
    }
 
    /**
-    * Obtains the list of registered Servlets using the {@link ServletRegistrationProvider} SPI.
+    * Obtains the list of registered {@link Servlet} instances using the {@link ServletRegistrationProvider} SPI.
     */
    private List<ServletRegistration> getServletRegistration(ServletContext context)
    {
@@ -122,15 +152,9 @@ public class ServletMapping extends HttpCondition implements Parameterized
    }
 
    /**
-    * Create a condition which returns true if the given resource is mapped by any {@link Servlet} instances registered
-    * within the current application, and returns false if no {@link Servlet} will handle the resource.
+    * Return the underlying {@link ParameterizedPatternBuilder} for this {@link ServletMapping}.
     */
-   public static ServletMapping includes(final String resource)
-   {
-      return new ServletMapping(resource);
-   }
-
-   public RegexParameterizedPatternBuilder getResourceExpression()
+   public ParameterizedPatternBuilder getResourceExpression()
    {
       return resource;
    }

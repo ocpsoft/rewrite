@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config.encodequery;
 
 /**
- * Simple {@link Base64} encoding strategy.
+ * {@link EncodingStrategy} based on simple {@link Base64} encoding and decoding.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */

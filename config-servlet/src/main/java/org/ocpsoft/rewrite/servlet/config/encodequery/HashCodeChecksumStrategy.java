@@ -16,10 +16,9 @@
 package org.ocpsoft.rewrite.servlet.config.encodequery;
 
 /**
- * Checksum strategy based on Java String hashCode() equality
+ * {@link ChecksumStrategy} based on Java {@link String#hashCode()} equality
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public class HashCodeChecksumStrategy implements ChecksumStrategy
 {

@@ -15,13 +15,34 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
+import org.ocpsoft.urlbuilder.Address;
+
 /**
+ * A partially configured {@link Join} instance.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface JoinPath
 {
    /**
-    * The internal server resource (real or virtual) to be served.
+    * The internal server resource {@link Address} to be served when the specified {@link Join#path(String)} is
+    * requested.
+    * 
+    * <p>
+    * The given resource path may be parameterized:
+    * <p>
+    * <code>
+    *    /example/{param}.html <br>
+    *    /css/{value}.css <br>
+    *    ... 
+    * </code>
+    * <p>
+    * 
+    * @param location {@link ParameterizedPattern} specifying the {@link Address} of the internal resource.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)}
     */
    public Join to(String resource);
 }

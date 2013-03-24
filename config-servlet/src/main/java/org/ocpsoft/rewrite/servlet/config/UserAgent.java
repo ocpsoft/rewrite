@@ -20,14 +20,17 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of {@link HttpServletRequest#getScheme()}
+ * A {@link Condition} that inspects the value of {@link HttpServletRequest#getHeader(String)} "User-Agent"
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -35,8 +38,20 @@ public abstract class UserAgent extends HttpCondition
 {
 
    /**
-    * Condition asserting that the user-agent matches the given pattern. (May be parameterized using {param}
-    * expressions.)
+    * Create a {@link Condition} asserting that the user-agent matches the given pattern.
+    * <p>
+    * User agent expressions may be parameterized:
+    * <p>
+    * <code>
+    * UserAgent.matches("BlackBerry PlayBook 3.4")<br/>
+    * UserAgent.matches("BlackBerry PlayBook {version}")<br/>
+    * UserAgent.matches("{agent}")<br/>
+    * ...
+    * </code>
+    * 
+    * @param name {@link ParameterizedPattern} matching the request parameter name.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String) {@link HttpServletRequest#getParameterMap()}
     */
    public static UserAgent matches(final String pattern)
    {
@@ -44,7 +59,7 @@ public abstract class UserAgent extends HttpCondition
    }
 
    /**
-    * Condition asserting that the user-agent is a mobile device.
+    * Create a {@link Condition} asserting that the user-agent is a mobile device.
     */
    public static ClassificationUserAgent isMobile()
    {
@@ -52,7 +67,7 @@ public abstract class UserAgent extends HttpCondition
    }
 
    /**
-    * Condition asserting that the user-agent is a tablet device.
+    * Create a {@link Condition} asserting that the user-agent is a tablet device.
     */
    public static ClassificationUserAgent isTablet()
    {
@@ -60,7 +75,7 @@ public abstract class UserAgent extends HttpCondition
    }
 
    /**
-    * Condition asserting that the user-agent is a non-mobile device.
+    * Create a {@link Condition} asserting that the user-agent is a non-mobile device.
     */
    public static ClassificationUserAgent isDesktop()
    {

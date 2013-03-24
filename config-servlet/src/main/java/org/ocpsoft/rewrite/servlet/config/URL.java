@@ -18,19 +18,26 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.util.Set;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
+import org.ocpsoft.rewrite.config.Rule;
+import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.InboundRewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * A {@link org.ocpsoft.rewrite.config.Condition} that inspects the value of
- * {@link org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite#getRequestPath()}
+ * A {@link Condition} that inspects the entire value of the current {@link Address}.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -46,28 +53,44 @@ public class URL extends HttpCondition implements Parameterized
    }
 
    /**
-    * Inspect the current request URL, comparing against the given pattern.
+    * Create a {@link Condition} that inspects the entire value of the current {@link Address}, comparing against the
+    * given pattern.
     * <p>
-    * The given pattern may be parameterized using the following format:
+    * The given pattern may be parameterized:
     * <p>
     * <b>INBOUND:</b><br>
     * <code>
-    *    /context-path/{param}?foo={bar} <br>
-    *    /context-path/{param}/{param2}?foo={bar}&cab={caz} <br>
-    *    ... and so on
-    * </code> <b>OUTBOUND:</b><br>
-    * http://domain.com/context-path/{param}?foo={bar} <br>
-    * /context-path/{param}/{param2}?foo={bar}&cab={caz} <br>
-    * ... and so on
+    *    /path/store?item=1436
+    *    /path/store?item={itemId} <br>
+    *    /path/{store}?item={itemId}&category={catId} <br>
+    *    ...
+    * </code>
     * <p>
-    * By default, matching parameter values are bound only to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * See also {@link #where(String)}
+    * <b>OUTBOUND:</b><br>
+    * <code>
+    * http://domain.com/path/store.html?item=1436
+    * http://domain.com/path/store?item={itemId} <br>
+    * /path/{store}?item={itemId}&category={catId} <br>
+    * ...
+    * </code>
+    * <p>
+    * 
+    * @param url {@link ParameterizedPattern} to which the current {@link Address} must match.
+    * 
+    * @see {@link ConfigurationRuleParameterBuilder#where(String)}
     */
    public static URL matches(final String pattern)
    {
       return new URL(pattern);
    }
 
+   /**
+    * Create a {@link Condition} to capture the entire value of the current {@link Address} into the given
+    * {@link Parameter} name. This {@link Parameter} may be referenced in other {@link Condition} and {@link Operation}
+    * instances within the current {@link Rule}.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
+    */
    public static URL captureIn(final String param)
    {
       URL path = new URL("{" + param + "}");
@@ -75,10 +98,8 @@ public class URL extends HttpCondition implements Parameterized
    }
 
    /**
-    * Bind each URL parameter to the corresponding request parameter by name. By default, matching values are bound only
-    * to the {@link org.ocpsoft.rewrite.context.EvaluationContext}.
-    * <p>
-    * See also {@link #where(String)}
+    * Bind each {@link Parameter} value of the current {@link Address} to the corresponding request parameter by name.
+    * Only takes affect on {@link InboundRewrite} events.
     */
    public URL withRequestBinding()
    {
@@ -137,7 +158,6 @@ public class URL extends HttpCondition implements Parameterized
    @Override
    public void setParameterStore(ParameterStore store)
    {
-      // TODO verify that this is the correct place to perform this type of behavior.
       if (requestBinding)
       {
          for (String param : getRequiredParameterNames()) {

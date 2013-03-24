@@ -23,11 +23,12 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
 
 /**
- * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule handling appending or removal of
- * the trailing slash character in paths.
- *
+ * A {@link Rule} that creates a bi-directional rewrite rule handling appending or removal of the trailing slash
+ * character in {@link Address} paths.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public abstract class TrailingSlash implements Rule
@@ -35,8 +36,8 @@ public abstract class TrailingSlash implements Rule
    private String id;
 
    /**
-    * Return a new {@link TrailingSlash} instance that will remove trailing slashes from all matching request and
-    * rendered output URLs, if necessary.
+    * Create a new {@link TrailingSlash} instance that will remove trailing slashes from all matching request and
+    * rendered output {@link Address} instances, if necessary.
     */
    public static TrailingSlash remove()
    {
@@ -44,12 +45,21 @@ public abstract class TrailingSlash implements Rule
    }
 
    /**
-    * Return a new {@link TrailingSlash} instance that will append trailing slashes from all matching request and
-    * rendered output URLs, if necessary.
+    * Create a new {@link TrailingSlash} instance that will append trailing slashes from all matching request and
+    * rendered output {@link Address} instances, if necessary.
     */
    public static TrailingSlash append()
    {
       return new AppendTrailingSlash();
+   }
+
+   /**
+    * Set the ID of this {@link TrailingSlash} instance.
+    */
+   public TrailingSlash withId(final String id)
+   {
+      this.id = id;
+      return this;
    }
 
    private static class AppendTrailingSlash extends TrailingSlash
@@ -113,14 +123,5 @@ public abstract class TrailingSlash implements Rule
    public String getId()
    {
       return id;
-   }
-
-   /**
-    * Set the ID of this {@link TrailingSlash}.
-    */
-   public TrailingSlash withId(final String id)
-   {
-      this.id = id;
-      return this;
    }
 }

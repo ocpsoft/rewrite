@@ -42,7 +42,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.ParameterUtils;
 
 /**
- * Allows for conditional evaluation of {@link Rule} sets.
+ * An {@link Operation} that allows for conditional evaluation of nested {@link Rule} sets.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -65,7 +65,6 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
    /*
     * Executors
     */
-
    @Override
    public void perform(Rewrite rewrite, EvaluationContext context)
    {

@@ -15,14 +15,19 @@
  */
 package org.ocpsoft.rewrite.servlet.config.encodequery;
 
+import org.ocpsoft.rewrite.servlet.config.EncodeQuery;
+
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Strategy for performing checksum embedding and validation.
  * 
+ * @see EncodeQuery
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface ChecksumStrategy
 {
    /**
-    * Return true if the given token contains a valid checksum.
+    * Return <code>true</code> if the given token contains a valid checksum.
     */
    boolean checksumValid(String token);
 
@@ -32,7 +37,7 @@ public interface ChecksumStrategy
    String embedChecksum(String token);
 
    /**
-    * Extract the token from the given string with checksum.
+    * Extract the checksum from the given token.
     */
    String removeChecksum(String token);
 

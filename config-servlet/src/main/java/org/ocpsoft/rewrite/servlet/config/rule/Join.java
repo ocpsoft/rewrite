@@ -21,15 +21,20 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.ConditionVisit;
+import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.config.ParameterizedCallback;
 import org.ocpsoft.rewrite.config.ParameterizedConditionVisitor;
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -40,12 +45,14 @@ import org.ocpsoft.rewrite.servlet.config.bind.Request;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import org.ocpsoft.urlbuilder.Address;
 
 /**
- * {@link org.ocpsoft.rewrite.config.Rule} that creates a bi-directional rewrite rule between an externally facing URL
- * and an internal server resource URL
+ * {@link Rule} that creates a bi-directional rewrite rule between an externally facing {@link Address} and an internal
+ * server resource {@link Address} for the purposes of changing the {@link Address} with which the internal server
+ * resource is accessible.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -81,10 +88,24 @@ public class Join implements Rule, JoinPath, Parameterized
    }
 
    /**
-    * The client-facing URL path to which this {@link Join} will apply. Parameters of the form <code>"{n}"</code> will
-    * be bound by name to the request parameter map via {@link Request#parameter(String)}, and subsequently used to
-    * build the outbound URL by extracting values from the query string
-    * <code>"?n=value"<code>. To disable request parameter binding and outbound URL rewriting, instead use {@link #pathNonBinding(String)}
+    * Create a {@link Rule} specifying the inbound request {@link Address} to which this {@link Join} will apply. Any
+    * {@link Parameter} instances defined in the given pattern will be bound by default to the
+    * {@link HttpServletRequest#getParameterMap()} via the {@link RequestParameterProvider} SPI.
+    * <p>
+    * To disable {@link Request} parameter {@link Binding}, instead use {@link #pathNonBinding(String)}.
+    * <p>
+    * The given pattern may be parameterized:
+    * <p>
+    * <code>
+    *    /example/{param} <br>
+    *    /example/{param1}/sub/{param2} <br>
+    *    ...
+    * </code>
+    * <p>
+    * 
+    * @param pattern {@link ParameterizedPattern} matching the requested path.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static JoinPath path(final String pattern)
    {
@@ -92,8 +113,24 @@ public class Join implements Rule, JoinPath, Parameterized
    }
 
    /**
-    * The client-facing URL path to which this {@link Join} will apply. Parameters will not be bound to the request
-    * parameter map. To enable request parameter binding and outbound URL rewriting, instead use {@link #path(String)}.
+    * Create a {@link Rule} specifying the inbound request {@link Address} to which this {@link Join} will apply. Any
+    * {@link Parameter} instances defined in the given pattern will <b>NOT</b> be bound by default to the
+    * {@link HttpServletRequest#getParameterMap()}.
+    * <p>
+    * To enable {@link Request} parameter {@link Binding}, instead use {@link #path(String)}.
+    * <p>
+    * The given pattern may be parameterized:
+    * <p>
+    * <code>
+    *    /example/{param} <br>
+    *    /example/{param1}/sub/{param2} <br>
+    *    ...
+    * </code>
+    * <p>
+    * 
+    * @param pattern {@link ParameterizedPattern} matching the requested path.
+    * 
+    * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static JoinPath pathNonBinding(String pattern)
    {
@@ -101,7 +138,8 @@ public class Join implements Rule, JoinPath, Parameterized
    }
 
    /**
-    * Retrieve the {@link Join} that was invoked on the current request; if no {@link Join} was invoked, return null.
+    * Retrieve the {@link Join} that was invoked on the current {@link HttpServletRequest}; if no {@link Join} was
+    * invoked, return <code>null</code>.
     */
    public static Join getCurrentJoin(final HttpServletRequest request)
    {
@@ -131,6 +169,10 @@ public class Join implements Rule, JoinPath, Parameterized
       return this;
    }
 
+   /**
+    * Specifies that requests for the original internal resource path specified by {@link Join#to(String)} will be
+    * redirected to the updated path specified by {@link Join#path(String)}.
+    */
    public Join withInboundCorrection()
    {
       this.inboundCorrection = true;
@@ -138,7 +180,9 @@ public class Join implements Rule, JoinPath, Parameterized
    }
 
    /**
-    * Enable the 'to' target of this {@link Join} to be intercepted by the 'path' of another Join.
+    * Enable the target of this {@link Join}, specified by {@link Join#to(String)}, to be intercepted by the
+    * {@link Join#path(String)} of another {@link Join} instance. If not activated, subsequent matching {@link Join}
+    * instances will not be evaluated on the current {@link InboundRewrite} instance.
     */
    public Join withChaining()
    {

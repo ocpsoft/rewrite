@@ -17,16 +17,16 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Responsible for sending status codes via {@link HttpServletResponse#setStatus(int)} and
+ * An {@link Operation} responsible for sending status codes via {@link HttpServletResponse#setStatus(int)} and
  * {@link HttpServletResponse#flushBuffer()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public class SendStatus extends HttpOperation
 {
@@ -50,13 +50,18 @@ public class SendStatus extends HttpOperation
    }
 
    /**
-    * Send an HTTP status code to the browser, then call {@link HttpInboundServletRewrite#abort()}
+    * Create an {@link Operation} that will send an HTTP status code to the browser, then call
+    * {@link HttpInboundServletRewrite#abort()}
     */
    public static SendStatus code(final int code)
    {
       return new SendStatus(code);
    }
 
+   /**
+    * Create an {@link Operation} that will send an HTTP error code to the browser, then call
+    * {@link HttpInboundServletRewrite#abort()}
+    */
    public static SendStatus error(final int code)
    {
       return new SendError(code);
