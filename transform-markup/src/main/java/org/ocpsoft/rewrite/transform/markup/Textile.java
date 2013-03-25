@@ -34,6 +34,8 @@ public class Textile extends JRubyTransformer<Textile>
 
    private final boolean fullDocument;
 
+   private final HtmlDocumentBuilder documentBuilder = new HtmlDocumentBuilder();
+
    /**
     * Create a {@link Transformer} instance that renders a full HTML document structure.
     */
@@ -55,6 +57,24 @@ public class Textile extends JRubyTransformer<Textile>
       this.fullDocument = fullDocument;
    }
 
+   /**
+    * Sets the title of the rendered HTML document. Only applicable when rending a full document.
+    */
+   public Textile withTitle(String title)
+   {
+      this.documentBuilder.withTitle(title);
+      return this;
+   }
+
+   /**
+    * Adds a CSS stylesheet to the rendered HTML document. Only applicable when rending a full document.
+    */
+   public Textile addStylesheet(String url)
+   {
+      this.documentBuilder.addStylesheet(url);
+      return this;
+   }
+
    @Override
    public List<String> getLoadPaths()
    {
@@ -71,12 +91,7 @@ public class Textile extends JRubyTransformer<Textile>
 
          // create complete HTML structure
          if (fullDocument) {
-            StringBuilder result = new StringBuilder();
-            result.append("<!DOCTYPE html>\n");
-            result.append("<html>\n<body>\n");
-            result.append(fragment.toString());
-            result.append("</body>\n</html>\n");
-            return result.toString();
+            return documentBuilder.build(fragment.toString());
          }
 
          // output just the fragment

@@ -15,7 +15,9 @@
  */
 package org.ocpsoft.rewrite.transform.markup;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -89,6 +91,28 @@ public class TextileTest
       assertTrue("html tag is missing", html.contains("<html"));
       assertTrue("body tag is missing", html.contains("<body>"));
       assertTrue("Expected text missing", html.contains("<p>some text</p>"));
+
+   }
+
+   @Test
+   public void shouldRenderTitleCorrectly()
+   {
+
+      String textile = "some text";
+      String html = Textile.fullDocument().withTitle("My Title").transform(textile);
+
+      assertThat(html, containsString("<title>My Title</title>"));
+
+   }
+
+   @Test
+   public void shouldAddStylesheetCorrectly()
+   {
+
+      String textile = "some text";
+      String html = Textile.fullDocument().addStylesheet("http://localhost/style.css").transform(textile);
+
+      assertThat(html, containsString("http://localhost/style.css"));
 
    }
 

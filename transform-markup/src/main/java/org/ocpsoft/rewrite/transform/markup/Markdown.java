@@ -30,10 +30,11 @@ public class Markdown extends JRubyTransformer<Markdown>
 {
 
    private final static String SCRIPT = "require 'maruku'\n" +
-            "doc = Maruku.new(input)\n" +
-            "fullDocument ? doc.to_html_document : doc.to_html\n";
+            "Maruku.new(input).to_html";
 
    private final boolean fullDocument;
+
+   private final HtmlDocumentBuilder documentBuilder = new HtmlDocumentBuilder();
 
    /**
     * Create a {@link Transformer} instance that renders a full markdown HTML document structure.
@@ -59,6 +60,24 @@ public class Markdown extends JRubyTransformer<Markdown>
       this.fullDocument = fullDocument;
    }
 
+   /**
+    * Sets the title of the rendered HTML document. Only applicable when rending a full document.
+    */
+   public Markdown withTitle(String title)
+   {
+      this.documentBuilder.withTitle(title);
+      return this;
+   }
+
+   /**
+    * Adds a CSS stylesheet to the rendered HTML document. Only applicable when rending a full document.
+    */
+   public Markdown addStylesheet(String url)
+   {
+      this.documentBuilder.addStylesheet(url);
+      return this;
+   }
+
    @Override
    public List<String> getLoadPaths()
    {
@@ -68,8 +87,23 @@ public class Markdown extends JRubyTransformer<Markdown>
    @Override
    public Object runScript(ScriptingContainer container)
    {
-      container.put("fullDocument", fullDocument);
-      return container.runScriptlet(SCRIPT);
+
+      Object fragment = container.runScriptlet(SCRIPT);
+
+      if (fragment != null) {
+
+         // create complete HTML structure
+         if (fullDocument) {
+            return documentBuilder.build(fragment.toString());
+         }
+
+         // output just the fragment
+         else {
+            return fragment.toString();
+         }
+      }
+      return null;
+
    }
 
    @Override
