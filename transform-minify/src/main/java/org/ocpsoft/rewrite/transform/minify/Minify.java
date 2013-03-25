@@ -11,7 +11,7 @@ import org.ocpsoft.rewrite.transform.Transformer;
  */
 public abstract class Minify implements Transformer
 {
-   private Charset charset;
+   private Charset charset = Charset.forName("UTF-8");
 
    /**
     * Specify the {@link Charset} to be used during minification.
