@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -53,6 +54,19 @@ public class HtmlDocumentBuilderTest
    {
       String result = new HtmlDocumentBuilder().build(null);
       assertThat(result, not(containsString("<link")));
+   }
+
+   @Test
+   public void shouldAddNoHeaderInjectionByDefault()
+   {
+      String result = new HtmlDocumentBuilder().build(null);
+      Assert.assertEquals("<!DOCTYPE html>\n" +
+               "<html>\n" +
+               "<head>\n" +
+               "</head>\n" +
+               "<body>\n" +
+               "</body>\n" +
+               "</html>\n", result);
    }
 
    @Test

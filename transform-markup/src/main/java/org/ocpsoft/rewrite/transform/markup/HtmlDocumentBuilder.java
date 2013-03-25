@@ -8,7 +8,7 @@ import org.ocpsoft.rewrite.transform.Transformer;
 
 /**
  * Helper class that can be used by {@link Transformer} implementations to render full HTML documents.
- * 
+ *
  * @author Christian Kaltepoth
  */
 class HtmlDocumentBuilder
@@ -17,6 +17,7 @@ class HtmlDocumentBuilder
    private String title;
 
    private final List<String> stylesheets = new ArrayList<String>();
+   private final List<String> headerInjections = new ArrayList<String>();
 
    public HtmlDocumentBuilder addStylesheet(String url)
    {
@@ -27,6 +28,12 @@ class HtmlDocumentBuilder
    public HtmlDocumentBuilder withTitle(String title)
    {
       this.title = title;
+      return this;
+   }
+
+   public HtmlDocumentBuilder addHeaderInjection(String element)
+   {
+      headerInjections.add(element);
       return this;
    }
 
@@ -46,6 +53,10 @@ class HtmlDocumentBuilder
          result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
          result.append(stylesheet);
          result.append("\">\n");
+      }
+      for (String headerInjection : headerInjections) {
+         result.append(headerInjection);
+         result.append("\n");
       }
       result.append("</head>\n");
 
