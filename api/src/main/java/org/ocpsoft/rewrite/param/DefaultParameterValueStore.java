@@ -44,7 +44,11 @@ public class DefaultParameterValueStore implements ParameterValueStore, Iterable
       boolean result = false;
       String stored = map.get(param);
 
-      if (stored == value || (stored != null && stored.equals(value)))
+      if ("*".equals(param.getName()))
+      {
+         result = true;
+      }
+      else if (stored == value || (stored != null && stored.equals(value)))
       {
          result = true;
       }

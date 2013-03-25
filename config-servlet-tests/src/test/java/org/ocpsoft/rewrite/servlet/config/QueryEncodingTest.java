@@ -74,8 +74,8 @@ public class QueryEncodingTest
    @Test
    public void testQueryStringMatchesWithRegex()
    {
-      // FIXME remove regex support
-      Query query = Query.valueExists(".*∂ve.*");
+      Query query = Query.valueExists("{*}∂ve{*}");
+      query.setParameterStore(store);
       Assert.assertTrue(query.evaluate(rewrite, context));
    }
 

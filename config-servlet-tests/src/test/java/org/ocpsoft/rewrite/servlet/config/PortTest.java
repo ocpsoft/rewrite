@@ -40,6 +40,8 @@ public class PortTest
       request = Mockito.mock(HttpServletRequest.class);
       Mockito.when(request.getServerPort())
                .thenReturn(8080);
+      Mockito.when(request.getRequestURI())
+               .thenReturn("/path");
 
       rewrite = new HttpInboundRewriteImpl(request, null, null);
    }

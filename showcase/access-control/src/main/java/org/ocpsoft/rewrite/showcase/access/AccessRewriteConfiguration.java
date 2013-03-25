@@ -18,7 +18,7 @@ import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class AccessRewriteConfiguration extends HttpConfigurationProvider
 {
@@ -36,8 +36,7 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                 * Domain based access control (only grants access to specific domains)
                 */
                .addRule(Join.path("/domain").to("/domain.xhtml").withInboundCorrection())
-               .when(Direction.isInbound().andNot(Domain.matches("localhost").or(Domain.matches("{1}rhcloud{2}"))))
-               .where("1").matches(".*").where("2").matches(".*")
+               .when(Direction.isInbound().andNot(Domain.matches("localhost").or(Domain.matches("{*}rhcloud{*}"))))
 
                /*
                 * Time based access control (only grants access during the first half of each minute)
@@ -56,9 +55,8 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                .addRule()
                .when(Direction.isInbound()
                         .and(DispatchType.isRequest())
-                        .andNot(Path.matches("{1}javax.faces.resource{2}")))
-               .perform(Forward.to("/accessDenied.xhtml"))
-               .where("1").matches(".*").where("2").matches(".*");
+                        .andNot(Path.matches("{*}javax.faces.resource{*}")))
+               .perform(Forward.to("/accessDenied.xhtml"));
 
    }
 
