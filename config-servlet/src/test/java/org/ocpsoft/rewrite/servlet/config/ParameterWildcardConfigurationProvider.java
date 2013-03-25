@@ -35,7 +35,7 @@ public class ParameterWildcardConfigurationProvider extends HttpConfigurationPro
    public Configuration getConfiguration(final ServletContext context)
    {
       Configuration config = ConfigurationBuilder.begin()
-               .addRule().when(Path.matches("*.txt"))
+               .addRule().when(Path.matches("{*}.txt"))
                .perform(SendStatus.code(200))
                .where("*").matches("foo");
 
