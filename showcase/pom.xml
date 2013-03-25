@@ -16,6 +16,7 @@
       <module>access-control</module>
       <module>composite-query</module>
       <module>rest-ws</module>
+      <module>transform</module>
       <module>bookstore</module>
    </modules>
 
