@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.config.Rule;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>> extends Converter<Object>, Validator<Object>
+public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>>
 {
    /**
     * Get the name of this {@link Parameter}

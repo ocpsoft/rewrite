@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.config;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Validator;
-import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.Transform;
@@ -37,22 +36,22 @@ public interface ConfigurationRuleParameterMatches extends ConfigurationBuilderR
    ConfigurationRuleParameterWhere where(String string);
 
    /**
-    * Add a {@link Binding} to this {@link ConfigurableParameter}.
+    * Add a {@link Binding} to this {@link Parameter}.
     */
    ConfigurationRuleParameterMatches bindsTo(Binding binding);
 
    /**
-    * Set the {@link Converter} with which this {@link ConfigurableParameter} value will be converted.
+    * Set the {@link Converter} with which this {@link Parameter} value will be converted.
     */
    public ConfigurationRuleParameterMatches convertedBy(final Converter<?> converter);
 
    /**
-    * Set the {@link Validator} with which this {@link ConfigurableParameter} value will be validated.
+    * Set the {@link Validator} with which this {@link Parameter} value will be validated.
     */
    public ConfigurationRuleParameterMatches validatedBy(final Validator<?> validator);
 
    /**
-    * Add a constraint to which this object {@link IMPLTYPE} must match.
+    * Add a {@link Constraint} to which this object {@link IMPLTYPE} must match.
     */
    public ConfigurationRuleParameterMatches constrainedBy(Constraint<String> pattern);
 

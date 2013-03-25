@@ -24,6 +24,7 @@ import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
@@ -148,12 +149,16 @@ public class Path extends HttpCondition implements Parameterized
    {
       if (captureIn != null)
       {
-         store.get(captureIn).constrainedBy(new RegexConstraint(".*"));
+         Parameter<?> parameter = store.get(captureIn);
+         if (parameter instanceof ConfigurableParameter<?>)
+            ((ConfigurableParameter<?>) parameter).constrainedBy(new RegexConstraint(".*"));
       }
       if (withRequestBinding)
       {
          for (String param : getRequiredParameterNames()) {
-            store.get(param).bindsTo(Request.parameter(param));
+            Parameter<?> parameter = store.get(param);
+            if (parameter instanceof ConfigurableParameter<?>)
+               ((ConfigurableParameter<?>) parameter).bindsTo(Request.parameter(param));
          }
          withRequestBinding = true;
       }

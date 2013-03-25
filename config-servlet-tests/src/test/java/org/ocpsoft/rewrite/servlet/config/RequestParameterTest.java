@@ -28,6 +28,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterConfiguration;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
@@ -96,7 +98,8 @@ public class RequestParameterTest
       ParameterStore store = new DefaultParameterStore();
       ParameterUtils.initialize(store, requestParam);
 
-      store.get("value").constrainedBy(new RegexConstraint("(bar|baz)"));
+      Parameter<?> parameter = store.get("value");
+      ((ParameterConfiguration<?>) parameter).constrainedBy(new RegexConstraint("(bar|baz)"));
       Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -108,7 +111,7 @@ public class RequestParameterTest
       ParameterStore store = new DefaultParameterStore();
       ParameterUtils.initialize(store, requestParam);
 
-      store.get("value").constrainedBy(new RegexConstraint("(cab|caz)"));
+      ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("(cab|caz)"));
       Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -126,7 +129,7 @@ public class RequestParameterTest
       ParameterStore store = new DefaultParameterStore();
       ParameterUtils.initialize(store, requestParam);
 
-      store.get("value").constrainedBy(new RegexConstraint("nothing"));
+      ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("nothing"));
       Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -137,7 +140,7 @@ public class RequestParameterTest
       ParameterStore store = new DefaultParameterStore();
       ParameterUtils.initialize(store, requestParam);
 
-      store.get("name").constrainedBy(new RegexConstraint("nothing"));
+      ((ParameterConfiguration<?>) store.get("name")).constrainedBy(new RegexConstraint("nothing"));
       Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 
@@ -148,7 +151,7 @@ public class RequestParameterTest
       ParameterStore store = new DefaultParameterStore();
       ParameterUtils.initialize(store, requestParam);
 
-      store.get("value").constrainedBy(new RegexConstraint("(cab|xxx)"));
+      ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("(cab|xxx)"));
       Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
 

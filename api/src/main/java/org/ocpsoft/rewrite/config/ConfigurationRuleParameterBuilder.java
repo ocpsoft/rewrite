@@ -21,6 +21,7 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.RegexConstraint;
@@ -41,10 +42,10 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
 {
 
    private final ConfigurationRuleBuilder parent;
-   private ParameterBuilder<?> param;
+   private ConfigurableParameter<?> param;
 
    public ConfigurationRuleParameterBuilder(ConfigurationRuleBuilder parent,
-            final ParameterBuilder<?> param)
+            final ConfigurableParameter<?> param)
    {
       super(param.getName());
       this.parent = parent;

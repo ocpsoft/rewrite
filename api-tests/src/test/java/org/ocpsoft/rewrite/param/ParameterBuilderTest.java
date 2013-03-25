@@ -40,8 +40,11 @@ public class ParameterBuilderTest
 
       Parameter<?> parameter = new DefaultParameter("foo").validatedBy(validator).convertedBy(converter);
 
-      Object value = parameter.convert(new MockRewrite(), new MockEvaluationContext(), new Object());
-      boolean valid = parameter.validate(new MockRewrite(), new MockEvaluationContext(), value);
+      Object value = parameter.getConverter().convert(new MockRewrite(), new MockEvaluationContext(), new Object());
+
+      @SuppressWarnings("unchecked")
+      boolean valid = ((Validator<Object>) parameter.getValidator()).validate(new MockRewrite(),
+               new MockEvaluationContext(), value);
 
       Assert.assertTrue(validated);
       Assert.assertFalse(valid);

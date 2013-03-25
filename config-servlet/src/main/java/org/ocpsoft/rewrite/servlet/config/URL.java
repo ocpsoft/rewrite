@@ -24,6 +24,7 @@ import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
@@ -161,7 +162,9 @@ public class URL extends HttpCondition implements Parameterized
       if (requestBinding)
       {
          for (String param : getRequiredParameterNames()) {
-            store.get(param).bindsTo(Request.parameter(param));
+            Parameter<?> parameter = store.get(param);
+            if (parameter instanceof ConfigurableParameter<?>)
+               ((ConfigurableParameter<?>) parameter).bindsTo(Request.parameter(param));
          }
       }
 

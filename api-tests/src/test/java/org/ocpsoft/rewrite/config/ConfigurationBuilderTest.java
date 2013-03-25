@@ -204,7 +204,12 @@ public class ConfigurationBuilderTest
                .where("s").matches("oh").bindsTo(El.property("ee.flee"))
                .constrainedBy(null).convertedBy(null).transformedBy(null).validatedBy(null)
                .withId("id")
-               .withPriority(0);
+               .withPriority(0)
+
+               .addRule()
+               .when(new True())
+               .otherwise(operation)
+               .where("p");
    }
 
    @Test

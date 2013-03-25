@@ -88,7 +88,7 @@ public class QueryEncodingTest
    @Test
    public void testQueryStringMatchesPattern()
    {
-      store.get("x", new DefaultParameter("x")).constrainedBy(new RegexConstraint(".*&one=1.*"));
+      store.get("x", new DefaultParameter("x").constrainedBy(new RegexConstraint(".*&one=1.*")));
       Query query = Query.matches("{x}");
       query.setParameterStore(store);
       Assert.assertTrue(query.evaluate(rewrite, context));
@@ -97,7 +97,7 @@ public class QueryEncodingTest
    @Test
    public void testQueryStringBindsToEntireValue()
    {
-      store.get("x", new DefaultParameter("x")).constrainedBy(new RegexConstraint(".*&one=1.*"));
+      store.get("x", new DefaultParameter("x").constrainedBy(new RegexConstraint(".*&one=1.*")));
       Query query = Query.matches("{x}");
       query.setParameterStore(store);
       Assert.assertTrue(query.evaluate(rewrite, context));

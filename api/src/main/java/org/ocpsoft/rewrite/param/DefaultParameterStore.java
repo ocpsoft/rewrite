@@ -27,16 +27,16 @@ import org.ocpsoft.common.util.Assert;
  */
 public class DefaultParameterStore implements ParameterStore
 {
-   private final Map<String, ConfigurableParameter<?>> parameters = new LinkedHashMap<String, ConfigurableParameter<?>>();
+   private final Map<String, Parameter<?>> parameters = new LinkedHashMap<String, Parameter<?>>();
 
    public DefaultParameterStore()
    {
-      get("*", new DefaultParameter("*")).constrainedBy(new RegexConstraint(".*"));
+      get("*", new ImmutableParameter(new DefaultParameter("*").constrainedBy(new RegexConstraint(".*"))));
    }
 
-   public ConfigurableParameter<?> get(final String name, ConfigurableParameter<?> deflt)
+   public Parameter<?> get(final String name, Parameter<?> deflt)
    {
-      ConfigurableParameter<?> parameter = null;
+      Parameter<?> parameter = null;
       if (parameters.get(name) != null)
       {
          parameter = parameters.get(name);
@@ -53,7 +53,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameter;
    }
 
-   public ConfigurableParameter<?> get(String name)
+   public Parameter<?> get(String name)
    {
       if (!parameters.containsKey(name))
          throw new IllegalArgumentException("No such parameter [" + name + "] exists.");
@@ -65,7 +65,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameters.isEmpty();
    }
 
-   public ConfigurableParameter<?> store(ConfigurableParameter<?> value)
+   public Parameter<?> store(Parameter<?> value)
    {
       Assert.notNull(value, "Parameter to store must not be null.");
       return parameters.put(value.getName(), value);
@@ -77,7 +77,7 @@ public class DefaultParameterStore implements ParameterStore
    }
 
    @Override
-   public Iterator<Entry<String, ConfigurableParameter<?>>> iterator()
+   public Iterator<Entry<String, Parameter<?>>> iterator()
    {
       return parameters.entrySet().iterator();
    }

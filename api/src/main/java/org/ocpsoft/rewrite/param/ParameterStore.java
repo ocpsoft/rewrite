@@ -17,17 +17,19 @@ package org.ocpsoft.rewrite.param;
 
 import java.util.Map.Entry;
 
+import org.ocpsoft.rewrite.config.Rule;
+
 /**
- * {@link Parameter} store which retains the order, bindings, and names of parameters contained within.
+ * A store which retains the central index of {@link Parameter} instances for {@link Rule} configuraion.
  */
-public interface ParameterStore extends Iterable<Entry<String, ConfigurableParameter<?>>>
+public interface ParameterStore extends Iterable<Entry<String, Parameter<?>>>
 {
    /**
     * Get the {@link Parameter} with the given name.
     * 
     * @throws IllegalArgumentException if the {@link Parameter} with the given name does not exist.
     */
-   public ConfigurableParameter<?> get(String name) throws IllegalArgumentException;
+   public Parameter<?> get(String name) throws IllegalArgumentException;
 
    /**
     * Retrieve the {@link Parameter} with the given name, otherwise use the default, if supplied.
@@ -35,7 +37,7 @@ public interface ParameterStore extends Iterable<Entry<String, ConfigurableParam
     * @throws IllegalArgumentException if the {@link Parameter} with the given name does not exist and no default was
     *            supplied.
     */
-   public ConfigurableParameter<?> get(final String name, ConfigurableParameter<?> deflt);
+   public Parameter<?> get(final String name, Parameter<?> deflt);
 
    /**
     * Return <code>true</code> if this {@link ParameterStore} is empty, otherwise return <code>false</code>.

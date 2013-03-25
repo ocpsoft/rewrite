@@ -28,7 +28,9 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Evaluation;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
@@ -185,7 +187,9 @@ public class ConfigurationLoader
                      ParameterStore store = ((RuleBuilder) rule).getParameterStore();
 
                      for (String name : names) {
-                        store.get(name, new DefaultParameter(name)).bindsTo(Evaluation.property(name));
+                        Parameter<?> parameter = store.get(name, new DefaultParameter(name));
+                        if (parameter instanceof ConfigurableParameter<?>)
+                           ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
                      }
 
                      parameterized.setParameterStore(store);

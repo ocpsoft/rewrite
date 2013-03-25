@@ -15,13 +15,21 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.regex.Pattern;
+
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterConfiguration;
 
 /**
  * A {@link ConfigurationRuleParameter} with a where clause.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationRuleParameterWhere extends ConfigurationRuleParameter
+public interface ConfigurationRuleParameterWhere extends ParameterConfiguration<ConfigurationRuleParameterBuilder>
 {
+   /**
+    * Configure the regular expression {@link Pattern} to which this {@link Parameter} must match.
+    */
+   ConfigurationRuleParameterMatches matches(String string);
 
 }

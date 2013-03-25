@@ -27,7 +27,10 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
+import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterConfiguration;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
@@ -90,7 +93,9 @@ public class HeaderTest
       ParameterStore parameters = new DefaultParameterStore();
       ParameterUtils.initialize(parameters, header);
 
-      parameters.get("enc").constrainedBy(new RegexConstraint("(ISO|UTF)-\\d+"));
+      Parameter<?> parameter = parameters.get("enc");
+      if (parameter instanceof ConfigurableParameter<?>)
+         ((ParameterConfiguration<?>) parameter).constrainedBy(new RegexConstraint("(ISO|UTF)-\\d+"));
 
       Assert.assertTrue(header.evaluate(rewrite, new MockEvaluationContext()));
    }

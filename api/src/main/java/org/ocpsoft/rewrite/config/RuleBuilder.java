@@ -20,7 +20,10 @@ import java.util.List;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.exception.RewriteException;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
+import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.util.Visitor;
@@ -201,11 +204,12 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
    }
 
    @SuppressWarnings({ "rawtypes" })
-   public ParameterBuilder<?> where(String name)
+   public ConfigurableParameter<?> where(String name)
    {
       ParameterBuilder<?> parameter = new ParameterBuilder(name) {};
-      // FIXME: This cast isn't very nice.
-      return (ParameterBuilder<?>) getParameterStore().get(name, parameter);
+      Parameter<?> result = getParameterStore().get(name, parameter);
+      if (result instanceof ConfigurableParameter)
+         return (ConfigurableParameter<?>) result;
+      throw new RewriteException("Cannot configure read-only parameter [" + name + "].");
    }
-
 }

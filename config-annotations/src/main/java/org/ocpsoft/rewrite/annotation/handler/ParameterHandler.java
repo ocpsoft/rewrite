@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Or;
 import org.ocpsoft.rewrite.config.True;
 import org.ocpsoft.rewrite.el.El;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.servlet.config.RequestParameter;
@@ -67,7 +68,7 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       }
 
       // builder for this parameter
-      ParameterBuilder<?> parameterBuilder = context.getRuleBuilder().where(param);
+      ConfigurableParameter<?> parameterBuilder = context.getRuleBuilder().where(param);
 
       // subsequent handlers need the binding to configure deferred behavior
       El binding = El.property(field);

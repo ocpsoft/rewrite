@@ -28,8 +28,9 @@ import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.ConfigurableParameter;
+import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterConfiguration;
 import org.ocpsoft.rewrite.spi.ValidatorProvider;
 
 /**
@@ -58,7 +59,7 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
    {
       Field field = context.getJavaField();
 
-      ConfigurableParameter<?> parameter = (ConfigurableParameter<?>) context.get(Parameter.class);
+      Parameter<?> parameter = (Parameter<?>) context.get(Parameter.class);
       if (parameter != null) {
 
          Validator<?> validator = null;
@@ -78,7 +79,12 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
             validator = LazyValidatorAdapter.forTargetType(field.getType());
          }
 
-         parameter.validatedBy(validator);
+         if (parameter instanceof ParameterConfiguration)
+            ((ParameterConfiguration<?>) parameter).validatedBy(validator);
+         else
+            throw new RewriteException("Cannot add @" + Validate.class.getSimpleName() + " to [" + field
+                     + "] of class [" + field.getDeclaringClass() + "] because the parameter ["
+                     + parameter.getName() + "] is not writable.");
 
          if (log.isTraceEnabled()) {
             log.trace("Attached validator to field [{}] of class [{}]: ", new Object[] {

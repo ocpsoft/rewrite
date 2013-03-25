@@ -28,8 +28,9 @@ import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.ConfigurableParameter;
+import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterConfiguration;
 import org.ocpsoft.rewrite.spi.ConverterProvider;
 
 /**
@@ -58,7 +59,7 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
    {
       Field field = context.getJavaField();
 
-      ConfigurableParameter<?> parameter = (ConfigurableParameter<?>) context.get(Parameter.class);
+      Parameter<?> parameter = (Parameter<?>) context.get(Parameter.class);
       if (parameter != null) {
 
          Converter<?> converter = null;
@@ -78,7 +79,12 @@ public class ConvertHandler extends FieldAnnotationHandler<Convert>
             converter = LazyConverterAdapter.forTargetType(field.getType());
          }
 
-         parameter.convertedBy(converter);
+         if (parameter instanceof ParameterConfiguration)
+            ((ParameterConfiguration<?>) parameter).convertedBy(converter);
+         else
+            throw new RewriteException("Cannot add @" + Convert.class.getSimpleName() + " to [" + field
+                     + "] of class [" + field.getDeclaringClass() + "] because the parameter ["
+                     + parameter.getName() + "] is not writable.");
 
          if (log.isTraceEnabled()) {
             log.trace("Attached converter to field [{}] of class [{}]: ", new Object[] {

@@ -21,9 +21,6 @@ import java.util.List;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Validator;
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.util.ValueHolderUtil;
 
 /**
  * An base implementation of {@link Parameter}
@@ -70,18 +67,6 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    public String getName()
    {
       return name;
-   }
-
-   @Override
-   public Object convert(Rewrite event, EvaluationContext context, Object value)
-   {
-      return ValueHolderUtil.convert(event, context, converter, value);
-   }
-
-   @Override
-   public boolean validate(Rewrite event, EvaluationContext context, Object value)
-   {
-      return ValueHolderUtil.validates(event, context, validator, value);
    }
 
    @Override

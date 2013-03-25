@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.param.ParameterConfiguration;
 public interface ConfigurationRuleParameter extends ParameterConfiguration<ConfigurationRuleParameterBuilder>
 {
    /**
-    * Configure the regular expression {@link Pattern} to which this parameter must match.
+    * Configure the regular expression {@link Pattern} to which this {@link Parameter} must match.
     */
    ConfigurationRuleParameterMatches matches(String string);
 }

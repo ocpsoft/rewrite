@@ -30,12 +30,13 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.Operation;
+import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.Phase;
 import org.ocpsoft.rewrite.faces.config.PhaseBinding;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
-import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterConfiguration;
 
 public class DeferredHandler implements AnnotationHandler<Deferred>
 {
@@ -62,7 +63,7 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
          Field field = ((FieldContext) context).getJavaField();
 
          // locate the parameter previously created by @Parameter
-         final ConfigurableParameter<?> parameter = (ConfigurableParameter<?>) context.get(Parameter.class);
+         final Parameter<?> parameter = (Parameter<?>) context.get(Parameter.class);
          if (parameter != null) {
 
             Binding binding = (Binding) context.get(Binding.class);
@@ -78,7 +79,12 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
                      converter = ((DeferredConverter) converter).getDeferred();
                   }
                   phaseBinding.convertedBy(converter);
-                  parameter.convertedBy(new DeferredConverter(converter));
+                  if (parameter instanceof ParameterConfiguration)
+                     ((ParameterConfiguration<?>) parameter).convertedBy(new DeferredConverter(converter));
+                  else
+                     throw new RewriteException("Cannot specify @" + Deferred.class.getSimpleName() + " to ["
+                              + field + "] of class [" + field.getDeclaringClass() + "] because the parameter ["
+                              + parameter.getName() + "] is not writable.");
                }
 
                Validator<?> validator = parameter.getValidator();
@@ -89,7 +95,13 @@ public class DeferredHandler implements AnnotationHandler<Deferred>
                      validator = ((DeferredValidator) validator).getDeferred();
                   }
                   phaseBinding.validatedBy(validator);
-                  parameter.validatedBy(new DeferredValidator(validator));
+
+                  if (parameter instanceof ParameterConfiguration)
+                     ((ParameterConfiguration<?>) parameter).validatedBy(new DeferredValidator(validator));
+                  else
+                     throw new RewriteException("Cannot specify @" + Deferred.class.getSimpleName() + " to ["
+                              + field + "] of class [" + field.getDeclaringClass() + "] because the parameter ["
+                              + parameter.getName() + "] is not writable.");
                }
 
                // configure the target phase

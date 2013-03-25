@@ -65,9 +65,9 @@ public class ParameterizedPatternTest
       DefaultParameterStore store = new DefaultParameterStore();
       initialize(store, path);
 
-      store.get("prefix").constrainedBy(new RegexConstraint(".*"));
-      store.get("seg").constrainedBy(new RegexConstraint("[^/]+"));
-      store.get("suffix").constrainedBy(new RegexConstraint("\\?.*"));
+      ((ConfigurableParameter<?>) store.get("prefix")).constrainedBy(new RegexConstraint(".*"));
+      ((ConfigurableParameter<?>) store.get("seg")).constrainedBy(new RegexConstraint("[^/]+"));
+      ((ConfigurableParameter<?>) store.get("suffix")).constrainedBy(new RegexConstraint("\\?.*"));
 
       initialize(store, path);
 
@@ -213,7 +213,7 @@ public class ParameterizedPatternTest
       ParameterStore parameters = new DefaultParameterStore();
       initialize(parameters, path);
 
-      parameters.get("f").constrainedBy(new RegexConstraint("foo"));
+      ((ConfigurableParameter<?>) parameters.get("f")).constrainedBy(new RegexConstraint("foo"));
 
       Assert.assertTrue(path.matches(rewrite, context, "/foo/foo/"));
       Assert.assertFalse(path.matches(rewrite, context, "/foo/bar/"));

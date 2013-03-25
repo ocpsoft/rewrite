@@ -25,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
+import org.ocpsoft.rewrite.param.ParameterConfiguration;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
@@ -80,8 +81,8 @@ public class URLTest
       ParameterStore store = new DefaultParameterStore();
       ParameterUtils.initialize(store, url);
 
-      store.get("prefix").constrainedBy(new RegexConstraint(".*"));
-      store.get("suffix").constrainedBy(new RegexConstraint("\\?.*"));
+      ((ParameterConfiguration<?>) store.get("prefix")).constrainedBy(new RegexConstraint(".*"));
+      ((ParameterConfiguration<?>) store.get("suffix")).constrainedBy(new RegexConstraint("\\?.*"));
 
       MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
