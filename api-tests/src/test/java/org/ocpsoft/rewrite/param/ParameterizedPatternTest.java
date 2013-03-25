@@ -208,12 +208,12 @@ public class ParameterizedPatternTest
    @Test
    public void testParametersUsedMultipleRequireSingleConfiguration()
    {
-      ParameterizedPatternParser path = new RegexParameterizedPatternParser("/{*}/{*}/");
+      ParameterizedPatternParser path = new RegexParameterizedPatternParser("/{f}/{f}/");
 
       ParameterStore parameters = new DefaultParameterStore();
       initialize(parameters, path);
 
-      parameters.get("*").constrainedBy(new RegexConstraint("foo"));
+      parameters.get("f").constrainedBy(new RegexConstraint("foo"));
 
       Assert.assertTrue(path.matches(rewrite, context, "/foo/foo/"));
       Assert.assertFalse(path.matches(rewrite, context, "/foo/bar/"));

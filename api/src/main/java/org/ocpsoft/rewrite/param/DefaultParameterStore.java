@@ -29,6 +29,11 @@ public class DefaultParameterStore implements ParameterStore
 {
    private final Map<String, ConfigurableParameter<?>> parameters = new LinkedHashMap<String, ConfigurableParameter<?>>();
 
+   public DefaultParameterStore()
+   {
+      get("*", new DefaultParameter("*")).constrainedBy(new RegexConstraint(".*"));
+   }
+
    public ConfigurableParameter<?> get(final String name, ConfigurableParameter<?> deflt)
    {
       ConfigurableParameter<?> parameter = null;
@@ -68,7 +73,7 @@ public class DefaultParameterStore implements ParameterStore
 
    public int size()
    {
-      return parameters.size();
+      return parameters.size() - 1;
    }
 
    @Override
