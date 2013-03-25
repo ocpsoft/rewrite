@@ -37,7 +37,7 @@ public abstract class Minify implements Transformer
    /**
     * Get the {@link Charset} to be used during minification.
     */
-   public Charset getCharset()
+   protected Charset getCharset()
    {
       return charset;
    }
