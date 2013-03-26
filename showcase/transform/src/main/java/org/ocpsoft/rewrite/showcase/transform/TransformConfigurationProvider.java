@@ -26,6 +26,7 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Resource;
 import org.ocpsoft.rewrite.transform.Transform;
 import org.ocpsoft.rewrite.transform.less.Less;
+import org.ocpsoft.rewrite.transform.markup.Asciidoc;
 import org.ocpsoft.rewrite.transform.markup.Markdown;
 import org.ocpsoft.rewrite.transform.markup.Sass;
 import org.ocpsoft.rewrite.transform.markup.Textile;
@@ -57,6 +58,17 @@ public class TransformConfigurationProvider extends HttpConfigurationProvider
                .perform(Forward.to("/textile/{name}.textile")
                         .and(Transform.with(Textile.fullDocument()
                                  .withTitle("Textile Demo")
+                                 .addStylesheet(context.getContextPath() + "/common/bootstrap.css")
+                                 .addStylesheet(context.getContextPath() + "/common/common.css"))))
+
+               // AsciiDoc
+               .addRule()
+               .when(Direction.isInbound()
+                        .and(Path.matches("/asciidoc/{name}.html"))
+                        .and(Resource.exists("/asciidoc/{name}.asciidoc")))
+               .perform(Forward.to("/asciidoc/{name}.asciidoc")
+                        .and(Transform.with(Asciidoc.fullDocument()
+                                 .withTitle("AsciiDoc Demo")
                                  .addStylesheet(context.getContextPath() + "/common/bootstrap.css")
                                  .addStylesheet(context.getContextPath() + "/common/common.css"))))
 
