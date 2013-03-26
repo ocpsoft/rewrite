@@ -20,6 +20,19 @@
       <module>bookstore</module>
    </modules>
 
+   <build>
+      <pluginManagement>
+         <plugins>
+            <!-- Required to work around JDK7 issue: http://jira.codehaus.org/browse/MWAR-279 -->
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-war-plugin</artifactId>
+               <version>2.1.1</version>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
+
    <dependencyManagement>
       <dependencies>
          <dependency>
