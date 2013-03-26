@@ -30,15 +30,85 @@ public class AsciidocTest
    }
 
    @Test
-   public void shouldRenderHeader()
+   public void shouldRenderOneLineTitleLevel1()
    {
 
       String asciidoc = "" +
-               "== Some header\n\n" +
+               "== Level1 ==\n\n" +
                "Some text";
       String html = Asciidoc.partialDocument().transform(asciidoc);
 
-      assertThat(html).matches("(?s).*<h2[^>]*>Some header</h2>.*");
+      assertThat(html).matches("(?s).*<h2[^>]*>Level1</h2>.*");
+
+   }
+
+   @Test
+   public void shouldRenderTwoLineTitleLevel1()
+   {
+
+      String asciidoc = "" +
+               "Level1\n" +
+               "------\n\n" +
+               "Some text";
+      String html = Asciidoc.partialDocument().transform(asciidoc);
+
+      assertThat(html).matches("(?s).*<h2[^>]*>Level1</h2>.*");
+
+   }
+
+   @Test
+   public void shouldRenderOneLineTitleLevel2()
+   {
+
+      String asciidoc = "" +
+               "== Level2 ==\n\n" +
+               "Some text";
+      String html = Asciidoc.partialDocument().transform(asciidoc);
+
+      assertThat(html).matches("(?s).*<h2[^>]*>Level2</h2>.*");
+
+   }
+
+   @Test
+   public void shouldRenderOneLineTitleLevel3()
+   {
+
+      String asciidoc = "" +
+               "=== Level3 ===\n\n" +
+               "Some text";
+      String html = Asciidoc.partialDocument().transform(asciidoc);
+
+      assertThat(html).matches("(?s).*<h3[^>]*>Level3</h3>.*");
+
+   }
+
+   @Test
+   public void shouldRenderQuotes()
+   {
+
+      String asciidoc = "" +
+               "[quote]\n" +
+               "To be or not to be.";
+      String html = Asciidoc.partialDocument().transform(asciidoc);
+
+      assertThat(html).matches("(?s).*<blockquote>\\s*To be or not to be.\\s*</blockquote>.*");
+
+   }
+
+   @Test
+   public void shouldRenderLists()
+   {
+
+      String asciidoc = "" +
+               "- Item1\n" +
+               "- Item2\n";
+      String html = Asciidoc.partialDocument().transform(asciidoc);
+
+      assertThat(html)
+               .contains("<ul>")
+               .contains("</ul>")
+               .matches("(?s).*<li>\\s*<p>\\s*Item1\\s*</p>\\s*</li>.*")
+               .matches("(?s).*<li>\\s*<p>\\s*Item2\\s*</p>\\s*</li>.*");
 
    }
 
