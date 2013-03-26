@@ -1,8 +1,7 @@
 package org.ocpsoft.rewrite.transform.markup;
 
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 public class AsciidocTest
@@ -15,7 +14,7 @@ public class AsciidocTest
       String asciidoc = "This is **bold**!";
       String html = Asciidoc.partialDocument().transform(asciidoc);
 
-      assertThat(html, Matchers.containsString("This is <strong>bold</strong>!"));
+      assertThat(html).contains("This is <strong>bold</strong>!");
 
    }
 
@@ -26,7 +25,21 @@ public class AsciidocTest
       String asciidoc = "The +EventMetadata+ interface";
       String html = Asciidoc.partialDocument().transform(asciidoc);
 
-      assertThat(html, Matchers.containsString("The <tt>EventMetadata</tt> interface"));
+      assertThat(html).contains("The <tt>EventMetadata</tt> interface");
+
+   }
+
+   @Test
+   public void shouldRenderHeader()
+   {
+
+      String asciidoc = "" +
+               "== Some header\n\n" +
+               "Some text";
+      String html = Asciidoc.partialDocument().transform(asciidoc);
+
+      assertThat(html).matches("(?s).*<h2[^>]*>Some header</h2>.*");
+
    }
 
    @Test
@@ -44,9 +57,8 @@ public class AsciidocTest
                "----";
 
       String html = Asciidoc.partialDocument().transform(asciidoc);
-      System.out.println(html);
 
-      assertThat(html, Matchers.containsString("<div class=\"listingblock\">\n" +
+      assertThat(html).contains("<div class=\"listingblock\">\n" +
                "  \n" +
                "  <div class=\"content monospaced\">\n" +
                "    \n" +
@@ -58,7 +70,7 @@ public class AsciidocTest
                "    \n" +
                "  </div>\n" +
                "</div>\n" +
-               "\n"));
+               "\n");
    }
 
 }
