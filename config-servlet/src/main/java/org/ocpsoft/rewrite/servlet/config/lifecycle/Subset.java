@@ -19,33 +19,45 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.config.CompositeOperation;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConditionVisit;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
 import org.ocpsoft.rewrite.config.Operation;
+import org.ocpsoft.rewrite.config.OperationVisit;
+import org.ocpsoft.rewrite.config.ParameterizedCallback;
+import org.ocpsoft.rewrite.config.ParameterizedConditionVisitor;
+import org.ocpsoft.rewrite.config.ParameterizedOperationVisitor;
 import org.ocpsoft.rewrite.config.Rule;
+import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ConfigurableParameter;
+import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
-import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.ParameterUtils;
+import org.ocpsoft.rewrite.util.Visitor;
 
 /**
  * An {@link Operation} that allows for conditional evaluation of nested {@link Rule} sets.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Subset extends DefaultOperationBuilder implements CompositeOperation
+public class Subset extends DefaultOperationBuilder implements CompositeOperation, Parameterized
 {
    private static Logger log = Logger.getLogger(Subset.class);
    private final Configuration config;
@@ -81,7 +93,8 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
          Rule rule = rules.get(i);
 
          subContext.clear();
-         ParameterValueStore values = new DefaultParameterValueStore();
+         subContext.put(ParameterStore.class, context.get(ParameterStore.class));
+         ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
          subContext.put(ParameterValueStore.class, values);
 
          if (rule.evaluate(event, subContext))
@@ -207,6 +220,52 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
       public RewriteState getState()
       {
          throw new IllegalStateException("not implemented");
+      }
+   }
+
+   @Override
+   public Set<String> getRequiredParameterNames()
+   {
+      return Collections.emptySet();
+   }
+
+   @Override
+   public void setParameterStore(final ParameterStore parent)
+   {
+      for (final Rule rule : config.getRules()) {
+         if (rule instanceof RuleBuilder) {
+            ParameterizedCallback callback = new ParameterizedCallback() {
+               @Override
+               public void call(Parameterized parameterized)
+               {
+                  Set<String> names = parameterized.getRequiredParameterNames();
+                  ParameterStore store = ((RuleBuilder) rule).getParameterStore();
+
+                  for (Entry<String, Parameter<?>> entry : parent) {
+                     if (!store.contains(entry.getKey()))
+                        store.get(entry.getKey(), entry.getValue());
+                     else if (!"*".equals(entry.getKey()))
+                        throw new IllegalStateException("Subset cannot re-configure parameter [" + entry.getKey()
+                                 + "] that was configured in parent Configuration. Re-definition was attempted at ["
+                                 + rule + "] ");
+                  }
+
+                  for (String name : names) {
+                     Parameter<?> parameter = store.get(name, new DefaultParameter(name));
+                     if (parameter instanceof ConfigurableParameter<?>)
+                        ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
+                  }
+
+                  parameterized.setParameterStore(store);
+               }
+            };
+
+            Visitor<Condition> conditionVisitor = new ParameterizedConditionVisitor(callback);
+            new ConditionVisit(rule).accept(conditionVisitor);
+
+            Visitor<Operation> operationVisitor = new ParameterizedOperationVisitor(callback);
+            new OperationVisit(rule).accept(operationVisitor);
+         }
       }
    }
 }
