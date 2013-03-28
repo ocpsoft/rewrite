@@ -222,6 +222,16 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
                throw new RewriteException("Could not get response output stream.", e);
             }
          }
+
+         if (isResponseStreamWrapped())
+         {
+            HttpServletRewrite event = new HttpBufferRewriteImpl(request, this, servletContext);
+            OutputStream wrapped = outputStream;
+            for (ResponseStreamWrapper wrapper : responseStreamWrappers) {
+               wrapped = wrapper.wrap(event, wrapped);
+            }
+            outputStream = new RewriteServletOutputStream(wrapped);
+         }
       }
 
       return outputStream;
