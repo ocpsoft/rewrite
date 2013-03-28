@@ -56,6 +56,7 @@ class PipelineContentInterceptor implements ResponseContentInterceptor
          ByteArrayOutputStream output = new ByteArrayOutputStream();
          transform(new ByteArrayInputStream(buffer.getContents()), output);
          buffer.setContents(output.toByteArray());
+         chain.proceed();
       }
       catch (IOException e) {
          throw new IllegalStateException("Failed to apply transformation pipeline", e);
