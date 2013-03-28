@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContent;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
@@ -164,6 +164,18 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    }
 
    @Override
+   public void finishStreamWrappers()
+   {
+      if (isResponseStreamWrapped())
+      {
+         HttpServletRewrite event = new HttpBufferRewriteImpl(request, this, servletContext);
+         for (ResponseStreamWrapper wrapper : responseStreamWrappers) {
+            wrapper.finish(event);
+         }
+      }
+   }
+
+   @Override
    public String toString()
    {
       if (isResponseContentIntercepted())
@@ -209,16 +221,6 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
             catch (IOException e) {
                throw new RewriteException("Could not get response output stream.", e);
             }
-         }
-
-         if (isResponseStreamWrapped())
-         {
-            HttpServletRewrite event = new HttpBufferRewriteImpl(request, this, servletContext);
-            OutputStream wrapped = outputStream;
-            for (ResponseStreamWrapper wrapper : responseStreamWrappers) {
-               wrapped = wrapper.wrap(event, wrapped);
-            }
-            outputStream = new RewriteServletOutputStream(wrapped);
          }
       }
 
@@ -318,7 +320,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       Address address = AddressBuilder.create(URLBuilder.createFrom(url).toURL());
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
-      if (event.getFlow().is(Flow.ABORT_REQUEST))
+      if (event.getFlow().is(ServletRewriteFlow.ABORT_REQUEST))
       {
          return event.getOutboundAddress().toString();
       }
@@ -331,7 +333,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       Address address = AddressBuilder.create(URLBuilder.createFrom(url).toURL());
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
-      if (event.getFlow().is(Flow.ABORT_REQUEST))
+      if (event.getFlow().is(ServletRewriteFlow.ABORT_REQUEST))
       {
          return event.getOutboundAddress().toString();
       }
@@ -371,7 +373,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
             if (p.handles(event))
             {
                p.rewrite(event);
-               if (event.getFlow().is(Flow.HANDLED))
+               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
                {
                   break;
                }

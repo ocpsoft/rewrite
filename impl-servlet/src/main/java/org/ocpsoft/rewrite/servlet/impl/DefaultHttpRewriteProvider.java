@@ -34,7 +34,7 @@ import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteProvider;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.spi.RuleCacheProvider;
@@ -118,14 +118,14 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                         preOperations.get(k).perform(event, context);
                      }
 
-                     if (event.getFlow().is(Flow.HANDLED))
+                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
                      {
                         return;
                      }
 
                      rule.perform(event, context);
 
-                     if (event.getFlow().is(Flow.HANDLED))
+                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
                      {
                         return;
                      }
@@ -135,7 +135,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                         postOperations.get(k).perform(event, context);
                      }
 
-                     if (event.getFlow().is(Flow.HANDLED))
+                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
                      {
                         return;
                      }
@@ -174,14 +174,14 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                   preOperations.get(k).perform(event, context);
                }
 
-               if (event.getFlow().is(Flow.HANDLED))
+               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
                {
                   break;
                }
 
                rule.perform(event, context);
 
-               if (event.getFlow().is(Flow.HANDLED))
+               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
                {
                   break;
                }
@@ -191,7 +191,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                   postOperations.get(k).perform(event, context);
                }
 
-               if (event.getFlow().is(Flow.HANDLED))
+               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
                {
                   break;
                }

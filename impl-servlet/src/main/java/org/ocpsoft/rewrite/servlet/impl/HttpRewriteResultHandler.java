@@ -32,15 +32,15 @@ public class HttpRewriteResultHandler implements RewriteResultHandler
          HttpInboundServletRewrite servletRewrite = (HttpInboundServletRewrite) event;
          String dispatchResource = servletRewrite.getDispatchResource();
 
-         if (servletRewrite.getFlow().is(BaseRewrite.Flow.ABORT_REQUEST))
+         if (servletRewrite.getFlow().is(BaseRewrite.ServletRewriteFlow.ABORT_REQUEST))
          {
-            if (servletRewrite.getFlow().is(BaseRewrite.Flow.FORWARD))
+            if (servletRewrite.getFlow().is(BaseRewrite.ServletRewriteFlow.FORWARD))
             {
                log.debug("Issuing internal FORWARD to [{}].", dispatchResource);
                servletRewrite.getRequest().getRequestDispatcher(dispatchResource)
                         .forward(servletRewrite.getRequest(), servletRewrite.getResponse());
             }
-            else if (servletRewrite.getFlow().is(BaseRewrite.Flow.REDIRECT_PERMANENT))
+            else if (servletRewrite.getFlow().is(BaseRewrite.ServletRewriteFlow.REDIRECT_PERMANENT))
             {
                log.debug("Issuing 301 permanent REDIRECT to [{}].", dispatchResource);
                HttpServletResponse response = (HttpServletResponse) servletRewrite.getResponse();
@@ -48,7 +48,7 @@ public class HttpRewriteResultHandler implements RewriteResultHandler
                response.setHeader("Location", dispatchResource);
                response.flushBuffer();
             }
-            else if (servletRewrite.getFlow().is(BaseRewrite.Flow.REDIRECT_TEMPORARY))
+            else if (servletRewrite.getFlow().is(BaseRewrite.ServletRewriteFlow.REDIRECT_TEMPORARY))
             {
                log.debug("Issuing 302 temporary REDIRECT to [{}].", dispatchResource);
                HttpServletResponse response = (HttpServletResponse) servletRewrite.getResponse();
@@ -61,7 +61,7 @@ public class HttpRewriteResultHandler implements RewriteResultHandler
                log.debug("ABORT requested. Terminating request NOW.");
             }
          }
-         else if (servletRewrite.getFlow().is(BaseRewrite.Flow.INCLUDE))
+         else if (servletRewrite.getFlow().is(BaseRewrite.ServletRewriteFlow.INCLUDE))
          {
             log.debug("Issuing internal INCLUDE to [{}].", dispatchResource);
             servletRewrite.getRequest().getRequestDispatcher(dispatchResource)

@@ -21,6 +21,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.context.Context;
+import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
 
@@ -42,7 +43,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    public BaseRewrite(final IN request, final OUT response, final ServletContext servletContext)
    {
       this.servletContext = servletContext;
-      flow = Flow.UN_HANDLED;
+      flow = ServletRewriteFlow.UN_HANDLED;
       this.request = request;
       this.response = response;
    }
@@ -57,7 +58,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
     */
    public void abort()
    {
-      this.flow = Flow.ABORT_REQUEST;
+      this.flow = ServletRewriteFlow.ABORT_REQUEST;
    }
 
    /**
@@ -67,7 +68,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
     */
    public void proceed()
    {
-      this.flow = Flow.PROCEED;
+      this.flow = ServletRewriteFlow.PROCEED;
    }
 
    /**
@@ -77,7 +78,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
     */
    public void handled()
    {
-      this.flow = Flow.HANDLED;
+      this.flow = ServletRewriteFlow.HANDLED;
    }
 
    /**
@@ -87,7 +88,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    public void include(final String resource)
    {
       this.dispatchResource = resource;
-      this.flow = Flow.INCLUDE;
+      this.flow = ServletRewriteFlow.INCLUDE;
    }
 
    /**
@@ -97,14 +98,14 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    public void forward(final String resource)
    {
       this.dispatchResource = resource;
-      this.flow = Flow.FORWARD;
+      this.flow = ServletRewriteFlow.FORWARD;
    }
 
    /*
     * Getters
     */
    /**
-    * Get the current {@link Flow} state.
+    * Get the current {@link ServletRewriteFlow} state.
     */
    public Flow getFlow()
    {
@@ -112,9 +113,9 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    }
 
    /**
-    * Set the current {@link Flow} state.
+    * Set the current {@link ServletRewriteFlow} state.
     */
-   public void setFlow(final Flow flow)
+   public void setFlow(final ServletRewriteFlow flow)
    {
       this.flow = flow;
    }
@@ -171,7 +172,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    /**
     * Enum to represent the finite state of the Rewrite container.
     */
-   public enum Flow
+   public enum ServletRewriteFlow implements Flow
    {
       UN_HANDLED(null),
       HANDLED(null),
@@ -186,24 +187,24 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
       REDIRECT_TEMPORARY(ABORT_REQUEST),
       REDIRECT_PERMANENT(ABORT_REQUEST);
 
-      private Flow parent;
+      private ServletRewriteFlow parent;
 
-      private Flow(final Flow flow)
+      private ServletRewriteFlow(final ServletRewriteFlow flow)
       {
          this.parent = flow;
       }
 
       /**
-       * Return true if this {@link Flow} is a descendant of the given value.
+       * Return true if this {@link ServletRewriteFlow} is a descendant of the given value.
        */
-      public boolean is(final Flow other)
+      public boolean is(final ServletRewriteFlow other)
       {
          if (other == null)
          {
             return false;
          }
 
-         Flow t = this;
+         ServletRewriteFlow t = this;
          while (t != null)
          {
             if (other == t)
@@ -216,16 +217,16 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
       }
 
       /**
-       * Return true if the given {@link Flow} is a descendant of <code>this</code>.
+       * Return true if the given {@link ServletRewriteFlow} is a descendant of <code>this</code>.
        */
-      public boolean contains(final Flow other)
+      public boolean contains(final ServletRewriteFlow other)
       {
          if (other == null)
          {
             return false;
          }
 
-         Flow t = other;
+         ServletRewriteFlow t = other;
          while (t != null)
          {
             if (this == t)
@@ -234,6 +235,20 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
             }
             t = t.parent;
          }
+         return false;
+      }
+
+      @Override
+      public boolean isHandled()
+      {
+         return is(HANDLED);
+      }
+
+      @Override
+      public boolean is(Flow flow)
+      {
+         if (flow instanceof ServletRewriteFlow)
+            return is((ServletRewriteFlow) flow);
          return false;
       }
    }

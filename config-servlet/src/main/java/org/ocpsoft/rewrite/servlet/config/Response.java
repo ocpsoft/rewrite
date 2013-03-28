@@ -30,6 +30,8 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
+import org.ocpsoft.rewrite.servlet.config.response.GZipResponseContentInterceptor;
+import org.ocpsoft.rewrite.servlet.config.response.GZipResponseStreamWrapper;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseContentInterceptor;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -181,6 +183,55 @@ public abstract class Response extends HttpOperation
          {
             return "Response.addCookie(" + cookie + ")";
          }
+      };
+   }
+
+   /**
+    * Compress the {@link ServletOutputStream} contents written to the client.
+    * <p>
+    * <b>WARNING</b>: This causes response content to be buffered in memory in order to properly count the response
+    * 'Content-Length'.
+    */
+   public static Response gzipCompression()
+   {
+      return new Response() {
+
+         @Override
+         public void performHttp(HttpServletRewrite event, EvaluationContext context)
+         {
+            withOutputInterceptedBy(new GZipResponseContentInterceptor()).perform(event, context);
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Response.gzipCompression()";
+         }
+
+      };
+   }
+
+   /**
+    * Compress the {@link ServletOutputStream} contents written to the client.
+    * <p>
+    * <b>WARNING</b>: This means that the HTTP response will not contain a 'Content-Length' header.
+    */
+   public static Response gzipStreamCompression()
+   {
+      return new Response() {
+
+         @Override
+         public void performHttp(HttpServletRewrite event, EvaluationContext context)
+         {
+            withOutputStreamWrappedBy(new GZipResponseStreamWrapper()).perform(event, context);
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Response.gzipCompression()";
+         }
+
       };
    }
 

@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.mock;
 
 import org.ocpsoft.rewrite.context.Context;
+import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -27,5 +28,11 @@ public class MockRewrite implements Rewrite
    public Context getRewriteContext()
    {
       return new MockRewriteContext();
+   }
+
+   @Override
+   public Flow getFlow()
+   {
+      return null;
    }
 }

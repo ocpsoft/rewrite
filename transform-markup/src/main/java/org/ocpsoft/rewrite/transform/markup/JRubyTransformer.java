@@ -38,40 +38,43 @@ abstract class JRubyTransformer<T> extends StringTransformer
     */
    public abstract T self();
 
+   ScriptingContainer container = new ScriptingContainer(LocalContextScope.SINGLETON, LocalVariableBehavior.TRANSIENT);
+
+   public JRubyTransformer()
+   {
+      // the user may have set a custom CompileMode
+      if (compileMode != null) {
+         container.setCompileMode(compileMode);
+      }
+
+      // the user may have set a customn CompatVersion
+      if (compatVersion != null) {
+         container.setCompatVersion(compatVersion);
+      }
+
+      // scripts typically need to set the load path for 3rd party gems
+      List<String> loadPaths = getLoadPaths();
+      if (loadPaths != null && !loadPaths.isEmpty()) {
+         container.setLoadPaths(loadPaths);
+      }
+   }
+
    @Override
    public final String transform(String input)
    {
-
-      ScriptingContainer container = null;
       try {
 
-         // as this container is only used locally, a single threaded transient one works fine
-         container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.TRANSIENT);
+         Object result = null;
+         synchronized (container) {
+            // 'input' will be the string to transform
+            container.put("input", input);
 
-         // the user may have set a custom CompileMode
-         if (compileMode != null) {
-            container.setCompileMode(compileMode);
+            // perform custom initialization of the container
+            prepareContainer(container);
+
+            // execute the script returned by the implementation
+            result = runScript(container);
          }
-
-         // the user may have set a customn CompatVersion
-         if (compatVersion != null) {
-            container.setCompatVersion(compatVersion);
-         }
-
-         // scripts typically need to set the load path for 3rd party gems
-         List<String> loadPaths = getLoadPaths();
-         if (loadPaths != null && !loadPaths.isEmpty()) {
-            container.setLoadPaths(loadPaths);
-         }
-
-         // 'input' will be the string to transform
-         container.put("input", input);
-
-         // perform custom initialization of the container
-         prepareContainer(container);
-
-         // execute the script returned by the implementation
-         Object result = runScript(container);
 
          // the result must be a string
          return result != null ? result.toString() : null;

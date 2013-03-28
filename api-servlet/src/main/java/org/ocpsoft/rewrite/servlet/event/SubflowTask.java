@@ -16,24 +16,25 @@
 package org.ocpsoft.rewrite.servlet.event;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.event.Flow;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 
 /**
- * Defines a task to be performed within a sub-{@link Flow} of a given {@link ServletRewrite}
- *
+ * Defines a task to be performed within a sub-{@link ServletRewriteFlow} of a given {@link ServletRewrite}
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public abstract class SubflowTask
 {
 
    /**
     * Perform the given {@link SubflowTask} using the given {@link ServletRewrite} event. If modified, the original
-    * {@link Flow} will be restored after task completion.
-    *
+    * {@link ServletRewriteFlow} will be restored after task completion.
+    * 
     * @param event the {@link ServletRewrite} event used in the given {@link SubflowTask}
-    *
-    * @return the resultant {@link Flow} from the {@link SubflowTask} execution.
+    * 
+    * @return the resultant {@link ServletRewriteFlow} from the {@link SubflowTask} execution.
     */
    public static Flow perform(ServletRewrite<?, ?> rewrite, EvaluationContext context,
             SubflowTask subflowTask)
@@ -43,12 +44,12 @@ public abstract class SubflowTask
 
    /**
     * Perform the given {@link SubflowTask} using the given {@link ServletRewrite} event initialized with a new
-    * {@link Flow}. The original {@link Flow} will be restored after task completion.
-    *
+    * {@link ServletRewriteFlow}. The original {@link ServletRewriteFlow} will be restored after task completion.
+    * 
     * @param event the {@link ServletRewrite} event used in the given {@link SubflowTask}
-    * @param subflow the {@link Flow} to be us as the initial state for the given {@link SubflowTask}
-    *
-    * @return the resultant {@link Flow} from the {@link SubflowTask} execution.
+    * @param subflow the {@link ServletRewriteFlow} to be us as the initial state for the given {@link SubflowTask}
+    * 
+    * @return the resultant {@link ServletRewriteFlow} from the {@link SubflowTask} execution.
     */
    public static Flow perform(ServletRewrite<?, ?> event, EvaluationContext context, Flow subflow,
             SubflowTask subflowTask)
@@ -67,7 +68,7 @@ public abstract class SubflowTask
    }
 
    /**
-    * The task to be performed in a sub-{@link Flow}.
+    * The task to be performed in a sub-{@link ServletRewriteFlow}.
     */
    public abstract void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context);
 

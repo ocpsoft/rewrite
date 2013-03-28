@@ -12,7 +12,7 @@ import org.ocpsoft.rewrite.config.Invoke;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.exception.RewriteException;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.event.SubflowTask;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
@@ -71,7 +71,7 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
    @SuppressWarnings("unchecked")
    public void performOperation(final HttpServletRewrite event, final EvaluationContext context)
    {
-      SubflowTask.perform(event, context, Flow.UN_HANDLED, new SubflowTask() {
+      SubflowTask.perform(event, context, ServletRewriteFlow.UN_HANDLED, new SubflowTask() {
 
          @Override
          public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
@@ -113,17 +113,17 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
             if (result != null)
             {
                try {
-                  if (event.getFlow().is(Flow.ABORT_REQUEST))
+                  if (event.getFlow().is(ServletRewriteFlow.ABORT_REQUEST))
                   {
                      FacesContext facesContext = FacesContext.getCurrentInstance();
-                     if (event.getFlow().is(Flow.FORWARD))
+                     if (event.getFlow().is(ServletRewriteFlow.FORWARD))
                      {
                         String dispatchResource = ((HttpInboundServletRewrite) event).getDispatchResource();
                         facesContext.getExternalContext().dispatch(dispatchResource);
                      }
                      facesContext.responseComplete();
                   }
-                  else if (event.getFlow().is(Flow.INCLUDE))
+                  else if (event.getFlow().is(ServletRewriteFlow.INCLUDE))
                   {
                      throw new IllegalStateException(
                               "Cannot issue INCLUDE directive within JSF lifecycle. Not supported.");

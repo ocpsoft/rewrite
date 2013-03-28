@@ -17,9 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
  */
 public interface ConfigRoot
 {
-
 }

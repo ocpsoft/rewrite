@@ -47,4 +47,9 @@ public class WrappedStreamToUppercase implements ResponseStreamWrapper
       };
    }
 
+   @Override
+   public void finish()
+   {
+   }
+
 }

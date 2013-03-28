@@ -20,18 +20,24 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public interface ServletRewrite<IN extends ServletRequest, OUT extends ServletResponse>
          extends Rewrite
 {
+   /**
+    * Get the current {@link ServletRequest}.
+    */
    public IN getRequest();
 
+   /**
+    * Get the current {@link ServletResponse}.
+    */
    public OUT getResponse();
 
    public ServletContext getServletContext();
@@ -55,11 +61,6 @@ public interface ServletRewrite<IN extends ServletRequest, OUT extends ServletRe
     * control of the request to the application via {@link FilterChain#doFilter(ServletRequest, ServletResponse)}
     */
    public void handled();
-
-   /**
-    * Get the current {@link Flow} state.
-    */
-   public Flow getFlow();
 
    /**
     * Set the current {@link Flow} state.

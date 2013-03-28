@@ -28,4 +28,5 @@ public class HttpBufferRewriteImpl extends BaseHttpRewrite implements HttpServle
    {
       return delegate.getAddress();
    }
+
 }

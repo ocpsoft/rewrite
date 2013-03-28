@@ -18,16 +18,22 @@ package org.ocpsoft.rewrite.event;
 import org.ocpsoft.rewrite.context.Context;
 
 /**
- * Event propagated to registered {@link RewriteLifecycleListener} and {@link org.ocpsoft.rewrite.spi.RewriteProvider} instances when the
- * rewrite lifecycle is executed.
+ * Event propagated to registered {@link RewriteLifecycleListener} and {@link org.ocpsoft.rewrite.spi.RewriteProvider}
+ * instances when the rewrite lifecycle is executed.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface Rewrite
 {
    /**
-    * Get the {@link org.ocpsoft.rewrite.context.Context} object associated with the current {@link Rewrite} event. This {@link Context} is created
-    * at the start of a {@link Rewrite} event, and is destroyed once the {@link Rewrite} event is complete.
+    * Get the {@link org.ocpsoft.rewrite.context.Context} object associated with the current {@link Rewrite} event. This
+    * {@link Context} is created at the start of a {@link Rewrite} event, and is destroyed once the {@link Rewrite}
+    * event is complete.
     */
    public Context getRewriteContext();
+
+   /**
+    * Get the current lifecycle {@link Flow}.
+    */
+   public Flow getFlow();
 }

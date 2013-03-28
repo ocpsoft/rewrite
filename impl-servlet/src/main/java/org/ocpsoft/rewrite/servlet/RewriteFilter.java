@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -185,7 +185,7 @@ public class RewriteFilter implements Filter
 
          rewrite(event);
 
-         if (!event.getFlow().is(BaseRewrite.Flow.ABORT_REQUEST))
+         if (!event.getFlow().is(BaseRewrite.ServletRewriteFlow.ABORT_REQUEST))
          {
             log.debug("RewriteFilter passing control of request to underlying application.");
             chain.doFilter(event.getRequest(), event.getResponse());
@@ -233,7 +233,7 @@ public class RewriteFilter implements Filter
          {
             provider.rewrite(event);
 
-            if (event.getFlow().is(BaseRewrite.Flow.HANDLED))
+            if (event.getFlow().is(BaseRewrite.ServletRewriteFlow.HANDLED))
             {
                log.debug("Event flow marked as HANDLED. No further processing will occur.");
                break;

@@ -20,8 +20,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.context.Context;
+import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.mock.MockRewriteContext;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 
 /**
@@ -68,19 +69,19 @@ public class MockServletRewrite implements ServletRewrite<ServletRequest, Servle
    @Override
    public void abort()
    {
-      this.flow = Flow.ABORT_REQUEST;
+      this.flow = ServletRewriteFlow.ABORT_REQUEST;
    }
 
    @Override
    public void proceed()
    {
-      this.flow = Flow.PROCEED;
+      this.flow = ServletRewriteFlow.PROCEED;
    }
 
    @Override
    public void handled()
    {
-      this.flow = Flow.HANDLED;
+      this.flow = ServletRewriteFlow.HANDLED;
    }
 
    @Override

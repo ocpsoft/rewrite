@@ -12,10 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.faces.config.PhaseAction;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.event.SubflowTask;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleContext;
@@ -78,11 +79,11 @@ public class RewritePhaseListener implements PhaseListener
             {
                Flow flow = handlePhaseOperation(operation);
 
-               if (flow.is(Flow.ABORT_REQUEST))
+               if (flow.is(ServletRewriteFlow.ABORT_REQUEST))
                {
                   event.getFacesContext().responseComplete();
                }
-               if (flow.is(Flow.HANDLED))
+               if (flow.is(ServletRewriteFlow.HANDLED))
                {
                   break;
                }
@@ -105,11 +106,11 @@ public class RewritePhaseListener implements PhaseListener
             {
                Flow flow = handlePhaseOperation(operation);
 
-               if (flow.is(Flow.ABORT_REQUEST))
+               if (flow.is(ServletRewriteFlow.ABORT_REQUEST))
                {
                   event.getFacesContext().responseComplete();
                }
-               if (flow.is(Flow.HANDLED))
+               if (flow.is(ServletRewriteFlow.HANDLED))
                {
                   break;
                }
@@ -120,7 +121,7 @@ public class RewritePhaseListener implements PhaseListener
 
    private Flow handlePhaseOperation(final PhaseOperation<?> operation)
    {
-      Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), Flow.UN_HANDLED,
+      Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), ServletRewriteFlow.UN_HANDLED,
                new SubflowTask() {
 
                   @Override

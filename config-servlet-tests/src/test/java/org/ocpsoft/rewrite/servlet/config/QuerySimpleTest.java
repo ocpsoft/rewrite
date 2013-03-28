@@ -21,9 +21,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.mock.MockRewrite;
 import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
@@ -120,13 +120,7 @@ public class QuerySimpleTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Query.matches(".*").evaluate(new Rewrite() {
-         @Override
-         public Context getRewriteContext()
-         {
-            return null;
-         }
-      }, context));
+      Assert.assertFalse(Query.matches(".*").evaluate(new MockRewrite(), context));
    }
 
    @Test(expected = IllegalArgumentException.class)

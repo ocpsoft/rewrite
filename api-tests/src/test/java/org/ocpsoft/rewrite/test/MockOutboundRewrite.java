@@ -16,8 +16,10 @@
 package org.ocpsoft.rewrite.test;
 
 import org.ocpsoft.rewrite.context.Context;
+import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.event.OutboundRewrite;
 import org.ocpsoft.rewrite.mock.MockRewriteContext;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -28,5 +30,11 @@ public class MockOutboundRewrite implements OutboundRewrite
    public Context getRewriteContext()
    {
       return new MockRewriteContext();
+   }
+
+   @Override
+   public Flow getFlow()
+   {
+      return ServletRewriteFlow.UN_HANDLED;
    }
 }

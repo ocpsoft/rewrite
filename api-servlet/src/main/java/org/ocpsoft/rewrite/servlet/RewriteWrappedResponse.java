@@ -97,4 +97,10 @@ public abstract class RewriteWrappedResponse extends HttpServletResponseWrapper
     * has no effect if no {@link ResponseContentInterceptor} instances are registered.
     */
    abstract public void flushBufferedContent();
+
+   /**
+    * Call {@link ResponseStreamWrapper#finish()} any registered instances of {@link ResponseStreamWrapper}. This
+    * operation has no effect if no instances are registered.
+    */
+   abstract public void finishStreamWrappers();
 }

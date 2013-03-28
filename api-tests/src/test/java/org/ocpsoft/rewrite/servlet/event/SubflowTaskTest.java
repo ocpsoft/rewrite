@@ -5,8 +5,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
+import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.test.MockServletRewrite;
 
 public class SubflowTaskTest
@@ -22,45 +23,46 @@ public class SubflowTaskTest
    @Test
    public void testSubflowRestoresOriginalFlowState()
    {
-      rewrite.setFlow(Flow.REDIRECT_PERMANENT);
+      rewrite.setFlow(ServletRewriteFlow.REDIRECT_PERMANENT);
 
       Flow result = SubflowTask.perform(rewrite, new MockEvaluationContext(), new SubflowTask() {
 
          @Override
          public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
          {
-            Assert.assertEquals(Flow.REDIRECT_PERMANENT, rewrite.getFlow());
-            event.setFlow(Flow.HANDLED);
+            Assert.assertEquals(ServletRewriteFlow.REDIRECT_PERMANENT, rewrite.getFlow());
+            event.setFlow(ServletRewriteFlow.HANDLED);
          }
       });
 
-      Assert.assertEquals(Flow.HANDLED, result);
-      Assert.assertEquals(Flow.REDIRECT_PERMANENT, rewrite.getFlow());
+      Assert.assertEquals(ServletRewriteFlow.HANDLED, result);
+      Assert.assertEquals(ServletRewriteFlow.REDIRECT_PERMANENT, rewrite.getFlow());
    }
 
    @Test
    public void testSubflowRestoresOriginalFlowStateWithInitializedFlow()
    {
-      rewrite.setFlow(Flow.REDIRECT_PERMANENT);
+      rewrite.setFlow(ServletRewriteFlow.REDIRECT_PERMANENT);
 
-      Flow result = SubflowTask.perform(rewrite, new MockEvaluationContext(), Flow.INCLUDE, new SubflowTask() {
+      Flow result = SubflowTask.perform(rewrite, new MockEvaluationContext(), ServletRewriteFlow.INCLUDE,
+               new SubflowTask() {
 
-         @Override
-         public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
-         {
-            Assert.assertEquals(Flow.INCLUDE, rewrite.getFlow());
-            event.setFlow(Flow.HANDLED);
-         }
-      });
+                  @Override
+                  public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
+                  {
+                     Assert.assertEquals(ServletRewriteFlow.INCLUDE, rewrite.getFlow());
+                     event.setFlow(ServletRewriteFlow.HANDLED);
+                  }
+               });
 
-      Assert.assertEquals(Flow.HANDLED, result);
-      Assert.assertEquals(Flow.REDIRECT_PERMANENT, rewrite.getFlow());
+      Assert.assertEquals(ServletRewriteFlow.HANDLED, result);
+      Assert.assertEquals(ServletRewriteFlow.REDIRECT_PERMANENT, rewrite.getFlow());
    }
 
    @Test
    public void testSubflowRestoresOriginalFlowStateAfterException()
    {
-      rewrite.setFlow(Flow.REDIRECT_PERMANENT);
+      rewrite.setFlow(ServletRewriteFlow.REDIRECT_PERMANENT);
 
       Flow result = null;
       try {
@@ -69,8 +71,8 @@ public class SubflowTaskTest
             @Override
             public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
             {
-               Assert.assertEquals(Flow.REDIRECT_PERMANENT, rewrite.getFlow());
-               event.setFlow(Flow.HANDLED);
+               Assert.assertEquals(ServletRewriteFlow.REDIRECT_PERMANENT, rewrite.getFlow());
+               event.setFlow(ServletRewriteFlow.HANDLED);
                throw new RuntimeException();
             }
 
@@ -80,33 +82,34 @@ public class SubflowTaskTest
       catch (RuntimeException e) {}
 
       Assert.assertNull(result);
-      Assert.assertEquals(Flow.REDIRECT_PERMANENT, rewrite.getFlow());
+      Assert.assertEquals(ServletRewriteFlow.REDIRECT_PERMANENT, rewrite.getFlow());
    }
 
    @Test
    public void testSubflowRestoresOriginalFlowStateAfterExceptionWithInitializedFlow()
    {
-      rewrite.setFlow(Flow.REDIRECT_PERMANENT);
+      rewrite.setFlow(ServletRewriteFlow.REDIRECT_PERMANENT);
 
       Flow result = null;
       try {
-         result = SubflowTask.perform(rewrite, new MockEvaluationContext(), Flow.INCLUDE, new SubflowTask() {
+         result = SubflowTask.perform(rewrite, new MockEvaluationContext(), ServletRewriteFlow.INCLUDE,
+                  new SubflowTask() {
 
-            @Override
-            public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
-            {
-               Assert.assertEquals(Flow.INCLUDE, rewrite.getFlow());
-               event.setFlow(Flow.HANDLED);
-               throw new RuntimeException();
-            }
+                     @Override
+                     public void performInSubflow(ServletRewrite<?, ?> event, EvaluationContext context)
+                     {
+                        Assert.assertEquals(ServletRewriteFlow.INCLUDE, rewrite.getFlow());
+                        event.setFlow(ServletRewriteFlow.HANDLED);
+                        throw new RuntimeException();
+                     }
 
-         });
+                  });
          Assert.fail();
       }
       catch (RuntimeException e) {}
 
       Assert.assertNull(result);
-      Assert.assertEquals(Flow.REDIRECT_PERMANENT, rewrite.getFlow());
+      Assert.assertEquals(ServletRewriteFlow.REDIRECT_PERMANENT, rewrite.getFlow());
    }
 
 }

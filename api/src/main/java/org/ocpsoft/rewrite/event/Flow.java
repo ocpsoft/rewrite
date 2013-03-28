@@ -13,32 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.servlet.impl;
+package org.ocpsoft.rewrite.event;
+
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Represents the current {@link Rewrite} event lifecycle state.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CompileException extends RuntimeException
+public interface Flow
 {
-   private static final long serialVersionUID = 5795246117307994195L;
+   /**
+    * Return <code>true</code> if this {@link Flow} represents a handled state.
+    */
+   public boolean isHandled();
 
-   public CompileException()
-   {}
-
-   public CompileException(final String message)
-   {
-      super(message);
-   }
-
-   public CompileException(final Throwable e)
-   {
-      super(e);
-   }
-
-   public CompileException(final String message, final Throwable e)
-   {
-      super(message, e);
-   }
-
+   /**
+    * Return <code>true</code> if this {@link Flow} is equivalent to the given instance.
+    */
+   public boolean is(Flow type);
 }

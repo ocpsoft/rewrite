@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,12 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public interface ResponseStreamWrapper
 {
    /**
-    * Wrap the {@link OutputStream} for the current {@link HttpServletResponse}.
+    * Wrap the {@link OutputStream} for the current {@link HttpServletRewrite}.
     */
    OutputStream wrap(HttpServletRewrite rewrite, OutputStream outputStream);
+
+   /**
+    * Perform necessary final operations on the {@link OutputStream} for the current {@link HttpServletRewrite}.
+    */
+   void finish(HttpServletRewrite rewrite);
 }

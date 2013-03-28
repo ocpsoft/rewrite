@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.servlet.config.lifecycle;
+package org.ocpsoft.rewrite.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,18 +24,6 @@ import java.util.Set;
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.config.CompositeOperation;
-import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.ConditionVisit;
-import org.ocpsoft.rewrite.config.Configuration;
-import org.ocpsoft.rewrite.config.DefaultOperationBuilder;
-import org.ocpsoft.rewrite.config.Operation;
-import org.ocpsoft.rewrite.config.OperationVisit;
-import org.ocpsoft.rewrite.config.ParameterizedCallback;
-import org.ocpsoft.rewrite.config.ParameterizedConditionVisitor;
-import org.ocpsoft.rewrite.config.ParameterizedOperationVisitor;
-import org.ocpsoft.rewrite.config.Rule;
-import org.ocpsoft.rewrite.config.RuleBuilder;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
@@ -47,8 +35,6 @@ import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.servlet.event.BaseRewrite.Flow;
-import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.rewrite.util.Visitor;
 
@@ -83,7 +69,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
       /*
        * Highly optimized loop - for performance reasons. Think before you change this!
        */
-      HttpServletRewrite event = (HttpServletRewrite) rewrite;
+      Rewrite event = (Rewrite) rewrite;
       List<Rule> cacheable = new ArrayList<Rule>();
       List<Rule> rules = config.getRules();
 
@@ -109,14 +95,14 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
                preOperations.get(k).perform(event, subContext);
             }
 
-            if (event.getFlow().is(Flow.HANDLED))
+            if (event.getFlow().isHandled())
             {
                break;
             }
 
             rule.perform(event, subContext);
 
-            if (event.getFlow().is(Flow.HANDLED))
+            if (event.getFlow().isHandled())
             {
                break;
             }
@@ -126,7 +112,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
                postOperations.get(k).perform(event, subContext);
             }
 
-            if (event.getFlow().is(Flow.HANDLED))
+            if (event.getFlow().isHandled())
             {
                break;
             }
@@ -134,7 +120,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
       }
    }
 
-   private boolean handleBindings(final HttpServletRewrite event, final EvaluationContextImpl context,
+   private boolean handleBindings(final Rewrite event, final EvaluationContextImpl context,
             ParameterValueStore values)
    {
       boolean result = true;

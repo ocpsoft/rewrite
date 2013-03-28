@@ -51,7 +51,7 @@ public class HttpInboundRewriteImpl extends BaseHttpRewrite implements HttpInbou
       }
 
       dispatchResource = encodeRedirectUrl(response, location);
-      this.flow = Flow.REDIRECT_TEMPORARY;
+      this.flow = ServletRewriteFlow.REDIRECT_TEMPORARY;
    }
 
    @Override
@@ -66,7 +66,7 @@ public class HttpInboundRewriteImpl extends BaseHttpRewrite implements HttpInbou
       }
 
       dispatchResource = encodeRedirectUrl(response, location);
-      this.flow = Flow.REDIRECT_PERMANENT;
+      this.flow = ServletRewriteFlow.REDIRECT_PERMANENT;
    }
 
    private String encodeRedirectUrl(final HttpServletResponse response, final String url)

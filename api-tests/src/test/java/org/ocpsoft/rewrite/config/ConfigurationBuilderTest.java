@@ -24,7 +24,6 @@ import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
-import org.ocpsoft.rewrite.servlet.config.lifecycle.Subset;
 import org.ocpsoft.rewrite.test.MockInboundRewrite;
 
 /**
