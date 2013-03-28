@@ -18,11 +18,10 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.net.MalformedURLException;
 import java.util.Set;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.exception.ParameterizationException;
