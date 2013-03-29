@@ -48,7 +48,7 @@ public class WrappedStreamToUppercase implements ResponseStreamWrapper
    }
 
    @Override
-   public void finish()
+   public void finish(HttpServletRewrite rewrite)
    {
    }
 
