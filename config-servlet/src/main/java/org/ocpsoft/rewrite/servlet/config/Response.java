@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;
 import org.ocpsoft.rewrite.servlet.config.response.GZipResponseContentInterceptor;
@@ -335,6 +336,24 @@ public abstract class Response extends HttpOperation
             return "Response.write(" + stream + ")";
          }
       };
+   }
+
+   /**
+    * Create an {@link Operation} that sets the given status code via {@link HttpServletResponse#setStatus(int)}. This
+    * does not call {@link HttpServletResponse#flushBuffer()}
+    */
+   public static SetStatus setStatus(int status)
+   {
+      return SetStatus.code(status);
+   }
+
+   /**
+    * Create an {@link Operation} that halts further {@link Rewrite} processing and completes the current
+    * {@link HttpServletResponse}.
+    */
+   public static Operation complete()
+   {
+      return Lifecycle.abort();
    }
 
 }
