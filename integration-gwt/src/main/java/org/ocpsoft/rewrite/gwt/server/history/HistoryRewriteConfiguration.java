@@ -42,7 +42,7 @@ public class HistoryRewriteConfiguration extends HttpConfigurationProvider
                      .addRule()
                      .when(Method.isHead().and(
                               Query.parameterExists("org.ocpsoft.rewrite.gwt.history.contextPath")))
-                     .perform(Response.setCode(200).and(
+                     .perform(Response.setStatus(200).and(
                               Response.addHeader("org.ocpsoft.rewrite.gwt.history.contextPath",
                                        contextPath)));
          }

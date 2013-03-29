@@ -66,8 +66,8 @@ public class Filesystem implements Condition, Parameterized
     * The given file path may be parameterized:
     * <p>
     * <code>
-    *    /tmp/file.txt <br>
-    *    c:\tmp\{param}.txt <br>
+    *    new File("/tmp/file.txt") <br>
+    *    new File("c:\tmp\{param}.txt") <br>
     *    ...
     * </code>
     * <p>
@@ -95,8 +95,8 @@ public class Filesystem implements Condition, Parameterized
     * The given file path may be parameterized:
     * <p>
     * <code>
-    *    /tmp/file.txt <br>
-    *    c:\tmp\{param}.txt <br>
+    *    new File("/tmp/directory/") <br>
+    *    new File("c:\tmp\{param}") <br>
     *    ...
     * </code>
     * <p>

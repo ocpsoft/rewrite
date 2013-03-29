@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.config.Operation;
+import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
@@ -59,7 +60,7 @@ public abstract class Response extends HttpOperation
     * 
     * @throws IllegalStateException When output has already been written to the client.
     */
-   public static Response withOutputInterceptedBy(final ResponseContentInterceptor... buffers)
+   public static OperationBuilder withOutputInterceptedBy(final ResponseContentInterceptor... buffers)
             throws IllegalStateException
    {
       return new Response() {
@@ -87,7 +88,7 @@ public abstract class Response extends HttpOperation
     * 
     * @throws IllegalStateException When output has already been written to the client.
     */
-   public static Response withOutputStreamWrappedBy(final ResponseStreamWrapper... wrappers)
+   public static OperationBuilder withOutputStreamWrappedBy(final ResponseStreamWrapper... wrappers)
             throws IllegalStateException
    {
       return new Response() {
@@ -110,7 +111,7 @@ public abstract class Response extends HttpOperation
    /**
     * Create an {@link Operation} that adds a header to the {@link HttpServletResponse}
     */
-   public static Response addHeader(final String name, final String value)
+   public static OperationBuilder addHeader(final String name, final String value)
    {
       return new Response() {
          @Override
@@ -130,7 +131,7 @@ public abstract class Response extends HttpOperation
    /**
     * Create an {@link Operation} that adds a date header to the {@link HttpServletResponse}
     */
-   public static Response addDateHeader(final String name, final long value)
+   public static OperationBuilder addDateHeader(final String name, final long value)
    {
       return new Response() {
          @Override
@@ -150,7 +151,7 @@ public abstract class Response extends HttpOperation
    /**
     * Create an {@link Operation} that sets the content type for the {@link HttpServletResponse}
     */
-   public static Response setContentType(final String contentType)
+   public static OperationBuilder setContentType(final String contentType)
    {
       return new Response() {
          @Override
@@ -170,7 +171,7 @@ public abstract class Response extends HttpOperation
    /**
     * Create an {@link Operation} that adds an <code>int</code> header to the {@link HttpServletResponse}
     */
-   public static Response addIntHeader(final String name, final int value)
+   public static OperationBuilder addIntHeader(final String name, final int value)
    {
       return new Response() {
          @Override
@@ -190,7 +191,7 @@ public abstract class Response extends HttpOperation
    /**
     * Create an {@link Operation} that adds a {@link Cookie} to the {@link HttpServletResponse}
     */
-   public static Response addCookie(final Cookie cookie)
+   public static OperationBuilder addCookie(final Cookie cookie)
    {
       return new Response() {
          @Override
@@ -213,7 +214,7 @@ public abstract class Response extends HttpOperation
     * <b>WARNING</b>: This causes response content to be buffered in memory in order to properly count the response
     * 'Content-Length'.
     */
-   public static Response gzipCompression()
+   public static OperationBuilder gzipCompression()
    {
       return new Response() {
 
@@ -237,7 +238,7 @@ public abstract class Response extends HttpOperation
     * <p>
     * <b>WARNING</b>: This means that the HTTP response will not contain a 'Content-Length' header.
     */
-   public static Response gzipStreamCompression()
+   public static OperationBuilder gzipStreamCompression()
    {
       return new Response() {
 
@@ -257,30 +258,9 @@ public abstract class Response extends HttpOperation
    }
 
    /**
-    * Create an {@link Operation} that sets the {@link HttpServletResponse#setStatus(int)} code of the current
-    * {@link HttpServletResponse}.
-    */
-   public static Response setCode(final int code)
-   {
-      return new Response() {
-         @Override
-         public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
-         {
-            event.getResponse().setStatus(code);
-         }
-
-         @Override
-         public String toString()
-         {
-            return "Response.setCode(" + code + ")";
-         }
-      };
-   }
-
-   /**
     * Create an {@link Operation} that writes the given bytes to the current {@link HttpServletResponse} upon execution.
     */
-   public static Response write(final byte... bytes)
+   public static OperationBuilder write(final byte... bytes)
    {
       return write(new ByteArrayInputStream(bytes));
    }
@@ -289,7 +269,7 @@ public abstract class Response extends HttpOperation
     * Create an {@link Operation} that writes the {@link String} value of the given {@link Object} to the current
     * {@link HttpServletResponse} upon execution. The value to be written is obtained using {@link Object#toString()}.
     */
-   public static Response write(final Object value)
+   public static OperationBuilder write(final Object value)
    {
       return new Response() {
          @Override
@@ -316,9 +296,9 @@ public abstract class Response extends HttpOperation
     * Create an {@link Operation} that writes the contents of the given {@link InputStream} current
     * {@link HttpServletResponse} upon execution.
     */
-   public static Response write(final InputStream stream)
+   public static OperationBuilder write(final InputStream stream)
    {
-      return new Response() {
+      return new HttpOperation() {
          @Override
          public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
          {
@@ -342,16 +322,24 @@ public abstract class Response extends HttpOperation
     * Create an {@link Operation} that sets the given status code via {@link HttpServletResponse#setStatus(int)}. This
     * does not call {@link HttpServletResponse#flushBuffer()}
     */
-   public static SetStatus setStatus(int status)
+   public static OperationBuilder setStatus(final int status)
    {
-      return SetStatus.code(status);
+      return new HttpOperation()
+      {
+         @Override
+         public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+         {
+            event.getResponse().setStatus(status);
+         }
+      };
+
    }
 
    /**
     * Create an {@link Operation} that halts further {@link Rewrite} processing and completes the current
     * {@link HttpServletResponse}.
     */
-   public static Operation complete()
+   public static OperationBuilder complete()
    {
       return Lifecycle.abort();
    }

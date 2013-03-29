@@ -66,13 +66,14 @@ public class ResponseContentInterceptorTestProvider extends HttpConfigurationPro
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
-                     if (HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest()).isResponseContentIntercepted())
+                     if (HttpRewriteWrappedResponse.getCurrentInstance(event.getRequest())
+                              .isResponseContentIntercepted())
                      {
                         throw new IllegalStateException("Buffering should not be active.");
                      }
                      else
                      {
-                        Response.setCode(201).perform(event, context);
+                        Response.setStatus(201).perform(event, context);
                      }
                   }
                })
@@ -87,7 +88,7 @@ public class ResponseContentInterceptorTestProvider extends HttpConfigurationPro
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
                   {
                      Response.withOutputInterceptedBy(new ResponseToLowercase()).perform(event, context);
-                     Response.setCode(202).perform(event, context);
+                     Response.setStatus(202).perform(event, context);
                   }
                })
 

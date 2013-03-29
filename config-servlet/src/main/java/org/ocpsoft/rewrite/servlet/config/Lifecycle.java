@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import org.ocpsoft.rewrite.config.Operation;
+import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
@@ -31,7 +32,7 @@ public abstract class Lifecycle extends HttpOperation
    /**
     * Create an {@link Operation} that calls {@link ServletRewrite#abort()}
     */
-   public static Operation abort()
+   public static OperationBuilder abort()
    {
       return new Lifecycle() {
          @Override
@@ -45,7 +46,7 @@ public abstract class Lifecycle extends HttpOperation
    /**
     * Create an {@link Operation} that calls {@link ServletRewrite#handled()}
     */
-   public static Operation handled()
+   public static OperationBuilder handled()
    {
       return new Lifecycle() {
          @Override
@@ -59,7 +60,7 @@ public abstract class Lifecycle extends HttpOperation
    /**
     * Create an {@link Operation} that calls {@link ServletRewrite#proceed()}
     */
-   public static Operation proceed()
+   public static OperationBuilder proceed()
    {
       return new Lifecycle() {
          @Override
