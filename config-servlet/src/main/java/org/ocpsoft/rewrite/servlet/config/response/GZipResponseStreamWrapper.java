@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class GZipResponseStreamWrapper implements ResponseStreamWrapper
 {
-   public final static String STREAM_KEY = GZIPOutputStream.class.getName() + "_STREAM";
+   public final static String STREAM_KEY = GZipResponseStreamWrapper.class.getName() + "_STREAM";
 
    @Override
    public OutputStream wrap(final HttpServletRewrite rewrite, OutputStream outputStream)

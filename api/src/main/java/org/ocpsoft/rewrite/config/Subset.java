@@ -23,18 +23,21 @@ import java.util.Set;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Evaluation;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ConfigurableParameter;
+import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.Transform;
 import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.rewrite.util.Visitor;
 
@@ -225,24 +228,60 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
                public void call(Parameterized parameterized)
                {
                   Set<String> names = parameterized.getRequiredParameterNames();
-                  ParameterStore store = ((RuleBuilder) rule).getParameterStore();
+                  if (rule instanceof RuleBuilder)
+                  {
+                     ParameterStore store = ((RuleBuilder) rule).getParameterStore();
 
-                  for (Entry<String, Parameter<?>> entry : parent) {
-                     if (!store.contains(entry.getKey()))
-                        store.get(entry.getKey(), entry.getValue());
-                     else if (!"*".equals(entry.getKey()))
-                        throw new IllegalStateException("Subset cannot re-configure parameter [" + entry.getKey()
-                                 + "] that was configured in parent Configuration. Re-definition was attempted at ["
-                                 + rule + "] ");
+                     for (Entry<String, Parameter<?>> entry : parent) {
+                        String name = entry.getKey();
+                        Parameter<?> parentParam = entry.getValue();
+
+                        if (!store.contains(name)) {
+                           store.get(name, parentParam);
+                        }
+                        else
+                        {
+                           Parameter<?> parameter = store.get(name);
+                           for (Binding binding : parameter.getBindings()) {
+                              if (!parentParam.getBindings().contains(binding))
+                                 throwRedefinitionError(rule, name);
+                           }
+
+                           for (Constraint<?> constraint : parameter.getConstraints()) {
+                              if (!parentParam.getConstraints().contains(constraint))
+                                 throwRedefinitionError(rule, name);
+                           }
+
+                           for (Transform<?> transform : parameter.getTransforms()) {
+                              if (!parentParam.getTransforms().contains(transform))
+                                 throwRedefinitionError(rule, name);
+                           }
+
+                           if (parentParam.getConverter() != null
+                                    && !parentParam.getConverter().equals(parameter.getConverter()))
+                              throwRedefinitionError(rule, name);
+
+                           if (parentParam.getValidator() != null
+                                    && !parentParam.getValidator().equals(parameter.getValidator()))
+                              throwRedefinitionError(rule, name);
+                        }
+                     }
+
+                     for (String name : names) {
+                        Parameter<?> parameter = store.get(name, new DefaultParameter(name));
+                        if (parameter instanceof ConfigurableParameter<?>)
+                           ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
+                     }
+                     parameterized.setParameterStore(store);
                   }
 
-                  for (String name : names) {
-                     Parameter<?> parameter = store.get(name, new DefaultParameter(name));
-                     if (parameter instanceof ConfigurableParameter<?>)
-                        ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
-                  }
+               }
 
-                  parameterized.setParameterStore(store);
+               private void throwRedefinitionError(Rule rule, String name)
+               {
+                  throw new IllegalStateException("Subset cannot re-configure parameter [" + name
+                           + "] that was configured in parent Configuration. Re-definition was attempted at ["
+                           + rule + "] ");
                }
             };
 

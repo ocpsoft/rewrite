@@ -15,6 +15,8 @@
  */
 package org.ocpsoft.rewrite.param;
 
+import java.util.regex.Pattern;
+
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -27,8 +29,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public class RegexConstraint implements Constraint<String>
 {
-
-   private final String pattern;
+   private final Pattern pattern;
 
    /**
     * Create a new {@link RegexConstraint} using the given pattern.
@@ -36,24 +37,52 @@ public class RegexConstraint implements Constraint<String>
    public RegexConstraint(String pattern)
    {
       Assert.notNull(pattern, "Pattern must not be null.");
-      this.pattern = pattern;
+      this.pattern = Pattern.compile(pattern);
    }
 
    @Override
    public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
    {
-      return value != null && value.matches(pattern);
+      return value != null && pattern.matcher(value).matches();
    }
 
    @Override
    public String toString()
    {
-      return pattern;
+      return getPattern();
    }
 
    public String getPattern()
    {
-      return pattern;
+      return pattern.pattern();
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((pattern.pattern() == null) ? 0 : pattern.pattern().hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      RegexConstraint other = (RegexConstraint) obj;
+      if (pattern.pattern() == null) {
+         if (other.pattern.pattern() != null)
+            return false;
+      }
+      else if (!pattern.pattern().equals(other.pattern.pattern()))
+         return false;
+      return true;
    }
 
 }
