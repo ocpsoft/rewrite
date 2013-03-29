@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config.response;
 
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
@@ -31,25 +30,17 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  */
 public class GZipResponseStreamWrapper implements ResponseStreamWrapper
 {
-   private GZIPOutputStream stream;
-   private CountingOutputStream counter;
+   public final static String STREAM_KEY = GZIPOutputStream.class.getName() + "_STREAM";
 
    @Override
    public OutputStream wrap(final HttpServletRewrite rewrite, OutputStream outputStream)
    {
-      rewrite.getResponse().addHeader("Content-Encoding", "gzip");
+      rewrite.getResponse().setHeader("Content-Encoding", "gzip");
 
       try {
-         stream = new GZIPOutputStream(outputStream);
-         counter = new CountingOutputStream(stream) {
-            @Override
-            public void flush() throws IOException
-            {
-               rewrite.getResponse().setHeader("Content-Length", String.valueOf(counter.getBytesWritten()));
-               super.flush();
-            }
-         };
-         return counter;
+         GZIPOutputStream stream = new GZIPOutputStream(outputStream);
+         rewrite.getRequest().setAttribute(STREAM_KEY, stream);
+         return stream;
       }
       catch (IOException e) {
          throw new RewriteException("Could not wrap OutputStream", e);
@@ -60,41 +51,15 @@ public class GZipResponseStreamWrapper implements ResponseStreamWrapper
    public void finish(HttpServletRewrite rewrite)
    {
       try {
-         counter.flush();
-         stream.finish();
-         stream.close();
+         GZIPOutputStream stream = (GZIPOutputStream) rewrite.getRequest().getAttribute(STREAM_KEY);
+         if (stream != null)
+         {
+            stream.flush();
+            stream.finish();
+         }
       }
       catch (IOException e) {
          throw new RewriteException("Could not finish GZip Encoding", e);
-      }
-   }
-
-   private class CountingOutputStream extends FilterOutputStream
-   {
-      private long written;
-
-      public CountingOutputStream(OutputStream out)
-      {
-         super(out);
-      }
-
-      public long getBytesWritten()
-      {
-         return written;
-      }
-
-      @Override
-      public void write(byte[] b, int off, int len) throws IOException
-      {
-         out.write(b, off, len);
-         written += len;
-      }
-
-      @Override
-      public void write(int b) throws IOException
-      {
-         out.write(b);
-         written++;
       }
    }
 }

@@ -79,13 +79,15 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
     * Buffering Facilities
     */
    private ByteArrayOutputStream bufferedResponseContent = new ByteArrayOutputStream();
-   private PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(bufferedResponseContent,
-            Charset.forName(getCharacterEncoding())), true);
+
    private List<ResponseContentInterceptor> responseContentInterceptors = new ArrayList<ResponseContentInterceptor>();
    private List<ResponseStreamWrapper> responseStreamWrappers = new ArrayList<ResponseStreamWrapper>();
 
    private boolean contentWritten = false;
+
+   private PrintWriter printWriter;
    private ServletOutputStream outputStream = null;
+   private ServletOutputStream wrappedOutputStream = null;
 
    @Override
    public boolean isResponseContentIntercepted()
@@ -140,6 +142,10 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       if (isResponseContentIntercepted())
       {
          try {
+            if (bufferedResponseContent != null) {
+               bufferedResponseContent.close();
+            }
+
             ResponseContent buffer = new ResponseContentImpl(bufferedResponseContent.toByteArray(),
                      Charset.forName(getCharacterEncoding()));
             new ResponseContentInterceptorChainImpl(responseContentInterceptors).begin(new HttpBufferRewriteImpl(
@@ -148,12 +154,12 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
             if (!Charset.forName(getCharacterEncoding()).equals(buffer.getCharset()))
                setCharacterEncoding(buffer.getCharset().name());
 
-            Streams.copy(new ByteArrayInputStream(buffer.getContents()), super.getOutputStream());
+            ServletOutputStream outputStream = isResponseStreamWrapped() ? wrappedOutputStream : super
+                     .getOutputStream();
+            Streams.copy(new ByteArrayInputStream(buffer.getContents()), outputStream);
+
             if (printWriter != null) {
                printWriter.close();
-            }
-            if (bufferedResponseContent != null) {
-               bufferedResponseContent.close();
             }
          }
          catch (IOException e) {
@@ -194,26 +200,45 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public PrintWriter getWriter()
    {
-      if (isResponseContentIntercepted())
-         return printWriter;
-      else
-         try {
-            lockStreams();
-            return super.getWriter();
+      if (printWriter == null)
+      {
+         if (isResponseContentIntercepted())
+         {
+            printWriter = new PrintWriter(new OutputStreamWriter(bufferedResponseContent,
+                     Charset.forName(getCharacterEncoding())), true);
          }
-         catch (IOException e) {
-            throw new RewriteException("Could not get response writer.", e);
+         else if (isResponseStreamWrapped())
+         {
+            printWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(),
+                     Charset.forName(getCharacterEncoding())), true);
          }
+         else
+         {
+            try {
+               lockStreams();
+               return super.getWriter();
+            }
+            catch (IOException e) {
+               throw new RewriteException("Could not get response writer.", e);
+            }
+         }
+      }
+
+      return printWriter;
    }
 
    @Override
    public ServletOutputStream getOutputStream()
    {
+
       if (outputStream == null)
       {
          if (isResponseContentIntercepted())
+         {
             outputStream = new RewriteServletOutputStream(bufferedResponseContent);
-         else {
+         }
+         else
+         {
             try {
                lockStreams();
                outputStream = super.getOutputStream();
@@ -225,12 +250,26 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 
          if (isResponseStreamWrapped())
          {
-            HttpServletRewrite event = new HttpBufferRewriteImpl(request, this, servletContext);
-            OutputStream wrapped = outputStream;
-            for (ResponseStreamWrapper wrapper : responseStreamWrappers) {
-               wrapped = wrapper.wrap(event, wrapped);
+            if (wrappedOutputStream == null)
+            {
+               HttpServletRewrite event = new HttpBufferRewriteImpl(request, this, servletContext);
+
+               try {
+                  OutputStream wrapped = super.getOutputStream();
+                  for (ResponseStreamWrapper wrapper : responseStreamWrappers) {
+                     wrapped = wrapper.wrap(event, wrapped);
+                  }
+                  wrappedOutputStream = new RewriteServletOutputStream(wrapped);
+                  if (!isResponseContentIntercepted())
+                  {
+                     outputStream = wrappedOutputStream;
+                  }
+               }
+               catch (IOException e) {
+                  throw new RewriteException("Could not get response output stream.", e);
+               }
+
             }
-            outputStream = new RewriteServletOutputStream(wrapped);
          }
       }
 
@@ -306,6 +345,12 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
             throw new RewriteException("Error writing bytes to stream [" + stream + "] at offset [" + off
                      + "] with length [" + len + "]", e);
          }
+      }
+
+      @Override
+      public String toString()
+      {
+         return stream.toString();
       }
    }
 
