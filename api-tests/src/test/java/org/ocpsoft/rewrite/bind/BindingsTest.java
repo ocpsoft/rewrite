@@ -47,7 +47,7 @@ public class BindingsTest
       DefaultParameter parameter = new DefaultParameter("lincoln");
       Assert.assertTrue(ParameterUtils.enqueueSubmission(rewrite, context,
                parameter.bindsTo(Evaluation.property("lincoln")), "baxter"));
-      Assert.assertEquals("baxter", Evaluation.property("lincoln").retrieve(rewrite, context, parameter));
+      Assert.assertEquals("baxter", Evaluation.property("lincoln").retrieve(rewrite, context));
    }
 
    @Test

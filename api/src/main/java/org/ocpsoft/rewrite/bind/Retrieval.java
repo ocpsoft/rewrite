@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.bind;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * Defines the methods necessary to perform {@link Binding} value retrieval.
@@ -29,5 +28,5 @@ public interface Retrieval
    /**
     * Retrieve the value from its storage location.
     */
-   Object retrieve(Rewrite event, EvaluationContext context, Parameter<?> parameter);
+   Object retrieve(Rewrite event, EvaluationContext context);
 }

@@ -22,13 +22,11 @@ import org.ocpsoft.rewrite.bind.Retrieval;
 import org.ocpsoft.rewrite.bind.Submission;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.DefaultParameter;
-import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.spi.InvocationResultHandler;
 
 /**
- * Builds {@link Operation} instances used to directly invoke {@link Binding} submission or
- * retrieval on {@link Rewrite} events.
+ * Builds {@link Operation} instances used to directly invoke {@link Binding} submission or retrieval on {@link Rewrite}
+ * events.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -37,7 +35,6 @@ public class Invoke extends DefaultOperationBuilder
    private static final Logger log = Logger.getLogger(Invoke.class);
    private final Submission submission;
    private final Retrieval retrieval;
-   private final Parameter<?> parameter = new DefaultParameter("");
 
    private Invoke(final Submission submission, final Retrieval retrieval)
    {
@@ -52,13 +49,13 @@ public class Invoke extends DefaultOperationBuilder
       Object result = null;
       if ((submission == null) && (retrieval != null))
       {
-         result = retrieval.retrieve(event, context, parameter);
+         result = retrieval.retrieve(event, context);
          log.debug("Invoked binding [" + retrieval + "] returned value [" + result + "]");
       }
       else if (retrieval != null)
       {
          // TODO convert/validate here?
-         result = submission.submit(event, context, parameter, retrieval.retrieve(event, context, parameter));
+         result = submission.submit(event, context, retrieval.retrieve(event, context));
          log.debug("Invoked binding [" + submission + "] returned value [" + result + "]");
       }
       else

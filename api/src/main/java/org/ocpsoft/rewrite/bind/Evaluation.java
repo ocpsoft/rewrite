@@ -40,7 +40,7 @@ public class Evaluation implements Binding
    }
 
    @Override
-   public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter, final Object value)
+   public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
    {
       String unconvertedName = getParameterUnconvertedName(property);
       if (!context.containsKey(property))
@@ -66,8 +66,7 @@ public class Evaluation implements Binding
       return null;
    }
 
-   public Object submitConverted(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
-            final Object value)
+   public Object submitConverted(final Rewrite event, final EvaluationContext context, final Object value)
    {
       String convertedName = getParameterConvertedName(property);
       if (!context.containsKey(property))
@@ -114,7 +113,7 @@ public class Evaluation implements Binding
    }
 
    @Override
-   public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
+   public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
       return retrieveFromProperty(context, getParameterUnconvertedName(property));
    }

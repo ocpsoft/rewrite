@@ -79,12 +79,12 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
             Object result = null;
             if (retrieval != null)
             {
-               result = retrieval.retrieve(event, context, null);
+               result = retrieval.retrieve(event, context);
                log.debug("Invoked binding [" + submission + "] returned value [" + result + "]");
             }
             if (submission != null)
             {
-               result = submission.submit(event, context, null, result);
+               result = submission.submit(event, context, result);
                log.debug("Invoked binding [" + retrieval + "] returned value [" + result + "]");
             }
             if (retrieval == null && submission == null)

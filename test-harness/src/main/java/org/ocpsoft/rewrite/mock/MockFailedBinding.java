@@ -9,7 +9,7 @@ public class MockFailedBinding implements Binding
 {
 
    @Override
-   public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
+   public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
       throw new RuntimeException("Binding extraction failed (expected)");
    }
@@ -27,7 +27,7 @@ public class MockFailedBinding implements Binding
    }
 
    @Override
-   public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter, final Object value)
+   public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
    {
       throw new RuntimeException("Binding failed (expected)");
    }

@@ -30,7 +30,6 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
-import org.ocpsoft.rewrite.param.Parameter;
 
 /**
  * Responsible for binding to EL expressions.
@@ -156,7 +155,7 @@ public abstract class El implements Binding, Retrieval
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
+      public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
 
          if (!supportsRetrieval())
@@ -188,8 +187,7 @@ public abstract class El implements Binding, Retrieval
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
-               final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          if (!supportsSubmission())
             throw new RewriteException("Method binding expression supports retrieval only [" + getExpression
@@ -249,7 +247,7 @@ public abstract class El implements Binding, Retrieval
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
+      public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
          Object value = null;
          for (ExpressionLanguageProvider provider : getProviders()) {
@@ -292,8 +290,7 @@ public abstract class El implements Binding, Retrieval
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
-               final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          for (ExpressionLanguageProvider provider : getProviders()) {
             try
@@ -338,7 +335,7 @@ public abstract class El implements Binding, Retrieval
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
+      public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
          Object value = null;
          for (ExpressionLanguageProvider provider : getProviders()) {
@@ -381,8 +378,7 @@ public abstract class El implements Binding, Retrieval
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter,
-               final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          for (ExpressionLanguageProvider provider : getProviders()) {
             try

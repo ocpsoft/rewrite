@@ -75,8 +75,8 @@ public class ParameterUtils
                if (ValueHolderUtil.validates(event, context, parameter.getValidator(), convertedValue))
                {
                   Evaluation evaluation = (Evaluation) binding;
-                  evaluation.submit(event, context, parameter, value);
-                  evaluation.submitConverted(event, context, parameter, convertedValue);
+                  evaluation.submit(event, context, value);
+                  evaluation.submitConverted(event, context, convertedValue);
                }
                else
                   return false;
@@ -86,7 +86,7 @@ public class ParameterUtils
                Object convertedValue = ValueHolderUtil.convert(event, context, parameter.getConverter(), value);
                if (ValueHolderUtil.validates(event, context, parameter.getValidator(), convertedValue))
                {
-                  operations.add(new BindingOperation(parameter, binding, convertedValue));
+                  operations.add(new BindingOperation(binding, convertedValue));
                }
                else
                   return false;
@@ -120,7 +120,7 @@ public class ParameterUtils
       {
          if (result == null && !(binding instanceof Evaluation))
          {
-            result = binding.retrieve(event, context, parameter);
+            result = binding.retrieve(event, context);
          }
       }
 
@@ -130,7 +130,7 @@ public class ParameterUtils
          {
             if (((Evaluation) binding).hasValue(event, context))
             {
-               result = binding.retrieve(event, context, parameter);
+               result = binding.retrieve(event, context);
             }
          }
       }
@@ -145,13 +145,11 @@ public class ParameterUtils
     */
    private static class BindingOperation implements Operation
    {
-      private final Parameter<?> parameter;
       private final Binding binding;
       private final Object value;
 
-      public BindingOperation(final Parameter<?> parameter, final Binding binding, final Object value)
+      public BindingOperation(final Binding binding, final Object value)
       {
-         this.parameter = parameter;
          this.binding = binding;
          this.value = value;
       }
@@ -159,7 +157,7 @@ public class ParameterUtils
       @Override
       public void perform(final Rewrite event, final EvaluationContext context)
       {
-         binding.submit(event, context, parameter, value);
+         binding.submit(event, context, value);
       }
 
       @Override

@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  */
 public class RequestConstraintTransformTestProvider extends HttpConfigurationProvider
 {
@@ -74,9 +74,8 @@ public class RequestConstraintTransformTestProvider extends HttpConfigurationPro
                   @Override
                   public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
                   {
-                     ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
-                     String one = ((String) Evaluation.property("1").retrieve(event, context, store.get("1")));
-                     String two = ((String) Evaluation.property("2").retrieve(event, context, store.get("1")));
+                     String one = ((String) Evaluation.property("1").retrieve(event, context));
+                     String two = ((String) Evaluation.property("2").retrieve(event, context));
                      String three = event.getResponse().encodeRedirectURL(event.getContextPath() + "/outbound/THREE");
 
                      Response.addHeader("one", one).perform(event, context);

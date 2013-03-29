@@ -31,7 +31,6 @@ import org.ocpsoft.rewrite.config.CompositeOperation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.SendStatus;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -52,7 +51,6 @@ public class PhaseBinding extends HttpOperation implements Binding, CompositeOpe
 
    private final Submission deferred;
    private Object deferredValue;
-   private Parameter<?> deferredParameter;
 
    private Validator<?> validator;
    private Converter<?> converter;
@@ -135,20 +133,19 @@ public class PhaseBinding extends HttpOperation implements Binding, CompositeOpe
       }
       else
       {
-         deferred.submit(event, context, deferredParameter, value);
+         deferred.submit(event, context, value);
       }
    }
 
    @Override
-   public Object retrieve(Rewrite event, EvaluationContext context, Parameter<?> parameter)
+   public Object retrieve(Rewrite event, EvaluationContext context)
    {
       throw new IllegalStateException("PhaseBinding does not support retrieval.");
    }
 
    @Override
-   public Object submit(Rewrite event, EvaluationContext context, Parameter<?> parameter, Object value)
+   public Object submit(Rewrite event, EvaluationContext context, Object value)
    {
-      deferredParameter = parameter;
       deferredValue = value;
 
       /**

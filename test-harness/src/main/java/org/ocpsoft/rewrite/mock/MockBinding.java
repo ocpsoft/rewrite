@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.mock;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Parameter;
 
 public class MockBinding implements Binding
 {
@@ -40,7 +39,7 @@ public class MockBinding implements Binding
    }
 
    @Override
-   public Object submit(final Rewrite event, final EvaluationContext context, Parameter<?> parameter, final Object value)
+   public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
    {
       if (value.getClass().isArray())
       {
@@ -59,7 +58,7 @@ public class MockBinding implements Binding
    }
 
    @Override
-   public Object retrieve(final Rewrite event, final EvaluationContext context, Parameter<?> parameter)
+   public Object retrieve(final Rewrite event, final EvaluationContext context)
    {
       extracted = true;
       return value;

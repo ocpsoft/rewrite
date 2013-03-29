@@ -74,8 +74,7 @@ public abstract class Request implements Binding
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter,
-               final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          ServletRequest request = ((ServletRewrite<?, ?>) event).getRequest();
          RewriteWrappedRequest wrapper = RewriteWrappedRequest.getCurrentInstance(request);
@@ -97,7 +96,7 @@ public abstract class Request implements Binding
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter)
+      public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
          return ((HttpServletRewrite) event).getRequest().getParameter(name);
       }
@@ -119,15 +118,14 @@ public abstract class Request implements Binding
       }
 
       @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter,
-               final Object value)
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
       {
          ((HttpServletRewrite) event).getRequest().setAttribute(name, value);
          return null;
       }
 
       @Override
-      public Object retrieve(final Rewrite event, final EvaluationContext context, final Parameter<?> parameter)
+      public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
          if (event instanceof HttpServletRewrite)
             return ((HttpServletRewrite) event).getRequest().getParameter(name);
