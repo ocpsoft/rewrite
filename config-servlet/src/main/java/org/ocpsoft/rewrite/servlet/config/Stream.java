@@ -103,8 +103,8 @@ public abstract class Stream extends HttpOperation implements Parameterized
    }
 
    /**
-    * Create an {@link Operation} that duplicates content written to {@link HttpServletResponse#getOutputStream()} to
-    * the given {@link File}.
+    * Create an {@link Operation} that duplicates content written to {@link HttpServletResponse#getOutputStream()} and
+    * writes it to the given {@link File}.
     */
    public static Operation to(File file)
    {
