@@ -24,6 +24,7 @@ import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Resource;
+import org.ocpsoft.rewrite.servlet.config.Response;
 import org.ocpsoft.rewrite.transform.Transform;
 import org.ocpsoft.rewrite.transform.less.Less;
 import org.ocpsoft.rewrite.transform.markup.Asciidoc;
@@ -45,6 +46,7 @@ public class TransformConfigurationProvider extends HttpConfigurationProvider
                         .and(Path.matches("/markdown/{name}.html"))
                         .and(Resource.exists("/markdown/{name}.md")))
                .perform(Forward.to("/markdown/{name}.md")
+                        .and(Response.setContentType("text/html"))
                         .and(Transform.with(Markdown.fullDocument()
                                  .withTitle("Markdown Demo")
                                  .addStylesheet(context.getContextPath() + "/common/bootstrap.css")
@@ -56,6 +58,7 @@ public class TransformConfigurationProvider extends HttpConfigurationProvider
                         .and(Path.matches("/textile/{name}.html"))
                         .and(Resource.exists("/textile/{name}.textile")))
                .perform(Forward.to("/textile/{name}.textile")
+                        .and(Response.setContentType("text/html"))
                         .and(Transform.with(Textile.fullDocument()
                                  .withTitle("Textile Demo")
                                  .addStylesheet(context.getContextPath() + "/common/bootstrap.css")
@@ -67,6 +70,7 @@ public class TransformConfigurationProvider extends HttpConfigurationProvider
                         .and(Path.matches("/asciidoc/{name}.html"))
                         .and(Resource.exists("/asciidoc/{name}.asciidoc")))
                .perform(Forward.to("/asciidoc/{name}.asciidoc")
+                        .and(Response.setContentType("text/html"))
                         .and(Transform.with(Asciidoc.fullDocument()
                                  .withTitle("AsciiDoc Demo")
                                  .addStylesheet(context.getContextPath() + "/common/bootstrap.css")
@@ -78,6 +82,7 @@ public class TransformConfigurationProvider extends HttpConfigurationProvider
                         .and(Path.matches("/less/{name}.css"))
                         .and(Resource.exists("/less/{name}.less")))
                .perform(Forward.to("/less/{name}.less")
+                        .and(Response.setContentType("text/css"))
                         .and(Transform.with(Less.compiler())))
 
                // Sass
@@ -86,6 +91,7 @@ public class TransformConfigurationProvider extends HttpConfigurationProvider
                         .and(Path.matches("/sass/{name}.css"))
                         .and(Resource.exists("/sass/{name}.scss")))
                .perform(Forward.to("/sass/{name}.scss")
+                        .and(Response.setContentType("text/css"))
                         .and(Transform.with(Sass.compiler())));
 
    }
