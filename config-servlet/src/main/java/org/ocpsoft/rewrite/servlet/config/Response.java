@@ -147,6 +147,26 @@ public abstract class Response extends HttpOperation
    }
 
    /**
+    * Create an {@link Operation} that sets the content type for the {@link HttpServletResponse}
+    */
+   public static Response setContentType(final String contentType)
+   {
+      return new Response() {
+         @Override
+         public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
+         {
+            event.getResponse().setContentType(contentType);
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Response.setContentType(\"" + contentType + ")";
+         }
+      };
+   }
+
+   /**
     * Create an {@link Operation} that adds an <code>int</code> header to the {@link HttpServletResponse}
     */
    public static Response addIntHeader(final String name, final int value)
