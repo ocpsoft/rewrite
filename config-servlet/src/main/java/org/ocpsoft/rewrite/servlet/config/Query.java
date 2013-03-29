@@ -120,7 +120,8 @@ public abstract class Query extends HttpCondition implements Parameterized
     * <p>
     * <code>
     *    Query.paramterExists("param") <br>
-    *    ...
+    *    ...<br/>
+    *    Forward.to("/{param}/page.jsp")
     * </code>
     * <p>
     * 
