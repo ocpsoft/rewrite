@@ -38,7 +38,7 @@ abstract class JRubyTransformer<T> extends StringTransformer
     */
    public abstract T self();
 
-   ScriptingContainer container = new ScriptingContainer(LocalContextScope.SINGLETON, LocalVariableBehavior.TRANSIENT);
+   ScriptingContainer container = new ScriptingContainer(LocalContextScope.THREADSAFE, LocalVariableBehavior.TRANSIENT);
 
    public JRubyTransformer()
    {
