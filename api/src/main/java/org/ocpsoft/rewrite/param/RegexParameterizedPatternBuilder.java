@@ -237,13 +237,21 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       for (RegexGroup group : groups)
       {
          Parameter<?> parameter = parameters.get(group.getName());
-         Object value = ParameterUtils.performRetrieval(event, context, parameter);
+         Object value = null;
 
-         if (value == null && context.getState().isEvaluating())
+         // TODO TEST ME!!!
+         if (context.getState().isEvaluating())
             value = ((ParameterValueStore) context.get(ParameterValueStore.class)).retrieve(parameter);
 
+         if (value == null || context.getState().isPerforming())
+         {
+            Object retrieved = ParameterUtils.performRetrieval(event, context, parameter);
+            if (retrieved != null)
+               value = retrieved;
+         }
+
          if (value == null)
-            throw new ParameterizationException("Required parameter [" + group.getName() + "] value was null.");
+            throw new ParameterizationException("The value of required parameter [" + group.getName() + "] was null.");
 
          result.put(group.getName(), transform.transform(event, context, value.toString()));
       }

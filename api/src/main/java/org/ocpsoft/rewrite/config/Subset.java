@@ -85,39 +85,41 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
          subContext.put(ParameterStore.class, context.get(ParameterStore.class));
          ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
          subContext.put(ParameterValueStore.class, values);
+         subContext.setState(RewriteState.EVALUATING);
 
          if (rule.evaluate(event, subContext))
          {
-            if (!handleBindings(event, subContext, values))
-               break;
-
-            log.debug("Rule [" + rule + "] matched and will be performed.");
-            cacheable.add(rule);
-            List<Operation> preOperations = subContext.getPreOperations();
-            for (int k = 0; k < preOperations.size(); k++) {
-               preOperations.get(k).perform(event, subContext);
-            }
-
-            if (event.getFlow().isHandled())
+            if (handleBindings(event, subContext, values))
             {
-               break;
-            }
+               subContext.setState(RewriteState.PERFORMING);
+               log.debug("Rule [" + rule + "] matched and will be performed.");
+               cacheable.add(rule);
+               List<Operation> preOperations = subContext.getPreOperations();
+               for (int k = 0; k < preOperations.size(); k++) {
+                  preOperations.get(k).perform(event, subContext);
+               }
 
-            rule.perform(event, subContext);
+               if (event.getFlow().isHandled())
+               {
+                  break;
+               }
 
-            if (event.getFlow().isHandled())
-            {
-               break;
-            }
+               rule.perform(event, subContext);
 
-            List<Operation> postOperations = subContext.getPostOperations();
-            for (int k = 0; k < postOperations.size(); k++) {
-               postOperations.get(k).perform(event, subContext);
-            }
+               if (event.getFlow().isHandled())
+               {
+                  break;
+               }
 
-            if (event.getFlow().isHandled())
-            {
-               break;
+               List<Operation> postOperations = subContext.getPostOperations();
+               for (int k = 0; k < postOperations.size(); k++) {
+                  postOperations.get(k).perform(event, subContext);
+               }
+
+               if (event.getFlow().isHandled())
+               {
+                  break;
+               }
             }
          }
       }
@@ -156,6 +158,7 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
    {
       private final List<Operation> preOperations = new ArrayList<Operation>();
       private final List<Operation> postOperations = new ArrayList<Operation>();
+      private RewriteState state;
 
       public EvaluationContextImpl()
       {
@@ -208,7 +211,12 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
       @Override
       public RewriteState getState()
       {
-         throw new IllegalStateException("not implemented");
+         return state;
+      }
+
+      public void setState(RewriteState state)
+      {
+         this.state = state;
       }
    }
 
