@@ -22,10 +22,10 @@ public class AsciidocTest
    public void shouldRenderLiteral()
    {
 
-      String asciidoc = "The +EventMetadata+ interface";
+      String asciidoc = "The +EventMetadata+ interface";
       String html = Asciidoc.partialDocument().transform(asciidoc);
 
-      assertThat(html).contains("The <tt>EventMetadata</tt> interface");
+      assertThat(html).contains("The <tt>EventMetadata</tt> interface");
 
    }
 
