@@ -46,7 +46,12 @@ public class IgnorePostbackOperation implements Operation
       Assert.notNull(facesContext, "FacesContext.getCurrentInstance() returned null. " +
                "You should use @Deferred so the operation gets executed within the JSF lifecycle.");
 
-      boolean postback = facesContext.getRenderKit().getResponseStateManager().isPostback(facesContext);
+      // getRenderKit() may return null in some situations
+      boolean postback = false;
+      if (facesContext.getRenderKit() != null) {
+         postback = facesContext.getRenderKit().getResponseStateManager().isPostback(facesContext);
+      }
+
       if (!postback) {
          delegate.perform(event, context);
       }
