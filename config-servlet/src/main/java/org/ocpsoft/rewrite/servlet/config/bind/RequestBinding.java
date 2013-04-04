@@ -34,12 +34,12 @@ import org.ocpsoft.rewrite.util.Maps;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class Request implements Binding
+public abstract class RequestBinding implements Binding
 {
    /**
     * Create a {@link Binding} to the {@link ServletRequest#setAttribute(String, Object)} map.
     */
-   public static Request attribute(final String property)
+   public static RequestBinding attribute(final String property)
    {
       return new RequestAttributeBinding(property);
    }
@@ -47,7 +47,7 @@ public abstract class Request implements Binding
    /**
     * Create a {@link Binding} to the {@link ServletRequest#getParameterMap()}.
     */
-   public static Request parameter(final String property)
+   public static RequestBinding parameter(final String property)
    {
       return new RequestParameterBinding(property);
    }
@@ -64,7 +64,7 @@ public abstract class Request implements Binding
       return true;
    }
 
-   private static class RequestParameterBinding extends Request
+   private static class RequestParameterBinding extends RequestBinding
    {
       private final String name;
 
@@ -108,7 +108,7 @@ public abstract class Request implements Binding
       }
    }
 
-   private static class RequestAttributeBinding extends Request
+   private static class RequestAttributeBinding extends RequestBinding
    {
       private final String name;
 

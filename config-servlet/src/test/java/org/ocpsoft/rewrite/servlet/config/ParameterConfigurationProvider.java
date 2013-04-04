@@ -22,7 +22,7 @@ import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.mock.MockFailedBinding;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -55,8 +55,8 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                      Response.addHeader("Order-ID", event.getRequest().getParameter("oid")).perform(event, context);
                   }
                }.and(SendStatus.code(200)))
-               .where("user").matches("[a-zA-Z]+").bindsTo(Request.parameter("uname"))
-               .where("oid").matches("[0-9]+").bindsTo(Request.parameter("oid"))
+               .where("user").matches("[a-zA-Z]+").bindsTo(RequestBinding.parameter("uname"))
+               .where("oid").matches("[0-9]+").bindsTo(RequestBinding.parameter("oid"))
 
                /*
                 * Forward a request to another resource

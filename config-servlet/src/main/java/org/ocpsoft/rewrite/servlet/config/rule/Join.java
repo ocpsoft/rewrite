@@ -41,7 +41,7 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.Substitute;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -92,7 +92,7 @@ public class Join implements Rule, JoinPath, Parameterized
     * {@link Parameter} instances defined in the given pattern will be bound by default to the
     * {@link HttpServletRequest#getParameterMap()} via the {@link RequestParameterProvider} SPI.
     * <p>
-    * To disable {@link Request} parameter {@link Binding}, instead use {@link #pathNonBinding(String)}.
+    * To disable {@link RequestBinding} parameter {@link Binding}, instead use {@link #pathNonBinding(String)}.
     * <p>
     * The given pattern may be parameterized:
     * <p>
@@ -117,7 +117,7 @@ public class Join implements Rule, JoinPath, Parameterized
     * {@link Parameter} instances defined in the given pattern will <b>NOT</b> be bound by default to the
     * {@link HttpServletRequest#getParameterMap()}.
     * <p>
-    * To enable {@link Request} parameter {@link Binding}, instead use {@link #path(String)}.
+    * To enable {@link RequestBinding} parameter {@link Binding}, instead use {@link #path(String)}.
     * <p>
     * The given pattern may be parameterized:
     * <p>

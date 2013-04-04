@@ -20,7 +20,7 @@ import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Response;
 import org.ocpsoft.rewrite.servlet.config.SendStatus;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 public class PhaseOperationTestConfigurationProvider extends HttpConfigurationProvider
@@ -105,7 +105,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                                  SendStatus.code(505).perform(event, context);
                            }
                         }).before(PhaseId.RENDER_RESPONSE)))
-               .where("value").bindsTo(PhaseBinding.to(Request.parameter("v")).after(PhaseId.RESTORE_VIEW))
+               .where("value").bindsTo(PhaseBinding.to(RequestBinding.parameter("v")).after(PhaseId.RESTORE_VIEW))
 
                /*
                 * Defer validation with binding.
@@ -113,7 +113,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
                .addRule()
                .when(Path.matches("/defer_validation/{value}").and(DispatchType.isRequest()))
                .perform(Forward.to("/empty.xhtml"))
-               .where("value").bindsTo(PhaseBinding.to(Request.parameter("v")).validatedBy(validator).after(
+               .where("value").bindsTo(PhaseBinding.to(RequestBinding.parameter("v")).validatedBy(validator).after(
                         PhaseId.RESTORE_VIEW))
 
                /*

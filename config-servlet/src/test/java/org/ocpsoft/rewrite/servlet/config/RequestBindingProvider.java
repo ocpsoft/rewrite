@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -56,8 +56,8 @@ public class RequestBindingProvider extends HttpConfigurationProvider
                      SendStatus.code(210).perform(event, context);
                   }
                })
-               .where("1").bindsTo(Request.parameter("one"))
-               .where("2").bindsTo(Request.attribute("two"));
+               .where("1").bindsTo(RequestBinding.parameter("one"))
+               .where("2").bindsTo(RequestBinding.attribute("two"));
 
       return config;
    }

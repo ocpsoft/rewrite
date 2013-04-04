@@ -19,7 +19,7 @@ import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 /**
@@ -38,7 +38,7 @@ public class JoinBindingConfigurationProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder.begin()
                .addRule(Join.path("/bind/{id}").to("/bind.html"))
-               .where("id").bindsTo(Request.parameter("join-id"))
+               .where("id").bindsTo(RequestBinding.parameter("join-id"))
 
                .addRule()
                .when(Path.matches("/bind.html").and(RequestParameter.exists("join-id")))

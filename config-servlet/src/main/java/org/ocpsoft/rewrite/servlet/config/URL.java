@@ -32,7 +32,7 @@ import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
-import org.ocpsoft.rewrite.servlet.config.bind.Request;
+import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.urlbuilder.Address;
@@ -164,7 +164,7 @@ public class URL extends HttpCondition implements Parameterized
          for (String param : getRequiredParameterNames()) {
             Parameter<?> parameter = store.get(param);
             if (parameter instanceof ConfigurableParameter<?>)
-               ((ConfigurableParameter<?>) parameter).bindsTo(Request.parameter(param));
+               ((ConfigurableParameter<?>) parameter).bindsTo(RequestBinding.parameter(param));
          }
       }
 
