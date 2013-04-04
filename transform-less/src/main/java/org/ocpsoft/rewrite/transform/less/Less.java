@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.ocpsoft.common.util.Streams;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 import org.ocpsoft.rewrite.transform.Transformer;
 
@@ -55,7 +56,7 @@ public class Less extends StringTransformer
    }
 
    @Override
-   public String transform(String less)
+   public String transform(HttpServletRewrite event, String less)
    {
 
       Context context = Context.enter();

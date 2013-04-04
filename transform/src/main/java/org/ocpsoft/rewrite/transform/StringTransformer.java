@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import org.ocpsoft.common.util.Streams;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * Base class for {@link Transformer} implementations that operate on strings. Please note that this classes assumes
@@ -35,10 +36,10 @@ public abstract class StringTransformer implements Transformer
 
    private static final Charset UTF8 = Charset.forName("UTF8");
 
-   public abstract String transform(String input);
+   public abstract String transform(HttpServletRewrite event, String input);
 
    @Override
-   public void transform(InputStream inputStream, OutputStream outputStream) throws IOException
+   public void transform(HttpServletRewrite event, InputStream inputStream, OutputStream outputStream) throws IOException
    {
 
       // read input stream and store it in a string
@@ -47,7 +48,7 @@ public abstract class StringTransformer implements Transformer
       String input = new String(bos.toByteArray(), UTF8);
 
       // perform internal transformation
-      String output = transform(input);
+      String output = transform(null, input);
 
       // write result to the output stream
       outputStream.write(output.getBytes(UTF8));

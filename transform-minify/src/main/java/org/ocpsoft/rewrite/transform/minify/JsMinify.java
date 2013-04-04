@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.Transformer;
 
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
@@ -38,7 +39,7 @@ public class JsMinify extends Minify implements Transformer
    {}
 
    @Override
-   public void transform(InputStream input, OutputStream output) throws IOException
+   public void transform(HttpServletRewrite event, InputStream input, OutputStream output) throws IOException
    {
 
       // prepare input reader

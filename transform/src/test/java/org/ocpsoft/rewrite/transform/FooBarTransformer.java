@@ -15,11 +15,13 @@
  */
 package org.ocpsoft.rewrite.transform;
 
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+
 public class FooBarTransformer extends StringTransformer
 {
 
    @Override
-   public String transform(String input)
+   public String transform(HttpServletRewrite event, String input)
    {
       return input.replace("foo", "bar");
    }

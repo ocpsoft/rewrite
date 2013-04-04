@@ -12,7 +12,7 @@ public class AsciidocTest
    {
 
       String asciidoc = "This is **bold**!";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).contains("This is <strong>bold</strong>!");
 
@@ -23,7 +23,7 @@ public class AsciidocTest
    {
 
       String asciidoc = "The +EventMetadata+ interface";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).contains("The <tt>EventMetadata</tt> interface");
 
@@ -36,7 +36,7 @@ public class AsciidocTest
       String asciidoc = "" +
                "== Level1 ==\n\n" +
                "Some text";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).matches("(?s).*<h2[^>]*>Level1</h2>.*");
 
@@ -50,7 +50,7 @@ public class AsciidocTest
                "Level1\n" +
                "------\n\n" +
                "Some text";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).matches("(?s).*<h2[^>]*>Level1</h2>.*");
 
@@ -63,7 +63,7 @@ public class AsciidocTest
       String asciidoc = "" +
                "== Level2 ==\n\n" +
                "Some text";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).matches("(?s).*<h2[^>]*>Level2</h2>.*");
 
@@ -76,7 +76,7 @@ public class AsciidocTest
       String asciidoc = "" +
                "=== Level3 ===\n\n" +
                "Some text";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).matches("(?s).*<h3[^>]*>Level3</h3>.*");
 
@@ -89,7 +89,7 @@ public class AsciidocTest
       String asciidoc = "" +
                "[quote]\n" +
                "To be or not to be.";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).matches("(?s).*<blockquote>\\s*To be or not to be.\\s*</blockquote>.*");
 
@@ -102,7 +102,7 @@ public class AsciidocTest
       String asciidoc = "" +
                "- Item1\n" +
                "- Item2\n";
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html)
                .contains("<ul>")
@@ -126,7 +126,7 @@ public class AsciidocTest
                " } \n" +
                "----";
 
-      String html = Asciidoc.partialDocument().transform(asciidoc);
+      String html = Asciidoc.partialDocument().transform(null, asciidoc);
 
       assertThat(html).contains("<div class=\"listingblock\">\n" +
                "  \n" +

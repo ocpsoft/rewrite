@@ -25,7 +25,7 @@ public class SassTest {
     public void testCalculations() {
 
         String sass = ".class { width: 1+1 }";
-        String css = Sass.compiler().transform(sass);
+        String css = Sass.compiler().transform(null, sass);
 
         assertEquals(".class { width: 2; }", normalize(css));
 
@@ -35,7 +35,7 @@ public class SassTest {
     public void testNesting() {
 
         String sass = ".outer { margin: 2px; .inner { padding: 3px; } }";
-        String css = Sass.compiler().transform(sass);
+        String css = Sass.compiler().transform(null, sass);
 
         assertEquals(".outer { margin: 2px; } .outer .inner { padding: 3px; }", normalize(css));
 
@@ -45,7 +45,7 @@ public class SassTest {
     public void testVariables() {
 
         String sass = "$mycolor: #123456; .class { color: $mycolor }";
-        String css = Sass.compiler().transform(sass);
+        String css = Sass.compiler().transform(null, sass);
 
         assertEquals(".class { color: #123456; }", normalize(css));
 
@@ -55,7 +55,7 @@ public class SassTest {
     public void testMixins() {
 
         String sass = "@mixin invalid { color: red } .label { @include invalid }";
-        String css = Sass.compiler().transform(sass);
+        String css = Sass.compiler().transform(null, sass);
 
         assertEquals(".label { color: red; }", normalize(css));
 

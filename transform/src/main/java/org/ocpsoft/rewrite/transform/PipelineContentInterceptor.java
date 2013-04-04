@@ -54,7 +54,7 @@ class PipelineContentInterceptor implements ResponseContentInterceptor
    {
       try {
          ByteArrayOutputStream output = new ByteArrayOutputStream();
-         transform(new ByteArrayInputStream(buffer.getContents()), output);
+         transform(event, new ByteArrayInputStream(buffer.getContents()), output);
          buffer.setContents(output.toByteArray());
          chain.proceed();
       }
@@ -63,7 +63,7 @@ class PipelineContentInterceptor implements ResponseContentInterceptor
       }
    }
 
-   public void transform(InputStream input, OutputStream output) throws IOException
+   public void transform(HttpServletRewrite event, InputStream input, OutputStream output) throws IOException
    {
 
       // just do a copy if no transformers have been added
@@ -73,7 +73,7 @@ class PipelineContentInterceptor implements ResponseContentInterceptor
 
       // delegate if there is only one transformer
       else if (pipeline.size() == 1) {
-         pipeline.get(0).transform(input, output);
+         pipeline.get(0).transform(event, input, output);
       }
 
       // multiple transformers
@@ -86,7 +86,7 @@ class PipelineContentInterceptor implements ResponseContentInterceptor
          for (int i = 0; i < pipeline.size(); i++) {
 
             // run transformation
-            pipeline.get(i).transform(in, out);
+            pipeline.get(i).transform(event, in, out);
 
             // if it isn't the last transformation step -> prepare next one
             if (i < pipeline.size() - 1) {

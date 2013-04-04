@@ -7,6 +7,7 @@ import org.jruby.RubyInstanceConfig.CompileMode;
 import org.jruby.embed.LocalContextScope;
 import org.jruby.embed.LocalVariableBehavior;
 import org.jruby.embed.ScriptingContainer;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.StringTransformer;
 import org.ocpsoft.rewrite.transform.Transformer;
 
@@ -60,7 +61,7 @@ abstract class JRubyTransformer<T> extends StringTransformer
    }
 
    @Override
-   public final String transform(String input)
+   public final String transform(HttpServletRewrite event, String input)
    {
       try {
 

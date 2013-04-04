@@ -30,7 +30,7 @@ public class TextileTest
    {
 
       String textile = "This is *bold*!";
-      String html = Textile.partialDocument().transform(textile);
+      String html = Textile.partialDocument().transform(null, textile);
 
       assertEquals("<p>This is <strong>bold</strong>!</p>", html);
 
@@ -41,7 +41,7 @@ public class TextileTest
    {
 
       String textile = "h1. Header\n\nh2. Section\n\nSome text!";
-      String html = Textile.partialDocument().transform(textile);
+      String html = Textile.partialDocument().transform(null, textile);
 
       assertEquals("<h1>Header</h1><h2>Section</h2><p>Some text!</p>", normalize(html));
 
@@ -52,7 +52,7 @@ public class TextileTest
    {
 
       String textile = "bq. Some quote";
-      String html = Textile.partialDocument().transform(textile);
+      String html = Textile.partialDocument().transform(null, textile);
 
       assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
 
@@ -63,7 +63,7 @@ public class TextileTest
    {
 
       String textile = "* One\n* Two";
-      String html = Textile.partialDocument().transform(textile);
+      String html = Textile.partialDocument().transform(null, textile);
 
       assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html).replaceAll(" ", ""));
 
@@ -74,7 +74,7 @@ public class TextileTest
    {
 
       String textile = "bc. private int n = 0;";
-      String html = Textile.partialDocument().transform(textile);
+      String html = Textile.partialDocument().transform(null, textile);
 
       assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
 
@@ -85,7 +85,7 @@ public class TextileTest
    {
 
       String textile = "some text";
-      String html = Textile.fullDocument().transform(textile);
+      String html = Textile.fullDocument().transform(null, textile);
 
       assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html"));
       assertTrue("html tag is missing", html.contains("<html"));
@@ -99,7 +99,7 @@ public class TextileTest
    {
 
       String textile = "some text";
-      String html = Textile.fullDocument().withTitle("My Title").transform(textile);
+      String html = Textile.fullDocument().withTitle("My Title").transform(null, textile);
 
       assertThat(html, containsString("<title>My Title</title>"));
 
@@ -110,7 +110,7 @@ public class TextileTest
    {
 
       String textile = "some text";
-      String html = Textile.fullDocument().addStylesheet("http://localhost/style.css").transform(textile);
+      String html = Textile.fullDocument().addStylesheet("http://localhost/style.css").transform(null, textile);
 
       assertThat(html, containsString("http://localhost/style.css"));
 

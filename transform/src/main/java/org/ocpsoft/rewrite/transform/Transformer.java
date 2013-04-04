@@ -21,6 +21,8 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+
 /**
  * Implementations of this interface are able to transform streamed data. Classes implementing this interface can be
  * added via {@link Transform} to modify an intercepted {@link HttpServletResponse#getOutputStream()}.
@@ -34,6 +36,6 @@ public interface Transformer
    /**
     * Transform the given {@link InputStream} and write it to the given {@link OutputStream}.
     */
-   void transform(InputStream input, OutputStream output) throws IOException;
+   void transform(HttpServletRewrite event, InputStream input, OutputStream output) throws IOException;
 
 }
