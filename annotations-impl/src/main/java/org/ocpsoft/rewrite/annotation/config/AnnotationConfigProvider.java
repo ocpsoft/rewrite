@@ -46,7 +46,7 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
    @Override
    public int priority()
    {
-      return 0;
+      return 100;
    }
 
    @Override
