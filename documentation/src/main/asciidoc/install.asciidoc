@@ -1,0 +1,22 @@
+== Installation
+
+=== Include Rewrite in your Project
+
+Add the required Maven dependencies to your pom.xml file
+
+[source,xml]
+.Add Rewrite to your maven pom.xml
+----
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-servlet</artifactId>
+   <version>1.1.0.Final</version>
+</dependency>
+
+<!-- To use snapshots, you must also use the Sonatype Snapshots respository -->
+<repository>
+   <id>sonatype-snapshots</id>
+   <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+</repository>
+----
+

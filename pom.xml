@@ -73,6 +73,7 @@
       <module>rewrite-servlet</module>
       <module>showcase</module>
       <module>distribution</module>
+      <module>documentation</module>
    </modules>
 
    <build>
