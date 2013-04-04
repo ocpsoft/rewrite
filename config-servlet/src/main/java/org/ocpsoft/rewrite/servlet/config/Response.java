@@ -40,7 +40,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * Responsible for manipulating properties such as headers, cookies, {@link ResponseContentInterceptor} and
- * {@link ResponseStreamWrapper} instances to the curent {@link HttpServletResponse}
+ * {@link ResponseStreamWrapper} instances to the current {@link HttpServletResponse}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
