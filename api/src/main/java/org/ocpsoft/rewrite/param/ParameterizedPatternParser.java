@@ -48,7 +48,7 @@ public interface ParameterizedPatternParser extends ParameterizedPattern
 
    /**
     * Parses the given string if it matches this expression. Returns a {@link org.ocpsoft.rewrite.param.Parameter}-value
-    * map of parsed values. This method does not apply any {@link Transform} instances that may be registered.
+    * map of parsed values. This method does not apply any {@link Transposition} instances that may be registered.
     */
    Map<Parameter<?>, String> parse(String value);
 

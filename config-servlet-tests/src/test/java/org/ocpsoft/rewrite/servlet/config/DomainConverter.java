@@ -1,8 +1,8 @@
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Converter;
 
 public class DomainConverter implements Converter<DomainConvertedType>
 {

@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
-import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.rewrite.util.Transpositions;
 import org.ocpsoft.urlbuilder.Address;
 
 /**
@@ -82,7 +82,7 @@ public class Forward extends HttpOperation implements Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, Transforms.encodePath());
+         String target = location.build(event, context, Transpositions.encodePath());
          ((HttpInboundServletRewrite) event).forward(target);
       }
    }

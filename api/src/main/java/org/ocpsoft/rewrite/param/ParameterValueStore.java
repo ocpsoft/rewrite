@@ -21,7 +21,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
  * Used to submit {@link Parameter} values in {@link String} form. These values will subsequently be passed through
- * {@link Constraint}, {@link Transform} and {@link Binding} processing.
+ * {@link Constraint}, {@link Transposition} and {@link Binding} processing.
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */

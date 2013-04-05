@@ -20,21 +20,21 @@ import java.net.URISyntaxException;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Transform;
+import org.ocpsoft.rewrite.param.Transposition;
 
 /**
- * This class provides common implementations of the {@link Transform} interface.
+ * This class provides common implementations of the {@link Transposition} interface.
  * 
  * @author Christian Kaltepoth
  */
-public class Transforms
+public class Transpositions
 {
 
-   public static Transform<String> encodePath()
+   public static Transposition<String> encodePath()
    {
-      return new Transform<String>() {
+      return new Transposition<String>() {
          @Override
-         public String transform(Rewrite event, EvaluationContext context, String value)
+         public String transpose(Rewrite event, EvaluationContext context, String value)
          {
             try
             {
@@ -49,11 +49,11 @@ public class Transforms
       };
    }
 
-   public static Transform<String> identity()
+   public static Transposition<String> identity()
    {
-      return new Transform<String>() {
+      return new Transposition<String>() {
          @Override
-         public String transform(Rewrite event, EvaluationContext context, String value)
+         public String transpose(Rewrite event, EvaluationContext context, String value)
          {
             return value;
          }

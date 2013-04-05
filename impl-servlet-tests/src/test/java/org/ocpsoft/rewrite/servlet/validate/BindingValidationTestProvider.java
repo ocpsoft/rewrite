@@ -18,12 +18,12 @@ package org.ocpsoft.rewrite.servlet.validate;
 import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.SendStatus;
@@ -51,7 +51,7 @@ public class BindingValidationTestProvider extends HttpConfigurationProvider
                .perform(SendStatus.code(205))
                .where("param").bindsTo(Evaluation.property("param")).validatedBy(new Validator() {
                   @Override
-                  public boolean validate(final Rewrite event, final EvaluationContext context,
+                  public boolean isValid(final Rewrite event, final EvaluationContext context,
                            final Object value)
                   {
                      return "valid".equals(value);

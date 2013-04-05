@@ -37,7 +37,7 @@ import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
-import org.ocpsoft.rewrite.param.Transform;
+import org.ocpsoft.rewrite.param.Transposition;
 import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.rewrite.util.Visitor;
 
@@ -260,8 +260,8 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
                                  throwRedefinitionError(rule, name);
                            }
 
-                           for (Transform<?> transform : parameter.getTransforms()) {
-                              if (!parentParam.getTransforms().contains(transform))
+                           for (Transposition<?> transposition : parameter.getTranspositions()) {
+                              if (!parentParam.getTranspositions().contains(transposition))
                                  throwRedefinitionError(rule, name);
                            }
 

@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.instance;
 
-import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.spi.ValidatorProvider;
 import org.ocpsoft.rewrite.util.Instances;
 

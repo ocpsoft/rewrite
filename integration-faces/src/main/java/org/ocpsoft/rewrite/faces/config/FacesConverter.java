@@ -20,10 +20,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.faces.util.NullComponent;
+import org.ocpsoft.rewrite.param.Converter;
 
 /**
  * Adapter class that allows to use JSF converters with {@link Rewrite} framework {@link Converter} instances.

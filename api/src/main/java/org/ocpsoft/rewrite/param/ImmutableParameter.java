@@ -18,8 +18,6 @@ package org.ocpsoft.rewrite.param;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 
 /**
  * A an immutable implementation of {@link Parameter}.
@@ -66,9 +64,9 @@ public class ImmutableParameter implements Parameter<ImmutableParameter>
    }
 
    @Override
-   public List<Transform<String>> getTransforms()
+   public List<Transposition<String>> getTranspositions()
    {
-      return wrapped.getTransforms();
+      return wrapped.getTranspositions();
    }
 
 }

@@ -61,11 +61,11 @@ public class DefaultParameterValueStore implements ParameterValueStore, Iterable
                result = false;
             }
          }
-         // FIXME Transform processing will break multi-conditional matching
+         // FIXME Transposition processing will break multi-conditional matching
          if (result)
          {
-            for (Transform<String> transform : param.getTransforms()) {
-               value = transform.transform(event, context, value);
+            for (Transposition<String> transposition : param.getTranspositions()) {
+               value = transposition.transpose(event, context, value);
             }
             map.put(param, value);
             result = true;

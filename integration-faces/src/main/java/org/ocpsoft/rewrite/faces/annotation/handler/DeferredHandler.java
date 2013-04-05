@@ -27,16 +27,16 @@ import org.ocpsoft.rewrite.annotation.api.MethodContext;
 import org.ocpsoft.rewrite.annotation.handler.HandlerWeights;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.Phase;
 import org.ocpsoft.rewrite.faces.config.PhaseBinding;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
+import org.ocpsoft.rewrite.param.Converter;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterConfiguration;
+import org.ocpsoft.rewrite.param.Validator;
 
 public class DeferredHandler implements AnnotationHandler<Deferred>
 {

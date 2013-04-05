@@ -44,7 +44,7 @@ public interface ParameterizedPatternBuilder extends ParameterizedPattern
     * 
     * @throws {@link ParameterizationException} when a required parameter is missing.
     */
-   String build(Rewrite event, EvaluationContext context, Transform<String> transform)
+   String build(Rewrite event, EvaluationContext context, Transposition<String> transposition)
             throws ParameterizationException;
 
    /**
@@ -56,7 +56,7 @@ public interface ParameterizedPatternBuilder extends ParameterizedPattern
 
    /**
     * Use this expression's pattern to build a {@link String} from the given values. Enforces that the number of values
-    * passed must equal the number of expression parameters. Does not apply any configured {@link Transform} instances.
+    * passed must equal the number of expression parameters. Does not apply any configured {@link Transposition} instances.
     * 
     * @throws {@link ParameterizationException} when a required parameter is missing.
     */

@@ -7,10 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 
 import org.junit.Test;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.instance.DefaultValidatorProvider;
+import org.ocpsoft.rewrite.param.Validator;
 
 public class DefaultValidatorProviderTest
 {
@@ -46,7 +46,7 @@ public class DefaultValidatorProviderTest
    public static class TestValidator implements Validator<Object>
    {
       @Override
-      public boolean validate(Rewrite event, EvaluationContext context, Object value)
+      public boolean isValid(Rewrite event, EvaluationContext context, Object value)
       {
          return false;
       }

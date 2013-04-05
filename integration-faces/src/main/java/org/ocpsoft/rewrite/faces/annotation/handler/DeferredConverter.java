@@ -1,8 +1,8 @@
 package org.ocpsoft.rewrite.faces.annotation.handler;
 
-import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Converter;
 
 class DeferredConverter implements Converter<Object>
 {

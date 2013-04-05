@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.bind;
+package org.ocpsoft.rewrite.param;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * An object that can validate a value.
+ * Used to validate {@link Parameter} values after they have been converted via the {@link Converter} API.
  * 
+ * @see {@link Parameter} {@link Constraint} {@link Transposition} {@link Converter}
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public interface Validator<T>
 {
    /**
-    * Validate a single value.
+    * Return <code>true</code> if the given value is valid; otherwise return <code>false</code>.
     */
-   boolean validate(Rewrite event, EvaluationContext context, T value);
+   boolean isValid(Rewrite event, EvaluationContext context, T value);
 }

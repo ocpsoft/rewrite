@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.instance;
 
-import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.param.Converter;
 import org.ocpsoft.rewrite.spi.ConverterProvider;
 import org.ocpsoft.rewrite.util.Instances;
 

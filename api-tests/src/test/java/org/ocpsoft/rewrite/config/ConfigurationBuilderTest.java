@@ -191,7 +191,7 @@ public class ConfigurationBuilderTest
                .perform(operation)
                .otherwise(operation)
                .where("p").bindsTo(El.property("whee.glee")).matches("blah")
-               .constrainedBy(null).convertedBy(null).transformedBy(null).validatedBy(null)
+               .constrainedBy(null).convertedBy(null).transposedBy(null).validatedBy(null)
                .where("s").matches("oh").bindsTo(El.property("ee.flee"))
                .withPriority(0)
                .withId("id")
@@ -201,7 +201,7 @@ public class ConfigurationBuilderTest
                .otherwise(operation)
                .where("p").matches("blah").bindsTo(El.property("whee.glee"))
                .where("s").matches("oh").bindsTo(El.property("ee.flee"))
-               .constrainedBy(null).convertedBy(null).transformedBy(null).validatedBy(null)
+               .constrainedBy(null).convertedBy(null).transposedBy(null).validatedBy(null)
                .withId("id")
                .withPriority(0)
 

@@ -15,9 +15,9 @@
  */
 package org.ocpsoft.rewrite.showcase.rest;
 
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Validator;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 public class ProductValidator implements Validator<Product>
 {
    @Override
-   public boolean validate(final Rewrite event, final EvaluationContext context, final Product value)
+   public boolean isValid(final Rewrite event, final EvaluationContext context, final Product value)
    {
       /*
        * Make sure that we actually have a Product object. If we don't, we can assume that

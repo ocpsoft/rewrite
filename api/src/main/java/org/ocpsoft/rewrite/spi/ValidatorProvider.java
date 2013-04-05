@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.spi;
 
 import org.ocpsoft.common.pattern.Weighted;
-import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.param.Validator;
 
 /**
  * SPI for providing integration with other validation frameworks.

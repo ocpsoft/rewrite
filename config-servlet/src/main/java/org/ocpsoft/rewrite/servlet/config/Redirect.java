@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.rewrite.util.Transpositions;
 
 /**
  * An {@link Operation} that performs redirects via {@link HttpInboundServletRewrite#redirectPermanent(String)} and
@@ -55,7 +55,7 @@ public class Redirect extends HttpOperation implements Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, Transforms.encodePath());
+         String target = location.build(event, context, Transpositions.encodePath());
          switch (type)
          {
          case PERMANENT:

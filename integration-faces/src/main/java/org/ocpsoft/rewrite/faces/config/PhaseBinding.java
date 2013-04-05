@@ -24,13 +24,13 @@ import java.util.Set;
 import javax.faces.event.PhaseId;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Submission;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.CompositeOperation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Converter;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.SendStatus;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;

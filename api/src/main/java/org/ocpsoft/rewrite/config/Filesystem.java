@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
-import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.rewrite.util.Transpositions;
 
 /**
  * A {@link Condition} responsible for determining existence of {@link File} paths on the host file-system.
@@ -51,7 +51,7 @@ public class Filesystem implements Condition, Parameterized
    {
       if (resource != null)
       {
-         String filePath = resource.getBuilder().build(event, context, Transforms.encodePath());
+         String filePath = resource.getBuilder().build(event, context, Transpositions.encodePath());
          File file = new File(filePath);
          return filter.accept(file);
       }

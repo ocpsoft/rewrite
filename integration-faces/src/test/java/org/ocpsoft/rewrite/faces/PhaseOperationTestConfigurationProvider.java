@@ -5,7 +5,6 @@ import javax.faces.event.PhaseId;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Operation;
@@ -13,6 +12,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.faces.config.PhaseBinding;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
@@ -30,7 +30,7 @@ public class PhaseOperationTestConfigurationProvider extends HttpConfigurationPr
    {
       Validator<String> validator = new Validator<String>() {
          @Override
-         public boolean validate(Rewrite event, EvaluationContext context, String value)
+         public boolean isValid(Rewrite event, EvaluationContext context, String value)
          {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext == null)

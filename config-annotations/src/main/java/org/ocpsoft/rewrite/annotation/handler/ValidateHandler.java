@@ -25,12 +25,12 @@ import org.ocpsoft.rewrite.annotation.Validate;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.spi.FieldAnnotationHandler;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterConfiguration;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.spi.ValidatorProvider;
 
 /**
@@ -134,7 +134,7 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
 
       @Override
       @SuppressWarnings({ "rawtypes", "unchecked" })
-      public boolean validate(Rewrite event, EvaluationContext context, Object value)
+      public boolean isValid(Rewrite event, EvaluationContext context, Object value)
       {
 
          Validator validator = null;
@@ -161,7 +161,7 @@ public class ValidateHandler extends FieldAnnotationHandler<Validate>
          }
          Assert.notNull(validator, "Got no validator from any ValidatorProvider for: " + this.toString());
 
-         return validator.validate(event, context, value);
+         return validator.isValid(event, context, value);
 
       }
 

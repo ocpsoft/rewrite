@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.spi;
 
 import org.ocpsoft.common.pattern.Weighted;
-import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.param.Converter;
 
 /**
  * SPI for providing integration with other conversion frameworks.

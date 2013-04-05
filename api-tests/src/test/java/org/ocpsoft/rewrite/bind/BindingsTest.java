@@ -22,6 +22,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.test.MockRewrite;
 import org.ocpsoft.rewrite.util.ParameterUtils;
 
@@ -57,7 +58,7 @@ public class BindingsTest
       MockEvaluationContext context = new MockEvaluationContext();
       Validator validator = new Validator() {
          @Override
-         public boolean validate(Rewrite event, EvaluationContext context, Object value)
+         public boolean isValid(Rewrite event, EvaluationContext context, Object value)
          {
             return "baxter III".equals(value);
          }

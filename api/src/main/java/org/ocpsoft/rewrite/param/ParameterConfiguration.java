@@ -16,8 +16,6 @@
 package org.ocpsoft.rewrite.param;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 
 /**
  * The set of mutators for configuring {@link Parameter} instances.
@@ -47,8 +45,8 @@ public interface ParameterConfiguration<IMPLTYPE extends ParameterConfiguration<
    public IMPLTYPE constrainedBy(Constraint<String> pattern);
 
    /**
-    * Add a {@link Transform} to this {@link ParameterConfiguration}; it will executed in the order in which it was
+    * Add a {@link Transposition} to this {@link ParameterConfiguration}; it will executed in the order in which it was
     * added.
     */
-   public IMPLTYPE transformedBy(Transform<String> transform);
+   public IMPLTYPE transposedBy(Transposition<String> transform);
 }

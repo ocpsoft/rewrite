@@ -4,10 +4,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.faces.util.NullComponent;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.spi.ConverterProvider;
 import org.ocpsoft.rewrite.spi.ValidatorProvider;
 
@@ -67,7 +67,7 @@ public class FacesValidatorProvider implements ValidatorProvider
       }
 
       @Override
-      public boolean validate(Rewrite event, EvaluationContext context, T value)
+      public boolean isValid(Rewrite event, EvaluationContext context, T value)
       {
          FacesContext facesContext = FacesContext.getCurrentInstance();
          Assert.notNull(facesContext, "FacesContext.getCurrentInstance() returned null. " +

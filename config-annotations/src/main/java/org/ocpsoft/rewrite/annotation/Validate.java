@@ -22,7 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.ocpsoft.rewrite.bind.Validator;
+import org.ocpsoft.rewrite.param.Validator;
 
 /**
  * Specifies a {@link Validator} with which to validate the corresponding {@link Parameter}. Used in conjunction with

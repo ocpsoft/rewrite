@@ -3,8 +3,6 @@ package org.ocpsoft.rewrite.param;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
@@ -21,7 +19,7 @@ public class ParameterBuilderTest
    {
       Validator<String> validator = new Validator<String>() {
          @Override
-         public boolean validate(Rewrite event, EvaluationContext context, String value)
+         public boolean isValid(Rewrite event, EvaluationContext context, String value)
          {
             validated = true;
             return false;
@@ -43,7 +41,7 @@ public class ParameterBuilderTest
       Object value = parameter.getConverter().convert(new MockRewrite(), new MockEvaluationContext(), new Object());
 
       @SuppressWarnings("unchecked")
-      boolean valid = ((Validator<Object>) parameter.getValidator()).validate(new MockRewrite(),
+      boolean valid = ((Validator<Object>) parameter.getValidator()).isValid(new MockRewrite(),
                new MockEvaluationContext(), value);
 
       Assert.assertTrue(validated);

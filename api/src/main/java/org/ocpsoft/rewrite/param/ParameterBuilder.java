@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 
 /**
  * An base implementation of {@link Parameter}
@@ -31,7 +29,7 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
          ConfigurableParameter<IMPLTYPE>
 {
    private final List<Binding> bindings = new ArrayList<Binding>();
-   private final List<Transform<String>> transforms = new ArrayList<Transform<String>>();
+   private final List<Transposition<String>> transpositions = new ArrayList<Transposition<String>>();
    private final List<Constraint<String>> constraints = new ArrayList<Constraint<String>>();
    private Converter<?> converter = null;
    private Validator<?> validator = null;
@@ -113,22 +111,22 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
 
    @Override
    @SuppressWarnings("unchecked")
-   public IMPLTYPE transformedBy(Transform<String> transform)
+   public IMPLTYPE transposedBy(Transposition<String> transform)
    {
-      this.transforms.add(transform);
+      this.transpositions.add(transform);
       return (IMPLTYPE) this;
    }
 
    @Override
-   public List<Transform<String>> getTransforms()
+   public List<Transposition<String>> getTranspositions()
    {
-      return transforms;
+      return transpositions;
    }
 
    @Override
    public String toString()
    {
-      return "ParameterBuilder [" + name + " -> transforms=" + transforms + ", constraints=" + constraints
+      return "ParameterBuilder [" + name + " -> transpositions=" + transpositions + ", constraints=" + constraints
                + ", bindings=" + getBindings() + ", converter=" + converter + ", validator=" + validator + "]";
    }
 

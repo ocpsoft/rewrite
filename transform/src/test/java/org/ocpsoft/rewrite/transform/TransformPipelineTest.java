@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
  * 
- * Integration test for core {@link Transform} API.
+ * Integration test for core {@link Transposition} API.
  * 
  * @author Christian Kaltepoth
  * 

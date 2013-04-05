@@ -18,14 +18,14 @@ package org.ocpsoft.rewrite.config;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.bind.Evaluation;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Constraint;
+import org.ocpsoft.rewrite.param.Converter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.RegexConstraint;
-import org.ocpsoft.rewrite.param.Transform;
+import org.ocpsoft.rewrite.param.Transposition;
+import org.ocpsoft.rewrite.param.Validator;
 
 /**
  * A {@link ParameterBuilder} for a {@link ConfigurationRuleBuilder}
@@ -86,9 +86,9 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
    }
 
    @Override
-   public ConfigurationRuleParameterBuilder transformedBy(final Transform<String> transform)
+   public ConfigurationRuleParameterBuilder transposedBy(final Transposition<String> transform)
    {
-      param.transformedBy(transform);
+      param.transposedBy(transform);
       return this;
    }
 

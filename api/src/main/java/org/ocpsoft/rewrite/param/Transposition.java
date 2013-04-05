@@ -19,16 +19,16 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * Used to perform operations on values (Cannot be used to change the type of the value, for that, see the
- * {@link org.ocpsoft.rewrite.bind.Converter} API.)
+ * Used to modify {@link Parameter} values after they have been verified by the {@link Constraint} API. (Cannot be used
+ * to change the type of the value, for that, see {@link org.ocpsoft.rewrite.param.Converter})
  * 
+ * @see {@link Parameter} {@link Constraint} {@link Validator} {@link Converter}
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
-public interface Transform<S>
+public interface Transposition<S>
 {
    /**
     * Perform an operation on the given value.
     */
-   S transform(Rewrite event, EvaluationContext context, S value);
+   S transpose(Rewrite event, EvaluationContext context, S value);
 }

@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.servlet.config.response.ResponseStreamWrapper;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.rewrite.util.Transpositions;
 
 /**
  * An {@link Operation} responsible for streaming a {@link File} on the host file-system to the
@@ -74,7 +74,7 @@ public abstract class Stream extends HttpOperation implements Parameterized
          {
             InputStream stream = null;
             try {
-               File file = new File(target.build(event, context, Transforms.encodePath()));
+               File file = new File(target.build(event, context, Transpositions.encodePath()));
                stream = new BufferedInputStream(new FileInputStream(file));
                log.debug("Streaming from file [" + file + "] to response.");
                Response.write(stream).perform(event, context);
@@ -112,7 +112,7 @@ public abstract class Stream extends HttpOperation implements Parameterized
          @Override
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
-            final File file = new File(target.build(event, context, Transforms.encodePath()));
+            final File file = new File(target.build(event, context, Transpositions.encodePath()));
             if (!file.exists())
             {
                file.mkdirs();

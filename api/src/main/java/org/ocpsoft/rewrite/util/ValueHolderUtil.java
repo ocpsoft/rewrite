@@ -17,10 +17,10 @@ package org.ocpsoft.rewrite.util;
 
 import java.lang.reflect.Array;
 
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Converter;
+import org.ocpsoft.rewrite.param.Validator;
 
 /**
  * Utility for interacting with {@link Validator} and {@link Converter} instances.
@@ -40,14 +40,14 @@ public final class ValueHolderUtil
          {
             Object[] values = (Object[]) value;
             for (int i = 0; i < values.length; i++) {
-               if (!((Validator) validator).validate(event, context, values[i]))
+               if (!((Validator) validator).isValid(event, context, values[i]))
                {
                   return false;
                }
             }
          }
          else
-            return ((Validator) validator).validate(event, context, value);
+            return ((Validator) validator).isValid(event, context, value);
       }
       return true;
    }

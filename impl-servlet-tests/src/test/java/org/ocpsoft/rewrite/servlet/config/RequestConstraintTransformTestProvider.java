@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.ParameterStore;
-import org.ocpsoft.rewrite.param.Transform;
+import org.ocpsoft.rewrite.param.Transposition;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -42,9 +42,9 @@ public class RequestConstraintTransformTestProvider extends HttpConfigurationPro
       }
    };
 
-   private final Transform<String> toLowercase = new Transform<String>() {
+   private final Transposition<String> toLowercase = new Transposition<String>() {
       @Override
-      public String transform(Rewrite event, EvaluationContext context, String value)
+      public String transpose(Rewrite event, EvaluationContext context, String value)
       {
          return value.toLowerCase();
       }
@@ -65,7 +65,7 @@ public class RequestConstraintTransformTestProvider extends HttpConfigurationPro
                .addRule()
                .when(Direction.isOutbound().and(Path.matches("/outbound/{3}")))
                .perform(Substitute.with("/outbound/{3}"))
-               .where("3").transformedBy(toLowercase)
+               .where("3").transposedBy(toLowercase)
 
                .addRule()
                .when(Path.matches("/constraint/{1}/{2}"))
@@ -86,7 +86,7 @@ public class RequestConstraintTransformTestProvider extends HttpConfigurationPro
                   }
                })
                .where("1").constrainedBy(uppercaseOnly).where("2")
-               .constrainedBy(uppercaseOnly).transformedBy(toLowercase);
+               .constrainedBy(uppercaseOnly).transposedBy(toLowercase);
 
       return config;
    }

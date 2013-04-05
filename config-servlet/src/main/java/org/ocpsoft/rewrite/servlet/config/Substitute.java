@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.util.Transforms;
+import org.ocpsoft.rewrite.util.Transpositions;
 import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
@@ -88,14 +88,14 @@ public class Substitute extends HttpOperation implements Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.getBuilder().build(event, context, Transforms.encodePath());
+         String target = location.getBuilder().build(event, context, Transpositions.encodePath());
          ((HttpInboundServletRewrite) event).forward(target);
       }
       else if (event instanceof HttpOutboundServletRewrite)
       {
          ParameterizedPatternBuilder builder = location.getBuilder();
 
-         String target = builder.build(event, context, Transforms.encodePath());
+         String target = builder.build(event, context, Transpositions.encodePath());
          if (((HttpOutboundServletRewrite) event).getOutboundAddress().getPath().startsWith(event.getContextPath())
                   && target.startsWith("/")
                   && !target.startsWith(event.getContextPath()))

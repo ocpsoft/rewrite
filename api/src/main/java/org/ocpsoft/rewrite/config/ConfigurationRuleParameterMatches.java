@@ -16,11 +16,11 @@
 package org.ocpsoft.rewrite.config;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.param.Constraint;
+import org.ocpsoft.rewrite.param.Converter;
 import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.Transform;
+import org.ocpsoft.rewrite.param.Transposition;
+import org.ocpsoft.rewrite.param.Validator;
 
 /**
  * A {@link ConfigurationRuleParameter} with a matches clause.
@@ -56,7 +56,7 @@ public interface ConfigurationRuleParameterMatches extends ConfigurationBuilderR
    public ConfigurationRuleParameterMatches constrainedBy(Constraint<String> pattern);
 
    /**
-    * Add a {@link Transform} to this {@link IMPLTYPE}; it will executed in the order in which it was added.
+    * Add a {@link Transposition} to this {@link IMPLTYPE}; it will executed in the order in which it was added.
     */
-   public ConfigurationRuleParameterMatches transformedBy(Transform<String> transform);
+   public ConfigurationRuleParameterMatches transposedBy(Transposition<String> transform);
 }

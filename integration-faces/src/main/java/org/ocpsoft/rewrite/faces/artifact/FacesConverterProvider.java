@@ -4,10 +4,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
 import org.ocpsoft.common.util.Assert;
-import org.ocpsoft.rewrite.bind.Converter;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.faces.util.NullComponent;
+import org.ocpsoft.rewrite.param.Converter;
 import org.ocpsoft.rewrite.spi.ConverterProvider;
 
 /**

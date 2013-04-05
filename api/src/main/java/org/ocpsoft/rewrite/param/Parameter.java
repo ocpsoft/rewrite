@@ -18,8 +18,6 @@ package org.ocpsoft.rewrite.param;
 import java.util.List;
 
 import org.ocpsoft.rewrite.bind.Binding;
-import org.ocpsoft.rewrite.bind.Converter;
-import org.ocpsoft.rewrite.bind.Validator;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.Rule;
@@ -58,7 +56,7 @@ public interface Parameter<IMPLTYPE extends Parameter<IMPLTYPE>>
    List<Constraint<String>> getConstraints();
 
    /**
-    * Get the underlying {@link List} of all {@link Transform} objects currently registered to this {@link Parameter}.
+    * Get the underlying {@link List} of all {@link Transposition} objects currently registered to this {@link Parameter}.
     */
-   List<Transform<String>> getTransforms();
+   List<Transposition<String>> getTranspositions();
 }

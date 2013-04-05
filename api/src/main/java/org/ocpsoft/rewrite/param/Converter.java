@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.bind;
+package org.ocpsoft.rewrite.param;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
- * A converter for {@link Binding} instances.
+ * Used to convert {@link Parameter} values before they are verified by the {@link Validator} API.
  * 
+ * @see {@link Parameter} {@link Constraint} {@link Transposition} {@link Validator}
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */

@@ -39,7 +39,7 @@ public class Transform extends HttpOperation
    }
 
    /**
-    * Create a {@link Transform} instance that applies the given {@link Transformer}.
+    * Create a {@link Transposition} instance that applies the given {@link Transformer}.
     */
    public static Transform with(Transformer transformer)
    {

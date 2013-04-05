@@ -22,7 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.ocpsoft.rewrite.bind.Converter;
+import org.ocpsoft.rewrite.param.Converter;
 
 /**
  * <p>
