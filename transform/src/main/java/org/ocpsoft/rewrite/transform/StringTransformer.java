@@ -39,7 +39,8 @@ public abstract class StringTransformer implements Transformer
    public abstract String transform(HttpServletRewrite event, String input);
 
    @Override
-   public void transform(HttpServletRewrite event, InputStream inputStream, OutputStream outputStream) throws IOException
+   public void transform(HttpServletRewrite event, InputStream inputStream, OutputStream outputStream)
+            throws IOException
    {
 
       // read input stream and store it in a string
@@ -48,7 +49,7 @@ public abstract class StringTransformer implements Transformer
       String input = new String(bos.toByteArray(), UTF8);
 
       // perform internal transformation
-      String output = transform(null, input);
+      String output = transform(event, input);
 
       // write result to the output stream
       outputStream.write(output.getBytes(UTF8));
