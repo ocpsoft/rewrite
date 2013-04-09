@@ -84,7 +84,7 @@ public abstract class JRubyTransformer<T extends JRubyTransformer<T>> extends St
       ScriptingContainer cachedContainer = storage.get(getTransformerType());
       if (cachedContainer == null)
       {
-         cachedContainer = new ScriptingContainer(LocalContextScope.THREADSAFE, LocalVariableBehavior.TRANSIENT);
+         cachedContainer = new ScriptingContainer(LocalContextScope.CONCURRENT, LocalVariableBehavior.TRANSIENT);
          storage.put(getTransformerType(), cachedContainer);
 
          // the user may have set a custom CompileMode
