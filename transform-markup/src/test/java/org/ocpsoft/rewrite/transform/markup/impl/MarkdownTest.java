@@ -13,24 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.transform.markup;
+package org.ocpsoft.rewrite.transform.markup.impl;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
+import org.jruby.embed.ScriptingContainer;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.transform.markup.Markdown;
+import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
 
 public class MarkdownTest
 {
+   private ServletContext context;
+   private HttpServletRewrite event;
+
+   @Before
+   public void before()
+   {
+      context = Mockito.mock(ServletContext.class);
+      Mockito.when(context.getAttribute(JRubyTransformer.CONTAINER_STORE_KEY))
+               .thenReturn(new HashMap<Class<?>, ScriptingContainer>());
+
+      event = Mockito.mock(HttpServletRewrite.class);
+      Mockito.when(event.getServletContext()).thenReturn(context);
+   }
+   
+   @After
+   public void after()
+   {
+      new MarkupContextListener().contextDestroyed(new ServletContextEvent(context));
+   }
 
    @Test
    public void testBoldText()
    {
 
       String markdown = "This is **bold**!";
-      String html = Markdown.partialDocument().transform(null, markdown);
+      String html = Markdown.partialDocument().transform(event, markdown);
 
       assertEquals("<p>This is <strong>bold</strong>!</p>", html);
 
@@ -41,7 +72,7 @@ public class MarkdownTest
    {
 
       String markdown = "# Header\n\n##Section\n\nSome text!";
-      String html = Markdown.partialDocument().transform(null, markdown);
+      String html = Markdown.partialDocument().transform(event, markdown);
 
       assertEquals("<h1 id='header'>Header</h1><h2 id='section'>Section</h2><p>Some text!</p>", normalize(html));
 
@@ -52,7 +83,7 @@ public class MarkdownTest
    {
 
       String markdown = "> Some quote";
-      String html = Markdown.partialDocument().transform(null, markdown);
+      String html = Markdown.partialDocument().transform(event, markdown);
 
       assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
 
@@ -63,7 +94,7 @@ public class MarkdownTest
    {
 
       String markdown = "* One\n* Two";
-      String html = Markdown.partialDocument().transform(null, markdown);
+      String html = Markdown.partialDocument().transform(event, markdown);
 
       assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html));
 
@@ -74,7 +105,7 @@ public class MarkdownTest
    {
 
       String markdown = "    private int n = 0;";
-      String html = Markdown.partialDocument().transform(null, markdown);
+      String html = Markdown.partialDocument().transform(event, markdown);
 
       assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
 
@@ -85,7 +116,7 @@ public class MarkdownTest
    {
 
       String markdown = "some text";
-      String html = Markdown.fullDocument().transform(null, markdown);
+      String html = Markdown.fullDocument().transform(event, markdown);
 
       assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html"));
       assertTrue("html tag is missing", html.contains("<html"));
@@ -99,7 +130,7 @@ public class MarkdownTest
    {
 
       String textile = "some text";
-      String html = Markdown.fullDocument().withTitle("My Title").transform(null, textile);
+      String html = Markdown.fullDocument().withTitle("My Title").transform(event, textile);
 
       assertThat(html, containsString("<title>My Title</title>"));
 
@@ -110,7 +141,7 @@ public class MarkdownTest
    {
 
       String textile = "some text";
-      String html = Markdown.fullDocument().addStylesheet("http://localhost/style.css").transform(null, textile);
+      String html = Markdown.fullDocument().addStylesheet("http://localhost/style.css").transform(event, textile);
 
       assertThat(html, containsString("http://localhost/style.css"));
 

@@ -225,6 +225,10 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
    }
 
    @Override
+   public void shutdown(ServletContext context)
+   {}
+
+   @Override
    public int priority()
    {
       return 0;

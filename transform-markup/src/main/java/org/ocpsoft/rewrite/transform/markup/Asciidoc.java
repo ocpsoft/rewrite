@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.Transformer;
+import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
 
 /**
  * A {@link Transformer} that translates AsciiDoc files
@@ -110,6 +111,16 @@ public class Asciidoc extends JRubyTransformer<Asciidoc>
    public Asciidoc self()
    {
       return this;
+   }
+
+   @Override
+   protected void prepareContainer(ScriptingContainer container)
+   {}
+
+   @Override
+   protected Class<Asciidoc> getTransformerType()
+   {
+      return Asciidoc.class;
    }
 
 }

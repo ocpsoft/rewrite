@@ -133,7 +133,7 @@ public class RewriteFilter implements Filter
 
       for (RewriteProvider<ServletContext, Rewrite> provider : providers) {
          if (provider instanceof ServletRewriteProvider)
-            ((ServletRewriteProvider<?>) provider).init(filterConfig.getServletContext());
+            ((ServletRewriteProvider<?>) provider).init(servletContext);
       }
 
       if ((configurations == null) || configurations.isEmpty())
@@ -260,6 +260,12 @@ public class RewriteFilter implements Filter
    public void destroy()
    {
       log.info("RewriteFilter shutting down...");
+
+      for (RewriteProvider<ServletContext, Rewrite> provider : providers) {
+         if (provider instanceof ServletRewriteProvider)
+            ((ServletRewriteProvider<?>) provider).shutdown(servletContext);
+      }
+
       log.info("RewriteFilter deactivated.");
    }
 

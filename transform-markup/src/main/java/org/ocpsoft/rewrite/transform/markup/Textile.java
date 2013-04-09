@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.Transformer;
+import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
 
 /**
  * A {@link Transformer} that translates Textile markup into HTML.
@@ -107,6 +108,16 @@ public class Textile extends JRubyTransformer<Textile>
    public Textile self()
    {
       return this;
+   }
+
+   @Override
+   protected void prepareContainer(ScriptingContainer container)
+   {}
+
+   @Override
+   protected Class<Textile> getTransformerType()
+   {
+      return Textile.class;
    }
 
 }

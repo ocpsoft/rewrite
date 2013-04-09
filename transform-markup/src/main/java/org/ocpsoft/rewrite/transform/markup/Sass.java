@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.transform.Transformer;
+import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
 
 /**
  * A {@link Transformer} that translates SASS files into CSS.
@@ -62,4 +63,13 @@ public class Sass extends JRubyTransformer<Sass>
       return this;
    }
 
+   @Override
+   protected void prepareContainer(ScriptingContainer container)
+   {}
+
+   @Override
+   protected Class<Sass> getTransformerType()
+   {
+      return Sass.class;
+   }
 }

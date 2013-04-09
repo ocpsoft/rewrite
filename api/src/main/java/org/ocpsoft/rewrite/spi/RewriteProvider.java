@@ -35,4 +35,9 @@ public interface RewriteProvider<C, T extends Rewrite> extends Weighted, Special
     * Handle the given {@link Rewrite} event.
     */
    void rewrite(T event);
+
+   /**
+    * Shut down this {@link RewriteProvider}
+    */
+   void shutdown(C context);
 }

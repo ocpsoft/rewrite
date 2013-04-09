@@ -29,4 +29,10 @@ public class RewriteFilterInvalidRewriteProvider implements RewriteProvider<Inte
       throw new IllegalStateException("Fail if called.");
    }
 
+   @Override
+   public void shutdown(Integer context)
+   {
+      throw new IllegalStateException("Fail if called.");
+   }
+
 }

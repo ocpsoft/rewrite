@@ -51,4 +51,10 @@ public class RewriteProviderBridge extends ServletRewriteProvider<ServletRewrite
       return 100;
    }
 
+   @Override
+   public void shutdown(ServletContext context)
+   {
+      manager.fireEvent(context);
+   }
+
 }
