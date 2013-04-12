@@ -24,6 +24,8 @@ module Sass
     #     (`:color blue` as opposed to `color: blue`).
     #     This is only meaningful when generating Sass code,
     #     rather than SCSS.
+    # @option options :indent [String] ("  ")
+    #     The string to use for indenting each line. Defaults to two spaces.
     def initialize(template, options = {})
       if template.is_a? IO
         template = template.read
@@ -80,6 +82,7 @@ module Sass
       nest_seqs          root
       parent_ref_rules   root
       flatten_rules      root
+      bubble_subject     root
       fold_commas        root
       dump_selectors     root
       root
@@ -210,14 +213,16 @@ module Sass
         firsts, rest = [sseq.members.first], sseq.members[1..-1]
         firsts.push rest.shift if firsts.first.is_a?(Sass::Selector::Parent)
 
-        if current_rule.nil? || first_sseq(current_rule).members != firsts
+        last_simple_subject = rest.empty? && sseq.subject?
+        if current_rule.nil? || first_sseq(current_rule).members != firsts ||
+            !!first_sseq(current_rule).subject? != !!last_simple_subject
           current_rule = Tree::RuleNode.new([])
-          current_rule.parsed_rules = make_sseq(*firsts)
+          current_rule.parsed_rules = make_sseq(last_simple_subject, *firsts)
         end
 
         unless rest.empty?
           rest.unshift Sass::Selector::Parent.new
-          child.parsed_rules = make_sseq(*rest)
+          child.parsed_rules = make_sseq(sseq.subject?, *rest)
           current_rule << child
         else
           current_rule.children += child.children
@@ -276,13 +281,26 @@ module Sass
         if first_simple_sel(child).is_a?(Sass::Selector::Parent)
           rule.parsed_rules = child.parsed_rules.resolve_parent_refs(rule.parsed_rules)
         else
-          rule.parsed_rules = make_seq(first_sseq(rule), *first_seq(child).members)
+          rule.parsed_rules = make_seq(*(first_seq(rule).members + first_seq(child).members))
         end
 
         rule.children = child.children
       end
 
       flatten_rules(rule)
+    end
+
+    def bubble_subject(root)
+      root.children.each do |child|
+        bubble_subject(child) if child.is_a?(Tree::RuleNode) || child.is_a?(Tree::DirectiveNode)
+        next unless child.is_a?(Tree::RuleNode)
+        next unless child.children.all? do |c|
+          next unless c.is_a?(Tree::RuleNode)
+          first_simple_sel(c).is_a?(Sass::Selector::Parent) && first_sseq(c).subject?
+        end
+        first_sseq(child).subject = true
+        child.children.each {|c| first_sseq(c).subject = false}
+      end
     end
 
     # Transform
@@ -353,10 +371,11 @@ module Sass
     # {Sass::Selector::Sequence} which in turn contains only a single
     # {Sass::Selector::SimpleSequence}.
     #
+    # @param subject [Boolean] Whether this is a subject selector
     # @param sseqs [Array<Sass::Selector::Sequence, String>]
     # @return [Sass::Selector::CommaSequence]
-    def make_sseq(*sseqs)
-      make_seq(Sass::Selector::SimpleSequence.new(sseqs))
+    def make_sseq(subject, *sseqs)
+      make_seq(Sass::Selector::SimpleSequence.new(sseqs, subject))
     end
 
     # Return the first {Sass::Selector::Sequence} in a {Sass::Tree::RuleNode}.

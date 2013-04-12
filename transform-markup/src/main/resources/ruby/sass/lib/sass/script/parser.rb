@@ -74,21 +74,22 @@ module Sass
 
       # Parses the argument list for a mixin include.
       #
-      # @return [(Array<Script::Node>, {String => Script::Note})]
-      #   The root nodes of the arguments.
-      #   Keyword arguments are in a hash from names to values.
+      # @return [(Array<Script::Node>, {String => Script::Node}, Script::Node)]
+      #   The root nodes of the positional arguments, keyword arguments, and
+      #   splat argument. Keyword arguments are in a hash from names to values.
       # @raise [Sass::SyntaxError] if the argument list isn't valid SassScript
       def parse_mixin_include_arglist
         args, keywords = [], {}
         if try_tok(:lparen)
-          args, keywords = mixin_arglist || [[], {}]
+          args, keywords, splat = mixin_arglist || [[], {}]
           assert_tok(:rparen)
         end
         assert_done
 
         args.each {|a| a.options = @options}
         keywords.each {|k, v| v.options = @options}
-        return args, keywords
+        splat.options = @options if splat
+        return args, keywords, splat
       rescue Sass::SyntaxError => e
         e.modify_backtrace :line => @lexer.line, :filename => @options[:filename]
         raise e
@@ -96,17 +97,19 @@ module Sass
 
       # Parses the argument list for a mixin definition.
       #
-      # @return [Array<Script::Node>] The root nodes of the arguments.
+      # @return [(Array<Script::Node>, Script::Node)]
+      #   The root nodes of the arguments, and the splat argument.
       # @raise [Sass::SyntaxError] if the argument list isn't valid SassScript
       def parse_mixin_definition_arglist
-        args = defn_arglist!(false)
+        args, splat = defn_arglist!(false)
         assert_done
 
         args.each do |k, v|
           k.options = @options
           v.options = @options if v
         end
-        args
+        splat.options = @options if splat
+        return args, splat
       rescue Sass::SyntaxError => e
         e.modify_backtrace :line => @lexer.line, :filename => @options[:filename]
         raise e
@@ -114,17 +117,40 @@ module Sass
 
       # Parses the argument list for a function definition.
       #
-      # @return [Array<Script::Node>] The root nodes of the arguments.
+      # @return [(Array<Script::Node>, Script::Node)]
+      #   The root nodes of the arguments, and the splat argument.
       # @raise [Sass::SyntaxError] if the argument list isn't valid SassScript
       def parse_function_definition_arglist
-        args = defn_arglist!(true)
+        args, splat = defn_arglist!(true)
         assert_done
 
         args.each do |k, v|
           k.options = @options
           v.options = @options if v
         end
-        args
+        splat.options = @options if splat
+        return args, splat
+      rescue Sass::SyntaxError => e
+        e.modify_backtrace :line => @lexer.line, :filename => @options[:filename]
+        raise e
+      end
+
+      # Parse a single string value, possibly containing interpolation.
+      # Doesn't assert that the scanner is finished after parsing.
+      #
+      # @return [Script::Node] The root node of the parse tree.
+      # @raise [Sass::SyntaxError] if the string isn't valid SassScript
+      def parse_string
+        unless (peek = @lexer.peek) &&
+            (peek.type == :string ||
+            (peek.type == :funcall && peek.value.downcase == 'url'))
+          lexer.expected!("string")
+        end
+
+        expr = assert_expr :funcall
+        expr.options = @options
+        @lexer.unpeek!
+        expr
       rescue Sass::SyntaxError => e
         e.modify_backtrace :line => @lexer.line, :filename => @options[:filename]
         raise e
@@ -177,7 +203,7 @@ module Sass
         # sub is the name of the production beneath it,
         # and ops is a list of operators for this precedence level
         def production(name, sub, *ops)
-          class_eval <<RUBY
+          class_eval <<RUBY, __FILE__, __LINE__ + 1
             def #{name}
               interp = try_ops_after_interp(#{ops.inspect}, #{name.inspect}) and return interp
               return unless e = #{sub}
@@ -197,7 +223,7 @@ RUBY
         end
 
         def unary(op, sub)
-          class_eval <<RUBY
+          class_eval <<RUBY, __FILE__, __LINE__ + 1
             def unary_#{op}
               return #{sub} unless tok = try_tok(:#{op})
               interp = try_op_before_interp(tok) and return interp
@@ -295,7 +321,7 @@ RUBY
         return if @stop_at && @stop_at.include?(@lexer.peek.value)
 
         name = @lexer.next
-        if color = Color::HTML4_COLORS[name.value.downcase]
+        if color = Color::COLOR_NAMES[name.value.downcase]
           return node(Color.new(color))
         end
         node(Script::String.new(name.value, :identifier))
@@ -303,82 +329,78 @@ RUBY
 
       def funcall
         return raw unless tok = try_tok(:funcall)
-        args, keywords = fn_arglist || [[], {}]
+        args, keywords, splat = fn_arglist || [[], {}]
         assert_tok(:rparen)
-        node(Script::Funcall.new(tok.value, args, keywords))
+        node(Script::Funcall.new(tok.value, args, keywords, splat))
       end
 
       def defn_arglist!(must_have_parens)
         if must_have_parens
           assert_tok(:lparen)
         else
-          return [] unless try_tok(:lparen)
+          return [], nil unless try_tok(:lparen)
         end
-        return [] if try_tok(:rparen)
+        return [], nil if try_tok(:rparen)
 
         res = []
+        splat = nil
         must_have_default = false
         loop do
-          line = @lexer.line
-          offset = @lexer.offset + 1
           c = assert_tok(:const)
           var = Script::Variable.new(c.value)
-          if tok = try_tok(:colon)
+          if try_tok(:colon)
             val = assert_expr(:space)
             must_have_default = true
           elsif must_have_default
             raise SyntaxError.new("Required argument #{var.inspect} must come before any optional arguments.")
+          elsif try_tok(:splat)
+            splat = var
+            break
           end
           res << [var, val]
           break unless try_tok(:comma)
         end
         assert_tok(:rparen)
-        res
+        return res, splat
       end
 
       def fn_arglist
-        arglist(:fn_arglist, :equals)
+        arglist(:equals, "function argument")
       end
 
       def mixin_arglist
-        arglist(:mixin_arglist, :interpolation)
+        arglist(:interpolation, "mixin argument")
       end
 
-      def arglist(type, subexpr)
+      def arglist(subexpr, description)
         return unless e = send(subexpr)
-        if @lexer.peek && @lexer.peek.type == :colon
-          name = e
-          @lexer.expected!("comma") unless name.is_a?(Variable)
-          assert_tok(:colon)
-          keywords = {name.underscored_name => assert_expr(subexpr, EXPR_NAMES[type])}
-        end
 
-        unless try_tok(:comma)
-          return [], keywords if keywords
-          return [e], {}
-        end
+        args = []
+        keywords = {}
+        loop do
+          if @lexer.peek && @lexer.peek.type == :colon
+            name = e
+            @lexer.expected!("comma") unless name.is_a?(Variable)
+            assert_tok(:colon)
+            value = assert_expr(subexpr, description)
 
-        other_args, other_keywords = assert_expr(type)
-        if keywords
-          if other_keywords[name.underscored_name]
-            raise SyntaxError.new("Keyword argument \"#{name.to_sass}\" passed more than once")
+            if keywords[name.underscored_name]
+              raise SyntaxError.new("Keyword argument \"#{name.to_sass}\" passed more than once")
+            end
+
+            keywords[name.underscored_name] = value
+          else
+            if !keywords.empty?
+              raise SyntaxError.new("Positional arguments must come before keyword arguments.")
+            end
+
+            return args, keywords, e if try_tok(:splat)
+            args << e
           end
-          return other_args, keywords.merge(other_keywords)
-        else
-          return [e, *other_args], other_keywords
-        end
-      end
 
-      def keyword_arglist
-        return unless var = try_tok(:const)
-        unless try_tok(:colon)
-          return_tok!
-          return
+          return args, keywords unless try_tok(:comma)
+          e = assert_expr(subexpr, description)
         end
-        name = var[1]
-        value = interpolation
-        return {name => value} unless try_tok(:comma)
-        {name => value}.merge(assert_expr(:keyword_arglist))
       end
 
       def raw
@@ -432,7 +454,7 @@ RUBY
       end
 
       def literal
-        (t = try_tok(:color, :bool)) && (return t.value)
+        (t = try_tok(:color, :bool, :null)) && (return t.value)
       end
 
       # It would be possible to have unified #assert and #try methods,

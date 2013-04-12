@@ -62,6 +62,7 @@ module Sass
         '}' => :end_interpolation,
         ';' => :semicolon,
         '{' => :lcurly,
+        '...' => :splat,
       }
 
       OPERATORS_REVERSE = Sass::Util.map_hash(OPERATORS) {|k, v| [v, k]}
@@ -90,6 +91,7 @@ module Sass
         :number => /(-)?(?:(\d*\.\d+)|(\d+))([a-zA-Z%]+)?/,
         :color => HEXCOLOR,
         :bool => /(true|false)\b/,
+        :null => /null\b/,
         :ident_op => %r{(#{Regexp.union(*IDENT_OP_NAMES.map{|s| Regexp.new(Regexp.escape(s) + "(?!#{NMCHAR}|\Z)")})})},
         :op => %r{(#{Regexp.union(*OP_NAMES)})},
       }
@@ -114,6 +116,12 @@ module Sass
         [:single, true] => string_re('', "'"),
         [:uri, false] => /url\(#{W}(#{URLCHAR}*?)(#{W}\)|#\{)/,
         [:uri, true] => /(#{URLCHAR}*?)(#{W}\)|#\{)/,
+        # Defined in https://developer.mozilla.org/en/CSS/@-moz-document as a
+        # non-standard version of http://www.w3.org/TR/css3-conditional/
+        [:url_prefix, false] => /url-prefix\(#{W}(#{URLCHAR}*?)(#{W}\)|#\{)/,
+        [:url_prefix, true] => /(#{URLCHAR}*?)(#{W}\)|#\{)/,
+        [:domain, false] => /domain\(#{W}(#{URLCHAR}*?)(#{W}\)|#\{)/,
+        [:domain, true] => /(#{URLCHAR}*?)(#{W}\)|#\{)/,
       }
 
       # @param str [String, StringScanner] The source text to lex
@@ -228,7 +236,7 @@ module Sass
         end
 
         variable || string(:double, false) || string(:single, false) || number ||
-          color || bool || string(:uri, false) || raw(UNICODERANGE) ||
+          color || bool || null || string(:uri, false) || raw(UNICODERANGE) ||
           special_fun || special_val || ident_op || ident || op
       end
 
@@ -237,8 +245,6 @@ module Sass
       end
 
       def _variable(rx)
-        line = @line
-        offset = @offset
         return unless scan(rx)
 
         [:const, @scanner[2]]
@@ -284,6 +290,11 @@ MESSAGE
       def bool
         return unless s = scan(REGULAR_EXPRESSIONS[:bool])
         [:bool, Script::Bool.new(s == 'true')]
+      end
+
+      def null
+        return unless scan(REGULAR_EXPRESSIONS[:null])
+        [:null, Script::Null.new]
       end
 
       def special_fun

@@ -28,12 +28,14 @@ import javax.servlet.ServletContextEvent;
 import org.jruby.embed.ScriptingContainer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.markup.Textile;
 import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
 
+@Ignore
 public class TextileTest
 {
    private ServletContext context;

@@ -125,6 +125,7 @@ module Sass
       def puts_action(name, color, arg)
         return if @options[:for_engine][:quiet]
         printf color(color, "%11s %s\n"), name, arg
+        STDOUT.flush
       end
 
       # Same as \{Kernel.puts}, but doesn't print anything if the `--quiet` option is set.
@@ -229,6 +230,10 @@ END
                                    'Only meaningful for --watch and --update.') do
           @options[:stop_on_error] = true
         end
+        opts.on('--poll', 'Check for file changes manually, rather than relying on the OS.',
+                          'Only meaningful for --watch.') do
+          @options[:poll] = true
+        end
         opts.on('-f', '--force', 'Recompile all Sass files, even if the CSS file is newer.',
                                  'Only meaningful for --update.') do
           @options[:force] = true
@@ -302,6 +307,7 @@ END
         return watch_or_update if @options[:watch] || @options[:update]
         super
         @options[:for_engine][:filename] = @options[:filename]
+        @options[:for_engine][:css_filename] = @options[:output].path if @options[:output].is_a?(File)
 
         begin
           input = @options[:input]
@@ -357,6 +363,7 @@ END
         require 'sass/plugin'
         ::Sass::Plugin.options.merge! @options[:for_engine]
         ::Sass::Plugin.options[:unix_newlines] = @options[:unix_newlines]
+        ::Sass::Plugin.options[:poll] = @options[:poll]
 
         if @options[:force]
           raise "The --force flag may only be used with --update." unless @options[:update]
@@ -401,6 +408,13 @@ MSG
         ::Sass::Plugin.on_creating_directory {|dirname| puts_action :directory, :green, dirname}
         ::Sass::Plugin.on_deleting_css {|filename| puts_action :delete, :yellow, filename}
         ::Sass::Plugin.on_compilation_error do |error, _, _|
+          if error.is_a?(SystemCallError) && !@options[:stop_on_error]
+            had_error = true
+            puts_action :error, :red, error.message
+            STDOUT.flush
+            next
+          end
+
           raise error unless error.is_a?(::Sass::SyntaxError) && !@options[:stop_on_error]
           had_error = true
           puts_action :error, :red, "#{error.sass_filename} (Line #{error.sass_line}: #{error.message})"
@@ -490,14 +504,14 @@ Options:
 END
 
         opts.on('-F', '--from FORMAT',
-          'The format to convert from. Can be css, scss, sass, less.',
+          'The format to convert from. Can be css, scss, sass.',
           'By default, this is inferred from the input filename.',
           'If there is none, defaults to css.') do |name|
           @options[:from] = name.downcase.to_sym
-          unless [:css, :scss, :sass, :less].include?(@options[:from])
+          raise "sass-convert no longer supports LessCSS." if @options[:from] == :less
+          unless [:css, :scss, :sass].include?(@options[:from])
             raise "Unknown format for sass-convert --from: #{name}"
           end
-          try_less_note if @options[:from] == :less
         end
 
         opts.on('-T', '--to FORMAT',
@@ -523,6 +537,17 @@ END
 
         opts.on('--dasherize', 'Convert underscores to dashes') do
           @options[:for_tree][:dasherize] = true
+        end
+
+        opts.on('--indent NUM',
+          'How many spaces to use for each level of indentation. Defaults to 2.',
+          '"t" means use hard tabs.') do |indent|
+
+          if indent == 't'
+            @options[:for_tree][:indent] = "\t"
+          else
+            @options[:for_tree][:indent] = " " * indent.to_i
+          end
         end
 
         opts.on('--old', 'Output the old-style ":prop val" property syntax.',
@@ -619,7 +644,7 @@ END
             case input.path
             when /\.scss$/; :scss
             when /\.sass$/; :sass
-            when /\.less$/; :less
+            when /\.less$/; raise "sass-convert no longer supports LessCSS."
             when /\.css$/; :css
             end
         elsif @options[:in_place]
@@ -643,11 +668,6 @@ END
             if @options[:from] == :css
               require 'sass/css'
               ::Sass::CSS.new(input.read, @options[:for_tree]).render(@options[:to])
-            elsif @options[:from] == :less
-              require 'sass/less'
-              try_less_note
-              input = input.read if input.is_a?(IO) && !input.is_a?(File) # Less is dumb
-              Less::Engine.new(input).to_tree.to_sass_tree.send("to_#{@options[:to]}", @options[:for_tree])
             else
               if input.is_a?(File)
                 ::Sass::Engine.for_file(input.path, @options[:for_engine])
@@ -665,17 +685,6 @@ END
         raise "Error on line #{e.sass_line}#{file}: #{e.message}\n  Use --trace for backtrace"
       rescue LoadError => err
         handle_load_error(err)
-      end
-
-      @@less_note_printed = false
-      def try_less_note
-        return if @@less_note_printed
-        @@less_note_printed = true
-        warn <<NOTE
-* NOTE: Sass and Less are different languages, and they work differently.
-* I'll do my best to translate, but some features -- especially mixins --
-* should be checked by hand.
-NOTE
       end
     end
   end

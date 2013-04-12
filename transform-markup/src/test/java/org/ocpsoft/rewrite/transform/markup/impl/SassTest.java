@@ -25,12 +25,14 @@ import javax.servlet.ServletContextEvent;
 import org.jruby.embed.ScriptingContainer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.markup.Sass;
 import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
 
+@Ignore
 public class SassTest
 {
 
@@ -47,7 +49,7 @@ public class SassTest
       event = Mockito.mock(HttpServletRewrite.class);
       Mockito.when(event.getServletContext()).thenReturn(context);
    }
-   
+
    @After
    public void after()
    {

@@ -23,13 +23,20 @@ module Sass
       # @return [{String => Script::Node}]
       attr_reader :keywords
 
+      # The splat argument for this function, if one exists.
+      #
+      # @return [Script::Node?]
+      attr_accessor :splat
+
       # @param name [String] See \{#name}
       # @param args [Array<Script::Node>] See \{#args}
+      # @param splat [Script::Node] See \{#splat}
       # @param keywords [{String => Script::Node}] See \{#keywords}
-      def initialize(name, args, keywords)
+      def initialize(name, args, keywords, splat)
         @name = name
         @args = args
         @keywords = keywords
+        @splat = splat
         super()
       end
 
@@ -38,7 +45,11 @@ module Sass
         args = @args.map {|a| a.inspect}.join(', ')
         keywords = Sass::Util.hash_to_a(@keywords).
             map {|k, v| "$#{k}: #{v.inspect}"}.join(', ')
-        "#{name}(#{args}#{', ' unless args.empty? || keywords.empty?}#{keywords})"
+        if self.splat
+          splat = (args.empty? && keywords.empty?) ? "" : ", "
+          splat = "#{splat}#{self.splat.inspect}..."
+        end
+        "#{name}(#{args}#{', ' unless args.empty? || keywords.empty?}#{keywords}#{splat})"
       end
 
       # @see Node#to_sass
@@ -46,7 +57,11 @@ module Sass
         args = @args.map {|a| a.to_sass(opts)}.join(', ')
         keywords = Sass::Util.hash_to_a(@keywords).
           map {|k, v| "$#{dasherize(k, opts)}: #{v.to_sass(opts)}"}.join(', ')
-        "#{dasherize(name, opts)}(#{args}#{', ' unless args.empty? || keywords.empty?}#{keywords})"
+        if self.splat
+          splat = (args.empty? && keywords.empty?) ? "" : ", "
+          splat = "#{splat}#{self.splat.inspect}..."
+        end
+        "#{dasherize(name, opts)}(#{args}#{', ' unless args.empty? || keywords.empty?}#{keywords}#{splat})"
       end
 
       # Returns the arguments to the function.
@@ -54,7 +69,9 @@ module Sass
       # @return [Array<Node>]
       # @see Node#children
       def children
-        @args + @keywords.values
+        res = @args + @keywords.values
+        res << @splat if @splat
+        res
       end
 
       # @see Node#deep_copy
@@ -74,13 +91,14 @@ module Sass
       # @raise [Sass::SyntaxError] if the function call raises an ArgumentError
       def _perform(environment)
         args = @args.map {|a| a.perform(environment)}
+        splat = @splat.perform(environment) if @splat
         if fn = environment.function(@name)
           keywords = Sass::Util.map_hash(@keywords) {|k, v| [k, v.perform(environment)]}
-          return perform_sass_fn(fn, args, keywords)
+          return perform_sass_fn(fn, args, keywords, splat)
         end
 
         ruby_name = @name.tr('-', '_')
-        args = construct_ruby_args(ruby_name, args, environment)
+        args = construct_ruby_args(ruby_name, args, splat, environment)
 
         unless Functions.callable?(ruby_name)
           opts(to_literal(args))
@@ -88,13 +106,53 @@ module Sass
           opts(Functions::EvaluationContext.new(environment.options).send(ruby_name, *args))
         end
       rescue ArgumentError => e
+        message = e.message
+
         # If this is a legitimate Ruby-raised argument error, re-raise it.
         # Otherwise, it's an error in the user's stylesheet, so wrap it.
-        if e.message =~ /^wrong number of arguments \(\d+ for \d+\)/ &&
+        if Sass::Util.rbx?
+          # Rubinius has a different error report string than vanilla Ruby. It
+          # also doesn't put the actual method for which the argument error was
+          # thrown in the backtrace, nor does it include `send`, so we look for
+          # `_perform`.
+          if e.message =~ /^method '([^']+)': given (\d+), expected (\d+)/
+            error_name, given, expected = $1, $2, $3
+            raise e if error_name != ruby_name || e.backtrace[0] !~ /:in `_perform'$/
+            message = "wrong number of arguments (#{given} for #{expected})"
+          end
+        elsif Sass::Util.jruby?
+          if Sass::Util.jruby1_6?
+            should_maybe_raise = e.message =~ /^wrong number of arguments \((\d+) for (\d+)\)/ &&
+              # The one case where JRuby does include the Ruby name of the function
+              # is manually-thrown ArgumentErrors, which are indistinguishable from
+              # legitimate ArgumentErrors. We treat both of these as
+              # Sass::SyntaxErrors even though it can hide Ruby errors.
+              e.backtrace[0] !~ /:in `(block in )?#{ruby_name}'$/
+          else
+            should_maybe_raise = e.message =~ /^wrong number of arguments calling `[^`]+` \((\d+) for (\d+)\)/
+            given, expected = $1, $2
+          end
+
+          if should_maybe_raise
+            # JRuby 1.7 includes __send__ before send and _perform.
+            trace = e.backtrace.dup
+            raise e if !Sass::Util.jruby1_6? && trace.shift !~ /:in `__send__'$/
+
+            # JRuby (as of 1.7.2) doesn't put the actual method
+            # for which the argument error was thrown in the backtrace, so we
+            # detect whether our send threw an argument error.
+            if !(trace[0] =~ /:in `send'$/ && trace[1] =~ /:in `_perform'$/)
+              raise e
+            elsif !Sass::Util.jruby1_6?
+              # JRuby 1.7 doesn't use standard formatting for its ArgumentErrors.
+              message = "wrong number of arguments (#{given} for #{expected})"
+            end
+          end
+        elsif e.message =~ /^wrong number of arguments \(\d+ for \d+\)/ &&
             e.backtrace[0] !~ /:in `(block in )?#{ruby_name}'$/
           raise e
         end
-        raise Sass::SyntaxError.new("#{e.message} for `#{name}'")
+        raise Sass::SyntaxError.new("#{message} for `#{name}'")
       end
 
       # This method is factored out from `_perform` so that compass can override
@@ -106,12 +164,23 @@ module Sass
 
       private
 
-      def construct_ruby_args(name, args, environment)
-        unless signature = Functions.signature(name.to_sym, args.size, @keywords.size)
-          return args if keywords.empty?
+      def construct_ruby_args(name, args, splat, environment)
+        args += splat.to_a if splat
+
+        # If variable arguments were passed, there won't be any explicit keywords.
+        if splat.is_a?(Sass::Script::ArgList)
+          kwargs_size = splat.keywords.size
+          splat.keywords_accessed = false
+        else
+          kwargs_size = @keywords.size
+        end
+
+        unless signature = Functions.signature(name.to_sym, args.size, kwargs_size)
+          return args if @keywords.empty?
           raise Sass::SyntaxError.new("Function #{name} doesn't support keyword arguments")
         end
-        keywords = Sass::Util.map_hash(@keywords) {|k, v| [k, v.perform(environment)]}
+        keywords = splat.is_a?(Sass::Script::ArgList) ? splat.keywords :
+          Sass::Util.map_hash(@keywords) {|k, v| [k, v.perform(environment)]}
 
         # If the user passes more non-keyword args than the function expects,
         # but it does expect keyword args, Ruby's arg handling won't raise an error.
@@ -136,39 +205,26 @@ module Sass
           if signature.var_kwargs
             args << keywords
           else
-            raise Sass::SyntaxError.new("Function #{name} doesn't take an argument named $#{keywords.keys.sort.first}")
+            argname = keywords.keys.sort.first
+            if signature.args.include?(argname)
+              raise Sass::SyntaxError.new("Function #{name} was passed argument $#{argname} both by position and by name")
+            else
+              raise Sass::SyntaxError.new("Function #{name} doesn't have an argument named $#{argname}")
+            end
           end
         end
 
         args
       end
 
-      def perform_sass_fn(function, args, keywords)
-        # TODO: merge with mixin arg evaluation?
-        keywords.each do |name, value|
-          # TODO: Make this fast
-          unless function.args.find {|(var, default)| var.underscored_name == name}
-            raise Sass::SyntaxError.new("Function #{@name} doesn't have an argument named $#{name}")
+      def perform_sass_fn(function, args, keywords, splat)
+        Sass::Tree::Visitors::Perform.perform_arguments(function, args, keywords, splat) do |env|
+          val = catch :_sass_return do
+            function.tree.each {|c| Sass::Tree::Visitors::Perform.visit(c, env)}
+            raise Sass::SyntaxError.new("Function #{@name} finished without @return")
           end
+          val
         end
-
-        if args.size > function.args.size
-          raise ArgumentError.new("Wrong number of arguments (#{args.size} for #{function.args.size})")
-        end
-
-        environment = function.args.zip(args).
-          inject(Sass::Environment.new(function.environment)) do |env, ((var, default), value)|
-          env.set_local_var(var.name,
-            value || keywords[var.underscored_name] || (default && default.perform(env)))
-          raise Sass::SyntaxError.new("Function #{@name} is missing parameter #{var.inspect}.") unless env.var(var.name)
-          env
-        end
-
-        val = catch :_sass_return do
-          function.tree.each {|c| Sass::Tree::Visitors::Perform.visit(c, environment)}
-          raise Sass::SyntaxError.new("Function #{@name} finished without @return")
-        end
-        val
       end
     end
   end

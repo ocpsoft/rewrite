@@ -24,9 +24,9 @@ public abstract class JRubyTransformer<T extends JRubyTransformer<T>> extends St
 {
    static final String CONTAINER_STORE_KEY = JRubyTransformer.class.getName() + "_CONTAINER_INSTANCE";
 
-   private CompileMode compileMode = null;
+   private CompileMode compileMode = CompileMode.JIT;
 
-   private CompatVersion compatVersion = null;
+   private CompatVersion compatVersion = CompatVersion.RUBY2_0;
 
    /**
     * Return the load paths to use for {@link ScriptingContainer#setLoadPaths(List)}.
@@ -85,6 +85,8 @@ public abstract class JRubyTransformer<T extends JRubyTransformer<T>> extends St
       if (cachedContainer == null)
       {
          cachedContainer = new ScriptingContainer(LocalContextScope.CONCURRENT, LocalVariableBehavior.TRANSIENT);
+         cachedContainer.setRunRubyInProcess(false);
+
          storage.put(getTransformerType(), cachedContainer);
 
          // the user may have set a custom CompileMode
@@ -100,13 +102,13 @@ public abstract class JRubyTransformer<T extends JRubyTransformer<T>> extends St
          // scripts typically need to set the load path for 3rd party gems
          List<String> loadPaths = getLoadPaths();
          if (loadPaths != null && !loadPaths.isEmpty()) {
-            cachedContainer.setLoadPaths(loadPaths);
+            cachedContainer.getLoadPaths().addAll(loadPaths);
          }
 
          // perform custom initialization of the container
          prepareContainer(cachedContainer);
       }
-      
+
       return cachedContainer;
    }
 

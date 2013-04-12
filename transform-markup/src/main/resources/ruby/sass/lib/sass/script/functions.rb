@@ -90,14 +90,17 @@ module Sass::Script
   #
   # ## Other Color Functions
   #
-  # \{#adjust_color adjust-color($color, \[$red\], \[$green\], \[$blue\], \[$hue\], \[$saturation\], \[$lightness\], \[$alpha\]}
+  # \{#adjust_color adjust-color($color, \[$red\], \[$green\], \[$blue\], \[$hue\], \[$saturation\], \[$lightness\], \[$alpha\])}
   # : Increase or decrease any of the components of a color.
   #
-  # \{#scale_color scale-color($color, \[$red\], \[$green\], \[$blue\], \[$saturation\], \[$lightness\], \[$alpha\]}
+  # \{#scale_color scale-color($color, \[$red\], \[$green\], \[$blue\], \[$saturation\], \[$lightness\], \[$alpha\])}
   # : Fluidly scale one or more components of a color.
   #
-  # \{#change_color change-color($color, \[$red\], \[$green\], \[$blue\], \[$hue\], \[$saturation\], \[$lightness\], \[$alpha\]}
+  # \{#change_color change-color($color, \[$red\], \[$green\], \[$blue\], \[$hue\], \[$saturation\], \[$lightness\], \[$alpha\])}
   # : Changes one or more properties of a color.
+  #
+  # \{#ie_hex_str ie-hex-str($color)}
+  # : Converts a color into the format understood by IE filters.
   #
   # ## String Functions
   #
@@ -124,6 +127,12 @@ module Sass::Script
   # \{#abs abs($value)}
   # : Returns the absolute value of a number.
   #
+  # \{#min min($x1, $x2, ...)\}
+  # : Finds the minimum of several values.
+  #
+  # \{#max max($x1, $x2, ...)\}
+  # : Finds the maximum of several values.
+  #
   # ## List Functions {#list-functions}
   #
   # \{#length length($list)}
@@ -134,6 +143,9 @@ module Sass::Script
   #
   # \{#join join($list1, $list2, \[$separator\])}
   # : Joins together two lists into one.
+  #
+  # \{#append append($list1, $val, \[$separator\])}
+  # : Appends a single value onto the end of a list.
   #
   # ## Introspection Functions
   #
@@ -241,7 +253,7 @@ module Sass::Script
     #   to {Sass::Script::Literal}s as the last argument.
     #   In addition, if this is true and `:var_args` is not,
     #   Sass will ensure that the last argument passed is a hash.
-    # 
+    #
     # @example
     #   declare :rgba, [:hex, :alpha]
     #   declare :rgba, [:red, :green, :blue, :alpha]
@@ -573,7 +585,10 @@ module Sass::Script
         return Sass::Script::String.new("alpha(#{args.map {|a| a.to_s}.join(", ")})")
       end
 
-      opacity(*args)
+      raise ArgumentError.new("wrong number of arguments (#{args.size} for 1)") if args.size != 1
+
+      assert_type args.first, :Color
+      Sass::Script::Number.new(args.first.alpha)
     end
     declare :alpha, [:color]
 
@@ -586,6 +601,7 @@ module Sass::Script
     # @see #transparentize
     # @raise [ArgumentError] If `color` isn't a color
     def opacity(color)
+      return Sass::Script::String.new("opacity(#{color})") if color.is_a?(Sass::Script::Number)
       assert_type color, :Color
       Sass::Script::Number.new(color.alpha)
     end
@@ -676,16 +692,21 @@ module Sass::Script
     # @example
     #   saturate(hsl(120, 30%, 90%), 20%) => hsl(120, 50%, 90%)
     #   saturate(#855, 20%) => #9e3f3f
-    # @param color [Color]
-    # @param amount [Number]
-    # @return [Color]
-    # @see #desaturate
-    # @raise [ArgumentError] If `color` isn't a color,
-    #   or `number` isn't a number between 0% and 100%
-    def saturate(color, amount)
+    # @overload saturate(color, amount)
+    #   @param color [Color]
+    #   @param amount [Number]
+    #   @return [Color]
+    #   @see #desaturate
+    #   @raise [ArgumentError] If `color` isn't a color,
+    #     or `number` isn't a number between 0% and 100%
+    def saturate(color, amount = nil)
+      # Support the filter effects definition of saturate.
+      # https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
+      return Sass::Script::String.new("saturate(#{color})") if amount.nil?
       _adjust(color, amount, :saturation, 0..100, :+, "%")
     end
     declare :saturate, [:color, :amount]
+    declare :saturate, [:amount]
 
     # Makes a color less saturated.
     # Takes a color and an amount between 0% and 100%,
@@ -723,6 +744,23 @@ module Sass::Script
       color.with(:hue => color.hue + degrees.value)
     end
     declare :adjust_hue, [:color, :degrees]
+
+    # Returns an IE hex string for a color with an alpha channel
+    # suitable for passing to IE filters.
+    #
+    # @example
+    #   ie-hex-str(#abc) => #FFAABBCC
+    #   ie-hex-str(#3322BB) => #FF3322BB
+    #   ie-hex-str(rgba(0, 255, 0, 0.5)) => #8000FF00
+    # @param color [Color]
+    # @return [String]
+    # @raise [ArgumentError] If `color` isn't a color
+    def ie_hex_str(color)
+      assert_type color, :Color
+      alpha = (color.alpha * 255).round.to_s(16).rjust(2, '0')
+      Sass::Script::String.new("##{alpha}#{color.send(:hex_str)[1..-1]}".upcase)
+    end
+    declare :ie_hex_str, [:color]
 
     # Adjusts one or more properties of a color.
     # This can change the red, green, blue, hue, saturation, value, and alpha properties.
@@ -935,23 +973,22 @@ module Sass::Script
 
       Sass::Util.check_range("Weight", 0..100, weight, '%')
 
-      # This algorithm factors in both the user-provided weight
-      # and the difference between the alpha values of the two colors
-      # to decide how to perform the weighted average of the two RGB values.
+      # This algorithm factors in both the user-provided weight (w) and the
+      # difference between the alpha values of the two colors (a) to decide how
+      # to perform the weighted average of the two RGB values.
       #
       # It works by first normalizing both parameters to be within [-1, 1],
-      # where 1 indicates "only use color1", -1 indicates "only use color 0",
-      # and all values in between indicated a proportionately weighted average.
+      # where 1 indicates "only use color1", -1 indicates "only use color2", and
+      # all values in between indicated a proportionately weighted average.
       #
-      # Once we have the normalized variables w and a,
-      # we apply the formula (w + a)/(1 + w*a)
-      # to get the combined weight (in [-1, 1]) of color1.
+      # Once we have the normalized variables w and a, we apply the formula
+      # (w + a)/(1 + w*a) to get the combined weight (in [-1, 1]) of color1.
       # This formula has two especially nice properties:
       #
       #   * When either w or a are -1 or 1, the combined weight is also that number
       #     (cases where w * a == -1 are undefined, and handled as a special case).
       #
-      #   * When a is 0, the combined weight is w, and vice versa
+      #   * When a is 0, the combined weight is w, and vice versa.
       #
       # Finally, the weight of color1 is renormalized to be within [0, 1]
       # and the weight of color2 is given by 1 minus the weight of color1.
@@ -969,21 +1006,13 @@ module Sass::Script
     declare :mix, [:color_1, :color_2]
     declare :mix, [:color_1, :color_2, :weight]
 
-    # @overload grayscale(color)
-    #   Converts a color to grayscale.
-    #   This is identical to `desaturate(color, 100%)`.
+    # Converts a color to grayscale.
+    # This is identical to `desaturate(color, 100%)`.
     #
-    #   @param color [Color]
-    #   @return [Color]
-    #   @raise [ArgumentError] if `color` isn't a color
-    #   @see #desaturate
-    # @overload grayscale(number)
-    #   Returns an unquoted string `grayscale(number)`, as though the function
-    #   were not defined. This is for the `grayscale` function used in
-    #   `-webkit-filter`.
-    #
-    #   @param number [Number]
-    #   @return [Sass::Script::String]
+    # @param color [Color]
+    # @return [Color]
+    # @raise [ArgumentError] if `color` isn't a color
+    # @see #desaturate
     def grayscale(color)
       return Sass::Script::String.new("grayscale(#{color})") if color.is_a?(Sass::Script::Number)
       desaturate color, Number.new(100)
@@ -1009,6 +1038,8 @@ module Sass::Script
     # @return [Color]
     # @raise [ArgumentError] if `color` isn't a color
     def invert(color)
+      return Sass::Script::String.new("invert(#{color})") if color.is_a?(Sass::Script::Number)
+
       assert_type color, :Color
       color.with(
         :red => (255 - color.red),
@@ -1184,6 +1215,37 @@ module Sass::Script
     end
     declare :abs, [:value]
 
+    # Finds the minimum of several values. This function takes any number of
+    # arguments.
+    #
+    # @example
+    #   min(1px, 4px) => 1px
+    #   min(5em, 3em, 4em) => 3em
+    # @param values [[Number]] The numbers
+    # @return [Number] The minimum value
+    # @raise [ArgumentError] if any argument isn't a number, or if not all of
+    #   the arguments have comparable units
+    def min(*values)
+      values.each {|v| assert_type v, :Number}
+      values.inject {|min, val| min.lt(val).to_bool ? min : val}
+    end
+    declare :min, [], :var_args => :true
+
+    # Finds the maximum of several values. This function takes any number of
+    # arguments.
+    #
+    # @example
+    #   max(1px, 4px) => 4px
+    #   max(5em, 3em, 4em) => 5em
+    # @return [Number] The maximum value
+    # @raise [ArgumentError] if any argument isn't a number, or if not all of
+    #   the arguments have comparable units
+    def max(*values)
+      values.each {|v| assert_type v, :Number}
+      values.inject {|max, val| max.gt(val).to_bool ? max : val}
+    end
+    declare :max, [], :var_args => :true
+
     # Return the length of a list.
     #
     # @example
@@ -1271,14 +1333,14 @@ module Sass::Script
     #   append(10px 20px, 30px) => 10px 20px 30px
     #   append((blue, red), green) => blue, red, green
     #   append(10px 20px, 30px 40px) => 10px 20px (30px 40px)
-    #   join(10px, 20px, comma) => 10px, 20px
-    #   join((blue, red), green, space) => blue red green
-    # @overload join(list, val, separator: auto)
-    #   @param list1 [Literal] The first list to join
-    #   @param list2 [Literal] The second list to join
+    #   append(10px, 20px, comma) => 10px, 20px
+    #   append((blue, red), green, space) => blue red green
+    # @overload append(list, val, separator: auto)
+    #   @param list [Literal] The list to add the value to
+    #   @param val [Literal] The value to add to the end of the list
     #   @param separator [String] How the list separator (comma or space) should be determined.
     #     If this is `comma` or `space`, that is always the separator;
-    #     if this is `auto` (the default), the separator is determined as explained above.
+    #     if this is `auto` (the default), the separator is the same as that used by the list.
     def append(list, val, separator = Sass::Script::String.new("auto"))
       assert_type separator, :String
       unless %w[auto space comma].include?(separator.value)
@@ -1309,9 +1371,9 @@ module Sass::Script
       length = nil
       values = []
       lists.each do |list|
-        assert_type list, :List
-        values << list.value.dup
-        length = length.nil? ? list.value.length : [length, list.value.length].min
+        array = list.to_a
+        values << array.dup
+        length = length.nil? ? array.length : [length, array.length].min
       end
       values.each do |value|
         value.slice!(length)
@@ -1329,8 +1391,7 @@ module Sass::Script
     #   index(1px solid red, solid) => 2
     #   index(1px solid red, dashed) => false
     def index(list, value)
-      assert_type list, :List
-      index = list.value.index {|e| e.eq(value).to_bool }
+      index = list.to_a.index {|e| e.eq(value).to_bool }
       if index
         Number.new(index + 1)
       else
