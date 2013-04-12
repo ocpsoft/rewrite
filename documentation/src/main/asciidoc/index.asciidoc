@@ -1,4 +1,4 @@
 * link:intro[intro]
 * link:install[install]
-* link:configuration[configuration]
+* link:configuration[configuration] 
 * link:faq[faq]
