@@ -5,4 +5,4 @@ bookmark-able, pretty URLs. Rewrite solves the "RESTful URL" problem elegantly, 
 features such as: page-load actions, managed parameter parsing, seamless integration 
 with CDI, Spring, and configuration-free compatibility with other web frameworks.
 
-Learn how to link:/documentation/src/main/asciidoc/install[install Rewrite].
+Learn how to link:install[install Rewrite].
