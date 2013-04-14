@@ -1,6 +1,6 @@
-== Installation
+= Installation
 
-=== Include Rewrite in your Project
+== Include Rewrite in your Project
 
 Add the required Maven dependencies to your pom.xml file
 
