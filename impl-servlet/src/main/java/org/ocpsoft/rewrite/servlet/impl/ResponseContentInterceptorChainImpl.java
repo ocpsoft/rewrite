@@ -40,22 +40,24 @@ public class ResponseContentInterceptorChainImpl implements ResponseContentInter
    @Override
    public void proceed()
    {
-      ResponseContentInterceptor interceptor = interceptors.remove(0);
-      interceptor.intercept(event, buffer, this);
+      if (!interceptors.isEmpty())
+      {
+         ResponseContentInterceptor interceptor = interceptors.remove(0);
+         interceptor.intercept(event, buffer, this);
+      }
    }
 
    public void begin(HttpServletRewrite event, ResponseContent buffer)
    {
       this.event = event;
       this.buffer = buffer;
-      
+
       interceptors.add(new ResponseContentInterceptor() {
          @Override
          public void intercept(HttpServletRewrite event, ResponseContent buffer, ResponseContentInterceptorChain chain)
-         {
-         }
+         {}
       });
-      
+
       proceed();
    }
 }

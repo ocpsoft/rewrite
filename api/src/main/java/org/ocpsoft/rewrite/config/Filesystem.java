@@ -19,8 +19,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.Set;
 
-import org.ocpsoft.rewrite.config.Condition;
-import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
@@ -28,7 +26,6 @@ import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
-import org.ocpsoft.rewrite.util.Transpositions;
 
 /**
  * A {@link Condition} responsible for determining existence of {@link File} paths on the host file-system.
@@ -51,7 +48,7 @@ public class Filesystem implements Condition, Parameterized
    {
       if (resource != null)
       {
-         String filePath = resource.getBuilder().build(event, context, Transpositions.encodePath());
+         String filePath = resource.getBuilder().build(event, context);
          File file = new File(filePath);
          return filter.accept(file);
       }

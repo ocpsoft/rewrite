@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -30,7 +29,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.ocpsoft.logging.Logger;
-
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
@@ -194,7 +192,14 @@ public class QueryStringBuilder
             List<String> values = null;
             if (entry.getValue() != null)
             {
-               values = Arrays.asList(entry.getValue());
+               List<String> temp = new ArrayList<String>();
+               if (entry.getValue() != null)
+               {
+                  for (String value : entry.getValue()) {
+                     temp.add(value);
+                  }
+               }
+               values = temp;
             }
             parameters.put(entry.getKey(), values);
          }
