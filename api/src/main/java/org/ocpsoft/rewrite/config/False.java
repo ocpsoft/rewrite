@@ -22,7 +22,6 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * {@link Condition} that always returns <code>false</code>.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
  */
 public final class False extends DefaultConditionBuilder
 {

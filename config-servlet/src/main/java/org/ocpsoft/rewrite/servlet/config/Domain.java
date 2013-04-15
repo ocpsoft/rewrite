@@ -50,7 +50,7 @@ public class Domain extends HttpCondition implements Parameterized
    /**
     * Create a {@link Domain} condition to inspect the current {@link Address#getDomain()}.
     * <p>
-    * The given pattern may be parameterized using the following format:
+    * The given pattern may be parameterized:
     * <p>
     * <code>
     *    example.com

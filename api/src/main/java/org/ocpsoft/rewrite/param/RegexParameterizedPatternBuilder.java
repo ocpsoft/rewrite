@@ -122,7 +122,15 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    }
 
    @Override
-   public String build(final Rewrite event, final EvaluationContext context, final Transposition<String> transposition)
+   public String build(final Rewrite event, final EvaluationContext context)
+            throws ParameterizationException
+   {
+      return build(event, context, null);
+   }
+
+   @Override
+   public String build(final Rewrite event, final EvaluationContext context,
+            final Transposition<String> transposition)
             throws ParameterizationException
    {
       return build(extractBoundValues(event, context, transposition));
@@ -230,7 +238,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
     * pairs. Before storing the values in the map, this method applies the supplied {@link Transposition} instance.
     */
    private Map<String, Object> extractBoundValues(final Rewrite event, final EvaluationContext context,
-            Transposition<String> transform)
+            Transposition<String> transposition)
    {
       Map<String, Object> result = new LinkedHashMap<String, Object>();
 
@@ -253,7 +261,10 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
          if (value == null)
             throw new ParameterizationException("The value of required parameter [" + group.getName() + "] was null.");
 
-         result.put(group.getName(), transform.transpose(event, context, value.toString()));
+         if (transposition != null)
+            value = transposition.transpose(event, context, value.toString());
+
+         result.put(group.getName(), value);
       }
       return result;
    }
