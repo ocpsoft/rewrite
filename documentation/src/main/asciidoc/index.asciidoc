@@ -7,7 +7,6 @@ with CDI, Spring, and configuration-free compatibility with other web frameworks
 
 Learn how to link:install[install Rewrite].
 
-* link:intro[intro]
 * link:install[install]
 * link:configuration[configuration] 
 * link:faq[faq]
