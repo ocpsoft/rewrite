@@ -1,4 +1,5 @@
-= Introduction =
+= Rewrite Documentation
+== Rewrite Documentation
 
 Rewrite is an OpenSource, Filter-based Servlets extension for Java - enabling creation of 
 bookmark-able, pretty URLs. Rewrite solves the "RESTful URL" problem elegantly, including 
