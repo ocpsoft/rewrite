@@ -1,4 +1,3 @@
-= Rewrite Documentation
 == Rewrite Documentation
 
 Rewrite is an OpenSource, Filter-based Servlets extension for Java - enabling creation of 
