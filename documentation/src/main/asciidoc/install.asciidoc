@@ -10,7 +10,7 @@ Add the required Maven dependencies to your pom.xml file
 <dependency>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-servlet</artifactId>
-   <version>1.1.0.Final</version>
+   <version>${rewrite.version}</version>
 </dependency>
 
 <!-- To use snapshots, you must also use the Sonatype Snapshots respository -->
@@ -20,3 +20,71 @@ Add the required Maven dependencies to your pom.xml file
 </repository>
 ----
 
+=== Create your first +ConfigurationProvider+
+
+Once Rewrite is installed, you will need to describe how you would like it to 
+handle events; this is done by implementing the +org.ocpsoft.rewrite.config.ConfigurationProvider+ interface. 
+Typically, when using Rewrite in a Servlet environment, you will want to extend from
+the provided base class +org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider+:
+
+[source,java]
+----
+public class ApplicationConfigurationProvider extends HttpConfigurationProvider
+{
+   @Override
+   public Configuration getConfiguration(ServletContext context)
+   {
+      return ConfigurationBuilder.begin()
+         .addRule()
+         .perform(Log.message(Log.message(Level.INFO, "Rewrite is active.")))
+      ; 
+   }
+
+   @Override
+   public int priority()
+   {
+      return 0;
+   }
+}
+----
+
+=== Activate your configuration
+
+In order to register your +ConfigurationProvider+ with Rewrite, you will need to create a
+provider registration file called +/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider+.
+
+This file must contain the fully qualified class name of each configuration implementation that
+you wish to activate in the application; one per line. Note that +ConfigurationProvider+ implementations 
+may be placed in JAR files that are included as dependencies in your project, but you must register
+providers in each JAR separately. This allows functionality to be extracted into a JAR, in effect,
+creating link:configuration/modular-applications[modular applications with Rewrite].
+
+To register providers in a JAR file, simply use this same activation mechanism, but create a service
+registration file in each JAR containing configurations. This registration file will be located at
++jar:/META-INF/org.ocpsoft.rewrite.config.ConfigurationProvider+. 
+
+Additionally, there are alternate methods of configuration available such as link:configuration/annotations[Rewrite Annotations],
+link:configuration/prettyfaces[PrettyFaces XML and Annotations], and via link:integration/cdi[cdi] and 
+link:integration/spring[spring]; these methods may be used to avoid the need for a provider registration file.
+
+=== Verify that your configuration is installed
+
+Before link:configuration[configuring Rewrite], you may wish to verify that your provider has
+been properly installed and activated. To do this, start your application and look at the server output, where
+you should see a summary of each active Rewrite extension, and all of your registered configuration providers.
+
+[source,text]
+----
+----
+
+If the your +ConfigurationProvider+ does not appear in the list of active providers, double check the location
+of the provider registration file, and make sure that you have correctly spelled the fully qualified name of
+each provider implementation.
+
+=== Add rules to your configuration
+
+
+
+
+
+  
