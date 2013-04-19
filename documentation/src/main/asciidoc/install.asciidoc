@@ -1,6 +1,4 @@
-= Installation
-
-== Include Rewrite in your Project
+== 1. Include Rewrite in your Project
 
 The first step to installing rewrite is to add the required Maven dependencies to your pom.xml file. If you
 are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[download the Rewrite distribution]
@@ -22,7 +20,7 @@ are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%
 </repository>
 ----
 
-=== Create your first +ConfigurationProvider+
+=== 2. Create your first +ConfigurationProvider+
 
 Once Rewrite is installed, you will need to describe how you would like it to 
 handle events; this is done by implementing the +org.ocpsoft.rewrite.config.ConfigurationProvider+ interface. 
@@ -51,9 +49,9 @@ public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 }
 ----
 
-=== Activate your configuration
+=== 3. Activate your configuration
 
-In order to register your +ConfigurationProvider+ with Rewrite, you will need to create a
+The next step is to register your +ConfigurationProvider+ with Rewrite. You will need to create a
 provider registration file called +/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider+.
 
 This file must contain the fully qualified class name of each configuration implementation that
@@ -70,7 +68,7 @@ Additionally, there are alternate methods of configuration available such as lin
 link:configuration/prettyfaces[PrettyFaces XML and Annotations], and via link:integration/cdi[cdi] and 
 link:integration/spring[spring]; these methods may be used to avoid the need for a provider registration file.
 
-=== Verify that your configuration is installed
+=== 4. Verify that your configuration is installed
 
 Before link:configuration[configuring Rewrite], you may wish to verify that your provider has
 been properly installed and activated. To do this, start your application and look at the server output, where
@@ -88,7 +86,7 @@ If the your +ConfigurationProvider+ does not appear in the list of active provid
 of the provider registration file, and make sure that you have correctly spelled the fully qualified name of
 each provider implementation.
 
-=== Add rules to your configuration
+=== 5. Add rules to your configuration
 
 As can be seen above, configuring Rewrite may be performed using the +ConfigurationBuilder+ class, which allows
 addition of pre-constructed +Rule+ instances, as well as definition of custom rules using +Condition+, +Operation+, 
