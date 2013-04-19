@@ -2,7 +2,9 @@
 
 == Include Rewrite in your Project
 
-Add the required Maven dependencies to your pom.xml file
+The first step to installing rewrite is to add the required Maven dependencies to your pom.xml file. If you
+are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[download the Rewrite distribution]
+ from the Maven central repository - a list of all available versions is available http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[here]:
 
 [source,xml]
 .Add Rewrite to your maven pom.xml
@@ -28,6 +30,7 @@ Typically, when using Rewrite in a Servlet environment, you will want to extend 
 the provided base class +org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider+:
 
 [source,java]
+.org.example.ApplicationConfigurationProvider
 ----
 public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 {
@@ -71,10 +74,14 @@ link:integration/spring[spring]; these methods may be used to avoid the need for
 
 Before link:configuration[configuring Rewrite], you may wish to verify that your provider has
 been properly installed and activated. To do this, start your application and look at the server output, where
-you should see a summary of each active Rewrite extension, and all of your registered configuration providers.
+you should see a summary of each active Rewrite extension, and all of your registered configuration providers:
 
 [source,text]
 ----
+INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] RewriteFilter starting up...
+...
+INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] Loaded [] org.ocpsoft.rewrite.config.ConfigurationProvider [org.example.ApplicationConfigurationProvider<0>]
+INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] RewriteFilter initialized.
 ----
 
 If the your +ConfigurationProvider+ does not appear in the list of active providers, double check the location
@@ -83,8 +90,47 @@ each provider implementation.
 
 === Add rules to your configuration
 
+As can be seen above, configuring Rewrite may be performed using the +ConfigurationBuilder+ class, which allows
+addition of pre-constructed +Rule+ instances, as well as definition of custom rules using +Condition+, +Operation+, 
+and other link:configuration[configuration objects]. Your configuration can be as simple or complex as you wish:
 
+[source,java]
+.Example Configuration
+----
+@Override
+public Configuration getConfiguration(ServletContext context)
+{
+   // Example bookstore configuration
+   return ConfigurationBuilder.begin()
+         
+         .addRule()
+         .perform(Log.message(Log.message(Level.INFO, "Rewrite is active.")))
 
+         // redirect to another page
+         .addRule()
+         .when(Direction.isInbound().and(Path.matches("/")))
+         .perform(Redirect.temporary(context.getContextPath() + "/home"))
+
+         // redirect legacy URLs to a new location
+         .addRule()
+         .when(Direction.isInbound()
+            .and(Path.matches("/book.php").and(Query.parameterExists("isbn"))))
+         .perform(Redirect.temporary(context.getContextPath() + "/book/{isbn}"))
+
+          // Join a URL to an internal resource
+         .addRule(Join.path("/year/{year}").to("/search/year.jsp"))
+         
+         // Join a URL to an internal resource that accepts a parameter
+         .addRule(Join.path("/book/{isbn}").to("/store/book.jsp"))
+   ;
+}
+----
+
+=== Explore Rewrite Extensions
+Once you have a grasp on the basic Rewrite features, you may wish to get a bit fancier, and try out some of
+the provided link:configuration/integration[Rewrite extensions]. Of course, you can always create your own extension simply by building a
+custom configuration or some configuration objects, but there may also be an existing extension that meets
+your needs.
 
 
   
