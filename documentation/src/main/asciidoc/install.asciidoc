@@ -53,20 +53,26 @@ public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 
 === 3. Activate your configuration
 
-The next step is to register your +ConfigurationProvider+ with Rewrite. You will need to create a
-provider registration file called +/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider+.
+The next step is to register your +ConfigurationProvider+ with Rewrite; you will need to create a
+provider registration file.
 
-This file must contain the fully qualified class name of each configuration implementation that
-you wish to activate in the application; one per line. Note that +ConfigurationProvider+ implementations 
-may be placed in JAR files that are included as dependencies in your project, but you must register
-providers in each JAR separately. This allows functionality to be extracted into a JAR, in effect,
-creating link:configuration/modular-applications[modular applications with Rewrite].
+This file contains the fully qualified class name of each configuration implementation that
+you wish to activate in the application; one per line:
+
+[source,text]
+./META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider
+----
+org.example.ApplicationConfigurationProvider
+org.example.OtherConfigurationProvider
+----
+
+TIP: +ConfigurationProvider+ implementations may be placed in JAR files that are included as project dependencies. 
 
 To register providers in a JAR file, simply use this same activation mechanism, but create a service
 registration file in each JAR containing configurations. This registration file will be located at
 +jar:/META-INF/org.ocpsoft.rewrite.config.ConfigurationProvider+. 
 
-Additionally, there are alternate methods of configuration available such as link:configuration/annotations[Rewrite Annotations],
+NOTE: Alternate methods of configuration are available, such as link:configuration/annotations[Rewrite Annotations],
 link:configuration/prettyfaces[PrettyFaces XML and Annotations], and via link:integration/cdi[cdi] and 
 link:integration/spring[spring]; these methods may be used to avoid the need for a provider registration file.
 
@@ -84,7 +90,7 @@ INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] RewriteFilter starting up...
 INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] RewriteFilter initialized.
 ----
 
-If the your +ConfigurationProvider+ does not appear in the list of active providers, double check the location
+TIP: If the your +ConfigurationProvider+ does not appear in the list of active providers, double check the location
 of the provider registration file, and make sure that you have correctly spelled the fully qualified name of
 each provider implementation.
 
