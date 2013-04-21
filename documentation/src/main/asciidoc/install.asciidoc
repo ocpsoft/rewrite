@@ -32,6 +32,12 @@ the provided base class +org.ocpsoft.rewrite.servlet.config.HttpConfigurationPro
 [source,java]
 .org.example.ApplicationConfigurationProvider
 ----
+import org.ocpsoft.logging.Logger.Level;
+import org.ocpsoft.rewrite.config.Configuration;
+import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Log;
+import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+
 public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 {
    @Override
