@@ -1,4 +1,4 @@
-* link:../[docs home]
+== Rewrite User Manual
 
 There are many types of configuration objects in Rewrite. The most basic `True` and `False` are the root of all other objects. Blah blah more stuff here.
 

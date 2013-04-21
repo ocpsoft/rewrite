@@ -1,5 +1,10 @@
 == Install Rewrite
 
+Installation requirements:
+
+* A Servlet 2.5 or 3.0+ compatible Servlet Container.
+* Java 1.6+
+
 == 1. Include Rewrite in your Project
 
 The first step to installing rewrite is to add the required Maven dependencies to your pom.xml file. If you
@@ -22,7 +27,7 @@ are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%
 </repository>
 ----
 
-=== 2. Create your first +ConfigurationProvider+
+=== 2. Create your first ConfigurationProvider
 
 Once Rewrite is installed, you will need to describe how you would like it to 
 handle events; this is done by implementing the +org.ocpsoft.rewrite.config.ConfigurationProvider+ interface. 
