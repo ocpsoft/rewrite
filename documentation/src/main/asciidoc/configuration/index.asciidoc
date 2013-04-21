@@ -1,12 +1,21 @@
 == Rewrite User Manual
 
-There are many types of configuration objects in Rewrite. The most basic `True` and `False` are the root of all other objects. Blah blah more stuff here.
+There are many types of configuration objects in Rewrite. Most of the core objects can be found in the +org.ocpsoft.rewrite.config+ package, while Servlet specific objects can be found in the +org.ocpsoft.rewrite.servlet.config+ package.
 
+=== The terminology
 
-* True
-* False
-* And
-* Or
-* Not
-* Condition
-* Operation
+It may be helpful to review the following terms, which will be frequently in this documentation.
+
+ConfigurationBuilder:: This is the root of the configuration system, start with a +ConfigurationBuilder+ in each situation where you find yourself in need of a +Configuration+ object. This class may be used to add pre-constructed, or contruct custom +Rule+ instances for the Rewrite framework.
+
+Condition:: Defines a requirement that must be met in order for rule evaluation to return true. You may create custom +Condition+ implementations. If creating custom implementations, you should likely extend +DefaultConditionBuilder+, which  adds logical operators to any class extending it.
+
+Operation:: Defines behavior to be performed after successful evaluation a Rewrite event.
+
+Rule:: A pre-constructed combination of +Condition+ and +Operation+ instances. You should use a +Rule+ when simple composition of +Condition+ and +Operation+ instances in a +ConfigurationBuilder+ is too difficult to achieve the desired functionality.
+
+True:: 
+False
+And
+Or
+Not
