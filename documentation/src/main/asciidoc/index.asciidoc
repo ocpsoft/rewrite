@@ -1,12 +1,31 @@
-== Rewrite Documentation
+== Learn Rewrite
 
-Rewrite is an OpenSource, Filter-based Servlets extension for Java - enabling creation of 
-bookmark-able, pretty URLs. Rewrite solves the "RESTful URL" problem elegantly, including 
-features such as: page-load actions, managed parameter parsing, seamless integration 
-with CDI, Spring, and configuration-free compatibility with other web frameworks.
+The following steps will guide you from knowing nothing about URL-rewriting with Rewrite, to configuring Rewrite in your application - in only a few minutes! If you already have some knowledge of the framework, just skip the steps you don't need.
 
-Learn how to link:install[install Rewrite].
+=== 1. What is Rewrite?
+Not sure what URL-rewriting is, and what the Rewrite framework can do for you? Watch this short presentation for a quick overview of the technology.
 
-* link:install[install]
-* link:configuration[configuration] 
-* link:faq[faq]
+link:http://youtube.com/watch?v=123123123[Play presentation] [TBD]
+
+=== 2. Try a sample application
+
+Download our bookstore application from GitHub.
+
+link:https://github.com/ocpsoft/rewrite/tree/master/showcase/bookstore[Sample application]
+
+=== 3. Download Rewrite
+Get the latest stable release of Rewrite.
+
+link:http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[Download Rewrite]
+
+You can skip this download and proceed to the next section if you use the link:http://maven.apache.org[Maven] build system.
+
+=== 4. Installation
+Simple and easy. Rewrite makes getting started fast and painless.
+
+link:install[Read installation manual]
+
+=== 5. User Manual & Examples
+Get detailed knowledge via the extensive user guide and practical examples.
+
+link:configuration[Manual] - link:http://ocpsoft.org/rewrite/examples/[Examples]

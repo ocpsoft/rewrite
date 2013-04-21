@@ -8,6 +8,7 @@ target/
 *.ipr
 *.idea
 *.iws
+*.swp
 *.*~
 bin/
 /*/src/main/java/META-INF
