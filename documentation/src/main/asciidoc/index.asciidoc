@@ -11,7 +11,7 @@ link:http://youtube.com/watch?v=123123123[Play presentation] [TBD]
 
 Download our bookstore application from GitHub.
 
-link:https://github.com/ocpsoft/rewrite/raw/master/showcase/target/rewrite-showcase-bookstore.zip[Sample application]
+link:https://raw.github.com/ocpsoft/rewrite/2.0.0.Final/showcase/target/rewrite-showcase-bookstore.zip[Sample application]
 
 === 3. Download Rewrite
 Get the latest stable release of Rewrite.

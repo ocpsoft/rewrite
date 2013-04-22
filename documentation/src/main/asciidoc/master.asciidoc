@@ -1,6 +1,10 @@
 Rewrite Documentation
 =====================
 
-include::intro.asciidoc[]
+include::index.asciidoc[]
+
 include::install.asciidoc[]
+
+include::configuration/index.asciidoc[]
+
 include::faq.asciidoc[]
