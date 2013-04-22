@@ -7,7 +7,7 @@ Installation requirements:
 
 == 1. Include Rewrite in your Project
 
-The first step to installing rewrite is to add the required Maven dependencies to your pom.xml file. If you
+The first step to installing link:./[Rewrite] is to add the required Maven dependencies to your pom.xml file. If you
 are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[download the Rewrite distribution]
  from the Maven central repository - a list of all available versions is available http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[here]:
 
@@ -97,8 +97,8 @@ you should see a summary of each active Rewrite extension, and all of your regis
 ----
 INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] RewriteFilter starting up...
 ...
-INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] Loaded [] org.ocpsoft.rewrite.config.ConfigurationProvider [org.example.ApplicationConfigurationProvider<0>]
-INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] RewriteFilter initialized.
+INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] Loaded [] org.ocpsoft.rewrite.config.ConfigurationProvider [org.example.ApplicationConfigurationProvider<0>]
+INFO  [org.ocpsoft.rewrite.servlet.RewriteFilter] RewriteFilter initialized.
 ----
 
 TIP: If the your +ConfigurationProvider+ does not appear in the list of active providers, double check the location
@@ -149,5 +149,8 @@ the provided link:configuration/integration[Rewrite extensions]. Of course, you 
 custom configuration or some configuration objects, but there may also be an existing extension that meets
 your needs.
 
+=== Continue configuring
 
-  
+Rewrite is a highly extendable framework, and there are many pre-defined configuration options available to help achieve specialized and specific results; however, if no pre-defined configuration object exists, it is easy to create one that fills the gaps.
+ 
+Read the link:configuration/[configuration manual] for more information on creating custom rules and rule primitives.
