@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.Set;
 
+import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
@@ -39,6 +40,8 @@ public class Filesystem implements Condition, Parameterized
 
    private Filesystem(final File resource, FileFilter filter)
    {
+      Assert.notNull(resource, "File path to inspect must not be null.");
+      Assert.notNull(filter, "FileFilter must not be null.");
       this.resource = new RegexParameterizedPatternParser(resource.getAbsolutePath());
       this.filter = filter;
    }
