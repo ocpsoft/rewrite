@@ -4,8 +4,6 @@
 .DS_Store
 dependency-reduced-pom.xml
 target/
-!/showcase/target/
-/showcase/target/archive-tmp/
 *.iml
 *.ipr
 *.idea

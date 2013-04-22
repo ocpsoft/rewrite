@@ -32,32 +32,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<finalName>rewrite-showcase</finalName>
-					<appendAssemblyId>true</appendAssemblyId>
-					<descriptors>
-						<descriptor>src/main/assembly/bookstore.xml</descriptor>
-					</descriptors>
-					<archiverConfig>
-						<fileMode>420</fileMode> <!-- 420(dec) = 644(oct) -->
-						<directoryMode>493</directoryMode> <!-- 493(dec) = 755(oct) -->
-						<defaultDirectoryMode>493</defaultDirectoryMode>
-					</archiverConfig>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencyManagement>
