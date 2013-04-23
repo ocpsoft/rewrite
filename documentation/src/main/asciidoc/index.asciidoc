@@ -28,4 +28,4 @@ link:install[Read installation manual]
 === 5. User Manual & Examples
 Get detailed knowledge via the extensive user guide and practical examples.
 
-link:configuration[Manual] - link:http://ocpsoft.org/rewrite/examples/[Examples]
+link:configuration/[Manual] - link:http://ocpsoft.org/rewrite/examples/[Examples]

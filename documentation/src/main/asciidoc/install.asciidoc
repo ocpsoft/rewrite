@@ -84,12 +84,12 @@ registration file in each JAR containing configurations. This registration file 
 +jar:/META-INF/org.ocpsoft.rewrite.config.ConfigurationProvider+. 
 
 NOTE: Alternate methods of configuration are available, such as link:configuration/annotations[Rewrite Annotations],
-link:configuration/prettyfaces[PrettyFaces XML and Annotations], and via link:integration/cdi[cdi] and 
+link:configuration/prettyfaces/[PrettyFaces XML and Annotations], and via link:integration/cdi[cdi] and 
 link:integration/spring[spring]; these methods may be used to avoid the need for a provider registration file.
 
 === 4. Verify that your configuration is installed
 
-Before link:configuration[configuring Rewrite], you may wish to verify that your provider has
+Before link:configuration/[configuring Rewrite], you may wish to verify that your provider has
 been properly installed and activated. To do this, start your application and look at the server output, where
 you should see a summary of each active Rewrite extension, and all of your registered configuration providers:
 
@@ -109,7 +109,7 @@ each provider implementation.
 
 As can be seen above, configuring Rewrite may be performed using the +ConfigurationBuilder+ class, which allows
 addition of pre-constructed +Rule+ instances, as well as definition of custom rules using +Condition+, +Operation+, 
-and other link:configuration[configuration objects]. Your configuration can be as simple or complex as you wish:
+and other link:configuration/[configuration objects]. Your configuration can be as simple or complex as you wish:
 
 [source,java]
 .Example Configuration
@@ -145,7 +145,7 @@ public Configuration getConfiguration(ServletContext context)
 
 === Explore Rewrite Extensions
 Once you have a grasp on the basic Rewrite features, you may wish to get a bit fancier, and try out some of
-the provided link:configuration/integration[Rewrite extensions]. Of course, you can always create your own extension simply by building a
+the provided link:configuration/integration/[Rewrite extensions]. Of course, you can always create your own extension simply by building a
 custom configuration or some configuration objects, but there may also be an existing extension that meets
 your needs.
 
