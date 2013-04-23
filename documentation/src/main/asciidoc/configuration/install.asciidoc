@@ -7,8 +7,7 @@ Installation requirements:
 
 == 1. Include Rewrite in your Project
 
-The first step to installing link:../[Rewrite] is to add the required Maven dependencies to your pom.xml file. If you
-are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[download the Rewrite distribution]
+The first step to installing link:../[Rewrite] is to add the required Maven dependencies to your pom.xml file. If you are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[download the Rewrite distribution]
  from the Maven central repository - a list of all available versions is available http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[here]:
 
 [source,xml]
@@ -30,8 +29,7 @@ are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%
 === 2. Create your first ConfigurationProvider
 
 Once Rewrite is installed, you will need to describe how you would like it to 
-handle events; this is done by implementing the +org.ocpsoft.rewrite.config.ConfigurationProvider+ interface. 
-Typically, when using Rewrite in a Servlet environment, you will want to extend from
+handle events; this is done by implementing the +org.ocpsoft.rewrite.config.ConfigurationProvider+ interface.  Typically, when using Rewrite in a Servlet environment, you will want to extend from
 the provided base class +org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider+:
 
 [source,java]
@@ -61,6 +59,7 @@ public class ApplicationConfigurationProvider extends HttpConfigurationProvider
    }
 }
 ----
+NOTE: You will see the `Log` message for each inbound request and each time a link is sent outbound to the browser, but you will not see it in the server startup logs.
 
 === 3. Activate your configuration
 

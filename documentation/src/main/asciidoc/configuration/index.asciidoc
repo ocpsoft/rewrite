@@ -1,4 +1,4 @@
-== Rewrite User Manual
+== Rewrite Configuration Manual
 
 There are many types of configuration objects in link:../[Rewrite], so we will take a few moments to define a few of the core terms before continuing to more advanced topics. Most of the core objects can be found in the +org.ocpsoft.rewrite.config+ package, while Servlet specific objects can be found in the +org.ocpsoft.rewrite.servlet.config+ package.
 
@@ -20,7 +20,106 @@ Condition:: Defines a requirement that must be met in order for rule evaluation 
 
 Operation:: Defines behavior to be performed after evaluation a +Rewrite+ event. These objects may be as simple or as complex as desired, ranging from simple logging to request forwarding. Typically +Operation+ instances may be chained to achieve more complex tasks. If creating custom umplementations, you should likely extend +DefaultOperationBuilder+, which adds logical chaining via +.and()+.
 
+Parameter:: Specifies a fragment of an HTTP request that may be referenced in both +Condition+ and +Operation+ instances. Parameters are defined using the +.where()+ method of the +ConfigurationBuilder+, which is available once the first +Rule+ (with conditions or operations) has been added.
+
 Rule:: A pre-constructed combination of +Condition+ and +Operation+ instances. You should use a +Rule+ when simple composition of +Condition+ and +Operation+ instances in a +ConfigurationBuilder+ is too difficult to achieve the desired functionality.
 
 === Get started
+
+Now that you have Rewrite installed, and understand the basic terms, let's start writing some rules. We will start with a simple example: logging an inbound request URL to the server log.
+
+First, open the +ConfigurationProvider+ you defined during link:install[installation], we will add the desired logging statement using the +.addRule()+ method of +ConfigurationBuilder+. This will demonstrate how to use simple parameters.
+
+[source,java]
+.Use ConfigurationBuilder to add Conditions and Operations to your ConfigurationProvider
+----
+public class ApplicationConfigurationProvider extends HttpConfigurationProvider
+{
+
+   @Override
+   public Configuration getConfiguration(ServletContext context)
+   {
+      return ConfigurationBuilder.begin()
+               .addRule()
+               .when(Direction.isInbound().and(Path.matches("/{path}")))
+               .perform(Log.message(Level.INFO, "Client requested path: {path}"));
+   }
+
+}
+----
+You might notice, however, that the results are not quite what you expected, and that only requests with a single segment (+http://localhost:8080/segment1/+) are being logged, while requests with more than one segment (+http://localhost:8080/segment1/segmentN/+) are not.
+
+This is because, by default, +Path+ parameters match all characters except for forward slash "+/+", and if we want to change this, we must configure the parameter ourself.
+
+[source,java]
+.Modify  parameters to match a specific values using +.where()+
+----
+public class ApplicationConfigurationProvider extends HttpConfigurationProvider
+{
+
+   @Override
+   public Configuration getConfiguration(ServletContext context)
+   {
+      return ConfigurationBuilder.begin()
+               .addRule()
+               .when(Direction.isInbound().and(Path.matches("/{path}")))
+               .perform(Log.message(Level.INFO, "Client requested path: {path}"))
+               .where("path").matches(".*");
+   }
+
+}
+----
+
+[NOTE] 
+====
+If you attempt to configure a parameter that does not exist, you will quickly find out upon application startup; your deployment will halt on exception:
+
+[source,console]
+----
+.where("foo").matches(".*");
+...
+java.lang.IllegalArgumentException: No such parameter [ foo ] exists.
+----
+====
+
+==== A closer look
+
+Now that we have written a rule that uses a few different +Operation+ and +Condition+ objects, lets take a look at how the interaction works - we will break down the entire rule:
+
+[source,java]
+----
+ConfigurationBuilder.begin()
+   .addRule()
+   .when(Direction.isInbound().and(Path.matches("/{path}")))
+   .perform(Log.message(Level.INFO, "Client requested path: {path}"))
+   .where("path").matches(".*");
+----
+
+===== The breakdown
++ConfigurationBuilder.begin().addRule()+:: Begins a new fluent +Configuration+ object and adds a fluent +Rule+
+
+`.when(Direction.isInbound().and(Path.matches("/{path}")))`:: Specifies that the rule should match only on inbound requests, and only when the request path matches the pattern `/[^/]+`, which is specified by our use of the parameter `{path}`
+
+`.perform(Log.message(Level.INFO, "Client requested path: {path}"))`:: Specify the +Operation+ to be performed when all conditions are met. Operations may be chained using the +.and()+ method available on most operation instances.
+
+`.where("path").matches(".*")`:: Configures the +Parameter+ named "+path+", and specifies that it must match the link:http://ocpsoft.org/opensource/guide-to-regular-expressions-in-java-part-1/[regular expression] pattern "+.*+"
+
+==== Add another operation
+
+Now say we wish to forward each inbound request to a Servlet or JSP that will handle the request and render a response for the client. We can achieve this by adding the +Forward+ operation to the set of operations to be performed when all rule conditions have been met. Forwards are purely internal operations, and the client browser URL will not be updated.
+
+[source,java]
+----
+ConfigurationBuilder.begin()
+   .addRule()
+   .when(Direction.isInbound().and(Path.matches("/{path}")))
+   .perform(Log.message(Level.INFO, "Client requested path: {path}")
+              .and(Forward.to("/Servlet?path={path}")))
+   .where("path").matches(".*");
+----
+
+Notice that we have specified a new Operation: +Forward.to("/Servlet?path={path}")+; this will again re-use the "+path+" parameter. The example below demonstrates how an inbound request will be forwarded to an inbound resource.
+
+TIP: Operations are performed in the order in which they are added to the rule, so make sure that breaking operations such as +Forward+, +Redirect+, +Substitute+, and +Lifecycle+ are added last, or your +Operation+ may not be performed.
+
 
