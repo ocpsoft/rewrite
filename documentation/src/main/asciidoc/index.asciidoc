@@ -23,7 +23,7 @@ You can skip this download and proceed to the next section if you use the link:h
 === 4. Installation
 Simple and easy. Rewrite makes getting started fast and painless.
 
-link:install[Read installation manual]
+link:configuration/install[Read installation manual]
 
 === 5. User Manual & Examples
 Get detailed knowledge via the extensive user guide and practical examples.
