@@ -1,10 +1,10 @@
 == Rewrite User Manual
 
-There are many types of configuration objects in link:../../[Rewrite], so we will take a few moments to define a few of the core terms before continuing to more advanced topics. Most of the core objects can be found in the +org.ocpsoft.rewrite.config+ package, while Servlet specific objects can be found in the +org.ocpsoft.rewrite.servlet.config+ package.
+There are many types of configuration objects in link:../[Rewrite], so we will take a few moments to define a few of the core terms before continuing to more advanced topics. Most of the core objects can be found in the +org.ocpsoft.rewrite.config+ package, while Servlet specific objects can be found in the +org.ocpsoft.rewrite.servlet.config+ package.
 
 === Download and install
 
-Before continuing on to learn about configuring Rewrite, make sure that you have already followed the link:../../install.asciidoc[installation guide]. This will ensure that Rewrite is successfully set up in your application.
+Before continuing on to learn about configuring Rewrite, make sure that you have already followed the link:../install[installation guide]. This will ensure that Rewrite is successfully set up in your application.
 
 === The terminology
 
