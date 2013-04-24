@@ -24,7 +24,7 @@ Parameter:: Specifies a fragment of an HTTP request that may be referenced in bo
 
 Rule:: A pre-constructed combination of +Condition+ and +Operation+ instances. You should use a +Rule+ when simple composition of +Condition+ and +Operation+ instances in a +ConfigurationBuilder+ is too difficult to achieve the desired functionality.
 
-=== Get started
+=== Start using Rewrite rules
 
 Now that you have Rewrite installed, and understand the basic terms, let's start writing some rules. We will start with a simple example: logging an inbound request URL to the server log.
 
