@@ -26,6 +26,8 @@ The first step to installing link:../[Rewrite] is to add the required Maven depe
 </repository>
 ----
 
+If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ folder of your web application. You do not need other JARs unless you are using link:../integration/[extensions].
+
 === 2. Create your first ConfigurationProvider
 
 Once Rewrite is installed, you will need to describe how you would like it to 
@@ -83,7 +85,7 @@ registration file in each JAR containing configurations. This registration file 
 +jar:/META-INF/org.ocpsoft.rewrite.config.ConfigurationProvider+. 
 
 NOTE: Alternate methods of configuration are available, such as link:./annotations/[Rewrite Annotations],
-link:../prettyfaces/[PrettyFaces XML and Annotations], and via link:../../integration/cdi[cdi] and 
+link:./prettyfaces/[PrettyFaces XML and Annotations], and via link:../../integration/cdi[cdi] and 
 link:../../integration/spring[spring]; these methods may be used to avoid the need for a provider registration file.
 
 === 4. Verify that your configuration is installed
@@ -144,7 +146,7 @@ public Configuration getConfiguration(ServletContext context)
 
 === Explore Rewrite Extensions
 Once you have a grasp on the basic Rewrite features, you may wish to get a bit fancier, and try out some of
-the provided link:../../integration/[Rewrite extensions]. Of course, you can always create your own extension simply by building a
+the provided link:../integration/[Rewrite extensions]. Of course, you can always create your own extension simply by building a
 custom configuration or some configuration objects, but there may also be an existing extension that meets
 your needs.
 

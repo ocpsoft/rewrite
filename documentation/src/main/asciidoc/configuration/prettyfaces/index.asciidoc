@@ -1,0 +1,22 @@
+== PrettyFaces Integration for Rewrite
+
+Docs coming soon.
+
+=== Install
+
+[source,xml]
+----
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-config-prettyfaces</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+
+<!-- To use snapshots, you must also use the Sonatype Snapshots respository -->
+<repository>
+   <id>sonatype-snapshots</id>
+   <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+</repository>
+----
+
+You may then use the PrettyFaces standalone documentation, available link:http://ocpsoft.org/prettyfaces/docs/[here].
