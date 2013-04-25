@@ -49,6 +49,13 @@ public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 ----
 You might notice, however, that the results are not quite what you expected, and that only requests with a single segment (+http://localhost:8080/segment1/+) are being logged, while requests with more than one segment (+http://localhost:8080/segment1/segmentN/+) are not.
 
+[source,console]
+.Log output
+----
+INFO [org.ocpsoft.config.Log] Client requested path: /foo
+INFO [org.ocpsoft.config.Log] Client requested path: /bar
+----
+
 This is because, by default, +Path+ parameters match all characters except for forward slash "+/+", and if we want to change this, we must configure the parameter ourself.
 
 [source,java]
@@ -68,6 +75,16 @@ public class ApplicationConfigurationProvider extends HttpConfigurationProvider
    }
 
 }
+----
+
+Now we will see that our rule matches for any inbound request, with any number of path segments. This type of parameter configuration can be used any time when parameters have been specified using the +ConfigurationBuilder+
+
+[source,console]
+.Log output
+----
+INFO [org.ocpsoft.config.Log] Client requested path: /foo
+INFO [org.ocpsoft.config.Log] Client requested path: /foo/bar
+...
 ----
 
 [NOTE] 
