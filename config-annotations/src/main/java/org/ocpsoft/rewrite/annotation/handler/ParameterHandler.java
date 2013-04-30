@@ -93,7 +93,7 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       * corresponding query parameter. We must make sure that
       * the condition is evaluated even if the existing part of the tree evaluates to true.
       */
-      Condition requestParameter = RequestParameter.matches("{name}", "{" + param + "}");
+      Condition requestParameter = RequestParameter.matches(param, "{" + param + "}");
       ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
                Or.any(requestParameter, new True()));
       context.getRuleBuilder().when(composite);
