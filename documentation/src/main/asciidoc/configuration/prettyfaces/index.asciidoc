@@ -20,3 +20,172 @@ Docs coming soon.
 ----
 
 You may then use the PrettyFaces standalone documentation, available link:http://ocpsoft.org/prettyfaces/docs/[here].
+
+=== Migration from PrettyFaces 3.x and Prior
+
+Assuming that you have included the required dependencies (see above), and you have
+a previously existing +pretty-config.xml+, then your migration is complete! But if
+you wish to take advantage of the newer features of link:../../[Rewrite], then you
+might consider migrating your +pretty-config.xml+ as well.
+
+This choice is completely yours, and you may continue using the simplified PrettyFaces
+XML configuration as you see fit. If the following configuration is too verbose
+for your taste, then you might also consider using the link:../annotations/[Rewrite Annotations] based
+configuration for further simplification.
+
+==== An example:
+
+Let's migrate the following simple XML configuration to Rewrite. This configuration
+has caused some problems, because the +<rewrite/>+ tag can be ambiguous and somewhat
+confusing, and the +<url-mapping/>+ construct has limitations that quickly become
+difficult to overcome in complex scenarios.
+
+In fact, the Rewrite framework was largely based on the +<rewrite/>+ tag
+from PrettyFaces, while focusing on keeping rules simple, so there should be a 
+good deal of familiarity when migrating a configuration.
+
+[source,xml]
+.Example configuration for migration
+----
+<rewrite match="/.*[^/]$" trailingSlash="append" toCase="lowercase" />
+
+<url-mapping id="store">
+    <pattern value="/store" />
+    <view-id value="/faces/viewStore.xhtml" />
+</url-mapping>
+
+<url-mapping id="category">
+    <pattern value="/shop/#{categoryBean.category}" />
+    <view-id value="/faces/viewCategory.xhtml" />
+    <action>#{categoryBean.loadCategory}</action>
+</url-mapping>
+---- 
+
+First, we will begin my migrating the +<url-mapping/>+ tags to use the Rewrite rule
+system. To do this, we will need to create a configuration provider and 
+link:../install#_3_activate_your_configuration[activate it]:
+
+[source,java]
+----
+public class RewriteConfig extends HttpConfigurationProvider
+{
+   @Override
+   public Configuration getConfiguration(final ServletContext context)
+   {
+     return ConfigurationBuilder.begin()
+       .addRule(Join.path("/store").to("/faces/viewStore.xhtml"));
+   }
+ 
+   @Override
+   public int priority()
+   {
+     return 10;
+   }
+}
+----
+
+So as you can see, one +<url-mapping/>+ becomes one +Join+ rule; however, in this
+case we have two mappings, one of which uses EL bean binding, so we can also migrate
+our Expression Language (EL) bean bindings to use the configurable +PhaseBinding+ 
+and +El+ binding objects from Rewrite.
+
+Additionally, any configured +<action/>+ methods can be migrated to the
++PhaseAction+ configuration.
+
+[source,java]
+----
+public class RewriteConfig extends HttpConfigurationProvider
+{
+   @Override
+   public Configuration getConfiguration(final ServletContext context)
+   {
+     return ConfigurationBuilder.begin()
+       .addRule(Join.path("/store").to("/faces/viewStore.xhtml"))
+       
+       .addRule(Join.path("/shop/{category}").to("/faces/viewCategory.xhtml"))
+       
+       /* Call the method to load, as an additional action for the rule */
+       .perform(PhaseAction.retrieveFrom(
+           El.retrievalMethod("categoryBean.loadCategory"))
+             .after(PhaseId.RESTORE_VIEW)))
+       
+       /* Ensure that our "category" parameter is bound to the CategoryBean */
+       .where("category").bindsTo(PhaseBinding.to(
+       	   El.property("categoryBean.category"))
+       	     .after(PhaseId.RESTORE_VIEW));
+   }
+}
+----
+
+NOTE: Even though the +PhaseBinding+ appears to come after the +PhaseAction+ in the
+configuration, the order is actually correct. Parameter configuration occurs after
+rule definition, but given the same JSF +PhaseId+, a +PhaseBinding+ will always 
+occurs before a +PhaseAction+
+
+Now that we have migrated the +<url-mapping/> elements, this might seem complex 
+in comparison to simple XML configuration, but there is a great deal of power and
+control that is available when each operation is reduced to several smaller steps.
+Additionally, the fluent configuration API will guide your way through migration.
+
+TIP: In a more advanced case, you can re-use fragments of configuration, which 
+will reduce the overall lines of code required to perform complex operations.
+
+==== Migrating custom +<rewrite/>+ tags
+Now that we have migrated our +<url-mapping/>+ tags, it's time to tackle the custom
++<rewrite/>+ element. Fortunately, our job is easy, since Rewrite is designed to
+handle this kind of specific scenario. Take the following example configuration:
+
+[source,xml]
+.PrettyFaces 3.x Rewrite Rule
+----
+<rewrite match="/.*[^/]$" trailingSlash="append" toCase="lowercase" />
+----
+
+In order to migrate this rule to link:../../[Rewrite], we just need to add another
+rule to our Rewrite +ConfigurationProvider+. In this case, we will leverage the
++Direction.isInbound()+ condition, the +Redirect+ operation, as well as the 
+parameter +Transposition+ API to perform our de-capitalization.
+
+[source,java]
+----
+public class RewriteConfig extends HttpConfigurationProvider
+{
+   @Override
+   public Configuration getConfiguration(final ServletContext context)
+   {
+     return ConfigurationBuilder.begin()
+       .addRule()
+         .when(Direction.isInbound().and(Path.matches("/{p}")))
+         .perform(Redirect.to(context.getContextRoot() + "/{p}/"))
+         .where("p").matches("^.*[^/]$").transposedBy(
+            new Transposition<String>() {
+               public String transpose(String value) {
+                  return value.toLowerCase();
+               }
+            }
+         );
+   }
+ 
+   @Override
+   public int priority()
+   {
+     return 10;
+   }
+}
+----
+
+Notice how the +Path+ condition is used to capture the requested URL into a 
+parameter. Once this is done, we may now manipulate the parameter directly, using
+the +Transposition+ API, or indirectly, by adding a trailing +"/"+ in the
++Redirect+ operation.
+
+This rule is equivalent to our original +<rewrite/>+ XML configuration, but before
+you start thinking about the complexity of this rule as compared to the XML, you
+might also want to consider that there is a larger degree of control that can be
+applied to rules when written in the Java configuration.
+
+NOTE: This is one simple example of +<url-mapping/>+ and +<rewrite/>+ migration, but in reality, each
+XML configuration will need to be migrated to fit your specific needs. Fortunately,
+Rewrite makes it possible to do so with confidence.
+
+Continue reading about link:../../[Rewrite] or link:../annotations/[Rewrite Annotations].
