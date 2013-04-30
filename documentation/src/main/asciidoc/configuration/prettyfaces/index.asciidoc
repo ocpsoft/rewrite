@@ -1,6 +1,7 @@
 == PrettyFaces Integration for Rewrite
 
-Docs coming soon.
+Learn how to use PrettyFaces with the Rewrite Servlet Framework. Either migrate your
+configuration, or keep everything the way it is. The choice is yours!
 
 === Install
 
