@@ -181,9 +181,16 @@ parameter. Once this is done, we may now manipulate the parameter directly, usin
 the +Transposition+ API, or indirectly, by adding a trailing +"/"+ in the
 +Redirect+ operation.
 
-This rule is equivalent to our original +<rewrite/>+ XML configuration, but before
-you start thinking about the complexity of this rule as compared to the XML, you
-might also want to consider that there is a larger degree of control that can be
+[source,java]
+.Indirect modification of a parameter to add a trailing +"/"+ 
+----
+.when(Direction.isInbound().and(Path.matches("/{p}")))
+.perform(Redirect.to(context.getContextRoot() + "/{p}/"))
+----
+
+The rewritten rule is equivalent to our original +<rewrite/>+ XML configuration, but 
+before you start thinking about the complexity of this rule as compared to the XML, 
+you might also want to consider that there is a larger degree of control that can be
 applied to rules when written in the Java configuration.
 
 NOTE: This is one simple example of +<url-mapping/>+ and +<rewrite/>+ migration, but in reality, each
