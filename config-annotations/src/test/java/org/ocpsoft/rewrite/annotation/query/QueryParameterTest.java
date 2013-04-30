@@ -40,4 +40,12 @@ public class QueryParameterTest extends RewriteTestBase
       assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
    }
 
+   @Test
+   public void shouldFindCorrectQueryParameterIfOthersExist() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/query?a=b&q=foo&c=d");
+      assertEquals(200, action.getStatusCode());
+      assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
+   }
+
 }
