@@ -147,6 +147,7 @@ rule to our Rewrite +ConfigurationProvider+. In this case, we will leverage the
 parameter +Transposition+ API to perform our de-capitalization.
 
 [source,java]
+.Migrated Rewrite Rule
 ----
 public class RewriteConfig extends HttpConfigurationProvider
 {
