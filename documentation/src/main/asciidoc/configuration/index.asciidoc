@@ -26,40 +26,12 @@ Rule:: A pre-constructed combination of +Condition+ and +Operation+ instances. Y
 
 === Start using Rewrite rules
 
-Now that you have Rewrite installed, and understand the basic terms, let's start writing some rules. We will start with a simple example: logging an inbound request URL to the server log.
+Now that you have Rewrite installed, and understand the basic terms, let's start writing some rules. We will start with a simple example: logging an inbound request URL to the server console.
 
-First, open the +ConfigurationProvider+ you defined during link:install[installation], we will add the desired logging statement using the +.addRule()+ method of +ConfigurationBuilder+. This will demonstrate how to use simple parameters.
-
-[source,java]
-.Use ConfigurationBuilder to add Conditions and Operations to your ConfigurationProvider
-----
-public class ApplicationConfigurationProvider extends HttpConfigurationProvider
-{
-
-   @Override
-   public Configuration getConfiguration(ServletContext context)
-   {
-      return ConfigurationBuilder.begin()
-               .addRule()
-               .when(Direction.isInbound().and(Path.matches("/{path}")))
-               .perform(Log.message(Level.INFO, "Client requested path: {path}"));
-   }
-
-}
-----
-You might notice, however, that the results are not quite what you expected, and that only requests with a single segment (+http://localhost:8080/segment1/+) are being logged, while requests with more than one segment (+http://localhost:8080/segment1/segmentN/+) are not.
-
-[source,console]
-.Log output
-----
-INFO [org.ocpsoft.config.Log] Client requested path: /foo
-INFO [org.ocpsoft.config.Log] Client requested path: /bar
-----
-
-This is because, by default, +Path+ parameters match all characters except for forward slash "+/+", and if we want to change this, we must configure the parameter ourself.
+First, open the +ConfigurationProvider+ you defined during link:install[installation] and add the desired logging statement using the +.addRule()+ method of +ConfigurationBuilder+.
 
 [source,java]
-.Modify  parameters to match a specific values using +.where()+
+.Log an inbound request to the server console
 ----
 public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 {
@@ -77,7 +49,9 @@ public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 }
 ----
 
-Now we will see that our rule matches for any inbound request, with any number of path segments. This type of parameter configuration can be used any time when parameters have been specified using the +ConfigurationBuilder+
+By default, parameters defined within the +Path+ condition match all characters except for forward slash "+/+". To change this, we must configure the parameter manually. Once complete, our rule matches any inbound request, with any number of path segments.
+
+TIP: Parameter configuration can be used any time when parameters have been specified using the +ConfigurationBuilder+.
 
 [source,console]
 .Log output

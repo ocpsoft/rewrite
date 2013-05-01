@@ -144,14 +144,15 @@ public Configuration getConfiguration(ServletContext context)
 }
 ----
 
+=== Continue configuring
+
+Rewrite is a highly extendable framework, and there are many pre-defined configuration options available to help achieve specialized and specific results; however, if no pre-defined configuration object exists, it is easy to create one that fills the gaps.
+ 
+Read the link:./[configuration manual] for more information on creating custom rules and rule primitives.
+
 === Explore Rewrite Extensions
 Once you have a grasp on the basic Rewrite features, you may wish to get a bit fancier, and try out some of
 the provided link:../integration/[Rewrite extensions]. Of course, you can always create your own extension simply by building a
 custom configuration or some configuration objects, but there may also be an existing extension that meets
 your needs.
 
-=== Continue configuring
-
-Rewrite is a highly extendable framework, and there are many pre-defined configuration options available to help achieve specialized and specific results; however, if no pre-defined configuration object exists, it is easy to create one that fills the gaps.
- 
-Read the link:./[configuration manual] for more information on creating custom rules and rule primitives.
