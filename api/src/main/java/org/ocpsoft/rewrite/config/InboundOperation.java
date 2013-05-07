@@ -34,13 +34,13 @@ public abstract class InboundOperation extends DefaultOperationBuilder
    {
       if (event instanceof InboundRewrite)
       {
-         performInbound((InboundRewrite) event);
+         performInbound((InboundRewrite) event, context);
       }
    }
 
    /**
     * Perform the {@link Operation}.
     */
-   public abstract void performInbound(InboundRewrite event);
+   public abstract void performInbound(InboundRewrite event, EvaluationContext context);
 
 }
