@@ -16,7 +16,9 @@
 package org.ocpsoft.rewrite.config;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -26,6 +28,7 @@ import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.util.Visitor;
 
 /**
@@ -207,9 +210,36 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
    public ConfigurableParameter<?> where(String name)
    {
       ParameterBuilder<?> parameter = new ParameterBuilder(name) {};
+
+      assertParameterExists(parameter, name);
+
       Parameter<?> result = getParameterStore().get(name, parameter);
       if (result instanceof ConfigurableParameter)
          return (ConfigurableParameter<?>) result;
       throw new RewriteException("Cannot configure read-only parameter [" + name + "].");
+   }
+
+   private void assertParameterExists(ParameterBuilder<?> parameter, String name)
+   {
+      final Set<String> parameterNames = new HashSet<String>();
+
+      ParameterizedCallback callback = new ParameterizedCallback() {
+         @Override
+         public void call(Parameterized parameterized)
+         {
+            Set<String> names = parameterized.getRequiredParameterNames();
+            parameterNames.addAll(names);
+         }
+      };
+
+      Visitor<Condition> conditionVisitor = new ParameterizedConditionVisitor(callback);
+      new ConditionVisit(this).accept(conditionVisitor);
+
+      Visitor<Operation> operationVisitor = new ParameterizedOperationVisitor(callback);
+      new OperationVisit(this).accept(operationVisitor);
+
+      if (!parameterNames.contains(name))
+         throw new IllegalArgumentException("Parameter [" + name + "] does not exist in rule [" + this
+                  + "] and cannot be configured.");
    }
 }

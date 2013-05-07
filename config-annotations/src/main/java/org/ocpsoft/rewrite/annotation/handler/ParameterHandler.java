@@ -67,6 +67,16 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
          log.trace("Binding parameter [{}] to field [{}]", param, field);
       }
 
+      /*
+      * Add the query parameter condition to the condition tree that will capture a 
+      * corresponding query parameter. We must make sure that
+      * the condition is evaluated even if the existing part of the tree evaluates to true.
+      */
+      Condition requestParameter = RequestParameter.matches(param, "{" + param + "}");
+      ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
+               Or.any(requestParameter, new True()));
+      context.getRuleBuilder().when(composite);
+
       // builder for this parameter
       ConfigurableParameter<?> parameterBuilder = context.getRuleBuilder().where(param);
 
@@ -87,16 +97,6 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       Binding enrichedBinding = (Binding) context.get(Binding.class);
       Assert.notNull(enrichedBinding, "Binding was removed from the context");
       parameterBuilder.bindsTo(enrichedBinding);
-
-      /*
-      * Add the query parameter condition to the condition tree that will capture a 
-      * corresponding query parameter. We must make sure that
-      * the condition is evaluated even if the existing part of the tree evaluates to true.
-      */
-      Condition requestParameter = RequestParameter.matches(param, "{" + param + "}");
-      ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
-               Or.any(requestParameter, new True()));
-      context.getRuleBuilder().when(composite);
    }
 
 }

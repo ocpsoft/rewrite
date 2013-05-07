@@ -24,6 +24,7 @@ import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.test.MockInboundRewrite;
 
 /**
@@ -187,7 +188,7 @@ public class ConfigurationBuilderTest
       ConfigurationBuilder.begin()
 
                .addRule()
-               .when(new True())
+               .when(Path.matches("/{p}/{s}"))
                .perform(operation)
                .otherwise(operation)
                .where("p").bindsTo(El.property("whee.glee")).matches("blah")
@@ -197,8 +198,8 @@ public class ConfigurationBuilderTest
                .withId("id")
 
                .addRule()
-               .when(new True())
-               .otherwise(operation)
+               .when(Path.matches("/{p}/{s}"))
+               .perform(operation)
                .where("p").matches("blah").bindsTo(El.property("whee.glee"))
                .where("s").matches("oh").bindsTo(El.property("ee.flee"))
                .constrainedBy(null).convertedBy(null).transposedBy(null).validatedBy(null)
@@ -206,8 +207,39 @@ public class ConfigurationBuilderTest
                .withPriority(0)
 
                .addRule()
+               .when(Path.matches("/{p}/{s}"))
+               .otherwise(operation)
+               .where("p");
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testConfigureUndefinedParameter() throws Exception
+   {
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new True())
+               .perform(operation)
+               .otherwise(operation)
+               .where("p");
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testConfigureUndefinedParameter2() throws Exception
+   {
+      ConfigurationBuilder.begin()
+               .addRule()
                .when(new True())
                .otherwise(operation)
+               .where("p");
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testConfigureUndefinedParameter3() throws Exception
+   {
+      ConfigurationBuilder.begin()
+               .addRule()
+               .when(new True())
+               .perform(operation)
                .where("p");
    }
 

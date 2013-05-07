@@ -44,8 +44,8 @@ import org.ocpsoft.rewrite.faces.navigate.Navigate;
 public class NavigateEncodingBean
 {
 
-   @Parameter("q")
    @Deferred
+   @Parameter("q")
    private String query;
 
    public Navigate redirectSimpleString()
