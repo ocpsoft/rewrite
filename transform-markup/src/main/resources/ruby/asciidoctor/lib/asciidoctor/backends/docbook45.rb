@@ -1,11 +1,12 @@
 module Asciidoctor
   class BaseTemplate
-    def tag(name, key)
+    def tag(name, key, dynamic = false)
       type = key.is_a?(Symbol) ? :attr : :var
       key = key.to_s
       if type == :attr
+        key_str = dynamic ? %("#{key}") : "'#{key}'"
         # example: <% if attr? 'foo' %><bar><%= attr 'foo' %></bar><% end %>
-        %(<% if attr? '#{key}' %><#{name}><%= attr '#{key}' %></#{name}><% end %>)
+        %(<% if attr? #{key_str} %><#{name}><%= attr #{key_str} %></#{name}><% end %>)
       else
         # example: <% unless foo.to_s.empty? %><bar><%= foo %></bar><% end %>
         %(<% unless #{key}.to_s.empty? %><#{name}><%= #{key} %></#{name}><% end %>)
@@ -31,10 +32,20 @@ module Asciidoctor
 
 module DocBook45
 class DocumentTemplate < BaseTemplate
+  def title_tags(str)
+    if str.include?(': ')
+      title, _, subtitle = str.rpartition(': ')
+      %(<title>#{title}</title>
+    <subtitle>#{subtitle}</subtitle>)
+    else
+      %(<title>#{str}</title>)
+    end
+  end
+
   def docinfo
     <<-EOF
     <% if has_header? && !notitle %>
-    #{tag 'title', '@header.title'}
+    <%= template.title_tags(@header.title) %>
     <% end %>
     <% if attr? :revdate %>
     <date><%= attr :revdate %></date>
@@ -43,6 +54,7 @@ class DocumentTemplate < BaseTemplate
     <% end %>
     <% if has_header? %>
     <% if attr? :author %>
+    <% if attr? :authorcount, 1 %>
     <author>
       #{tag 'firstname', :firstname}
       #{tag 'othername', :middlename}
@@ -50,15 +62,31 @@ class DocumentTemplate < BaseTemplate
       #{tag 'email', :email}
     </author>
     #{tag 'authorinitials', :authorinitials}
+    <% else %>
+    <authorgroup>
+    <% (1..(attr(:authorcount))).each do |idx| %>
+      <author> 
+        #{tag 'firstname', :"firstname_\#{idx}", true}
+        #{tag 'othername', :"middlename_\#{idx}", true}
+        #{tag 'surname', :"lastname_\#{idx}", true}
+        #{tag 'email', :"email_\#{idx}", true}
+      </author> 
+    <% end %>
+    </authorgroup>
+    <% end %>
     <% end %>
     <% if (attr? :revnumber) || (attr? :revremark) %>
     <revhistory>
-      #{tag 'revision', :revnumber}
-      #{tag 'date', :revdate}
-      #{tag 'authorinitials', :authorinitials}
-      #{tag 'revremark', :revremark}
+      <revision>
+        #{tag 'revnumber', :revnumber}
+        #{tag 'date', :revdate}
+        #{tag 'authorinitials', :authorinitials}
+        #{tag 'revremark', :revremark}
+      </revision>
     </revhistory>
     <% end %>
+<%= docinfo %>
+    #{tag 'orgname', :orgname}
     <% end %>
     EOF
   end
@@ -94,12 +122,22 @@ class EmbeddedTemplate < BaseTemplate
   end
 end
 
+class BlockTocTemplate < BaseTemplate
+  def result(node)
+    ''
+  end
+
+  def template
+    :invoke_result
+  end
+end
+
 class BlockPreambleTemplate < BaseTemplate
   def template
     @template ||= @eruby.new <<-EOF
 <%#encoding:UTF-8%><% if @document.doctype == 'book' %>
 <preface#{common_attrs_erb}>
-  <title><%= title %></title>
+  #{title_tag false}
 <%= content %>
 </preface>
 <% else %>
@@ -110,11 +148,11 @@ class BlockPreambleTemplate < BaseTemplate
 end
 
 class SectionTemplate < BaseTemplate
-  def section(sec)
+  def result(sec)
     if sec.special
       tag = sec.level <= 1 ? sec.sectname : 'section'
     else
-      tag = sec.document.doctype == 'book' && sec.level <= 1 ? 'chapter' : 'section'
+      tag = sec.document.doctype == 'book' && sec.level <= 1 ? (sec.level == 0 ? 'part' : 'chapter') : 'section'
     end
     %(<#{tag}#{common_attrs(sec.id, (sec.attr 'role'), (sec.attr 'reftext'))}>
   #{sec.title? ? "<title>#{sec.title}</title>" : nil}
@@ -123,10 +161,7 @@ class SectionTemplate < BaseTemplate
   end
 
   def template
-    # hot piece of code, optimized for speed
-    @template ||= @eruby.new <<-EOF
-<%#encoding:UTF-8%><%= template.section(self) %>
-    EOF
+    :invoke_result
   end
 end
 
@@ -138,25 +173,38 @@ class BlockFloatingTitleTemplate < BaseTemplate
   end
 end
 
-
 class BlockParagraphTemplate < BaseTemplate
-
-  def paragraph(id, role, reftext, title, content)
-    if title
-      %(<formalpara#{common_attrs(id, role, reftext)}>
+  def paragraph(id, style, role, reftext, title, content)
+    # FIXME temporary hack until I can generalize this feature
+    if style == 'partintro'
+      if title
+        %(<partintro#{common_attrs(id, role, reftext)}>
+  <title>#{title}</title>
+  <simpara>#{content}</simpara>
+</partintro>)
+      else
+        %(<partintro#{common_attrs(id, role, reftext)}>
+  <simpara>#{content}</simpara>
+</partintro>)
+      end
+    else
+      if title
+        %(<formalpara#{common_attrs(id, role, reftext)}>
   <title>#{title}</title>
   <para>#{content}</para>
 </formalpara>)
-    else
-      %(<simpara#{common_attrs(id, role, reftext)}>#{content}</simpara>)
+      else
+        %(<simpara#{common_attrs(id, role, reftext)}>#{content}</simpara>)
+      end
     end
   end
 
+  def result(node)
+    paragraph(node.id, node.attr('style'), node.attr('role'), node.attr('reftext'), (node.title? ? node.title : nil), node.content)
+  end
+
   def template
-    # very hot piece of code, optimized for speed
-    @template ||= @eruby.new <<-EOF
-<%#encoding:UTF-8%><%= template.paragraph(@id, (attr 'role'), (attr 'reftext'), title? ? title : nil, content) %>
-    EOF
+    :invoke_result
   end
 end
 
@@ -254,7 +302,8 @@ class BlockDlistTemplate < BaseTemplate
     'qanda' => {
       :list => 'qandaset',
       :entry => 'qandaentry',
-      :term => 'question',
+      :label => 'question',
+      :term => 'simpara',
       :item => 'answer'
     },
     'glossary' => {
@@ -272,9 +321,17 @@ class BlockDlistTemplate < BaseTemplate
   #{title_tag}
   <% content.each do |dt, dd| %>
   <<%= tags[:entry] %>>
+    <% if tags.has_key?(:label) %>
+    <<%= tags[:label] %>>
+      <<%= tags[:term] %>>
+        <%= dt.text %>
+      </<%= tags[:term] %>>
+    </<%= tags[:label] %>>
+    <% else %>
     <<%= tags[:term] %>>
       <%= dt.text %>
     </<%= tags[:term] %>>
+    <% end %>
     <% unless dd.nil? %>
     <<%= tags[:item] %>>
       <% if dd.text? %>
@@ -469,6 +526,14 @@ class BlockImageTemplate < BaseTemplate
   end
 end
 
+class BlockAudioTemplate < BaseTemplate
+  include EmptyTemplate
+end
+
+class BlockVideoTemplate < BaseTemplate
+  include EmptyTemplate
+end
+
 class BlockRulerTemplate < BaseTemplate
   def template
     @template ||= @eruby.new <<-EOF
@@ -494,6 +559,8 @@ class InlineBreakTemplate < BaseTemplate
 end
 
 class InlineQuotedTemplate < BaseTemplate
+  NO_TAGS = ['', '']
+
   QUOTED_TAGS = {
     :emphasis => ['<emphasis>', '</emphasis>'],
     :strong => ['<emphasis role="strong">', '</emphasis>'],
@@ -502,11 +569,10 @@ class InlineQuotedTemplate < BaseTemplate
     :subscript => ['<subscript>', '</subscript>'],
     :double => ['&#8220;', '&#8221;'],
     :single => ['&#8216;', '&#8217;']
-    #:none => ['', '']
   }
 
-  def quote(text, type, role)
-    start_tag, end_tag = QUOTED_TAGS[type] || ['', '']
+  def quote_text(text, type, role)
+    start_tag, end_tag = QUOTED_TAGS[type] || NO_TAGS
     if role
       "#{start_tag}<phrase role=\"#{role}\">#{text}</phrase>#{end_tag}"
     else
@@ -514,11 +580,12 @@ class InlineQuotedTemplate < BaseTemplate
     end
   end
 
+  def result(node)
+    quote_text(node.text, node.type, node.attr('role'))
+  end
+
   def template
-    # very hot piece of code, optimized for speed
-    @template ||= @eruby.new <<-EOF
-<%#encoding:UTF-8%><%= template.quote(@text, @type, attr('role')) %>
-    EOF
+    :invoke_result
   end
 end
 
@@ -536,11 +603,12 @@ class InlineAnchorTemplate < BaseTemplate
     end
   end
 
+  def result(node)
+    anchor(node.target, node.text, node.type)
+  end
+
   def template
-    # hot piece of code, optimized for speed
-    @template ||= @eruby.new <<-EOS
-<%#encoding:UTF-8%><%= template.anchor(@target, @text, @type) %>
-    EOS
+    :invoke_result
   end
 end
 
@@ -571,10 +639,12 @@ end %>
 end
 
 class InlineCalloutTemplate < BaseTemplate
+  def result(node)
+    %(<co id="#{node.id}"/>)
+  end
+
   def template
-    @template ||= @eruby.new <<-EOF
-<%#encoding:UTF-8%><co#{id}/>
-    EOF
+    :invoke_result
   end
 end
 
@@ -588,10 +658,10 @@ if numterms > 2 %><indexterm>
 </indexterm>
 <% end %><%
 if numterms > 1 %><indexterm>
-  <primary><%= terms[numterms - 2] %></primary><secondary><%= terms[numterms - 1] %></secondary>
+  <primary><%= terms[-2] %></primary><secondary><%= terms[-1] %></secondary>
 </indexterm>
 <% end %><indexterm>
-  <primary><%= terms[numterms - 1] %></primary>
+  <primary><%= terms[-1] %></primary>
 </indexterm><% end %>
     EOS
   end

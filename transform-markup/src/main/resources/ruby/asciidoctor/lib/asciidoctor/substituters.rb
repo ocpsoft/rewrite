@@ -92,7 +92,9 @@ module Substituters
   #
   # returns - A String with literal (verbatim) substitutions performed
   def apply_literal_subs(lines)
-    if @document.attributes['basebackend'] == 'html' && attr('style') == 'source' &&
+    if attr? 'subs'
+      apply_subs(lines.join, resolve_subs(attr 'subs'))
+    elsif @document.attributes['basebackend'] == 'html' && attr('style') == 'source' &&
       @document.attributes['source-highlighter'] == 'coderay' && attr?('language')
       sub_callouts(highlight_source(lines.join))
     else
@@ -109,11 +111,24 @@ module Substituters
     apply_subs(text, [:specialcharacters, :attributes])
   end
 
+  # Public: Apply explicit substitutions, if specified, otherwise normal substitutions.
+  #
+  # lines  - The lines of text to process. Can be a String or a String Array 
+  #
+  # returns - A String with substitutions applied
+  def apply_para_subs(lines)
+    if attr? 'subs'
+      apply_subs(lines.join, resolve_subs(attr 'subs'))
+    else
+      apply_subs(lines.join)
+    end
+  end
+
   # Public: Apply substitutions for passthrough text
   #
   # lines  - A String Array containing the lines of text process
   #
-  # returns - A String Array with passthrough substitutions performed
+  # returns - A String with passthrough substitutions performed
   def apply_passthrough_subs(lines)
     if attr? 'subs'
       subs = resolve_subs(attr('subs'))
@@ -222,8 +237,24 @@ module Substituters
   def sub_replacements(text)
     result = text.dup
 
-    REPLACEMENTS.each {|pattern, replacement|
-      result.gsub!(pattern, replacement)
+    REPLACEMENTS.each {|pattern, replacement, restore|
+      result.gsub!(pattern) {
+        matched = $&
+        head = $1
+        tail = $2
+        if matched.include?('\\')
+          matched.tr('\\', '')
+        else
+          case restore
+          when :none
+            replacement
+          when :leading
+            "#{head}#{replacement}"
+          when :bounding
+            "#{head}#{replacement}#{tail}" 
+          end
+        end
+      }
     }
     
     result
@@ -298,6 +329,7 @@ module Substituters
     found[:square_bracket] = result.include?('[')
     found[:round_bracket] = result.include?('(')
     found[:colon] = result.include?(':')
+    found[:at] = result.include?('@')
     found[:macroish] = (found[:square_bracket] && found[:colon])
     found[:macroish_short_form] = (found[:square_bracket] && found[:colon] && result.include?(':['))
     found[:uri] = (found[:colon] && result.include?('://'))
@@ -314,8 +346,8 @@ module Substituters
         end
         target = sub_attributes(m[1])
         @document.register(:images, target)
-        attrs = parse_attributes(m[2], ['alt', 'width', 'height'])
-        if !attrs.has_key?('alt') || attrs['alt'].empty?
+        attrs = parse_attributes(unescape_bracketed_text(m[2]), ['alt', 'width', 'height'])
+        if !attrs['alt']
           attrs['alt'] = File.basename(target, File.extname(target))
         end
         Inline.new(self, :image, nil, :target => target, :attributes => attrs).render
@@ -333,7 +365,7 @@ module Substituters
           next m[0][1..-1]
         end
 
-        terms = (m[1] || m[2]).strip.tr("\n", ' ').gsub('\]', ']').split(REGEXP[:csv_delimiter])
+        terms = unescape_bracketed_text(m[1] || m[2]).split(REGEXP[:csv_delimiter])
         document.register(:indexterms, [*terms])
         Inline.new(self, :indexterm, text, :attributes => {'terms' => terms}).render
       }
@@ -348,7 +380,7 @@ module Substituters
           next m[0][1..-1]
         end
 
-        text = (m[1] || m[2]).strip.tr("\n", ' ').gsub('\]', ']')
+        text = unescape_bracketed_text(m[1] || m[2])
         document.register(:indexterms, [text])
         Inline.new(self, :indexterm, text, :type => :visible).render
       }
@@ -369,12 +401,14 @@ module Substituters
         end
         prefix = (m[1] != 'link:' ? m[1] : '')
         target = m[2]
+        suffix = ''
         # strip the <> around the link
-        if prefix.end_with? '&lt;'
-          prefix = prefix[0..-5]
-        end
-        if target.end_with? '&gt;'
+        if prefix.start_with?('&lt;') && target.end_with?('&gt;')
+          prefix = prefix[4..-1]
           target = target[0..-5]
+        elsif prefix.start_with?('(') && target.end_with?(')')
+          target = target[0..-2]
+          suffix = ')'
         end
         @document.register(:links, target)
 
@@ -391,11 +425,11 @@ module Substituters
           text = ''
         end
 
-        "#{prefix}#{Inline.new(self, :anchor, (!text.empty? ? text : target), :type => :link, :target => target, :attributes => attrs).render}"
+        "#{prefix}#{Inline.new(self, :anchor, (!text.empty? ? text : target), :type => :link, :target => target, :attributes => attrs).render}#{suffix}"
       }
     end
 
-    if found[:macroish] && result.include?('link:')
+    if found[:macroish] && (result.include?('link:') || result.include?('mailto:'))
       # inline link macros, link:target[text]
       result.gsub!(REGEXP[:link_macro]) {
         # alias match for Ruby 1.8.7 compat
@@ -404,19 +438,51 @@ module Substituters
         if m[0].start_with? '\\'
           next m[0][1..-1]
         end
-        target = m[1]
-        @document.register(:links, target)
+        raw_target = m[1]
+        mailto = m[0].start_with?('mailto:')
+        target = mailto ? "mailto:#{raw_target}" : raw_target
 
         attrs = nil
         #text = sub_attributes(m[2].gsub('\]', ']'))
         if link_attrs && (m[2].start_with?('"') || m[2].include?(','))
           attrs = parse_attributes(sub_attributes(m[2].gsub('\]', ']')))
           text = attrs[1]
+          if mailto
+            if attrs.has_key? 2
+              target = "#{target}?subject=#{Helpers.encode_uri(attrs[2])}"
+
+              if attrs.has_key? 3
+                target = "#{target}&amp;body=#{Helpers.encode_uri(attrs[3])}"
+              end
+            end
+          end
         else
           text = sub_attributes(m[2].gsub('\]', ']'))
         end
+        # QUESTION should a mailto be registered as an e-mail address?
+        @document.register(:links, target)
 
-        Inline.new(self, :anchor, (!text.empty? ? text : target), :type => :link, :target => target, :attributes => attrs).render
+        Inline.new(self, :anchor, (!text.empty? ? text : raw_target), :type => :link, :target => target, :attributes => attrs).render
+      }
+    end
+
+    if found[:at]
+      result.gsub!(REGEXP[:email_inline]) {
+        # alias match for Ruby 1.8.7 compat
+        m = $~
+        address = m[0]
+        case address[0..0]
+        when '\\'
+          next address[1..-1]
+        when '>', ':'
+          next address
+        end
+
+        target = "mailto:#{address}"
+        # QUESTION should this be registered as an e-mail address?
+        @document.register(:links, target)
+
+        Inline.new(self, :anchor, address, :type => :link, :target => target).render
       }
     end
 
@@ -573,11 +639,29 @@ module Substituters
   # posattrs  - The keys for positional attributes
   #
   # returns nil if attrline is nil, an empty Hash if attrline is empty, otherwise a Hash of parsed attributes
-  def parse_attributes(attrline, posattrs = ['role'])
+  def parse_attributes(attrline, posattrs = ['role'], opts = {})
     return nil if attrline.nil?
     return {} if attrline.empty?
+    attrline = @document.sub_attributes(attrline) if opts[:sub_input]
+    attrline = unescape_bracketed_text(attrline) if opts[:unescape_input]
+    block = nil
+    if opts.fetch(:sub_result, true)
+      # substitutions are only performed on attribute values if block is not nil
+      block = self
+    end
     
-    AttributeList.new(attrline, self).parse(posattrs)
+    if opts.has_key?(:into)
+      AttributeList.new(attrline, block).parse_into(opts[:into], posattrs)
+    else
+      AttributeList.new(attrline, block).parse(posattrs)
+    end
+  end
+
+  # Internal: Strip bounding whitespace, fold endlines and unescaped closing
+  # square brackets from text extracted from brackets
+  def unescape_bracketed_text(text)
+    return '' if text.empty?
+    text.strip.tr("\n", ' ').gsub('\]', ']')
   end
 
   # Internal: Resolve the list of comma-delimited subs against the possible options.

@@ -26,6 +26,7 @@ class Block < AbstractBlock
   def initialize(parent, context, buffer = nil)
     super(parent, context)
     @buffer = buffer
+    @caption = nil
   end
 
   # Public: Get the rendered String content for this Block.  If the block
@@ -94,9 +95,8 @@ class Block < AbstractBlock
   #   block.content
   #   => ["<em>This</em> is what happens when you &lt;meet&gt; a stranger in the &lt;alps&gt;!"]
   def content
-
     case @context
-    when :preamble, :open, :example, :sidebar
+    when :preamble, :open
       @blocks.map {|b| b.render }.join
     # lists get iterated in the template (for now)
     # list items recurse into this block when their text and content methods are called
@@ -106,14 +106,14 @@ class Block < AbstractBlock
       apply_literal_subs(@buffer)
     when :pass
       apply_passthrough_subs(@buffer)
-    when :quote, :verse, :admonition
+    when :admonition, :example, :sidebar, :quote, :verse
       if !@buffer.nil?
-        apply_normal_subs(@buffer)
+        apply_para_subs(@buffer)
       else
         @blocks.map {|b| b.render }.join
       end
     else
-      apply_normal_subs(@buffer)
+      apply_para_subs(@buffer)
     end
   end
 

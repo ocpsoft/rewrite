@@ -40,15 +40,17 @@ class BaseTemplate
   # locals - A Hash of additional variables. Not currently in use.
   def render(node = Object.new, locals = {})
     tmpl = template
-    if tmpl.equal? :content
+    case tmpl
+    when :invoke_result
+      return result(node)
+    when :content
       result = node.content
-    #elsif tmpl.is_a?(String)
-    #  result = tmpl
     else
       result = tmpl.result(node.get_binding(self))
     end
 
-    if (@view == 'document' || @view == 'embedded') && node.renderer.compact
+    if (@view == 'document' || @view == 'embedded') &&
+        node.renderer.compact && !node.document.nested?
       compact result
     else
       result
@@ -103,6 +105,16 @@ class BaseTemplate
   # create template matter to insert an id if one is specified for the block
   def id
     attribute('id', '@id')
+  end
+end
+
+module EmptyTemplate
+  def result(node)
+    ''
+  end
+
+  def template
+    :invoke_result
   end
 end
 end

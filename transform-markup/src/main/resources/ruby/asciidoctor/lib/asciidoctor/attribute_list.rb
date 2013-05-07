@@ -84,6 +84,7 @@ class AttributeList
 
   def self.rekey(attributes, pos_attrs)
     pos_attrs.each_with_index do |key, index|
+      next if key.nil?
       pos = index + 1
       unless (val = attributes[pos]).nil?
         attributes[key] = val
@@ -166,9 +167,11 @@ class AttributeList
     else
       resolved_value = value
       # example: options="opt1,opt2,opt3"
-      if name == 'options'
+      # opts is an alias for options
+      if name == 'options' || name == 'opts'
+        name = 'options'
         resolved_value.split(CSV_SPLIT_PATTERN).each do |o|
-          @attributes[o + '-option'] = nil
+          @attributes[o + '-option'] = ''
         end
       elsif single_quoted_value && !@block.nil?
         resolved_value = @block.apply_normal_subs(value)

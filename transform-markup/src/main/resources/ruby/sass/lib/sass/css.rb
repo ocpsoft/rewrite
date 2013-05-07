@@ -1,3 +1,4 @@
+require File.dirname(__FILE__) + '/../sass'
 require 'sass/tree/node'
 require 'sass/scss/css_parser'
 

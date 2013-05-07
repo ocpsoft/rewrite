@@ -127,11 +127,12 @@ class Document < AbstractBlock
     @safe = @options.fetch(:safe, SafeMode::SECURE).to_i
     @options[:header_footer] = @options.fetch(:header_footer, false)
 
-    @attributes['asciidoctor'] = ''
-    @attributes['asciidoctor-version'] = VERSION
-    @attributes['sectids'] = ''
     @attributes['encoding'] = 'UTF-8'
-    @attributes['notitle'] = '' if !@options[:header_footer]
+    @attributes['sectids'] = ''
+    @attributes['notitle'] = '' unless @options[:header_footer]
+    @attributes['toc-placement'] = 'auto'
+    @attributes['stylesheet'] = ''
+    @attributes['linkcss'] = ''
 
     # language strings
     # TODO load these based on language settings
@@ -143,10 +144,25 @@ class Document < AbstractBlock
     @attributes['appendix-caption'] = 'Appendix'
     @attributes['example-caption'] = 'Example'
     @attributes['figure-caption'] = 'Figure'
+    #@attributes['listing-caption'] = 'Listing'
     @attributes['table-caption'] = 'Table'
     @attributes['toc-title'] = 'Table of Contents'
 
+    # attribute overrides are attributes that can only be set from the commandline
+    # a direct assignment effectively makes the attribute a constant
+    # assigning a nil value will result in the attribute being unset
     @attribute_overrides = options[:attributes] || {}
+
+    @attribute_overrides['asciidoctor'] = ''
+    @attribute_overrides['asciidoctor-version'] = VERSION
+
+    safe_mode_name = SafeMode.constants.detect {|l| SafeMode.const_get(l) == @safe}.to_s.downcase
+    @attribute_overrides['safe-mode-name'] = safe_mode_name
+    @attribute_overrides["safe-mode-#{safe_mode_name}"] = ''
+    @attribute_overrides['safe-mode-level'] = @safe
+
+    # sync the embedded attribute w/ the value of options...do not allow override
+    @attribute_overrides['embedded'] = @options[:header_footer] ? nil : ''
 
     # the only way to set the include-depth attribute is via the document options
     # 10 is the AsciiDoc default, though currently Asciidoctor only supports 1 level
@@ -159,8 +175,8 @@ class Document < AbstractBlock
       if @attribute_overrides['docdir']
         @base_dir = @attribute_overrides['docdir'] = File.expand_path(@attribute_overrides['docdir'])
       else
-        # perhaps issue a warning here?
-        @base_dir = @attribute_overrides['docdir'] = Dir.pwd
+        #puts 'asciidoctor: WARNING: setting base_dir is recommended when working with string documents' unless nested?
+        @base_dir = @attribute_overrides['docdir'] = File.expand_path(Dir.pwd)
       end
     else
       @base_dir = @attribute_overrides['docdir'] = File.expand_path(options[:base_dir])
@@ -176,7 +192,8 @@ class Document < AbstractBlock
     end
 
     if @safe >= SafeMode::SERVER
-      # restrict document from setting source-highlighter and backend
+      # restrict document from setting linkcss, copycss, source-highlighter and backend
+      @attribute_overrides['copycss'] ||= nil
       @attribute_overrides['source-highlighter'] ||= nil
       @attribute_overrides['backend'] ||= DEFAULT_BACKEND
       # restrict document from seeing the docdir and trim docfile to relative path
@@ -184,17 +201,24 @@ class Document < AbstractBlock
         @attribute_overrides['docfile'] = @attribute_overrides['docfile'][(@attribute_overrides['docdir'].length + 1)..-1]
       end
       @attribute_overrides['docdir'] = ''
-      # restrict document from enabling icons
       if @safe >= SafeMode::SECURE
+        # assign linkcss (preventing css embedding) unless disabled from the commandline
+        unless @attribute_overrides.fetch('linkcss', '').nil? || @attribute_overrides.has_key?('linkcss!')
+          @attribute_overrides['linkcss'] = ''
+        end
+        # restrict document from enabling icons
         @attribute_overrides['icons'] ||= nil
       end
     end
     
     @attribute_overrides.delete_if {|key, val|
       verdict = false
-      # a nil or negative key undefines the attribute 
-      if val.nil? || key[-1..-1] == '!'
-        @attributes.delete(key.chomp '!')
+      # a nil value undefines the attribute 
+      if val.nil?
+        @attributes.delete(key)
+      # a negative key undefines the attribute
+      elsif key.end_with? '!'
+        @attributes.delete(key[0..-2])
       # otherwise it's an attribute assignment
       else
         # a value ending in @ indicates this attribute does not override
@@ -211,6 +235,12 @@ class Document < AbstractBlock
     @attributes['backend'] ||= DEFAULT_BACKEND
     @attributes['doctype'] ||= DEFAULT_DOCTYPE
     update_backend_attributes
+    # make toc and numbered the default for the docbook backend
+    # FIXME this doesn't take into account the backend being set in the document
+    #if @attributes.has_key?('basebackend-docbook')
+    #  @attributes['toc'] = '' unless @attribute_overrides.has_key?('toc!')
+    #  @attributes['numbered'] = '' unless @attribute_overrides.has_key?('numbered!')
+    #end
 
     if !@parent_document.nil?
       # don't need to do the extra processing within our own document
@@ -230,8 +260,10 @@ class Document < AbstractBlock
     @attributes['docdate'] ||= @attributes['localdate']
     @attributes['doctime'] ||= @attributes['localtime']
     @attributes['docdatetime'] ||= @attributes['localdatetime']
-    
-    @attributes['iconsdir'] ||= File.join(@attributes.fetch('imagesdir', 'images'), 'icons')
+
+    # fallback directories
+    @attributes['stylesdir'] ||= '.'
+    @attributes['iconsdir'] ||= File.join(@attributes.fetch('imagesdir', './images'), 'icons')
 
     # Now parse the lines in the reader into blocks
     Lexer.parse(@reader, self, :header_only => @options.fetch(:parse_header_only, false)) 
@@ -267,6 +299,18 @@ class Document < AbstractBlock
     end
 
     (@attributes[name] = @counters[name])
+  end
+
+  # Public: Increment the specified counter and store it in the block's attributes
+  #
+  # counter_name - the String name of the counter attribute
+  # block        - the Block on which to save the counter
+  #
+  # returns the next number in the sequence for the specified counter
+  def counter_increment(counter_name, block)
+    val = counter(counter_name)
+    AttributeEntry.new(counter_name, val).save_to(block.attributes)
+    val
   end
 
   # Internal: Get the next value in the sequence.
@@ -316,6 +360,11 @@ class Document < AbstractBlock
 
   def nested?
     !@parent_document.nil?
+  end
+
+  def embedded?
+    # QUESTION should this be !@options[:header_footer] ?
+    @attributes.has_key? 'embedded'
   end
 
   # Make the raw source for the Document available.
@@ -396,6 +445,12 @@ class Document < AbstractBlock
     if @id.nil? && @attributes.has_key?('css-signature')
       @id = @attributes['css-signature']
     end
+
+    if @attributes.has_key? 'toc2'
+      @attributes['toc'] = ''
+      @attributes['toc-class'] ||= 'toc2'
+    end
+
     @original_attributes = @attributes.dup
   end
 
@@ -579,6 +634,53 @@ class Document < AbstractBlock
     # per AsciiDoc-spec, remove the title after rendering the header
     @attributes.delete('title')
     @blocks.map {|b| b.render }.join
+  end
+
+  # Public: Read the docinfo file(s) for inclusion in the
+  # document template
+  #
+  # If the docinfo1 attribute is set, read the docinfo.ext file. If the docinfo
+  # attribute is set, read the doc-name.docinfo.ext file. If the docinfo2
+  # attribute is set, read both files in that order.
+  #
+  # ext - The extension of the docinfo file(s). If not set, the extension
+  #       will be determined based on the basebackend. (default: nil)
+  #
+  # returns The contents of the docinfo file(s)
+  def docinfo(ext = nil)
+    if safe >= SafeMode::SECURE
+      ''
+    else
+      if ext.nil?
+        case @attributes['basebackend']
+        when 'docbook'
+          ext = '.xml'
+        when 'html'
+          ext = '.html'
+        end
+      end
+
+      content = nil
+
+      docinfo = @attributes.has_key?('docinfo')
+      docinfo1 = @attributes.has_key?('docinfo1')
+      docinfo2 = @attributes.has_key?('docinfo2')
+      docinfo_filename = "docinfo#{ext}"
+      if docinfo1 || docinfo2
+        docinfo_path = normalize_system_path(docinfo_filename)
+        content = read_asset(docinfo_path)
+      end
+
+      if (docinfo || docinfo2) && @attributes.has_key?('docname')
+        docinfo_path = normalize_system_path("#{@attributes['docname']}-#{docinfo_filename}")
+        content2 = read_asset(docinfo_path)
+        unless content2.nil?
+          content = content.nil? ? content2 : "#{content}\n#{content2}"
+        end
+      end
+
+      content.nil? ? '' : content
+    end
   end
 
   def to_s

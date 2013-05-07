@@ -268,7 +268,7 @@ class Reader
   def preprocess_next_line
     # this return could be happening from a recursive call
     return nil if @eof || (next_line = @lines.first).nil?
-    if next_line.include?('if') && (match = next_line.match(REGEXP[:ifdef_macro]))
+    if next_line.include?('::') && (next_line.include?('if') || next_line.include?('endif')) && (match = next_line.match(REGEXP[:ifdef_macro]))
       if next_line.start_with? '\\'
         @next_line_preprocessed = true
         @unescape_next_line = true
@@ -287,7 +287,7 @@ class Reader
         @unescape_next_line = true
         false
       else
-        preprocess_include(match[1])
+        preprocess_include(match[1], match[2].strip)
       end
     else
       @next_line_preprocessed = true
@@ -343,7 +343,7 @@ class Reader
       return preprocess_next_line.nil? ? nil : true
     end
 
-    skip = nil
+    skip = false
     if !@skipping
       case directive
       when 'ifdef'
@@ -384,17 +384,19 @@ class Reader
 
         skip = !lhs.send(op.to_sym, rhs)
       end
-      @skipping = skip
     end
     advance
     # single line conditional inclusion
     if directive != 'ifeval' && !text.nil?
-      if !@skipping
+      if !@skipping && !skip
         unshift_line "#{text.rstrip}\n"
         return true
       end
     # conditional inclusion block
     else
+      if !@skipping && skip
+        @skipping = true
+      end
       @conditionals_stack << {:target => target, :skip => skip, :skipping => @skipping}
     end
     return preprocess_next_line.nil? ? nil : true
@@ -422,9 +424,11 @@ class Reader
   #          target slot of the include::[] macro
   #
   # returns a Boolean indicating whether the line under the cursor has changed.
-  def preprocess_include(target)
+  def preprocess_include(target, raw_attributes)
     # if running in SafeMode::SECURE or greater, don't process this directive
+    # however, be friendly and at least make it a link to the source document
     if @document.safe >= SafeMode::SECURE
+      @lines[0] = "link:#{target}[#{target}]"
       @next_line_preprocessed = true
       false
     # assume that if a block is given, the developer wants
@@ -438,7 +442,81 @@ class Reader
     elsif @document.attributes.fetch('include-depth', 0).to_i > 0
       advance
       # FIXME this borks line numbers
-      @lines.unshift(*File.readlines(@document.normalize_asset_path(target, 'include file')).map {|l| "#{l.rstrip}\n"})
+      include_file = @document.normalize_system_path(target, nil, nil, :target_name => 'include file')
+      if !File.file?(include_file)
+        puts "asciidoctor: WARNING: line #{@lineno}: include file not found: #{include_file}"
+        return true
+      end
+
+      lines = nil
+      tags = nil
+      if !raw_attributes.empty?
+        attributes = AttributeList.new(raw_attributes).parse
+        if attributes.has_key? 'lines'
+          lines = []
+          attributes['lines'].split(REGEXP[:scsv_csv_delim]).each do |linedef|
+            if linedef.include?('..')
+              from, to = linedef.split('..').map(&:to_i)
+              if to == -1
+                lines << from
+                lines << 1.0/0.0
+              else
+                lines.concat Range.new(from, to).to_a
+              end
+            else
+              lines << linedef.to_i
+            end
+          end
+          lines = lines.sort.uniq
+          #lines.push lines.shift if lines.first == -1
+        elsif attributes.has_key? 'tags'
+          tags = attributes['tags'].split(REGEXP[:scsv_csv_delim]).uniq
+        end
+      end
+      if !lines.nil?
+        if !lines.empty?
+          selected = []
+          f = File.new(include_file)
+          f.each_line do |l|
+            take = lines.first
+            if take.is_a?(Float) && take.infinite?
+              selected.push("#{l.rstrip}\n")
+            else
+              if f.lineno == take
+                selected.push("#{l.rstrip}\n")
+                lines.shift 
+              end
+              break if lines.empty?
+            end
+          end
+          @lines.unshift(*selected) unless selected.empty?
+        end
+      elsif !tags.nil?
+        if !tags.empty?
+          selected = []
+          active_tag = nil
+          f = File.new(include_file)
+          f.each_line do |l|
+            if !active_tag.nil?
+              if l.include?("end::#{active_tag}[]")
+                active_tag = nil
+              else
+                selected.push("#{l.rstrip}\n")
+              end
+            else
+              tags.each do |tag|
+                if l.include?("tag::#{tag}[]")
+                  active_tag = tag
+                  break
+                end
+              end
+            end
+          end
+          @lines.unshift(*selected) unless selected.empty?
+        end
+      else
+        @lines.unshift(*File.readlines(include_file).map {|l| "#{l.rstrip}\n"})
+      end
       true
     else
       @next_line_preprocessed = true
@@ -514,32 +592,54 @@ class Reader
   def grab_lines_until(options = {}, &block)
     buffer = []
 
-    finis = false
     advance if options[:skip_first_line]
-    # save options to locals for minor optimization
-    terminator = options[:terminator]
-    terminator.chomp! if terminator
-    break_on_blank_lines = options[:break_on_blank_lines]
-    break_on_list_continuation = options[:break_on_list_continuation]
+    # very hot code
+    # save options to locals for minor optimizations
+    if options.has_key? :terminator
+      terminator = options[:terminator]
+      break_on_blank_lines = false
+      break_on_list_continuation = false
+      chomp_last_line = options[:chomp_last_line] || false
+    else
+      terminator = nil
+      break_on_blank_lines = options[:break_on_blank_lines]
+      break_on_list_continuation = options[:break_on_list_continuation]
+      chomp_last_line = break_on_blank_lines
+    end
     skip_line_comments = options[:skip_line_comments]
     preprocess = options.fetch(:preprocess, true)
+    buffer_empty = true
     while !(this_line = get_line(preprocess)).nil?
-      Debug.debug { "Reader processing line: '#{this_line}'" }
-      finis = true if terminator && this_line.chomp == terminator
-      finis = true if !finis && break_on_blank_lines && this_line.strip.empty?
-      finis = true if !finis && break_on_list_continuation && this_line.chomp == LIST_CONTINUATION
-      finis = true if !finis && block && yield(this_line)
-      if finis
-        buffer << this_line if options[:grab_last_line]
-        unshift_line(this_line) if options[:preserve_last_line]
+      # effectively a no-args lamba, but much faster
+      finish = while true
+        break true if terminator && this_line.chomp == terminator
+        break true if break_on_blank_lines && this_line.strip.empty?
+        if break_on_list_continuation && !buffer_empty && this_line.chomp == LIST_CONTINUATION
+          options[:preserve_last_line] = true
+          break true
+        end
+        break true if block && yield(this_line)
+        break false
+      end
+
+      if finish
+        if options[:grab_last_line]
+          buffer << this_line
+          buffer_empty = false
+        end
+        # QUESTION should we dup this_line when restoring??
+        unshift_line this_line if options[:preserve_last_line]
         break
       end
 
       unless skip_line_comments && this_line.match(REGEXP[:comment])
         buffer << this_line
+        buffer_empty = false
       end
     end
 
+    # should we dup the line before chopping?
+    buffer.last.chomp! if chomp_last_line && !buffer_empty
     buffer
   end
 
@@ -619,8 +719,7 @@ class Reader
 
     # Process bibliography references, so they're available when text
     # before the reference is being rendered.
-    # FIXME we don't have support for bibliography lists yet, so disable for now
-    # plus, this should be done while we are walking lines above
+    # FIXME reenable whereever it belongs
     #@lines.each do |line|
     #  if biblio = line.match(REGEXP[:biblio])
     #    @document.register(:ids, biblio[1])
