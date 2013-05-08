@@ -33,13 +33,13 @@ public abstract class OutboundOperation extends DefaultOperationBuilder
    {
       if (event instanceof OutboundRewrite)
       {
-         performOutbound((OutboundRewrite) event);
+         performOutbound((OutboundRewrite) event, context);
       }
    }
 
    /**
     * Perform the operation.
     */
-   public abstract void performOutbound(OutboundRewrite event);
+   public abstract void performOutbound(OutboundRewrite event, EvaluationContext context);
 
 }
