@@ -17,6 +17,8 @@ package org.ocpsoft.rewrite.config;
 
 import org.ocpsoft.rewrite.config.DefaultOperationBuilder.DefaultCompositeOperation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.InboundRewrite;
+import org.ocpsoft.rewrite.event.OutboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 
 /**
@@ -33,6 +35,36 @@ public class Operations
    public static OperationBuilder create()
    {
       return new NoOp();
+   }
+
+   /**
+    * Wrap the given {@link Operation} in a new {@link InboundOperation} which will invoke the wrapped operation only
+    * for inbound rewrites.
+    */
+   public static Operation onInbound(final Operation operation)
+   {
+      return new InboundOperation() {
+         @Override
+         public void performInbound(InboundRewrite event, EvaluationContext context)
+         {
+            operation.perform(event, context);
+         }
+      };
+   }
+
+   /**
+    * Wrap the given {@link Operation} in a new {@link OutboundOperation} which will invoke the wrapped operation only
+    * for outbound rewrites.
+    */
+   public static Operation onOutbound(final Operation operation)
+   {
+      return new OutboundOperation() {
+         @Override
+         public void performOutbound(OutboundRewrite event, EvaluationContext context)
+         {
+            operation.perform(event, context);
+         }
+      };
    }
 
    /**
