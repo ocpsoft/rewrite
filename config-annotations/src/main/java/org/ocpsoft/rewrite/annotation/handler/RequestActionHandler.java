@@ -22,12 +22,10 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.api.MethodContext;
 import org.ocpsoft.rewrite.annotation.spi.MethodAnnotationHandler;
-import org.ocpsoft.rewrite.config.InboundOperation;
 import org.ocpsoft.rewrite.config.Invoke;
 import org.ocpsoft.rewrite.config.Operation;
-import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.config.Operations;
 import org.ocpsoft.rewrite.el.El;
-import org.ocpsoft.rewrite.event.InboundRewrite;
 
 public class RequestActionHandler extends MethodAnnotationHandler<RequestAction>
 {
@@ -59,19 +57,8 @@ public class RequestActionHandler extends MethodAnnotationHandler<RequestAction>
       Assert.notNull(enrichedOperation, "Operation was removed from the context");
 
       // append this operation to the rule
-      context.getRuleBuilder().perform(inboundOperation(enrichedOperation));
+      context.getRuleBuilder().perform(Operations.onInbound(enrichedOperation));
 
-   }
-
-   private Operation inboundOperation(final Operation operation)
-   {
-      return new InboundOperation() {
-         @Override
-         public void performInbound(InboundRewrite event, EvaluationContext context)
-         {
-            operation.perform(event, context);
-         }
-      };
    }
 
 }
