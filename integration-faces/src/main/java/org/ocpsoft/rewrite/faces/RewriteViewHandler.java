@@ -33,8 +33,6 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.rewrite.faces.spi.FacesActionUrlProvider;
 import org.ocpsoft.rewrite.servlet.util.URLBuilder;
-import org.ocpsoft.urlbuilder.Address;
-import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -130,9 +128,13 @@ public class RewriteViewHandler extends ViewHandler
 
          if (result != null)
          {
-            URLBuilder builder = URLBuilder.createFrom(result);
-            builder.getQueryStringBuilder().addParameters(parent.getActionURL(context, viewId));
-            result = builder.toURL();
+            String parentActionURL = parent.getActionURL(context, viewId);
+            if (parentActionURL.contains("?"))
+            {
+               URLBuilder builder = URLBuilder.createFrom(result);
+               builder.getQueryStringBuilder().addParameters(parentActionURL);
+               result = builder.toURL();
+            }
          }
       }
       if (result == null)
