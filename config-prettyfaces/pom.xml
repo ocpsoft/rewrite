@@ -18,14 +18,17 @@
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api</artifactId>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api-el</artifactId>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-api-servlet</artifactId>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>

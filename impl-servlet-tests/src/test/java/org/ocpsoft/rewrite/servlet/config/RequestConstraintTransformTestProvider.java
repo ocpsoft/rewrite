@@ -24,7 +24,6 @@ import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Constraint;
-import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Transposition;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 

@@ -28,6 +28,7 @@ import org.junit.Test;
 public class WebClassesFinderTest
 {
 
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    @Test
    public void testWebClassesFinder() throws Exception
    {
@@ -49,13 +50,16 @@ public class WebClassesFinderTest
       EasyMock.expect(servletContext.getResource("/WEB-INF/classes/")).andReturn(classesUrl).anyTimes();
       EasyMock.expect(servletContext.getResourcePaths("/WEB-INF/classes/")).andReturn(classesDirectory).anyTimes();
       EasyMock.expect(servletContext.getResource("/WEB-INF/classes/package/")).andReturn(packageUrl).anyTimes();
-      EasyMock.expect(servletContext.getResourcePaths("/WEB-INF/classes/package/")).andReturn(packageDirectory).anyTimes();
-      EasyMock.expect(servletContext.getResource("/WEB-INF/classes/package/TestClass.class")).andReturn(classUrl).anyTimes();
+      EasyMock.expect(servletContext.getResourcePaths("/WEB-INF/classes/package/")).andReturn(packageDirectory)
+               .anyTimes();
+      EasyMock.expect(servletContext.getResource("/WEB-INF/classes/package/TestClass.class")).andReturn(classUrl)
+               .anyTimes();
       EasyMock.replay(servletContext);
 
       // ClassLoader that knows the test class
       ClassLoader classLoader = EasyMock.createNiceMock(ClassLoader.class);
-      EasyMock.expect(classLoader.loadClass("package.TestClass")).andReturn((Class) ClassFinderTestBean.class).anyTimes();
+      EasyMock.expect(classLoader.loadClass("package.TestClass")).andReturn((Class) ClassFinderTestBean.class)
+               .anyTimes();
       EasyMock.replay(classLoader);
 
       // Prepare mock of PrettyAnnotationHandler
@@ -73,7 +77,7 @@ public class WebClassesFinderTest
 
    }
 
-
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    @Test
    public void testWebClassesFinderWithJettyRunGoal() throws Exception
    {
@@ -95,13 +99,16 @@ public class WebClassesFinderTest
       EasyMock.expect(servletContext.getResource("/WEB-INF/classes/")).andReturn(classesUrl).anyTimes();
       EasyMock.expect(servletContext.getResourcePaths("/WEB-INF/classes/")).andReturn(classesDirectory).anyTimes();
       EasyMock.expect(servletContext.getResource("/WEB-INF/classes/package/")).andReturn(packageUrl).anyTimes();
-      EasyMock.expect(servletContext.getResourcePaths("/WEB-INF/classes/package/")).andReturn(packageDirectory).anyTimes();
-      EasyMock.expect(servletContext.getResource("/WEB-INF/classes/package/TestClass.class")).andReturn(classUrl).anyTimes();
+      EasyMock.expect(servletContext.getResourcePaths("/WEB-INF/classes/package/")).andReturn(packageDirectory)
+               .anyTimes();
+      EasyMock.expect(servletContext.getResource("/WEB-INF/classes/package/TestClass.class")).andReturn(classUrl)
+               .anyTimes();
       EasyMock.replay(servletContext);
 
       // ClassLoader that knows the test class
       ClassLoader classLoader = EasyMock.createNiceMock(ClassLoader.class);
-      EasyMock.expect(classLoader.loadClass("package.TestClass")).andReturn((Class) ClassFinderTestBean.class).anyTimes();
+      EasyMock.expect(classLoader.loadClass("package.TestClass")).andReturn((Class) ClassFinderTestBean.class)
+               .anyTimes();
       EasyMock.replay(classLoader);
 
       // Prepare mock of PrettyAnnotationHandler

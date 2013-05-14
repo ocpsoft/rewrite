@@ -39,7 +39,7 @@ public class WebLibFinderTest
 {
 
    @Test
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    public void testWebLibFinder() throws Exception
    {
 
