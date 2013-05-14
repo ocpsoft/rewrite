@@ -32,6 +32,9 @@ import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.rewrite.faces.spi.FacesActionUrlProvider;
+import org.ocpsoft.rewrite.servlet.util.URLBuilder;
+import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -124,6 +127,13 @@ public class RewriteViewHandler extends ViewHandler
             if (result != null)
                break;
          }
+
+         if (result != null)
+         {
+            URLBuilder builder = URLBuilder.createFrom(result);
+            builder.getQueryStringBuilder().addParameters(parent.getActionURL(context, viewId));
+            result = builder.toURL();
+         }
       }
       if (result == null)
          result = parent.getActionURL(context, viewId);
@@ -133,10 +143,10 @@ public class RewriteViewHandler extends ViewHandler
    @SuppressWarnings("unchecked")
    public List<FacesActionUrlProvider> getProviders()
    {
-      if(providers == null)
+      if (providers == null)
       {
-      providers = Iterators.asList(ServiceLoader.load(FacesActionUrlProvider.class));
-      Collections.sort(providers, new WeightedComparator());
+         providers = Iterators.asList(ServiceLoader.load(FacesActionUrlProvider.class));
+         Collections.sort(providers, new WeightedComparator());
       }
       return providers;
    }
