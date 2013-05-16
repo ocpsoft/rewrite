@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+   <error-page>
+      <error-code>404</error-code>
+      <location>/404.xhtml</location>
+   </error-page>
+
+   <servlet>
+      <servlet-name>Faces Servlet</servlet-name>
+      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.xhtml</url-pattern>
+   </servlet-mapping>
+   <context-param>
+      <param-name>javax.faces.PROJECT_STAGE</param-name>
+      <param-value>Development</param-value>
+   </context-param>
+
+</web-app>
