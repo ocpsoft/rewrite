@@ -63,6 +63,10 @@ public class CDNConfigurationProvider extends HttpConfigurationProvider
                .where("p").matches(".*")
                .where("version").matches(".*")
 
+               // URL without a schema
+               .addRule(CDN.relocate("{*}/angular.min.js")
+                        .to("//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"))
+
                /*
                 * Now send a response to our test case containing the relocated resource.
                 */
@@ -76,6 +80,7 @@ public class CDNConfigurationProvider extends HttpConfigurationProvider
                         HttpServletResponse response = event.getResponse();
                         response.getWriter().write(response.encodeURL("/jquery.min.js"));
                         response.getWriter().write(response.encodeURL("/something/foo-1.2.3.js"));
+                        response.getWriter().write("[" + response.encodeURL("/somewwhere/angular.min.js") + "]");
                         SendStatus.code(200).perform(event, context);
                      }
                      catch (IOException e) {

@@ -15,12 +15,15 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import static org.junit.Assert.assertThat;
 import junit.framework.Assert;
 
 import org.apache.http.client.methods.HttpGet;
+import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -52,6 +55,19 @@ public class CDNConfigurationTest extends RewriteTest
                "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"));
       Assert.assertTrue(action.getResponseContent().contains(
                "http://mycdn.com/foo-1.2.3.js"));
+
+   }
+
+   @Test
+   @Ignore // See: https://github.com/ocpsoft/rewrite/issues/86
+   public void testCDNRelocationWithSchemalessURL() throws Exception
+   {
+
+      HttpAction<HttpGet> action = get("/relocate");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      assertThat(action.getResponseContent(), Matchers.containsString(
+               "[//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js]"));
 
    }
 
