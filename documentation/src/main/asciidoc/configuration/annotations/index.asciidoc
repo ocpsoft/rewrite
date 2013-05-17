@@ -1,3 +1,128 @@
 == Rewrite Annotations
 
-Docs coming soon.
+The Rewrite annotation support offers an alternative way to configure Rewrite. Compared to configuring
+Rewrite using a +ConfigurationProvider+, the annotations allow to place the configuration very close
+to the affected code, which some people prefer over a central configuration.
+
+Please note that the Rewrite annotations are not as flexible as a +ConfigurationProvider+.
+The main focus of the annotations is to simplify the most common usecases which usually occur
+many times in an application. A good example for this are +Join+ rules which are used very often.
+
+NOTE: Of cause you can use a +ConfigurationProvider+ and the annotations side by side. 
+
+=== Configuration
+
+The annotation support of Rewrite is enabled by default. So you usually don't have do add any
+additional configuration to use annotations.
+
+If you care about the performance of the annotation scanning process, you can tell Rewrite which
+packages to scan for annotations. Restricting the packages may increase performance if you have
+a large number of classes in your application.
+
+To tell Rewrite to scan only a specific package including all subpackes, add the following entry
+to your +web.xml+:
+
+[source,xml]
+.Restrict annotation scanning to a specific package
+----
+<context-param>
+  <param-name>org.ocpsoft.rewrite.annotation.BASE_PACKAGES</param-name>
+  <param-value>com.example.myapp</param-value>
+</context-param>
+----
+
+If you want to disable the annotation scanning completely, set the package to scan to +none+ like this:
+
+[source,xml]
+.Disable annotation scanning
+----
+<context-param>
+  <param-name>org.ocpsoft.rewrite.annotation.BASE_PACKAGES</param-name>
+  <param-value>none</param-value>
+</context-param>
+----
+
+By default Rewrite will only scan the contents of your +/WEB-INF/classes+ directory. 
+Sometimes it makes sense to also scan the JAR files located in
++/WEB-INF/lib+. This may be the case if your are developing a highly modular application
+which is split into different JAR. 
+
+You can tell Rewrite to also scan the JAR files in +/WEB-INF/lib+ by adding the 
+following configuration to your +web.xml+: 
+
+[source,xml]
+.Tell Rewrite to scan JAR files for annotations
+----
+<context-param>
+  <param-name>org.ocpsoft.rewrite.annotation.SCAN_LIB_DIRECTORY</param-name>
+  <param-value>true</param-value>
+</context-param>
+----
+
+=== Defining rules with annotations
+
+One of the most common Rewrite rule types is the +Join+ which maps a _virtual_ path to a physical 
+server resource. If you are using the +ConfigurationProvider+ way of configuration, adding a join
+usually looks like this:
+
+[source,java]
+.A basic join using the fluent Java API
+----
+.addRule(Join.path("/welcome").to("/faces/welcome.xhtml"))
+----
+
+If you want to configure this rule using the Rewrite annotations API, you can do it like this:
+
+[source,java]
+.A basic join using Rewrite annotations
+----
+@Named
+@RequestScoped
+@Join(path="/welcome", to="/faces/welcome.xhtml")
+public class WelcomePage {
+  // your code
+}
+----
+
+As you can see in this example, using the Rewrite annotations is straight forward. Just add
+a +@Join+ annotation to your class and set the +path+ and +to+ attributes just like you would
+using the fluent Java API.
+
+TIP: When using web frameworks like JSF, it is recommended to place the annotation on the class
+which is mainly responsible for the corresponding page.
+
+In some cases it is desired to add an additional +Condition+ to a rule. A good example for this
+are additional security checks for an URL. To add such a constraint, just add the corresponding annotation to
+your class like shown in the following example.
+
+[source,java]
+.Adding a security constraint to a Join
+----
+@Named
+@RequestScoped
+@RolesRequired("ADMIN")
+@Join(path="/users", to="/faces/user-list.xhtml")
+public class UserListPage {
+  // your code
+}
+----
+
+In this example the +Join+ rules is only applied if the user as the required JAAS role.
+
+TIP: If Rewrite doesn't provide an existing annotation for your specific usecase, you can create your
+own one very easily. Have a look at <<custom-annotations,Building custom annotations>> to learn how
+to do this.
+
+
+=== Handling parameters
+
+TODO
+
+=== Invoking methods
+
+TODO
+
+[[custom-annotations]]
+=== Building custom annotations
+
+TODO

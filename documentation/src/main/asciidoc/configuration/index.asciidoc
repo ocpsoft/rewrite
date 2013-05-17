@@ -10,7 +10,7 @@ Before continuing on to learn about configuring Rewrite, make sure that you have
 
 It may be helpful to review the following terms, many of which will make frequent appearances in this documentation.
 
-ConfigurationProvider:: An object that provides +Configuration+ instances to the Rewrite framework; these may be created and registered as necessary. If not using Rewrite Annotations, or other extensions, you must have at least one registered +ConfigurationProvider+ or Rewrite will not have any effect.
+ConfigurationProvider:: An object that provides +Configuration+ instances to the Rewrite framework; these may be created and registered as necessary. If not using link:./annotations/index[Rewrite Annotations], or other extensions, you must have at least one registered +ConfigurationProvider+ or Rewrite will not have any effect.
 
 Configuration:: A collection of +Rule+ objects that are processed in order until the system has determined the current inbound or oubound Rewrite event has been handled. Configurations may be provided by extensions, cached for performance, or built dynamically at run-time.
 
