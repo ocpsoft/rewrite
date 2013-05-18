@@ -15,6 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.NonEnriching;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
+import org.ocpsoft.rewrite.servlet.DispatcherType;
 import org.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
+import org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider;
 import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 
 /**
@@ -36,6 +40,7 @@ import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper implements NonEnriching
 {
    private volatile List<RequestParameterProvider> providers;
+   private final List<DispatcherTypeProvider> dispatcherProviders;
 
    @SuppressWarnings("unchecked")
    public HttpRewriteRequestCycleWrapper()
@@ -45,6 +50,11 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
             if (providers == null)
                providers = Iterators.asList(ServiceLoader.load(RequestParameterProvider.class));
          }
+
+      dispatcherProviders = Iterators.asList(
+               ServiceLoader.loadTypesafe(DispatcherTypeProvider.class).iterator());
+      Collections.sort(dispatcherProviders, new WeightedComparator());
+
    }
 
    @Override
@@ -73,9 +83,28 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
             final ServletContext servletContext)
    {
       HttpServletResponse result = response;
-      if (HttpRewriteWrappedResponse.getCurrentInstance(request) == null)
+      /*
+       * The Servlet spec requires that the unwrapped response is used in case of dispatch type ERROR. 
+       * Therefore we must ALWAYS wrap the response for the ERROR dispatch type.
+       */
+      if (HttpRewriteWrappedResponse.getCurrentInstance(request) == null ||
+               getDispatcherType(request, servletContext) == DispatcherType.ERROR)
          result = new HttpRewriteWrappedResponse(request, response, servletContext);
       return result;
+   }
+
+   /**
+    * Determines the {@link DispatcherType} of the current request using the {@link DispatcherTypeProvider} SPI.
+    */
+   private DispatcherType getDispatcherType(HttpServletRequest request, ServletContext context)
+   {
+      for (DispatcherTypeProvider provider : dispatcherProviders) {
+         DispatcherType dispatcherType = provider.getDispatcherType(request, context);
+         if (dispatcherType != null) {
+            return dispatcherType;
+         }
+      }
+      throw new IllegalStateException("Unable to determine dispatcher type of current request");
    }
 
    @Override

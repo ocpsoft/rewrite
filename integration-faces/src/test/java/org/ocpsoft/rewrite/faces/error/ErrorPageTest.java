@@ -23,11 +23,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
-import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
@@ -58,7 +56,6 @@ public class ErrorPageTest extends RewriteTestBase
    }
 
    @Test
-   @Ignore // See: https://github.com/ocpsoft/rewrite/issues/94
    public void shouldRewriteOutboundLinksForErrorPage() throws Exception
    {
       HttpAction<HttpGet> action = get("/does-not-exist");
