@@ -115,10 +115,10 @@ class AddressResult implements Address
          StringBuilder result = new StringBuilder();
 
          if (isSchemeSet())
-            result.append(getScheme()).append("://");
+            result.append(getScheme()).append(":");
 
          if (isDomainSet())
-            result.append(getDomain());
+            result.append("//").append(getDomain());
 
          if (isPortSet())
             result.append(":").append(getPort());

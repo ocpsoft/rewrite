@@ -173,7 +173,7 @@ public class AddressBuilderTest
    @Test
    public void testBuildHostAndPath()
    {
-      Assert.assertEquals("ocpsoft.org/store/23/buy",
+      Assert.assertEquals("//ocpsoft.org/store/23/buy",
                AddressBuilder.begin()
                         .domain("ocpsoft.org")
                         .path("/store/{item}/{action}").set("item", 23).set("action", "buy").toString());
@@ -182,7 +182,7 @@ public class AddressBuilderTest
    @Test
    public void testBuildHostAndPathResult()
    {
-      Assert.assertEquals("ocpsoft.org/store/23/buy",
+      Assert.assertEquals("//ocpsoft.org/store/23/buy",
                AddressBuilder.begin().domain("ocpsoft.org")
                         .path("/store/{item}/{action}").set("item", 23).set("action", "buy").build().toString());
    }
@@ -190,14 +190,14 @@ public class AddressBuilderTest
    @Test
    public void testProtocolAndPort()
    {
-      Assert.assertEquals("file://:80",
+      Assert.assertEquals("file::80",
                AddressBuilder.begin().scheme("file").port(80).toString());
    }
 
    @Test
    public void testProtocolAndPortResult()
    {
-      Assert.assertEquals("file://:80",
+      Assert.assertEquals("file::80",
                AddressBuilder.begin().scheme("file").port(80).build().toString());
    }
 
@@ -235,6 +235,20 @@ public class AddressBuilderTest
       assertEquals("/search", address.getPath());
       assertEquals("q=foobar", address.getQuery());
       assertEquals("/search?q=foobar", address.getPathAndQuery());
+   }
+
+   @Test
+   public void testCreateSchemalessUrl()
+   {
+
+      Address address = AddressBuilder.begin()
+               .scheme(null)
+               .domain("example.com")
+               .path("/test.txt")
+               .build();
+
+      assertEquals("//example.com/test.txt", address.toString());
+
    }
 
 }
