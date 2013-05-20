@@ -23,7 +23,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -46,7 +45,6 @@ public class SchemalessCDNRuleTest extends RewriteTestBase
    }
 
    @Test
-   @Ignore // See: https://github.com/ocpsoft/rewrite/issues/86
    public void shouldRewriteToSchemalessURL() throws Exception
    {
 

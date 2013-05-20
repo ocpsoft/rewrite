@@ -97,7 +97,8 @@ public class Substitute extends HttpOperation implements Parameterized
 
          String target = builder.build(event, context, Transpositions.encodePath());
          if (((HttpOutboundServletRewrite) event).getOutboundAddress().getPath().startsWith(event.getContextPath())
-                  && target.startsWith("/")
+                  && target.startsWith("/") 
+                  && !target.startsWith("//")
                   && !target.startsWith(event.getContextPath()))
          {
             target = event.getContextPath() + target;
