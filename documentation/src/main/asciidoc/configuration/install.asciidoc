@@ -32,7 +32,9 @@ If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ f
 
 Once Rewrite is installed, you will need to describe how you would like it to 
 handle events; this is done by implementing the +org.ocpsoft.rewrite.config.ConfigurationProvider+ interface.  Typically, when using Rewrite in a Servlet environment, you will want to extend from
-the provided base class +org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider+:
+the provided base class +org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider+.
+
+CAUTION: The registration file must be created in +src/main/resources/META-INF/services+, along-side your Java resources. It must *NOT* be placed in the +src/main/webapp/META-INF+ directory.
 
 [source,java]
 .org.example.ApplicationConfigurationProvider
