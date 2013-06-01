@@ -25,9 +25,9 @@ Parameter:: Specifies a fragment of an HTTP request that may be referenced in bo
 Rule:: A pre-constructed combination of +Condition+ and +Operation+ instances. You should use a +Rule+ when simple composition of +Condition+ and +Operation+ instances in a +ConfigurationBuilder+ is too difficult to achieve the desired functionality.
 
 === Activate Development Mode
-By default, Rewrite uses a +ConfigurationCacheProvider+ that stores your configuration in the +ServletContext+ as an application-wide caching medium. This means, by default, the +Configuration+ will be loaded once upon application startup, and never again.
+By default, Rewrite uses a +ConfigurationCacheProvider+ that stores your configuration in the +ServletContext+ as an application-wide caching medium. This means, by default, all registered +ConfigurationProvider+ instances will be loaded once upon application startup, and never again.
 
-To disable the default caching mechanism, and enable +Configuration+ reloading on each request, add the following servlet context init parameter to <code>web.xml</code>:
+To disable the default caching mechanism, and enable configuration reloading on each request, add the following servlet context init parameter to <code>web.xml</code>:
 
 [source,xml]
 ----
