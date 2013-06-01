@@ -24,6 +24,20 @@ Parameter:: Specifies a fragment of an HTTP request that may be referenced in bo
 
 Rule:: A pre-constructed combination of +Condition+ and +Operation+ instances. You should use a +Rule+ when simple composition of +Condition+ and +Operation+ instances in a +ConfigurationBuilder+ is too difficult to achieve the desired functionality.
 
+=== Activate Development Mode
+By default, Rewrite uses a +ConfigurationCacheProvider+ that stores your configuration in the {@link ServletContext} as an application-wide caching medium. This means, by default, the +Configuration+ will be loaded once upon application startup, and never again.
+
+To disable the default caching mechanism, and enable {@link Configuration} reloading on each request, add the following servlet context init parameter to <code>web.xml</code>:
+
+[source,xml]
+----
+<context-param>
+   <param-name>org.ocpsoft.rewrite.config.CONFIG_RELOADING</param-name>
+   <param-value>true</param-value>
+</context-param>
+----
+Make sure to disable this option before deploying to production, since larger and more complex configurations may take some time to re-load.
+
 === Start using Rewrite rules
 
 Now that you have Rewrite installed, and understand the basic terms, let's start writing some rules. We will start with a simple example: logging an inbound request URL to the server console.
