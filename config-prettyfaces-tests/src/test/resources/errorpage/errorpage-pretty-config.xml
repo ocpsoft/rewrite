@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.3.3 http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.1.1.xsd">
+
+   <url-mapping id="test">
+      <pattern value="/validate/#{value}">
+         <validate index="0" validatorIds="ErrorPageValidator" />
+      </pattern>
+      <view-id>/view.jsf</view-id>
+   </url-mapping>
+
+</pretty-config>
