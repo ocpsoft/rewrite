@@ -55,7 +55,6 @@
       <module>config-tuckey</module>
       <module>addressbuilder</module>
       <module>api-el</module>
-      <module>api-el-tests</module>
       <module>api-servlet</module>
       <module>impl-servlet</module>
       <module>impl-servlet-2.5</module>
@@ -66,6 +65,7 @@
       <module>transform-minify</module>
       <module>transform-markup</module>
       <module>integration-cdi</module>
+      <module>integration-cdi-tests</module>
       <module>integration-faces</module>
       <module>integration-faces-tests</module>
       <module>integration-gwt</module>

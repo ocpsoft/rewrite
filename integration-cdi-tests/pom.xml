@@ -8,7 +8,7 @@
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-api-el-tests</artifactId>
+   <artifactId>rewrite-integration-cdi-tests</artifactId>
 
    <dependencies>
 
