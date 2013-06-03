@@ -1,4 +1,4 @@
-package org.ocpsoft.rewrite.el.cdi.faces.binding;
+package test.org.ocpsoft.rewrite.cdi.binding;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;

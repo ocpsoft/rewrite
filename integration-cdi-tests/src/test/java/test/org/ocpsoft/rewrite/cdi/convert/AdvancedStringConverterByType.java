@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.el.cdi.faces.convert;
+package test.org.ocpsoft.rewrite.cdi.convert;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;

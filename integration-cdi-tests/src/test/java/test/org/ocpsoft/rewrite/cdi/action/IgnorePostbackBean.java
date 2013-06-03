@@ -28,61 +28,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.el.cdi.faces.action;
-
-import java.util.ArrayList;
-import java.util.List;
+package test.org.ocpsoft.rewrite.cdi.action;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
-import org.ocpsoft.rewrite.faces.annotation.Phase;
+import org.ocpsoft.rewrite.faces.annotation.IgnorePostback;
 
 @Named
 @RequestScoped
 @Join(path = "/action", to = "/faces/action.xhtml")
-public class DeferredActionsBean
+public class IgnorePostbackBean
 {
-   private final List<String> log = new ArrayList<String>();
+
+   private boolean actionDefault;
+   private boolean actionIgnorePostback;
 
    @RequestAction
    @Deferred
    public void action1()
    {
-      log.add("Action 1 = [" + getCurrentPhase() + "]");
+      actionDefault = true;
    }
 
    @RequestAction
-   @Deferred(before = Phase.RENDER_RESPONSE)
+   @Deferred
+   @IgnorePostback
    public void action2()
    {
-      log.add("Action 2 = [" + getCurrentPhase() + "]");
+      actionIgnorePostback = true;
    }
 
-   @RequestAction
-   @Deferred(after = Phase.INVOKE_APPLICATION)
-   public void action3()
+   public boolean isActionDefault()
    {
-      log.add("Action 3 = [" + getCurrentPhase() + "]");
+      return actionDefault;
    }
 
-   private static String getCurrentPhase()
+   public boolean isActionIgnorePostback()
    {
-      String s = FacesContext.getCurrentInstance().getCurrentPhaseId().toString();
-      if (s != null && s.length() > 5) {
-         // remove the trailing ordinal value of phase
-         return s.substring(0, s.length() - 2);
-      }
-      return s;
-   }
-
-   public List<String> getLog()
-   {
-      return log;
+      return actionIgnorePostback;
    }
 
 }

@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.el.cdi.faces.convert;
+package test.org.ocpsoft.rewrite.cdi.convert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ocpsoft.rewrite.el.cdi.faces.RewriteELTest;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import test.org.ocpsoft.rewrite.cdi.RewriteELTest;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 

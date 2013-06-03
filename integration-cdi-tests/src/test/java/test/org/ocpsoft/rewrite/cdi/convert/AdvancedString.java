@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.el.cdi.faces.convert;
+package test.org.ocpsoft.rewrite.cdi.convert;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-
-@FacesConverter("AdvancedStringConverter")
-public class AdvancedStringConverterById implements Converter
+public class AdvancedString
 {
 
-   @Override
-   public Object getAsObject(FacesContext context, UIComponent component, String value)
+   private final String value;
+
+   public AdvancedString(String value)
    {
-      return new AdvancedString(value);
+      this.value = value;
    }
 
    @Override
-   public String getAsString(FacesContext context, UIComponent component, Object value)
+   public String toString()
    {
-      throw new UnsupportedOperationException();
+      if (value != null) {
+         return "[" + value + "] with length " + value.length();
+      }
+      return "null";
    }
 
 }
