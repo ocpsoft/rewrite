@@ -48,18 +48,25 @@ good deal of familiarity when migrating a configuration.
 [source,xml]
 .Example configuration for migration
 ----
-<rewrite match="/.*[^/]$" trailingSlash="append" toCase="lowercase" />
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" 
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces        
+               http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+               
+  <rewrite match="/.*[^/]$" trailingSlash="append" toCase="lowercase" />
 
-<url-mapping id="store">
+  <url-mapping id="store">
     <pattern value="/store" />
     <view-id value="/faces/viewStore.xhtml" />
-</url-mapping>
+  </url-mapping>
 
-<url-mapping id="category">
+  <url-mapping id="category">
     <pattern value="/shop/#{categoryBean.category}" />
     <view-id value="/faces/viewCategory.xhtml" />
     <action>#{categoryBean.loadCategory}</action>
-</url-mapping>
+  </url-mapping>
+  
+</pretty-config>
 ---- 
 
 First, we will begin my migrating the +<url-mapping/>+ tags to use the Rewrite rule

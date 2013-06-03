@@ -17,8 +17,8 @@
 -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified" targetNamespace="http://ocpsoft.com/prettyfaces/3.3.3"
-	xmlns="http://ocpsoft.com/prettyfaces/3.3.3">
+	elementFormDefault="qualified" targetNamespace="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces">
 
 	<xs:annotation>
 		<xs:documentation>PrettyFaces Configuration XSD Schema

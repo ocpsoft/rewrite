@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.el;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -140,6 +141,28 @@ public abstract class El implements Binding, Retrieval
       return _providers;
    }
 
+   private static Object executeProviderCallable(Rewrite event, EvaluationContext context,
+            ProviderCallable<Object> providerCallable)
+   {
+      List<Exception> exceptions = new ArrayList<Exception>();
+      for (ExpressionLanguageProvider provider : getProviders()) {
+         try
+         {
+            return providerCallable.call(event, context, provider);
+         }
+         catch (Exception e)
+         {
+            exceptions.add(e);
+         }
+      }
+
+      for (Exception exception : exceptions) {
+         log.error("DEFERRED EXCEPTION", exception);
+      }
+      throw new RewriteException("No registered " + ExpressionLanguageProvider.class.getName()
+               + " could handle the Expression [" + providerCallable.getExpression() + "]");
+   }
+
    /**
     * Handle EL Method Invocation and Value Extraction
     */
@@ -157,33 +180,24 @@ public abstract class El implements Binding, Retrieval
       @Override
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
-
          if (!supportsRetrieval())
             throw new RewriteException("Method binding expression supports submission only [" + setExpression
                      + "], no value retrieval expression was defined");
 
-         Object value = null;
-         for (ExpressionLanguageProvider provider : getProviders()) {
-
-            try
+         return executeProviderCallable(event, context, new ProviderCallable<Object>() {
+            @Override
+            public Object call(Rewrite event, EvaluationContext context, ExpressionLanguageProvider provider)
+                     throws Exception
             {
                return provider.evaluateMethodExpression(getExpression.getExpression());
             }
-            catch (UnsupportedOperationException e) {
-               log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not invoke method ["
-                        + getExpression + "]", e);
-            }
-            catch (Exception e)
+
+            @Override
+            public String getExpression()
             {
-               throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not retrieve value from property ["
-                        + getExpression + "]", e);
-
+               return ElMethod.this.getExpression.getExpression();
             }
-         }
-
-         return value;
+         });
       }
 
       @Override
@@ -193,25 +207,20 @@ public abstract class El implements Binding, Retrieval
             throw new RewriteException("Method binding expression supports retrieval only [" + getExpression
                      + "], no value submission expression was defined");
 
-         for (ExpressionLanguageProvider provider : getProviders()) {
-            try
+         return executeProviderCallable(event, context, new ProviderCallable<Object>() {
+            @Override
+            public Object call(Rewrite event, EvaluationContext context, ExpressionLanguageProvider provider)
+                     throws Exception
             {
                return provider.evaluateMethodExpression(setExpression.getExpression(), value);
             }
-            catch (UnsupportedOperationException e) {
-               log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not submit method [" + setExpression
-                        + "} with value [" + value + "]", e);
-            }
-            catch (Exception e)
-            {
-               throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not submit method ["
-                        + setExpression + "} with value [" + value + "]", e);
 
+            @Override
+            public String getExpression()
+            {
+               return ElMethod.this.setExpression.getExpression();
             }
-         }
-         return null;
+         });
       }
 
       @Override
@@ -249,32 +258,40 @@ public abstract class El implements Binding, Retrieval
       @Override
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
-         Object value = null;
-         for (ExpressionLanguageProvider provider : getProviders()) {
-
-            try
+         return executeProviderCallable(event, context, new ProviderCallable<Object>() {
+            @Override
+            public Object call(Rewrite event, EvaluationContext context, ExpressionLanguageProvider provider)
+                     throws Exception
             {
-               value = provider.retrieveValue(expression.getExpression());
-               break;
-            }
-            catch (UnsupportedOperationException e)
-            {
-               log.debug("El provider [" + provider.getClass().getName() + "] could not extract value from property ["
-                        + expression + "]", e);
-            }
-            catch (Exception e) {
-               throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not extract value from property ["
-                        + expression + "]", e);
+               return provider.retrieveValue(expression.getExpression());
             }
 
-            if (value != null)
+            @Override
+            public String getExpression()
             {
-               break;
+               return ElProperty.this.expression.getExpression();
             }
-         }
+         });
+      }
 
-         return value;
+      @Override
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      {
+         return executeProviderCallable(event, context, new ProviderCallable<Object>() {
+            @Override
+            public Object call(Rewrite event, EvaluationContext context, ExpressionLanguageProvider provider)
+                     throws Exception
+            {
+               provider.submitValue(expression.getExpression(), value);
+               return null;
+            }
+
+            @Override
+            public String getExpression()
+            {
+               return ElProperty.this.expression.getExpression();
+            }
+         });
       }
 
       @Override
@@ -287,31 +304,6 @@ public abstract class El implements Binding, Retrieval
       public boolean supportsSubmission()
       {
          return true;
-      }
-
-      @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
-      {
-         for (ExpressionLanguageProvider provider : getProviders()) {
-            try
-            {
-               provider.submitValue(expression.getExpression(), value);
-               break;
-            }
-            catch (UnsupportedOperationException e)
-            {
-               log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not inject property [" + expression
-                        + "} with value [" + value + "]", e);
-            }
-            catch (Exception e) {
-               throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not inject property [" + expression
-                        + "} with value [" + value + "]", e);
-            }
-         }
-
-         return null;
       }
 
       @Override
@@ -337,32 +329,40 @@ public abstract class El implements Binding, Retrieval
       @Override
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
-         Object value = null;
-         for (ExpressionLanguageProvider provider : getProviders()) {
-
-            try
+         return executeProviderCallable(event, context, new ProviderCallable<Object>() {
+            @Override
+            public Object call(Rewrite event, EvaluationContext context, ExpressionLanguageProvider provider)
+                     throws Exception
             {
-               value = provider.retrieveValue(retrieve.getExpression());
-               break;
-            }
-            catch (UnsupportedOperationException e)
-            {
-               log.debug("El provider [" + provider.getClass().getName() + "] could not extract value from property ["
-                        + retrieve + "]", e);
-            }
-            catch (Exception e) {
-               throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not extract value from property ["
-                        + retrieve + "]", e);
+               return provider.retrieveValue(retrieve.getExpression());
             }
 
-            if (value != null)
+            @Override
+            public String getExpression()
             {
-               break;
+               return retrieve.getExpression();
             }
-         }
+         });
+      }
 
-         return value;
+      @Override
+      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
+      {
+         return executeProviderCallable(event, context, new ProviderCallable<Object>() {
+            @Override
+            public Object call(Rewrite event, EvaluationContext context, ExpressionLanguageProvider provider)
+                     throws Exception
+            {
+               provider.submitValue(submit.getExpression(), value);
+               return null;
+            }
+
+            @Override
+            public String getExpression()
+            {
+               return submit.getExpression();
+            }
+         });
       }
 
       @Override
@@ -375,31 +375,6 @@ public abstract class El implements Binding, Retrieval
       public boolean supportsSubmission()
       {
          return true;
-      }
-
-      @Override
-      public Object submit(final Rewrite event, final EvaluationContext context, final Object value)
-      {
-         for (ExpressionLanguageProvider provider : getProviders()) {
-            try
-            {
-               provider.submitValue(submit.getExpression(), value);
-               break;
-            }
-            catch (UnsupportedOperationException e)
-            {
-               log.debug("El provider [" + provider.getClass().getName()
-                        + "] could not inject property [" + submit
-                        + "} with value [" + value + "]", e);
-            }
-            catch (Exception e) {
-               throw new RewriteException("El provider [" + provider.getClass().getName()
-                        + "] could not inject property [" + submit
-                        + "} with value [" + value + "]", e);
-            }
-         }
-
-         return null;
       }
 
       @Override
