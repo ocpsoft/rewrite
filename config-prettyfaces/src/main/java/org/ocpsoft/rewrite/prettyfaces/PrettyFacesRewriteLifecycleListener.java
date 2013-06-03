@@ -75,7 +75,9 @@ public class PrettyFacesRewriteLifecycleListener extends HttpRewriteLifecycleLis
 
    @Override
    public void afterInboundLifecycle(final HttpServletRewrite event)
-   {}
+   {
+      PrettyContext.setCurrentContext(event.getRequest(), null);
+   }
 
    @Override
    public void beforeOutboundRewrite(final HttpServletRewrite event)

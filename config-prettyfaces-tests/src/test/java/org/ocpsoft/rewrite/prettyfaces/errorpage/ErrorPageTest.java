@@ -47,9 +47,8 @@ public class ErrorPageTest extends RewriteTestBase
       assertThat(action.getResponseContent(), Matchers.containsString("#{1+1} = 2"));
    }
 
-   // https://github.com/ocpsoft/rewrite/issues/96
    @Test
-   @Ignore
+   // https://github.com/ocpsoft/rewrite/issues/96
    public void failedValidationShouldRenderCustom404FacesView() throws Exception
    {
       HttpAction<HttpGet> action = get("/validate/invalid");
