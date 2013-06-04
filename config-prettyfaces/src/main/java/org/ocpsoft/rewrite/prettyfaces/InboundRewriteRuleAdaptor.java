@@ -121,11 +121,11 @@ public class InboundRewriteRuleAdaptor implements Rule
             redirectURL = newUrl.trim();
          }
 
-         URLBuilder encodedRedirectUrl = URLBuilder.createFrom(redirectURL).encode();
-         redirectURL = encodedRedirectUrl.toString();
 
          if (redirectURL != null)
          {
+            URLBuilder encodedRedirectUrl = URLBuilder.createFrom(redirectURL).encode();
+            redirectURL = encodedRedirectUrl.toString();
             if (Redirect.PERMANENT.equals(rule.getRedirect()))
                ((HttpInboundServletRewrite) event).redirectPermanent(redirectURL);
             if (Redirect.TEMPORARY.equals(rule.getRedirect()))
