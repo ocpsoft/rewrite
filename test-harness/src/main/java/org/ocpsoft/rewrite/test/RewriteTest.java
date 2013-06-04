@@ -56,7 +56,7 @@ public class RewriteTest extends RewriteTestBase
    {
       WebArchive archive = getDeployment();
       archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
-      archive.addAsWebInfResource(new StringAsset("<faces-config/>"), "faces-config.xml");
+      archive.addAsWebInfResource(new StringAsset("<faces-config version=\"2.0\"/>"), "faces-config.xml");
       return archive;
    }
 
