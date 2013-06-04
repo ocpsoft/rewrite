@@ -186,11 +186,12 @@ public class ConfigurationLoader
                      Set<String> names = parameterized.getRequiredParameterNames();
                      ParameterStore store = ((RuleBuilder) rule).getParameterStore();
 
-                     for (String name : names) {
-                        Parameter<?> parameter = store.get(name, new DefaultParameter(name));
-                        if (parameter instanceof ConfigurableParameter<?>)
-                           ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
-                     }
+                     if (names != null)
+                        for (String name : names) {
+                           Parameter<?> parameter = store.get(name, new DefaultParameter(name));
+                           if (parameter instanceof ConfigurableParameter<?>)
+                              ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
+                        }
 
                      parameterized.setParameterStore(store);
                   }

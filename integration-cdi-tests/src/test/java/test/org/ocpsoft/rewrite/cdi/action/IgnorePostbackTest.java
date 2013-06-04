@@ -19,7 +19,7 @@ public class IgnorePostbackTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTest.getDeploymentWithCDI()
+      WebArchive deployment = RewriteTest.getDeploymentWithFacesAndCDI()
                .addAsLibrary(RewriteELTest.getRewriteAnnotationArchive())
                .addAsLibrary(RewriteELTest.getRewriteFacesArchive())
                .addAsLibrary(RewriteELTest.getRewriteCDIArchive())

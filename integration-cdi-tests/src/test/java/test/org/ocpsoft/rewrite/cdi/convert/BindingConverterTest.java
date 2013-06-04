@@ -34,7 +34,7 @@ public class BindingConverterTest extends RewriteTestBase
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      return RewriteTest.getDeploymentWithCDI()
+      return RewriteTest.getDeploymentWithFacesAndCDI()
                .addAsLibrary(RewriteELTest.getRewriteAnnotationArchive())
                .addAsLibrary(RewriteELTest.getRewriteFacesArchive())
                .addAsLibrary(RewriteELTest.getRewriteCDIArchive())

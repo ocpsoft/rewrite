@@ -36,13 +36,13 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                 * Domain based access control (only grants access to specific domains)
                 */
                .addRule(Join.path("/domain").to("/domain.xhtml").withInboundCorrection())
-               .when(Direction.isInbound().andNot(Domain.matches("localhost").or(Domain.matches("{*}rhcloud{*}"))))
+               .when(Direction.isInbound().and(Domain.matches("localhost").or(Domain.matches("{*}rhcloud{*}"))))
 
                /*
                 * Time based access control (only grants access during the first half of each minute)
                 */
                .addRule(Join.path("/timer").to("/timer.xhtml").withInboundCorrection())
-               .when(Direction.isInbound().andNot(JodaTime.matches(timeGranted)))
+               .when(Direction.isInbound().and(JodaTime.matches(timeGranted)))
 
                .addRule()
                .when(Direction.isInbound()

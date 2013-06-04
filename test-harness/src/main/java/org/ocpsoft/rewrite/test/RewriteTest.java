@@ -52,6 +52,14 @@ public class RewriteTest extends RewriteTestBase
       return archive;
    }
 
+   public static WebArchive getDeploymentWithFacesAndCDI()
+   {
+      WebArchive archive = getDeployment();
+      archive.addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml");
+      archive.addAsWebInfResource(new StringAsset("<faces-config/>"), "faces-config.xml");
+      return archive;
+   }
+
    public static WebArchive getDeploymentNoWebXml()
    {
       return getDeploymentNoWebXml("rewrite-test.war");
