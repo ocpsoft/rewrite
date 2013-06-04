@@ -9,8 +9,8 @@ import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.config.jodatime.JodaTime;
 import org.ocpsoft.rewrite.config.jodatime.TimeCondition;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
-import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.Domain;
+import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Lifecycle;
 import org.ocpsoft.rewrite.servlet.config.Path;
@@ -26,7 +26,6 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
    public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
-
                /*
                 * Enable the root menu.
                 */
@@ -71,7 +70,7 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
    @Override
    public int priority()
    {
-      return 0;
+      return 10;
    }
 
 }
