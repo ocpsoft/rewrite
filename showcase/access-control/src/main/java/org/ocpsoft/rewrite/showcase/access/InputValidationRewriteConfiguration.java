@@ -32,7 +32,7 @@ public class InputValidationRewriteConfiguration extends HttpConfigurationProvid
                                  )
                         )
                )
-               .perform(SendStatus.error(404)) // or take some protective action
+               .perform(SendStatus.error(403, "Forbidden")) // or take some protective action
                .where("badthings").constrainedBy(selectedCharacters);
 
    }
