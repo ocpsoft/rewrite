@@ -80,16 +80,23 @@ public abstract class RequestBinding implements Binding
          RewriteWrappedRequest wrapper = RewriteWrappedRequest.getCurrentInstance(request);
 
          Map<String, String[]> modifiableParameters = wrapper.getModifiableParameters();
-         if (value.getClass().isArray())
+         if (value != null)
          {
-            Object[] values = (Object[]) value;
-            for (Object object : values) {
-               Maps.addArrayValue(modifiableParameters, name, object.toString());
-            }
+           if(value.getClass().isArray())
+           {
+              Object[] values = (Object[]) value;
+              for (Object object : values) {
+                 Maps.addArrayValue(modifiableParameters, name, object.toString());
+              }
+           }
+           else
+           {
+              Maps.addArrayValue(modifiableParameters, name, value.toString());
+           }
          }
          else
          {
-            Maps.addArrayValue(modifiableParameters, name, value.toString());
+           Maps.addArrayValue(modifiableParameters, name, null);
          }
 
          return null;
