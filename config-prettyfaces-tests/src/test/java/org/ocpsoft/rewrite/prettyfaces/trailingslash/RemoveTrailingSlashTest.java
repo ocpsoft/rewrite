@@ -8,7 +8,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
@@ -26,9 +25,8 @@ public class RemoveTrailingSlashTest extends RewriteTestBase
                .addAsWebInfResource("trailingslash/trailingslash-pretty-config.xml", "pretty-config.xml");
    }
 
-   // https://github.com/ocpsoft/rewrite/issues/95
    @Test
-   @Ignore
+   // https://github.com/ocpsoft/rewrite/issues/95
    public void requestingFileDirectly() throws Exception
    {
       HttpAction<HttpGet> action = get("/foobar.txt");
@@ -37,9 +35,8 @@ public class RemoveTrailingSlashTest extends RewriteTestBase
       assertThat(action.getResponseContent(), Matchers.containsString("some content"));
    }
 
-   // https://github.com/ocpsoft/rewrite/issues/95
    @Test
-   @Ignore
+   // https://github.com/ocpsoft/rewrite/issues/95
    public void requestWithTrailing() throws Exception
    {
       HttpAction<HttpGet> action = get("/foobar.txt/");

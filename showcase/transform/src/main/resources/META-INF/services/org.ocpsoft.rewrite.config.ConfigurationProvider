@@ -1,1 +1,2 @@
 org.ocpsoft.rewrite.showcase.transform.TransformConfigurationProvider
+org.ocpsoft.rewrite.showcase.transform.GZipConfigurationProvider

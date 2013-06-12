@@ -31,22 +31,38 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public class SendStatus extends HttpOperation
 {
    private final int code;
+   private String message;
 
    private SendStatus(final int code)
    {
       this.code = code;
    }
 
+   private SendStatus(final int code, String message)
+   {
+      this.code = code;
+      this.message = message;
+   }
+
    @Override
    public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      if (event instanceof HttpInboundServletRewrite)
-         ((HttpInboundServletRewrite) event).sendStatusCode(code);
+      if (event instanceof HttpInboundServletRewrite) {
+         if (getMessage() != null)
+            ((HttpInboundServletRewrite) event).sendStatusCode(this.getCode(), this.getMessage());
+         else
+            ((HttpInboundServletRewrite) event).sendStatusCode(this.getCode());
+      }
    }
 
    protected int getCode()
    {
       return code;
+   }
+
+   protected String getMessage()
+   {
+      return message;
    }
 
    /**
@@ -64,21 +80,36 @@ public class SendStatus extends HttpOperation
     */
    public static SendStatus error(final int code)
    {
-      return new SendError(code);
+      return new SendError(code, null);
+   }
+
+   /**
+    * Create an {@link Operation} that will send an HTTP error code and message to the browser, then call
+    * {@link HttpInboundServletRewrite#abort()}
+    */
+   public static SendStatus error(final int code, final String message)
+   {
+      return new SendError(code, message);
    }
 
    private static class SendError extends SendStatus
    {
-      public SendError(final int code)
+      public SendError(final int code, String message)
       {
-         super(code);
+         super(code, message);
       }
 
       @Override
       public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
       {
          if (event instanceof HttpInboundServletRewrite)
-            ((HttpInboundServletRewrite) event).sendErrorCode(this.getCode());
+         {
+            if (getMessage() != null)
+               ((HttpInboundServletRewrite) event).sendErrorCode(this.getCode(), this.getMessage());
+            else
+               ((HttpInboundServletRewrite) event).sendErrorCode(this.getCode());
+
+         }
       }
    }
 

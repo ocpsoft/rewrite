@@ -32,7 +32,7 @@ import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
  * <pre>
  * &lt;context-param&gt;
  *   &lt;param-name&gt;org.ocpsoft.rewrite.config.CONFIG_RELOADING&lt;/param-name&gt;
- *   &lt;param-value&gt;false&lt;/param-value&gt;
+ *   &lt;param-value&gt;true&lt;/param-value&gt;
  * &lt;/context-param&gt;
  * </pre>
  * 
