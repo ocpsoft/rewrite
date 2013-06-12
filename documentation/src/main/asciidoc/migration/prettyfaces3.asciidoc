@@ -1,0 +1,117 @@
+== PrettyFaces 3.x Migration Guide
+
+This guide describes how to migrate existing applications built using PrettyFaces 3.x to Rewrite 2.0.
+
+There are basically two ways of migrating such applications to Rewrite:
+
+PrettyFaces compatibility module:: This Rewrite module allows you to keep your old PrettyFace 3.x
+  configuration and use it with Rewrite. The module supports both the XML configuration file
+  +pretty-config.xml+ and the PrettyFaces annotations like +@URLMapping+. You should use this way
+  of migration for your application if you don't want to modify your existing code.
+
+JSF integration module:: If you don't want to use the old PrettyFaces 3.x configuration anymore and
+  want to use all the new features of Rewrite, you should choose the Rewrite JSF integration module. 
+  This module provides a new way of configuration and therefore requires you to adapt your 
+  existing configuration.
+
+NOTE: Both ways of migrating will only work for JSF 2.x applications.
+
+The following sections will describe both ways in detail.
+
+=== PrettyFaces compatibility module
+
+Migrating application using PrettyFaces 3.x is very easy. Just follow the steps described below.
+
+==== Update your dependencies
+
+First you have to remove the old `com.ocpsoft.prettyfaces` dependency from your project. Open
+your +pom.xml+ and remove the following entry:
+
+[source,xml]
+----
+<dependency>
+   <groupId>com.ocpsoft</groupId>
+   <artifactId>prettyfaces-jsf2</artifactId>
+   <version>3.3.3</version>
+</dependency>
+----
+
+Now add the Rewrite servlet and the PrettyFaces compatibility module to your +pom.xml+:
+
+[source,xml]
+----
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-servlet</artifactId>
+   <version>2.0.2.Final</version>
+</dependency>
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-config-prettyfaces</artifactId>
+   <version>2.0.2.Final</version>
+</dependency>
+----
+
+Your code should still compile fine after updating the dependencies.
+
+
+==== Filter registration
+
+If you used PrettyFaces in a Servlet 3.0 environment, the required servlet filter is automatically 
+registered. In this case you typically don't have an entry for the +PrettyFilter+ in your +web.xml+
+and you can therefore skip this section.
+
+If you added the +PrettyFilter+ manually to your +web.xml+, you will have to replace the filter
+declaration to use the Rewrite filter instead. Locate the following entry in your +web.xml+:
+
+[source,xml]
+----
+<filter>
+   <filter-name>Pretty Filter</filter-name>
+   <filter-class>com.ocpsoft.pretty.PrettyFilter</filter-class>
+   <async-supported>true</async-supported>
+</filter>
+<filter-mapping> 
+   <filter-name>Pretty Filter</filter-name> 
+   <url-pattern>/*</url-pattern> 
+   <dispatcher>FORWARD</dispatcher>
+   <dispatcher>REQUEST</dispatcher>
+   <dispatcher>INCLUDE</dispatcher>
+   <dispatcher>ASYNC</dispatcher>
+   <dispatcher>ERROR</dispatcher>
+</filter-mapping>
+----
+
+Remove this entry completely and replace it with the corresponding entry for the +RewriteFilter+:
+
+[source,xml]
+----
+<filter>
+   <filter-name>OCPsoft Rewrite Filter</filter-name>
+   <filter-class>org.ocpsoft.rewrite.servlet.RewriteFilter</filter-class>
+   <async-supported>true</async-supported>
+</filter>
+<filter-mapping>
+   <filter-name>OCPsoft Rewrite Filter</filter-name>
+   <url-pattern>/*</url-pattern>
+   <dispatcher>FORWARD</dispatcher>
+   <dispatcher>REQUEST</dispatcher>
+   <dispatcher>INCLUDE</dispatcher>
+   <dispatcher>ASYNC</dispatcher>
+   <dispatcher>ERROR</dispatcher>
+</filter-mapping>
+----
+
+NOTE: Please not that if you are using a Servlet 3.x container and your +web.xml+ doesn't set
++metadata-complete="true"+, you don't have to register the Rewrite filter manually, because
+this is done automatically. In this case just make sure to remove the old +PrettyFilter+ entry. 
+
+==== Test your application
+
+After having performed the changes described in the two sections, your migration is complete.
+Although we consider the compatibility module to be very solid and stable, you should test your 
+application carefully. If something doesn't work as before, let us know. :) 
+
+=== JSF integration module
+
+TODO, contributions welcome. :)
