@@ -114,4 +114,234 @@ application carefully. If something doesn't work as before, let us know. :)
 
 === JSF integration module
 
-TODO, contributions welcome. :)
+This section describes how to migrate existing PrettyFaces configuration to the Rewrite
+JSF integration module.
+
+==== PrettyFaces XML configuration
+
+TODO
+
+==== PrettyFaces Annotations
+
+===== URL Mappings
+
+The URL mappings of PrettyFaces have been replace with a Rewrite rule called +Join+. 
+The concepts are very similar. You can specify a _virtual path_ that is mapped to a
+physical server resource.
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+@URLMapping(pattern = "/login", viewId = "/login.jsf")
+public class CustomerDetailsBean {
+  ...
+}
+----
+|
+----
+@Join(path = "/login", to="/login.jsf")
+public class CustomerDetailsBean {
+  ...
+}
+|===
+
+===== Path parameters
+
+With PrettyFaces, path parameters were specified using EL-like expressions in the pattern.
+With Rewrite you simply specify the parameter in the path pattern using +\{name\}+. Rewrite
+automatically transforms the value into a query parameter with the same name. you can also
+directly inject the value into your bean by adding the +@Parameter+ annotation to a field
+with the same name as the parameter. 
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+@URLMapping(
+	pattern = "/customer/#{ id : customerDetailsBean.id }", 
+	viewId = "/customer-details.jsf")
+public class CustomerDetailsBean {
+
+  private Long id;
+
+}
+----
+|
+----
+@Join(path = "/customer/{id}", to="/customer-details.jsf")
+public class CustomerDetailsBean {
+
+  @Parameter
+  private Long id;
+
+}
+|===
+
+If you want to customize the regular expression that is used to match the parameter, just add
+a +@Matches+ annotation:
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+@URLMapping(
+	pattern = "/customer/#{ /[0-9]+/ customerDetailsBean.id }", 
+	viewId = "/customer-details.jsf")
+public class CustomerDetailsBean {
+
+  private Long id;
+
+}
+----
+|
+----
+@Join(path = "/customer/{id}", to="/customer-details.jsf")
+public class CustomerDetailsBean {
+
+  @Parameter
+  @Matches("[0-9]+")
+  private Long id;
+
+}
+|===
+
+
+===== Query parameters
+
+Query parameters in Rewrite are handled the same way as path parameters. To inject the value
+of a query parameter into your bean, add a +@Parameter+ to a field like this.
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+@URLMapping(pattern = "/login", viewId = "/login.jsf")
+public class CustomerDetailsBean {
+
+  @URLQueryParam("q")
+  private String query;
+
+}
+----
+|
+----
+@Join(path = "/login", to="/login.jsf")
+public class CustomerDetailsBean {
+
+  @Parameter("q")
+  private String query;
+
+}
+|===
+
+TIP: You can omit the parameter name when using the +@Parameter+ annotation if the name of the query
+     parameter is the same as the name of the field.
+
+
+===== Page actions
+
+
+To invoke a specific method in your bean when the page is accessed, add a +@RequestAction+ annotation
+to the method. 
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+@URLMapping(pattern = "/login", viewId = "/login.jsf")
+public class CustomerDetailsBean {
+
+   @URLAction
+   public void action() {
+      ...
+   }
+
+}
+----
+|
+----
+@Join(path = "/login", to="/login.jsf")
+public class CustomerDetailsBean {
+
+  @RequestAction
+  public void action() {
+     ...
+  }
+
+}
+|===
+
+The +ignorePostback+ attribute is now a separate annotation called +@IgnorePostback+.
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+@URLAction(onPostback=false)
+public void action() {
+  ...
+}
+----
+|
+----
+@RequestAction
+@IgnorePostback
+public void action() {
+  ...
+}
+|===
+
+TIP: Thie +@IgnorePostback+ annotation can also be used with +@Parameter+.
+
+If the annotated bean has a scope that requires an active JSF lifecycle like for example
++@ViewScopre+, you have to _defer_ the invocation. To do so add a +@Deferred+ annotation
+to the method.  
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+@ManagedBean
+@ViewScoped
+@URLMapping(pattern = "/login", viewId = "/login.jsf")
+public class CustomerDetailsBean {
+
+   @URLAction
+   public void action() {
+      ...
+   }
+
+}
+----
+|
+----
+@ManagedBean
+@ViewScoped
+@Join(path = "/login", to="/login.jsf")
+public class CustomerDetailsBean {
+
+  @RequestAction
+  @Deferred
+  public void action() {
+     ...
+  }
+
+}
+|===
+
+More to come...
