@@ -1,3 +1,9 @@
+= PrettyFaces 3.x Migration Guide
+Christian Kaltepoth
+:description: This guide described the process of migrating existing PrettyFaces applications to Rewrite
+:keywords: PrettyFaces, Rewrite, Migration
+:toc:
+
 == PrettyFaces 3.x Migration Guide
 
 This guide describes how to migrate existing applications built using PrettyFaces 3.x to Rewrite 2.0.
@@ -43,12 +49,12 @@ Now add the Rewrite servlet and the PrettyFaces compatibility module to your +po
 <dependency>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-servlet</artifactId>
-   <version>2.0.2.Final</version>
+   <version>${rewrite.version}</version>
 </dependency>
 <dependency>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-config-prettyfaces</artifactId>
-   <version>2.0.2.Final</version>
+   <version>${rewrite.version}</version>
 </dependency>
 ----
 
@@ -116,6 +122,36 @@ application carefully. If something doesn't work as before, let us know. :)
 
 This section describes how to migrate existing PrettyFaces configuration to the Rewrite
 JSF integration module.
+
+==== Adding the Rewrite dependencies
+
+If you want to use the Rewrite JSF integration module, you have to add the following dependencies
+to your project.
+
+[source,xml]
+----
+<!-- Rewrite with JSF integration -->
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-servlet</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-integration-jsf</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+
+<!-- optional: CDI integration -->
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-integration-cdi</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+----
+
+Adding the dependencies in a Servlet 3.0 environment will automatically register the required
+Servlet listeners and filters.
 
 ==== PrettyFaces XML configuration
 
@@ -307,8 +343,8 @@ public void action() {
 TIP: Thie +@IgnorePostback+ annotation can also be used with +@Parameter+.
 
 If the annotated bean has a scope that requires an active JSF lifecycle like for example
-+@ViewScopre+, you have to _defer_ the invocation. To do so add a +@Deferred+ annotation
-to the method.  
++@ViewScope+, you have to _defer_ the invocation so that it is executed within the JSF lifecycle. 
+To do so add a +@Deferred+ annotation to the method.  
 
 [cols="1a,1a", options="header"]
 |===
@@ -344,4 +380,74 @@ public class CustomerDetailsBean {
 }
 |===
 
-More to come...
+===== Creating links
+
+PrettyFaces shipped with a special JSF component that simplified creating links to mapped URLs.
+However JSF 2.0 introduced +<h:link>+, which works fine for creating such links. Rewrite doesn't
+include any special JSF component. It is recomended to use the standard JSF component for rendering
+links.
+
+Using +<h:link>+ for creating links to Rewrite URLs is very easy. Just use the URL you
+configured as the +to+ part of the Join for the +outcome+. If the URL contains parameters,
+set their value using +<f:param>+.
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+<pretty:link mappingId="customerDetails">
+  <f:param value="123" />
+  Show details
+</pretty:link>
+----
+|
+----
+<h:link outcome="/customer-details.jsf">
+  <f:param name="id" value="123"/>
+  Show details
+</h:link>
+|===
+
+
+===== Programmatic navigation
+
+Programmatic navigation was very painful in PrettyFaces. To navigate to a page with path or
+query parameters, you had to obtain a reference to the bean which the parameters were bound
+to, set them to the desired values and return a PrettyFaces navigation string.
+
+With Rewrite you can use the new +Navigate+ class, which provides a fluent way for navigation.
+Just change your action method to return +Navigate+ instead of a string. 
+Then use +Navigate.to(..)+ to select the target view. You can either supply a class annotated
+with +@Join+ or specify the +to+ part of a join for that. Then you can use +with()+ to set the
+values of the query or path parameters.
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+public String actionMethod() {
+  // obtain the CustomerDetailsBean
+  customerDetailsBean.setId("123");
+  return "pretty:customerDetails";
+}
+----
+|
+----
+public Navigate actionMethod() {
+  return Navigate.to(CustomerDetailsBean.class)
+      .with("id", "123");
+}
+|===
+
+If you used the JSF 2.0 implicit navigation for navigating with PrettyFaces,
+you can do so in Rewrite too.
+
+----
+public String actionMethod() {
+  return "/customer-details.jsf?faces-redirect=true&id=123";
+}
+----
