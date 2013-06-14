@@ -155,15 +155,68 @@ Servlet listeners and filters.
 
 ==== PrettyFaces XML configuration
 
-TODO
+PrettyFaces used an XML file called +pretty-config.xml+ to configure URL mappings and rewrite rules.
+Rewrite uses a fluent Java API for configuration instead. XML files are not supported any more.
 
-==== PrettyFaces Annotations
+----
+public class MyConfigurationProvider extends HttpConfigurationProvider {
+
+  @Override
+  public Configuration getConfiguration(ServletContext context) {
+  
+     return ConfigurationBuilder.begin()
+               
+               /* add your rules here */
+
+               ;
+  }
+
+  @Override
+  public int priority() {
+     return 10;
+  }
+
+}
+----
 
 ===== URL Mappings
 
 The URL mappings of PrettyFaces have been replace with a Rewrite rule called +Join+. 
 The concepts are very similar. You can specify a _virtual path_ that is mapped to a
 physical server resource.
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+<url-mapping id="login">
+  <pattern value="/login" />
+  <view-id value="/login.jsf" /> 
+</url-mapping>
+----
+|
+----
+@Override
+public Configuration getConfiguration(ServletContext context) {
+  
+   return ConfigurationBuilder.begin()
+
+             .addRule(Join.path("/login").to("/login.jsf"))
+             
+             ;
+}
+|===
+
+TODO: describe all the other cases.
+
+==== PrettyFaces Annotations
+
+===== URL Mappings
+
+As the URL mappings of PrettyFaces have been replaced with +Join+, the replacement
+for the +@URLMapping+ annotation is called +@Join+. 
 
 [cols="1a,1a", options="header"]
 |===
