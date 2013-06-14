@@ -52,7 +52,17 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
 
          String originalViewId = context.getViewRoot().getViewId();
          parent.handleNavigation(context, fromAction, outcome);
-         String newViewId = context.getViewRoot().getViewId();
+
+         /*
+          * the view root may be null if the navigation occurs before RESTORE_VIEW or as
+          * a result of a ViewExpiredException
+          * 
+          * https://github.com/ocpsoft/rewrite/issues/103
+          */
+         String newViewId = null;
+         if (context.getViewRoot() != null) {
+            newViewId = context.getViewRoot().getViewId();
+         }
 
          /*
           * Navigation is complete if the viewId has not changed or the response is complete
