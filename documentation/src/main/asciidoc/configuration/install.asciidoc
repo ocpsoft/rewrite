@@ -26,7 +26,35 @@ The first step to installing link:../[Rewrite] is to add the required Maven depe
 </repository>
 ----
 
-If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ folder of your web application. You do not need other JARs unless you are using link:../integration/[extensions].
+If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ folder of your web application. You do not need any other JARs unless you are using Rewrite link:../integration/[extensions]. Additionally, if you are using Servlet 2.5, or are deploying an EAR with link:http://maven.apache.org/plugins/maven-ear-plugin/examples/skinny-wars.html[skinny WARs], you will need to add the Rewrite Servlet configuration to the `WEB-INF/web.xml` file in each WAR. If you are using Servlet 3.0 or are deploying a simple WAR application, you may skip this step.
+
+[source,xml]
+.Configure Rewrite for Servlet 2.5 or EAR deployments by adding the following to `WEB-INF/web.xml`
+----
+<listener>
+   <listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletRequestListener</listener-class>
+</listener>
+
+<listener>
+   <listener-class>org.ocpsoft.rewrite.servlet.impl.RewriteServletContextListener</listener-class>
+</listener>
+
+<filter>
+   <filter-name>OCPsoft Rewrite Filter</filter-name>
+   <filter-class>org.ocpsoft.rewrite.servlet.RewriteFilter</filter-class>
+   <async-supported>true</async-supported>
+</filter>
+<filter-mapping>
+   <filter-name>OCPsoft Rewrite Filter</filter-name>
+   <url-pattern>/*</url-pattern>
+   <dispatcher>FORWARD</dispatcher>
+   <dispatcher>REQUEST</dispatcher>
+   <dispatcher>INCLUDE</dispatcher>
+   <dispatcher>ASYNC</dispatcher>
+   <dispatcher>ERROR</dispatcher>
+</filter-mapping>
+----
+You are now ready to configure your application.
 
 === 2. Create your first ConfigurationProvider
 
