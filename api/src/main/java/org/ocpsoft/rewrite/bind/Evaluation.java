@@ -71,7 +71,7 @@ public class Evaluation implements Binding
       String convertedName = getParameterConvertedName(property);
       if (!context.containsKey(property))
       {
-         if (value.getClass().isArray())
+         if (value != null && value.getClass().isArray())
             storeValue(event, context, convertedName, value);
          else
             storeValue(event, context, convertedName, new Object[] { value });
