@@ -26,7 +26,10 @@ The first step to installing link:../[Rewrite] is to add the required Maven depe
 </repository>
 ----
 
-If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ folder of your web application. You do not need any other JARs unless you are using Rewrite link:../integration/[extensions]. Additionally, if you are using Servlet 2.5, or are deploying an EAR with link:http://maven.apache.org/plugins/maven-ear-plugin/examples/skinny-wars.html[skinny WARs], you will need to add the Rewrite Servlet configuration to the `WEB-INF/web.xml` file in each WAR. If you are using Servlet 3.0 or are deploying a simple WAR application, you may skip this step.
+If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ folder of your web application. You do not need any other JARs unless you are using Rewrite link:../integration/[extensions]. In the case of an EAR, ensure that you do not include Rewrite twice (once in the EAR/lib, and again in the WAR/lib), this will cause deployment errors; Rewrite dependencies should be marked as "provided" in the WAR POM.
+
+
+Additionally, if you are using Servlet 2.5, or are deploying an EAR with link:http://maven.apache.org/plugins/maven-ear-plugin/examples/skinny-wars.html[skinny WARs], you will need to add the Rewrite Servlet configuration to the `WEB-INF/web.xml` file in each WAR. 
 
 [source,xml]
 .Configure Rewrite for Servlet 2.5 or EAR deployments by adding the following to `WEB-INF/web.xml`
