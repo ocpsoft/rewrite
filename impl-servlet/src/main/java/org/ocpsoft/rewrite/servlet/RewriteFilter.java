@@ -183,7 +183,15 @@ public class RewriteFilter implements Filter
             }
          }
 
-         rewrite(event);
+         try {
+            rewrite(event);
+         }
+         catch (ServletException e) {
+            throw e;
+         }
+         catch (Exception e) {
+            throw new ServletException("Error during Rewrite processing. Please inspect stack trace for root cause.", e);
+         }
 
          if (!event.getFlow().is(BaseRewrite.ServletRewriteFlow.ABORT_REQUEST))
          {
@@ -214,8 +222,7 @@ public class RewriteFilter implements Filter
    }
 
    private void rewrite(final InboundServletRewrite<ServletRequest, ServletResponse> event)
-            throws ServletException,
-            IOException
+            throws ServletException, IOException, Exception
    {
       int listenerCount = listeners.size();
       for (int i = 0; i < listenerCount; i++)

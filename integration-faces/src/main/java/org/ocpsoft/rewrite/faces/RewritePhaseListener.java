@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Flow;
+import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.faces.config.PhaseAction;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
@@ -127,18 +128,23 @@ public class RewritePhaseListener implements PhaseListener
                   @Override
                   public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
                   {
-                     operation.performOperation((HttpServletRewrite) rewriteEvent, context);
+                     try {
+                        operation.performOperation((HttpServletRewrite) rewriteEvent, context);
 
-                     List<RewriteResultHandler> resultHandlers = ((HttpRewriteLifecycleContext) ((HttpServletRewrite) rewriteEvent)
-                              .getRequest().getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY))
-                              .getResultHandlers();
+                        List<RewriteResultHandler> resultHandlers = ((HttpRewriteLifecycleContext) ((HttpServletRewrite) rewriteEvent)
+                                 .getRequest().getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY))
+                                 .getResultHandlers();
 
-                     int handlerCount = resultHandlers.size();
-                     for (int i = 0; i < handlerCount; i++)
-                     {
-                        RewriteResultHandler handler = resultHandlers.get(i);
-                        if (handler.handles(operation.getEvent()))
-                           handler.handleResult(operation.getEvent());
+                        int handlerCount = resultHandlers.size();
+                        for (int i = 0; i < handlerCount; i++)
+                        {
+                           RewriteResultHandler handler = resultHandlers.get(i);
+                           if (handler.handles(operation.getEvent()))
+                              handler.handleResult(operation.getEvent());
+                        }
+                     }
+                     catch (Exception e) {
+                        throw new RewriteException("Failed to handle PhaseOperation [" + operation + "]", e);
                      }
                   }
 

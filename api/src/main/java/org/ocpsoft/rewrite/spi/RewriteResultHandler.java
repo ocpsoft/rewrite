@@ -31,5 +31,5 @@ public interface RewriteResultHandler extends Weighted, Specialized<Rewrite>
     * Perform any actions necessary to respond to state of the system after the given {@link Rewrite} event has been
     * processed.
     */
-   public void handleResult(Rewrite event);
+   public void handleResult(Rewrite event) throws Exception;
 }
