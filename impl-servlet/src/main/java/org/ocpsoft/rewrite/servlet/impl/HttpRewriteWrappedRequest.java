@@ -21,7 +21,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.servlet.RewriteWrappedRequest;
@@ -41,8 +40,7 @@ public class HttpRewriteWrappedRequest extends RewriteWrappedRequest
     */
    public HttpRewriteWrappedRequest(final HttpServletRequest request, final Map<String, String[]> additionalParams)
    {
-      super((HttpServletRequest) (request instanceof ServletRequestWrapper ? ((ServletRequestWrapper) request)
-               .getRequest() : request));
+      super(request);
 
       modifiableParameters = new TreeMap<String, String[]>();
       modifiableParameters.putAll(additionalParams);
