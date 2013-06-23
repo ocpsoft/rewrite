@@ -1,18 +1,20 @@
 package org.ocpsoft.rewrite.prettyfaces.outbound;
 
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import static org.hamcrest.Matchers.endsWith;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
@@ -36,7 +38,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String hlink = browser.findElement(By.id("hLink")).getAttribute("href");
-      Assert.assertTrue(hlink.endsWith("/view-hardcoded-params"));
+      assertTrue(hlink.endsWith("/view-hardcoded-params"));
    }
 
    @Test
@@ -44,7 +46,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String hlink = browser.findElement(By.id("hLink-extra")).getAttribute("href");
-      Assert.assertTrue(hlink.endsWith("/view-hardcoded-params?extraParam=extraValue"));
+      assertTrue(hlink.endsWith("/view-hardcoded-params?extraParam=extraValue"));
    }
 
    @Test
@@ -52,7 +54,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String url = browser.findElement(By.id("prettyLink")).getAttribute("href");
-      Assert.assertTrue(url.endsWith("/view-hardcoded-params"));
+      assertTrue(url.endsWith("/view-hardcoded-params"));
    }
 
    @Test
@@ -60,27 +62,30 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String url = browser.findElement(By.id("prettyLink-extra")).getAttribute("href");
-      Assert.assertTrue(url.endsWith("/view-hardcoded-params?extraParam=extraValue"));
+      assertTrue(url.endsWith("/view-hardcoded-params?extraParam=extraValue"));
    }
 
    @Test
    public void testHCommandLink() throws Exception
    {
-      Assume.assumeTrue(browser instanceof HtmlUnitDriver);
-      ((HtmlUnitDriver)browser).setJavascriptEnabled(true);
-      browser.get(getBaseURL() + getContextPath() + "/index");
-      browser.findElement(By.id("hCommandLink")).click();
-      Assert.assertTrue(browser.getCurrentUrl().endsWith("/view-hardcoded-params"));
+      HtmlPage firstPage = getWebClient("/index").getPage();
+      HtmlPage secondPage = firstPage.getElementById("hCommandLink").click();
+      assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params"));
    }
 
    @Test
    public void testHCommandLinkExtraParams() throws Exception
    {
-      Assume.assumeTrue(browser instanceof HtmlUnitDriver);
-      ((HtmlUnitDriver)browser).setJavascriptEnabled(true);
-      browser.get(getBaseURL() + getContextPath() + "/index");
-      browser.findElement(By.id("hCommandLink-extra")).click();
-      Assert.assertTrue(browser.getCurrentUrl().endsWith("/view-hardcoded-params?extraParam=extraValue"));
+      HtmlPage firstPage = getWebClient("/index").getPage();
+      HtmlPage secondPage = firstPage.getElementById("hCommandLink-extra").click();
+      assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params?extraParam=extraValue"));
    }
 
+   @Test
+   public void testHCommandLinkInvalid() throws Exception
+   {
+      HtmlPage firstPage = getWebClient("/index").getPage();
+      HtmlPage secondPage = firstPage.getElementById("hCommandLink-notMapped").click();
+      assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params.jsf?param=value2"));
+   }
 }

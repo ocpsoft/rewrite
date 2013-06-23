@@ -15,4 +15,8 @@ public class ViewHardcodedParamsBean
    public String hCommandLinkExtra() {
       return "view-hardcoded-params.jsf?faces-redirect=true&param=value&extraParam=extraValue";
    }
+
+   public String hCommandLinkNotMapped() {
+      return "view-hardcoded-params.jsf?faces-redirect=true&param=value2";
+   }
 }
