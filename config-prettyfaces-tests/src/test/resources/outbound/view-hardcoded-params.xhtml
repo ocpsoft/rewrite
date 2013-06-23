@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:pretty="http://ocpsoft.com/prettyfaces"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<head>
+  <title>Outbound Page</title>
+</head>
+
+<body>
+
+  <h:link id="hLink" value="hlink" outcome="view-hardcoded-params.jsf?param=value"/>
+  <br/>
+
+  <h:link id="hLink-extra" value="hlink-extra" outcome="view-hardcoded-params.jsf?param=value&amp;extraParam=extraValue"/>
+  <br/>
+
+  <pretty:link id="prettyLink" mappingId="view-hardcoded-params">
+    prettylink
+  </pretty:link>
+  <br/>
+
+  <pretty:link id="prettyLink-extra" mappingId="view-hardcoded-params">
+    <f:param name="extraParam" value="extraValue"/>
+    prettylink-extra
+  </pretty:link>
+  <br/>
+
+  <h:form prependId="false">
+
+    <h:commandLink id="hCommandLink" action="#{outbound.hCommandLink}" value="hCommandLink"/>
+    <br/>
+
+    <h:commandLink id="hCommandLink-extra" action="#{outbound.hCommandLinkExtra}" value="hCommandLink-extra"/>
+    <br/>
+
+    <h:commandLink id="hCommandLink-notMapped" action="#{outbound.hCommandLinkNotMapped}" value="hCommandLink-notMapped"/>
+    <br/>
+
+  </h:form>
+
+</body>
+
+</html>
