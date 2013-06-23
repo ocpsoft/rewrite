@@ -73,6 +73,11 @@ public class UrlMappingRuleAdaptor implements Rule
          {
             qs.addParameters(url);
 
+            QueryString mappingViewQueryString = QueryString.build(mapping.getViewId());
+            for (String mappingViewParam : mappingViewQueryString.getParameterMap().keySet()) {
+               qs.removeParameter(mappingViewParam);
+            }
+
             // remove own own metadata
             qs.removeParameter("com.ocpsoft.mappingId");
          }
@@ -115,6 +120,62 @@ public class UrlMappingRuleAdaptor implements Rule
       return result;
    }
 
+   private boolean evaluateOutbound(String outboundURL) {
+      QueryString outboundQueryString = QueryString.build(outboundURL);
+      String cachedMappingId = outboundQueryString.getParameter(REWRITE_MAPPING_ID_KEY);
+      if (cachedMappingId != null)
+      {
+         return mapping.getId().equals(cachedMappingId);
+      }
+
+      String outboundPath = outboundURL;
+      String mappingViewId = mapping.getViewId();
+      int outboundQueryStringStart = outboundPath.indexOf("?");
+      if (outboundQueryStringStart != -1)
+      {
+         outboundPath = outboundPath.substring(0, outboundQueryStringStart);
+      }
+      int mappingViewQueryStringStart = mappingViewId.indexOf("?");
+      if (mappingViewQueryStringStart != -1)
+      {
+         mappingViewId = mappingViewId.substring(0, mappingViewQueryStringStart);
+      }
+
+      if (!mappingViewId.equals(outboundPath))
+      {
+         return false;
+      }
+
+      QueryString mappingViewQueryString = QueryString.build(mapping.getViewId());
+      for (Entry<String, String[]> mappingViewParam : mappingViewQueryString.getParameterMap().entrySet())
+      {
+         for (String mappingViewParamValue : mappingViewParam.getValue())
+         {
+            boolean found = false;
+            for (Entry<String, String[]> outboundParam : outboundQueryString.getParameterMap().entrySet())
+            {
+               if (!mappingViewParam.getKey().equals(outboundParam.getKey()))
+               {
+                  continue;
+               }
+               for (String outboundParamValue : outboundParam.getValue())
+               {
+                  if ((mappingViewParamValue == outboundParamValue)
+                        || (mappingViewParamValue != null && mappingViewParamValue.equals(outboundParamValue)))
+                  {
+                     found = true;
+                     break;
+                  }
+               }
+            }
+            if (!found) {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
    @Override
    public String getId()
    {
@@ -139,14 +200,7 @@ public class UrlMappingRuleAdaptor implements Rule
             outboundURL = outboundURL.substring(((HttpServletRewrite) event).getContextPath().length());
          }
 
-         QueryString queryString = QueryString.build(outboundURL);
-         String mappingId = queryString.getParameter(REWRITE_MAPPING_ID_KEY);
-
-         if (((mappingId == null) && outboundURL.startsWith(mapping.getViewId()))
-                  || mapping.getId().equals(mappingId))
-         {
-            return true;
-         }
+         return evaluateOutbound(outboundURL);
       }
       return false;
    }
