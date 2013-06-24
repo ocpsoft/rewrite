@@ -209,6 +209,62 @@ public Configuration getConfiguration(ServletContext context) {
 }
 |===
 
+===== Path Parameters
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+<url-mapping id="viewCategory">
+  <pattern value="/store/#{category}/" />
+  <view-id value="/faces/shop/store.jsf" /> 
+</url-mapping>
+----
+|
+----
+.addRule(
+  Join.path("/store/{category}/").to("/faces/shop/store.jsf")
+)
+|===
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+<url-mapping id="viewCategory">
+  <pattern value="/store/#{bean.category}/" />
+  <view-id value="/faces/shop/store.jsf" /> 
+</url-mapping>
+----
+|
+----
+.addRule(
+  Join.path("/store/{category}/").to("/faces/shop/store.jsf")
+).where("category").bindsTo(El.property("bean.category"))
+|===
+
+If your bean uses a JSF-specifc scope like +@ViewScoped+), you have to wrap 
+the +El+ binding in a +PhaseBinding+. This will tell PrettyFaces to submit the 
+binding in the specified JSF phase which ensures, that the scope of the bean will
+be active.
+
+So instead of:
+
+----
+.bindsTo(El.property("bean.category"))
+----
+
+You have to write:
+
+----
+.bindsTo(PhaseBinding.to(El.property("bean.category"))).after(PhaseId.RESTORE_VIEW))
+----
+
+
 TODO: describe all the other cases.
 
 ==== PrettyFaces Annotations
