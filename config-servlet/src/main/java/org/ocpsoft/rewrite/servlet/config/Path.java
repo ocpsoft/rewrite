@@ -109,7 +109,11 @@ public class Path extends HttpCondition implements Parameterized
       String url = null;
 
       if (event instanceof HttpOutboundServletRewrite)
+      {
          url = ((HttpOutboundServletRewrite) event).getOutboundAddress().getPath();
+         if(url == null) //e.g an external url like http://ocpsoft.org (without trailing slash) or an anchor link have a null path
+            return false;
+      }
       else
          url = URLBuilder.createFrom(event.getInboundAddress().getPath()).decode().toPath();
 
