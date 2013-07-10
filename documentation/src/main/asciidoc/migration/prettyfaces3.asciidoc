@@ -211,6 +211,11 @@ public Configuration getConfiguration(ServletContext context) {
 
 ===== Path Parameters
 
+Path parameters are dynamic parts of an URL which you typically use to embed details about an addressed
+resource. With PrettyFaces you had to use EL-like expressions in the pattern part of the mapping to
+add such parameters. Rewrite parameters are very similar to that.  The only real difference is that 
+you have to use +\{param\}+ instead of +#\{param\}+ for the parameter. 
+
 [cols="1a,1a", options="header"]
 |===
 |PrettyFaces
@@ -228,6 +233,23 @@ public Configuration getConfiguration(ServletContext context) {
   Join.path("/store/{category}/").to("/faces/shop/store.jsf")
 )
 |===
+
+In the example show above the parameters will be automatically turned into query parameters with
+the same name as the parameter. This means that you can access the parameter using the standard
+Servlet API:
+
+----
+request.getParameter("category");
+----
+
+Instead of using the standard Servlet API to access the parameters, it is often easier
+to use EL-injected path parameters. With PrettyFaces you would simply use an EL expression that
+refers to a bean property for that. PrettyFaces will then automatically inject the path parameter
+value into that bean property.
+
+Rewrite uses a concept called _parameter bindings_ to achieve the same. With Rewrite you can
+_bind_ parameters to bean properties by calling +.where("param").bindsTo(...)+. See the following
+code for an example: 
 
 [cols="1a,1a", options="header"]
 |===
@@ -264,8 +286,60 @@ You have to write:
 .bindsTo(PhaseBinding.to(El.property("bean.category"))).after(PhaseId.RESTORE_VIEW))
 ----
 
+===== Page actions
 
-TODO: describe all the other cases.
+PrettyFaces allowed the user to specify a _page action_ which is invoked when a request
+for the mapping is received. 
+
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+<url-mapping id="viewItem">
+  <pattern value="/store/item/#{id}/" />
+  <view-id value="/faces/shop/item.jsf" /> 
+  <action>#{bean.loadItem}</action>
+</url-mapping>
+----
+|
+----
+.addRule(
+  Join.path("/store/item/#{id}/").to("/faces/shop/item.jsf")
+).perform(Invoke.binding(El.retrievalMethod("bean.loadItem")))
+|===
+
+With the Rewrite configuration shown above, the page action is invoked very early in request 
+processing, even before the JSF lifecycle starts. In some situations this may lead to problems.
+Especially if you are using a scope like +@ViewScoped+, which requires an active JSF
+lifecycle.
+
+To work around this problem, you can defer the invocation of the page action by wrapping it in
+a +PhaseOperation+. 
+
+So instead of:
+
+----
+.perform(
+  Invoke.binding(El.retrievalMethod("bean.loadItem"))
+)
+----
+
+You have to write:
+
+----
+.perform(
+  PhaseOperation.enqueue(
+    Invoke.binding(El.retrievalMethod("bean.loadItem"))
+  ).after(PhaseId.RESTORE_VIEW)
+)
+
+----
+
+
+
 
 ==== PrettyFaces Annotations
 
