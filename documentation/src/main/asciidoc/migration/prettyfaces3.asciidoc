@@ -3,10 +3,15 @@ Christian Kaltepoth
 :description: This guide described the process of migrating existing PrettyFaces applications to Rewrite
 :keywords: PrettyFaces, Rewrite, Migration
 :toc:
+:toclevels: 4
 
-== PrettyFaces 3.x Migration Guide
+= PrettyFaces 3.x Migration Guide
 
 This guide describes how to migrate existing applications built using PrettyFaces 3.x to Rewrite 2.0.
+
+toc::[]
+
+== Migration strategies
 
 There are basically two ways of migrating such applications to Rewrite:
 
@@ -24,11 +29,11 @@ NOTE: Both ways of migrating will only work for JSF 2.x applications.
 
 The following sections will describe both ways in detail.
 
-=== PrettyFaces compatibility module
+== PrettyFaces compatibility module
 
 Migrating application using PrettyFaces 3.x is very easy. Just follow the steps described below.
 
-==== Update your dependencies
+=== Update your dependencies
 
 First you have to remove the old `com.ocpsoft.prettyfaces` dependency from your project. Open
 your +pom.xml+ and remove the following entry:
@@ -61,7 +66,7 @@ Now add the Rewrite servlet and the PrettyFaces compatibility module to your +po
 Your code should still compile fine after updating the dependencies.
 
 
-==== Filter registration
+=== Filter registration
 
 If you used PrettyFaces in a Servlet 3.0 environment, the required servlet filter is automatically 
 registered. In this case you typically don't have an entry for the +PrettyFilter+ in your +web.xml+
@@ -112,18 +117,18 @@ NOTE: Please not that if you are using a Servlet 3.x container and your +web.xml
 +metadata-complete="true"+, you don't have to register the Rewrite filter manually, because
 this is done automatically. In this case just make sure to remove the old +PrettyFilter+ entry. 
 
-==== Test your application
+=== Test your application
 
 After having performed the changes described in the two sections, your migration is complete.
 Although we consider the compatibility module to be very solid and stable, you should test your 
 application carefully. If something doesn't work as before, let us know. :) 
 
-=== JSF integration module
+== JSF integration module
 
 This section describes how to migrate existing PrettyFaces configuration to the Rewrite
 JSF integration module.
 
-==== Adding the Rewrite dependencies
+=== Adding the Rewrite dependencies
 
 If you want to use the Rewrite JSF integration module, you have to add the following dependencies
 to your project.
@@ -153,7 +158,7 @@ to your project.
 Adding the dependencies in a Servlet 3.0 environment will automatically register the required
 Servlet listeners and filters.
 
-==== PrettyFaces XML configuration
+=== PrettyFaces XML configuration
 
 PrettyFaces used an XML file called +pretty-config.xml+ to configure URL mappings and rewrite rules.
 Rewrite uses a fluent Java API for configuration instead. XML files are not supported any more.
@@ -179,7 +184,7 @@ public class MyConfigurationProvider extends HttpConfigurationProvider {
 }
 ----
 
-===== URL Mappings
+==== URL Mappings
 
 The URL mappings of PrettyFaces have been replace with a Rewrite rule called +Join+. 
 The concepts are very similar. You can specify a _virtual path_ that is mapped to a
@@ -209,7 +214,7 @@ public Configuration getConfiguration(ServletContext context) {
 }
 |===
 
-===== Path Parameters
+==== Path Parameters
 
 Path parameters are dynamic parts of an URL which you typically use to embed details about an addressed
 resource. With PrettyFaces you had to use EL-like expressions in the pattern part of the mapping to
@@ -286,7 +291,7 @@ You have to write:
 .bindsTo(PhaseBinding.to(El.property("bean.category"))).after(PhaseId.RESTORE_VIEW))
 ----
 
-===== Page actions
+==== Page actions
 
 PrettyFaces allowed the user to specify a _page action_ which is invoked when a request
 for the mapping is received. 
@@ -341,9 +346,9 @@ You have to write:
 
 
 
-==== PrettyFaces Annotations
+=== PrettyFaces Annotations
 
-===== URL Mappings
+==== URL Mappings
 
 As the URL mappings of PrettyFaces have been replaced with +Join+, the replacement
 for the +@URLMapping+ annotation is called +@Join+. 
@@ -367,7 +372,7 @@ public class CustomerDetailsBean {
 }
 |===
 
-===== Path parameters
+==== Path parameters
 
 With PrettyFaces, path parameters were specified using EL-like expressions in the pattern.
 With Rewrite you simply specify the parameter in the path pattern using +\{name\}+. Rewrite
@@ -432,7 +437,7 @@ public class CustomerDetailsBean {
 |===
 
 
-===== Query parameters
+==== Query parameters
 
 Query parameters in Rewrite are handled the same way as path parameters. To inject the value
 of a query parameter into your bean, add a +@Parameter+ to a field like this.
@@ -466,7 +471,7 @@ TIP: You can omit the parameter name when using the +@Parameter+ annotation if t
      parameter is the same as the name of the field.
 
 
-===== Page actions
+==== Page actions
 
 
 To invoke a specific method in your bean when the page is accessed, add a +@RequestAction+ annotation
@@ -563,7 +568,7 @@ public class CustomerDetailsBean {
 }
 |===
 
-===== Creating links
+=== Creating links
 
 PrettyFaces shipped with a special JSF component that simplified creating links to mapped URLs.
 However JSF 2.0 introduced +<h:link>+, which works fine for creating such links. Rewrite doesn't
@@ -594,7 +599,7 @@ set their value using +<f:param>+.
 |===
 
 
-===== Programmatic navigation
+=== Programmatic navigation
 
 Programmatic navigation was very painful in PrettyFaces. To navigate to a page with path or
 query parameters, you had to obtain a reference to the bean which the parameters were bound
