@@ -1,4 +1,9 @@
+:toc:
+:toclevels: 4
+
 == Rewrite Annotations
+
+toc::[]
 
 The Rewrite annotation support offers an alternative way to configure Rewrite. Compared to configuring
 Rewrite using a +ConfigurationProvider+, the annotations allow to place the configuration very close
@@ -45,7 +50,7 @@ If you want to disable the annotation scanning completely, set the package to sc
 By default Rewrite will only scan the contents of your +/WEB-INF/classes+ directory. 
 Sometimes it makes sense to also scan the JAR files located in
 +/WEB-INF/lib+. This may be the case if your are developing a highly modular application
-which is split into different JAR. 
+which is split into different JAR files. 
 
 You can tell Rewrite to also scan the JAR files in +/WEB-INF/lib+ by adding the 
 following configuration to your +web.xml+: 
@@ -116,13 +121,103 @@ to do this.
 
 === Handling parameters
 
+Parameters are a very important concept in Rewrite. They allow you to specify a _dynamic_ part of your
+URL used to identify the resource the user is trying to access.
+
+When using the +ConfigurationProvider+ API, you declare parameters like this:
+
+[source,java]
+.A join with parameters
+----
+.addRule(Join.path("/user/{name}").to("/faces/user-details.xhtml"))
+----
+
+If you want to define such a rule using Rewrite annotations, add the parameter
+to the path just like you would using the +ConfigurationProvider+:
+
+[source,java]
+.Using parameters with @Join annotations
+----
+@Named
+@RequestScoped
+@Join(path="/user/{name}", to="/faces/user-details.xhtml"")
+public class UserDetailsPage {
+  // your code
+}
+----
+
+Rewrite will automatically turn the parameter into a query parameter with the same name. So
+you can access the value simply by calling +HttpServletRequest.getParameter()+:
+
+[source,java]
+.Accessing parameters using the Servlet API
+----
+String username = request.getParameter("name");
+----
+
+Of cause it is not very nice to spread such low level Servlet API calls across your code. 
+Therefore Rewrite also supports _parameter bindings_ which allow you to automatically
+inject the parameter values into managed bean properties.
+
+To inject the parameters into a property of you bean, just add a +@Parameter+ annotation
+to the corresponding field like this:
+
+[source,java]
+.Using @Parameter to inject parameter values
+----
+@Named
+@RequestScoped
+@Join(path="/user/{name}", to="/faces/user-details.xhtml"")
+public class UserListPage {
+
+  @Parameter("name")
+  private String username;
+
+}
+----
+
+TIP: If you don't specify the name of the parameter in the annotation, Rewrite will instead 
+use the name of the field. So you don't have to specify the name if the name of the field
+matches the name of the parameter.
+
+
+==== Custom matching patterns
+
+By default Rewrite parameters will match any character except for the path delimiter +/+.
+Internally Rewrite uses the regular expression +[^/]++ for matching the value of the parameter.
+In some situations it can be useful to customize this pattern. Especially if the standard
+pattern matches too greedy or if you want to match more than a single path segment.
+
+If you want to customize the regular expression used for the matching, just add a +@Matches+
+annotation to the corresponding field. The following class contains a parameter that will
+match only lowercase letters and digits.
+
+[source,java]
+.Using @Parameter to inject parameter values
+----
+@Named
+@RequestScoped
+@Join(path="/user/{name}", to="/faces/user-details.xhtml"")
+public class UserListPage {
+
+  @Parameter
+  @Matches("[a-z0-9]+")
+  private String name;
+
+}
+----
+
+==== Custom validation
+
 TODO
+
 
 === Invoking methods
 
 TODO
 
 [[custom-annotations]]
+
 === Building custom annotations
 
 TODO
