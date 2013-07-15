@@ -155,7 +155,7 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
    private String prependContextPath(ExternalContext externalContext, String url)
    {
       String contextPath = externalContext.getRequestContextPath();
-      if ("/".equals(contextPath)) {
+      if ("/".equals(contextPath) || (url.startsWith(contextPath))) {
          return url;
       }
       return contextPath + url;
