@@ -180,7 +180,7 @@ TIP: If you don't specify the name of the parameter in the annotation, Rewrite w
 use the name of the field. So you don't have to specify the name if the name of the field
 matches the name of the parameter.
 
-
+[[parameter-custom-regex-pattern]]
 ==== Custom matching patterns
 
 By default Rewrite parameters will match any character except for the path delimiter +/+.
@@ -209,7 +209,53 @@ public class UserListPage {
 
 ==== Custom validation
 
-TODO
+Many parameter validation requirements can be implemented using regular expressions like shown
+in the <<parameter-custom-regex-pattern,previous section>>. If your validation rules are more
+complex, you can use Rewrite's support for custom validators.
+
+A validator must implement the interface +Validator+. The only method in this interface is
+called +isValid()+ and must return +true+ if the parameter is valid and +false+ otherwise.
+The following example shows an validator which validates that the length of a parameter value
+is even.
+
+[source,java]
+.Example for a custom validator
+----
+public class EvenLengthValidator implements Validator<String>
+{
+
+   @Override
+   public boolean isValid(Rewrite event, EvaluationContext context, String value)
+   {
+      return value.trim().length() % 2 == 0;
+   }
+
+}
+----
+
+To use such a custom validator, add a +@Validate+ annotation to your field and refer to the type
+of the validator you wish to use:
+
+[source,java]
+.Using @ValidateWith for custom vaidation
+----
+@Named
+@RequestScoped
+@Join(path="/some-path/{value}", to="/faces/some-page.xhtml"")
+public class SomePage {
+
+  @Parameter
+  @Validate(with = EvenLengthValidator.class)
+  private String value;
+
+}
+----
+
+TIP: If you are using the JSF integration module, you can also refer to standard JSF validators without
+the need to create a Rewrite-specific one. Refer to the JSF integration module documentation
+for details.
+
+
 
 
 === Invoking methods
