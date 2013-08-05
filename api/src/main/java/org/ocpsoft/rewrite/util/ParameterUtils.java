@@ -118,7 +118,7 @@ public class ParameterUtils
 
       for (Binding binding : bindings)
       {
-         if (result == null && !(binding instanceof Evaluation))
+         if (result == null && !(binding instanceof Evaluation) && binding.supportsRetrieval())
          {
             result = binding.retrieve(event, context);
          }

@@ -4,7 +4,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Validator;
 
-class DeferredValidator implements Validator<Object>
+public class DeferredValidator implements Validator<Object>
 {
    private Validator<?> deferred;
 
