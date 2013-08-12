@@ -15,12 +15,12 @@
  */
 package org.ocpsoft.rewrite.showcase.bookstore.dao;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 
 import org.ocpsoft.rewrite.showcase.bookstore.model.Book;
 import org.ocpsoft.rewrite.showcase.bookstore.model.Category;
@@ -29,47 +29,51 @@ import org.ocpsoft.rewrite.showcase.bookstore.model.Category;
 public class BookDao
 {
 
-   @PersistenceContext
-   private EntityManager entityManager;
+   @Inject
+   private TestDataRepository repository;
 
    public List<Book> findByCategory(Category category)
    {
-      return entityManager
-               .createQuery("SELECT b FROM Book b WHERE b.category = :category ORDER BY b.title", Book.class)
-               .setParameter("category", category)
-               .getResultList();
+      List<Book> result = new ArrayList<Book>();
+      for (Book book : repository.getBooks()) {
+         if (book.getCategory().equals(category)) {
+            result.add(book);
+         }
+      }
+      return Collections.unmodifiableList(result);
    }
 
    public Book getByIsbn(Long isbn)
    {
-      try {
-         return entityManager
-                  .createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
-                  .setParameter("isbn", isbn)
-                  .setMaxResults(1)
-                  .getSingleResult();
+      for (Book book : repository.getBooks()) {
+         if (book.getIsbn().equals(isbn)) {
+            return book;
+         }
       }
-      catch (NoResultException e) {
-         return null;
-      }
+      return null;
    }
 
    public List<Book> findByQuery(String query)
    {
-      return entityManager
-               .createQuery(
-                        "SELECT b FROM Book b WHERE LOWER(b.title) LIKE :query OR LOWER(b.author) LIKE :query ORDER BY b.title",
-                        Book.class)
-               .setParameter("query", "%" + query.toLowerCase() + "%")
-               .getResultList();
+      List<Book> result = new ArrayList<Book>();
+      for (Book book : repository.getBooks()) {
+         if (book.getTitle().toLowerCase().contains(query.toLowerCase())
+                  || book.getAuthor().toLowerCase().contains(query.toLowerCase())) {
+            result.add(book);
+         }
+      }
+      return Collections.unmodifiableList(result);
    }
 
    public List<Book> findByYear(Integer year)
    {
-      return entityManager
-               .createQuery("SELECT b FROM Book b WHERE b.year= :year ORDER BY b.title", Book.class)
-               .setParameter("year", year)
-               .getResultList();
+      List<Book> result = new ArrayList<Book>();
+      for (Book book : repository.getBooks()) {
+         if (book.getYear().equals(year)) {
+            result.add(book);
+         }
+      }
+      return Collections.unmodifiableList(result);
    }
 
 }

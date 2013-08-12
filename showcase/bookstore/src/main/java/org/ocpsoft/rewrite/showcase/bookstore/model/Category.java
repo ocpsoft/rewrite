@@ -15,27 +15,19 @@
  */
 package org.ocpsoft.rewrite.showcase.bookstore.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.io.Serializable;
 
-@Entity
-@Table(name = "category")
-public class Category extends AbstractEntity
+public class Category implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
 
-   @Basic
+   private long id;
+
    private String name;
 
-   @Basic
-   @Column(name = "seo_key")
    private String seoKey;
 
-   @Basic
-   @Column(length = 1000)
    private String description;
 
    public String getName()
@@ -66,6 +58,40 @@ public class Category extends AbstractEntity
    public void setDescription(String description)
    {
       this.description = description;
+   }
+
+   public long getId()
+   {
+      return id;
+   }
+
+   public void setId(long id)
+   {
+      this.id = id;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (int) (id ^ (id >>> 32));
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      Category other = (Category) obj;
+      if (id != other.id)
+         return false;
+      return true;
    }
 
 }

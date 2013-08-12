@@ -15,12 +15,11 @@
  */
 package org.ocpsoft.rewrite.showcase.bookstore.dao;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
 
 import org.ocpsoft.rewrite.showcase.bookstore.model.Category;
 
@@ -28,28 +27,22 @@ import org.ocpsoft.rewrite.showcase.bookstore.model.Category;
 public class CategoryDao
 {
 
-   @PersistenceContext
-   protected EntityManager entityManager;
+   @Inject
+   private TestDataRepository repository;
 
    public List<Category> list()
    {
-      return entityManager
-               .createQuery("SELECT c FROM Category c", Category.class)
-               .getResultList();
+      return Collections.unmodifiableList(repository.getCategories());
    }
 
    public Category getBySeoKey(String key)
    {
-      try {
-         return entityManager
-                  .createQuery("SELECT c FROM Category c WHERE c.seoKey = :key", Category.class)
-                  .setParameter("key", key)
-                  .setMaxResults(1)
-                  .getSingleResult();
+      for (Category cat : repository.getCategories()) {
+         if (cat.getSeoKey().equals(key)) {
+            return cat;
+         }
       }
-      catch (NoResultException e) {
-         return null;
-      }
+      return null;
    }
 
 }

@@ -15,45 +15,40 @@
  */
 package org.ocpsoft.rewrite.showcase.bookstore.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.io.Serializable;
 
-@Entity
-@Table(name = "book")
-public class Book extends AbstractEntity
+public class Book implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
 
-   @Basic
+   private long id;
+
    private String title;
 
-   @Basic
    private String author;
 
-   @Basic
    private Long isbn;
 
-   @Basic
    private Integer year;
 
-   @Basic
    private Float price;
 
-   @Basic
-   @Column(name = "seo_key")
    private String seoKey;
 
-   @ManyToOne
-   @JoinColumn(name = "category_id")
    private Category category;
 
-   @Basic
    private Integer stock;
+
+   public long getId()
+   {
+      return id;
+   }
+
+   public void setId(long id)
+   {
+      this.id = id;
+   }
 
    public String getSeoKey()
    {
@@ -133,6 +128,30 @@ public class Book extends AbstractEntity
    public void setYear(Integer year)
    {
       this.year = year;
+   }
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (int) (id ^ (id >>> 32));
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      Book other = (Book) obj;
+      if (id != other.id)
+         return false;
+      return true;
    }
 
 }
