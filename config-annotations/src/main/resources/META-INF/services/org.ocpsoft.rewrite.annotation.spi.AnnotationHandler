@@ -1,4 +1,5 @@
 org.ocpsoft.rewrite.annotation.handler.DomainHandler
+org.ocpsoft.rewrite.annotation.handler.EnabledHandler
 org.ocpsoft.rewrite.annotation.handler.JoinHandler
 org.ocpsoft.rewrite.annotation.handler.RuleHandler
 org.ocpsoft.rewrite.annotation.handler.PathPatternHandler

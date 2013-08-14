@@ -51,15 +51,19 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
     */
    private final ConfigurationBuilder builder = ConfigurationBuilder.begin();
 
+   private Object payload;
+
    /**
     * The visitor must be initialized with the handlers to call for specific annotations
     */
-   public ClassVisitorImpl(List<AnnotationHandler<Annotation>> handlers)
+   public ClassVisitorImpl(List<AnnotationHandler<Annotation>> handlers, Object payload)
    {
       handlerList = new ArrayList<AnnotationHandler<Annotation>>(handlers);
       Collections.sort(handlerList, new WeightedComparator());
+      this.payload = payload;
 
-      if (log.isDebugEnabled()) {
+      if (log.isDebugEnabled())
+      {
          log.debug("Initialized to use {} AnnotationHandlers..", handlers.size());
       }
 
@@ -73,8 +77,10 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    {
 
       ClassContext context = new ClassContextImpl(builder, clazz);
+      context.put(clazz, payload);
 
-      if (log.isTraceEnabled()) {
+      if (log.isTraceEnabled())
+      {
          log.trace("Scanning class: {}", clazz.getName());
       }
 
@@ -82,18 +88,22 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
       visit(clazz, context);
 
       // then process the fields
-      for (Field field : clazz.getDeclaredFields()) {
+      for (Field field : clazz.getDeclaredFields())
+      {
          visit(field, new FieldContextImpl(context, field));
       }
 
       // then the methods
-      for (Method method : clazz.getDeclaredMethods()) {
+      for (Method method : clazz.getDeclaredMethods())
+      {
          MethodContextImpl methodContext = new MethodContextImpl(context, method);
          visit(method, methodContext);
 
          // then the method parameters
-         for (int i = 0; i < method.getParameterTypes().length; i++) {
-            ParameterImpl parameter = new ParameterImpl(method, method.getParameterTypes()[i], method.getParameterAnnotations()[i], i);
+         for (int i = 0; i < method.getParameterTypes().length; i++)
+         {
+            ParameterImpl parameter = new ParameterImpl(method, method.getParameterTypes()[i],
+                     method.getParameterAnnotations()[i], i);
             visit(parameter, new ParameterContextImpl(methodContext, parameter));
          }
       }
@@ -107,22 +117,27 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    {
 
       List<AnnotationHandler<Annotation>> elementHandlers = new ArrayList<AnnotationHandler<Annotation>>();
-      
+
       // check if any of the handlers is responsible
-      for (AnnotationHandler<Annotation> handler : handlerList) {
+      for (AnnotationHandler<Annotation> handler : handlerList)
+      {
 
          // each annotation on the element may be interesting for us
-         for (Annotation annotation : element.getAnnotations()) {
-            if (handler.handles().equals(annotation.annotationType())) {
+         for (Annotation annotation : element.getAnnotations())
+         {
+            if (handler.handles().equals(annotation.annotationType()))
+            {
                elementHandlers.add(handler);
             }
          }
 
       }
 
-      if (!elementHandlers.isEmpty()) {
+      if (!elementHandlers.isEmpty())
+      {
 
-         if (log.isTraceEnabled()) {
+         if (log.isTraceEnabled())
+         {
             log.trace("Executing handler chain on " + element + ": " + elementHandlers);
          }
 

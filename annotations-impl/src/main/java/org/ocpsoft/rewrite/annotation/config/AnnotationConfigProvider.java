@@ -103,7 +103,7 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
       PackageFilter packageFilter = new PackageFilter(packageFilters);
 
       // ClassVisitor will process all classes that ByteCodeFilter considers as worth scanning them
-      ClassVisitorImpl classVisitor = new ClassVisitorImpl(annotationHandlers);
+      ClassVisitorImpl classVisitor = new ClassVisitorImpl(annotationHandlers, servletContext);
 
       // fallback to some other classloder if there is no context class loader
       ClassLoader classloader = Thread.currentThread().getContextClassLoader();
