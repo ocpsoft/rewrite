@@ -79,6 +79,16 @@ public interface Address
    boolean isSchemeSet();
 
    /**
+    * Get the scheme section of this {@link Address}, or null if no scheme specific part is set.
+    */
+   String getSchemeSpecificPart();
+
+   /**
+    * Return <code>true</code> if this {@link Address} has a scheme specific part section, otherwise return <code>false</code>.
+    */
+   boolean isSchemeSpecificPartSet();
+
+   /**
     * Get the query section of this {@link Address}, or <code>null</code> if no query is set.
     */
    String getQuery();

@@ -30,6 +30,7 @@ import org.ocpsoft.urlbuilder.util.ParseTools;
 class AddressResult implements Address
 {
    private final String protocol;
+   private final String schemeSpecificPart;
    private final String host;
    private final Integer port;
    private final String path;
@@ -43,6 +44,11 @@ class AddressResult implements Address
          protocol = parameterize(parent.parameters, parent.scheme).toString();
       else
          protocol = null;
+
+      if (isSet(parent.schemeSpecificPart))
+         schemeSpecificPart = parameterize(parent.parameters, parent.schemeSpecificPart, false).toString();
+      else
+         schemeSpecificPart = null;
 
       if (isSet(parent.domain))
          host = parameterize(parent.parameters, parent.domain).toString();
@@ -117,20 +123,27 @@ class AddressResult implements Address
          if (isSchemeSet())
             result.append(getScheme()).append(":");
 
-         if (isDomainSet())
-            result.append("//").append(getDomain());
-
-         if (isPortSet())
-            result.append(":").append(getPort());
-
-         if (isPathSet())
-            result.append(getPath());
-
-         if (isQuerySet())
-            result.append('?').append(getQuery());
-
-         if (isAnchorSet())
-            result.append('#').append(getAnchor());
+         if (isSchemeSpecificPartSet())
+         {
+           result.append(getSchemeSpecificPart());
+         }
+         else
+         {
+           if (isDomainSet())
+              result.append("//").append(getDomain());
+  
+           if (isPortSet())
+              result.append(":").append(getPort());
+  
+           if (isPathSet())
+              result.append(getPath());
+  
+           if (isQuerySet())
+              result.append('?').append(getQuery());
+  
+           if (isAnchorSet())
+              result.append('#').append(getAnchor());
+         }
 
          this.result = result;
       }
@@ -140,6 +153,11 @@ class AddressResult implements Address
 
    private CharSequence parameterize(Map<CharSequence, Parameter> parameters, CharSequence sequence)
    {
+     return parameterize(parameters, sequence, true);
+   }
+
+   private CharSequence parameterize(Map<CharSequence, Parameter> parameters, CharSequence sequence, boolean encodeSequence)
+   {
       StringBuilder result = new StringBuilder();
       int cursor = 0;
       int lastEnd = 0;
@@ -148,7 +166,11 @@ class AddressResult implements Address
          switch (sequence.charAt(cursor))
          {
          case '{':
-            result.append(Encoder.path(sequence.subSequence(lastEnd, cursor)));
+            CharSequence subSequence = sequence.subSequence(lastEnd, cursor);
+            if(encodeSequence)
+              subSequence = Encoder.path(subSequence);
+            
+            result.append(subSequence);
 
             int startPos = cursor;
             CapturingGroup group = ParseTools.balancedCapture(sequence, startPos, sequence.length() - 1,
@@ -175,7 +197,13 @@ class AddressResult implements Address
       }
 
       if (cursor >= lastEnd)
-         result.append(Encoder.path(sequence.subSequence(lastEnd, cursor)));
+      {
+         CharSequence subSequence = sequence.subSequence(lastEnd, cursor);
+         if(encodeSequence)
+            subSequence = Encoder.path(subSequence);
+        
+         result.append(subSequence);
+      }
       return result;
    }
 
@@ -269,6 +297,18 @@ class AddressResult implements Address
       return isSet(protocol);
    }
 
+   @Override
+   public String getSchemeSpecificPart()
+   {
+      return schemeSpecificPart;
+   }
+   
+   @Override
+   public boolean isSchemeSpecificPartSet()
+   {
+      return isSet(schemeSpecificPart);
+   }
+   
    @Override
    public String getQuery()
    {

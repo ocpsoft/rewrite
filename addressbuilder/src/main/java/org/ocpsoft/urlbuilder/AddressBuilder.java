@@ -35,6 +35,7 @@ public class AddressBuilder
 {
    private volatile Address address;
    protected volatile CharSequence scheme;
+   protected volatile CharSequence schemeSpecificPart;
    protected volatile CharSequence domain;
    protected volatile Integer port;
    protected volatile CharSequence path;
@@ -69,14 +70,20 @@ public class AddressBuilder
     * Create a new {@link Address} from the given fully encoded URL. Improperly formatted or encoded URLs are not
     * parse-able and will result in an exception.
     * 
+    * @see http://en.wikipedia.org/wiki/URI_scheme
     * @throws IllegalArgumentException when the input URL or URL fragment is not valid.
     */
    public static Address create(String url) throws IllegalArgumentException
    {
       try {
          URI u = new URI(url);
-         return AddressBuilder.begin().scheme(u.getScheme()).domain(u.getHost()).port(u.getPort())
-                  .pathEncoded(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment()).build();
+         String scheme = u.getScheme();
+         String host = u.getHost();
+         if(scheme != null && host == null)
+            return AddressBuilder.begin().scheme(u.getScheme()).schemeSpecificPart(u.getRawSchemeSpecificPart()).build();
+         else
+           return AddressBuilder.begin().scheme(scheme).domain(host).port(u.getPort())
+             .pathEncoded(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment()).build();
       }
       catch (URISyntaxException e) {
          throw new IllegalArgumentException(
@@ -92,6 +99,15 @@ public class AddressBuilder
    {
       this.scheme = scheme;
       return new AddressBuilderScheme(this);
+   }
+
+   /**
+    * Set the scheme section of this {@link Address}.
+    */
+   AddressBuilderSchemeSpecificPart schemeSpecificPart(CharSequence schemeSpecificPart)
+   {
+      this.schemeSpecificPart = schemeSpecificPart;
+      return new AddressBuilderSchemeSpecificPart(this);
    }
 
    /**
