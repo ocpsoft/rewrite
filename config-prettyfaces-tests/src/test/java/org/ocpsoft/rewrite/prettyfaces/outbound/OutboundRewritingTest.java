@@ -11,7 +11,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
@@ -55,7 +54,6 @@ public class OutboundRewritingTest extends RewriteTestBase
     * query parameter should be added to the rewritten URL.
     */
    @Test
-   @Ignore
    public void rewriteAdditionalQueryParam() throws Exception
    {
       browser.get(url + "/outbound.jsf");
@@ -68,7 +66,6 @@ public class OutboundRewritingTest extends RewriteTestBase
     * rewritten.
     */
    @Test
-   @Ignore
    public void rewriteWithPathParam() throws Exception
    {
       browser.get(url + "/outbound.jsf");
@@ -82,7 +79,6 @@ public class OutboundRewritingTest extends RewriteTestBase
     * rewritten URL.
     */
    @Test
-   @Ignore
    public void rewriteWithPathParamAndQueryParam() throws Exception
    {
       browser.get(url + "/outbound.jsf");

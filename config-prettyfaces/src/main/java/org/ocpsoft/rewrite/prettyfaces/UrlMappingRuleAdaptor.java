@@ -146,7 +146,11 @@ public class UrlMappingRuleAdaptor implements Rule
          return false;
       }
 
-      QueryString mappingViewQueryString = QueryString.build(mapping.getViewId());
+      QueryString mappingViewQueryString = new QueryString();
+      if (mapping.getViewId().contains("?")) {
+         mappingViewQueryString.addParameters(mapping.getViewId());
+      }
+
       for (Entry<String, String[]> mappingViewParam : mappingViewQueryString.getParameterMap().entrySet())
       {
          for (String mappingViewParamValue : mappingViewParam.getValue())
