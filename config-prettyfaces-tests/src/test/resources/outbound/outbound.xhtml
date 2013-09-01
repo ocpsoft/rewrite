@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:pretty="http://ocpsoft.com/prettyfaces" xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:body>
+
+   <p>
+      <h:link id="no-param" value="no-param" outcome="/no-param.xhtml" />
+   </p>
+
+   <p>
+      <h:link id="no-param-plus-query" value="no-param-plus-query" outcome="/no-param.xhtml">
+         <f:param name="foo" value="bar" />
+      </h:link>
+   </p>
+
+   <p>
+      <h:link id="with-param" value="with-param" outcome="/with-param.xhtml">
+         <f:param name="param" value="foobar" />
+      </h:link>
+   </p>
+
+   <p>
+      <h:link id="with-param-plus-query" value="with-param-plus-query" outcome="/with-param.xhtml">
+         <f:param name="param" value="foobar" />
+         <f:param name="foo" value="bar" />
+      </h:link>
+   </p>
+
+</h:body>
+
+</html>
