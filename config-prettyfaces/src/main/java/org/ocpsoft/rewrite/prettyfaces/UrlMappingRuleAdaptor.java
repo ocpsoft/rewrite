@@ -121,7 +121,10 @@ public class UrlMappingRuleAdaptor implements Rule
    }
 
    private boolean evaluateOutbound(String outboundURL) {
-      QueryString outboundQueryString = QueryString.build(outboundURL);
+      QueryString outboundQueryString = new QueryString();
+      if (outboundURL.contains("?")) {
+         outboundQueryString.addParameters(outboundURL);
+      }
       String cachedMappingId = outboundQueryString.getParameter(REWRITE_MAPPING_ID_KEY);
       if (cachedMappingId != null)
       {
