@@ -23,6 +23,12 @@ The first step to installing link:../[Rewrite] is to add the required Maven depe
 <repository>
    <id>sonatype-snapshots</id>
    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+   <releases>
+      <enabled>false</enabled>
+   </releases>
+   <snapshots>
+      <enabled>true</enabled>
+   </snapshots>
 </repository>
 ----
 
