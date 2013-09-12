@@ -156,7 +156,9 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 
             ServletOutputStream outputStream = isResponseStreamWrapped() ? wrappedOutputStream : super
                      .getOutputStream();
-            Streams.copy(new ByteArrayInputStream(buffer.getContents()), outputStream);
+                     
+            if(outputStream != null)
+               Streams.copy(new ByteArrayInputStream(buffer.getContents()), outputStream);
 
             if (printWriter != null) {
                printWriter.close();
