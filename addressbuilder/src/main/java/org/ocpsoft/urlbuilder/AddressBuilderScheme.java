@@ -46,6 +46,14 @@ public class AddressBuilderScheme
    }
 
    /**
+    * Set the scheme specific part section of this {@link Address}.
+    */
+   public AddressBuilderSchemeSpecificPart schemeSpecificPart(CharSequence schemeSpecificPart)
+   {
+      return parent.schemeSpecificPart(schemeSpecificPart);
+   }
+   
+   /**
     * Set the port section of this {@link Address}.
     */
    public AddressBuilderPort port(int port)
