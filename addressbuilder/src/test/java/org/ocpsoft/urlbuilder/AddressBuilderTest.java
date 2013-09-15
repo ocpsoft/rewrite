@@ -251,4 +251,24 @@ public class AddressBuilderTest
 
    }
 
+   @Test
+   public void testBuildSchemeSpecificPart()
+   {
+      Assert.assertEquals("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!",
+               AddressBuilder.begin()
+                         .scheme("mailto")
+                        .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
+                        .toString());
+   }
+
+   @Test
+   public void testBuildSchemeSpecificPartResult()
+   {
+      Assert.assertEquals("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!",
+               AddressBuilder.begin()
+               .scheme("mailto")
+               .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
+               .build().toString());
+   }
+
 }
