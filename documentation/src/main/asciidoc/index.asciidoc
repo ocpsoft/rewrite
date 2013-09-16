@@ -1,31 +1,36 @@
 == Learn Rewrite
 
-The following steps will guide you from knowing nothing about URL-rewriting with Rewrite, to configuring Rewrite in your application - in only a few minutes! If you already have some knowledge of the framework, just skip the steps you don't need.
+The following steps will guide you from knowing nothing about URL-rewriting with Rewrite, 
+to configuring Rewrite in your application - in only a few minutes! If you already have some knowledge 
+of the framework, just skip the steps you don't need.
 
-=== 1. What is Rewrite?
-Not sure what URL-rewriting is, and what the Rewrite framework can do for you? Watch this short presentation for a quick overview of the technology.
 
-link:http://youtube.com/watch?v=123123123[Play presentation] [TBD]
+=== Getting started with Rewrite
 
-=== 2. Try a sample application
+* link:configuration/install[Install Rewrite] 
+* Create your first URL mapping 
+* link:configuration[Anatomy of a Rewrite Rule]
 
-Download our bookstore application from GitHub.
+=== Working with Rewrite
 
-link:http://search.maven.org/remotecontent?filepath=org/ocpsoft/rewrite/rewrite-examples/2.0.0.Final/rewrite-examples-2.0.0.Final.zip[Sample application]
+* Parameterize Rules
+* link:configuration/annotations[Simplify with Annotations]
+* Response Interception
+* Resource Transformation
+* Internationalize your URLs
+* link:migration/prettyfaces3[PrettyFaces 3.x Migration Guide]
 
-=== 3. Download Rewrite
-Get the latest stable release of Rewrite.
+=== Integrate Rewrite with other Frameworks
 
-link:http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[Download Rewrite]
+* link:integration/cdi[Integrating with CDI]
+* Integrating with JSF
+* link:integration/spring[Integrating with Spring]
 
-You can skip this download and proceed to the next section if you use the link:http://maven.apache.org[Maven] build system.
+=== Extending Rewrite
 
-=== 4. Installation
-Simple and easy. Rewrite makes getting started fast and painless.
+* Create your own configuration objects
+* Customize an extension point (SPI)
 
-link:configuration/install[Read installation manual]
+=== Frequently Asked Questions
 
-=== 5. User Manual & Examples
-Get detailed knowledge via the extensive user guide and practical examples.
-
-link:configuration/[Manual] - link:http://ocpsoft.org/rewrite/examples/[Examples]
+* link:faq[FAQ]
