@@ -17,10 +17,17 @@ package org.ocpsoft.rewrite.param;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Iterators;
+import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.spi.GlobalParameterProvider;
+import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * {@link Parameter} store which retains the order, bindings, and names of parameters contained within.
@@ -28,12 +35,31 @@ import org.ocpsoft.common.util.Assert;
 public class DefaultParameterStore implements ParameterStore
 {
    private final Map<String, Parameter<?>> parameters = new LinkedHashMap<String, Parameter<?>>();
+   private List<GlobalParameterProvider> providers;
+   private static final Logger log = Logger.getLogger(DefaultParameterStore.class);
 
+   @SuppressWarnings("unchecked")
    public DefaultParameterStore()
    {
-      get("*", new ImmutableParameter(new DefaultParameter("*").constrainedBy(new RegexConstraint(".*"))));
+      if (providers == null)
+      {
+         providers = Iterators.asList(ServiceLoader.load(GlobalParameterProvider.class));
+         ServiceLogger.logLoadedServices(log, GlobalParameterProvider.class, providers);
+      }
+
+      for (GlobalParameterProvider provider : providers)
+      {
+         Set<Parameter<?>> params = provider.getParameters();
+         if (params != null)
+         {
+            for (Parameter<?> parameter : params)
+               get(parameter.getName(), parameter);
+         }
+      }
+
    }
 
+   @Override
    public Parameter<?> get(final String name, Parameter<?> deflt)
    {
       Parameter<?> parameter = null;
@@ -53,6 +79,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameter;
    }
 
+   @Override
    public Parameter<?> get(String name)
    {
       if (!parameters.containsKey(name))
@@ -60,6 +87,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameters.get(name);
    }
 
+   @Override
    public boolean isEmpty()
    {
       return parameters.isEmpty();
@@ -71,6 +99,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameters.put(value.getName(), value);
    }
 
+   @Override
    public int size()
    {
       return parameters.size() - 1;
@@ -82,6 +111,7 @@ public class DefaultParameterStore implements ParameterStore
       return parameters.entrySet().iterator();
    }
 
+   @Override
    public boolean contains(String name)
    {
       return parameters.containsKey(name);
