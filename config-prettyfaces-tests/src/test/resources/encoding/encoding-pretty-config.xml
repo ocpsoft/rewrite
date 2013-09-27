@@ -42,5 +42,10 @@
       <pattern value="/virtuální"></pattern>
       <view-id>/encoding.jsf</view-id>
    </url-mapping>
+
+   <url-mapping id="decodequery">
+      <pattern value="/decodequery"></pattern>
+      <view-id>/encoding.jsf</view-id>
+   </url-mapping>
    
 </pretty-config>

@@ -20,7 +20,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -32,7 +31,6 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 /**
  * @author Christian Kaltepoth
  */
-@Ignore // FIXME False negative on jetty sometimes for some reason
 @RunWith(Arquillian.class)
 public class ExpressionLanguageTest extends RewriteTest
 {
