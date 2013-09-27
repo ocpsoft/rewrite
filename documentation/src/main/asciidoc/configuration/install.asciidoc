@@ -123,7 +123,7 @@ To register providers in a JAR file, simply use this same activation mechanism, 
 registration file in each JAR containing configurations. This registration file will be located at
 +jar:/META-INF/org.ocpsoft.rewrite.config.ConfigurationProvider+. 
 
-NOTE: Alternate methods of configuration are available, such as link:./annotations/[Rewrite Annotations],
+NOTE: Alternate methods of configuration are available, such as link:../annotations/[Rewrite Annotations],
 link:./prettyfaces/[PrettyFaces XML and Annotations], and via link:../../integration/cdi[cdi] and 
 link:../../integration/spring[spring]; these methods may be used to avoid the need for a provider registration file.
 
