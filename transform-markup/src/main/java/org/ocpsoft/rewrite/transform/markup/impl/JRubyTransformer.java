@@ -119,7 +119,7 @@ public abstract class JRubyTransformer<T extends JRubyTransformer<T>> extends St
    /**
     * Allows to customize the {@link CompileMode} used by the JRuby runtime.
     */
-   protected T compileMode(CompileMode compileMode)
+   public T compileMode(CompileMode compileMode)
    {
       this.compileMode = compileMode;
       return self();
@@ -128,7 +128,7 @@ public abstract class JRubyTransformer<T extends JRubyTransformer<T>> extends St
    /**
     * Allows to customize the {@link CompatVersion} used by the JRuby runtime.
     */
-   protected T compatVersion(CompatVersion compatVersion)
+   public T compatVersion(CompatVersion compatVersion)
    {
       this.compatVersion = compatVersion;
       return self();
