@@ -32,6 +32,7 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.spi.ServiceEnricher;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.Version;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -144,7 +145,7 @@ public class RewriteFilter implements Filter
                   " file containing the fully qualified name of your provider implementation?");
       }
 
-      log.info("RewriteFilter initialized.");
+      log.info(Version.getFullName() + " initialized.");
    }
 
    @Override
