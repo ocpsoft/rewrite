@@ -56,7 +56,7 @@ public class Markdown extends JRubyTransformer<Markdown>
    /**
     * Creates a {@link Markdown} instance.
     */
-   private Markdown(boolean fullDocument)
+   protected Markdown(boolean fullDocument)
    {
       this.fullDocument = fullDocument;
    }

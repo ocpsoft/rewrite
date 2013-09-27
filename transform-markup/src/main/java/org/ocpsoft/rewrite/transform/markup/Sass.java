@@ -42,7 +42,7 @@ public class Sass extends JRubyTransformer<Sass>
       return new Sass();
    }
 
-   private Sass()
+   protected Sass()
    {}
 
    @Override

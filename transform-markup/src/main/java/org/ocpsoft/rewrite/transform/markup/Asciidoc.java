@@ -56,7 +56,7 @@ public class Asciidoc extends JRubyTransformer<Asciidoc>
    /**
     * Creates a {@link Asciidoc} instance.
     */
-   private Asciidoc(boolean fullDocument)
+   protected Asciidoc(boolean fullDocument)
    {
       this.fullDocument = fullDocument;
    }

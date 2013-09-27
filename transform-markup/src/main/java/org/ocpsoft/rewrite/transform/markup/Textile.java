@@ -53,7 +53,7 @@ public class Textile extends JRubyTransformer<Textile>
       return new Textile(false);
    }
 
-   private Textile(boolean fullDocument)
+   protected Textile(boolean fullDocument)
    {
       this.fullDocument = fullDocument;
    }
