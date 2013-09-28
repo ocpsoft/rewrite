@@ -14,7 +14,7 @@ of the framework, just skip the steps you don't need.
 === Working with Rewrite
 
 * Parameterize Rules
-* link:configuration/annotations[Simplify with Annotations]
+* link:configuration/annotations/[Simplify with Annotations]
 * Response Interception
 * Resource Transformation
 * Internationalize your URLs
