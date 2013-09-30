@@ -18,7 +18,7 @@ package com.ocpsoft.pretty.faces.config.annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,12 +54,12 @@ public class PrettyAnnotationHandler
    /**
     * A map assigning mapping IDs to {@link UrlMapping} instances
     */
-   private final Map<String, UrlMapping> urlMappings = new HashMap<String, UrlMapping>();
+   private final Map<String, UrlMapping> urlMappings = new LinkedHashMap<String, UrlMapping>();
 
    /**
     * A map to resolve the bean name for a {@link Class} object
     */
-   private final Map<Class<?>, String> beanNameMap = new HashMap<Class<?>, String>();
+   private final Map<Class<?>, String> beanNameMap = new LinkedHashMap<Class<?>, String>();
 
    /**
     * The {@link ActionSpec} objects generated from annotation scanning

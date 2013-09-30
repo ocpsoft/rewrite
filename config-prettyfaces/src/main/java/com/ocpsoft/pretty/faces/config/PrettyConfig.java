@@ -18,7 +18,7 @@ package com.ocpsoft.pretty.faces.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class PrettyConfig
    private List<UrlMapping> mappings = new ArrayList<UrlMapping>();
    private List<RewriteRule> globalRewriteRules = new ArrayList<RewriteRule>();
    private String dynaviewId = "";
-   private final Map<String, UrlMapping> cachedMappings = new HashMap<String, UrlMapping>();
+   private final Map<String, UrlMapping> cachedMappings = new LinkedHashMap<String, UrlMapping>();
    private boolean useEncodeUrlForRedirects = false;
 
    /**

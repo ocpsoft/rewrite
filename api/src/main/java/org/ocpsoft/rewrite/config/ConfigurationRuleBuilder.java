@@ -17,7 +17,11 @@ package org.ocpsoft.rewrite.config;
 
 import java.util.List;
 
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterizedRule;
 
 /**
  * An intermediate stage {@link Rule} configuration.
@@ -25,6 +29,7 @@ import org.ocpsoft.rewrite.param.Parameter;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
+         ParameterizedRule,
          ConfigurationRuleBuilderCustom,
          ConfigurationRuleBuilderWhen,
          ConfigurationRuleBuilderPerform,
@@ -130,5 +135,35 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    public List<Rule> getRules()
    {
       return wrapped.getRules();
+   }
+
+   @Override
+   public List<RuleBuilder> getRuleBuilders()
+   {
+      return wrapped.getRuleBuilders();
+   }
+
+   @Override
+   public ParameterStore getParameterStore()
+   {
+      return rule.getParameterStore();
+   }
+
+   @Override
+   public String getId()
+   {
+      return rule.getId();
+   }
+
+   @Override
+   public boolean evaluate(Rewrite event, EvaluationContext context)
+   {
+      return rule.evaluate(event, context);
+   }
+
+   @Override
+   public void perform(Rewrite event, EvaluationContext context)
+   {
+      rule.perform(event, context);
    }
 }

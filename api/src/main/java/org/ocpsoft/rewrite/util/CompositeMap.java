@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,9 +27,9 @@ import java.util.Set;
 /**
  * {@link Map} implementation supporting delegation to other {@link Map} instances configured with
  * {@link CompositeMap#addDelegate(Map)}.
- *
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- *
+ * 
  * @param <KEYTYPE>
  * @param <VALUETYPE>
  */
@@ -82,7 +82,7 @@ public class CompositeMap<KEYTYPE, VALUETYPE> implements Map<KEYTYPE, VALUETYPE>
    @Override
    public Set<java.util.Map.Entry<KEYTYPE, VALUETYPE>> entrySet()
    {
-      Set<java.util.Map.Entry<KEYTYPE, VALUETYPE>> entries = new HashSet<Map.Entry<KEYTYPE, VALUETYPE>>();
+      Set<java.util.Map.Entry<KEYTYPE, VALUETYPE>> entries = new LinkedHashSet<Map.Entry<KEYTYPE, VALUETYPE>>();
       for (Map<KEYTYPE, VALUETYPE> delegate : delegates) {
          entries.addAll(delegate.entrySet());
       }
@@ -132,7 +132,7 @@ public class CompositeMap<KEYTYPE, VALUETYPE> implements Map<KEYTYPE, VALUETYPE>
    @Override
    public Set<KEYTYPE> keySet()
    {
-      Set<KEYTYPE> result = new HashSet<KEYTYPE>();
+      Set<KEYTYPE> result = new LinkedHashSet<KEYTYPE>();
       for (Map<KEYTYPE, VALUETYPE> delegate : delegates) {
          result.addAll(delegate.keySet());
       }
@@ -170,7 +170,7 @@ public class CompositeMap<KEYTYPE, VALUETYPE> implements Map<KEYTYPE, VALUETYPE>
    @Override
    public Collection<VALUETYPE> values()
    {
-      Set<VALUETYPE> values = new HashSet<VALUETYPE>();
+      Set<VALUETYPE> values = new LinkedHashSet<VALUETYPE>();
       for (Map<KEYTYPE, VALUETYPE> delegate : delegates) {
          values.addAll(delegate.values());
       }

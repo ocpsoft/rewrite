@@ -35,7 +35,7 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
 public class DefaultParameterStore implements ParameterStore
 {
    private final Map<String, Parameter<?>> parameters = new LinkedHashMap<String, Parameter<?>>();
-   private List<GlobalParameterProvider> providers;
+   private static List<GlobalParameterProvider> providers;
    private static final Logger log = Logger.getLogger(DefaultParameterStore.class);
 
    @SuppressWarnings("unchecked")
@@ -53,7 +53,7 @@ public class DefaultParameterStore implements ParameterStore
          if (params != null)
          {
             for (Parameter<?> parameter : params)
-               get(parameter.getName(), parameter);
+               store(parameter);
          }
       }
 
@@ -74,7 +74,7 @@ public class DefaultParameterStore implements ParameterStore
       }
 
       if (parameter == null)
-         throw new IllegalArgumentException("No such parameter [" + name + "] exists.");
+         throw new IllegalArgumentException("No such parameter [" + name + "] exists in parameter store.");
 
       return parameter;
    }
@@ -83,7 +83,7 @@ public class DefaultParameterStore implements ParameterStore
    public Parameter<?> get(String name)
    {
       if (!parameters.containsKey(name))
-         throw new IllegalArgumentException("No such parameter [" + name + "] exists.");
+         throw new IllegalArgumentException("No such parameter [" + name + "] exists in parameter store.");
       return parameters.get(name);
    }
 

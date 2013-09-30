@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.ocpsoft.rewrite.config.Direction;
@@ -111,7 +111,7 @@ public class CDN implements Rule, CDNRelocate, Parameterized
    @Override
    public Set<String> getRequiredParameterNames()
    {
-      Set<String> result = new HashSet<String>();
+      Set<String> result = new LinkedHashSet<String>();
       result.addAll(resource.getRequiredParameterNames());
       result.addAll(location.getRequiredParameterNames());
       return result;

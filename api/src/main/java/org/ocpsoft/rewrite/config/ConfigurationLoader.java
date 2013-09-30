@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +33,7 @@ import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedRule;
 import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
 import org.ocpsoft.rewrite.util.Visitor;
 
@@ -129,7 +130,7 @@ public class ConfigurationLoader
    private Configuration build(Object context)
    {
 
-      Map<Integer, List<Rule>> priorityMap = new HashMap<Integer, List<Rule>>();
+      Map<Integer, List<Rule>> priorityMap = new LinkedHashMap<Integer, List<Rule>>();
       for (ConfigurationProvider provider : providers) {
          if (provider.handles(context))
          {
@@ -178,13 +179,13 @@ public class ConfigurationLoader
          for (final Rule rule : list) {
             result.addRule(rule);
 
-            if (rule instanceof RuleBuilder) {
+            if (rule instanceof ParameterizedRule) {
                ParameterizedCallback callback = new ParameterizedCallback() {
                   @Override
                   public void call(Parameterized parameterized)
                   {
                      Set<String> names = parameterized.getRequiredParameterNames();
-                     ParameterStore store = ((RuleBuilder) rule).getParameterStore();
+                     ParameterStore store = ((ParameterizedRule) rule).getParameterStore();
 
                      if (names != null)
                         for (String name : names) {

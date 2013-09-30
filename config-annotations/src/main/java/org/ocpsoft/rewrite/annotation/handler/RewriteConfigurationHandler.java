@@ -61,13 +61,16 @@ public class RewriteConfigurationHandler implements AnnotationHandler<RewriteCon
             if (provider.handles(configurationContext))
             {
                Configuration config = provider.getConfiguration(configurationContext);
-               for (Rule rule : config.getRules())
+               if (config != null)
                {
-                  ConfigurationRuleBuilder ruleBuilder = context.getConfigurationBuilder().addRule(rule);
-                  if (rule instanceof RelocatableRule && ((RelocatableRule) rule).isRelocated())
-                     ruleBuilder.withPriority(((RelocatableRule) rule).priority());
-                  else
-                     ruleBuilder.withPriority(provider.priority());
+                  for (Rule rule : config.getRules())
+                  {
+                     ConfigurationRuleBuilder ruleBuilder = context.getConfigurationBuilder().addRule(rule);
+                     if (rule instanceof RelocatableRule && ((RelocatableRule) rule).isRelocated())
+                        ruleBuilder.withPriority(((RelocatableRule) rule).priority());
+                     else
+                        ruleBuilder.withPriority(provider.priority());
+                  }
                }
             }
             else
@@ -83,7 +86,8 @@ public class RewriteConfigurationHandler implements AnnotationHandler<RewriteCon
       }
       else
       {
-         throw new RewriteException("Class [" + type.getName() + "] annotated with @" + RewriteConfiguration.class.getSimpleName()
+         throw new RewriteException("Class [" + type.getName() + "] annotated with @"
+                  + RewriteConfiguration.class.getSimpleName()
                   + " must implement [" + ConfigurationProvider.class.getName() + "]");
       }
       chain.proceed();

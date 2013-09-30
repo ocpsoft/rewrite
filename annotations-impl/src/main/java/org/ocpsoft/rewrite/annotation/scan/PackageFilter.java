@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.annotation.scan;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.ocpsoft.logging.Logger;
@@ -33,7 +33,7 @@ public class PackageFilter
 
    private final static Logger log = Logger.getLogger(PackageFilter.class);
 
-   private final Set<String> packageSet = new HashSet<String>();
+   private final Set<String> packageSet = new LinkedHashSet<String>();
 
    /**
     * Creates a new {@link PackageFilter}

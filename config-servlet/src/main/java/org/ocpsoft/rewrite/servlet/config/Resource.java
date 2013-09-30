@@ -24,10 +24,10 @@ import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.exception.ParameterizationException;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPattern;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -56,21 +56,28 @@ public class Resource extends HttpCondition implements Parameterized
    {
       if (resource != null)
       {
-         try {
-            String file = resource.getBuilder().build(event, context, Transpositions.encodePath());
-            try {
+         ParameterizedPatternBuilder builder = resource.getBuilder();
+         if (builder.isParameterComplete(event, context))
+         {
+            String file = builder.build(event, context, Transpositions.encodePath());
+            try
+            {
                return (event.getServletContext().getResource(file) != null);
             }
-            catch (MalformedURLException e) {
+            catch (MalformedURLException e)
+            {
                log.debug("Invalid file format [{}]", file);
             }
          }
-         catch (ParameterizationException e) {
-            // Parameter didn't exist, that's OK, switch to parsing mode.
-
+         else
+         {
+            /*
+             * Parameter didn't exist, that's OK, switch to parsing mode.
+             */
             @SuppressWarnings("unchecked")
             Set<String> paths = event.getServletContext().getResourcePaths("/");
-            for (String path : paths) {
+            for (String path : paths)
+            {
                if (resource.matches(path))
                {
                   return true;

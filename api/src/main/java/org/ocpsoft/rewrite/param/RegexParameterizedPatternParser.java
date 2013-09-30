@@ -17,9 +17,9 @@ package org.ocpsoft.rewrite.param;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -152,8 +152,8 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       }
 
       /*
-      N-conditions with N-values for same parameter. If they are different, evaluation fails.
-      If they are equal, we must create only one single binding operation.
+       * N-conditions with N-values for same parameter. If they are different, evaluation fails. If they are equal, we
+       * must create only one single binding operation.
        */
 
       return result;
@@ -191,7 +191,8 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
                if (parameters.contains(group.getName()))
                {
                   Iterator<Constraint<String>> iterator = parameters.get(group.getName()).getConstraints().iterator();
-                  while (iterator.hasNext()) {
+                  while (iterator.hasNext())
+                  {
                      Constraint<String> constraint = iterator.next();
                      if (constraint instanceof RegexConstraint)
                      {
@@ -242,7 +243,8 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       Matcher matcher = getMatcher(parameters, value);
       if (matcher.matches())
       {
-         for (RegexGroup group : groups) {
+         for (RegexGroup group : groups)
+         {
             values.put(parameters.get(group.getName()), matcher.group(group.getIndex() + 1));
          }
       }
@@ -259,7 +261,8 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       Matcher matcher = getMatcher(parameters, value);
       if (matcher.matches())
       {
-         for (RegexGroup group : groups) {
+         for (RegexGroup group : groups)
+         {
             values.put(parameters.get(group.getName()), matcher.group(group.getIndex() + 1));
          }
       }
@@ -325,8 +328,9 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    @Override
    public Set<String> getRequiredParameterNames()
    {
-      Set<String> result = new HashSet<String>();
-      for (RegexGroup group : groups) {
+      Set<String> result = new LinkedHashSet<String>();
+      for (RegexGroup group : groups)
+      {
          result.add(group.getName());
       }
       return result;

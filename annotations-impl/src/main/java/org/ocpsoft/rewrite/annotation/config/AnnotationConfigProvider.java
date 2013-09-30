@@ -17,8 +17,8 @@ package org.ocpsoft.rewrite.annotation.config;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,8 +54,7 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
    {
 
       /*
-       * ======================================================
-       * ============[ Configuration parameters ]==============
+       * ====================================================== ============[ Configuration parameters ]==============
        * ======================================================
        */
 
@@ -65,24 +64,25 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
       // does the user want to scan the WEB-INF/lib directory
       boolean scanLibDir = false;
       String jarConfig = servletContext.getInitParameter(CONFIG_SCAN_LIB_DIR);
-      if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("true")) {
+      if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("true"))
+      {
          scanLibDir = true;
       }
 
       // users can disable annotation scanning
-      if ((packageFilters != null) && packageFilters.trim().equalsIgnoreCase("none")) {
+      if ((packageFilters != null) && packageFilters.trim().equalsIgnoreCase("none"))
+      {
          log.debug("Annotation scanning is disabled!");
          return null;
       }
 
       /*
-       * ======================================================
-       * ============[ Prepare scanning process ]==============
+       * ====================================================== ============[ Prepare scanning process ]==============
        * ======================================================
        */
 
       // the byte code filter needs to know the annotations to look for
-      Set<Class<? extends Annotation>> annotationType = new HashSet<Class<? extends Annotation>>();
+      Set<Class<? extends Annotation>> annotationType = new LinkedHashSet<Class<? extends Annotation>>();
 
       // list of annotation handlers for the ClassVisitor
       List<AnnotationHandler<Annotation>> annotationHandlers = new ArrayList<AnnotationHandler<Annotation>>();
@@ -90,7 +90,8 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
       // load the implementations of the AnnotationHandler SPI
       @SuppressWarnings("unchecked")
       Iterator<AnnotationHandler<Annotation>> handlerIterator = ServiceLoader.load(AnnotationHandler.class).iterator();
-      while (handlerIterator.hasNext()) {
+      while (handlerIterator.hasNext())
+      {
          AnnotationHandler<Annotation> handler = handlerIterator.next();
          annotationHandlers.add(handler);
          annotationType.add(handler.handles());
@@ -107,13 +108,13 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
 
       // fallback to some other classloder if there is no context class loader
       ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-      if (classloader == null) {
+      if (classloader == null)
+      {
          classloader = this.getClass().getClassLoader();
       }
 
       /*
-       * ======================================================
-       * =============[ Scanning process starts ]==============
+       * ====================================================== =============[ Scanning process starts ]==============
        * ======================================================
        */
 
@@ -121,12 +122,14 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
       // compile a list of class finders to run
       List<ClassFinder> classFinders = new ArrayList<ClassFinder>();
       classFinders.add(new WebClassesFinder(servletContext, classloader, packageFilter, byteCodeFilter));
-      if (scanLibDir) {
+      if (scanLibDir)
+      {
          classFinders.add(new WebLibFinder(servletContext, classloader, packageFilter, byteCodeFilter));
       }
 
       // start the scanning process
-      for (ClassFinder finder : classFinders) {
+      for (ClassFinder finder : classFinders)
+      {
          finder.findClasses(classVisitor);
       }
 

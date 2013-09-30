@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +38,7 @@ import org.ocpsoft.rewrite.spi.RewriteResultHandler;
  */
 public class HttpRewriteContextImpl implements HttpRewriteLifecycleContext
 {
-   private final Map<Object, Object> map = new HashMap<Object, Object>();
+   private final Map<Object, Object> map = new LinkedHashMap<Object, Object>();
 
    private final List<RewriteProvider<ServletContext, Rewrite>> providers;
    private final List<RewriteResultHandler> resultHandlers;
