@@ -72,4 +72,10 @@ public interface ParameterizedPatternBuilder extends ParameterizedPattern
     */
    String build(List<Object> values) throws ParameterizationException;
 
+   /**
+    * Returns <code>true</code> if all parameters required by this builder are available; otherwise, returns
+    * <code>false</code>.
+    */
+   boolean isParameterComplete(Rewrite event, EvaluationContext context);
+
 }

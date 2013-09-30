@@ -35,7 +35,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -70,33 +69,41 @@ public class WrappedResponseStreamTest extends RewriteTest
    }
 
    @Test
-   @Ignore
    public void testWrappedResponseStreamToGZip() throws Exception
    {
 
       DefaultHttpClient client = new DefaultHttpClient();
-      client.addRequestInterceptor(new HttpRequestInterceptor() {
+      client.addRequestInterceptor(new HttpRequestInterceptor()
+      {
 
+         @Override
          public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException
          {
-            if (!request.containsHeader("Accept-Encoding")) {
+            if (!request.containsHeader("Accept-Encoding"))
+            {
                request.addHeader("Accept-Encoding", "gzip");
             }
          }
 
       });
 
-      client.addResponseInterceptor(new HttpResponseInterceptor() {
+      client.addResponseInterceptor(new HttpResponseInterceptor()
+      {
 
+         @Override
          public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException
          {
             HttpEntity entity = response.getEntity();
-            if (entity != null) {
+            if (entity != null)
+            {
                Header header = entity.getContentEncoding();
-               if (header != null) {
+               if (header != null)
+               {
                   HeaderElement[] codecs = header.getElements();
-                  for (int i = 0; i < codecs.length; i++) {
-                     if (codecs[i].getName().equalsIgnoreCase("gzip")) {
+                  for (int i = 0; i < codecs.length; i++)
+                  {
+                     if (codecs[i].getName().equalsIgnoreCase("gzip"))
+                     {
                         response.setEntity(new GzipDecompressingEntity(response.getEntity()));
                         return;
                      }

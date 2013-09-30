@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.context;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +27,7 @@ import java.util.Map;
 public abstract class ContextBase implements Context
 {
 
-   private final Map<Object, Object> map = new HashMap<Object, Object>();
+   private final Map<Object, Object> map = new LinkedHashMap<Object, Object>();
 
    @Override
    public Object get(final Object key)

@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -126,7 +126,8 @@ public class Header extends HttpCondition implements Parameterized
    {
       HttpServletRequest request = event.getRequest();
       Enumeration<String> headerNames = request.getHeaderNames();
-      if (headerNames != null) {
+      if (headerNames != null)
+      {
          for (String header : Collections.list(headerNames))
          {
             if (name.matches(event, context, header) && matchesValue(event, context, request, header))
@@ -143,7 +144,8 @@ public class Header extends HttpCondition implements Parameterized
             final String header)
    {
       Enumeration<String> headers = request.getHeaders(header);
-      if (headers != null) {
+      if (headers != null)
+      {
          for (String contents : Collections.list(headers))
          {
             if (value.matches(event, context, contents))
@@ -158,7 +160,7 @@ public class Header extends HttpCondition implements Parameterized
    @Override
    public Set<String> getRequiredParameterNames()
    {
-      Set<String> result = new HashSet<String>();
+      Set<String> result = new LinkedHashSet<String>();
       result.addAll(name.getRequiredParameterNames());
       result.addAll(value.getRequiredParameterNames());
       return result;

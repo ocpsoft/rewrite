@@ -15,8 +15,7 @@ import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 
-// FIXME this results in sporadic failure. needs review
-@Ignore
+@Ignore("This still fails randomly/sporadically.")
 @RunWith(Arquillian.class)
 public class ParameterTest extends RewriteTestBase
 {

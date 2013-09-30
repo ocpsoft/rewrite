@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.servlet.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -39,7 +39,7 @@ class WebXmlServletRegistrationParser
 
    private List<ServletEntry> servlets = new ArrayList<ServletEntry>();
 
-   private Map<String, ServletMappingEntry> servletMappings = new HashMap<String, ServletMappingEntry>();
+   private Map<String, ServletMappingEntry> servletMappings = new LinkedHashMap<String, ServletMappingEntry>();
 
    private ServletEntry currentServlet;
 
@@ -135,9 +135,10 @@ class WebXmlServletRegistrationParser
          if (event.isEndElement() && isNotBlank(currentServletMapping.servletName)) {
             String key = currentServletMapping.servletName.trim();
             ServletMappingEntry existingMapping = servletMappings.get(key);
-            if(existingMapping != null) {
+            if (existingMapping != null) {
                existingMapping.mappings.addAll(currentServletMapping.mappings);
-            } else {
+            }
+            else {
                servletMappings.put(key, currentServletMapping);
             }
             currentServletMapping = null;

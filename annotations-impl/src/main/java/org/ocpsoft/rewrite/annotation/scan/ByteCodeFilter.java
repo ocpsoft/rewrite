@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.ocpsoft.logging.Logger;
@@ -69,7 +70,7 @@ public class ByteCodeFilter
    /**
     * The strings to look for in the constants table
     */
-   private final Set<String> fieldDescriptors = new HashSet<String>();
+   private final Set<String> fieldDescriptors = new LinkedHashSet<String>();
 
    /**
     * The filter must be initialized with a list of types to look for when scanning the class files. If a class files

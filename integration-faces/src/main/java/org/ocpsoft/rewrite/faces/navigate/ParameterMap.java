@@ -16,11 +16,11 @@
 package org.ocpsoft.rewrite.faces.navigate;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * MultiMap for storing multiple values for each parameter
@@ -34,19 +34,20 @@ class ParameterMap
 
    public ParameterMap()
    {
-      map = new TreeMap<String, List<String>>();
+      map = new LinkedHashMap<String, List<String>>();
    }
 
    public ParameterMap(ParameterMap source)
    {
-      map = new TreeMap<String, List<String>>(source.map);
+      map = new LinkedHashMap<String, List<String>>(source.map);
    }
 
    public void put(String key, String value)
    {
 
       List<String> values = map.get(key);
-      if (values == null) {
+      if (values == null)
+      {
          values = new ArrayList<String>();
          map.put(key, values);
       }

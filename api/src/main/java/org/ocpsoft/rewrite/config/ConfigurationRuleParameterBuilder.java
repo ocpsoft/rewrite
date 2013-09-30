@@ -32,9 +32,9 @@ import org.ocpsoft.rewrite.param.Validator;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ConfigurationRuleParameterBuilder extends ParameterBuilder<ConfigurationRuleParameterBuilder>
+public class ConfigurationRuleParameterBuilder
          implements
-
+         ConfigurableParameter<ConfigurationRuleParameterBuilder>,
          ConfigurationRuleParameter,
          ConfigurationRuleParameterMatches,
          ConfigurationRuleParameterWhere,
@@ -47,7 +47,6 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
    public ConfigurationRuleParameterBuilder(ConfigurationRuleBuilder parent,
             final ConfigurableParameter<?> param)
    {
-      super(param.getName());
       this.parent = parent;
       this.param = param;
 
@@ -130,6 +129,48 @@ public class ConfigurationRuleParameterBuilder extends ParameterBuilder<Configur
    public ConfigurationRuleBuilderWithPriority withPriority(int priority)
    {
       return parent.withPriority(priority);
+   }
+
+   @Override
+   public List<Binding> getBindings()
+   {
+      return param.getBindings();
+   }
+
+   @Override
+   public String getName()
+   {
+      return param.getName();
+   }
+
+   @Override
+   public Converter<?> getConverter()
+   {
+      return param.getConverter();
+   }
+
+   @Override
+   public Validator<?> getValidator()
+   {
+      return param.getValidator();
+   }
+
+   @Override
+   public List<Constraint<String>> getConstraints()
+   {
+      return param.getConstraints();
+   }
+
+   @Override
+   public List<Transposition<String>> getTranspositions()
+   {
+      return param.getTranspositions();
+   }
+
+   @Override
+   public String toString()
+   {
+      return param.toString();
    }
 
 }

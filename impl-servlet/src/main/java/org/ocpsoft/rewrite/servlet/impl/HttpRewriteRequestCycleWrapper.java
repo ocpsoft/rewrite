@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.servlet.impl;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +63,7 @@ public class HttpRewriteRequestCycleWrapper extends HttpRequestCycleWrapper impl
    {
       HttpServletRequest result = request;
       if (HttpRewriteWrappedRequest.getCurrentInstance(request) == null) {
-         Map<String, String[]> additionalParams = new HashMap<String, String[]>();
+         Map<String, String[]> additionalParams = new LinkedHashMap<String, String[]>();
 
          for (RequestParameterProvider provider : providers) {
             Map<String, String[]> m = provider.getAdditionalParameters(request, response);

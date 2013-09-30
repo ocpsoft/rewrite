@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.param;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public class DefaultParameterValueStore implements ParameterValueStore, Iterable<Entry<Parameter<?>, String>>
 {
-   Map<Parameter<?>, String> map = new HashMap<Parameter<?>, String>();
+   Map<Parameter<?>, String> map = new LinkedHashMap<Parameter<?>, String>();
 
    @Override
    public String retrieve(Parameter<?> parameter)

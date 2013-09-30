@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.pretty.faces.config.dynaview;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +48,7 @@ public class DynaviewEngine
    {
       StringBuffer result = new StringBuffer();
 
-      Map<Pattern, String> patterns = new HashMap<Pattern, String>();
+      Map<Pattern, String> patterns = new LinkedHashMap<Pattern, String>();
 
       Pattern pathMapping = Pattern.compile("^(/.*/)\\*$");
       Pattern extensionMapping = Pattern.compile("^\\*(\\..*)$");

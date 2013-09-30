@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.config;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,11 +24,12 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.param.ConfigurableParameter;
+import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.Parameter;
-import org.ocpsoft.rewrite.param.ParameterBuilder;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+import org.ocpsoft.rewrite.param.ParameterizedRule;
 import org.ocpsoft.rewrite.util.Visitor;
 
 /**
@@ -36,17 +37,28 @@ import org.ocpsoft.rewrite.util.Visitor;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RuleBuilder implements RelocatableRule, CompositeCondition, CompositeOperation
+public class RuleBuilder implements ParameterizedRule, RelocatableRule, CompositeCondition, CompositeOperation
 {
-   private final ParameterStore store = new DefaultParameterStore();
+   private final ParameterStore store;
 
    private Integer priority = null;
    private String id = "";
    private Condition condition = new True();
    private Operation operation;
 
-   protected RuleBuilder()
-   {}
+   private RuleBuilder()
+   {
+      store = new DefaultParameterStore();
+   }
+
+   private RuleBuilder(Rule rule)
+   {
+      if (rule instanceof RuleBuilder)
+         store = ((RuleBuilder) rule).getParameterStore();
+      else
+         store = new DefaultParameterStore();
+      withId(rule.getId()).when(rule).perform(rule);
+   }
 
    /**
     * Returns a new {@link RuleBuilder} instance.
@@ -61,7 +73,7 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
     */
    public static RuleBuilder wrap(final Rule rule)
    {
-      return new RuleBuilder().withId(rule.getId()).when(rule).perform(rule);
+      return new RuleBuilder(rule);
    }
 
    /**
@@ -201,29 +213,27 @@ public class RuleBuilder implements RelocatableRule, CompositeCondition, Composi
       return Collections.emptyList();
    }
 
+   @Override
    public ParameterStore getParameterStore()
    {
       return store;
    }
 
-   @SuppressWarnings({ "rawtypes" })
    public ConfigurableParameter<?> where(String name)
    {
-      ParameterBuilder<?> parameter = new ParameterBuilder(name) {};
-
-      assertParameterExists(parameter, name);
-
-      Parameter<?> result = getParameterStore().get(name, parameter);
+      assertParameterExists(name);
+      Parameter<?> result = getParameterStore().get(name, new DefaultParameter(name));
       if (result instanceof ConfigurableParameter)
          return (ConfigurableParameter<?>) result;
       throw new RewriteException("Cannot configure read-only parameter [" + name + "].");
    }
 
-   private void assertParameterExists(ParameterBuilder<?> parameter, String name)
+   private void assertParameterExists(String name)
    {
-      final Set<String> parameterNames = new HashSet<String>();
+      final Set<String> parameterNames = new LinkedHashSet<String>();
 
-      ParameterizedCallback callback = new ParameterizedCallback() {
+      ParameterizedCallback callback = new ParameterizedCallback()
+      {
          @Override
          public void call(Parameterized parameterized)
          {

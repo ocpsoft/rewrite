@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -327,7 +327,7 @@ public class Join implements Rule, JoinPath, Parameterized
    @Override
    public Set<String> getRequiredParameterNames()
    {
-      final Set<String> result = new HashSet<String>();
+      final Set<String> result = new LinkedHashSet<String>();
       result.addAll(requestPath.getRequiredParameterNames());
       result.addAll(resourcePath.getRequiredParameterNames());
       if (outboundConditionCache != null)

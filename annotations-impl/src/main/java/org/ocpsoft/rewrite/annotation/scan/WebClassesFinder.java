@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -45,7 +45,7 @@ public class WebClassesFinder extends AbstractClassFinder
    /**
     * Manage a set of classes already processed
     */
-   private final Set<String> processedClasses = new HashSet<String>();
+   private final Set<String> processedClasses = new LinkedHashSet<String>();
 
    /**
     * Initialization

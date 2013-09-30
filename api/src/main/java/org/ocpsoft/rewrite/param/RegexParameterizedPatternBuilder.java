@@ -17,8 +17,8 @@ package org.ocpsoft.rewrite.param;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -328,8 +328,9 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    @Override
    public Set<String> getRequiredParameterNames()
    {
-      Set<String> result = new HashSet<String>();
-      for (RegexGroup group : groups) {
+      Set<String> result = new LinkedHashSet<String>();
+      for (RegexGroup group : groups)
+      {
          result.add(group.getName());
       }
       return result;
@@ -339,5 +340,19 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    public void setParameterStore(ParameterStore store)
    {
       this.parameters = store;
+   }
+
+   @Override
+   public boolean isParameterComplete(Rewrite event, EvaluationContext context)
+   {
+      try
+      {
+         extractBoundValues(event, context, null);
+         return true;
+      }
+      catch (ParameterizationException e)
+      {
+         return false;
+      }
    }
 }

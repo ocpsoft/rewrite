@@ -88,16 +88,17 @@ public class ServletMapping extends HttpCondition implements Parameterized
    @Override
    public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
    {
-      if (resource != null)
+      if (resource != null && resource.isParameterComplete(event, context))
       {
          String path = resource.build(event, context, Transpositions.encodePath());
-         try {
-
+         try
+         {
             for (ServletRegistration registration : getServletRegistration(event.getServletContext()))
             {
                Collection<String> mappings = registration.getMappings();
 
-               for (String mapping : mappings) {
+               for (String mapping : mappings)
+               {
                   if (path.startsWith("/") && !mapping.startsWith("/"))
                   {
                      mapping = "/" + mapping;
@@ -117,7 +118,8 @@ public class ServletMapping extends HttpCondition implements Parameterized
 
             return event.getServletContext().getResource(path) != null;
          }
-         catch (MalformedURLException e) {
+         catch (MalformedURLException e)
+         {
             log.debug("Invalid file format [{}]", path);
          }
       }
@@ -129,9 +131,11 @@ public class ServletMapping extends HttpCondition implements Parameterized
     */
    private List<ServletRegistration> getServletRegistration(ServletContext context)
    {
-      for (ServletRegistrationProvider provider : getServletRegistrationProviders()) {
+      for (ServletRegistrationProvider provider : getServletRegistrationProviders())
+      {
          List<ServletRegistration> registrations = provider.getServletRegistrations(context);
-         if (registrations != null) {
+         if (registrations != null)
+         {
             return registrations;
          }
       }
@@ -143,7 +147,8 @@ public class ServletMapping extends HttpCondition implements Parameterized
     */
    private List<ServletRegistrationProvider> getServletRegistrationProviders()
    {
-      if (servletRegistrationProviders == null) {
+      if (servletRegistrationProviders == null)
+      {
          servletRegistrationProviders = Iterators.asList(
                   ServiceLoader.loadTypesafe(ServletRegistrationProvider.class).iterator());
          Collections.sort(servletRegistrationProviders, new WeightedComparator());

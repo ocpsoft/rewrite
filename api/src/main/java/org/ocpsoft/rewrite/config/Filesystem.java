@@ -25,6 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPattern;
+import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 
@@ -51,9 +52,13 @@ public class Filesystem implements Condition, Parameterized
    {
       if (resource != null)
       {
-         String filePath = resource.getBuilder().build(event, context);
-         File file = new File(filePath);
-         return filter.accept(file);
+         ParameterizedPatternBuilder builder = resource.getBuilder();
+         if (builder.isParameterComplete(event, context))
+         {
+            String filePath = builder.build(event, context);
+            File file = new File(filePath);
+            return filter.accept(file);
+         }
       }
       return false;
    }
@@ -78,7 +83,8 @@ public class Filesystem implements Condition, Parameterized
     */
    public static Filesystem fileExists(final File resource)
    {
-      return new Filesystem(resource, new FileFilter() {
+      return new Filesystem(resource, new FileFilter()
+      {
          @Override
          public boolean accept(File file)
          {
@@ -107,7 +113,8 @@ public class Filesystem implements Condition, Parameterized
     */
    public static Filesystem directoryExists(final File resource)
    {
-      return new Filesystem(resource, new FileFilter() {
+      return new Filesystem(resource, new FileFilter()
+      {
          @Override
          public boolean accept(File file)
          {

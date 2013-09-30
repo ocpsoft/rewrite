@@ -26,8 +26,9 @@ import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * This test case was intended to begin mocking out an i18n API.
  * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class ParameterizedPatternInterceptorTest
 {

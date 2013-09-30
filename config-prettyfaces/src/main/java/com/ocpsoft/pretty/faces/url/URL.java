@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class URL
    private String originalURL = "";
    private List<String> segments;
 
-   private final Map<String, List<String>> decodedSegments = new HashMap<String, List<String>>();
+   private final Map<String, List<String>> decodedSegments = new LinkedHashMap<String, List<String>>();
 
    /**
     * Create a URL object for the given url String. The input string must not yet have been decoded.
@@ -43,7 +43,7 @@ public class URL
    {
       if (url != null)
       {
-         url =url.trim();
+         url = url.trim();
          originalURL = url;
          if (StringUtils.hasLeadingSlash(url))
          {
@@ -145,14 +145,14 @@ public class URL
    {
       try
       {
-         
+
          /*
           * Note: The replacement allows to call decode() on an already decoded URL 
           * and supports decoding of strings that contain not encoded characters. 
           * IHMO this is only needed because there seem to be situation in PrettyFaces 
           * where decoded URLs are decoded again.
           */
-         
+
          final URI uri = new URI(("http://localhost/" + segment)
                   .replace(" ", "%20")
                   .replace("\"", "%22")

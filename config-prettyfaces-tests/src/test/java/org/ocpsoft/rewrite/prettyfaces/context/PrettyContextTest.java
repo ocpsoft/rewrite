@@ -37,8 +37,6 @@ public class PrettyContextTest extends RewriteTest
                .addAsWebResource("context/index.xhtml", "index.xhtml")
                .addAsWebInfResource("context/pretty-config.xml", "pretty-config.xml");
 
-      System.out.println(deployment.toString(true));
-
       return deployment;
    }
 

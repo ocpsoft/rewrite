@@ -33,6 +33,7 @@ public interface ConfigurationRuleParameterMatches extends ConfigurationBuilderR
    /**
     * Configure the {@link Parameter} with the given name.
     */
+   @Override
    ConfigurationRuleParameterWhere where(String string);
 
    /**

@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.spring;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,13 +29,14 @@ import org.springframework.web.context.WebApplicationContext;
  * 
  * @author Christian Kaltepoth
  */
-public class SpringServiceLocator implements ServiceLocator {
+public class SpringServiceLocator implements ServiceLocator
+{
 
    @Override
    @SuppressWarnings("unchecked")
-   public <T> Collection<Class<T>> locate(Class<T> clazz) {
-
-      Set<Class<T>> result = new HashSet<Class<T>>();
+   public <T> Collection<Class<T>> locate(Class<T> clazz)
+   {
+      Set<Class<T>> result = new LinkedHashSet<Class<T>>();
 
       // use the Spring API to obtain the WebApplicationContext
       WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();

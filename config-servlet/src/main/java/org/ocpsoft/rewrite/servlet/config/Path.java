@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -111,7 +111,8 @@ public class Path extends HttpCondition implements Parameterized
       if (event instanceof HttpOutboundServletRewrite)
       {
          url = ((HttpOutboundServletRewrite) event).getOutboundAddress().getPath();
-         if(url == null) //e.g an external url like http://ocpsoft.org (without trailing slash) or an anchor link have a null path
+         if (url == null) // e.g an external url like http://ocpsoft.org (without trailing slash) or an anchor link have
+                          // a null path
             return false;
       }
       else
@@ -140,7 +141,7 @@ public class Path extends HttpCondition implements Parameterized
    @Override
    public Set<String> getRequiredParameterNames()
    {
-      Set<String> result = new HashSet<String>();
+      Set<String> result = new LinkedHashSet<String>();
       if (captureIn != null)
          result.add(captureIn);
       else

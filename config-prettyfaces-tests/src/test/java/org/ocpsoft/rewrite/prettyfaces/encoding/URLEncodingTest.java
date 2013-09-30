@@ -168,13 +168,14 @@ public class URLEncodingTest extends RewriteTestBase
       Assert.assertNotNull(browser.findElement(By.id("form")));
    }
 
+   @Test
    public void testNoDecodeOnSubmitDoesNotCrash() throws Exception
    {
       browser.get(getBaseURL() + getContextPath() + "/decodequery");
 
-      Assert.assertTrue(browser.getPageSource().contains("viewId=encoding.jsf"));
+      Assert.assertTrue(browser.getPageSource().contains("viewId=/encoding.xhtml"));
       browser.findElement(By.id("input1")).sendKeys("%");
       browser.findElement(By.id("submit")).click();
-      Assert.assertTrue(browser.getPageSource().contains("viewId=encoding.jsf"));
+      Assert.assertTrue(browser.getPageSource().contains("viewId=/encoding.xhtml"));
    }
 }

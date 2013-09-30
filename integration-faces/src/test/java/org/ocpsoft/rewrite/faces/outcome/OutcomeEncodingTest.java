@@ -67,8 +67,11 @@ public class OutcomeEncodingTest extends RewriteTestBase
    }
 
    @Test
-   // TODO: Why doesn't this work
-   @Ignore
+   @Ignore("It seems like JSF is actually failing to parse the returned action strings, "
+            + "and is passing only the bare view-id to response.encodeURL()."
+            + "I'm not sure what the rules on '=' as a value are in the http spec, but"
+            + "this is JSF doing something bad here afaik. Perhaps something to do with:"
+            + "'include-view-params=true' ?")
    public void testOutcomeRedirectWithEqual() throws Exception
    {
 
@@ -80,15 +83,25 @@ public class OutcomeEncodingTest extends RewriteTestBase
    }
 
    @Test
-   // Seems like ampersands are not really supported by JSF outcomes
-   @Ignore
+   @Ignore("Actually I think that this should not include ampersands in the rewritten values. "
+            + "Parsing the redirect should treat '&bar' as a query parameter with null value. "
+            + "JSF is still dropping 'bar' incorrectly, but I wouldn't expect it to be included "
+            + "in the path param of the rewritten URL.")
    public void testOutcomeRedirectWithAmpersand() throws Exception
    {
 
       HtmlPage startPage = getWebClient("/start").getPage();
       HtmlPage secondPage = startPage.getElementById("form:redirectWithAmpersand").click();
 
-      assertThat(secondPage.getUrl().toString(), endsWith("/page/foo%26bar&query=foo%26bar"));
+      /*
+       * Christian thinks:
+       */
+      // assertThat(secondPage.getUrl().toString(), endsWith("/page/foo%26bar&query=foo%26bar"));
+
+      /*
+       * Lincoln thinks:
+       */
+      assertThat(secondPage.getUrl().toString(), endsWith("/page/foo?bar&query=foo&bar"));
 
    }
 
