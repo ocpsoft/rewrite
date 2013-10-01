@@ -1,0 +1,9 @@
+language: java
+env: 
+  - CONTAINER=JBOSS_AS_MANAGED_7.X
+  - CONTAINER=GLASSFISH_MANAGED_3.1
+script: "mvn -P $CONTAINER test"
+jdk:
+  - oraclejdk7
+  - openjdk6
+
