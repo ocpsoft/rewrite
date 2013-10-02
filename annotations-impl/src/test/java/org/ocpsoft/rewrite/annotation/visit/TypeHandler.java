@@ -17,6 +17,10 @@ public class TypeHandler implements AnnotationHandler<TypeAnno>
    @Override
    public void process(ClassContext context, TypeAnno annotation, HandlerChain chain)
    {
+
+      // TODO: quickfix to tell context that we created a rule
+      context.getRuleBuilder();
+
       context.getConfigurationBuilder().addRule()
                .when(Path.matches("/annotation/" + annotation.value()))
                .perform(SendStatus.code(204));

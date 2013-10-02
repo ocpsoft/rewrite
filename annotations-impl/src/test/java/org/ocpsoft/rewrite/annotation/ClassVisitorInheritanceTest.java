@@ -94,8 +94,13 @@ public class ClassVisitorInheritanceTest
             elements.add(fieldContext.getJavaClass().getSimpleName() + ":" + fieldContext.getJavaField().getName());
          }
          else if (context instanceof ClassContext) {
+
             ClassContext classContext = (ClassContext) context;
             elements.add(classContext.getJavaClass().getSimpleName());
+
+            // trigger creation of a RuleBuilder
+            context.getRuleBuilder();
+
          }
       }
 

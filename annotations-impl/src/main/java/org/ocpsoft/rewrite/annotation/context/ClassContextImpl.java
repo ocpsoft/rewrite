@@ -66,4 +66,9 @@ public class ClassContextImpl extends ContextBase implements ClassContext
       return javaClass;
    }
 
+   public boolean hasRuleBuildingStarted()
+   {
+      return configurationRuleBuilder != null;
+   }
+
 }

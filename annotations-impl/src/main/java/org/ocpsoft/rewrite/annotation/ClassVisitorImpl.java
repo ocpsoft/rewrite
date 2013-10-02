@@ -76,7 +76,7 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
    public void visit(Class<?> clazz)
    {
 
-      ClassContext context = new ClassContextImpl(builder, clazz);
+      ClassContextImpl context = new ClassContextImpl(builder, clazz);
       context.put(clazz, payload);
 
       if (log.isTraceEnabled())
@@ -87,25 +87,30 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
       // first process the class
       visit(clazz, context);
 
-      // then process the fields
-      for (Field field : clazz.getDeclaredFields())
-      {
-         visit(field, new FieldContextImpl(context, field));
-      }
+      // only process fields and classes if a rule building has been started
+      if (context.hasRuleBuildingStarted()) {
 
-      // then the methods
-      for (Method method : clazz.getDeclaredMethods())
-      {
-         MethodContextImpl methodContext = new MethodContextImpl(context, method);
-         visit(method, methodContext);
-
-         // then the method parameters
-         for (int i = 0; i < method.getParameterTypes().length; i++)
+         // then process the fields
+         for (Field field : clazz.getDeclaredFields())
          {
-            ParameterImpl parameter = new ParameterImpl(method, method.getParameterTypes()[i],
-                     method.getParameterAnnotations()[i], i);
-            visit(parameter, new ParameterContextImpl(methodContext, parameter));
+            visit(field, new FieldContextImpl(context, field));
          }
+
+         // then the methods
+         for (Method method : clazz.getDeclaredMethods())
+         {
+            MethodContextImpl methodContext = new MethodContextImpl(context, method);
+            visit(method, methodContext);
+
+            // then the method parameters
+            for (int i = 0; i < method.getParameterTypes().length; i++)
+            {
+               ParameterImpl parameter = new ParameterImpl(method, method.getParameterTypes()[i],
+                        method.getParameterAnnotations()[i], i);
+               visit(parameter, new ParameterContextImpl(methodContext, parameter));
+            }
+         }
+
       }
 
    }
