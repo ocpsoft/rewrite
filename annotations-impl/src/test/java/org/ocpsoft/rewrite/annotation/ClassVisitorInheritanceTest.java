@@ -52,8 +52,12 @@ public class ClassVisitorInheritanceTest
 
       visitor.visit(SimpleClass.class);
 
+      /*
+       * The hander visits the class and all the fields
+       */
       assertThat(handler.getElements())
-               .containsExactly("SimpleClass", "SimpleClass:field");
+               .contains("SimpleClass")
+               .contains("field");
 
    }
 
@@ -63,9 +67,15 @@ public class ClassVisitorInheritanceTest
 
       visitor.visit(SimpleSubClass.class);
 
+      /*
+       * The handler visits the class, all the fields (including the ones 
+       * declared in the super class), but not the super class itself.
+       */
       assertThat(handler.getElements())
-               .containsExactly("SimpleSubClass", "SimpleSubClass:field1")
-               .doesNotContain("SimpleSuperClass", "SimpleSuperClass:field2");
+               .contains("SimpleSubClass")
+               .contains("field1")
+               .contains("field2")
+               .doesNotContain("SimpleSuperClass");
 
    }
 
@@ -91,7 +101,7 @@ public class ClassVisitorInheritanceTest
       {
          if (context instanceof FieldContext) {
             FieldContext fieldContext = (FieldContext) context;
-            elements.add(fieldContext.getJavaClass().getSimpleName() + ":" + fieldContext.getJavaField().getName());
+            elements.add(fieldContext.getJavaField().getName());
          }
          else if (context instanceof ClassContext) {
 

@@ -90,27 +90,34 @@ public class ClassVisitorImpl implements ClassVisitor, Configuration
       // only process fields and classes if a rule building has been started
       if (context.hasRuleBuildingStarted()) {
 
-         // then process the fields
-         for (Field field : clazz.getDeclaredFields())
-         {
-            visit(field, new FieldContextImpl(context, field));
-         }
+         // walk up the inheritance hierarchy
+         Class<?> currentType = clazz;
+         while (currentType != null) {
 
-         // then the methods
-         for (Method method : clazz.getDeclaredMethods())
-         {
-            MethodContextImpl methodContext = new MethodContextImpl(context, method);
-            visit(method, methodContext);
-
-            // then the method parameters
-            for (int i = 0; i < method.getParameterTypes().length; i++)
+            // then process the fields
+            for (Field field : currentType.getDeclaredFields())
             {
-               ParameterImpl parameter = new ParameterImpl(method, method.getParameterTypes()[i],
-                        method.getParameterAnnotations()[i], i);
-               visit(parameter, new ParameterContextImpl(methodContext, parameter));
+               visit(field, new FieldContextImpl(context, field));
             }
-         }
 
+            // then the methods
+            for (Method method : currentType.getDeclaredMethods())
+            {
+               MethodContextImpl methodContext = new MethodContextImpl(context, method);
+               visit(method, methodContext);
+
+               // then the method parameters
+               for (int i = 0; i < method.getParameterTypes().length; i++)
+               {
+                  ParameterImpl parameter = new ParameterImpl(method, method.getParameterTypes()[i],
+                           method.getParameterAnnotations()[i], i);
+                  visit(parameter, new ParameterContextImpl(methodContext, parameter));
+               }
+            }
+
+            currentType = currentType.getSuperclass();
+
+         }
       }
 
    }

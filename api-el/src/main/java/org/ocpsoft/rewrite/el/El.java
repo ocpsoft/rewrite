@@ -65,7 +65,16 @@ public abstract class El implements Binding, Retrieval
     */
    public static El retrievalMethod(final Method method)
    {
-      return new ElMethod(new TypeBasedExpression(method.getDeclaringClass(), method.getName()), null);
+      return retrievalMethod(method.getDeclaringClass(), method.getName());
+   }
+
+   /**
+    * Create a new EL Method binding to retrieve values. This method allows the caller to supply the {@link Class}
+    * representing the type of the target object and the method name to refer to the method that should be invoked.
+    */
+   public static El retrievalMethod(final Class<?> clazz, final String methodName)
+   {
+      return new ElMethod(new TypeBasedExpression(clazz, methodName), null);
    }
 
    /**
@@ -92,7 +101,18 @@ public abstract class El implements Binding, Retrieval
     */
    public static El property(final Field field)
    {
-      return new ElProperty(new TypeBasedExpression(field.getDeclaringClass(), field.getName()));
+      return property(field.getDeclaringClass(), field.getName());
+   }
+
+   /**
+    * Create a new EL Value binding using a single expression to submit and retrieve values. The specified property must
+    * either be public, or have a publicly defined getter/setter. Instead of an EL expression this method expects the
+    * {@link Class} representing the type of the target object and the field name. The EL expression will be
+    * automatically created at runtime.
+    */
+   public static El property(final Class<?> clazz, final String fieldName)
+   {
+      return new ElProperty(new TypeBasedExpression(clazz, fieldName));
    }
 
    /**

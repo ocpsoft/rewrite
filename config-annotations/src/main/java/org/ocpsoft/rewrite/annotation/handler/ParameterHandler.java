@@ -81,7 +81,7 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
       ConfigurableParameter<?> parameterBuilder = context.getRuleBuilder().where(param);
 
       // subsequent handlers need the binding to configure deferred behavior
-      El binding = El.property(field);
+      El binding = El.property(context.getJavaClass(), field.getName());
       context.put(Binding.class, binding);
 
       // subsequent handlers need the builder to configure the parameter

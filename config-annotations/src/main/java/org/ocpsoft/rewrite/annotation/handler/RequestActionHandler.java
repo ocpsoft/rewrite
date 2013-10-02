@@ -48,7 +48,8 @@ public class RequestActionHandler extends MethodAnnotationHandler<RequestAction>
 
       // create an Operation for executing this method
       Method method = context.getJavaMethod();
-      Operation plainOperation = Invoke.binding(El.retrievalMethod(method));
+      El el = El.retrievalMethod(context.getJavaClass(), method.getName());
+      Operation plainOperation = Invoke.binding(el);
 
       // let subsequent handlers enrich the operation
       context.put(Operation.class, plainOperation);
