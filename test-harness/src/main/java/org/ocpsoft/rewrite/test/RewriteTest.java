@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.test;
 
 import java.io.File;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -242,7 +241,12 @@ public class RewriteTest extends RewriteTestBase
    {
       File classes = new File("../config-annotations/target/classes/org");
 
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-annotations.jar");
+      /*
+       * FIXME: There is already a different archive named "rewrite-annotations.jar"
+       * which worked fine with Arquillian 1.0.4 but not with 1.1.1. So for now
+       * I renamed this archive to "rewrite-annotations2.jar"
+       */
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-annotations2.jar");
 
       if (classes.exists())
       {
