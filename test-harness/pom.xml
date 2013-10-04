@@ -94,7 +94,6 @@
          <groupId>org.jboss.arquillian.extension</groupId>
          <artifactId>arquillian-drone-webdriver-depchain</artifactId>
          <type>pom</type>
-         <scope>import</scope>
       </dependency>
    </dependencies>
 </project>
