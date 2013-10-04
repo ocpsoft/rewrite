@@ -1,10 +1,9 @@
 package org.ocpsoft.rewrite.test;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,9 +17,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.GenericArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
@@ -37,20 +34,21 @@ public abstract class RewriteTestBase
    /**
     * Resolve an {@link Archive} from Maven coordinates.
     */
-   protected static Collection<GenericArchive> resolveDependencies(final String coords)
+   protected static File[] resolveDependencies(final String coords)
    {
-      return DependencyResolvers.use(MavenDependencyResolver.class)
-               .loadEffectivePom("pom.xml")
-               .artifacts(coords)
-               .resolveAs(GenericArchive.class);
+      return Maven.resolver()
+               .loadPomFromFile("pom.xml")
+               .resolve(coords)
+               .withTransitivity()
+               .asFile();
    }
 
    /**
     * Resolve an {@link Archive} from Maven coordinates.
     */
-   protected static GenericArchive resolveDependency(final String coords)
+   protected static File resolveDependency(final String coords)
    {
-      return new ArrayList<GenericArchive>(resolveDependencies(coords)).get(0);
+      return resolveDependencies(coords)[0];
    }
 
    /**
