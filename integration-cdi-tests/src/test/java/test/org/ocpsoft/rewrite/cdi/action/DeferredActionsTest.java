@@ -33,7 +33,7 @@ public class DeferredActionsTest extends RewriteTestBase
       HtmlPage firstPage = getWebClient("/action").getPage();
 
       // reload so we get a postback that visits all the phases
-      HtmlPage secondPage = firstPage.getElementById("form:reload").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:reload").click();
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
       assertContains(secondPageContent, "Action 1 = [RESTORE_VIEW]");

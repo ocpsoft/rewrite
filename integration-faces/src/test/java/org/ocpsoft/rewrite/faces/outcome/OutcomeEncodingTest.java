@@ -49,7 +49,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
    {
 
       HtmlPage startPage = getWebClient("/start").getPage();
-      HtmlPage secondPage = startPage.getElementById("form:redirectSimple").click();
+      HtmlPage secondPage = startPage.getHtmlElementById("form:redirectSimple").click();
 
       assertThat(secondPage.getUrl().toString(), endsWith("/page/foo?query=foo"));
 
@@ -60,7 +60,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
    {
 
       HtmlPage startPage = getWebClient("/start").getPage();
-      HtmlPage secondPage = startPage.getElementById("form:redirectWithSpace").click();
+      HtmlPage secondPage = startPage.getHtmlElementById("form:redirectWithSpace").click();
 
       assertThat(secondPage.getUrl().toString(), endsWith("/page/foo%20bar?query=foo+bar"));
 
@@ -76,7 +76,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
    {
 
       HtmlPage startPage = getWebClient("/start").getPage();
-      HtmlPage secondPage = startPage.getElementById("form:redirectWithEqual").click();
+      HtmlPage secondPage = startPage.getHtmlElementById("form:redirectWithEqual").click();
 
       assertThat(secondPage.getUrl().toString(), endsWith("/page/foo%3Dbar&query=foo%3Dbar"));
 
@@ -91,7 +91,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
    {
 
       HtmlPage startPage = getWebClient("/start").getPage();
-      HtmlPage secondPage = startPage.getElementById("form:redirectWithAmpersand").click();
+      HtmlPage secondPage = startPage.getHtmlElementById("form:redirectWithAmpersand").click();
 
       /*
        * Christian thinks:

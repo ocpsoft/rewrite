@@ -33,7 +33,6 @@ import org.ocpsoft.rewrite.mock.MockBinding;
 @RunWith(Arquillian.class)
 public class RewriteTest extends RewriteTestBase
 {
-   @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       return getDeployment("rewrite-test.war");

@@ -51,7 +51,7 @@ public class NavigateOutcomeTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectSimpleString").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectSimpleString").click();
 
       assertThat(secondPage.getWebResponse().getWebRequest().getHttpMethod(), is(HttpMethod.GET));
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo"));
@@ -66,7 +66,7 @@ public class NavigateOutcomeTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectWithSpace").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectWithSpace").click();
 
       assertThat(secondPage.getWebResponse().getWebRequest().getHttpMethod(), is(HttpMethod.GET));
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo+bar"));
@@ -81,7 +81,7 @@ public class NavigateOutcomeTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectWithAmpersand").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectWithAmpersand").click();
 
       assertThat(secondPage.getWebResponse().getWebRequest().getHttpMethod(), is(HttpMethod.GET));
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo%26bar"));
@@ -96,7 +96,7 @@ public class NavigateOutcomeTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectWithEquals").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectWithEquals").click();
 
       assertThat(secondPage.getWebResponse().getWebRequest().getHttpMethod(), is(HttpMethod.GET));
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo%3Dbar"));
@@ -111,7 +111,7 @@ public class NavigateOutcomeTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectWithChinese").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectWithChinese").click();
 
       assertThat(secondPage.getWebResponse().getWebRequest().getHttpMethod(), is(HttpMethod.GET));
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=%E6%BC%A2%E5%AD%97"));
@@ -123,7 +123,7 @@ public class NavigateOutcomeTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:navigateNoParams").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:navigateNoParams").click();
 
       assertThat(secondPage.getWebResponse().getWebRequest().getHttpMethod(), is(HttpMethod.POST));
       assertThat(secondPage.getUrl().toString(), Matchers.containsString(getContextPath() + "/navigate"));

@@ -27,7 +27,7 @@ public class FacesNavigateInteractionTest extends RewriteTestBase
    public void testNavigate() throws Exception
    {
       HtmlPage firstPage = getWebClient("/page").getPage();
-      HtmlPage secondPage = firstPage.getElementById("navigate").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("navigate").click();
       assertEquals(secondPage.getUrl().getPath(), getContextPath() + "/page");
    }
 }

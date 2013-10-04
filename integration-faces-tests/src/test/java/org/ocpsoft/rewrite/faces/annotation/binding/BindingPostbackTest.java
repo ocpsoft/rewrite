@@ -36,7 +36,7 @@ public class BindingPostbackTest extends RewriteTestBase
       assertContains(firstPageContent, "valueIgnorePostback = [foo]");
 
       // reload so we get a postback
-      HtmlPage secondPage = firstPage.getElementById("form:reload").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:reload").click();
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
       assertContains(secondPageContent, "valueDefault = [foo]");

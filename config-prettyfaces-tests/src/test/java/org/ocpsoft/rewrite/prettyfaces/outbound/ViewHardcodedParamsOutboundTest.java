@@ -69,7 +69,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    public void testHCommandLink() throws Exception
    {
       HtmlPage firstPage = getWebClient("/index").getPage();
-      HtmlPage secondPage = firstPage.getElementById("hCommandLink").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("hCommandLink").click();
       assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params"));
    }
 
@@ -77,7 +77,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    public void testHCommandLinkExtraParams() throws Exception
    {
       HtmlPage firstPage = getWebClient("/index").getPage();
-      HtmlPage secondPage = firstPage.getElementById("hCommandLink-extra").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("hCommandLink-extra").click();
       assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params?extraParam=extraValue"));
    }
 
@@ -85,7 +85,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    public void testHCommandLinkInvalid() throws Exception
    {
       HtmlPage firstPage = getWebClient("/index").getPage();
-      HtmlPage secondPage = firstPage.getElementById("hCommandLink-notMapped").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("hCommandLink-notMapped").click();
       assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params.jsf?param=value2"));
    }
 }

@@ -49,7 +49,7 @@ public class NavigateEncodingTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectSimpleString").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectSimpleString").click();
 
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo"));
 
@@ -63,7 +63,7 @@ public class NavigateEncodingTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectStringWithSpace").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectStringWithSpace").click();
 
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo+bar"));
 
@@ -77,7 +77,7 @@ public class NavigateEncodingTest extends RewriteTestBase
    {
 
       HtmlPage firstPage = getWebClient("/navigate").getPage();
-      HtmlPage secondPage = firstPage.getElementById("form:redirectProblematicCharacters").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectProblematicCharacters").click();
 
       assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo%3Dbar"));
 

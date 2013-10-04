@@ -34,7 +34,7 @@ public class DeferredBindingTest extends RewriteTestBase
       HtmlPage firstPage = getWebClient("/binding/foo/").getPage();
 
       // reload so we get a postback that visits all the phases
-      HtmlPage secondPage = firstPage.getElementById("form:reload").click();
+      HtmlPage secondPage = firstPage.getHtmlElementById("form:reload").click();
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
       assertContains(secondPageContent, "Wrote [foo] to [defaultPhase] during [RESTORE_VIEW]");
