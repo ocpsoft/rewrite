@@ -11,13 +11,6 @@
 
    <artifactId>rewrite-test-harness</artifactId>
 
-   <properties>
-      <version.arquillian>1.0.0.Final</version.arquillian>
-      <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
-      <version.jetty>8.1.2.v20120308</version.jetty>
-      <version.jbossas>7.1.1.Final</version.jbossas>
-   </properties>
-
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
