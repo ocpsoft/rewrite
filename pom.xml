@@ -24,7 +24,7 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <version.jboss.spec>3.0.2.Final</version.jboss.spec>
-      <version.junit>4.8.1</version.junit>
+      <version.junit>4.11</version.junit>
       <version.common>1.0.5.Final</version.common>
       <version.logging>1.0.2.Final</version.logging>
       <version.arquillian>1.0.0.Final</version.arquillian>
@@ -33,8 +33,8 @@
       <version.arquillian.tomcat>1.0.0.Final-SNAPSHOT</version.arquillian.tomcat>
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
-      <version.tomcat>7.0.19</version.tomcat>
-      <version.glassfish>3.1.2</version.glassfish>
+      <version.tomcat>7.0.42</version.tomcat>
+      <version.glassfish>3.1.2.2</version.glassfish>
       <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
    </properties>
 
