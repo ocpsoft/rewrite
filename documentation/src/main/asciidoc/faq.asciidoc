@@ -1,3 +1,54 @@
 == FAQ
 
-TODO
+=== Which Servlet versions does Rewrite support?
+
+Rewrite requires at least a Servlet 2.5 environment or newer. 
+
+=== Which JSF versions does Rewrite support?
+
+Rewrite supports JSF 2.0 and newer. Due to the major changes in JSF 2.0, earlier
+versions are not supported any more.
+
+=== How do I retrieve the original URL after a forward?
+
+If a request gets forwarded by something like a +Join+, your application will only
+see the URL you forwarded the request to if you use something like
++request.getRequestURI()+.
+
+In some situations you may need to obtain the original URL sent by the client.
+The Servlet spec specifies that the original URL is stored in a request
+attribute called +javax.servlet.forward.request_uri+. So to get the original
+URL you can use the following code:
+
+[source,java]
+----
+String url = request.getAttribute("javax.servlet.forward.request_uri");
+----
+
+=== Why are file uploads not working correctly any more?
+
+According to the Servlet spec +HttpServletRequest.getParameter*()+ and
++HttpServletRequest.getPart*()+ can only be called from special Servlets 
+for +multipart/form-data+ request. Using these methods outside of such
+Servlets results in undefined behavior.
+
+Apache Tomcat provides an configuration parameter which changes this and
+allows to access these methods from a Servlet filter. To enable this
+behavior, create a file +META-INF/context.xml+ in your WAR file 
+(in case of Maven use +src/main/webapp/META-INF/context.xml+) and add
+the following content:
+
+[source,xml]
+----
+<Context allowCasualMultipartParsing="true">
+  <!-- no content required -->
+</Context>
+----
+
+As the servlet engines of containers like Glassfish and JBoss AS7 are 
+based on Apache Tomcat, you will run into similar issues there.
+
+For more details about this issue, have a look at this great 
+link:http://stackoverflow.com/a/8050589/395181[stackoverflow answer]
+by link:http://stackoverflow.com/users/157882/balusc[BalusC].
+
