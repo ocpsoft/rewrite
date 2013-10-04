@@ -27,10 +27,11 @@
       <version.junit>4.11</version.junit>
       <version.common>1.0.5.Final</version.common>
       <version.logging>1.0.2.Final</version.logging>
-      <version.arquillian>1.0.0.Final</version.arquillian>
-      <version.arquillian.jetty>1.0.0.CR1</version.arquillian.jetty>
-      <version.arquillian.glassfish>1.0.0.CR3</version.arquillian.glassfish>
-      <version.arquillian.tomcat>1.0.0.Final-SNAPSHOT</version.arquillian.tomcat>
+      <version.arquillian>1.0.4.Final</version.arquillian>
+      <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
+      <version.arquillian.jetty>1.0.0.CR2</version.arquillian.jetty>
+      <version.arquillian.glassfish>1.0.0.CR4</version.arquillian.glassfish>
+      <version.arquillian.tomcat>1.0.0.CR5</version.arquillian.tomcat>
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
       <version.tomcat>7.0.42</version.tomcat>
@@ -367,7 +368,7 @@
          <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-drone-bom</artifactId>
-            <version>${version.arquillian}</version>
+            <version>${version.arquillian.drone}</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
