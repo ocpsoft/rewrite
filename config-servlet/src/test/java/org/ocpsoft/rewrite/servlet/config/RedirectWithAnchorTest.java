@@ -15,18 +15,18 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import static org.junit.Assert.assertEquals;
+import static org.fest.assertions.api.Assertions.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
-import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 /**
  * @see https://github.com/ocpsoft/rewrite/issues/81
@@ -44,13 +44,14 @@ public class RedirectWithAnchorTest extends RewriteTest
                .addAsServiceProvider(ConfigurationProvider.class, RedirectWithAnchorProvider.class);
    }
 
-   @Test
-   @Ignore // TODO: Seems like HtmlUnit behaves differently here
-   public void testParamReadsForMatchingCondition() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/do");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
-      assertEquals("/it#now", action.getCurrentContextRelativeURL());
-   }
+   @ArquillianResource
+   private java.net.URL baseUrl;
 
+   @Test
+   public void testRedirectToUrlWithAnchor() throws Exception
+   {
+      WebDriver driver = new HtmlUnitDriver();
+      driver.get(baseUrl.toString() + "do");
+      assertThat(driver.getCurrentUrl()).endsWith("/it#now");
+   }
 }
