@@ -1,16 +1,14 @@
 language: java
+jdk: openjdk6
 env: 
   - CONTAINER=JBOSS_AS_MANAGED_7.X
   - CONTAINER=GLASSFISH_MANAGED_3.1
   - CONTAINER=TOMEE_MANAGED_1.5
 script: "mvn -P ${CONTAINER} install"
-jdk:
-  - oraclejdk7
-  - openjdk6
 matrix:
-  exclude:
-    - env: CONTAINER=GLASSFISH_MANAGED_3.1
-      jdk: openjdk6
+  include:
+    - env: CONTAINER=JBOSS_AS_MANAGED_7.X
+      jdk: oraclejdk7
 notifications:
   email: false
   irc: "chat.freenode.net#ocpsoft"
