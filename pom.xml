@@ -744,6 +744,22 @@
          </dependencies>
       </profile>
 
+      <profile>
+         <id>TOMEE_MANAGED_1.5</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.apache.openejb</groupId>
+               <artifactId>tomee-embedded</artifactId>
+               <version>1.5.2</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.openejb</groupId>
+               <artifactId>arquillian-tomee-remote</artifactId>
+               <version>1.5.2</version>
+            </dependency>
+         </dependencies>
+      </profile>
+
    </profiles>
 
    <developers>
