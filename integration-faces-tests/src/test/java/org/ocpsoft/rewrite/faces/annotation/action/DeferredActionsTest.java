@@ -35,9 +35,9 @@ public class DeferredActionsTest extends RewriteTestBase
       HtmlPage secondPage = firstPage.getHtmlElementById("form:reload").click();
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
-      assertContains(secondPageContent, "Action 1 = [RESTORE_VIEW]");
-      assertContains(secondPageContent, "Action 2 = [RENDER_RESPONSE]");
-      assertContains(secondPageContent, "Action 3 = [INVOKE_APPLICATION]");
+      assertContains(secondPageContent, "Action 1 = RESTORE_VIEW");
+      assertContains(secondPageContent, "Action 2 = RENDER_RESPONSE");
+      assertContains(secondPageContent, "Action 3 = INVOKE_APPLICATION");
 
    }
 

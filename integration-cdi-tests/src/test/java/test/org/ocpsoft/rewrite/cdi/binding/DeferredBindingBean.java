@@ -40,7 +40,7 @@ public class DeferredBindingBean
    public void setDefaultPhase(String defaultPhase)
    {
       this.defaultPhase = defaultPhase;
-      log.add("Wrote [" + defaultPhase + "] to [defaultPhase] during [" + getCurrentPhase() + "]");
+      log.add("Wrote [" + defaultPhase + "] to [defaultPhase] during " + getCurrentPhase());
    }
 
    public String getAfterInvokeApplication()
@@ -51,7 +51,7 @@ public class DeferredBindingBean
    public void setAfterInvokeApplication(String afterInvokeApplication)
    {
       this.afterInvokeApplication = afterInvokeApplication;
-      log.add("Wrote [" + afterInvokeApplication + "] to [afterInvokeApplication] during [" + getCurrentPhase() + "]");
+      log.add("Wrote [" + afterInvokeApplication + "] to [afterInvokeApplication] during " + getCurrentPhase());
    }
 
    public String getBeforeRenderResponse()
@@ -62,7 +62,7 @@ public class DeferredBindingBean
    public void setBeforeRenderResponse(String beforeRenderResponse)
    {
       this.beforeRenderResponse = beforeRenderResponse;
-      log.add("Wrote [" + beforeRenderResponse + "] to [beforeRenderResponse] during [" + getCurrentPhase() + "]");
+      log.add("Wrote [" + beforeRenderResponse + "] to [beforeRenderResponse] during " + getCurrentPhase());
    }
 
    public List<String> getLog()
@@ -72,12 +72,7 @@ public class DeferredBindingBean
 
    private static String getCurrentPhase()
    {
-      String s = FacesContext.getCurrentInstance().getCurrentPhaseId().toString();
-      if (s != null && s.length() > 5) {
-         // remove the trailing ordinal value of phase
-         return s.substring(0, s.length() - 2);
-      }
-      return s;
+      return FacesContext.getCurrentInstance().getCurrentPhaseId().toString();
    }
 
 }

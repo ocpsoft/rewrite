@@ -54,31 +54,26 @@ public class DeferredActionsBean
    @Deferred
    public void action1()
    {
-      log.add("Action 1 = [" + getCurrentPhase() + "]");
+      log.add("Action 1 = " + getCurrentPhase());
    }
 
    @RequestAction
    @Deferred(before = Phase.RENDER_RESPONSE)
    public void action2()
    {
-      log.add("Action 2 = [" + getCurrentPhase() + "]");
+      log.add("Action 2 = " + getCurrentPhase());
    }
 
    @RequestAction
    @Deferred(after = Phase.INVOKE_APPLICATION)
    public void action3()
    {
-      log.add("Action 3 = [" + getCurrentPhase() + "]");
+      log.add("Action 3 = " + getCurrentPhase());
    }
 
    private static String getCurrentPhase()
    {
-      String s = FacesContext.getCurrentInstance().getCurrentPhaseId().toString();
-      if (s != null && s.length() > 5) {
-         // remove the trailing ordinal value of phase
-         return s.substring(0, s.length() - 2);
-      }
-      return s;
+      return FacesContext.getCurrentInstance().getCurrentPhaseId().toString();
    }
 
    public List<String> getLog()

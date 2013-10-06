@@ -35,9 +35,9 @@ public class DeferredBindingTest extends RewriteTestBase
       HtmlPage secondPage = firstPage.getHtmlElementById("form:reload").click();
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
-      assertContains(secondPageContent, "Wrote [foo] to [defaultPhase] during [RESTORE_VIEW]");
-      assertContains(secondPageContent, "Wrote [foo] to [beforeRenderResponse] during [RENDER_RESPONSE]");
-      assertContains(secondPageContent, "Wrote [foo] to [afterInvokeApplication] during [INVOKE_APPLICATION]");
+      assertContains(secondPageContent, "Wrote [foo] to [defaultPhase] during RESTORE_VIEW");
+      assertContains(secondPageContent, "Wrote [foo] to [beforeRenderResponse] during RENDER_RESPONSE");
+      assertContains(secondPageContent, "Wrote [foo] to [afterInvokeApplication] during INVOKE_APPLICATION");
 
    }
 
