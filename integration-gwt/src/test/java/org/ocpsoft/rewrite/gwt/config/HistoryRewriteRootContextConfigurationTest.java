@@ -15,14 +15,13 @@
  */
 package org.ocpsoft.rewrite.gwt.config;
 
-import junit.framework.Assert;
-
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -41,6 +40,8 @@ public class HistoryRewriteRootContextConfigurationTest extends RewriteTest
    {
       WebArchive deployment = RewriteTest
                .getDeployment("ROOT.war")
+               // The TomEE Arquillian adapter doesn't like ROOT.war, so we force the root context path via context.xml
+               .addAsManifestResource(new StringAsset("<Context path=\"\"/>"), "context.xml")
                .addAsWebResource(new StringAsset(""), "index.html")
                .addAsServiceProvider(ConfigurationProvider.class, HistoryRewriteConfiguration.class);
       return deployment;
@@ -52,7 +53,7 @@ public class HistoryRewriteRootContextConfigurationTest extends RewriteTest
       HttpAction<HttpHead> action = head("/?org.ocpsoft.rewrite.gwt.history.contextPath");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
-      Assert.assertEquals(action.getContextPath(),
+      Assert.assertEquals("/",
                action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").get(0));
    }
 
