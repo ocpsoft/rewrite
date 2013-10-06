@@ -16,6 +16,8 @@
 package org.ocpsoft.rewrite.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +30,7 @@ import javax.enterprise.util.AnnotationLiteral;
 
 import org.ocpsoft.common.spi.ServiceLocator;
 import org.ocpsoft.rewrite.cdi.manager.BeanManagerAware;
+import org.ocpsoft.rewrite.cdi.util.ParameterizedTypeImpl;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -47,7 +50,7 @@ public class CdiServiceLocator extends BeanManagerAware implements ServiceLocato
 
          BeanManager manager = getBeanManager();
 
-         Set<Bean<?>> beans = manager.getBeans(type, new Annotation[] { new AnnotationLiteral<Any>() {
+         Set<Bean<?>> beans = manager.getBeans(getRequiredType(type), new Annotation[] { new AnnotationLiteral<Any>() {
             private static final long serialVersionUID = -1896831901770051851L;
          } });
 
@@ -59,6 +62,30 @@ public class CdiServiceLocator extends BeanManagerAware implements ServiceLocato
 
       return result;
 
+   }
+
+   /**
+    * Builds the correct "required type" including actual type arguments in case of parameterized types.
+    * 
+    * @see https://github.com/ocpsoft/rewrite/issues/137
+    */
+   private Type getRequiredType(Class<?> clazz)
+   {
+
+      TypeVariable<?>[] typeParameters = clazz.getTypeParameters();
+
+      if (typeParameters.length > 0) {
+
+         Type[] actualTypeParameters = new Type[typeParameters.length];
+         for (int i = 0; i < typeParameters.length; i++) {
+            actualTypeParameters[i] = Object.class;
+         }
+
+         return new ParameterizedTypeImpl(clazz, actualTypeParameters, null);
+
+      }
+
+      return clazz;
    }
 
 }
