@@ -38,6 +38,7 @@ public abstract class PrettyFacesTestBase extends RewriteTest
    public static WebArchive getDeployment()
    {
       return RewriteTest.getDeploymentWithCDI()
+               .setWebXML("web.xml")
                .addAsWebInfResource("faces-config.xml")
                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                .addAsLibraries(getPrettyFacesArchive())
