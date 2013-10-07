@@ -27,7 +27,7 @@
       </configuration>
    </container>
 
-   <container qualifier="glassfish_managed" default="true">
+   <container qualifier="glassfish_managed">
       <configuration>
          <property name="glassFishHome">target/container/glassfish3</property>
          <property name="adminPort">34848</property>
@@ -39,6 +39,12 @@
          <property name="httpPort">-1</property>
          <property name="stopPort">-1</property>
          <property name="removeUnusedWebapps">true</property>
+      </configuration>
+   </container>
+
+   <container qualifier="wildfly_managed">
+      <configuration>
+         <property name="jbossHome">target/container/wildfly-8.0.0.Beta1/</property>
       </configuration>
    </container>
 

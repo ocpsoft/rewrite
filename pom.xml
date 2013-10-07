@@ -34,6 +34,7 @@
       <version.arquillian.tomcat>1.0.0.CR5</version.arquillian.tomcat>
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
+      <version.wildfly>8.0.0.Beta1</version.wildfly>
       <version.tomcat>7.0.42</version.tomcat>
       <version.glassfish>3.1.2.2</version.glassfish>
       <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
@@ -756,6 +757,68 @@
                <groupId>org.apache.openejb</groupId>
                <artifactId>arquillian-tomee-remote</artifactId>
                <version>1.5.2</version>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <id>WILDFLY_REMOTE_8</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.wildfly</groupId>
+               <artifactId>wildfly-arquillian-container-remote</artifactId>
+               <version>${version.wildfly}</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <id>WILDFLY_MANAGED_8</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <systemPropertyVariables>
+                        <arquillian.launch>wildfly_managed</arquillian.launch>
+                     </systemPropertyVariables>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <extensions>false</extensions>
+                  <executions>
+                     <execution>
+                        <id>unpack-wildfly</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                           <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                           <artifactItems>
+                              <artifactItem>
+                                 <groupId>org.wildfly</groupId>
+                                 <artifactId>wildfly-dist</artifactId>
+                                 <version>${version.wildfly}</version>
+                                 <type>zip</type>
+                                 <overWrite>false</overWrite>
+                                 <outputDirectory>${project.build.directory}/container</outputDirectory>
+                              </artifactItem>
+                           </artifactItems>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+         <dependencies>
+            <dependency>
+               <groupId>org.wildfly</groupId>
+               <artifactId>wildfly-arquillian-container-managed</artifactId>
+               <version>${version.wildfly}</version>
+               <scope>test</scope>
             </dependency>
          </dependencies>
       </profile>
