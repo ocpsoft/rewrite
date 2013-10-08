@@ -1,11 +1,12 @@
 language: java
+jdk: openjdk6
 script: "mvn -P ${CONTAINER} install"
 matrix:
   # exclude default build as we manually define the build matrix
   # see: https://github.com/travis-ci/travis-ci/issues/1228
   exclude:
     - env: ""
-      jdk: ""
+      jdk: openjdk6
   include:
     - env: CONTAINER=JBOSS_AS_MANAGED_7.X
       jdk: openjdk6
