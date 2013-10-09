@@ -29,6 +29,11 @@
          <groupId>org.ocpsoft.logging</groupId>
          <artifactId>logging-api</artifactId>
       </dependency>
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-test-base</artifactId>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
 
 </project>
