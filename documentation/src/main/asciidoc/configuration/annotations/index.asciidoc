@@ -13,7 +13,7 @@ Please note that the Rewrite annotations are not as flexible as a +Configuration
 The main focus of the annotations is to simplify the most common usecases which usually occur
 many times in an application. A good example for this are +Join+ rules which are used very often.
 
-NOTE: Of cause you can use a +ConfigurationProvider+ and the annotations side by side. 
+NOTE: Of course you can use a +ConfigurationProvider+ and the annotations side by side. 
 
 === Configuration
 
