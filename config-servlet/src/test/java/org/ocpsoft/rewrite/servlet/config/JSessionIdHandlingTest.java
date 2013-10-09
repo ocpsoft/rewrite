@@ -24,7 +24,9 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
@@ -47,7 +49,14 @@ public class JSessionIdHandlingTest extends RewriteTest
                .addAsServiceProvider(ConfigurationProvider.class, JSessionIdHandlingProvider.class);
    }
 
+   /**
+    * This tests is ignored for Wildfly because of the following issues in 8.0.0.Beta1:
+    * 
+    * @see https://issues.jboss.org/browse/WFLY-2259
+    * @see https://issues.jboss.org/browse/WFLY-2251
+    */
    @Test
+   @Category(IgnoreForWildfly.class)
    public void testPathRuleMatchesWithRedirectedSessionId() throws Exception
    {
       HttpAction<HttpGet> action = get("/getsession");
