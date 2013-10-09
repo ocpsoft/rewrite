@@ -2,7 +2,8 @@
 
 === Which Servlet versions does Rewrite support?
 
-Rewrite requires at least a Servlet 2.5 environment or newer. 
+Rewrite requires at least a Servlet 2.5 environment or newer. Additionally, 
+using Servlet 3.0 introduces configuration-free installation.
 
 === Which JSF versions does Rewrite support?
 
