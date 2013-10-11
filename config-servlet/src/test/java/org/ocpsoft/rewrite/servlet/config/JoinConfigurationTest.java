@@ -15,14 +15,15 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import junit.framework.Assert;
-
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
@@ -71,7 +72,13 @@ public class JoinConfigurationTest extends RewriteTest
       Assert.assertEquals("/foo/bar", action.getCurrentContextRelativeURL());
    }
 
+   /**
+    * Disabled for Wildfly because of a known bug in 8.0.0.Beta1
+    * 
+    * @see https://issues.jboss.org/browse/WFLY-2284
+    */
    @Test
+   @Category(IgnoreForWildfly.class)
    public void testSubstitutionWithExtraQueryParams() throws Exception
    {
       HttpAction<HttpGet> action = get("/1/querypath/2/?in=out");
