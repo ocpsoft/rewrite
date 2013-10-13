@@ -30,6 +30,8 @@ public class ShiroUsersTest extends RewriteTestBase
                .addClasses(AdminPageBean.class, LoginServlet.class, LogoutServlet.class, ShiroTestRealm.class)
                .addAsLibraries(resolveDependencies("org.apache.shiro:shiro-web"))
                .addAsLibraries(resolveDependencies("org.ocpsoft.rewrite:rewrite-security-integration-shiro"))
+               // Glassfish needs SLF4J to be in the deployment
+               .addAsLibraries(resolveDependencies("org.slf4j:slf4j-simple:jar:1.7.5"))
                .setWebXML("shiro-web.xml")
                .addAsWebInfResource("shiro.ini")
                .addAsWebResource("protected-page.xhtml");
