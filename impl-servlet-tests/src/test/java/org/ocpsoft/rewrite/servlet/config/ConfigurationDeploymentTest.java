@@ -21,14 +21,21 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForGlassfish3;
+import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
 /**
+ * Wee skip this test for Wildfly and Glassfish, because the Arquillian adapters doesn't handle deployment errors
+ * correctly.
+ * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
+@Category({ IgnoreForWildfly.class, IgnoreForGlassfish3.class })
 public class ConfigurationDeploymentTest
 {
    @Deployment(testable = false)
