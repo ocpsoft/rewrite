@@ -34,6 +34,13 @@
       </configuration>
    </container>
 
+   <container qualifier="glassfish_remote">
+      <configuration>
+         <property name="adminUser">admin</property>
+         <property name="adminPassword">adminadmin</property>
+      </configuration>
+   </container>
+
    <container qualifier="tomee">
       <configuration>
          <property name="httpPort">-1</property>
