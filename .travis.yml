@@ -15,6 +15,8 @@ matrix:
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk7
 notifications:
-  email: false
-  irc: "chat.freenode.net#ocpsoft"
+  email:
+    - "ocpsoft-ci@googlegroups.com"
+  irc:
+    - "chat.freenode.net#ocpsoft"
 
