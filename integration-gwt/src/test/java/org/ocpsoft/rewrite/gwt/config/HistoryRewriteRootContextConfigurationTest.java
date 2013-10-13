@@ -42,6 +42,9 @@ public class HistoryRewriteRootContextConfigurationTest extends RewriteTest
                .getDeployment("ROOT.war")
                // The TomEE Arquillian adapter doesn't like ROOT.war, so we force the root context path via context.xml
                .addAsManifestResource(new StringAsset("<Context path=\"\"/>"), "context.xml")
+               // required for Glassfish to get application to the root context path
+               .addAsWebInfResource(new StringAsset("<glassfish-web-app><context-root>/</context-root></glassfish-web-app>"),
+                        "glassfish-web.xml")
                .addAsWebResource(new StringAsset(""), "index.html")
                .addAsServiceProvider(ConfigurationProvider.class, HistoryRewriteConfiguration.class);
       return deployment;
