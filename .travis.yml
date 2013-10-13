@@ -12,8 +12,6 @@ matrix:
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk7
   allow_failures:
-    - env: CONTAINER=GLASSFISH_MANAGED_3.1
-      jdk: openjdk6
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk7
 notifications:
