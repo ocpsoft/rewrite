@@ -2,16 +2,18 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.io.IOException;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 
 @WebServlet(urlPatterns="/servlet")
-public class JoinChainingConfigurationServlet implements Servlet
+public class JoinChainingConfigurationServlet extends HttpServlet
 {
+
+   private static final long serialVersionUID = 1L;
 
    private ServletConfig config;
 
