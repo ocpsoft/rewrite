@@ -170,6 +170,9 @@ public abstract class El implements Binding, Retrieval
          {
             return providerCallable.call(event, context, provider);
          }
+         catch (RuntimeException e) {
+            throw e;
+         }
          catch (Exception e)
          {
             exceptions.add(e);
