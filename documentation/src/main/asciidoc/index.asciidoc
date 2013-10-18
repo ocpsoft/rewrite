@@ -8,7 +8,7 @@ of the framework, just skip the steps you don't need.
 === Getting started with Rewrite
 
 * link:configuration/install[Install Rewrite] 
-* Create your first URL mapping 
+* link:configuration/mapping[Create your first URL mapping]
 * link:configuration/[Anatomy of a Rewrite Rule]
 
 === Working with Rewrite

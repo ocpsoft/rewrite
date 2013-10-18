@@ -1,0 +1,45 @@
+== Create your first URL-mapping
+
+Rewrite is an extremely versatile library, but the most common use-case is to perform URL-routing, mapping, or URL-rewriting for simple paths and query parameters. This section will demonstrate how to effecively join external URLs with internal server resources.
+
+=== Using Join
+
+The Join rule is a composite rule made up of several other Condition and Operation objects, an inbound URL-mapping, and an outbound URL-rewriting component. Inbound requests to "path" are forwarded "to" the internal resource:
+
+[source,java]
+----
+.addRule(Join.path("/external-url").to("/internal-resource.html"))
+----
+
+=== Adding parameters
+
+Joined URLs may also contain parameters, which represent fragments of the URL "path", and query-parameters of the internal resource. This means that the following `Join`:
+
+[source,java]
+----
+.addRule(Join.path("/external-url-{param}").to("/internal-resource.html"))
+----
+
+Will result in the following mapping (example):
+
+[source]
+----
+URL:                      Resource:
+"/external-url-value1" --> "/internal-resource.html?param=value1
+"/external-url-value2" --> "/internal-resource.html?param=value2
+----
+
+NOTE: The parameter name is used as the name of the query parameter.
+
+=== Using-parameters as conditional values:
+
+Parameters may also be queried and re-used in other conditional or operational values; for instance, the following rule uses the value of the `Join` parameter to inspect local resources, and suggest an alternate URL if the requested resource does not exist:
+
+[source,java]
+----
+.addRule(Join.path("/{page}").to("/files/{page}.html"))
+.when(Resource.exists("/files/{page}.html"))
+.otherwise(Redirect.to("http://example.com/search?q={page}"))
+----
+
+For additional details about using rule parameters, please read the chapter on how to link:parameters[parameterize rules]
