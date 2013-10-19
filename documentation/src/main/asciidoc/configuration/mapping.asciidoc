@@ -11,6 +11,14 @@ The Join rule is a composite rule made up of several other Condition and Operati
 .addRule(Join.path("/external-url").to("/internal-resource.html"))
 ----
 
+This will result in the following mapping:
+
+[source]
+----
+URL:                Resource:
+"/external-url" --> "/internal-resource.html
+----
+
 === Adding parameters
 
 Joined URLs may also contain parameters, which represent fragments of the URL "path", and query-parameters of the internal resource. This means that the following `Join`:
@@ -24,7 +32,7 @@ Will result in the following mapping (example):
 
 [source]
 ----
-URL:                      Resource:
+URL:                       Resource:
 "/external-url-value1" --> "/internal-resource.html?param=value1
 "/external-url-value2" --> "/internal-resource.html?param=value2
 ----
