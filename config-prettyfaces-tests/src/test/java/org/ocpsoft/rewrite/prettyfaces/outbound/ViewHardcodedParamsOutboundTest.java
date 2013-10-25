@@ -9,7 +9,9 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 import org.openqa.selenium.By;
@@ -17,7 +19,14 @@ import org.openqa.selenium.WebDriver;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+/**
+ * Ignored for Wildfly Beta1 because it ships with Mojarra 2.2.3 which ALWAYS appends 'jftfdi' and 'jffi' parameters.
+ * This seems to break our test asserts.
+ * 
+ * @see https://java.net/jira/browse/JAVASERVERFACES-3054
+ */
 @RunWith(Arquillian.class)
+@Category(IgnoreForWildfly.class)
 public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
 {
 
