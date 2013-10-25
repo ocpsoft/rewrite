@@ -16,7 +16,10 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.dynaview;
 
+import static org.junit.Assert.assertThat;
+
 import org.apache.http.client.methods.HttpGet;
+import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,11 +48,11 @@ public class AmbiguousViewidTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/foo");
 
       Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("action=\"" + action.getContextPath() + "/foo\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("action=\"" + action.getContextPath() + "/foo\""));
 
-      Assert.assertTrue(action.getResponseContent().contains("href=\"" + action.getContextPath() + "/foo\""));
-      Assert.assertTrue(action.getResponseContent().contains("href=\"" + action.getContextPath() + "/bar\""));
-      Assert.assertTrue(action.getResponseContent().contains("href=\"" + action.getContextPath() + "/baz\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/foo\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/bar\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/baz\""));
    }
 
    @Test
@@ -58,10 +61,10 @@ public class AmbiguousViewidTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/baz");
 
       Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("action=\"" + action.getContextPath() + "/baz\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("action=\"" + action.getContextPath() + "/baz\""));
 
-      Assert.assertTrue(action.getResponseContent().contains("href=\"" + action.getContextPath() + "/foo\""));
-      Assert.assertTrue(action.getResponseContent().contains("href=\"" + action.getContextPath() + "/bar\""));
-      Assert.assertTrue(action.getResponseContent().contains("href=\"" + action.getContextPath() + "/baz\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/foo\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/bar\""));
+      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/baz\""));
    }
 }
