@@ -82,7 +82,7 @@ public class CdiServiceLocator extends BeanManagerAware implements ServiceLocato
 
             Type[] actualTypeParameters = new Type[typeParameters.length];
             for (int i = 0; i < typeParameters.length; i++) {
-                actualTypeParameters[i] = new WildcardTypeImpl(new Type[]{}, new Type[]{});
+                actualTypeParameters[i] = new WildcardTypeImpl(new Type[]{ Object.class }, new Type[]{});
             }
 
             return new org.ocpsoft.rewrite.cdi.util.ParameterizedTypeImpl(clazz, actualTypeParameters, null);
