@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.cdi;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,56 +40,53 @@ import org.ocpsoft.rewrite.cdi.util.WildcardTypeImpl;
 public class CdiServiceLocator extends BeanManagerAware implements ServiceLocator
 {
 
+   @Override
+   @SuppressWarnings("unchecked")
+   public <T> Collection<Class<T>> locate(final Class<T> type)
+   {
+      List<Class<T>> result = new ArrayList<Class<T>>();
 
+      // the BeanManager may be not available during Rewrite startup
+      if (isBeanManagerAvailable()) {
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> Collection<Class<T>> locate(final Class<T> type)
-    {
-        List<Class<T>> result = new ArrayList<Class<T>>();
+         BeanManager manager = getBeanManager();
 
-        // the BeanManager may be not available during Rewrite startup
-        if (isBeanManagerAvailable()) {
+         Set<Bean<?>> beans = manager.getBeans(getRequiredType(type), new Annotation[] { new AnnotationLiteral<Any>() {
+            private static final long serialVersionUID = -1896831901770051851L;
+         } });
 
-            BeanManager manager = getBeanManager();
+         for (Bean<?> bean : beans) {
+            result.add((Class<T>) bean.getBeanClass());
+         }
 
-            Set<Bean<?>> beans = manager.getBeans(getRequiredType(type), new Annotation[] { new AnnotationLiteral<Any>() {
-                private static final long serialVersionUID = -1896831901770051851L;
-            } });
+      }
 
-            for (Bean<?> bean : beans) {
-                result.add((Class<T>) bean.getBeanClass());
-            }
+      return result;
 
-        }
+   }
 
-        return result;
+   /**
+    * Builds the correct "required type" including actual type arguments in case of parameterized types.
+    * 
+    * @see https://github.com/ocpsoft/rewrite/issues/137
+    */
+   private Type getRequiredType(Class<?> clazz)
+   {
 
-    }
+      TypeVariable<?>[] typeParameters = clazz.getTypeParameters();
 
-    /**
-     * Builds the correct "required type" including actual type arguments in case of parameterized types.
-     *
-     * @see https://github.com/ocpsoft/rewrite/issues/137
-     */
-    private Type getRequiredType(Class<?> clazz)
-    {
+      if (typeParameters.length > 0) {
 
-        TypeVariable<?>[] typeParameters = clazz.getTypeParameters();
+         Type[] actualTypeParameters = new Type[typeParameters.length];
+         for (int i = 0; i < typeParameters.length; i++) {
+            actualTypeParameters[i] = new WildcardTypeImpl(new Type[] { Object.class }, new Type[] {});
+         }
 
-        if (typeParameters.length > 0) {
+         return new ParameterizedTypeImpl(clazz, actualTypeParameters, null);
 
-            Type[] actualTypeParameters = new Type[typeParameters.length];
-            for (int i = 0; i < typeParameters.length; i++) {
-                actualTypeParameters[i] = new WildcardTypeImpl(new Type[]{ Object.class }, new Type[]{});
-            }
+      }
 
-            return new org.ocpsoft.rewrite.cdi.util.ParameterizedTypeImpl(clazz, actualTypeParameters, null);
-
-        }
-
-        return clazz;
-    }
-
+      return clazz;
+   }
 
 }

@@ -5,26 +5,31 @@ import java.lang.reflect.WildcardType;
 
 /**
  * Implementation of WildcardType
- *
+ * 
  * @author Bryn Cooke
  */
-public class WildcardTypeImpl implements WildcardType {
-    private final Type[] upperBounds;
-    private final Type[] lowerBounds;
+public class WildcardTypeImpl implements WildcardType
+{
 
-    public WildcardTypeImpl(Type[] upperBounds, Type[] lowerBounds) {
+   private final Type[] upperBounds;
+   private final Type[] lowerBounds;
 
-        this.upperBounds = upperBounds;
-        this.lowerBounds = lowerBounds;
-    }
+   public WildcardTypeImpl(Type[] upperBounds, Type[] lowerBounds)
+   {
 
-    @Override
-    public Type[] getUpperBounds() {
-        return upperBounds;
-    }
+      this.upperBounds = upperBounds;
+      this.lowerBounds = lowerBounds;
+   }
 
-    @Override
-    public Type[] getLowerBounds() {
-        return lowerBounds;
-    }
+   @Override
+   public Type[] getUpperBounds()
+   {
+      return upperBounds;
+   }
+
+   @Override
+   public Type[] getLowerBounds()
+   {
+      return lowerBounds;
+   }
 }
