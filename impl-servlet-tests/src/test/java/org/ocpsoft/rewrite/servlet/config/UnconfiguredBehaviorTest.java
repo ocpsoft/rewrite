@@ -15,9 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.apache.http.client.methods.HttpGet;
+import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,7 +47,9 @@ public class UnconfiguredBehaviorTest extends RewriteTest
    public void testErrorPageIsDisplayed() throws Exception
    {
       HttpAction<HttpGet> action = get("/other");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("404"));
+      assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      assertThat(action.getResponseContent(), Matchers.anyOf(
+               Matchers.containsString("404"),           // most containers
+               Matchers.containsString("Not Found")));   // Wildfly
    }
 }
