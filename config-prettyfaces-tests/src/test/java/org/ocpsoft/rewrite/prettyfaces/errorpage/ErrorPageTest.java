@@ -7,14 +7,24 @@ import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 
+/**
+ * Completely fails on Wildfly with some kind of sendError() recursion. We need some more time to debug this. As this
+ * currently completely kills the Travis build, we should disable it for now.
+ * 
+ * @author Christian Kaltepoth
+ * 
+ * @see https://github.com/ocpsoft/rewrite/issues/144
+ */
 @RunWith(Arquillian.class)
+@Category(IgnoreForWildfly.class)
 public class ErrorPageTest extends RewriteTestBase
 {
    @Deployment(testable = false)
