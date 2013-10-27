@@ -27,7 +27,9 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
@@ -63,7 +65,13 @@ public class CssMinifyTest extends RewriteTest
       return archive;
    }
 
+   /**
+    * Ignored on Wildlfy because there seems to be some issue with the content length.
+    * 
+    * @see https://github.com/ocpsoft/rewrite/issues/145
+    */
    @Test
+   @Category(IgnoreForWildfly.class)
    public void testCssFileCompression() throws Exception
    {
       HttpAction<HttpGet> action = get("/test.css");
