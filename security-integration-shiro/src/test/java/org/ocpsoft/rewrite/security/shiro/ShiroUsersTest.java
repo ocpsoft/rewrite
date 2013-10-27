@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.security.shiro;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -42,7 +42,7 @@ public class ShiroUsersTest extends RewriteTestBase
    {
       HttpAction<HttpGet> action = get("/admin/something");
       Assert.assertEquals(404, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("404"));
+      action.getResponseContent(); // consume response
    }
 
    @Test
@@ -53,7 +53,7 @@ public class ShiroUsersTest extends RewriteTestBase
       // before login
       HttpAction<HttpGet> beforeLogin = get(client, "/admin/something");
       Assert.assertEquals(404, beforeLogin.getStatusCode());
-      Assert.assertTrue(beforeLogin.getResponseContent().contains("404"));
+      beforeLogin.getResponseContent(); // consume response
 
       // login as admin
       HttpAction<HttpGet> login = get(client, "/login?user=ck");
@@ -73,7 +73,7 @@ public class ShiroUsersTest extends RewriteTestBase
       // after logout
       HttpAction<HttpGet> afterLogout = get(client, "/admin/something");
       assertEquals(404, afterLogout.getStatusCode());
-      Assert.assertTrue(afterLogout.getResponseContent().contains("404"));
+      afterLogout.getResponseContent(); // consume response
 
    }
 
@@ -85,7 +85,7 @@ public class ShiroUsersTest extends RewriteTestBase
       // before login
       HttpAction<HttpGet> beforeLogin = get(client, "/admin/something");
       Assert.assertEquals(404, beforeLogin.getStatusCode());
-      Assert.assertTrue(beforeLogin.getResponseContent().contains("404"));
+      beforeLogin.getResponseContent(); // consume response
 
       // login as someone else
       HttpAction<HttpGet> login = get(client, "/login?user=somebody");
@@ -95,7 +95,7 @@ public class ShiroUsersTest extends RewriteTestBase
       // wrong role
       HttpAction<HttpGet> afterLogin = get(client, "/admin/something");
       Assert.assertEquals(404, afterLogin.getStatusCode());
-      Assert.assertTrue(afterLogin.getResponseContent().contains("404"));
+      afterLogin.getResponseContent(); // consume response
 
       // logout as someone else
       HttpAction<HttpGet> logout = get(client, "/logout");
@@ -105,7 +105,7 @@ public class ShiroUsersTest extends RewriteTestBase
       // after logout
       HttpAction<HttpGet> afterLogout = get(client, "/admin/something");
       assertEquals(404, afterLogout.getStatusCode());
-      Assert.assertTrue(afterLogout.getResponseContent().contains("404"));
+      afterLogout.getResponseContent(); // consume response
 
    }
 
