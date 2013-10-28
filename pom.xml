@@ -683,6 +683,9 @@
                      <systemProperties>
                         <arquillian.launch>glassfish4_managed</arquillian.launch>
                      </systemProperties>
+                     <excludedGroups>
+                        org.ocpsoft.rewrite.category.IgnoreForGlassfish4
+                     </excludedGroups>
                   </configuration>
                </plugin>
                <plugin>
@@ -741,6 +744,9 @@
                      <systemProperties>
                         <arquillian.launch>glassfish_remote</arquillian.launch>
                      </systemProperties>
+                     <excludedGroups>
+                        org.ocpsoft.rewrite.category.IgnoreForGlassfish4
+                     </excludedGroups>
                   </configuration>
                </plugin>
             </plugins>
