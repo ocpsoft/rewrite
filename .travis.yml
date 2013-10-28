@@ -7,8 +7,6 @@ env:
 script: "mvn -P ${CONTAINER} install"
 matrix:
   include:
-    - env: CONTAINER=JBOSS_AS_MANAGED_7.X
-      jdk: oraclejdk7
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk7
     - env: CONTAINER=GLASSFISH_MANAGED_4.0
