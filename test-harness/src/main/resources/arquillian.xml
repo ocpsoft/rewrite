@@ -27,9 +27,16 @@
       </configuration>
    </container>
 
-   <container qualifier="glassfish_managed">
+   <container qualifier="glassfish3_managed">
       <configuration>
          <property name="glassFishHome">target/container/glassfish3</property>
+         <property name="adminPort">34848</property>
+      </configuration>
+   </container>
+
+   <container qualifier="glassfish4_managed">
+      <configuration>
+         <property name="glassFishHome">target/container/glassfish4</property>
          <property name="adminPort">34848</property>
       </configuration>
    </container>

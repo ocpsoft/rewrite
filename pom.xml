@@ -36,7 +36,8 @@
       <version.jbossas>7.1.1.Final</version.jbossas>
       <version.wildfly>8.0.0.Beta1</version.wildfly>
       <version.tomcat>7.0.42</version.tomcat>
-      <version.glassfish>3.1.2.2</version.glassfish>
+      <version.glassfish3>3.1.2.2</version.glassfish3>
+      <version.glassfish4>4.0</version.glassfish4>
       <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
    </properties>
 
@@ -584,7 +585,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
                      <systemProperties>
-                        <arquillian.launch>glassfish_managed</arquillian.launch>
+                        <arquillian.launch>glassfish3_managed</arquillian.launch>
                      </systemProperties>
                      <excludedGroups>
                         org.ocpsoft.rewrite.category.IgnoreForGlassfish3
@@ -603,8 +604,8 @@
                         <configuration>
                            <target>
                               <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://download.java.net/glassfish/${version.glassfish}/release/glassfish-${version.glassfish}-web.zip" />
-                              <unzip src="${container.download.dir}/glassfish-${version.glassfish}-web.zip" dest="${project.build.directory}/container" />
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://download.java.net/glassfish/${version.glassfish3}/release/glassfish-${version.glassfish3}-web.zip" />
+                              <unzip src="${container.download.dir}/glassfish-${version.glassfish3}-web.zip" dest="${project.build.directory}/container" />
                               <!-- Change all TCP ports from "xxxx" to "3xxxx" -->
                               <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8080&quot;" value="port=&quot;38080&quot;" />
                               <replace file="${project.build.directory}/container/glassfish3/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8181&quot;" value="port=&quot;38181&quot;" />
@@ -658,6 +659,64 @@
             <dependency>
                <groupId>org.jboss.arquillian.container</groupId>
                <artifactId>arquillian-glassfish-remote-3.1</artifactId>
+               <version>${version.arquillian.glassfish}</version>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.spec</groupId>
+               <artifactId>jboss-javaee-6.0</artifactId>
+               <version>${version.jboss.spec}</version>
+               <type>pom</type>
+               <scope>provided</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <id>GLASSFISH_MANAGED_4.0</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <systemProperties>
+                        <arquillian.launch>glassfish4_managed</arquillian.launch>
+                     </systemProperties>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.7</version>
+                  <executions>
+                     <execution>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <mkdir dir="${container.download.dir}" />
+                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://download.java.net/glassfish/${version.glassfish4}/release/glassfish-${version.glassfish4}-web.zip" />
+                              <unzip src="${container.download.dir}/glassfish-${version.glassfish4}-web.zip" dest="${project.build.directory}/container" />
+                              <!-- Change all TCP ports from "xxxx" to "3xxxx" -->
+                              <replace file="${project.build.directory}/container/glassfish4/glassfish/domains/domain1/config/domain.xml" token="port=&quot;3700&quot;" value="port=&quot;33700&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish4/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8181&quot;" value="port=&quot;38181&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish4/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8686&quot;" value="port=&quot;38686&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish4/glassfish/domains/domain1/config/domain.xml" token="port=&quot;4848&quot;" value="port=&quot;34848&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish4/glassfish/domains/domain1/config/domain.xml" token="port=&quot;8080&quot;" value="port=&quot;38080&quot;" />
+                              <replace file="${project.build.directory}/container/glassfish4/glassfish/domains/domain1/config/domain.xml" token="value=&quot;7676&quot;" value="value=&quot;37676&quot;" />
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-glassfish-managed-3.1</artifactId>
                <version>${version.arquillian.glassfish}</version>
                <scope>test</scope>
             </dependency>
