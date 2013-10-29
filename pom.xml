@@ -123,13 +123,6 @@
       </pluginManagement>
    </build>
 
-   <repositories>
-      <repository>
-         <id>JBOSS_NEXUS</id>
-         <url>http://repository.jboss.org/nexus/content/groups/public</url>
-      </repository>
-   </repositories>
-
    <dependencyManagement>
       <dependencies>
          <dependency>
@@ -826,20 +819,6 @@
                <scope>test</scope>
             </dependency>
          </dependencies>
-         <repositories>
-            <!-- We current need this because we have to use the SNAPSHOTS 
-               for the Tomcat container adapter -->
-            <repository>
-               <id>arquillian-snapshots</id>
-               <url>https://repository-arquillian.forge.cloudbees.com/snapshot/</url>
-               <releases>
-                  <enabled>false</enabled>
-               </releases>
-               <snapshots>
-                  <enabled>true</enabled>
-               </snapshots>
-            </repository>
-         </repositories>
       </profile>
 
       <profile>
