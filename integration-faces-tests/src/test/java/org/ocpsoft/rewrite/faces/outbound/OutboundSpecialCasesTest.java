@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -73,7 +72,6 @@ public class OutboundSpecialCasesTest extends RewriteTestBase
    }
 
    @Test
-   @Ignore // issue #139
    public void testEmptyAnchorNotRewritten() throws Exception
    {
       HtmlPage page = getWebClient("/faces/outbound.xhtml").getPage();

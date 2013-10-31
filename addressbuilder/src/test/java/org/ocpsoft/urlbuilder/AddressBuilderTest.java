@@ -1,8 +1,8 @@
 package org.ocpsoft.urlbuilder;
 
 import static org.junit.Assert.assertEquals;
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class AddressBuilderTest
@@ -269,6 +269,18 @@ public class AddressBuilderTest
                .scheme("mailto")
                .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
                .build().toString());
+   }
+
+   @Test
+   public void testAnchorOnly()
+   {
+      assertEquals("#foobar", AddressBuilder.create("#foobar").toString());
+   }
+
+   @Test
+   public void testEmptyAnchorOnly()
+   {
+      assertEquals("#", AddressBuilder.create("#").toString());
    }
 
 }

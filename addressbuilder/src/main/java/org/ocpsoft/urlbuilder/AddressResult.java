@@ -75,7 +75,7 @@ class AddressResult implements Address
       else
          query = null;
 
-      if (isSet(parent.anchor))
+      if (isSetOrEmpty(parent.anchor))
          anchor = parameterize(parent.parameters, parent.anchor).toString();
       else
          anchor = null;
@@ -222,6 +222,11 @@ class AddressResult implements Address
       return value != null && value.length() > 0;
    }
 
+   private boolean isSetOrEmpty(CharSequence value)
+   {
+      return value != null;
+   }
+
    /*
     * Inspectors
     */
@@ -235,7 +240,7 @@ class AddressResult implements Address
    @Override
    public boolean isAnchorSet()
    {
-      return isSet(anchor);
+      return isSetOrEmpty(anchor);
    }
 
    @Override
