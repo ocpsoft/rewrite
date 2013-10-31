@@ -7,4 +7,6 @@ include::install.asciidoc[]
 
 include::configuration/index.asciidoc[]
 
+include::migration/prettyfaces3.asciidoc[]
+
 include::faq.asciidoc[]
