@@ -1,10 +1,17 @@
+:toc:
+:toclevels: 4
+
 Rewrite Documentation
 =====================
+
+toc::[]
 
 include::index.asciidoc[]
 
 include::install.asciidoc[]
 
 include::configuration/index.asciidoc[]
+
+include::migration/prettyfaces3.asciidoc[]
 
 include::faq.asciidoc[]
