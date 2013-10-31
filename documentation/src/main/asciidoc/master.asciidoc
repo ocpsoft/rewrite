@@ -1,6 +1,8 @@
 Rewrite Documentation
 =====================
 
+toc::[]
+
 include::index.asciidoc[]
 
 include::install.asciidoc[]
