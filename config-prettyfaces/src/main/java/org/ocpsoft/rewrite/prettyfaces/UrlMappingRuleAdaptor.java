@@ -36,6 +36,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.urlbuilder.AddressBuilder;
+import org.ocpsoft.urlbuilder.util.Decoder;
 
 import com.ocpsoft.pretty.PrettyContext;
 import com.ocpsoft.pretty.faces.config.PrettyConfig;
@@ -128,7 +129,7 @@ public class UrlMappingRuleAdaptor implements Rule
       String cachedMappingId = outboundQueryString.getParameter(REWRITE_MAPPING_ID_KEY);
       if (cachedMappingId != null)
       {
-         return mapping.getId().equals(cachedMappingId);
+         return mapping.getId().equals(Decoder.query(cachedMappingId));
       }
 
       String outboundPath = outboundURL;
