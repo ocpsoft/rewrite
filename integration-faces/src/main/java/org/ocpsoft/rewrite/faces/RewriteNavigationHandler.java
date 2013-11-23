@@ -140,19 +140,21 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
       else if (outcome != null && outcome.startsWith(REDIRECT_PREFIX)) {
 
          // strip the prefix to get the context-relative URL
-         String url = outcome.substring(REDIRECT_PREFIX.length());
+         String relativeUrl = outcome.substring(REDIRECT_PREFIX.length());
+
+         // add the context path
+         String absoluteUrl = prependContextPath(externalContext, relativeUrl);
 
          // rewrite the URL
-         String encodedUrl = externalContext.encodeActionURL(url);
+         String rewrittenUrl = externalContext.encodeActionURL(absoluteUrl);
 
          // send the redirect
          try {
-            String absoluteUrl = prependContextPath(externalContext, encodedUrl);
-            externalContext.redirect(absoluteUrl);
+            externalContext.redirect(rewrittenUrl);
             return true;
          }
          catch (IOException e) {
-            throw new RewriteException("Could not redirect to [" + encodedUrl + "]", e);
+            throw new RewriteException("Could not redirect to [" + rewrittenUrl + "]", e);
          }
 
       }
