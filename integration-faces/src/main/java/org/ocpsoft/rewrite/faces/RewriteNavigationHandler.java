@@ -50,24 +50,35 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
       {
          setInNavigation((HttpServletRequest) context.getExternalContext().getRequest(), true);
 
-         String originalViewId = context.getViewRoot().getViewId();
+         /*
+          * the view root may be null if the navigation occurs before RESTORE_VIEW
+          * 
+          * https://github.com/ocpsoft/rewrite/issues/142
+          */
+         String originalViewId = null;
+         if(context.getViewRoot() != null)
+         {
+           originalViewId = context.getViewRoot().getViewId();
+         }
+         
          parent.handleNavigation(context, fromAction, outcome);
 
          /*
-          * the view root may be null if the navigation occurs before RESTORE_VIEW or as
-          * a result of a ViewExpiredException
+          * the view root may be null as a result of a ViewExpiredException
           * 
           * https://github.com/ocpsoft/rewrite/issues/103
           */
          String newViewId = null;
-         if (context.getViewRoot() != null) {
+         if (context.getViewRoot() != null)
+         {
             newViewId = context.getViewRoot().getViewId();
          }
 
+         
          /*
           * Navigation is complete if the viewId has not changed or the response is complete
           */
-         if ((true == context.getResponseComplete()) || originalViewId.equals(newViewId))
+         if ((true == context.getResponseComplete()) || (originalViewId == newViewId) || (originalViewId != null && originalViewId.equals(newViewId)))
          {
             setInNavigation((HttpServletRequest) context.getExternalContext().getRequest(), false);
          }
@@ -129,19 +140,21 @@ public class RewriteNavigationHandler extends ConfigurableNavigationHandler
       else if (outcome != null && outcome.startsWith(REDIRECT_PREFIX)) {
 
          // strip the prefix to get the context-relative URL
-         String url = outcome.substring(REDIRECT_PREFIX.length());
+         String relativeUrl = outcome.substring(REDIRECT_PREFIX.length());
+
+         // add the context path
+         String absoluteUrl = prependContextPath(externalContext, relativeUrl);
 
          // rewrite the URL
-         String encodedUrl = externalContext.encodeActionURL(url);
+         String rewrittenUrl = externalContext.encodeActionURL(absoluteUrl);
 
          // send the redirect
          try {
-            String absoluteUrl = prependContextPath(externalContext, encodedUrl);
-            externalContext.redirect(absoluteUrl);
+            externalContext.redirect(rewrittenUrl);
             return true;
          }
          catch (IOException e) {
-            throw new RewriteException("Could not redirect to [" + encodedUrl + "]", e);
+            throw new RewriteException("Could not redirect to [" + rewrittenUrl + "]", e);
          }
 
       }
