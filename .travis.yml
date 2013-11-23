@@ -11,6 +11,8 @@ matrix:
       jdk: oraclejdk7
     - env: CONTAINER=GLASSFISH_MANAGED_4.0
       jdk: oraclejdk7
+    - env: CONTAINER=JBOSS_AS_MANAGED_7.X
+      jdk: oraclejdk8
 notifications:
   email:
     - "ocpsoft-ci@googlegroups.com"
