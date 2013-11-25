@@ -13,9 +13,6 @@ matrix:
       jdk: oraclejdk7
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk8
-  allow_failures:
-    - env: CONTAINER=WILDFLY_MANAGED_8
-      jdk: oraclejdk8
 notifications:
   email:
     - "ocpsoft-ci@googlegroups.com"
