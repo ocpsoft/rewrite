@@ -143,7 +143,7 @@ to your project.
 </dependency>
 <dependency>
    <groupId>org.ocpsoft.rewrite</groupId>
-   <artifactId>rewrite-integration-jsf</artifactId>
+   <artifactId>rewrite-integration-faces</artifactId>
    <version>${rewrite.version}</version>
 </dependency>
 
