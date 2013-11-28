@@ -29,7 +29,7 @@ NOTE: Both ways of migrating will only work for JSF 2.x applications.
 
 The following sections will describe both ways in detail.
 
-== PrettyFaces compatibility module
+== Strategy #1: PrettyFaces compatibility module
 
 Migrating application using PrettyFaces 3.x is very easy. Just follow the steps described below.
 
@@ -123,7 +123,7 @@ After having performed the changes described in the two sections, your migration
 Although we consider the compatibility module to be very solid and stable, you should test your 
 application carefully. If something doesn't work as before, let us know. :) 
 
-== JSF integration module
+== Strategy #2: JSF integration module
 
 This section describes how to migrate existing PrettyFaces configuration to the Rewrite
 JSF integration module.
@@ -630,6 +630,31 @@ public Navigate actionMethod() {
       .with("id", "123");
 }
 |===
+
+Referencing the page you want to navigate to using a class only works if you are using
+the Rewrite +@Join+ annotation. If you are using the +ConfigurationProvider+ API for 
+configuration, you can reference the page using the JSF view-id like this:
+
+[cols="1a,1a", options="header"]
+|===
+|PrettyFaces
+|Rewrite
+| 
+----
+public String actionMethod() {
+  // obtain the CustomerDetailsBean
+  customerDetailsBean.setId("123");
+  return "pretty:customerDetails";
+}
+----
+|
+----
+public Navigate actionMethod() {
+  return Navigate.to("/customer-details.xhtml")
+      .with("id", "123");
+}
+|===
+
 
 If you used the JSF 2.0 implicit navigation for navigating with PrettyFaces,
 you can do so in Rewrite too.
