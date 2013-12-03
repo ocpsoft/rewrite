@@ -54,6 +54,7 @@
       <module>config-jodatime</module>
       <module>config-prettyfaces</module>
       <module>config-prettyfaces-tests</module>
+      <module>config-proxy</module>
       <module>config-servlet</module>
       <module>config-servlet-tests</module>
       <module>config-tuckey</module>
