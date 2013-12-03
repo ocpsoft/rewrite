@@ -26,6 +26,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.util.Streams;
+import org.ocpsoft.rewrite.config.Condition;
+import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.config.OperationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -342,6 +344,20 @@ public abstract class Response extends HttpOperation
    public static OperationBuilder complete()
    {
       return Lifecycle.abort();
+   }
+
+   /**
+    * Create a {@link Condition} that evaluates the status of {@link HttpServletResponse#isCommitted()}.
+    */
+   public static ConditionBuilder isCommitted()
+   {
+      return new HttpCondition() {
+         @Override
+         public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context)
+         {
+            return event.getResponse().isCommitted();
+         }
+      };
    }
 
 }

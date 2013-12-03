@@ -23,7 +23,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -34,10 +33,13 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @see http://ocpsoft.org/support/topic/rewrite-and-picketlink-illegalstateexception/
  * @see https://github.com/ocpsoft/rewrite/issues/151
  * 
+ *      This tests the scenario where a 3rd party filter has incorrectly called chain.doFilter() after issuing a servlet
+ *      redirect.
+ * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-@Ignore("https://github.com/ocpsoft/rewrite/issues/151")
 public class CommittedResponseTest extends RewriteTest
 {
 
@@ -58,11 +60,34 @@ public class CommittedResponseTest extends RewriteTest
       // WHEN the request is sent
       HttpAction<HttpGet> action = get("/path");
 
-      // THEN the 3rd part filter should send the redirect
+      // THEN the 3rd party filter should send the redirect, and call chain.doFilter()
       // AND the Join should _not_ forward again
+      assertThat(action.getStatusCode(), Matchers.equalTo(500));
+   }
+
+   @Test
+   public void alreadyCommittedReponseIsHandledByCatchallRule() throws Exception
+   {
+
+      // WHEN the request is sent
+      HttpAction<HttpGet> action = get("/path-handled");
+
+      // THEN the 3rd party filter should send the redirect, and call chain.doFilter()
+      // AND rewrite should abort the lifecycle
       assertThat(action.getStatusCode(), Matchers.equalTo(200));
       assertThat(action.getResponseContent(), Matchers.equalTo("[redirection worked]"));
+   }
 
+   @Test
+   public void alreadyCommittedReponseIsError() throws Exception
+   {
+
+      // WHEN the request is sent
+      HttpAction<HttpGet> action = get("/path-unhandled");
+
+      // THEN the 3rd party filter should send the redirect, and call chain.doFilter()
+      // AND rewrite should call chain.doFilter(...)
+      assertThat(action.getStatusCode(), Matchers.equalTo(500));
    }
 
 }

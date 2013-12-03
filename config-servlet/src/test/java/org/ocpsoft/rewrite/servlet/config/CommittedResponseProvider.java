@@ -36,10 +36,11 @@ public class CommittedResponseProvider extends HttpConfigurationProvider
 
                /*
                 * This rule simulates a filter that has been configured to execute BEFORE the RewriteFilter. 
-                * Lets assume this filter intercepts the response and sends a redirect.
+                * Lets assume this filter intercepts the response and sends a redirect, but still calls
+                * `chain.doFilter(...)`.
                 */
                .addRule()
-               .when(Direction.isInbound().and(Path.matches("/path")))
+               .when(Direction.isInbound().and(Path.matches("/path{*}")))
                .perform(new HttpOperation() {
                   @Override
                   public void performHttp(HttpServletRewrite event, EvaluationContext context)
@@ -58,6 +59,13 @@ public class CommittedResponseProvider extends HttpConfigurationProvider
                 * the request to some other resource.
                 */
                .addRule(Join.path("/path").to("/incorrect.txt"))
+
+               /*
+                * This prevents Rewrite from attempting to pass a committed response to the underlying application. 
+                */
+               .addRule()
+               .when(Direction.isInbound().and(Path.matches("/path-handled")).and(Response.isCommitted()))
+               .perform(Lifecycle.abort())
 
       ;
 

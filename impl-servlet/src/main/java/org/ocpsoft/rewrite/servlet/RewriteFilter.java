@@ -197,6 +197,11 @@ public class RewriteFilter implements Filter
          if (!event.getFlow().is(BaseRewrite.ServletRewriteFlow.ABORT_REQUEST))
          {
             log.debug("RewriteFilter passing control of request to underlying application.");
+            if (response.isCommitted())
+               log.warn("Response has already been committed, and further write operations are not permitted. "
+                        + "This may result in an IllegalStateException being triggered by the underlying application. To avoid this situation, "
+                        + "consider adding a Rule `.when(Direction.isInbound().and(Response.isCommitted())).perform(Lifecycle.abort())`, or "
+                        + "figure out where the response is being incorrectly committed and correct the bug in the offending code.");
             chain.doFilter(event.getRequest(), event.getResponse());
             log.debug("Control of request returned to RewriteFilter.");
          }
