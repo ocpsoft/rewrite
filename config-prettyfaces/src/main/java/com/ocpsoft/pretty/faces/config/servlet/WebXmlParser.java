@@ -61,7 +61,7 @@ public class WebXmlParser
 
             for (ServletRegistration s : registrations)
             {
-               if (s.getClassName().equalsIgnoreCase(FACES_SERVLET))
+               if (s.getClassName() != null && s.getClassName().equalsIgnoreCase(FACES_SERVLET))
                {
                   Collection<String> mappings = s.getMappings();
                   if (!mappings.isEmpty())
