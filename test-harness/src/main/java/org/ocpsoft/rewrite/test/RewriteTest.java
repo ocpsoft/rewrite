@@ -184,16 +184,12 @@ public class RewriteTest extends RewriteTestBase
    protected static JavaArchive getCurrentArchive()
    {
       File org = new File("target/classes/org");
-      File metaInf = new File("target/classes/META-INF");
-
       JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-current-module.jar");
 
       if (!org.getAbsolutePath().contains("impl-servlet") && !org.getAbsolutePath().contains("config-servlet"))
       {
-         if (org.exists())
-            archive.addAsResource(org);
-         if (metaInf.exists())
-            archive.addAsResource(metaInf);
+         addAsResource(archive, org);
+         addAsResource(archive, new File("target/classes/META-INF"));
       }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");
@@ -201,46 +197,47 @@ public class RewriteTest extends RewriteTestBase
 
    protected static JavaArchive getRewriteArchive()
    {
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar")
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-servlet.jar");
 
-               .addAsResource(new File("../api/target/classes/org"))
-               .addAsResource(new File("../api-el/target/classes/org"))
-               .addAsResource(new File("../api-el/target/classes/META-INF"))
-               .addAsResource(new File("../impl/target/classes/org"))
-               .addAsResource(new File("../impl/target/classes/META-INF"))
-               .addAsResource(new File("../addressbuilder/target/classes/org"))
-               .addAsResource(new File("../api-servlet/target/classes/org"))
+      addAsResource(archive, new File("../api/target/classes/org"));
+      addAsResource(archive, new File("../api-el/target/classes/org"));
+      addAsResource(archive, new File("../api-el/target/classes/META-INF"));
+      addAsResource(archive, new File("../impl/target/classes/org"));
+      addAsResource(archive, new File("../impl/target/classes/META-INF"));
+      addAsResource(archive, new File("../addressbuilder/target/classes/org"));
+      addAsResource(archive, new File("../api-servlet/target/classes/org"));
 
-               /*
-                * We have to manually create the META-NF/services entry for ServletRegistrationProvider
-                * and DispatcherTypeProvider, because the existing ones from the two modules overwrite 
-                * each other when added to the archive.
-                */
-               .addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider",
-                        "org.ocpsoft.rewrite.servlet.impl.Servlet3ServletRegistrationProvider",
-                        "org.ocpsoft.rewrite.servlet.impl.WebXmlServletRegistrationProvider")
-               .addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider",
-                        "org.ocpsoft.rewrite.servlet.impl.Servlet3DispatcherTypeProvider",
-                        "org.ocpsoft.rewrite.servlet.impl.Servlet25DispatcherTypeProvider")
-               .addAsResource(new File("../impl-servlet-2.5/target/classes/org"))
-               .addAsResource(new File("../impl-servlet-2.5/target/classes/META-INF"))
-               .addAsResource(new File("../impl-servlet-3.0/target/classes/org"))
-               .addAsResource(new File("../impl-servlet-3.0/target/classes/META-INF"));
+      /*
+       * We have to manually create the META-NF/services entry for ServletRegistrationProvider
+       * and DispatcherTypeProvider, because the existing ones from the two modules overwrite 
+       * each other when added to the archive.
+       */
+      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider",
+               "org.ocpsoft.rewrite.servlet.impl.Servlet3ServletRegistrationProvider",
+               "org.ocpsoft.rewrite.servlet.impl.WebXmlServletRegistrationProvider");
+      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider",
+               "org.ocpsoft.rewrite.servlet.impl.Servlet3DispatcherTypeProvider",
+               "org.ocpsoft.rewrite.servlet.impl.Servlet25DispatcherTypeProvider");
 
-      File implClasses = new File("../impl-servlet/target/classes/org");
-		if(implClasses.exists())
-		{
-          archive.addAsResource(implClasses)
-                 .addAsResource(new File("../impl-servlet/target/classes/META-INF"));
-		}
+      addAsResource(archive, new File("../impl-servlet-2.5/target/classes/org"));
+      addAsResource(archive, new File("../impl-servlet-2.5/target/classes/META-INF"));
+      addAsResource(archive, new File("../impl-servlet-3.0/target/classes/org"));
+      addAsResource(archive, new File("../impl-servlet-3.0/target/classes/META-INF"));
+
+      addAsResource(archive, new File("../impl-servlet/target/classes/org"));
+      addAsResource(archive, new File("../impl-servlet/target/classes/META-INF"));
 
       return archive;
    }
 
+   private static void addAsResource(JavaArchive archive, File file)
+   {
+      if (file != null && file.exists())
+         archive.addAsResource(file);
+   }
+
    protected static JavaArchive getRewriteAnnotationsArchive()
    {
-      File classes = new File("../config-annotations/target/classes/org");
-
       /*
        * FIXME: There is already a different archive named "rewrite-annotations.jar"
        * which worked fine with Arquillian 1.0.4 but not with 1.1.1. So for now
@@ -248,19 +245,15 @@ public class RewriteTest extends RewriteTestBase
        */
       JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-annotations2.jar");
 
-      if (classes.exists())
-      {
-         archive.addAsResource(new File("../annotations-api/target/classes/org"))
-                  .addAsResource(new File("../annotations-impl/target/classes/org"))
-                  .addAsResource(new File("../annotations-impl/target/classes/META-INF"));
+      addAsResource(archive, new File("../annotations-api/target/classes/org"));
+      addAsResource(archive, new File("../annotations-impl/target/classes/org"));
+      addAsResource(archive, new File("../annotations-impl/target/classes/META-INF"));
 
-         // if 'config-annotations' is currently tested, don't add it here, because it will be added via
-         // getCurrentArchive()
-         if (!new File("target/classes").getAbsolutePath().contains("config-annotations")) {
-            archive.addAsResource(new File("../config-annotations/target/classes/org"))
-                     .addAsResource(new File("../config-annotations/target/classes/META-INF"));
-         }
-
+      // if 'config-annotations' is currently tested, don't add it here, because it will be added via
+      // getCurrentArchive()
+      if (!new File("target/classes").getAbsolutePath().contains("config-annotations")) {
+         addAsResource(archive, new File("../config-annotations/target/classes/org"));
+         addAsResource(archive, new File("../config-annotations/target/classes/META-INF"));
       }
 
       return archive.addAsResource(new StringAsset("placeholder"), "README");
@@ -268,30 +261,30 @@ public class RewriteTest extends RewriteTestBase
 
    protected static JavaArchive getRewriteCDIArchive()
    {
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-cdi.jar")
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-cdi.jar");
 
-               .addAsResource(new File("../integration-cdi/target/classes/org"))
-               .addAsResource(new File("../integration-cdi/target/classes/META-INF"));
+      addAsResource(archive, new File("../integration-cdi/target/classes/org"));
+      addAsResource(archive, new File("../integration-cdi/target/classes/META-INF"));
 
       return archive;
    }
 
    protected static JavaArchive getRewriteConfigArchive()
    {
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-config-servlet.jar")
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-config-servlet.jar");
 
-               .addAsResource(new File("../config-servlet/target/classes/org"))
-               .addAsResource(new File("../config-servlet/target/classes/META-INF"));
+      addAsResource(archive, new File("../config-servlet/target/classes/org"));
+      addAsResource(archive, new File("../config-servlet/target/classes/META-INF"));
 
       return archive;
    }
 
    protected static JavaArchive getRewriteFacesArchive()
    {
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-faces.jar")
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "rewrite-integration-faces.jar");
 
-               .addAsResource(new File("../integration-faces/target/classes/org"))
-               .addAsResource(new File("../integration-faces/target/classes/META-INF"));
+      addAsResource(archive, new File("../integration-faces/target/classes/org"));
+      addAsResource(archive, new File("../integration-faces/target/classes/META-INF"));
 
       return archive;
    }
