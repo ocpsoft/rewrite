@@ -71,17 +71,17 @@ Once Rewrite is installed, you will need to describe how you would like it to
 handle events; this is done by implementing the +org.ocpsoft.rewrite.config.ConfigurationProvider+ interface.  Typically, when using Rewrite in a Servlet environment, you will want to extend from
 the provided base class +org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider+.
 
-CAUTION: The registration file must be created in +src/main/resources/META-INF/services+, along-side your Java resources. It must *NOT* be placed in the +src/main/webapp/META-INF+ directory. (*Note:* If you do not use Maven, this file should be created in your Java source folder, such as: `src/META-INF/services`)
-
 [source,java]
 .org.example.ApplicationConfigurationProvider
 ----
 import org.ocpsoft.logging.Logger.Level;
+import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Log;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 
+@RewriteConfiguration
 public class ApplicationConfigurationProvider extends HttpConfigurationProvider
 {
    @Override
@@ -116,6 +116,8 @@ you wish to activate in the application; one per line:
 org.example.ApplicationConfigurationProvider
 org.example.OtherConfigurationProvider
 ----
+
+CAUTION: The registration file must be created in +src/main/resources/META-INF/services+, along-side your Java resources. It must *NOT* be placed in the +src/main/webapp/META-INF+ directory. (*Note:* If you do not use Maven, this file should be created in your Java source folder, such as: `src/META-INF/services`)
 
 TIP: +ConfigurationProvider+ implementations may be placed in JAR files that are included as project dependencies. 
 
