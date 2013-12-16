@@ -104,11 +104,10 @@ NOTE: You will see the `Log` message for each inbound request and each time a li
 
 === 3. Activate your configuration
 
-The next step is to register your +ConfigurationProvider+ with Rewrite; you will need to create a
-provider registration file.
+The next step is to register your +ConfigurationProvider+ with Rewrite; you will need to add the `@RewriteAnnotation` to your `ConfigurationProvider` implementation, or list your implementation in a provider registration file. (If you have used the `@RewriteConfiguration` annotation, you may skip the rest of this section.)
 
-This file contains the fully qualified class name of each configuration implementation that
-you wish to activate in the application; one per line:
+The provider registration file contains the fully qualified class name of each configuration implementation that
+you wish to activate in the application; one per line, and is located in the `META-INF/services` folder:
 
 [source,text]
 ./META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider
