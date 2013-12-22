@@ -22,9 +22,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
@@ -42,13 +40,7 @@ public class PrettyContextTest extends RewriteTest
       return deployment;
    }
 
-   /**
-    * Ignored in Wildfly because of WFLY-2388.
-    * 
-    * @see https://issues.jboss.org/browse/WFLY-2388
-    */
    @Test
-   @Category(IgnoreForWildfly.class)
    public void testIsPrettyRequest() throws Exception
    {
       HttpAction<HttpGet> action = get("/");
