@@ -16,6 +16,7 @@ import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.faces.config.PhaseAction;
 import org.ocpsoft.rewrite.faces.config.PhaseOperation;
+import org.ocpsoft.rewrite.faces.config.PhaseOperation.DeferredOperation;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
@@ -70,15 +71,15 @@ public class RewritePhaseListener implements PhaseListener
       FacesContext facesContext = event.getFacesContext();
       HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
 
-      ArrayList<PhaseOperation<?>> operations = PhaseOperation.getSortedPhaseOperations(request);
+      ArrayList<DeferredOperation> operations = PhaseOperation.getSortedPhaseOperations(request);
       if (operations != null)
       {
-         for (final PhaseOperation<?> operation : operations) {
-
+         for (final DeferredOperation deferredOperation : operations) {
+            PhaseOperation<?> operation = deferredOperation.getOperation();
             if (operation.getBeforePhases().contains(event.getPhaseId())
                      || operation.getBeforePhases().contains(PhaseId.ANY_PHASE))
             {
-               Flow flow = handlePhaseOperation(operation);
+               Flow flow = handlePhaseOperation(deferredOperation);
 
                if (flow.is(ServletRewriteFlow.ABORT_REQUEST))
                {
@@ -98,14 +99,15 @@ public class RewritePhaseListener implements PhaseListener
       FacesContext facesContext = event.getFacesContext();
       HttpServletRequest request = ((HttpServletRequest) facesContext.getExternalContext().getRequest());
 
-      ArrayList<PhaseOperation<?>> operations = PhaseOperation.getSortedPhaseOperations(request);
+      ArrayList<DeferredOperation> operations = PhaseOperation.getSortedPhaseOperations(request);
       if (operations != null)
       {
-         for (final PhaseOperation<?> operation : operations) {
+         for (final DeferredOperation deferredOperation : operations) {
+            PhaseOperation<?> operation = deferredOperation.getOperation();
             if (operation.getAfterPhases().contains(event.getPhaseId())
                      || operation.getAfterPhases().contains(PhaseId.ANY_PHASE))
             {
-               Flow flow = handlePhaseOperation(operation);
+               Flow flow = handlePhaseOperation(deferredOperation);
 
                if (flow.is(ServletRewriteFlow.ABORT_REQUEST))
                {
@@ -120,7 +122,7 @@ public class RewritePhaseListener implements PhaseListener
       }
    }
 
-   private Flow handlePhaseOperation(final PhaseOperation<?> operation)
+   private Flow handlePhaseOperation(final DeferredOperation operation)
    {
       Flow flow = SubflowTask.perform(operation.getEvent(), operation.getContext(), ServletRewriteFlow.UN_HANDLED,
                new SubflowTask() {
@@ -129,7 +131,7 @@ public class RewritePhaseListener implements PhaseListener
                   public void performInSubflow(ServletRewrite<?, ?> rewriteEvent, EvaluationContext context)
                   {
                      try {
-                        operation.performOperation((HttpServletRewrite) rewriteEvent, context);
+                        operation.getOperation().performOperation((HttpServletRewrite) rewriteEvent, context);
 
                         List<RewriteResultHandler> resultHandlers = ((HttpRewriteLifecycleContext) ((HttpServletRewrite) rewriteEvent)
                                  .getRequest().getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY))

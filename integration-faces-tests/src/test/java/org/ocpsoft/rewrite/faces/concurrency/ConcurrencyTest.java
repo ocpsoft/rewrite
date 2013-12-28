@@ -68,8 +68,8 @@ public class ConcurrencyTest extends RewriteTestBase
    {
 
       // increase me to break the test
-      final int NUMBER_OF_THREADS = 1;
-      final int REQUESTS_PER_THREAD = 20;
+      final int NUMBER_OF_THREADS = 10;
+      final int REQUESTS_PER_THREAD = 10;
 
       final AtomicInteger successCounter = new AtomicInteger(0);
 

@@ -40,8 +40,6 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOperation implements Weighted
 {
    private static final String REQUEST_KEY = PhaseOperation.class.getName() + "_DEFERRED";
-   private HttpServletRewrite event;
-   private EvaluationContext context;
 
    private final Set<PhaseId> beforePhases = new HashSet<PhaseId>();
    private final Set<PhaseId> afterPhases = new HashSet<PhaseId>();
@@ -127,18 +125,16 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
    @Override
    public final void performHttp(HttpServletRewrite event, EvaluationContext context)
    {
-      this.event = event;
-      this.context = context;
-      getSortedPhaseOperations(event.getRequest()).add(this);
+      getSortedPhaseOperations(event.getRequest()).add(new DeferredOperation(event, context, this));
    }
 
    @SuppressWarnings("unchecked")
-   public static ArrayList<PhaseOperation<?>> getSortedPhaseOperations(HttpServletRequest request)
+   public static ArrayList<DeferredOperation> getSortedPhaseOperations(HttpServletRequest request)
    {
-      ArrayList<PhaseOperation<?>> operations = (ArrayList<PhaseOperation<?>>) request.getAttribute(REQUEST_KEY);
+      ArrayList<DeferredOperation> operations = (ArrayList<DeferredOperation>) request.getAttribute(REQUEST_KEY);
       if (operations == null)
       {
-         operations = new ArrayList<PhaseOperation<?>>();
+         operations = new ArrayList<DeferredOperation>();
          request.setAttribute(REQUEST_KEY, operations);
       }
 
@@ -147,19 +143,41 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
       return operations;
    }
 
-   /**
-    * Get the {@link HttpServletRewrite} with which this {@link PhaseOperation} was deferred.
-    */
-   public HttpServletRewrite getEvent()
+   public static class DeferredOperation implements Weighted
    {
-      return event;
+
+      private final HttpServletRewrite event;
+      private final EvaluationContext context;
+      private final PhaseOperation<?> operation;
+
+      public DeferredOperation(HttpServletRewrite event, EvaluationContext context, PhaseOperation<?> operation)
+      {
+         this.event = event;
+         this.context = context;
+         this.operation = operation;
+      }
+
+      @Override
+      public int priority()
+      {
+         return operation.priority();
+      }
+
+      public HttpServletRewrite getEvent()
+      {
+         return event;
+      }
+
+      public EvaluationContext getContext()
+      {
+         return context;
+      }
+
+      public PhaseOperation<?> getOperation()
+      {
+         return operation;
+      }
+
    }
 
-   /**
-    * Get the {@link EvaluationContext} with which this {@link PhaseOperation} was deferred.
-    */
-   public EvaluationContext getContext()
-   {
-      return context;
-   }
 }
