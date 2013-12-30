@@ -1,3 +1,71 @@
 == Parameterize Rules
 
-Docs coming soon.
+Parameterization is a core feature of Rewrite, adding flexibility and power to the configuration API.
+
+=== Basic Parameterization
+
+The following rule demonstrates simple parameterization. 
+
+[source,java]  
+----
+.addRule()
+
+ /* condition */
+.when(Path.matches("/requested/{path}"))
+
+ /* operation */
+.perform(Forward.to("/other/{path}"));
+----
+
+The value of `{path}` is extracted from the +Condition+, and inserted into the +Operation+ at the specified location. So for an initial request of:
+
+[source]
+----
+/requested/lincoln
+----
+
+The requested will subsequently be forwarded to the internal path:
+
+[source]
+----
+-> /other/lincoln
+----
+
+=== Configure Parameters
+
+Once a +Rule+ has been parameterized, the parameters themselves can be configured in several ways, such as regular expression constraints, custom constraints, transposition, conversion, and lastly validation.
+
+Let's configure the parameter in our example rule:
+
+[source,java]  
+----
+.addRule()
+.when(Path.matches("/requested/{path}"))
+.perform(Forward.to("/other/{path}"))
+----
+
+In order to configure parameters, a parameter must be selected using the +where(...)+ clause. Parameters are selected by name.
+
+[source,java]  
+----
+ /* Parameter selection */
+.where("path")
+----
+
+Once this is done, we may now move on to configuring the parameter using any of the following methods:
+
+==== Regular Expression Constraints
+
+[source,java]  
+----
+ /* Parameter regular expression matching */
+.matches("[0-9]+")
+----
+
+==== Custom Constraints
+
+[source,java]  
+----
+ /* Parameter regular expression matching */
+.matches("[0-9]+")
+----
