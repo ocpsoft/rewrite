@@ -1,10 +1,10 @@
 == Parameterize Rules
 
-Parameterization is a core feature of Rewrite, adding flexibility and power to the configuration API.
+Rule parameters allow for value extraction, modification, validation, and conversion before use in the application. Parameterization is a core feature of Rewrite, adding flexibility and power to the configuration API. Values from HTTP headers, URLs, GET and POST values, and more may all be parameterized as needed.
 
 === Basic Parameterization
 
-The following rule demonstrates simple parameterization. 
+Parameters are defined using braces notation inside a normal `String`, such as `"{example}"`. The following rule demonstrates simple parameterization, where we have a single parameter named "`path`".
 
 [source,java]  
 ----
@@ -19,17 +19,16 @@ The following rule demonstrates simple parameterization.
 
 The value of `{path}` is extracted from the +Condition+, and inserted into the +Operation+ at the specified location. So for an initial request of:
 
-[source]
-----
-/requested/lincoln
-----
+`"/requested/lincoln"`
 
-The requested will subsequently be forwarded to the internal path:
+The request will subsequently be forwarded to the internal path:
 
-[source]
-----
--> /other/lincoln
-----
+`"/other/lincoln"`
+
+This is a very simple example of parameterization, but is also the most common. We will now take a closer look at how parameters can be used to meet specific requirements such as validation and conversion.
+
+[TIP]
+Custom conditions and operations may be parameterized if built-in functionality is insufficient. 
 
 === Configure Parameters
 
@@ -56,16 +55,49 @@ Once this is done, we may now move on to configuring the parameter using any of 
 
 ==== Regular Expression Constraints
 
-[source,java]  
+Regular expression constraints are the simplest form of parameter configuration, and can be set using the shorthand `.matches(regex)` notation. 
+
+[source,java]
 ----
- /* Parameter regular expression matching */
 .matches("[0-9]+")
 ----
 
 ==== Custom Constraints
 
+If you require a specific constraint that would be difficult to model using regular expressions, custom constraints can be used to handle more complex scenarios. These constraints allow full use of the Java programming language:
+
 [source,java]  
 ----
- /* Parameter regular expression matching */
-.matches("[0-9]+")
+.constrainedBy(new Constraint<String>() {
+  boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value) {
+    // perform the custom constraint check
+  }
+})
 ----
+
+==== Converters
+TBD
+
+[source,java]  
+----
+.convertedBy(new Converter<String>() {
+  String convert(Rewrite event, EvaluationContext context, Object value) {
+    // perform the custom conversion
+  }
+})
+----
+
+==== Validators
+TBD
+
+[source,java]  
+----
+.validatedBy(new Validator<String>() {
+  boolean isValid(Rewrite event, EvaluationContext context, String value) {
+    // perform the custom validation
+  }
+})
+----
+
+==== Bindings
+TBD
