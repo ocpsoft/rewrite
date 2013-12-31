@@ -19,6 +19,7 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.ocpsoft.rewrite.cdi.expressions.Expressions;
@@ -29,8 +30,13 @@ import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
  */
 public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
 {
+   /**
+    * We cannot simply inject an instance of Expressions here, because {@link CdiExpressionLanguageProvider} is created
+    * only once for the entire application and {@link Expressions} is not thread-safe because it holds only a single
+    * {@link ELContext} instance.
+    */
    @Inject
-   private Expressions expressions;
+   private Instance<Expressions> expressionsInstance;
 
    @Override
    public int priority()
@@ -41,6 +47,7 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
    @Override
    public Object retrieveValue(final String expression)
    {
+      Expressions expressions = expressionsInstance.get();
       return getValue(expressions.getELContext(), expressions.getExpressionFactory(),
                groomExpression(expression));
    }
@@ -48,6 +55,7 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
    @Override
    public void submitValue(final String expression, final Object value)
    {
+      Expressions expressions = expressionsInstance.get();
       String el = groomExpression(expression);
       if (getExpectedType(expressions.getELContext(), expressions.getExpressionFactory(), el).isArray())
       {
@@ -84,7 +92,7 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
    {
       String result = expression.trim();
       if (!result.startsWith("#{"))
-         return expressions.toExpression(result);
+         return expressionsInstance.get().toExpression(result);
 
       return result;
    }
@@ -93,14 +101,14 @@ public class CdiExpressionLanguageProvider implements ExpressionLanguageProvider
    public Object evaluateMethodExpression(final String expression)
    {
       String el = groomExpression(expression);
-      return expressions.evaluateMethodExpression(el);
+      return expressionsInstance.get().evaluateMethodExpression(el);
    }
 
    @Override
    public Object evaluateMethodExpression(final String expression, final Object... values)
    {
       String el = groomExpression(expression);
-      return expressions.evaluateMethodExpression(el, values);
+      return expressionsInstance.get().evaluateMethodExpression(el, values);
    }
 
    /**
