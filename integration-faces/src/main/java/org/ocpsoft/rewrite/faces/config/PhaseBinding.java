@@ -15,17 +15,14 @@
  */
 package org.ocpsoft.rewrite.faces.config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.faces.event.PhaseId;
 
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Submission;
-import org.ocpsoft.rewrite.config.CompositeOperation;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -44,13 +41,12 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  */
-public class PhaseBinding extends HttpOperation implements Binding, CompositeOperation
+public class PhaseBinding implements Binding
 {
    private final Set<PhaseId> beforePhases = new HashSet<PhaseId>();
    private final Set<PhaseId> afterPhases = new HashSet<PhaseId>();
 
    private final Submission deferred;
-   private Object deferredValue;
 
    private Validator<?> validator;
    private Converter<?> converter;
@@ -120,24 +116,6 @@ public class PhaseBinding extends HttpOperation implements Binding, CompositeOpe
    }
 
    @Override
-   public void performHttp(HttpServletRewrite event, EvaluationContext context)
-   {
-      Object value = deferredValue;
-      if (converter != null)
-         value = ValueHolderUtil.convert(event, context, converter, value);
-
-      if (validator != null && !ValueHolderUtil.validates(event, context, validator, value))
-      {
-         if (operation != null)
-            operation.perform(event, context);
-      }
-      else
-      {
-         deferred.submit(event, context, value);
-      }
-   }
-
-   @Override
    public Object retrieve(Rewrite event, EvaluationContext context)
    {
       throw new IllegalStateException("PhaseBinding does not support retrieval.");
@@ -146,12 +124,11 @@ public class PhaseBinding extends HttpOperation implements Binding, CompositeOpe
    @Override
    public Object submit(Rewrite event, EvaluationContext context, Object value)
    {
-      deferredValue = value;
 
       /**
        * Must occur before queued {@link PhaseAction} instances during the same phase.
        */
-      PhaseOperation.enqueue(this, -5)
+      PhaseOperation.enqueue(new PhaseBindingOperation(value), -5)
                .before(beforePhases.toArray(new PhaseId[] {}))
                .after(afterPhases.toArray(new PhaseId[] {}))
                .perform(event, context);
@@ -171,12 +148,36 @@ public class PhaseBinding extends HttpOperation implements Binding, CompositeOpe
       return true;
    }
 
-   @Override
-   public List<Operation> getOperations()
+   private class PhaseBindingOperation extends HttpOperation
    {
-      ArrayList<Operation> operations = new ArrayList<Operation>();
-      if (operation != null)
-         operations.add(operation);
-      return operations;
+
+      private Object value;
+
+      public PhaseBindingOperation(Object value)
+      {
+         this.value = value;
+      }
+
+      @Override
+      public void performHttp(HttpServletRewrite event, EvaluationContext context)
+      {
+
+         Object converted = value;
+
+         if (converter != null)
+            converted = ValueHolderUtil.convert(event, context, converter, value);
+
+         if (validator != null && !ValueHolderUtil.validates(event, context, validator, converted))
+         {
+            if (operation != null)
+               operation.perform(event, context);
+         }
+         else
+         {
+            deferred.submit(event, context, converted);
+         }
+      }
+
    }
+
 }
