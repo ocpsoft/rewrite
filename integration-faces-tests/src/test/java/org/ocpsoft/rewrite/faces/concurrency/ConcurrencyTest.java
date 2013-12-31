@@ -18,6 +18,7 @@ package org.ocpsoft.rewrite.faces.concurrency;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -85,10 +86,12 @@ public class ConcurrencyTest extends RewriteTestBase
 
                for (int i = 0; i < REQUESTS_PER_THREAD; i++) {
 
-                  WebDriver driver = new HtmlUnitDriver();
-                  driver.get(baseUrl + "test/foobar/");
+                  String uuid = UUID.randomUUID().toString();
 
-                  if (driver.getPageSource().contains("The parameter is [foobar]")) {
+                  WebDriver driver = new HtmlUnitDriver();
+                  driver.get(baseUrl + "test/" + uuid + "/");
+
+                  if (driver.getPageSource().contains("The parameter is [" + uuid + "]")) {
                      successCounter.addAndGet(1);
                   }
 
