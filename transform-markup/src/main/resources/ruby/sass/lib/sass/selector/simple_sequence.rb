@@ -37,11 +37,16 @@ module Sass
         @base ||= (members.first if members.first.is_a?(Element) || members.first.is_a?(Universal))
       end
 
-      # Returns the non-base selectors in this sequence.
+      def pseudo_elements
+        @pseudo_elements ||= (members - [base]).
+          select {|sel| sel.is_a?(Pseudo) && sel.type == :element}
+      end
+
+      # Returns the non-base, non-pseudo-class selectors in this sequence.
       #
       # @return [Set<Simple>]
       def rest
-        @rest ||= Set.new(base ? members[1..-1] : members)
+        @rest ||= Set.new(members - [base] - pseudo_elements)
       end
 
       # Whether or not this compound selector is the subject of the parent
@@ -129,9 +134,9 @@ module Sass
       #   by the time extension and unification happen,
       #   this exception will only ever be raised as a result of programmer error
       def unify(sels, other_subject)
-        return unless sseq = members.inject(sels) do |sseq, sel|
-          return unless sseq
-          sel.unify(sseq)
+        return unless sseq = members.inject(sels) do |member, sel|
+          return unless member
+          sel.unify(member)
         end
         SimpleSequence.new(sseq, other_subject || subject?)
       end
@@ -145,7 +150,9 @@ module Sass
       # @param sseq [SimpleSequence]
       # @return [Boolean]
       def superselector?(sseq)
-        (base.nil? || base.eql?(sseq.base)) && rest.subset?(sseq.rest)
+        (base.nil? || base.eql?(sseq.base)) &&
+          pseudo_elements.eql?(sseq.pseudo_elements) &&
+          rest.subset?(sseq.rest)
       end
 
       # @see Simple#to_a
@@ -171,7 +178,7 @@ module Sass
       def with_more_sources(sources)
         sseq = dup
         sseq.members = members.dup
-        sseq.sources.merge sources
+        sseq.sources = self.sources | sources
         sseq
       end
 
@@ -197,8 +204,8 @@ WARNING
       end
 
       def _eql?(other)
-        other.base.eql?(self.base) && Sass::Util.set_eql?(other.rest, self.rest) &&
-          other.subject? == self.subject?
+        other.base.eql?(self.base) && other.pseudo_elements == pseudo_elements &&
+          Sass::Util.set_eql?(other.rest, self.rest) && other.subject? == self.subject?
       end
     end
   end

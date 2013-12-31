@@ -44,12 +44,6 @@ class Table < AbstractBlock
     }
   }
 
-  # Public: A compiled Regexp to match a blank line
-  BLANK_LINE_PATTERN = /\n[[:blank:]]*\n/
-
-  # Public: Get/Set the String caption (unused, necessary for compatibility w/ next_block)
-  attr_accessor :caption
-
   # Public: Get/Set the columns for this table
   attr_accessor :columns
 
@@ -57,28 +51,35 @@ class Table < AbstractBlock
   # and body rows)
   attr_accessor :rows
 
+  # Public: Boolean specifies whether this table has a header row
+  attr_accessor :has_header_option
+
   def initialize(parent, attributes)
     super(parent, :table)
-    # QUESTION since caption is on block, should it go to AbstractBlock?
-    @caption = nil
     @rows = Rows.new([], [], [])
     @columns = []
 
-    unless @attributes.has_key? 'tablepcwidth'
-      # smell like we need a utility method here
-      # to resolve an integer width from potential bogus input
-      pcwidth = attributes['width']
-      pcwidth_intval = pcwidth.to_i.abs
-      if pcwidth_intval == 0 && pcwidth != "0" || pcwidth_intval > 100
-        pcwidth_intval = 100
-      end
-      @attributes['tablepcwidth'] = pcwidth_intval
+    @has_header_option = attributes.has_key? 'header-option'
+
+    # smell like we need a utility method here
+    # to resolve an integer width from potential bogus input
+    pcwidth = attributes['width']
+    pcwidth_intval = pcwidth.to_i.abs
+    if pcwidth_intval == 0 && pcwidth != "0" || pcwidth_intval > 100
+      pcwidth_intval = 100
     end
+    @attributes['tablepcwidth'] = pcwidth_intval
 
     if @document.attributes.has_key? 'pagewidth'
       @attributes['tableabswidth'] ||=
           ((@attributes['tablepcwidth'].to_f / 100) * @document.attributes['pagewidth']).round
     end
+  end
+
+  # Internal: Returns whether the current row being processed is
+  # the header row
+  def header_row?
+    @has_header_option && @rows.body.size == 0
   end
 
   # Internal: Creates the Column objects from the column spec
@@ -109,10 +110,10 @@ class Table < AbstractBlock
     # set rowcount before splitting up body rows
     @attributes['rowcount'] = @rows.body.size
 
-    if !rows.body.empty? && attributes.has_key?('header-option')
+    if !rows.body.empty? && @has_header_option
       head = rows.body.shift
       # styles aren't applied to header row
-      head.each {|c| c.attributes.delete('style') }
+      head.each {|c| c.style = nil }
       # QUESTION why does AsciiDoc use an array for head? is it
       # possible to have more than one based on the syntax?
       rows.head = [head]
@@ -124,19 +125,6 @@ class Table < AbstractBlock
     
     nil
   end
-
-  # Public: Get the rendered String content for this Block.  If the block
-  # has child blocks, the content method should cause them to be
-  # rendered and returned as content that can be included in the
-  # parent block's template.
-  def render
-    Debug.debug { "Now attempting to render for table my own bad #{self}" }
-    Debug.debug { "Parent is #{@parent}" }
-    Debug.debug { "Renderer is #{renderer}" }
-    @document.playback_attributes @attributes
-    renderer.render('block_table', self) 
-  end
-
 end
 
 # Public: A struct that encapsulates the collection of rows (head, foot, body) for a table
@@ -145,14 +133,21 @@ Table::Rows = Struct.new(:head, :foot, :body)
 # Public: Methods to manage the columns of an AsciiDoc table. In particular, it
 # keeps track of the column specs
 class Table::Column < AbstractNode
+  # Public: Get/Set the Symbol style for this column.
+  attr_accessor :style
+
   def initialize(table, index, attributes = {})
     super(table, :column)
+    @style = attributes['style']
     attributes['colnumber'] = index + 1
     attributes['width'] ||= 1
     attributes['halign'] ||= 'left'
     attributes['valign'] ||= 'top'
     update_attributes(attributes)
   end
+
+  # Public: An alias to the parent block (which is always a Table)
+  alias :table :parent
 
   # Internal: Calculate and assign the widths (percentage and absolute) for this column
   #
@@ -176,6 +171,8 @@ end
 
 # Public: Methods for managing the a cell in an AsciiDoc table.
 class Table::Cell < AbstractNode
+  # Public: Get/Set the Symbol style for this cell (default: nil)
+  attr_accessor :style
 
   # Public: An Integer of the number of columns this cell will span (default: nil)
   attr_accessor :colspan
@@ -189,44 +186,59 @@ class Table::Cell < AbstractNode
   # Public: The internal Asciidoctor::Document for a cell that has the asciidoc style
   attr_reader :inner_document
 
-  def initialize(column, text, attributes = {})
+  def initialize(column, text, attributes = {}, cursor = nil)
     super(column, :cell)
     @text = text
+    @style = nil
     @colspan = nil
     @rowspan = nil
     # TODO feels hacky
     if !column.nil?
+      @style = column.attributes['style']
       update_attributes(column.attributes)
     end
     if !attributes.nil?
-      if attributes.has_key? 'colspan'
-        @colspan = attributes['colspan']
-        attributes.delete('colspan') 
-      end
-      if attributes.has_key? 'rowspan'
-        @rowspan = attributes['rowspan']
-        attributes.delete('rowspan') 
-      end
+      @colspan = attributes.delete('colspan')
+      @rowspan = attributes.delete('rowspan')
+      # TODO eventualy remove the style attribute from the attributes hash
+      #@style = attributes.delete('style') if attributes.has_key? 'style'
+      @style = attributes['style'] if attributes.has_key? 'style'
       update_attributes(attributes)
     end
-    if @attributes['style'] == :asciidoc
-      @inner_document = Document.new(@text, :header_footer => false, :parent => @document)
+    # only allow AsciiDoc cells in non-header rows
+    if @style == :asciidoc && !column.table.header_row?
+      # FIXME hide doctitle from nested document; temporary workaround to fix
+      # nested document seeing doctitle and assuming it has its own document title
+      parent_doctitle = @document.attributes.delete('doctitle')
+      # NOTE we need to process the first line of content as it may not have been processed
+      # the included content cannot expect to match conditional terminators in the remaining
+      # lines of table cell content, it must be self-contained logic
+      inner_document_lines = @text.each_line.to_a
+      unless inner_document_lines.empty? || !inner_document_lines.first.include?('::')
+        unprocessed_lines = inner_document_lines[0..0]
+        processed_lines = PreprocessorReader.new(@document, unprocessed_lines).readlines
+        if processed_lines != unprocessed_lines
+          inner_document_lines.shift
+          inner_document_lines.unshift(*processed_lines)
+        end
+      end
+      @inner_document = Document.new(inner_document_lines, :header_footer => false, :parent => @document, :cursor => cursor)
+      @document.attributes['doctitle'] = parent_doctitle unless parent_doctitle.nil?
     end
   end
 
   # Public: Get the text with normal substitutions applied for this cell. Used for cells in the head rows
   def text
-    apply_normal_subs(@text)
+    apply_normal_subs(@text).strip
   end
 
   # Public: Handles the body data (tbody, tfoot), applying styles and partitioning into paragraphs
   def content
-    style = attr('style')
-    if style == :asciidoc
+    if @style == :asciidoc
       @inner_document.render
     else
-      text.split(Table::BLANK_LINE_PATTERN).map {|p|
-        !style || style == :header ? p : Inline.new(parent, :quoted, p, :type => attr('style')).render
+      text.split(BLANK_LINE_PATTERN).map {|p|
+        !@style || @style == :header ? p : Inline.new(parent, :quoted, p, :type => @style).render
       }
     end
   end
@@ -266,8 +278,11 @@ class Table::ParserContext
   # Public: The cell delimiter compiled Regexp for this table.
   attr_reader :delimiter_re
 
-  def initialize(table, attributes = {})
+  def initialize(reader, table, attributes = {})
+    @reader = reader
     @table = table
+    # TODO if reader.cursor becomes a reference, this would require .dup
+    @last_cursor = reader.cursor
     if attributes.has_key? 'format'
       @format = attributes['format']
       if !Table::DATA_FORMATS.include? @format
@@ -314,7 +329,7 @@ class Table::ParserContext
   #
   # returns the String after the match
   def skip_matched_delimiter(match, escaped = false)
-    @buffer << (escaped ? match.pre_match.chop : match.pre_match) << @delimiter
+    @buffer = %(#@buffer#{escaped ? match.pre_match.chop : match.pre_match}#@delimiter)
     match.post_match
   end
 
@@ -410,7 +425,7 @@ class Table::ParserContext
     if format == 'psv'
       cell_spec = take_cell_spec
       if cell_spec.nil?
-        puts 'asciidoctor: ERROR: table missing leading separator, recovering automatically'
+        warn "asciidoctor: ERROR: #{@last_cursor.line_info}: table missing leading separator, recovering automatically"
         cell_spec = {}
         repeat = 1
       else
@@ -444,7 +459,8 @@ class Table::ParserContext
         column = @table.columns[@current_row.size]
       end
 
-      cell = Table::Cell.new(column, cell_text, cell_spec)
+      cell = Table::Cell.new(column, cell_text, cell_spec, @last_cursor)
+      @last_cursor = @reader.cursor
       unless cell.rowspan.nil? || cell.rowspan == 1
         activate_rowspan(cell.rowspan, (cell.colspan || 1))
       end

@@ -157,7 +157,7 @@ module Sass
 
       def write_output(text, destination)
         if destination.is_a?(String)
-          File.open(destination, 'w') {|file| file.write(text)}
+          open_file(destination, 'w') {|file| file.write(text)}
         else
           destination.write(text)
         end
@@ -168,7 +168,10 @@ module Sass
       def open_file(filename, flag = 'r')
         return if filename.nil?
         flag = 'wb' if @options[:unix_newlines] && flag == 'w'
-        File.open(filename, flag)
+        file = File.open(filename, flag)
+        return file unless block_given?
+        yield file
+        file.close
       end
 
       def handle_load_error(err)
@@ -290,8 +293,16 @@ END
           @options[:for_engine][:cache] = false
         end
 
-        unless ::Sass::Util.ruby1_8?
-          opts.on('-E encoding', 'Specify the default encoding for Sass files.') do |encoding|
+        encoding_desc = if ::Sass::Util.ruby1_8?
+          'Does not work in ruby 1.8.'
+        else
+          'Specify the default encoding for Sass files.'
+        end
+        opts.on('-E encoding', encoding_desc) do |encoding|
+          if ::Sass::Util.ruby1_8?
+            $stderr.puts "Specifying the encoding is not supported in ruby 1.8."
+            exit 1
+          else
             Encoding.default_external = encoding
           end
         end
@@ -609,7 +620,6 @@ END
         end
         @options[:output] ||= @options[:input]
 
-        from = @options[:from]
         if @options[:to] == @options[:from] && !@options[:in_place]
           fmt = @options[:from]
           raise "Error: converting from #{fmt} to #{fmt} without --in-place"
@@ -683,7 +693,7 @@ END
             end
           end
 
-        output = File.open(input.path, 'w') if @options[:in_place]
+        output = input.path if @options[:in_place]
         write_output(out, output)
       rescue ::Sass::SyntaxError => e
         raise e if @options[:trace]

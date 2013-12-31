@@ -63,7 +63,7 @@ public class MarkdownTest
       String markdown = "This is **bold**!";
       String html = Markdown.partialDocument().transform(event, markdown);
 
-      assertEquals("<p>This is <strong>bold</strong>!</p>", html);
+      assertEquals("\n<p>This is <strong>bold</strong>!</p>\n", html);
 
    }
 
@@ -74,7 +74,7 @@ public class MarkdownTest
       String markdown = "# Header\n\n##Section\n\nSome text!";
       String html = Markdown.partialDocument().transform(event, markdown);
 
-      assertEquals("<h1 id='header'>Header</h1><h2 id='section'>Section</h2><p>Some text!</p>", normalize(html));
+      assertEquals("<h1 id=\"header\">Header</h1><h2 id=\"section\">Section</h2><p>Some text!</p>", normalize(html));
 
    }
 

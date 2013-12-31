@@ -20,8 +20,12 @@ module Asciidoctor
 #   => 1
 class Section < AbstractBlock
 
-  # Public: Get/Set the Integer index of this section within the parent block
+  # Public: Get/Set the 0-based index order of this section within the parent block
   attr_accessor :index
+
+  # Public: Get/Set the number of this section within the parent block
+  # Only relevant if the attribute numbered is true
+  attr_accessor :number
 
   # Public: Get/Set the section name of this section
   attr_accessor :sectname
@@ -29,20 +33,28 @@ class Section < AbstractBlock
   # Public: Get/Set the flag to indicate whether this is a special section or a child of one
   attr_accessor :special
 
+  # Public: Get the state of the numbered attribute at this section (need to preserve for creating TOC)
+  attr_accessor :numbered
+
   # Public: Initialize an Asciidoctor::Section object.
   #
   # parent - The parent Asciidoc Object.
-  def initialize(parent = nil, level = nil)
+  def initialize(parent = nil, level = nil, numbered = true)
     super(parent, :section)
-    if level.nil? && !parent.nil?
-      @level = parent.level + 1
-    end
-    if parent.is_a?(Section) && parent.special
-      @special = true
+    @template_name = 'section'
+    if level.nil?
+      if !parent.nil?
+        @level = parent.level + 1
+      elsif @level.nil?
+        @level = 1
+      end
     else
-      @special = false
+      @level = level
     end
+    @numbered = numbered && @level > 0 && @level < 4
+    @special = parent.is_a?(Section) && parent.special
     @index = 0
+    @number = 1
   end
 
   # Public: The name of this section, an alias of the section title
@@ -69,16 +81,25 @@ class Section < AbstractBlock
   #   another_section.title = "Foo"
   #   another_section.generate_id
   #   => "_foo_1"
+  #
+  #   yet_another_section = Section.new(parent)
+  #   yet_another_section.title = "Ben & Jerry"
+  #   yet_another_section.generate_id
+  #   => "_ben_jerry"
   def generate_id
-    if @document.attr? 'sectids'
-      separator = @document.attr('idseparator', '_')
-      # FIXME define constants for these regexps
-      base_id = @document.attr('idprefix', '_') + title.downcase.gsub(/&#[0-9]+;/, separator).
-          gsub(/\W+/, separator).tr_s(separator, separator).chomp(separator)
+    if @document.attributes.has_key? 'sectids'
+      sep = @document.attributes['idseparator'] || '_'
+      pre = @document.attributes['idprefix'] || '_'
+      base_id = %(#{pre}#{title.downcase.gsub(REGEXP[:illegal_sectid_chars], sep).tr_s(sep, sep).chomp(sep)})
+      # ensure id doesn't begin with idprefix if requested it doesn't
+      if pre.empty? && base_id.start_with?(sep)
+        base_id = base_id[1..-1]
+        base_id = base_id[1..-1] while base_id.start_with?(sep)
+      end
       gen_id = base_id
       cnt = 2
-      while @document.references[:ids].has_key? gen_id 
-        gen_id = "#{base_id}#{separator}#{cnt}" 
+      while @document.references[:ids].has_key? gen_id
+        gen_id = "#{base_id}#{sep}#{cnt}"
         cnt += 1
       end 
       gen_id
@@ -87,34 +108,12 @@ class Section < AbstractBlock
     end
   end
 
-  # Public: Get the rendered String content for this Section and all its child
-  # Blocks.
-  def render
-    Debug.debug { "Now rendering section for #{self}" }
-    @document.playback_attributes @attributes
-    renderer.render('section', self)
-  end
-
-  # Public: Get the String section content by aggregating rendered section blocks.
-  #
-  # Examples
-  #
-  #   section = Section.new
-  #   section << 'foo'
-  #   section << 'bar'
-  #   section << 'baz'
-  #   section.content
-  #   "<div class=\"paragraph\"><p>foo</p></div>\n<div class=\"paragraph\"><p>bar</p></div>\n<div class=\"paragraph\"><p>baz</p></div>"
-  def content
-    @blocks.map {|b| b.render }.join
-  end
-
   # Public: Get the section number for the current Section
   #
   # The section number is a unique, dot separated String
   # where each entry represents one level of nesting and
-  # the value of each entry is the 1-based index of
-  # the Section amongst its sibling Sections
+  # the value of each entry is the 1-based outline number
+  # of the Section amongst its numbered sibling Sections
   #
   # delimiter - the delimiter to separate the number for each level
   # append    - the String to append at the end of the section number
@@ -155,15 +154,29 @@ class Section < AbstractBlock
   def sectnum(delimiter = '.', append = nil)
     append ||= (append == false ? '' : delimiter)
     if !@level.nil? && @level > 1 && @parent.is_a?(Section)
-      "#{@parent.sectnum(delimiter)}#{@index + 1}#{append}"
+      "#{@parent.sectnum(delimiter)}#{@number}#{append}"
     else
-      "#{@index + 1}#{append}"
+      "#{@number}#{append}"
+    end
+  end
+
+  # Public: Append a content block to this block's list of blocks.
+  #
+  # If the child block is a Section, assign an index to it.
+  #
+  # block - The child Block to append to this parent Block
+  #
+  # Returns nothing.
+  def <<(block)
+    super
+    if block.context == :section
+      assign_index block
     end
   end
 
   def to_s
     if @title
-      if @level && @index
+      if @numbered
         %[#{super.to_s} - #{sectnum} #@title [blocks:#{@blocks.size}]]
       else
         %[#{super.to_s} - #@title [blocks:#{@blocks.size}]]

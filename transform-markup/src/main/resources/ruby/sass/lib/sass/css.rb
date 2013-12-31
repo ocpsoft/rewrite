@@ -1,3 +1,4 @@
+require File.dirname(__FILE__) + '/../sass'
 require 'sass/tree/node'
 require 'sass/scss/css_parser'
 
@@ -292,7 +293,7 @@ module Sass
     def bubble_subject(root)
       root.children.each do |child|
         bubble_subject(child) if child.is_a?(Tree::RuleNode) || child.is_a?(Tree::DirectiveNode)
-        next unless child.is_a?(Tree::RuleNode)
+        next unless child.is_a?(Tree::RuleNode) && !child.children.empty?
         next unless child.children.all? do |c|
           next unless c.is_a?(Tree::RuleNode)
           first_simple_sel(c).is_a?(Sass::Selector::Parent) && first_sseq(c).subject?

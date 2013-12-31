@@ -255,7 +255,7 @@ module Sass
           # is a supersequence of the other, use that, otherwise give up.
           lcs = Sass::Util.lcs(ops1, ops2)
           return unless lcs == ops1 || lcs == ops2
-          res.unshift *(ops1.size > ops2.size ? ops1 : ops2).reverse
+          res.unshift(*(ops1.size > ops2.size ? ops1 : ops2).reverse)
           return res
         end
 
@@ -437,25 +437,32 @@ module Sass
       # @param seqses [Array<Array<Array<SimpleSequence or String>>>]
       # @return [Array<Array<Array<SimpleSequence or String>>>]
       def trim(seqses)
-        # Avoid truly horrific quadratic behavior. TOOD: I think there
+        # Avoid truly horrific quadratic behavior. TODO: I think there
         # may be a way to get perfect trimming without going quadratic.
         return seqses if seqses.size > 100
+
+        # Keep the results in a separate array so we can be sure we aren't
+        # comparing against an already-trimmed selector. This ensures that two
+        # identical selectors don't mutually trim one another.
+        result = seqses.dup
+
         # This is n^2 on the sequences, but only comparing between
         # separate sequences should limit the quadratic behavior.
-        seqses.map do |seqs1|
-          seqs1.reject do |seq1|
-            min_spec = _sources(seq1).map {|seq| seq.specificity}.min || 0
-            seqses.any? do |seqs2|
+        seqses.each_with_index do |seqs1, i|
+          result[i] = seqs1.reject do |seq1|
+            max_spec = _sources(seq1).map {|seq| seq.specificity}.max || 0
+            result.any? do |seqs2|
               next if seqs1.equal?(seqs2)
               # Second Law of Extend: the specificity of a generated selector
               # should never be less than the specificity of the extending
               # selector.
               #
               # See https://github.com/nex3/sass/issues/324.
-              seqs2.any? {|seq2| _specificity(seq2) >= min_spec && _superselector?(seq2, seq1)}
+              seqs2.any? {|seq2| _specificity(seq2) >= max_spec && _superselector?(seq2, seq1)}
             end
           end
         end
+        result
       end
 
       def _hash

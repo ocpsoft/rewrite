@@ -8,11 +8,12 @@ module Asciidoctor
 
       def initialize(options = {})
         self[:attributes] = options[:attributes] || {}
-        self[:input_file] = options[:input_file] || nil
+        self[:input_files] = options[:input_files] || nil
         self[:output_file] = options[:output_file] || nil
         self[:safe] = options[:safe] || SafeMode::UNSAFE
         self[:header_footer] = options[:header_footer] || true
-        self[:template_dir] = options[:template_dir] || nil
+        self[:template_dirs] = options[:template_dirs] || nil
+        self[:template_engine] = options[:template_engine] || nil
         if options[:doctype]
           self[:attributes]['doctype'] = options[:doctype]
         end
@@ -34,8 +35,8 @@ module Asciidoctor
       def parse!(args)
         opts_parser = OptionParser.new do |opts|
           opts.banner = <<-EOS
-Usage: asciidoctor [OPTION]... [FILE]
-Translate the AsciiDoc source FILE into the backend output format (e.g., HTML 5, DocBook 4.5, etc.)
+Usage: asciidoctor [OPTION]... FILE...
+Translate the AsciiDoc source FILE or FILE(s) into the backend output format (e.g., HTML 5, DocBook 4.5, etc.)
 By default, the output is written to a file with the basename of the source file and the appropriate extension.
 Example: asciidoctor -b html5 source.asciidoc
 
@@ -44,11 +45,11 @@ Example: asciidoctor -b html5 source.asciidoc
           opts.on('-v', '--verbose', 'enable verbose mode (default: false)') do |verbose|
             self[:verbose] = true
           end
-          opts.on('-b', '--backend BACKEND', ['html5', 'docbook45'], 'set output format (i.e., backend): [html5, docbook45] (default: html5)') do |backend|
+          opts.on('-b', '--backend BACKEND', 'set output format backend (default: html5)') do |backend|
             self[:attributes]['backend'] = backend
           end
-          opts.on('-d', '--doctype DOCTYPE', ['article', 'book'],
-                  'document type to use when rendering output: [article, book] (default: article)') do |doc_type|
+          opts.on('-d', '--doctype DOCTYPE', ['article', 'book', 'manpage', 'inline'],
+                  'document type to use when rendering output: [article, book, manpage, inline] (default: article)') do |doc_type|
             self[:attributes]['doctype'] = doc_type
           end
           opts.on('-o', '--out-file FILE', 'output file (default: based on input file path); use - to output to STDOUT') do |output_file|
@@ -78,16 +79,31 @@ Example: asciidoctor -b html5 source.asciidoc
           opts.on('-C', '--compact', 'compact the output by removing blank lines (default: false)') do
             self[:compact] = true
           end
-          opts.on('-a', '--attribute key1=value,key2=value2,...', Array,
-                  'a list of attributes, in the form key or key=value pair, to set on the document',
-                  'these attributes take precedence over attributes defined in the source file') do |attribs|
+          opts.on('-a', '--attribute key[=value],key2[=value2],...', Array,
+                  'a list of document attributes to set in the form of key, key! or key=value pair',
+                  'unless @ is appended to the value, these attributes take precedence over attributes',
+                  'defined in the source document') do |attribs|
             attribs.each do |attrib|
-              tokens = attrib.split('=')
-              self[:attributes][tokens[0]] = tokens[1] || ''
+              key, val = attrib.split '=', 2
+              # move leading ! to end for internal processing
+              #if val.nil? && key.start_with?('!')
+              #  key = "#{key[1..-1]}!"
+              #end
+              self[:attributes][key] = val || ''
             end
           end
-          opts.on('-T', '--template-dir DIR', 'directory containing custom render templates the override the built-in set') do |template_dir|
-            self[:template_dir] = template_dir
+          opts.on('-T', '--template-dir DIR', 'a directory containing custom render templates that override the built-in set (requires tilt gem)',
+                  'may be specified multiple times') do |template_dir|
+            if self[:template_dirs].nil?
+              self[:template_dirs] = [template_dir]
+            elsif self[:template_dirs].is_a? Array
+              self[:template_dirs].push template_dir
+            else
+              self[:template_dirs] = [self[:template_dirs], template_dir]
+            end
+          end
+          opts.on('-E', '--template-engine NAME', 'template engine to use for the custom render templates (loads gem on demand)') do |template_engine|
+            self[:template_engine] = template_engine
           end
           opts.on('-B', '--base-dir DIR', 'base directory containing the document and resources (default: directory of source file)') do |base_dir|
             self[:base_dir] = base_dir
@@ -112,23 +128,54 @@ Example: asciidoctor -b html5 source.asciidoc
         end
 
         begin
-          # shave off the file to process so that options errors appear correctly
-          if args.last && (args.last == '-' || !args.last.start_with?('-'))
-            self[:input_file] = args.pop
-          end
-          opts_parser.parse!(args)
-          if args.size > 0
-            # warn, but don't panic; we may have enough to proceed, so we won't force a failure
-            $stderr.puts "asciidoctor: WARNING: extra arguments detected (unparsed arguments: #{args.map{|a| "'#{a}'"} * ', '})"
-          end
-
-          if self[:input_file].nil? || self[:input_file].empty?
+          infiles = []
+          opts_parser.parse! args
+          
+          if args.empty?
             $stderr.puts opts_parser
             return 1
-          elsif self[:input_file] != '-' && !File.readable?(self[:input_file])
-            $stderr.puts "asciidoctor: FAILED: input file #{self[:input_file]} missing or cannot be read"
-            return 1
           end
+
+          # shave off the file to process so that options errors appear correctly
+          if args.size == 1 && args.first == '-'
+            infiles.push args.pop
+          elsif
+            args.each do |file|
+              if (file == '-' || file.start_with?('-'))
+                # warn, but don't panic; we may have enough to proceed, so we won't force a failure
+                $stderr.puts "asciidoctor: WARNING: extra arguments detected (unparsed arguments: #{args.map{|a| "'#{a}'"} * ', '}) or incorrect usage of stdin"
+              else
+                # TODO this glob may not be necessary as the shell should have already performed expansion
+                matches = Dir.glob file
+
+                if matches.empty?
+                  $stderr.puts "asciidoctor: FAILED: input file #{file} missing or cannot be read"
+                  return 1
+                end
+
+                infiles.concat matches
+              end
+            end
+          end
+
+          infiles.each do |file|
+            unless file == '-' || File.readable?(file)
+              $stderr.puts "asciidoctor: FAILED: input file #{file} missing or cannot be read"
+              return 1
+            end
+          end
+
+          self[:input_files] = infiles
+
+          if !self[:template_dirs].nil?
+            begin
+              require 'tilt'
+            rescue LoadError
+              $stderr.puts 'asciidoctor: FAILED: tilt could not be loaded; to use a custom backend, you must have the tilt gem installed (gem install tilt)'
+              return 1
+            end
+          end
+
         rescue OptionParser::MissingArgument
           $stderr.puts "asciidoctor: option #{$!.message}"
           $stdout.puts opts_parser

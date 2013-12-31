@@ -8,16 +8,22 @@ module Asciidoctor
 class BaseTemplate
 
   attr_reader :view
+  attr_reader :backend
   attr_reader :eruby
 
-  def initialize(view, eruby)
+  def initialize(view, backend, eruby)
     @view = view
+    @backend = backend
     @eruby = eruby
   end
 
   def self.inherited(klass)
-    @template_classes ||= []
-    @template_classes << klass
+    if self == BaseTemplate
+      @template_classes ||= []
+      @template_classes << klass
+    else
+      self.superclass.inherited(klass)
+    end
   end
 
   def self.template_classes
@@ -65,7 +71,7 @@ class BaseTemplate
   # returns the text with blank lines removed and HTML line feed entities
   # converted to an endline character.
   def compact(str)
-    str.gsub(BLANK_LINES_PATTERN, '').gsub(LINE_FEED_ENTITY, "\n")
+    str.gsub(BLANK_LINE_PATTERN, '').gsub(LINE_FEED_ENTITY, EOL)
   end
 
   # Public: Preserve endlines by replacing them with the HTML line feed entity.
@@ -76,7 +82,7 @@ class BaseTemplate
   # text  - the String to process
   # node  - the concrete instance of Asciidoctor::AbstractNode being rendered
   def preserve_endlines(str, node)
-    node.renderer.compact ? str.gsub("\n", LINE_FEED_ENTITY) : str
+    node.renderer.compact ? str.gsub(EOL, LINE_FEED_ENTITY) : str
   end
 
   def template
@@ -93,18 +99,6 @@ class BaseTemplate
       # example: <% if foo %> bar="<%= foo %>"<% end %>
       %(<% if #{key} %> #{name}="<%= #{key} %>"<% end %>)
     end
-  end
-
-  # create template matter to insert a style class if the variable has a value
-  def attrvalue(key, sibling = true)
-    delimiter = sibling ? ' ' : ''
-    # example: <% if attr? 'foo' %><%= attr 'foo' %><% end %>
-    %(<% if attr? '#{key}' %>#{delimiter}<%= attr '#{key}' %><% end %>)
-  end
-
-  # create template matter to insert an id if one is specified for the block
-  def id
-    attribute('id', '@id')
   end
 end
 

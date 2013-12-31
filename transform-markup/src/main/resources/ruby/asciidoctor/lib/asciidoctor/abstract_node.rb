@@ -22,17 +22,28 @@ class AbstractNode
   attr_reader :attributes
 
   def initialize(parent, context)
-    @parent = (context != :document ? parent : nil)
-
-    if !parent.nil?
-      @document = parent.is_a?(Document) ? parent : parent.document
+    # document is a special case, should refer to itself
+    if context == :document
+      @parent = nil
+      @document = parent
     else
-      @document = nil
+      @parent = parent
+      @document = (parent.nil? ? nil : parent.document)
     end
-    
     @context = context
     @attributes = {}
     @passthroughs = []
+  end
+
+  # Public: Associate this Block with a new parent Block
+  #
+  # parent - The Block to set as the parent of this Block
+  #
+  # Returns nothing
+  def parent=(parent)
+    @parent = parent
+    @document = parent.document
+    nil
   end
 
   # Public: Get the value of the specified attribute
@@ -43,54 +54,49 @@ class AbstractNode
   # Document node and return the value of the attribute if found. Otherwise,
   # return the default value, which defaults to nil.
   #
-  # name    - the name of the attribute to lookup as a String or Symbol
-  # default - the value to return if the attribute is not found (default: nil)
+  # name    - the String or Symbol name of the attribute to lookup
+  # default - the Object value to return if the attribute is not found (default: nil)
+  # inherit - a Boolean indicating whether to check for the attribute on the
+  #           AsciiDoctor::Document if not found on this node (default: false)
   #
   # return the value of the attribute or the default value if the attribute
   # is not found in the attributes of this node or the document node
-  def attr(name, default = nil)
+  def attr(name, default = nil, inherit = true)
     name = name.to_s if name.is_a?(Symbol)
-    if self == @document
-      default.nil? ? @attributes[name] : @attributes.fetch(name, default)
+    inherit = false if self == @document
+    if inherit
+      @attributes[name] || @document.attributes[name] || default
     else
-      default.nil? ? @attributes.fetch(name, @document.attr(name)) :
-          @attributes.fetch(name, @document.attr(name, default))
+      @attributes[name] || default
     end
   end
 
   # Public: Check if the attribute is defined, optionally performing a
-  # comparison of its value
+  # comparison of its value if expected is not nil
   #
   # Check if the attribute is defined. First look in the attributes on this
   # node. If not found, and this node is a child of the Document node, look in
   # the attributes of the Document node. If the attribute is found and a
-  # comparison value is specified, return whether the two values match.
+  # comparison value is specified (not nil), return whether the two values match.
   # Otherwise, return whether the attribute was found.
   #
-  # name   - the name of the attribute to lookup as a String or Symbol
-  # expect - the expected value of the attribute (default: nil)
+  # name    - the String or Symbol name of the attribute to lookup
+  # expect  - the expected Object value of the attribute (default: nil)
+  # inherit - a Boolean indicating whether to check for the attribute on the
+  #           AsciiDoctor::Document if not found on this node (default: false)
   #
   # return a Boolean indicating whether the attribute exists and, if a
   # comparison value is specified, whether the value of the attribute matches
   # the comparison value
-  def attr?(name, expect = nil)
+  def attr?(name, expect = nil, inherit = true)
     name = name.to_s if name.is_a?(Symbol)
+    inherit = false if self == @document
     if expect.nil?
-      if @attributes.has_key? name
-        true
-      elsif self != @document
-        @document.attributes.has_key? name
-      else
-        false
-      end
+      @attributes.has_key?(name) || (inherit && @document.attributes.has_key?(name))
+    elsif inherit
+      expect == (@attributes[name] || @document.attributes[name])
     else
-      if @attributes.has_key? name
-        @attributes[name] == expect
-      elsif self != @document && @document.attributes.has_key?(name)
-        @document.attributes[name] == expect
-      else
-        false
-      end
+      expect == @attributes[name]
     end
   end
 
@@ -113,6 +119,29 @@ class AbstractNode
         false
       end
     end
+  end
+
+  # TODO document me
+  def set_option(name)
+    if @attributes.has_key? 'options'
+      @attributes['options'] = "#{@attributes['options']},#{name}"
+    else
+      @attributes['options'] = name
+    end
+    @attributes["#{name}-option"] = ''
+  end
+
+  # Public: A convenience method to check if the specified option attribute is
+  # enabled on the current node.
+  #
+  # Check if the option is enabled. This method simply checks to see if the
+  # {name}-option attribute is defined on the current node.
+  #
+  # name    - the String or Symbol name of the option
+  #
+  # return a Boolean indicating whether the option has been specified
+  def option?(name)
+    @attributes.has_key? "#{name}-option"
   end
 
   # Public: Get the execution context of this object (via Kernel#binding).
@@ -153,6 +182,49 @@ class AbstractNode
   # Asciidoctor::Document to which this node belongs
   def renderer
     @document.renderer
+  end
+
+  # Public: A convenience method that checks if the role attribute is specified
+  def role?(expect = nil)
+    if expect.nil?
+      @attributes.has_key?('role') || @document.attributes.has_key?('role')
+    else
+      expect == (@attributes['role'] || @document.attributes['role'])
+    end
+  end
+
+  # Public: A convenience method that returns the value of the role attribute
+  def role
+    @attributes['role'] || @document.attributes['role']
+  end
+
+  # Public: A convenience method that checks if the specified role is present
+  # in the list of roles on this node
+  def has_role?(name)
+    if (val = (@attributes['role'] || @document.attributes['role']))
+      val.split(' ').include?(name)
+    else
+      false
+    end
+  end
+
+  # Public: A convenience method that returns the role names as an Array
+  def roles
+    if (val = (@attributes['role'] || @document.attributes['role']))
+      val.split(' ')
+    else
+      []
+    end
+  end
+
+  # Public: A convenience method that checks if the reftext attribute is specified
+  def reftext?
+    @attributes.has_key?('reftext') || @document.attributes.has_key?('reftext')
+  end
+
+  # Public: A convenience method that returns the value of the reftext attribute
+  def reftext
+    @attributes['reftext'] || @document.attributes['reftext']
   end
 
   # Public: Construct a reference or data URI to an icon image for the
@@ -251,7 +323,9 @@ class AbstractNode
   def generate_data_uri(target_image, asset_dir_key = nil)
     Helpers.require_library 'base64'
 
-    mimetype = 'image/' + File.extname(target_image)[1..-1]
+    ext = File.extname(target_image)[1..-1]
+    mimetype = 'image/' + ext
+    mimetype = "#{mimetype}+xml" if ext == 'svg'
     if asset_dir_key
       #asset_dir_path = normalize_system_path(@document.attr(asset_dir_key), nil, nil, :target_name => asset_dir_key)
       #image_path = normalize_system_path(target_image, asset_dir_path, nil, :target_name => 'image')
@@ -261,7 +335,7 @@ class AbstractNode
     end
 
     if !File.readable? image_path
-      puts "asciidoctor: WARNING: image to embed not found or not readable: #{image_path}"
+      warn "asciidoctor: WARNING: image to embed not found or not readable: #{image_path}"
       return "data:#{mimetype}:base64,"
       #return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
     end
@@ -287,9 +361,9 @@ class AbstractNode
   # if the file does not exist.
   def read_asset(path, warn_on_failure = false)
     if File.readable? path
-      File.read path
+      File.read(path).chomp
     else
-      puts "asciidoctor: WARNING: file does not exist or cannot be read: #{path}" if warn_on_failure
+      warn "asciidoctor: WARNING: file does not exist or cannot be read: #{path}" if warn_on_failure
       nil
     end
   end
@@ -348,6 +422,22 @@ class AbstractNode
   def normalize_asset_path(asset_ref, asset_name = 'path', autocorrect = true)
     normalize_system_path(asset_ref, @document.base_dir, nil,
         :target_name => asset_name, :recover => autocorrect)
+  end
+
+  # Public: Calculate the relative path to this absolute filename from the Document#base_dir
+  def relative_path(filename)
+    PathResolver.new.relative_path filename, @document.base_dir
+  end
+
+  # Public: Retrieve the list marker keyword for the specified list type.
+  #
+  # For use in the HTML type attribute.
+  #
+  # list_type - the type of list; default to the @style if not specified
+  #
+  # returns the single-character String keyword that represents the marker for the specified list type
+  def list_marker_keyword(list_type = nil)
+    ORDERED_LIST_KEYWORDS[list_type || @style]
   end
 
 end

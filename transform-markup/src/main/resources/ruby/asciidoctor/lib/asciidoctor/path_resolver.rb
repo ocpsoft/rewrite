@@ -76,6 +76,12 @@ module Asciidoctor
 #     resolver.system_path('../../../css', '../../..', '/path/to/docs')
 #     => '/path/to/docs/css'
 #
+#     resolver.system_path('..', 'C:\\data\\docs\\assets', 'C:\\data\\docs')
+#     => 'C:/data/docs'
+#
+#     resolver.system_path('..\\..\\css', 'C:\\data\\docs\\assets', 'C:\\data\\docs')
+#     => 'C:/data/docs/css'
+#
 #     begin
 #       resolver.system_path('../../../css', '../../..', '/path/to/docs', :recover => false)
 #     rescue SecurityError => e
@@ -98,14 +104,13 @@ class PathResolver
   DOT_DOT = '..'
   SLASH = '/'
   BACKSLASH = '\\'
-  PARTITION_RE = /\/+/
   WIN_ROOT_RE = /^[[:alpha:]]:(?:\\|\/)/
 
   attr_accessor :file_separator
   attr_accessor :working_dir
 
   # Public: Construct a new instance of PathResolver, optionally specifying the
-  # path separator (to override the system default) and the working directory
+  # file separator (to override the system default) and the working directory
   # (to override the present working directory). The working directory will be
   # expanded to an absolute path inside the constructor.
   #
@@ -114,7 +119,7 @@ class PathResolver
   # working_dir    - the String working directory (optional, default: Dir.pwd)
   #
   def initialize(file_separator = nil, working_dir = nil)
-    @file_separator = file_separator.nil? ? File::SEPARATOR : file_separator
+    @file_separator = file_separator.nil? ? (File::ALT_SEPARATOR || File::SEPARATOR) : file_separator
     if working_dir.nil?
       @working_dir = File.expand_path(Dir.pwd)
     else
@@ -170,7 +175,7 @@ class PathResolver
   # returns a String path with any parent or self references resolved.
   def expand_path(path)
     path_segments, path_root, _ = partition_path(path)
-    join_path(path_segments, path_root)
+    join_path path_segments, path_root
   end
   
   # Public: Partition the path into path segments and remove any empty segments
@@ -186,7 +191,7 @@ class PathResolver
   def partition_path(path, web_path = false)
     posix_path = posixfy path
     is_root = web_path ? is_web_root?(posix_path) : is_root?(posix_path)
-    path_segments = posix_path.split(PARTITION_RE)
+    path_segments = posix_path.tr_s(SLASH, SLASH).split(SLASH)
     # capture relative root
     root = path_segments.first == DOT ? DOT : nil
     path_segments.delete(DOT)
@@ -196,20 +201,21 @@ class PathResolver
     [path_segments, root, posix_path]
   end
   
-  # Public: Join the segments using the file separator specified in the
-  # constructor. Use the root, if specified, to construct an absolute path.
-  # Otherwise join the segments as a relative path.
+  # Public: Join the segments using the posix file separator (since Ruby knows
+  # how to work with paths specified this way, regardless of OS). Use the root,
+  # if specified, to construct an absolute path. Otherwise join the segments as
+  # a relative path.
   #
   # segments - a String Array of path segments
   # root     - a String path root (optional, default: nil)
   #
-  # returns a String path formed by joining the segments and prepending
-  # the root, if specified
+  # returns a String path formed by joining the segments using the posix file
+  # separator and prepending the root, if specified
   def join_path(segments, root = nil)
     if root
-      "#{root}#{@file_separator}#{segments * @file_separator}"
+      "#{root}#{SLASH}#{segments * SLASH}"
     else
-      segments * @file_separator
+      segments * SLASH
     end
   end
   
@@ -306,7 +312,7 @@ class PathResolver
           elsif !recover
             raise SecurityError, "#{opts[:target_name] || 'path'} #{target} refers to location outside jail: #{jail} (disallowed in safe mode)"
           elsif !warned
-            puts "asciidoctor: WARNING: #{opts[:target_name] || 'path'} has illegal reference to ancestor of jail, auto-recovering"
+            warn "asciidoctor: WARNING: #{opts[:target_name] || 'path'} has illegal reference to ancestor of jail, auto-recovering"
             warned = true
           end
         else
@@ -333,9 +339,14 @@ class PathResolver
   def web_path(target, start = nil)
     target = posixfy(target)
     start = posixfy(start)
+    uri_prefix = nil
 
     unless is_web_root?(target) || start.empty?
       target = "#{start}#{SLASH}#{target}"
+      if target.include?(':') && target.match(Asciidoctor::REGEXP[:uri_sniff])
+        uri_prefix = $~[0]
+        target = target[uri_prefix.length..-1]
+      end
     end
 
     target_segments, target_root, _ = partition_path(target, true)
@@ -354,7 +365,28 @@ class PathResolver
       accum
     end
 
-    join_path resolved_segments, target_root
+    if uri_prefix.nil?
+      join_path resolved_segments, target_root
+    else
+      "#{uri_prefix}#{join_path resolved_segments, target_root}"
+    end
+  end
+
+  # Public: Calculate the relative path to this absolute filename from the specified base directory
+  #
+  # If either the filename or the base_directory are not absolute paths, no work is done.
+  #
+  # filename       - An absolute file name as a String
+  # base_directory - An absolute base directory as a String
+  #
+  # Return the relative path String of the filename calculated from the base directory
+  def relative_path(filename, base_directory)
+    if (is_root? filename) && (is_root? base_directory)
+      offset = base_directory.chomp(@file_separator).length + 1
+      filename[offset..-1]
+    else
+      filename
+    end
   end
 end
 end
