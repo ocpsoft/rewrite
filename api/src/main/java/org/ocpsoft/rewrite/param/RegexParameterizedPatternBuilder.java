@@ -188,11 +188,6 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    @Override
    public String build(final Map<String, Object> values) throws ParameterizationException
    {
-      if ((values == null) || (groups.size() != values.size()))
-      {
-         throw new ParameterizationException("Must supply [" + groups.size() + "] values to build output string.");
-      }
-
       StringBuilder builder = new StringBuilder();
       CapturingGroup last = null;
 
@@ -208,6 +203,10 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
          {
             builder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
          }
+
+         if (!values.containsKey(param.getName()))
+            throw new ParameterizationException("No value supplied for parameter [" + param.getName()
+                     + "] when building pattern [" + getPattern() + "].");
 
          builder.append(values.get(param.getName()));
 
