@@ -102,6 +102,7 @@ public class LocaleBinding implements Binding {
 				// if language is not defined, do not translate and keep original value
 				bindedValue = value.toString();
 			}
+			//Should we store the bindedValue in the context?
 		}
 		return null;
 	}
