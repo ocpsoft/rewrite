@@ -21,6 +21,8 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.bind.LocaleBinding;
+import org.ocpsoft.rewrite.servlet.config.rule.Join;
+import org.ocpsoft.rewrite.servlet.config.transposition.LocaleTransposition;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
@@ -28,7 +30,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author Christian Gendreau
  *
  */
-public class LocaleBindingConfigurationProvider extends HttpConfigurationProvider
+public class LocaleTranspositionConfigurationProvider extends HttpConfigurationProvider
 {
 	   @Override
 	   public int priority()
@@ -42,18 +44,13 @@ public class LocaleBindingConfigurationProvider extends HttpConfigurationProvide
 	      Configuration config = ConfigurationBuilder.begin()
 	               .addRule()
 	               .when(Path.matches("/{lang}/{path}"))
-	               .perform(new HttpOperation() {
-	                  @Override
-	                  public void performHttp(final HttpServletRewrite event, final EvaluationContext context)
-	                  {
-	                	 //the path is not saved in the context, not sure how to get it
-	                	 String path = "";
-
-	                     Response.addHeader("path", path).perform(event, context);
-	                     SendStatus.code(210).perform(event, context);
-	                  }
-	               })
-	               .where("path").bindsTo(LocaleBinding.bundle("lang", "bundle"));
+	               .perform(Join.path("/{lang}/{path}").to("/{path}"))
+	               .where("path").transposedBy(LocaleTransposition.bundle("lang", "bundle"))
+	      
+			      .addRule()
+		          .when(Path.matches("/{lang}/{path}/{tosearch}"))
+		          .perform(Join.path("/{lang}/{path}/{tosearch}").to("/{path}"))
+		          .where("path").transposedBy(LocaleTransposition.bundle("lang", "bundle"));
 	      return config;
 	   }
 }
