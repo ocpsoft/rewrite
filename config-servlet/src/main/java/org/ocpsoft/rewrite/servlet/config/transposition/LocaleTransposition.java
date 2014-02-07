@@ -30,8 +30,12 @@ import org.ocpsoft.rewrite.param.Transposition;
 
 /**
  * A {@link Transposition} responsible for translating values from their matching translation from a ResourceBundle file.
+ * The lookup in the properties file is case-sensitive.
  * 
- * Requires inverted property files in the form of translated_name=name_to_bind.
+ * Requires inverted properties files in the form of translated_name=name_to_bind.
+ * 
+ * TODO Should we allow to load the properties file in a different encoding?
+ * TODO Allow to enable case insensitive and/or ascii-folding on property lookup
  * 
  * @author Christian Gendreau
  */

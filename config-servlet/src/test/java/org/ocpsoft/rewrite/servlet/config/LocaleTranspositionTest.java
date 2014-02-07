@@ -46,6 +46,7 @@ public class LocaleTranspositionTest extends RewriteTest{
                .addPackages(true, ConfigRoot.class.getPackage())
                .addAsServiceProvider(ConfigurationProvider.class, LocaleTranspositionConfigurationProvider.class)
                .addAsWebResource(new StringAsset("search page"),"search")
+               .addAsWebResource(new StringAsset("library page"),"library")
                .addAsResource(new File("src/test/resources/bundle_fr.properties"))
                .addAsResource(new File("src/test/resources/bundle_en.properties"));
 	   return deployment;
@@ -62,9 +63,22 @@ public class LocaleTranspositionTest extends RewriteTest{
 	   HttpAction<HttpGet> action = get("/fr/rechercher");
 	   Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 	   Assert.assertEquals("search page", action.getResponseContent());
-	   
-	   action = get("/fr/rechercher/mot");
+   }
+   
+//   @Test
+//   public void testLocaleTranspositionWithAdditionalPath() throws Exception
+//   {
+//	   HttpAction<HttpGet> action = get("/fr/rechercher/mot");
+//	   Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+//	   Assert.assertEquals("result:mot page", action.getResponseContent());
+//   }
+   
+   @Test
+   public void testLocaleTranspositionWithAccent() throws Exception
+   {
+	   //'bibliothèque' should be translated to 'library' and 'lang' should be joined
+	   HttpAction<HttpGet> action = get("/fr/bibliothèque");
 	   Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-	   Assert.assertEquals("search page", action.getResponseContent());
+	   Assert.assertEquals("library page", action.getResponseContent());
    }
 }

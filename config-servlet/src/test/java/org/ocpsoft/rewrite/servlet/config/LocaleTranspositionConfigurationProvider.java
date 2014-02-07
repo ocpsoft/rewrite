@@ -19,11 +19,8 @@ import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
-import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.servlet.config.bind.LocaleBinding;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.config.transposition.LocaleTransposition;
-import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * 
@@ -45,12 +42,7 @@ public class LocaleTranspositionConfigurationProvider extends HttpConfigurationP
 	               .addRule()
 	               .when(Path.matches("/{lang}/{path}"))
 	               .perform(Join.path("/{lang}/{path}").to("/{path}"))
-	               .where("path").transposedBy(LocaleTransposition.bundle("lang", "bundle"))
-	      
-			      .addRule()
-		          .when(Path.matches("/{lang}/{path}/{tosearch}"))
-		          .perform(Join.path("/{lang}/{path}/{tosearch}").to("/{path}"))
-		          .where("path").transposedBy(LocaleTransposition.bundle("lang", "bundle"));
+	               .where("path").transposedBy(LocaleTransposition.bundle("lang", "bundle"));
 	      return config;
 	   }
 }
