@@ -31,12 +31,13 @@ import org.ocpsoft.rewrite.param.Transposition;
 
 /**
  * A {@link Transposition} responsible for translating values from their matching translation from a
- * {@link ResourceBundle}. The lookup in the properties file is case-sensitive.
+ * {@link ResourceBundle}. The lookup in the properties file is case-sensitive. The properties file
+ * should use ISO-8859-1 encoding as defined by {@link PropertyResourceBundle}.
  * 
  * Requires inverted properties files in the form of translated_name=name_to_bind.
  * 
- * TODO Should we allow to load the properties file in a different encoding? TODO Allow to enable case insensitive
- * and/or ascii-folding on property lookup
+ * TODO Should we allow to load the properties file in a different encoding?
+ * TODO Allow to enable case insensitive and/or ascii-folding on property lookup?
  * 
  * @author Christian Gendreau
  */
@@ -80,7 +81,7 @@ public class LocaleTransposition implements Transposition<String>
     * 
     * 
     * @param bundleName Fully qualified name of the {@link ResourceBundle}
-    * @param localeParam The name of the {@link Parameter} that contains the {@link Locale} code.
+    * @param localeParam The name of the {@link Parameter} that contains the ISO 639-1 language code to be used with {@link Locale}.
     * 
     * @return new instance of LocaleBinding
     */
@@ -93,8 +94,7 @@ public class LocaleTransposition implements Transposition<String>
    public String transpose(Rewrite event, EvaluationContext context, String value)
    {
       String transposedValue = null;
-
-      // FIXME this is currently failing due to the absence of the languageParam parameter in the context
+      
       // Retrieve the value of lang from the context
       String targetLang = (String) Parameters.retrieve(context, this.languageParam);
       if (value != null)
@@ -104,7 +104,10 @@ public class LocaleTransposition implements Transposition<String>
             Locale locale = new Locale(targetLang);
             try
             {
+            	// if no bundle can be found for the targetLang, the system default is used
                ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale);
+               
+               // if(loadedBundle.getLocale().getLanguage().equals(targetLang)
                bundleMap.put(targetLang, loadedBundle);
             }
             catch (MissingResourceException e)
