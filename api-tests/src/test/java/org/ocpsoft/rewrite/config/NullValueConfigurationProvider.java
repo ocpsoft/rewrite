@@ -8,6 +8,7 @@ package org.ocpsoft.rewrite.config;
 public class NullValueConfigurationProvider implements ConfigurationProvider<Object>
 {
 
+   @Override
    public int priority()
    {
       return 0;

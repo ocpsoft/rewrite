@@ -11,6 +11,7 @@ import org.ocpsoft.rewrite.servlet.config.SendStatus;
 public class RelocatingConfigurationProvider2 implements ConfigurationProvider<Object>
 {
 
+   @Override
    public int priority()
    {
       return 5;

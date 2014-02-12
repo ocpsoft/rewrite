@@ -25,6 +25,7 @@ import org.ocpsoft.rewrite.servlet.config.SendStatus;
 public class SubsetParameterReconfigurationTestProvider implements ConfigurationProvider<Object>
 {
 
+   @Override
    public int priority()
    {
       return 0;
