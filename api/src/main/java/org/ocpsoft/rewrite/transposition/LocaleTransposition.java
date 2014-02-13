@@ -107,11 +107,13 @@ public class LocaleTransposition implements Transposition<String>
             Locale locale = new Locale(targetLang);
             try
             {
-            	// if no bundle can be found for the targetLang, the system default is used
+            	// if no bundle can be found for the targetLang, the system default is used.
                ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale);
                
-               // if(loadedBundle.getLocale().getLanguage().equals(targetLang)
-               bundleMap.put(targetLang, loadedBundle);
+               // we only use the bundle if it's what we asked for (avoid using the default locale when not found)
+               if(loadedBundle.getLocale().getLanguage().equals(targetLang)){
+            	   bundleMap.put(targetLang, loadedBundle);
+               }
             }
             catch (MissingResourceException e)
             {
