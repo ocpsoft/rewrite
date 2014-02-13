@@ -1,0 +1,144 @@
+== Internationalize your URLs
+
+One of the frequently use patterns when building multi-national or multi-lingual websites is the ability to utilize Internationalization and Localization information gathered from the URL; to serve dynamic content based on the selected Locale, and even to customize URLs for each language or locality.
+
+For instance, let's take the example of a website that provides a library of documents that may be accessed via the url:
+
+[source,text]
+----
+http://example.com/library.jsp
+----
+
+When the above URL is accessed, we should be presented with the library page; however, let's consider how this web application can detect and serve content in the user's native language. How would we go about achieving this?
+
+We could assume that localization codes may be passed as part of the URL, for instance:
+
+[source,text]
+----
+http://example.com/fr/biblioteque
+http://example.com/de/bibliothek
+http://example.com/pt/biblioteca
+----
+
+=== "Simple" i18n and l10n using Rewrite
+
+To accomplish this, one might naively create a rule for each combination of language and path, and while this may outwardly seem like a simple approach, it might result in a configuration that looks something like the configuration below - this configuration obviously suffers from too much duplication.
+
+[source,java]
+----
+public class ExampleLocalizedConfig extends HttpConfigurationProvider
+{
+   @Override
+   public Configuration getConfiguration(final ServletContext context)
+   {
+      return ConfigurationBuilder.begin()
+               .addRule()
+               .when(Path.matches("/{lang}/library").withRequestBinding())
+               .perform(Forward.to("/library.jsp"))
+
+               .addRule()
+               .when(Path.matches("/{lang}/biblioteque").withRequestBinding())
+               .perform(Forward.to("/library.jsp"));
+
+               // ... and so on
+   }
+}
+----
+
+NOTE: This configuration binds the parameter `"lang"` and its value to the request parameter map as if it were part of the request query string (via the `Path` element's `.withRequestBinding()` setting), and is passed to the application (automatically) as `/library.jsp?lang={lang}``:
+
+As you can see, this results in a large number of highly similar rules that can, depending on the number of languages supported, and the number of pages mapped using this technique, begin to introduce performance issues and maintenance debt.
+
+=== Creating a single rule to perform i18n and l10n
+
+The behavior outlined in the previous section can be condensed into one single rule using the `LocaleTransposition` class. The following `ConfigurationProvider` demonstrates basic usage:
+
+[source,java]
+----
+public class ExampleLocalizedConfig extends HttpConfigurationProvider
+{
+   @Override
+   public Configuration getConfiguration(final ServletContext context)
+   {
+      return ConfigurationBuilder.begin()
+               .addRule()
+               .when(Path.matches("/{lang}/{path}").withRequestBinding())
+               .perform(Forward.to("/{path}.jsp"))
+               .where("path").transposedBy(LocaleTransposition.bundle("org.example.Paths", "lang"));
+   }
+}
+----
+
+In the above configuration, `org.example.Paths` is the resource bundle name where translations are stored. The value of the parameter `"lang"` is extracted from the inbound request URL, and used as the bundle `Locale` code (such as `en`, or `PT_br`). The initial value of the parameter `"path"` is used as the entry lookup key, and is transposed to the value of the corresponding resource bundle entry. Once transposition has occurred, after rule evaluation, operations making reference to the `"path"` parameter will receive the value found in the appropriate `ResourceBundle` entry, instead of the original value that was extracted from the request URL.
+
+When this example is applied to a URL of: `"/de/bibliotek"`, assuming a bundle called `org.example.Paths_de` exists on the classpath and contains the an entry `"bibliotek=library"`, the rule will forward the request to the server resource located at `"/library.jsp"`, because the value of `"path"` has been transposed by `LocaleTransposition` using the resource bundle as a lookup table (shown below).
+
+
+=== Further simplification using Join
+
+In your application, you may opt to replace the `Path` and `Forward` elements with one combined rule, such as a `Join`. The `Path` and `Forward` elements allow fine control, but are used here only to showcase the parameter transposition lifecycle (occurs between `.when()` and `.perform()` steps.). A simplified configuration using `Join` would look something like this:
+
+[source,java]
+----
+public class ExampleLocalizedConfig extends HttpConfigurationProvider
+{
+   @Override
+   public Configuration getConfiguration(final ServletContext context)
+   {
+      return ConfigurationBuilder.begin()
+               .addRule(Join.path("/{lang}/{path}").to("/{path}.jsp"))
+               .where("path").transposedBy(LocaleTransposition.bundle("org.example.Paths", "lang"));
+   }
+}
+----
+
+=== The Resource Bundles
+
+In order for this example to work, we must also have corresponding Java resource bundles on the classpath. The following table displays what some corresponding resource bundles for this example would look like:
+
+[cols="2*a"]
+|===
+|Bundle Location |Bundle Contents
+
+
+|`src/main/java/org/example/Paths_en.properties`
+|[source,text]
+----
+libary=library
+home=home
+search=search
+----
+
+|`src/main/java/org/example/Paths_fr.properties`
+|[source,text]
+----
+bibliotheque=library
+maison=home
+recherche=search
+----
+
+
+|`src/main/java/org/example/Paths_de.properties`
+|[source,text]
+----
+bibliothek=library
+heim=home
+suche=search
+----
+
+|===
+
+As you can see, each file must contain a list of translations with which the parameter specified in the `.where("param")` clause should be transposed. 
+
+=== Summary
+
+There are obviously many ways to achieve i18n and l10n support in your application, and this is just one example of how to use the `LocaleTransposition` API, but hopefully gives a good place to start for internationalizing your site and services. Rewrite's APIs are flexible and powerful, allowing a great deal of control, so w encourage you to take your own approach and give us feedback on how this may be improved and brought back to the Rewrite framework as a whole.
+
+
+
+
+
+
+
+
+

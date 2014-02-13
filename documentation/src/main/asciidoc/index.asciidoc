@@ -17,7 +17,7 @@ of the framework, just skip the steps you don't need.
 * link:configuration/annotations/[Simplify with Annotations]
 * Response Interception
 * Resource Transformation
-* Internationalize your URLs
+* link:configuration/i18n[Internationalize your URLs]
 * link:migration/prettyfaces3[PrettyFaces 3.x Migration Guide]
 
 === Integrate Rewrite with other Frameworks
