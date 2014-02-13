@@ -19,8 +19,8 @@ A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 2.5+ applica
 
 Get Help
 ==========
-Support forum: http://ocpsoft.org/support/forum/rewrite-users/
-Documentation: http://ocpsoft.org/rewrite/docs/
+ * Support forum: http://ocpsoft.org/support/forum/rewrite-users/
+ * Documentation: http://ocpsoft.org/rewrite/docs/
 
 Get Started
 ==========
