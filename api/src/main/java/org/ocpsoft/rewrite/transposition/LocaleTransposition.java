@@ -68,7 +68,7 @@ public class LocaleTransposition implements Transposition<String>
     *          .where(&quot;path&quot;).transposedBy(LocaleTransposition.bundle(&quot;org.example.Paths&quot;, &quot;lang&quot;));
     * </pre>
     * <p>
-    * In the above scenario, "bundleName" is the resource bundle name. The value of the {@link Parameter} "lang" is used
+    * In the above scenario, "org.example.Paths" is the resource bundle name. The value of the {@link Parameter} "lang" is used
     * as the bundle {@link Locale}. The initial value of the {@link Parameter} "path" is used as the lookup key, and is
     * transposed to the value of the corresponding resource bundle entry. Once transposition has occurred, after rule
     * evaluation, subsequent references to the "path" {@link Parameter} will return the value from the
