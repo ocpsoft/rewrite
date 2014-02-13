@@ -21,226 +21,207 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import javax.servlet.ServletContext;
-
 import org.ocpsoft.rewrite.annotation.ClassVisitorImpl;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;
 
 /**
- * Implementation of {@link ClassFinder} that searches for classes in the <code>/WEB-INF/classes</code> directory of a
- * web application. Please note that this class is stateful. It should be used only for one call to
+ * Implementation of {@link ClassFinder} that searches for classes in the
+ * <code>/WEB-INF/classes</code> directory of a web application. Please note
+ * that this class is stateful. It should be used only for one call to
  * {@link #findClasses(ClassVisitorImpl)}.
  *
  * @author Christian Kaltepoth
  */
 public class WebClassesFinder extends AbstractClassFinder
 {
-   /**
-    * The name of the <code>classes</code> directory
-    */
-   private final static String CLASSES_FOLDER = "/WEB-INF/classes/";
 
-   /**
-    * Manage a set of classes already processed
-    */
-   private final Set<String> processedClasses = new LinkedHashSet<String>();
+  /**
+   * The name of the <code>classes</code> directory
+   */
+  private final static String CLASSES_FOLDER = "/WEB-INF/classes/";
 
-   /**
-    * Initialization
-    */
-   public WebClassesFinder(ServletContext servletContext, ClassLoader classLoader, PackageFilter packageFilter,
-            ByteCodeFilter byteCodeFilter)
-   {
-      super(servletContext, classLoader, packageFilter, byteCodeFilter);
-   }
+  /**
+   * Manage a set of classes already processed
+   */
+  private final Set<String> processedClasses = new LinkedHashSet<String>();
 
-   @Override
-   public void findClasses(ClassVisitor visitor)
-   {
+  /**
+   * Initialization
+   */
+  public WebClassesFinder(ServletContext servletContext, ClassLoader classLoader, PackageFilter packageFilter,
+          ByteCodeFilter byteCodeFilter)
+  {
+    super(servletContext, classLoader, packageFilter, byteCodeFilter);
+  }
+
+  @Override
+  public void findClasses(ClassVisitor visitor)
+  {
+    try
+    {
+      // get the absolute URL of the classes folder
+      URL classesFolderUrl = servletContext.getResource(CLASSES_FOLDER);
+
+      // abort if classes folder is missing
+      if (classesFolderUrl == null)
+      {
+        log.warn("Cannot find classes folder: " + CLASSES_FOLDER);
+        return;
+      }
+
+      // call recursive directory processing method
+      processDirectory(classesFolderUrl, CLASSES_FOLDER, visitor);
+
+    } catch (MalformedURLException e)
+    {
+      throw new IllegalStateException("Invalid URL: " + e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Scan for classes in a single directory. This method will call itself
+   * recursively if it finds other directories and call {@link #processClass(String, InputStream, ClassVisitorImpl) when it finds a file ending with ".class" and
+   * that is accepted by the {@link PackageFilter}
+   *
+   * @param absoluteUrl The absolute URL of the WEB-INF node to scan
+   * @param relativePath The path of the node inside the WEB-INF
+   * @param visitor The visitor class to call for classes found
+   * @throws MalformedURLException for invalid URLs
+   */
+  protected void processDirectory(URL absoluteUrl, String relativePath, ClassVisitor visitor)
+          throws MalformedURLException
+  {
+
+    // log directory name on trace level
+    if (log.isTraceEnabled())
+    {
+      log.trace("Processing directory: " + relativePath);
+    }
+
+    //  Convert url to string, this will result in a full path of a node in an exploded war archive
+    //  let it be "file://opt/server/application/abc/expoded/ear/war/WEB-INF/classes/com/"
+    String urlAsString = absoluteUrl.toString();
+
+    Set<?> paths = servletContext.getResourcePaths(relativePath);
+    if (paths == null || paths.isEmpty())
+    {
+      return;
+    }
+
+    // Process child nodes
+    for (Object obj : paths)
+    {
+      //  produces "/WEB-INF/classes/com/mycompany/"
+      String childNodeName = obj.toString();
+
+      //  get last part of the node path (folder or class entry)
+      //  for example for childnode "/WEB-INF/classes/com/mycompany/" returns "mycompany/"
+      String childNodeRelative = getChildNodeName(childNodeName);
+
+      //  get the folder of the node  inside WEB-INF
+      //  for example for childnode "/WEB-INF/classes/com/mycompany/" returns "/WEB-INF/classes/com/"
+      String webInfFolder = childNodeName.substring(0, childNodeName.length() - childNodeRelative.length());
+
+      //  Find relative base folder
+      //  produces "file://opt/server/application/abc/expoded/ear/war/"
+      String urlBase = urlAsString.substring(0, urlAsString.length() - webInfFolder.length());
+
+      //  Create child node URL
+      //  produces "file://opt/server/application/abc/expoded/ear/war/WEB-INF/classes/com/mycompany/"
+      URL childNodeUrl = new URL(urlBase + childNodeName);
+
+      if (childNodeRelative.endsWith("/"))
+      {
+        // Recursive cal
+        processDirectory(childNodeUrl, childNodeName, visitor);
+      }
+      if (childNodeRelative.endsWith(".class"))
+      {
+        handleClassEntry(childNodeUrl, childNodeName, visitor);
+      }
+    }
+  }
+
+  /**
+   *  Handles class entry in a WEB-INF.
+   */
+  private void handleClassEntry(URL entryUrl, String entryName, ClassVisitor visitor)
+  {
+
+    // build class name from relative name
+    String className = getClassName(entryName.substring(CLASSES_FOLDER.length()));
+
+    // check filter
+    if (mustProcessClass(className) && !processedClasses.contains(className))
+    {
+
+      // mark this class as processed
+      processedClasses.add(className);
+
+      // the class file stream
+      InputStream classFileStream = null;
+
+      // close the stream in finally block
       try
       {
-         // we start the recursive scan in the classes folder
-         URL classesFolderUrl = servletContext.getResource(CLASSES_FOLDER);
 
-         // abort if classes folder is missing
-         if (classesFolderUrl == null)
-         {
-            log.warn("Cannot find classes folder: " + CLASSES_FOLDER);
-            return;
-         }
+        /*
+         * Try to open the .class file. If an IOException is thrown,
+         * we will scan it anyway.
+         */
+        try
+        {
+          classFileStream = entryUrl.openStream();
+        } catch (IOException e)
+        {
+          if (log.isDebugEnabled())
+          {
+            log.debug("Cound not obtain InputStream for class file: " + entryUrl.toString(), e);
+          }
+        }
 
-         // call recursive directory processing method
-         processDirectory(classesFolderUrl, classesFolderUrl, visitor);
+        // analyze the class (with or without classFileStream)
+        processClass(className, classFileStream, visitor);
 
-      }
-      catch (MalformedURLException e)
+      } finally
       {
-         throw new IllegalStateException("Invalid URL: " + e.getMessage(), e);
+        try
+        {
+          if (classFileStream != null)
+          {
+            classFileStream.close();
+          }
+        } catch (IOException e)
+        {
+          if (log.isDebugEnabled())
+          {
+            log.debug("Failed to close input stream: " + e.getMessage());
+          }
+        }
       }
-   }
+    }
 
-   /**
-    * Scan for classes in a single directory. This method will call itself recursively if it finds other directories and
-    * call {@link #processClass(String, InputStream, ClassVisitorImpl) when it finds a file ending with ".class" and
-    * that is accepted by the {@link PackageFilter}
-    *
-    * @param directoryUrl The URL of the directory to scan
-    * @param visitor The vistor class to call for classes found
-    * @throws MalformedURLException for invalid URLs
-    */
-   protected void processDirectory(URL classesFolderUrl, URL directoryUrl, ClassVisitor visitor)
-            throws MalformedURLException
-   {
+  }
 
-      // only the path of the classes folder URL is required in this method
-      String classesFolderPath = classesFolderUrl.getPath();
+  /**
+   * @param path
+   * @return last node in a a string representation of URL path. For example for
+   * "/a/b/c/d/" returns "d/", for "/a/b/c/d.class" returns "d.class"
+   */
+  private String getChildNodeName(String path)
+  {
+    String[] elements = path.split("/");
+    int size = elements.length;
+    String nodeName = elements[size - 1];
+    return path.endsWith("/") ? nodeName + "/" : nodeName;
+  }
 
-      // log directory name on trace level
-      if (log.isTraceEnabled())
-      {
-         log.trace("Processing directory: " + directoryUrl.toString());
-      }
-
-      // get the directory name relative to the '/WEB-INF/classes/' folder
-      String relativeDirectoryName = getPathRelativeToClassesFolder(directoryUrl.getPath(), classesFolderPath);
-
-      // call getResourcePaths to get directory entries
-      Set<?> paths = servletContext.getResourcePaths(CLASSES_FOLDER + relativeDirectoryName);
-
-      if (paths != null) {
-
-         // loop over all entries of the directory
-         for (Object relativePath : paths)
-         {
-
-            // get full URL for this entry
-            URL entryUrl = servletContext.getResource(relativePath.toString());
-
-            // Embedded Jetty bug?
-            if (entryUrl == null) {
-               log.warn("Unable to obtain URL for relative path: " + relativePath.toString());
-               continue;
-            }
-
-            // we are using toString() instead of getPath() because AS7 doesn't handle # characters correctly
-            String entryName = entryUrl.toString();
-
-            // if this URL ends with .class it is a Java class
-            if (entryName.endsWith(".class"))
-            {
-
-               // the name of the entry relative to the '/WEB-INF/classes/' folder
-               String entryRelativeName = getPathRelativeToClassesFolder(entryName, classesFolderPath);
-
-               // build class name from relative name
-               String className = getClassName(entryRelativeName);
-
-               // check filter
-               if (mustProcessClass(className) && !processedClasses.contains(className))
-               {
-
-                  // mark this class as processed
-                  processedClasses.add(className);
-
-                  // the class file stream
-                  InputStream classFileStream = null;
-
-                  // close the stream in finally block
-                  try
-                  {
-
-                     /*
-                      * Try to open the .class file. If an IOException is thrown,
-                      * we will scan it anyway.
-                      */
-                     try
-                     {
-                        classFileStream = entryUrl.openStream();
-                     }
-                     catch (IOException e)
-                     {
-                        if (log.isDebugEnabled())
-                        {
-                           log.debug("Cound not obtain InputStream for class file: " + entryUrl.toString(), e);
-                        }
-                     }
-
-                     // analyze the class (with or without classFileStream)
-                     processClass(className, classFileStream, visitor);
-
-                  }
-                  finally
-                  {
-                     try
-                     {
-                        if (classFileStream != null)
-                        {
-                           classFileStream.close();
-                        }
-                     }
-                     catch (IOException e)
-                     {
-                        if (log.isDebugEnabled())
-                        {
-                           log.debug("Failed to close input stream: " + e.getMessage());
-                        }
-                     }
-                  }
-               }
-
-            }
-
-            // if this URL ends with a slash, its a directory
-            if (entryName.endsWith("/"))
-            {
-
-               // walk down the directory
-               processDirectory(classesFolderUrl, entryUrl, visitor);
-
-            }
-         }
-      }
-   }
-
-   /**
-    * This method will create a path relative to the '/WEB-INF/classes/' folder for the given path. It will first try to
-    * find the '/WEB-INF/classes/' suffix in the path to do so. If this suffix cannot be found (can happen when using
-    * the jetty-maven-plugin with 'jetty:run' goal), the method will try to build the relative name by stripping the
-    * path of the '/WEB-INF/classes/' folder which must be supplied to the method. The method will throw an
-    * {@link IllegalArgumentException} if the relative path could not be build.
-    *
-    * @param path The path to build the relative path for
-    * @param classesFolderPath the known path of the '/WEB-INF/classes/' folder.
-    * @return the relative name of the path
-    */
-   private String getPathRelativeToClassesFolder(String path, String classesFolderPath)
-   {
-
-      // first try to find the '/WEB-INF/classes' suffix
-      String result = stripKnownPrefix(path, CLASSES_FOLDER);
-
-      // alternative: try to strip the full path of the '/WEB-INF/classes/' folder
-      if (result == null)
-      {
-         result = stripKnownPrefix(path, classesFolderPath);
-      }
-
-      // none of the two methods worked?
-      if (result == null)
-      {
-         throw new IllegalArgumentException("Unable to build path relative to '/WEB-INF/classes/' from: " + path);
-      }
-
-      return result;
-
-   }
-
-   @Override
-   public int priority()
-   {
-      return 0;
-   }
+  @Override
+  public int priority()
+  {
+    return 0;
+  }
 
 }
