@@ -1,7 +1,7 @@
 Rewrite:
 =================================================
 
-A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applications, supporting integration with:
+A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 2.5+ applications, supporting integration with:
 
  * CDI
  * Spring DI
@@ -15,10 +15,12 @@ A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applicat
  * Spring Roo
  * Spring Web Flow
  * Any servlet & web framework!
+ * All major servlet containers and application servers
 
 Get Help
-==========
-Support forum: http://ocpsoft.com/support/forum/rewrite
+==========c
+Support forum: http://ocpsoft.org/support/forum/rewrite-users/
+Documentation: http://ocpsoft.org/rewrite/docs/
 
 Get Started
 ==========
