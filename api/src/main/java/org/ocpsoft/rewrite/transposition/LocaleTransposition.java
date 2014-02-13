@@ -21,6 +21,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -52,8 +53,10 @@ public class LocaleTransposition implements Transposition<String>
 
    private LocaleTransposition(final String languageParam, final String bundleName)
    {
-      this.languageParam = languageParam;
-      this.bundleName = bundleName;
+	   Assert.notNull(languageParam, "Language must not be null.");
+	   Assert.notNull(bundleName, "Bundle must not be null.");
+	   this.languageParam = languageParam;
+	   this.bundleName = bundleName;
    }
 
    /**
