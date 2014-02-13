@@ -1,7 +1,7 @@
 Rewrite:
 =================================================
 
-A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applications, supporting integration with:
+A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 2.5+ applications, supporting integration with:
 
  * CDI
  * Spring DI
@@ -15,10 +15,12 @@ A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 3.0 applicat
  * Spring Roo
  * Spring Web Flow
  * Any servlet & web framework!
+ * All major servlet containers and application servers
 
 Get Help
 ==========
-Support forum: http://ocpsoft.com/support/forum/rewrite
+ * Support forum: http://ocpsoft.org/support/forum/rewrite-users/
+ * Documentation: http://ocpsoft.org/rewrite/docs/
 
 Get Started
 ==========
@@ -29,13 +31,15 @@ Get Started
 
         <dependency>
            <groupId>org.ocpsoft.rewrite</groupId>
-           <artifactId>rewrite-impl-servlet</artifactId>
+           <artifactId>rewrite-servlet</artifactId>
            <version>${rewrite.version}</version>
         </dependency>
 
 3. Add a configuration provider implementing the 'org.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
 
         package com.example;
+        
+        @RewriteConfiguration
         public class ExampleConfigurationProvider extends HttpConfigurationProvider
         {
 	    
@@ -55,7 +59,7 @@ Get Started
             }
         }
 
-4. Create a file named: '/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider' which contains the fully qualified name of your ConfigurationProvider implementation:
+4. You must either annotate your `ConfigurationProvider` class with the @RewriteConfiguration annotation, OR create a file named: '/META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider' which contains the fully qualified name of your `ConfigurationProvider` implementation:
 
         /META-INF/services/org.ocpsoft.rewrite.config.ConfigurationProvider
         ---
@@ -67,7 +71,7 @@ Get Started
    * [JodaTime Integration](https://github.com/ocpsoft/rewrite/tree/master/config-jodatime)
    * [Tuckey URLRewriteFilter Integration](https://github.com/ocpsoft/rewrite/tree/master/config-tuckey)
    * [CDI Integration](https://github.com/ocpsoft/rewrite/tree/master/integration-cdi)
-   * And more...
+   * And more... read the [Documentation](http://ocpsoft.org/rewrite/docs/)
 
 7. Run your application!
 
@@ -80,9 +84,7 @@ TODO's
 ======
 
  * Continue simplification of Configuration objects and convenience APIs. 
- 
- * Implement file test conditions.
 
- * Implement additional file-based configuration support.
+ * Implement additional xml & file-based configuration support.
 
  * Implement http://localhost:8080/rewrite-status monitoring tool
