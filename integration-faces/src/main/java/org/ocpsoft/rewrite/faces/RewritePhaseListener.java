@@ -23,7 +23,7 @@ import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 import org.ocpsoft.rewrite.servlet.event.SubflowTask;
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.spi.RewriteResultHandler;
+import org.ocpsoft.rewrite.servlet.spi.RewriteResultHandler;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>

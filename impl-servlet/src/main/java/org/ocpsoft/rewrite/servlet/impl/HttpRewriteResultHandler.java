@@ -1,12 +1,15 @@
 package org.ocpsoft.rewrite.servlet.impl;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
-import org.ocpsoft.rewrite.spi.RewriteResultHandler;
+import org.ocpsoft.rewrite.servlet.spi.RewriteResultHandler;
 
 public class HttpRewriteResultHandler implements RewriteResultHandler
 {
@@ -25,7 +28,7 @@ public class HttpRewriteResultHandler implements RewriteResultHandler
    }
 
    @Override
-   public void handleResult(Rewrite event) throws Exception
+   public void handleResult(Rewrite event) throws ServletException, IOException
    {
       HttpInboundServletRewrite servletRewrite = (HttpInboundServletRewrite) event;
       String dispatchResource = servletRewrite.getDispatchResource();

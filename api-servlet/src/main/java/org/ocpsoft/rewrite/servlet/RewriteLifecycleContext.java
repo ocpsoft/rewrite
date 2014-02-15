@@ -26,8 +26,8 @@ import org.ocpsoft.rewrite.servlet.spi.InboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
+import org.ocpsoft.rewrite.servlet.spi.RewriteResultHandler;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
-import org.ocpsoft.rewrite.spi.RewriteResultHandler;
 
 /**
  * Stores implementations of all Rewrite lifecycle services.

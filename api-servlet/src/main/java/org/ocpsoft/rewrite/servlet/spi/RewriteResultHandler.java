@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.spi;
+package org.ocpsoft.rewrite.servlet.spi;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 
 import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
@@ -31,5 +35,5 @@ public interface RewriteResultHandler extends Weighted, Specialized<Rewrite>
     * Perform any actions necessary to respond to state of the system after the given {@link Rewrite} event has been
     * processed.
     */
-   public void handleResult(Rewrite event) throws Exception;
+   public void handleResult(Rewrite event) throws ServletException, IOException;
 }
