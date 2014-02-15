@@ -36,8 +36,7 @@ import com.ocpsoft.pretty.faces.config.PrettyConfigParser;
 import com.ocpsoft.pretty.faces.spi.ConfigurationProvider;
 
 /**
- * Loads configuration files specified in web.xml init parameter
- * {@link PrettyContext#CONFIG_KEY}
+ * Loads configuration files specified in web.xml init parameter {@link PrettyContext#CONFIG_KEY}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
@@ -46,6 +45,7 @@ public class ContextSpecifiedConfigurationProvider implements ConfigurationProvi
 {
    private static final Log log = LogFactory.getLog(ContextSpecifiedConfigurationProvider.class);
 
+   @Override
    public PrettyConfig loadConfiguration(ServletContext servletContext)
    {
       final PrettyConfigBuilder builder = new PrettyConfigBuilder();
@@ -99,9 +99,10 @@ public class ContextSpecifiedConfigurationProvider implements ConfigurationProvi
 
             if (DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG.equals(systemId))
             {
-               log.warn("The file [" + DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG + "] has been specified in the ["
-                     + PrettyContext.CONFIG_KEY + "] context parameter of "
-                     + "the deployment descriptor; this is unecessary and will be ignored.");
+               log.warn("The file [" + DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG
+                        + "] has been specified in the ["
+                        + PrettyContext.CONFIG_KEY + "] context parameter of "
+                        + "the deployment descriptor; this is unecessary and will be ignored.");
             }
             else
             {

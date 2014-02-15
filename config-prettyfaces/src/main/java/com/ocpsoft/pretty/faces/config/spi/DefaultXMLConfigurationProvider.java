@@ -41,6 +41,7 @@ public class DefaultXMLConfigurationProvider implements ConfigurationProvider
 
    public static final String DEFAULT_PRETTY_FACES_CONFIG = "/WEB-INF/pretty-config.xml";
 
+   @Override
    public PrettyConfig loadConfiguration(ServletContext servletContext)
    {
       final PrettyConfigBuilder builder = new PrettyConfigBuilder();
@@ -56,7 +57,8 @@ public class DefaultXMLConfigurationProvider implements ConfigurationProvider
          }
          catch (Exception e)
          {
-            throw new PrettyException("Failed to parse PrettyFaces configuration from " + DEFAULT_PRETTY_FACES_CONFIG, e);
+            throw new PrettyException("Failed to parse PrettyFaces configuration from " + DEFAULT_PRETTY_FACES_CONFIG,
+                     e);
          }
          finally
          {
@@ -65,8 +67,7 @@ public class DefaultXMLConfigurationProvider implements ConfigurationProvider
                is.close();
             }
             catch (IOException ignored)
-            {
-            }
+            {}
          }
       }
 

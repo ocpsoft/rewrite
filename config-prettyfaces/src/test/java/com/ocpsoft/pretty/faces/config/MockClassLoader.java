@@ -57,11 +57,13 @@ public class MockClassLoader extends URLClassLoader
       {
          private int index = 0;
 
+         @Override
          public boolean hasMoreElements()
          {
             return index < elements.length;
          }
 
+         @Override
          public T nextElement()
          {
             if (!hasMoreElements())

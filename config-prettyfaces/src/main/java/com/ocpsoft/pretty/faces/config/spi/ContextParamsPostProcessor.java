@@ -31,6 +31,7 @@ public class ContextParamsPostProcessor implements ConfigurationPostProcessor
 {
    public static final String USE_ENCODE_URL_FOR_REDIRECTS = "com.ocpsoft.pretty.USE_ENCODE_URL_FOR_REDIRECTS";
 
+   @Override
    public PrettyConfig processConfiguration(ServletContext context, PrettyConfig config)
    {
       String useEncodeURL = context.getInitParameter(USE_ENCODE_URL_FOR_REDIRECTS);
