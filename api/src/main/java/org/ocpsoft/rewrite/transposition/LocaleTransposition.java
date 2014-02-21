@@ -24,9 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.bind.Binding;
+import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.Parameters;
 import org.ocpsoft.rewrite.param.Transposition;
@@ -50,6 +50,8 @@ public class LocaleTransposition implements Transposition<String>
    
    private final String languageParam;
    private final String bundleName;
+   
+   private Operation onFailureOperation;
 
    private LocaleTransposition(final String languageParam, final String bundleName)
    {
@@ -60,6 +62,7 @@ public class LocaleTransposition implements Transposition<String>
 
 	   this.languageParam = languageParam;
 	   this.bundleName = bundleName;
+
    }
 
    /**
@@ -95,6 +98,18 @@ public class LocaleTransposition implements Transposition<String>
    {
       return new LocaleTransposition(localeParam, bundleName);
    }
+   
+   /**
+    * Specify an Operation to perform in case the transposition failed.
+    * Failure occurs when no resource bundle can be found for the requested language.
+    * @param onFailureOperation
+    * @return
+    */
+   public LocaleTransposition onFailure(Operation onFailureOperation)
+   {
+	   this.onFailureOperation = onFailureOperation;
+	   return this;
+   }
 
    @Override
    public String transpose(Rewrite event, EvaluationContext context, String value)
@@ -117,8 +132,10 @@ public class LocaleTransposition implements Transposition<String>
             }
             catch (MissingResourceException e)
             {
-               throw new RewriteException("Error occurred during Locale transposition of parameter value [" + value
-                        + "] via bundle [" + bundleName + "_" + targetLang + "]", e);
+            	if(onFailureOperation != null)
+            	{
+            		onFailureOperation.perform(event, context);
+            	}
             }
          }
 
