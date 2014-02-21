@@ -18,6 +18,7 @@ package org.ocpsoft.rewrite.transposition;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,10 +45,9 @@ import org.ocpsoft.rewrite.param.Transposition;
  */
 public class LocaleTransposition implements Transposition<String>
 {
-
    // shared thread safe map between a String(representing the language) and a ResourceBundle.
    private static Map<String, ResourceBundle> bundleMap = new ConcurrentHashMap<String, ResourceBundle>();
-
+   
    private final String languageParam;
    private final String bundleName;
 
@@ -55,6 +55,9 @@ public class LocaleTransposition implements Transposition<String>
    {
 	   Assert.notNull(languageParam, "Language must not be null.");
 	   Assert.notNull(bundleName, "Bundle must not be null.");
+	   
+	   //TODO ensure that we can find a resource bundle with the provided name in the classpath	   
+
 	   this.languageParam = languageParam;
 	   this.bundleName = bundleName;
    }
@@ -107,13 +110,10 @@ public class LocaleTransposition implements Transposition<String>
             Locale locale = new Locale(targetLang);
             try
             {
-            	// if no bundle can be found for the targetLang, the system default is used.
-               ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale);
-               
-               // we only use the bundle if it's what we asked for (avoid using the default locale when not found)
-               if(loadedBundle.getLocale().getLanguage().equals(targetLang)){
-            	   bundleMap.put(targetLang, loadedBundle);
-               }
+               ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale,
+            		   ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT));
+
+               bundleMap.put(targetLang, loadedBundle);
             }
             catch (MissingResourceException e)
             {
@@ -122,7 +122,8 @@ public class LocaleTransposition implements Transposition<String>
             }
          }
 
-         if (bundleMap.containsKey(targetLang)) {
+         if (bundleMap.containsKey(targetLang))
+         {
             try
             {
                // can we received more than one path section? e.g./search/service/

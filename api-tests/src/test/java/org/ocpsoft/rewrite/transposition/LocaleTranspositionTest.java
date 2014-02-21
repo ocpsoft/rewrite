@@ -76,4 +76,12 @@ public class LocaleTranspositionTest extends RewriteTest
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertEquals("library page", action.getResponseContent());
    }
+   
+   @Test
+   public void testMissingLocaleTransposition() throws Exception
+   {
+	   //FIXME a MissingResourceException is thrown
+      HttpAction<HttpGet> action = get("/zz/library");
+      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
+   }
 }
