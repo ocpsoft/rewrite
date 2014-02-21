@@ -33,13 +33,13 @@ import org.ocpsoft.rewrite.param.Transposition;
 
 /**
  * A {@link Transposition} responsible for translating values from their matching translation from a
- * {@link ResourceBundle}. The lookup in the properties file is case-sensitive. The properties file
- * should use ISO-8859-1 encoding as defined by {@link PropertyResourceBundle}.
+ * {@link ResourceBundle}. The lookup in the properties file is case-sensitive. The properties file should use
+ * ISO-8859-1 encoding as defined by {@link PropertyResourceBundle}.
  * 
  * Requires inverted properties files in the form of translated_name=name_to_bind.
  * 
- * TODO Should we allow to load the properties file in a different encoding?
- * TODO Allow to enable case insensitive and/or ascii-folding on property lookup?
+ * TODO Should we allow to load the properties file in a different encoding? TODO Allow to enable case insensitive
+ * and/or ascii-folding on property lookup?
  * 
  * @author Christian Gendreau
  */
@@ -47,21 +47,21 @@ public class LocaleTransposition implements Transposition<String>
 {
    // shared thread safe map between a String(representing the language) and a ResourceBundle.
    private static Map<String, ResourceBundle> bundleMap = new ConcurrentHashMap<String, ResourceBundle>();
-   
+
    private final String languageParam;
    private final String bundleName;
-   
+
    private Operation onFailureOperation;
 
    private LocaleTransposition(final String languageParam, final String bundleName)
    {
-	   Assert.notNull(languageParam, "Language must not be null.");
-	   Assert.notNull(bundleName, "Bundle must not be null.");
-	   
-	   //TODO ensure that we can find a resource bundle with the provided name in the classpath	   
+      Assert.notNull(languageParam, "Language must not be null.");
+      Assert.notNull(bundleName, "Bundle must not be null.");
 
-	   this.languageParam = languageParam;
-	   this.bundleName = bundleName;
+      // TODO ensure that we can find a resource bundle with the provided name in the classpath
+
+      this.languageParam = languageParam;
+      this.bundleName = bundleName;
 
    }
 
@@ -78,11 +78,11 @@ public class LocaleTransposition implements Transposition<String>
     *          .where(&quot;path&quot;).transposedBy(LocaleTransposition.bundle(&quot;org.example.Paths&quot;, &quot;lang&quot;));
     * </pre>
     * <p>
-    * In the above scenario, "org.example.Paths" is the resource bundle name. The value of the {@link Parameter} "lang" is 
-    * extracted from the inbound request URL, and used as the bundle {@link Locale}. The initial value of the {@link Parameter} 
-    * "path" is used as the lookup key, and is transposed to the value of the corresponding resource bundle entry. Once 
-    * transposition has occurred, after rule evaluation, subsequent references to the "path" {@link Parameter} will return the
-    * value from the {@link ResourceBundle} entry.
+    * In the above scenario, "org.example.Paths" is the resource bundle name. The value of the {@link Parameter} "lang"
+    * is extracted from the inbound request URL, and used as the bundle {@link Locale}. The initial value of the
+    * {@link Parameter} "path" is used as the lookup key, and is transposed to the value of the corresponding resource
+    * bundle entry. Once transposition has occurred, after rule evaluation, subsequent references to the "path"
+    * {@link Parameter} will return the value from the {@link ResourceBundle} entry.
     * <p>
     * When this example is applied to a URL of: "/de/bibliotek", assuming a bundle called "org.example.Paths_de" exists
     * and contains the an entry "bibliotek=library", the rule will forward to the new URL: "/library", because the value
@@ -90,7 +90,8 @@ public class LocaleTransposition implements Transposition<String>
     * 
     * 
     * @param bundleName Fully qualified name of the {@link ResourceBundle}
-    * @param localeParam The name of the {@link Parameter} that contains the ISO 639-1 language code to be used with {@link Locale}.
+    * @param localeParam The name of the {@link Parameter} that contains the ISO 639-1 language code to be used with
+    *           {@link Locale}.
     * 
     * @return new instance of LocaleBinding
     */
@@ -98,24 +99,27 @@ public class LocaleTransposition implements Transposition<String>
    {
       return new LocaleTransposition(localeParam, bundleName);
    }
-   
+
    /**
-    * Specify an Operation to perform in case the transposition failed.
-    * Failure occurs when no resource bundle can be found for the requested language.
+    * Specify an {@link Operation} to perform in case the {@link Transposition} failed. Failure occurs when no
+    * {@link ResourceBundle} can be found for the requested language or when a value can not be transposed due to a
+    * missing key in the resource bundle.
+    * 
     * @param onFailureOperation
     * @return
     */
-   public LocaleTransposition onFailure(Operation onFailureOperation)
+   public LocaleTransposition onTranspositionFailed(Operation onFailureOperation)
    {
-	   this.onFailureOperation = onFailureOperation;
-	   return this;
+      this.onFailureOperation = onFailureOperation;
+      return this;
    }
 
    @Override
    public String transpose(Rewrite event, EvaluationContext context, String value)
    {
       String transposedValue = null;
-      
+      boolean transpositionFailed = false;
+
       // Retrieve the value of lang from the context
       String targetLang = (String) Parameters.retrieve(context, this.languageParam);
       if (value != null)
@@ -126,20 +130,17 @@ public class LocaleTransposition implements Transposition<String>
             try
             {
                ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale,
-            		   ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT));
+                        ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT));
 
                bundleMap.put(targetLang, loadedBundle);
             }
             catch (MissingResourceException e)
             {
-            	if(onFailureOperation != null)
-            	{
-            		onFailureOperation.perform(event, context);
-            	}
+               transpositionFailed = true;
             }
          }
 
-         if (bundleMap.containsKey(targetLang))
+         if (!transpositionFailed)
          {
             try
             {
@@ -148,13 +149,17 @@ public class LocaleTransposition implements Transposition<String>
             }
             catch (MissingResourceException mrEx)
             {
-               // if not found, do not translate and keep original value
-               transposedValue = value;
+               transpositionFailed = true;
             }
          }
-         else
+
+         if (transpositionFailed)
          {
-            // if language is not defined, do not translate and keep original value
+            if (onFailureOperation != null)
+            {
+               onFailureOperation.perform(event, context);
+            }
+            // if language is not defined, do not translate and keep original value.
             transposedValue = value;
          }
       }

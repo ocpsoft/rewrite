@@ -76,12 +76,43 @@ public class LocaleTranspositionTest extends RewriteTest
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertEquals("library page", action.getResponseContent());
    }
-   
+
+   /**
+    * Expected behavior(default) is to keep original value so the address should become /library
+    * 
+    * @throws Exception
+    */
    @Test
-   public void testMissingLocaleTransposition() throws Exception
+   public void testLocaleTranspositionFailureNoHandling() throws Exception
    {
-	   //FIXME a MissingResourceException is thrown
       HttpAction<HttpGet> action = get("/zz/library");
-      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals("library page", action.getResponseContent());
+   }
+
+   /**
+    * Test onTranspositionFailed with missing Locale but good key. Expected behavior is to receive status code 201, as
+    * defined by LocaleTranspositionConfigurationProvider.
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void testLocaleTranspositionFailureWithHandling() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/zz/library/fail1");
+      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   /**
+    * Test onTranspositionFailed with good Locale but missing key. Expected behavior is to receive status code 202, as
+    * defined by LocaleTranspositionConfigurationProvider.
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void testLocaleTranspositionMissingKeyWithHandling() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/en/missinglibrary/fail2");
+      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
    }
 }
