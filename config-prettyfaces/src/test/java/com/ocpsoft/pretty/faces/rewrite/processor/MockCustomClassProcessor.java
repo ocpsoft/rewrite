@@ -31,6 +31,7 @@ public class MockCustomClassProcessor implements Processor
       return RESULT;
    }
 
+   @Override
    public String processInbound(final HttpServletRequest request, final HttpServletResponse response,
              final RewriteRule rule,
              final String url)
@@ -38,6 +39,7 @@ public class MockCustomClassProcessor implements Processor
       return process(request, response, rule, url);
    }
 
+   @Override
    public String processOutbound(final HttpServletRequest request, final HttpServletResponse response,
              final RewriteRule rule, final String url)
    {

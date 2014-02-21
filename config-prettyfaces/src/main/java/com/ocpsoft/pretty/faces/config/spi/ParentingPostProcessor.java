@@ -37,6 +37,7 @@ public class ParentingPostProcessor implements ConfigurationPostProcessor
    public static final String HIERARCHY_ENABLED_PARAM = "com.ocpsoft.pretty.INHERITABLE_CONFIG";
    private final List<UrlMapping> seen = new ArrayList<UrlMapping>();
 
+   @Override
    public PrettyConfig processConfiguration(ServletContext context, PrettyConfig config)
    {
       String enabled = context.getInitParameter(HIERARCHY_ENABLED_PARAM);
@@ -61,7 +62,8 @@ public class ParentingPostProcessor implements ConfigurationPostProcessor
          if (parent == null)
          {
             throw new PrettyException("Error when building configuration for URL-mapping [" + m.getId() + ":"
-                  + m.getPattern() + "] - the requested parentId [" + m.getParentId() + "] does not exist in the configuration.");
+                     + m.getPattern() + "] - the requested parentId [" + m.getParentId()
+                     + "] does not exist in the configuration.");
          }
          if (parent.hasParent())
          {

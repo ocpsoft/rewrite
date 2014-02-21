@@ -16,21 +16,32 @@
 
 package com.ocpsoft.pretty.faces.config.spi;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ocpsoft.rewrite.annotation.scan.ByteCodeFilter;
+import org.ocpsoft.rewrite.annotation.scan.PackageFilter;
+import org.ocpsoft.rewrite.annotation.scan.WebClassesFinder;
+import org.ocpsoft.rewrite.annotation.scan.WebLibFinder;
+import org.ocpsoft.rewrite.annotation.spi.ClassFinder;
 
+import com.ocpsoft.pretty.faces.annotation.URLAction;
+import com.ocpsoft.pretty.faces.annotation.URLActions;
+import com.ocpsoft.pretty.faces.annotation.URLBeanName;
+import com.ocpsoft.pretty.faces.annotation.URLMapping;
+import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
+import com.ocpsoft.pretty.faces.annotation.URLValidator;
 import com.ocpsoft.pretty.faces.config.PrettyConfig;
 import com.ocpsoft.pretty.faces.config.PrettyConfigBuilder;
-import com.ocpsoft.pretty.faces.config.annotation.ClassFinder;
-import com.ocpsoft.pretty.faces.config.annotation.PackageFilter;
 import com.ocpsoft.pretty.faces.config.annotation.PrettyAnnotationHandler;
-import com.ocpsoft.pretty.faces.config.annotation.WebClassesFinder;
-import com.ocpsoft.pretty.faces.config.annotation.WebLibFinder;
 import com.ocpsoft.pretty.faces.el.LazyBeanNameFinder;
 import com.ocpsoft.pretty.faces.spi.ConfigurationProvider;
 
@@ -45,6 +56,7 @@ public class AnnotationConfigurationProvider implements ConfigurationProvider
    public static final String CONFIG_SCAN_LIB_DIR = "com.ocpsoft.pretty.SCAN_LIB_DIRECTORY";
    public static final String CONFIG_BASE_PACKAGES = "com.ocpsoft.pretty.BASE_PACKAGES";
 
+   @Override
    public PrettyConfig loadConfiguration(ServletContext servletContext)
    {
       String packageFilters = servletContext.getInitParameter(CONFIG_BASE_PACKAGES);
@@ -67,14 +79,15 @@ public class AnnotationConfigurationProvider implements ConfigurationProvider
 
       List<ClassFinder> classFinders = new ArrayList<ClassFinder>();
 
-      // we will always scan /WEB-INF/classes
-      classFinders.add(new WebClassesFinder(servletContext, classloader, packageFilter));
+      ByteCodeFilter byteCodeFilter = getByteCodeFilter();
+
+      classFinders.add(new WebClassesFinder(servletContext, classloader, packageFilter, byteCodeFilter));
 
       // does the user want to scan /WEB-INF/lib ?
       String jarConfig = servletContext.getInitParameter(CONFIG_SCAN_LIB_DIR);
       if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("true"))
       {
-         classFinders.add(new WebLibFinder(servletContext, classloader, packageFilter));
+         classFinders.add(new WebLibFinder(servletContext, classloader, packageFilter, byteCodeFilter));
       }
 
       for (ClassFinder finder : classFinders)
@@ -85,5 +98,19 @@ public class AnnotationConfigurationProvider implements ConfigurationProvider
       PrettyConfigBuilder builder = new PrettyConfigBuilder();
       annotationHandler.build(builder);
       return builder.build();
+   }
+
+   private ByteCodeFilter getByteCodeFilter()
+   {
+      Set<Class<? extends Annotation>> annotations = new HashSet<Class<? extends Annotation>>();
+      annotations.add(URLAction.class);
+      annotations.add(URLActions.class);
+      annotations.add(URLBeanName.class);
+      annotations.add(URLMapping.class);
+      annotations.add(URLMappings.class);
+      annotations.add(URLQueryParameter.class);
+      annotations.add(URLValidator.class);
+      ByteCodeFilter byteCodeFilter = new ByteCodeFilter(annotations);
+      return byteCodeFilter;
    }
 }

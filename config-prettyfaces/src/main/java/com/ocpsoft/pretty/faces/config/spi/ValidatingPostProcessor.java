@@ -32,6 +32,7 @@ public class ValidatingPostProcessor implements ConfigurationPostProcessor
 {
    public static final String VALIDATION_ENABLED_PARAM = "com.ocpsoft.pretty.VALIDATE_CONFIG";
 
+   @Override
    public PrettyConfig processConfiguration(ServletContext context, PrettyConfig config)
    {
       String enabled = context.getInitParameter(VALIDATION_ENABLED_PARAM);

@@ -1,7 +1,6 @@
 package com.ocpsoft.pretty.faces.util;
 
-import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +52,7 @@ public class FacesMessagesUtilsTest
       /*
        * Step 1: Save
        */
-      
+
       // class under test
       FacesMessagesUtils utils = new FacesMessagesUtils();
 
@@ -71,11 +70,11 @@ public class FacesMessagesUtilsTest
       assertEquals(3, saved);
       assertNotNull(sessionMap.get(FacesMessagesUtils.token));
       assertEquals(3, ((Collection<?>) sessionMap.get(FacesMessagesUtils.token)).size());
-      
+
       /*
        * Step 2: Restore
        */
-      
+
       // Setup new FacesContext with two messages
       facesContext.clearAllMesages();
       facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Summary B", "Detail B"));
@@ -91,8 +90,7 @@ public class FacesMessagesUtilsTest
    }
 
    /**
-    * Simple mock of {@link FacesContext} that just handles the
-    * message queue.
+    * Simple mock of {@link FacesContext} that just handles the message queue.
     * 
     */
    private static class FacesContextMock extends FacesContext

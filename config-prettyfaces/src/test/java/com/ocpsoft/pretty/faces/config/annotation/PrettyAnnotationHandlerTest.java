@@ -47,10 +47,9 @@ public class PrettyAnnotationHandlerTest
    @Test
    public void testNotAnnotatedClass()
    {
-
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(NotAnnotatedClass.class);
+      handler.visit(NotAnnotatedClass.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -69,7 +68,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithSimpleMapping.class);
+      handler.visit(ClassWithSimpleMapping.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -99,7 +98,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithMappingAndPathValidation.class);
+      handler.visit(ClassWithMappingAndPathValidation.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -135,7 +134,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithSingleLazyExpressionAction.class);
+      handler.visit(ClassWithSingleLazyExpressionAction.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -176,7 +175,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithSingleConstantExpressionAction.class);
+      handler.visit(ClassWithSingleConstantExpressionAction.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -215,7 +214,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithMultipleActions.class);
+      handler.visit(ClassWithMultipleActions.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -263,7 +262,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithSingleQueryParameter.class);
+      handler.visit(ClassWithSingleQueryParameter.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -303,7 +302,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithSingleQueryParameterAndValidation.class);
+      handler.visit(ClassWithSingleQueryParameterAndValidation.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -346,7 +345,7 @@ public class PrettyAnnotationHandlerTest
 
       // create handler and process class
       PrettyAnnotationHandler handler = new PrettyAnnotationHandler(null);
-      handler.processClass(ClassWithMultipleMappings.class);
+      handler.visit(ClassWithMultipleMappings.class);
 
       // build configuration
       PrettyConfigBuilder configBuilder = new PrettyConfigBuilder();
@@ -368,18 +367,18 @@ public class PrettyAnnotationHandlerTest
       assertEquals(1, mappingA.getActions().size());
       assertEquals(2, mappingA.getQueryParams().size());
       assertEquals(0, mappingA.getPathValidators().size());
-      assertEquals("#{multiMappingBean.actionForBoth}", 
-            mappingA.getActions().get(0).getAction().getELExpression());
-      
+      assertEquals("#{multiMappingBean.actionForBoth}",
+               mappingA.getActions().get(0).getAction().getELExpression());
+
       // we don't know the order in which the query parameters are added
       List<String> queryParamExpressionsA = Arrays.asList(
-            mappingA.getQueryParams().get(0).getExpression().getELExpression(),
-            mappingA.getQueryParams().get(1).getExpression().getELExpression()
-      );
+               mappingA.getQueryParams().get(0).getExpression().getELExpression(),
+               mappingA.getQueryParams().get(1).getExpression().getELExpression()
+               );
       Collections.sort(queryParamExpressionsA);
       assertEquals("#{multiMappingBean.queryParameterForA}", queryParamExpressionsA.get(0));
       assertEquals("#{multiMappingBean.queryParameterForBoth}", queryParamExpressionsA.get(1));
-      
+
       // validate mapping properties for mappingB
       UrlMapping mappingB = config.getMappingById("mappingB");
       assertNotNull(mappingB);
@@ -391,20 +390,19 @@ public class PrettyAnnotationHandlerTest
       assertEquals(2, mappingB.getActions().size());
       assertEquals(1, mappingB.getQueryParams().size());
       assertEquals(0, mappingB.getPathValidators().size());
-      assertEquals("#{multiMappingBean.queryParameterForBoth}", 
-            mappingB.getQueryParams().get(0).getExpression().getELExpression());
-      
+      assertEquals("#{multiMappingBean.queryParameterForBoth}",
+               mappingB.getQueryParams().get(0).getExpression().getELExpression());
+
       // we don't know the order in which the actions are added
       List<String> actionExpressionsB = Arrays.asList(
-            mappingB.getActions().get(0).getAction().getELExpression(),
-            mappingB.getActions().get(1).getAction().getELExpression()
-      );
+               mappingB.getActions().get(0).getAction().getELExpression(),
+               mappingB.getActions().get(1).getAction().getELExpression()
+               );
       Collections.sort(actionExpressionsB);
       assertEquals("#{multiMappingBean.actionForBoth}", actionExpressionsB.get(0));
       assertEquals("#{multiMappingBean.actionForB}", actionExpressionsB.get(1));
 
    }
-   
 
    /**
     * Simple class without any PrettyFaces annotations
@@ -418,27 +416,25 @@ public class PrettyAnnotationHandlerTest
     * Simple class with a single {@link URLMapping} annotation
     */
    @URLMapping(id = "simple", pattern = "/some/url", viewId = "/view.jsf",
-         outbound = false, onPostback = false)
+            outbound = false, onPostback = false)
    public class ClassWithSimpleMapping
    {
       // nothing
    }
 
    /**
-    * Simple class with a single {@link URLMapping} annotation and a validation
-    * rule
+    * Simple class with a single {@link URLMapping} annotation and a validation rule
     */
    @URLMapping(id = "simple", pattern = "/some/url", viewId = "/view.jsf",
-         validation = @URLValidator(index = 0, onError = "#{bean.action}",
-               validatorIds = { "myValidator", "myOtherValidator" }))
+            validation = @URLValidator(index = 0, onError = "#{bean.action}",
+                     validatorIds = { "myValidator", "myOtherValidator" }))
    public class ClassWithMappingAndPathValidation
    {
       // nothing
    }
 
    /**
-    * Simple class with a mapping and one annotated action method (lazy
-    * expression)
+    * Simple class with a mapping and one annotated action method (lazy expression)
     */
    @URLMapping(id = "singleLazyExpressionAction", pattern = "/some/url", viewId = "/view.jsf")
    public class ClassWithSingleLazyExpressionAction
@@ -453,8 +449,7 @@ public class PrettyAnnotationHandlerTest
    }
 
    /**
-    * Simple class with a mapping and one annotated action method (constant
-    * expression)
+    * Simple class with a mapping and one annotated action method (constant expression)
     */
    @URLMapping(id = "singleConstantExpressionAction", pattern = "/some/url", viewId = "/view.jsf")
    @URLBeanName("someBean")
@@ -470,16 +465,15 @@ public class PrettyAnnotationHandlerTest
    }
 
    /**
-    * Simple class with a mapping and an action method referenced by multiple
-    * {@link URLAction}s.
+    * Simple class with a mapping and an action method referenced by multiple {@link URLAction}s.
     */
    @URLMapping(id = "multipleActions", pattern = "/some/url", viewId = "/view.jsf")
    public class ClassWithMultipleActions
    {
 
       @URLActions(actions = {
-            @URLAction(phaseId = URLAction.PhaseId.RENDER_RESPONSE),
-            @URLAction(phaseId = URLAction.PhaseId.INVOKE_APPLICATION)
+               @URLAction(phaseId = URLAction.PhaseId.RENDER_RESPONSE),
+               @URLAction(phaseId = URLAction.PhaseId.INVOKE_APPLICATION)
       })
       public void actionMethod()
       {
@@ -497,7 +491,6 @@ public class PrettyAnnotationHandlerTest
    {
 
       @URLQueryParameter("myQueryParam")
-      @SuppressWarnings("unused")
       private String someParameter;
 
    }
@@ -512,8 +505,7 @@ public class PrettyAnnotationHandlerTest
 
       @URLQueryParameter(value = "myQueryParam", onPostback = false)
       @URLValidator(index = 0, onError = "#{bean.action}",
-            validatorIds = { "myValidator", "myOtherValidator" })
-      @SuppressWarnings("unused")
+               validatorIds = { "myValidator", "myOtherValidator" })
       private String someParameter;
 
    }
@@ -521,35 +513,35 @@ public class PrettyAnnotationHandlerTest
    /*
     * Class with two mappings
     */
-   @URLMappings(mappings={
-         @URLMapping(id = "mappingA", pattern = "/some/url/a", viewId = "/view.jsf"),
-         @URLMapping(id = "mappingB", pattern = "/some/url/b", viewId = "/view.jsf")
+   @URLMappings(mappings = {
+            @URLMapping(id = "mappingA", pattern = "/some/url/a", viewId = "/view.jsf"),
+            @URLMapping(id = "mappingB", pattern = "/some/url/b", viewId = "/view.jsf")
    })
    @URLBeanName("multiMappingBean")
    public class ClassWithMultipleMappings
    {
-      
+
       // assigned to both mappings
       @URLQueryParameter("q1")
-      @SuppressWarnings("unused")
       private String queryParameterForBoth;
 
       // assigned to both mappings
-      @URLQueryParameter(value="q2", mappingId="mappingA")
-      @SuppressWarnings("unused")
+      @URLQueryParameter(value = "q2", mappingId = "mappingA")
       private String queryParameterForA;
 
       // assigned to both mappings
       @URLAction
-      public void actionForBoth() {
+      public void actionForBoth()
+      {
          // nothing
       }
 
       // assigned to both mappings
-      @URLAction(mappingId="mappingB")
-      public void actionForB() {
+      @URLAction(mappingId = "mappingB")
+      public void actionForB()
+      {
          // nothing
       }
-      
+
    }
 }

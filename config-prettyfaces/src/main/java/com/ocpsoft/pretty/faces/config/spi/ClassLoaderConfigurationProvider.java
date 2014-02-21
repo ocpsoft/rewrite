@@ -42,6 +42,7 @@ public class ClassLoaderConfigurationProvider implements ConfigurationProvider
    public static final String PRETTY_CONFIG_RESOURCE = "META-INF/pretty-config.xml";
    public static final String CLASSPATH_CONFIG_ENABLED = "com.ocpsoft.pretty.LOAD_CLASSPATH_CONFIG";
 
+   @Override
    public PrettyConfig loadConfiguration(ServletContext context)
    {
       String enabled = context.getInitParameter(CLASSPATH_CONFIG_ENABLED);

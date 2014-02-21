@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 
 import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLAction.PhaseId;
@@ -43,7 +44,7 @@ import com.ocpsoft.pretty.faces.el.LazyBeanNameFinder;
 import com.ocpsoft.pretty.faces.el.LazyExpression;
 import com.ocpsoft.pretty.faces.el.PrettyExpression;
 
-public class PrettyAnnotationHandler
+public class PrettyAnnotationHandler implements ClassVisitor
 {
 
    /**
@@ -90,7 +91,8 @@ public class PrettyAnnotationHandler
     * 
     * @param clazz The class to scan
     */
-   public void processClass(Class<?> clazz)
+   @Override
+   public void visit(Class<?> clazz)
    {
 
       // log class name on trace level

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.ocpsoft.pretty.PrettyException;
@@ -291,6 +292,7 @@ public class URLPatternParserTest
    {
       URLPatternParser regexParser = new URLPatternParser("/(foo|bar|baz|cat|dog).jsf");
       List<PathParameter> params = regexParser.parse(new URL("/foo.jsf"));
+      Assert.assertTrue(params.isEmpty());
    }
    
    @Test

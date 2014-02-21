@@ -47,10 +47,10 @@ import org.ocpsoft.rewrite.servlet.spi.RequestCycleWrapper;
 import org.ocpsoft.rewrite.servlet.spi.RequestListener;
 import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
+import org.ocpsoft.rewrite.servlet.spi.RewriteResultHandler;
 import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
 import org.ocpsoft.rewrite.spi.InvocationResultHandler;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
-import org.ocpsoft.rewrite.spi.RewriteResultHandler;
 import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
@@ -188,10 +188,10 @@ public class RewriteFilter implements Filter
             rewrite(event);
          }
          catch (ServletException e) {
+            /*
+             * This catch clause is for debugging purposes. 
+             */
             throw e;
-         }
-         catch (Exception e) {
-            throw new ServletException("Error during Rewrite processing. Please inspect stack trace for root cause.", e);
          }
 
          if (!event.getFlow().is(BaseRewrite.ServletRewriteFlow.ABORT_REQUEST))
@@ -228,7 +228,7 @@ public class RewriteFilter implements Filter
    }
 
    private void rewrite(final InboundServletRewrite<ServletRequest, ServletResponse> event)
-            throws ServletException, IOException, Exception
+            throws ServletException, IOException
    {
       int listenerCount = listeners.size();
       for (int i = 0; i < listenerCount; i++)
