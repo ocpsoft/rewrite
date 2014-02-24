@@ -27,6 +27,7 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.Parameters;
 import org.ocpsoft.rewrite.param.Transposition;
@@ -43,7 +44,7 @@ import org.ocpsoft.rewrite.param.Transposition;
  * 
  * @author Christian Gendreau
  */
-public class LocaleTransposition implements Transposition<String>
+public class LocaleTransposition implements Transposition<String>, Constraint<String>
 {
    // shared thread safe map between a String(representing the language) and a ResourceBundle.
    private static Map<String, ResourceBundle> bundleMap = new ConcurrentHashMap<String, ResourceBundle>();
@@ -101,9 +102,9 @@ public class LocaleTransposition implements Transposition<String>
    }
 
    /**
-    * Specify an {@link Operation} to perform in case the {@link Transposition} failed. Failure occurs when no
-    * {@link ResourceBundle} can be found for the requested language or when a value can not be transposed due to a
-    * missing key in the resource bundle.
+    * Specify an {@link Operation} to be added as a preOperation in case the {@link Transposition} failed. Failure
+    * occurs when no {@link ResourceBundle} can be found for the requested language or when a value can not be
+    * transposed due to a missing key in the resource bundle.
     * 
     * @param onFailureOperation
     * @return
@@ -157,12 +158,58 @@ public class LocaleTransposition implements Transposition<String>
          {
             if (onFailureOperation != null)
             {
-               onFailureOperation.perform(event, context);
+               context.addPreOperation(onFailureOperation);
             }
             // if language is not defined, do not translate and keep original value.
             transposedValue = value;
          }
       }
       return transposedValue;
+   }
+
+   @Override
+   public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
+   {
+      boolean transpositionFailed = false;
+
+      // Retrieve the value of lang from the context
+      String targetLang = (String) Parameters.retrieve(context, this.languageParam);
+      if (value != null)
+      {
+         if (!bundleMap.containsKey(targetLang))
+         {
+            Locale locale = new Locale(targetLang);
+            try
+            {
+               ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale,
+                        ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT));
+
+               bundleMap.put(targetLang, loadedBundle);
+            }
+            catch (MissingResourceException e)
+            {
+               transpositionFailed = true;
+            }
+         }
+
+         if (!transpositionFailed)
+         {
+            try
+            {
+               // can we received more than one path section? e.g./search/service/
+               bundleMap.get(targetLang).getString(value);
+            }
+            catch (MissingResourceException mrEx)
+            {
+               transpositionFailed = true;
+            }
+         }
+
+         if (transpositionFailed)
+         {
+            return false;
+         }
+      }
+      return true;
    }
 }
