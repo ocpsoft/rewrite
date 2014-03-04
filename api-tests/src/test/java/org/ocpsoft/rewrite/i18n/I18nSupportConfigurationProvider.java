@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author Christian Gendreau
  * 
  */
-public class I18nSuuportConfigurationProvider extends HttpConfigurationProvider
+public class I18nSupportConfigurationProvider extends HttpConfigurationProvider
 {
    @Override
    public int priority()

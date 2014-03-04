@@ -46,7 +46,7 @@ public class I18nSupportTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, Root.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, I18nSuuportConfigurationProvider.class)
+               .addAsServiceProvider(ConfigurationProvider.class, I18nSupportConfigurationProvider.class)
                .addAsWebResource(new StringAsset("search page"), "search")
                .addAsWebResource(new StringAsset("library page"), "library")
                .addAsResource(new File("src/test/resources/bundle_fr.properties"))
