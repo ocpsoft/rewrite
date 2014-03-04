@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.i18n;
+package org.ocpsoft.rewrite.transposition;
 
 import java.io.File;
 
@@ -37,7 +37,7 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * 
  */
 @RunWith(Arquillian.class)
-public class I18nSupportTest extends RewriteTest
+public class LocaleTranspositionTest extends RewriteTest
 {
 
    @Deployment(testable = false)
@@ -46,7 +46,7 @@ public class I18nSupportTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, Root.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, I18nSupportConfigurationProvider.class)
+               .addAsServiceProvider(ConfigurationProvider.class, LocaleTranspositionConfigurationProvider.class)
                .addAsWebResource(new StringAsset("search page"), "search")
                .addAsWebResource(new StringAsset("library page"), "library")
                .addAsResource(new File("src/test/resources/bundle_fr.properties"))

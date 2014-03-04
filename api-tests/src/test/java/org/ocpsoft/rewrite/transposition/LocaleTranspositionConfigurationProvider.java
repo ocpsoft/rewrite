@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.i18n;
+package org.ocpsoft.rewrite.transposition;
 
 import javax.servlet.ServletContext;
 
@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author Christian Gendreau
  * 
  */
-public class I18nSupportConfigurationProvider extends HttpConfigurationProvider
+public class LocaleTranspositionConfigurationProvider extends HttpConfigurationProvider
 {
    @Override
    public int priority()
@@ -44,14 +44,14 @@ public class I18nSupportConfigurationProvider extends HttpConfigurationProvider
    {
       Configuration config = ConfigurationBuilder.begin()
                .addRule(Join.path("/{lang}/{path}").to("/{path}"))
-               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang"))
-               .constrainedBy(I18nSupport.bundle("bundle", "lang"))
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))
+               .constrainedBy(LocaleTransposition.bundle("bundle", "lang"))
 
                .addRule(Join.path("/{lang}/{path}/transposition_only").to("/{path}"))
-               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang"))
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))
 
                .addRule(Join.path("/{lang}/{path}/transposition_failed_1").to("/{path}"))
-               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang").onTranspositionFailed(
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang").onTranspositionFailed(
                         new HttpOperation()
                         {
                            @Override
@@ -62,7 +62,7 @@ public class I18nSupportConfigurationProvider extends HttpConfigurationProvider
                         }))
 
                .addRule(Join.path("/{lang}/{path}/transposition_failed_2").to("/{path}"))
-               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang").onTranspositionFailed(
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang").onTranspositionFailed(
                         new HttpOperation()
                         {
                            @Override

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.i18n;
+package org.ocpsoft.rewrite.transposition;
 
 import java.util.Locale;
 import java.util.Map;
@@ -44,7 +44,7 @@ import org.ocpsoft.rewrite.param.Transposition;
  * 
  * @author Christian Gendreau
  */
-public class I18nSupport implements Transposition<String>, Constraint<String>
+public class LocaleTransposition implements Transposition<String>, Constraint<String>
 {
    // shared thread safe map between a String(representing the language) and a ResourceBundle.
    private static Map<String, ResourceBundle> bundleMap = new ConcurrentHashMap<String, ResourceBundle>();
@@ -54,7 +54,7 @@ public class I18nSupport implements Transposition<String>, Constraint<String>
 
    private Operation onFailureOperation;
 
-   private I18nSupport(final String languageParam, final String bundleName)
+   private LocaleTransposition(final String languageParam, final String bundleName)
    {
       Assert.notNull(languageParam, "Language must not be null.");
       Assert.notNull(bundleName, "Bundle must not be null.");
@@ -129,7 +129,7 @@ public class I18nSupport implements Transposition<String>, Constraint<String>
     * <p>
     * When this example is applied to a URL of: "/de/bibliotek", assuming a bundle called "org.example.Paths_de" exists
     * and contains the an entry "bibliotek=library", the rule will forward to the new URL: "/library", because the value
-    * of "path" has been transposed by {@link I18nSupport}.
+    * of "path" has been transposed by {@link LocaleTransposition}.
     * 
     * 
     * @param bundleName Fully qualified name of the {@link ResourceBundle}
@@ -138,9 +138,9 @@ public class I18nSupport implements Transposition<String>, Constraint<String>
     * 
     * @return new instance of LocaleBinding
     */
-   public static I18nSupport bundle(final String bundleName, final String localeParam)
+   public static LocaleTransposition bundle(final String bundleName, final String localeParam)
    {
-      return new I18nSupport(localeParam, bundleName);
+      return new LocaleTransposition(localeParam, bundleName);
    }
 
    /**
@@ -151,7 +151,7 @@ public class I18nSupport implements Transposition<String>, Constraint<String>
     * @param onFailureOperation
     * @return
     */
-   public I18nSupport onTranspositionFailed(Operation onFailureOperation)
+   public LocaleTransposition onTranspositionFailed(Operation onFailureOperation)
    {
       this.onFailureOperation = onFailureOperation;
       return this;
@@ -182,12 +182,6 @@ public class I18nSupport implements Transposition<String>, Constraint<String>
       // Retrieve the value of lang from the context
       String targetLang = (String) Parameters.retrieve(context, this.languageParam);
       String translation = translate(targetLang, value);
-
-      // Should it be triggered only in transpose(...) ?
-      // if (translation == null && onFailureOperation != null)
-      // {
-      // context.addPreOperation(onFailureOperation);
-      // }
 
       return (translation != null);
    }
