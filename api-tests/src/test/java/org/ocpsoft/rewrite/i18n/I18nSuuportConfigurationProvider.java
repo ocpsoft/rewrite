@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.transposition;
+package org.ocpsoft.rewrite.i18n;
 
 import javax.servlet.ServletContext;
 
@@ -31,7 +31,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author Christian Gendreau
  * 
  */
-public class LocaleTranspositionConfigurationProvider extends HttpConfigurationProvider
+public class I18nSuuportConfigurationProvider extends HttpConfigurationProvider
 {
    @Override
    public int priority()
@@ -44,10 +44,14 @@ public class LocaleTranspositionConfigurationProvider extends HttpConfigurationP
    {
       Configuration config = ConfigurationBuilder.begin()
                .addRule(Join.path("/{lang}/{path}").to("/{path}"))
-               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))
-               .constrainedBy(LocaleTransposition.bundle("bundle", "lang"))
-               .addRule(Join.path("/{lang}/{path}/fail1").to("/{path}"))
-               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang").onTranspositionFailed(
+               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang"))
+               .constrainedBy(I18nSupport.bundle("bundle", "lang"))
+
+               .addRule(Join.path("/{lang}/{path}/transposition_only").to("/{path}"))
+               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang"))
+
+               .addRule(Join.path("/{lang}/{path}/transposition_failed_1").to("/{path}"))
+               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang").onTranspositionFailed(
                         new HttpOperation()
                         {
                            @Override
@@ -56,8 +60,9 @@ public class LocaleTranspositionConfigurationProvider extends HttpConfigurationP
                               SendStatus.code(201).performHttp(event, context);
                            }
                         }))
-               .addRule(Join.path("/{lang}/{path}/fail2").to("/{path}"))
-               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang").onTranspositionFailed(
+
+               .addRule(Join.path("/{lang}/{path}/transposition_failed_2").to("/{path}"))
+               .where("path").transposedBy(I18nSupport.bundle("bundle", "lang").onTranspositionFailed(
                         new HttpOperation()
                         {
                            @Override

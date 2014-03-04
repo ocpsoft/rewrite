@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ocpsoft.rewrite.transposition;
+package org.ocpsoft.rewrite.i18n;
 
 import java.util.Locale;
 import java.util.Map;
@@ -33,8 +33,8 @@ import org.ocpsoft.rewrite.param.Parameters;
 import org.ocpsoft.rewrite.param.Transposition;
 
 /**
- * A {@link Transposition} responsible for translating values from their matching translation from a
- * {@link ResourceBundle}. The lookup in the properties file is case-sensitive. The properties file should use
+ * A {@link Transposition} and/or {@link Constraint} responsible for translating values from their matching translation
+ * from a {@link ResourceBundle}. The lookup in the properties file is case-sensitive. The properties file should use
  * ISO-8859-1 encoding as defined by {@link PropertyResourceBundle}.
  * 
  * Requires inverted properties files in the form of translated_name=name_to_bind.
@@ -44,7 +44,7 @@ import org.ocpsoft.rewrite.param.Transposition;
  * 
  * @author Christian Gendreau
  */
-public class LocaleTransposition implements Transposition<String>, Constraint<String>
+public class I18nSupport implements Transposition<String>, Constraint<String>
 {
    // shared thread safe map between a String(representing the language) and a ResourceBundle.
    private static Map<String, ResourceBundle> bundleMap = new ConcurrentHashMap<String, ResourceBundle>();
@@ -54,7 +54,7 @@ public class LocaleTransposition implements Transposition<String>, Constraint<St
 
    private Operation onFailureOperation;
 
-   private LocaleTransposition(final String languageParam, final String bundleName)
+   private I18nSupport(final String languageParam, final String bundleName)
    {
       Assert.notNull(languageParam, "Language must not be null.");
       Assert.notNull(bundleName, "Bundle must not be null.");
@@ -64,6 +64,48 @@ public class LocaleTransposition implements Transposition<String>, Constraint<St
       this.languageParam = languageParam;
       this.bundleName = bundleName;
 
+   }
+
+   /**
+    * Translate a value into the matching one from a resource bundle in specified language.
+    * 
+    * @param lang
+    * @param value
+    * @return translated value or null if no bundle can be found for the specified language or no entries in the bundle
+    *         match the given value.
+    */
+   private String translate(String lang, String value)
+   {
+      String translatation = null;
+      if (value != null)
+      {
+         if (!bundleMap.containsKey(lang))
+         {
+            Locale locale = new Locale(lang);
+            try
+            {
+               ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale,
+                        ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT));
+
+               bundleMap.put(lang, loadedBundle);
+            }
+            catch (MissingResourceException e)
+            {
+               return null;
+            }
+         }
+
+         try
+         {
+            // can we received more than one path section? e.g./search/service/
+            translatation = bundleMap.get(lang).getString(value);
+         }
+         catch (MissingResourceException mrEx)
+         {
+            // ignore
+         }
+      }
+      return translatation;
    }
 
    /**
@@ -87,7 +129,7 @@ public class LocaleTransposition implements Transposition<String>, Constraint<St
     * <p>
     * When this example is applied to a URL of: "/de/bibliotek", assuming a bundle called "org.example.Paths_de" exists
     * and contains the an entry "bibliotek=library", the rule will forward to the new URL: "/library", because the value
-    * of "path" has been transposed by {@link LocaleTransposition}.
+    * of "path" has been transposed by {@link I18nSupport}.
     * 
     * 
     * @param bundleName Fully qualified name of the {@link ResourceBundle}
@@ -96,9 +138,9 @@ public class LocaleTransposition implements Transposition<String>, Constraint<St
     * 
     * @return new instance of LocaleBinding
     */
-   public static LocaleTransposition bundle(final String bundleName, final String localeParam)
+   public static I18nSupport bundle(final String bundleName, final String localeParam)
    {
-      return new LocaleTransposition(localeParam, bundleName);
+      return new I18nSupport(localeParam, bundleName);
    }
 
    /**
@@ -109,7 +151,7 @@ public class LocaleTransposition implements Transposition<String>, Constraint<St
     * @param onFailureOperation
     * @return
     */
-   public LocaleTransposition onTranspositionFailed(Operation onFailureOperation)
+   public I18nSupport onTranspositionFailed(Operation onFailureOperation)
    {
       this.onFailureOperation = onFailureOperation;
       return this;
@@ -118,51 +160,18 @@ public class LocaleTransposition implements Transposition<String>, Constraint<St
    @Override
    public String transpose(Rewrite event, EvaluationContext context, String value)
    {
-      String transposedValue = null;
-      boolean transpositionFailed = false;
-
       // Retrieve the value of lang from the context
       String targetLang = (String) Parameters.retrieve(context, this.languageParam);
-      if (value != null)
+      String transposedValue = translate(targetLang, value);
+
+      if (transposedValue == null)
       {
-         if (!bundleMap.containsKey(targetLang))
+         if (onFailureOperation != null)
          {
-            Locale locale = new Locale(targetLang);
-            try
-            {
-               ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale,
-                        ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT));
-
-               bundleMap.put(targetLang, loadedBundle);
-            }
-            catch (MissingResourceException e)
-            {
-               transpositionFailed = true;
-            }
+            context.addPreOperation(onFailureOperation);
          }
-
-         if (!transpositionFailed)
-         {
-            try
-            {
-               // can we received more than one path section? e.g./search/service/
-               transposedValue = bundleMap.get(targetLang).getString(value);
-            }
-            catch (MissingResourceException mrEx)
-            {
-               transpositionFailed = true;
-            }
-         }
-
-         if (transpositionFailed)
-         {
-            if (onFailureOperation != null)
-            {
-               context.addPreOperation(onFailureOperation);
-            }
-            // if language is not defined, do not translate and keep original value.
-            transposedValue = value;
-         }
+         // if language is not defined, do not translate and keep original value.
+         transposedValue = value;
       }
       return transposedValue;
    }
@@ -170,46 +179,16 @@ public class LocaleTransposition implements Transposition<String>, Constraint<St
    @Override
    public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
    {
-      boolean transpositionFailed = false;
-
       // Retrieve the value of lang from the context
       String targetLang = (String) Parameters.retrieve(context, this.languageParam);
-      if (value != null)
-      {
-         if (!bundleMap.containsKey(targetLang))
-         {
-            Locale locale = new Locale(targetLang);
-            try
-            {
-               ResourceBundle loadedBundle = ResourceBundle.getBundle(bundleName, locale,
-                        ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT));
+      String translation = translate(targetLang, value);
 
-               bundleMap.put(targetLang, loadedBundle);
-            }
-            catch (MissingResourceException e)
-            {
-               transpositionFailed = true;
-            }
-         }
+      // Should it be triggered only in transpose(...) ?
+      // if (translation == null && onFailureOperation != null)
+      // {
+      // context.addPreOperation(onFailureOperation);
+      // }
 
-         if (!transpositionFailed)
-         {
-            try
-            {
-               // can we received more than one path section? e.g./search/service/
-               bundleMap.get(targetLang).getString(value);
-            }
-            catch (MissingResourceException mrEx)
-            {
-               transpositionFailed = true;
-            }
-         }
-
-         if (transpositionFailed)
-         {
-            return false;
-         }
-      }
-      return true;
+      return (translation != null);
    }
 }
