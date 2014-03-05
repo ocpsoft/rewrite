@@ -44,8 +44,7 @@ public class LocaleTranspositionConfigurationProvider extends HttpConfigurationP
    {
       Configuration config = ConfigurationBuilder.begin()
                .addRule(Join.path("/{lang}/{path}").to("/{path}"))
-               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))
-               .constrainedBy(LocaleTransposition.bundle("bundle", "lang"))
+               .where("path").configuredBy(LocaleTransposition.bundle("bundle", "lang"))
 
                .addRule(Join.path("/{lang}/{path}/transposition_only").to("/{path}"))
                .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))

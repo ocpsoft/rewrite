@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface Converter<T>
+public interface Converter<T> extends ParameterConfigurator
 {
    /**
     * Convert the given {@link Object} into the expected type. Should return null if the object cannot be converted.

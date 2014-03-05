@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @see {@link Parameter} {@link Constraint} {@link Validator} {@link Converter}
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Transposition<S>
+public interface Transposition<S> extends ParameterConfigurator
 {
    /**
     * Perform an operation on the given value.

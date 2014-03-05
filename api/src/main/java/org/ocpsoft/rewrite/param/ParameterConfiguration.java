@@ -27,7 +27,7 @@ public interface ParameterConfiguration<IMPLTYPE extends ParameterConfiguration<
    /**
     * Add a {@link Binding} to this {@link ParameterConfiguration}.
     */
-   IMPLTYPE bindsTo(Binding binding);
+   public IMPLTYPE bindsTo(Binding binding);
 
    /**
     * Set the {@link Converter} with which this {@link ParameterConfiguration} value will be converted.
@@ -49,4 +49,9 @@ public interface ParameterConfiguration<IMPLTYPE extends ParameterConfiguration<
     * added.
     */
    public IMPLTYPE transposedBy(Transposition<String> transform);
+
+   /**
+    * Add a {@link ParameterConfigurator} with which this {@link ParameterConfiguration} will be configured.
+    */
+   public IMPLTYPE configuredBy(ParameterConfigurator configurator);
 }

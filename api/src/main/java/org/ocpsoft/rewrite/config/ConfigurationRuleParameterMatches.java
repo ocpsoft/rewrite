@@ -19,6 +19,7 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Converter;
 import org.ocpsoft.rewrite.param.Parameter;
+import org.ocpsoft.rewrite.param.ParameterConfigurator;
 import org.ocpsoft.rewrite.param.Transposition;
 import org.ocpsoft.rewrite.param.Validator;
 
@@ -59,5 +60,10 @@ public interface ConfigurationRuleParameterMatches extends ConfigurationBuilderR
    /**
     * Add a {@link Transposition} to this {@link IMPLTYPE}; it will executed in the order in which it was added.
     */
-   public ConfigurationRuleParameterMatches transposedBy(Transposition<String> transform);
+   public ConfigurationRuleParameterMatches transposedBy(Transposition<String> transposition);
+
+   /**
+    * Add a {@link ParameterConfigurator} with which this {@link Parameter} will be configured.
+    */
+   public ConfigurationRuleParameterMatches configuredBy(ParameterConfigurator configurator);
 }

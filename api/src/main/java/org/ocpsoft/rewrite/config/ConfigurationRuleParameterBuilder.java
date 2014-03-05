@@ -23,6 +23,7 @@ import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.Constraint;
 import org.ocpsoft.rewrite.param.Converter;
 import org.ocpsoft.rewrite.param.ParameterBuilder;
+import org.ocpsoft.rewrite.param.ParameterConfigurator;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.param.Transposition;
 import org.ocpsoft.rewrite.param.Validator;
@@ -81,6 +82,13 @@ public class ConfigurationRuleParameterBuilder
    public ConfigurationRuleParameterBuilder matches(final String pattern)
    {
       param.constrainedBy(new RegexConstraint(pattern));
+      return this;
+   }
+
+   @Override
+   public ConfigurationRuleParameterBuilder configuredBy(ParameterConfigurator configurator)
+   {
+      param.configuredBy(configurator);
       return this;
    }
 

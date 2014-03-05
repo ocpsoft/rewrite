@@ -24,7 +24,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * @see {@link Parameter} {@link Transposition} {@link Validator} {@link Converter}
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface Constraint<T>
+public interface Constraint<T> extends ParameterConfigurator
 {
    /**
     * Return <code>true</code> if this {@link Constraint} is satisfied by the given value; otherwise, return

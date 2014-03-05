@@ -45,6 +45,24 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
 
    @Override
    @SuppressWarnings("unchecked")
+   public IMPLTYPE configuredBy(ParameterConfigurator configurator)
+   {
+      if (configurator instanceof Binding)
+         bindsTo((Binding) configurator);
+      if (configurator instanceof Constraint<?>)
+         constrainedBy((Constraint<String>) configurator);
+      if (configurator instanceof Converter<?>)
+         convertedBy((Converter<?>) configurator);
+      if (configurator instanceof Validator<?>)
+         validatedBy((Validator<?>) configurator);
+      if (configurator instanceof Transposition<?>)
+         transposedBy((Transposition<String>) configurator);
+
+      return (IMPLTYPE) this;
+   }
+
+   @Override
+   @SuppressWarnings("unchecked")
    public IMPLTYPE bindsTo(final Binding binding)
    {
       /*

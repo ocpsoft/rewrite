@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.config;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +23,11 @@ import org.ocpsoft.rewrite.el.El;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
+import org.ocpsoft.rewrite.param.Constraint;
+import org.ocpsoft.rewrite.param.Converter;
+import org.ocpsoft.rewrite.param.ParameterConfigurator;
+import org.ocpsoft.rewrite.param.Transposition;
+import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.test.MockInboundRewrite;
 
@@ -185,6 +189,37 @@ public class ConfigurationBuilderTest
    @Test
    public void testWhereAPI() throws Exception
    {
+      ParameterConfigurator configurator = new ParameterConfigurator() {};
+      Validator<String> validator = new Validator<String>() {
+         @Override
+         public boolean isValid(Rewrite event, EvaluationContext context, String value)
+         {
+            return false;
+         }
+      };
+      Transposition<String> transposition = new Transposition<String>() {
+
+         @Override
+         public String transpose(Rewrite event, EvaluationContext context, String value)
+         {
+            return null;
+         }
+      };
+      Converter<String> converter = new Converter<String>() {
+         @Override
+         public String convert(Rewrite event, EvaluationContext context, Object value)
+         {
+            return null;
+         }
+      };
+      Constraint<String> constraint = new Constraint<String>() {
+         @Override
+         public boolean isSatisfiedBy(Rewrite event, EvaluationContext context, String value)
+         {
+            return false;
+         }
+      };
+
       ConfigurationBuilder.begin()
 
                .addRule()
@@ -202,14 +237,16 @@ public class ConfigurationBuilderTest
                .perform(operation)
                .where("p").matches("blah").bindsTo(El.property("whee.glee"))
                .where("s").matches("oh").bindsTo(El.property("ee.flee"))
-               .constrainedBy(null).convertedBy(null).transposedBy(null).validatedBy(null)
+               .constrainedBy(constraint).convertedBy(converter).transposedBy(transposition).validatedBy(validator)
+               .configuredBy(configurator)
                .withId("id")
                .withPriority(0)
 
                .addRule()
                .when(Path.matches("/{p}/{s}"))
                .otherwise(operation)
-               .where("p");
+               .where("p")
+               .configuredBy(constraint).configuredBy(converter).configuredBy(transposition).configuredBy(validator);
    }
 
    @Test(expected = IllegalArgumentException.class)
