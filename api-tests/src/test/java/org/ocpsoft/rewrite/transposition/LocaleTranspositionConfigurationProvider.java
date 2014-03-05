@@ -19,9 +19,12 @@ import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.HttpOperation;
+import org.ocpsoft.rewrite.servlet.config.SendStatus;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
-import org.ocpsoft.rewrite.transposition.LocaleTransposition;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * 
@@ -41,7 +44,33 @@ public class LocaleTranspositionConfigurationProvider extends HttpConfigurationP
    {
       Configuration config = ConfigurationBuilder.begin()
                .addRule(Join.path("/{lang}/{path}").to("/{path}"))
-               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"));
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))
+               .constrainedBy(LocaleTransposition.bundle("bundle", "lang"))
+
+               .addRule(Join.path("/{lang}/{path}/transposition_only").to("/{path}"))
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))
+
+               .addRule(Join.path("/{lang}/{path}/transposition_failed_1").to("/{path}"))
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang").onTranspositionFailed(
+                        new HttpOperation()
+                        {
+                           @Override
+                           public void performHttp(HttpServletRewrite event, EvaluationContext context)
+                           {
+                              SendStatus.code(201).performHttp(event, context);
+                           }
+                        }))
+
+               .addRule(Join.path("/{lang}/{path}/transposition_failed_2").to("/{path}"))
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang").onTranspositionFailed(
+                        new HttpOperation()
+                        {
+                           @Override
+                           public void performHttp(HttpServletRewrite event, EvaluationContext context)
+                           {
+                              SendStatus.code(202).performHttp(event, context);
+                           }
+                        }));
       return config;
    }
 }

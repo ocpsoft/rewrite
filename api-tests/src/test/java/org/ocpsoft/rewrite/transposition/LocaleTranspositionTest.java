@@ -60,7 +60,7 @@ public class LocaleTranspositionTest extends RewriteTest
     * @throws Exception
     */
    @Test
-   public void testLocaleTransposition() throws Exception
+   public void testI18nSupport() throws Exception
    {
       // 'rechercher' should be translated to 'search' and 'lang' should be joined
       HttpAction<HttpGet> action = get("/fr/rechercher");
@@ -69,11 +69,63 @@ public class LocaleTranspositionTest extends RewriteTest
    }
 
    @Test
-   public void testLocaleTranspositionWithAccent() throws Exception
+   public void testI18nSupportWithAccent() throws Exception
    {
       // 'bibliothèque' should be translated to 'library' and 'lang' should be joined
       HttpAction<HttpGet> action = get("/fr/bibliothèque");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertEquals("library page", action.getResponseContent());
+   }
+
+   /**
+    * Expected behavior(default) when used as a Transposition and Constraint is to abort the rule so 404 is expected.
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void testI18nSupportFailureNoHandling() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/zz/library");
+      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   /**
+    * Expected behavior(default) when used as a Transposition only is to keep the original value so the address should
+    * become /library
+    * 
+    * @Test
+    * @throws Exception
+    */
+   public void testI18nSupportTranspositionFailureNoHandling() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/zz/library/transposition_only");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals("library page", action.getResponseContent());
+   }
+
+   /**
+    * Test onTranspositionFailed with missing Locale but good key. Expected behavior is to receive status code 201, as
+    * defined by LocaleTranspositionConfigurationProvider.
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void testLocaleTranspositionFailureWithHandling() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/zz/library/transposition_failed_1");
+      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   /**
+    * Test onTranspositionFailed with good Locale but missing key. Expected behavior is to receive status code 202, as
+    * defined by LocaleTranspositionConfigurationProvider.
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void testLocaleTranspositionMissingKeyWithHandling() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/en/missinglibrary/transposition_failed_2");
+      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
    }
 }
