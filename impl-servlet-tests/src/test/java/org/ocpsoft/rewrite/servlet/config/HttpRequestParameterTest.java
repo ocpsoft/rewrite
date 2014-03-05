@@ -31,35 +31,21 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class HttpConfigurationTest extends RewriteTest
+public class HttpRequestParameterTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
       WebArchive deployment = RewriteTest.getDeployment()
                .addPackages(true, ServletRoot.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, HttpConfigurationTestProvider.class);
+               .addAsServiceProvider(ConfigurationProvider.class, HttpRequestParameterTestProvider.class);
       return deployment;
    }
 
    @Test
-   public void testConfigurationProviderForward() throws Exception
+   public void testParameterRetrieval() throws Exception
    {
-      HttpAction<HttpGet> action = get("/path");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
-   }
-
-   @Test
-   public void testConfigurationIngoresUnconfiguredRequests() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/other");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
-   }
-
-   @Test
-   public void testConfigurationProviderRedirect() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/redirect");
+      HttpAction<HttpGet> action = get("/param?foo");
       Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
    }
 }

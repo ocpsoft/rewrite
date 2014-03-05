@@ -78,7 +78,7 @@ public class HttpRewriteWrappedRequest extends RewriteWrappedRequest
    public String getParameter(final String name)
    {
       String[] strings = getParameterMap().get(name);
-      if (strings != null)
+      if (strings != null && strings.length > 0)
       {
          return strings[0];
       }
