@@ -15,10 +15,13 @@
  */
 package org.ocpsoft.rewrite.spring;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.el.spi.BeanNameResolver;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -43,23 +46,46 @@ public class SpringBeanNameResolver implements BeanNameResolver
       }
 
       // obtain a map of bean names
-      Map<String, ?> beans = context.getBeansOfType(clazz);
+      Set<String> beanNames = resolveBeanNames(context, clazz);
 
       // no beans of that type, nothing we can do
-      if (beans == null || beans.size() == 0) {
+      if (beanNames == null || beanNames.size() == 0) {
          return null;
       }
 
       // more than one result -> warn the user
-      else if (beans.size() > 1) {
+      else if (beanNames.size() > 1) {
          log.warn("Spring knows more than one bean of type [{}]", clazz.getName());
          return null;
       }
 
       // exactly one result -> we got a name
       else {
-         return beans.keySet().iterator().next();
+         return beanNames.iterator().next();
       }
+
+   }
+
+   /**
+    * Will ignore scoped proxy target bean names.
+    * 
+    * @see https://github.com/ocpsoft/rewrite/issues/170
+    */
+   private Set<String> resolveBeanNames(ListableBeanFactory beanFactory, Class<?> clazz)
+   {
+
+      final Set<String> result = new HashSet<String>();
+
+      Map<String, ?> beanMap = beanFactory.getBeansOfType(clazz);
+      if (beanMap != null) {
+         for (String name : beanMap.keySet()) {
+            if (name != null && !name.startsWith("scopedTarget.")) {
+               result.add(name);
+            }
+         }
+      }
+
+      return result;
 
    }
 
