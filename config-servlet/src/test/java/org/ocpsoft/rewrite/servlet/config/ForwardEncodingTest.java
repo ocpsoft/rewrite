@@ -40,16 +40,16 @@ public class ForwardEncodingTest extends RewriteTest
       return RewriteTest.getDeployment()
                .addPackages(true, ConfigRoot.class.getPackage())
                .addAsServiceProvider(ConfigurationProvider.class, ForwardEncodingProvider.class)
-               .addAsWebResource(new StringAsset("foobar"), "direct/foobar.txt")
-               .addAsWebResource(new StringAsset("spaces"), "direct/with spaces.txt")
-               .addAsWebResource(new StringAsset("umlaut"), "direct/\u00fcber.txt") // "über.txt"
+               .addAsWebResource(new StringAsset("foobar"), "direct/static/foobar.txt")
+               .addAsWebResource(new StringAsset("spaces"), "direct/static/with spaces.txt")
+               .addAsWebResource(new StringAsset("umlaut"), "direct/static/\u00fcber.txt") // "über.txt"
       ;
    }
 
    @Test
    public void simpleFileDirect() throws Exception
    {
-      HttpAction<HttpGet> action = get("/direct/foobar.txt");
+      HttpAction<HttpGet> action = get("/direct/static/foobar.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("foobar"));
    }
@@ -57,7 +57,7 @@ public class ForwardEncodingTest extends RewriteTest
    @Test
    public void simpleFileForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward/foobar.txt");
+      HttpAction<HttpGet> action = get("/forward/static/foobar.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("foobar"));
    }
@@ -65,7 +65,7 @@ public class ForwardEncodingTest extends RewriteTest
    @Test
    public void fileWithSpacesDirect() throws Exception
    {
-      HttpAction<HttpGet> action = get("/direct/with%20spaces.txt");
+      HttpAction<HttpGet> action = get("/direct/static/with%20spaces.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("spaces"));
    }
@@ -73,7 +73,7 @@ public class ForwardEncodingTest extends RewriteTest
    @Test
    public void fileWithSpacesForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward/with%20spaces.txt");
+      HttpAction<HttpGet> action = get("/forward/static/with%20spaces.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("spaces"));
    }
@@ -81,7 +81,7 @@ public class ForwardEncodingTest extends RewriteTest
    @Test
    public void fileWithUmlautDirect() throws Exception
    {
-      HttpAction<HttpGet> action = get("/direct/%FCber.txt");
+      HttpAction<HttpGet> action = get("/direct/static/%FCber.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("umlaut"));
    }
@@ -89,9 +89,41 @@ public class ForwardEncodingTest extends RewriteTest
    @Test
    public void fileWithUmlautForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward/%FCber.txt");
+      HttpAction<HttpGet> action = get("/forward/static/%FCber.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("umlaut"));
+   }
+
+   @Test
+   public void requestUrlsDirect() throws Exception
+   {
+
+      HttpAction<HttpGet> action = get("/direct/debug/foo%20bar.dyn");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      // we should see the encoded space character in both URLs
+      assertThat(action.getResponseContent(),
+               Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+      assertThat(action.getResponseContent(),
+               Matchers.containsString("getInboundAddress: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+
+   }
+
+   @Test
+   public void requestUrlsForward() throws Exception
+   {
+
+      HttpAction<HttpGet> action = get("/forward/debug/foo%20bar.dyn");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      // Not really sure if this is the expected result of the Servlet API call
+      assertThat(action.getResponseContent(),
+               Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+
+      // IMHO this should be the result for our API
+      assertThat(action.getResponseContent(),
+               Matchers.containsString("getInboundAddress: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+
    }
 
 }

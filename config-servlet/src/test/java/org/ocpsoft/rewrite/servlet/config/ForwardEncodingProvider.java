@@ -20,6 +20,8 @@ import javax.servlet.ServletContext;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Direction;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 public class ForwardEncodingProvider extends HttpConfigurationProvider
 {
@@ -28,9 +30,30 @@ public class ForwardEncodingProvider extends HttpConfigurationProvider
    public Configuration getConfiguration(final ServletContext context)
    {
       return ConfigurationBuilder.begin()
+
                .addRule()
                .when(Direction.isInbound().and(Path.matches("/forward/{param}")))
-               .perform(Forward.to("/direct/{param}"));
+               .perform(Forward.to("/direct/{param}"))
+               .where("param").matches(".*")
+
+               .addRule()
+               .when(Direction.isInbound().and(Path.matches("/direct/debug/{name}")))
+               .perform(new HttpOperation() {
+                  @Override
+                  public void performHttp(HttpServletRewrite event, EvaluationContext context)
+                  {
+
+                     String requestURI = event.getRequest().getRequestURI();
+                     Response.write("getRequestURI: [" + requestURI + "]").perform(event, context);
+
+                     String inboundAddress = event.getInboundAddress().getPath();
+                     Response.write("getInboundAddress: [" + inboundAddress + "]").perform(event, context);
+
+                     Response.complete().perform(event, context);
+
+                  }
+               });
+
    }
 
    @Override
