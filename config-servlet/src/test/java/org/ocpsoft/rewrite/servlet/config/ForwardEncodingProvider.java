@@ -46,8 +46,8 @@ public class ForwardEncodingProvider extends HttpConfigurationProvider
                      String requestURI = event.getRequest().getRequestURI();
                      Response.write("getRequestURI: [" + requestURI + "]").perform(event, context);
 
-                     String inboundAddress = event.getInboundAddress().getPath();
-                     Response.write("getInboundAddress: [" + inboundAddress + "]").perform(event, context);
+                     String inboundPath = event.getInboundAddress().getPath();
+                     Response.write("inboundAddressPath: [" + inboundPath + "]").perform(event, context);
 
                      Response.complete().perform(event, context);
 

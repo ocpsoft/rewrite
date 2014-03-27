@@ -42,8 +42,7 @@ public class ForwardEncodingTest extends RewriteTest
                .addAsServiceProvider(ConfigurationProvider.class, ForwardEncodingProvider.class)
                .addAsWebResource(new StringAsset("foobar"), "direct/static/foobar.txt")
                .addAsWebResource(new StringAsset("spaces"), "direct/static/with spaces.txt")
-               .addAsWebResource(new StringAsset("umlaut"), "direct/static/\u00fcber.txt") // "über.txt"
-      ;
+               .addAsWebResource(new StringAsset("hash"), "direct/static/with#hash.txt");
    }
 
    @Test
@@ -79,19 +78,19 @@ public class ForwardEncodingTest extends RewriteTest
    }
 
    @Test
-   public void fileWithUmlautDirect() throws Exception
+   public void fileWithHashDirect() throws Exception
    {
-      HttpAction<HttpGet> action = get("/direct/static/%FCber.txt");
+      HttpAction<HttpGet> action = get("/direct/static/with%23hash.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("umlaut"));
+      assertThat(action.getResponseContent(), Matchers.containsString("hash"));
    }
 
    @Test
-   public void fileWithUmlautForward() throws Exception
+   public void fileWithHashForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward/static/%FCber.txt");
+      HttpAction<HttpGet> action = get("/forward/static/with%23hash.txt");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("umlaut"));
+      assertThat(action.getResponseContent(), Matchers.containsString("hash"));
    }
 
    @Test
@@ -101,11 +100,11 @@ public class ForwardEncodingTest extends RewriteTest
       HttpAction<HttpGet> action = get("/direct/debug/foo%20bar.dyn");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
-      // we should see the encoded space character in both URLs
+      // we should get the encoded space character in both URLs
       assertThat(action.getResponseContent(),
                Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
       assertThat(action.getResponseContent(),
-               Matchers.containsString("getInboundAddress: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+               Matchers.containsString("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
 
    }
 
@@ -116,13 +115,13 @@ public class ForwardEncodingTest extends RewriteTest
       HttpAction<HttpGet> action = get("/forward/debug/foo%20bar.dyn");
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
-      // Not really sure if this is the expected result of the Servlet API call
+      // Not really sure if this is the expected result
       assertThat(action.getResponseContent(),
-               Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+               Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo bar.dyn]"));
 
-      // IMHO this should be the result for our API
+      // IMHO this should be the result as it is consistent with the non-forwarded case
       assertThat(action.getResponseContent(),
-               Matchers.containsString("getInboundAddress: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+               Matchers.containsString("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
 
    }
 
