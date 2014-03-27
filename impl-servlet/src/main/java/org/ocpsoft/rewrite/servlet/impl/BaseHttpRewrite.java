@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.servlet.event.BaseRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
+import org.ocpsoft.urlbuilder.util.Encoder;
 
 /**
  * Base class for Http {@link Rewrite} events.
@@ -76,6 +77,12 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
          if (sessionIdMatcher.matches())
          {
             requestURI = sessionIdMatcher.replaceFirst(JSESSIONID_REPLACEMENT);
+         }
+
+         // for forwards the requestURI isn't URL encoded as we expect it
+         // see: https://github.com/ocpsoft/rewrite/issues/165
+         if (getRequest().getAttribute("javax.servlet.forward.request_uri") != null) {
+            requestURI = Encoder.path(requestURI);
          }
 
          this.address = AddressBuilder.begin()

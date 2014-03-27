@@ -82,7 +82,7 @@ public class Forward extends HttpOperation implements Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, Transpositions.encodePath());
+         String target = location.build(event, context, Transpositions.identity());
          ((HttpInboundServletRewrite) event).forward(target);
       }
    }
