@@ -21,7 +21,7 @@ URL:                Resource:
 
 === Adding parameters
 
-Joined URLs may also contain parameters, which represent fragments of the URL "path", and query-parameters of the internal resource. This means that the following `Join`:
+Joined URLs may also contain parameters, which represent fragments of the URL "path", and map to synthetic (dynamically added) query-parameters for the internal resource. This means that the following `Join`:
 
 [source,java]
 ----
@@ -37,7 +37,7 @@ URL:                       Resource:
 "/external-url-value2" --> "/internal-resource.html?param=value2
 ----
 
-NOTE: The parameter name is used as the name of the query parameter.
+NOTE: By default, parameters in `Path` and `Join` conditions do not match over `/` characters in the URL. You must use the `.where("param").matches(".*")` clause in order to extend a parameter over multiple path segments. To learn more, visit the chapter on rule link:parameters[parameterization].
 
 === Using-parameters as conditional values:
 
