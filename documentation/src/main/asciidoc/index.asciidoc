@@ -13,7 +13,7 @@ of the framework, just skip the steps you don't need.
 
 === Working with Rewrite
 
-* link:configuration/parameters/[Parameterize Rules]
+* link:configuration/parameters[Parameterize Rules]
 * link:configuration/annotations/[Simplify with Annotations]
 * Response Interception
 * Resource Transformation
