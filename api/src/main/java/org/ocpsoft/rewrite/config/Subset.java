@@ -66,13 +66,12 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
     * Executors
     */
    @Override
-   public void perform(Rewrite rewrite, EvaluationContext context)
+   public void perform(Rewrite event, EvaluationContext context)
    {
 
       /*
        * Highly optimized loop - for performance reasons. Think before you change this!
        */
-      Rewrite event = (Rewrite) rewrite;
       List<Rule> cacheable = new ArrayList<Rule>();
       List<Rule> rules = config.getRules();
 
