@@ -38,7 +38,7 @@ import org.ocpsoft.urlbuilder.util.Encoder;
 public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, HttpServletResponse> implements
          HttpServletRewrite
 {
-   private static final Pattern JSESSIONID_PATTERN = Pattern.compile("(?i)^(.*);jsessionid=[\\w\\.\\-]+(.*)");
+   private static final Pattern JSESSIONID_PATTERN = Pattern.compile("(?i)^(.*);jsessionid=[\\w\\.\\-\\+]+(.*)");
    private static final String JSESSIONID_REPLACEMENT = "$1$2";
 
    /*

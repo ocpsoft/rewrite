@@ -90,10 +90,19 @@ public class JSessionIdHandlingTest extends RewriteTest
       assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
    }
 
+   @Test
    public void testPathRuleMatchesWithGoogleAppEngineSessionId() throws Exception
    {
       // see: https://github.com/ocpsoft/prettyfaces/issues/15
       HttpAction<HttpGet> action = get("/path;jsessionid=1E-y6jzfx53ou9wymGmcfw");
+      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void testPathRuleMatchesWithJBoss713() throws Exception
+   {
+      // see: https://github.com/ocpsoft/rewrite/issues/173
+      HttpAction<HttpGet> action = get("/path;jsessionid=1E+y6jzfx53ou9wymGmcfw");
       assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
    }
 

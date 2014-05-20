@@ -50,7 +50,7 @@ public class PrettyContext implements Serializable
    public static final String PRETTY_PREFIX = "pretty:";
    private static final String CONTEXT_REQUEST_KEY = "prettyContext";
 
-   private static final Pattern JSESSIONID_PATTERN = Pattern.compile("(?i)^(.*);jsessionid=[\\w\\.\\-]+(.*)");
+   private static final Pattern JSESSIONID_PATTERN = Pattern.compile("(?i)^(.*);jsessionid=[\\w\\.\\-\\+]+(.*)");
    private static final String JSESSIONID_REPLACEMENT = "$1$2";
 
    private PrettyConfig config;
