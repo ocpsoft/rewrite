@@ -107,6 +107,8 @@ ConfigurationBuilder.begin()
 
 `.perform(Log.message(Level.INFO, "Client requested path: {path}"))`:: Specify the +Operation+ to be performed when all conditions are met. Operations may be chained using the +.and()+ method available on most operation instances.
 
+`.otherwise(Log.message(Level.INFO, "Path did not match."))`:: Specify the +Operation+ to be performed when conditions are NOT met. Operations may be chained using the +.and()+ method available on most operation instances.
+
 `.where("path").matches(".*")`:: Configures the +Parameter+ named "+path+", and specifies that it must match the link:http://ocpsoft.org/opensource/guide-to-regular-expressions-in-java-part-1/[regular expression] pattern "+.*+"
 
 ==== Add another operation
