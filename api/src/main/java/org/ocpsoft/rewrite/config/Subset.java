@@ -72,7 +72,6 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
       /*
        * Highly optimized loop - for performance reasons. Think before you change this!
        */
-      List<Rule> cacheable = new ArrayList<Rule>();
       List<Rule> rules = config.getRules();
 
       final EvaluationContextImpl subContext = new EvaluationContextImpl();
@@ -92,7 +91,6 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
             {
                subContext.setState(RewriteState.PERFORMING);
                log.debug("Rule [" + rule + "] matched and will be performed.");
-               cacheable.add(rule);
                List<Operation> preOperations = subContext.getPreOperations();
                for (int k = 0; k < preOperations.size(); k++) {
                   preOperations.get(k).perform(event, subContext);
