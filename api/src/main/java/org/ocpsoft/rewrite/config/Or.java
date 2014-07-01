@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -89,6 +90,10 @@ public final class Or extends DefaultConditionBuilder implements CompositeCondit
    @Override
    public String toString()
    {
-      return "Or [" + Arrays.asList(conditions) + "]";
+      String result = Strings.join(Arrays.asList(conditions), ".or(");
+      for (int i = 0; i < conditions.length; i++) {
+         result += ")";
+      }
+      return result;
    }
 }

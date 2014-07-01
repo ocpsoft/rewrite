@@ -35,7 +35,7 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class CDN implements Rule, CDNRelocate, Parameterized
+public abstract class CDN implements Rule, CDNRelocate, Parameterized
 {
    private String id;
 
@@ -53,7 +53,7 @@ public class CDN implements Rule, CDNRelocate, Parameterized
     */
    public static CDNRelocate relocate(final String pattern)
    {
-      return new CDN(pattern);
+      return new CDN(pattern) {};
    }
 
    @Override
@@ -95,7 +95,8 @@ public class CDN implements Rule, CDNRelocate, Parameterized
    @Override
    public String toString()
    {
-      return "Join [resource=" + resource + ", to=" + location + ", id=" + id + "]";
+      return "CDN.relocate(\"" + resource.getExpression().getPattern() + "\").to(\""
+               + location.getExpression().getPattern() + "\")";
    }
 
    public ParameterizedPatternParser getLocationExpression()

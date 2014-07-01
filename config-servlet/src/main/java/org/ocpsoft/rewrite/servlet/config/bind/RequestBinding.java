@@ -41,7 +41,13 @@ public abstract class RequestBinding implements Binding
     */
    public static RequestBinding attribute(final String property)
    {
-      return new RequestAttributeBinding(property);
+      return new RequestAttributeBinding(property) {
+         @Override
+         public String toString()
+         {
+            return "RequestBinding.attribute(\"" + property + "\")";
+         }
+      };
    }
 
    /**
@@ -49,7 +55,13 @@ public abstract class RequestBinding implements Binding
     */
    public static RequestBinding parameter(final String property)
    {
-      return new RequestParameterBinding(property);
+      return new RequestParameterBinding(property) {
+         @Override
+         public String toString()
+         {
+            return "RequestBinding.parameter(\"" + property + "\")";
+         }
+      };
    }
 
    @Override
@@ -82,21 +94,21 @@ public abstract class RequestBinding implements Binding
          Map<String, String[]> modifiableParameters = wrapper.getModifiableParameters();
          if (value != null)
          {
-           if(value.getClass().isArray())
-           {
-              Object[] values = (Object[]) value;
-              for (Object object : values) {
-                 Maps.addArrayValue(modifiableParameters, name, object.toString());
-              }
-           }
-           else
-           {
-              Maps.addArrayValue(modifiableParameters, name, value.toString());
-           }
+            if (value.getClass().isArray())
+            {
+               Object[] values = (Object[]) value;
+               for (Object object : values) {
+                  Maps.addArrayValue(modifiableParameters, name, object.toString());
+               }
+            }
+            else
+            {
+               Maps.addArrayValue(modifiableParameters, name, value.toString());
+            }
          }
          else
          {
-           Maps.addArrayValue(modifiableParameters, name, null);
+            Maps.addArrayValue(modifiableParameters, name, null);
          }
 
          return null;
@@ -106,12 +118,6 @@ public abstract class RequestBinding implements Binding
       public Object retrieve(final Rewrite event, final EvaluationContext context)
       {
          return ((HttpServletRewrite) event).getRequest().getParameter(name);
-      }
-
-      @Override
-      public String toString()
-      {
-         return "RequestParameterBinding [parameter=" + name + "]";
       }
    }
 
@@ -139,12 +145,6 @@ public abstract class RequestBinding implements Binding
 
          else
             return null;
-      }
-
-      @Override
-      public String toString()
-      {
-         return "RequestAttributeBinding [parameter=" + name + "]";
       }
 
    }

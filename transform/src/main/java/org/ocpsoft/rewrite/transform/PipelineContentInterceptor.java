@@ -104,13 +104,14 @@ class PipelineContentInterceptor implements ResponseContentInterceptor
                else {
                   lastOutput.reset();
                }
-
             }
-
          }
-
       }
-
    }
 
+   @Override
+   public String toString()
+   {
+      return "" + pipeline;
+   }
 }

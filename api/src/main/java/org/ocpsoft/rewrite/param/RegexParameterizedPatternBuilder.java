@@ -47,7 +47,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    private final char[] chars;
    private final List<RegexGroup> groups = new ArrayList<RegexGroup>();
    private final String defaultParameterPattern;
-   private ParameterStore parameters;
+   private ParameterStore store;
 
    private RegexParameterizedPatternParser parser = null;
 
@@ -243,7 +243,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
 
       for (RegexGroup group : groups)
       {
-         Parameter<?> parameter = parameters.get(group.getName());
+         Parameter<?> parameter = store.get(group.getName());
          Object value = null;
 
          // TODO TEST ME!!!
@@ -319,7 +319,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       if (parser == null)
       {
          parser = new RegexParameterizedPatternParser(this, defaultParameterPattern, pattern);
-         parser.setParameterStore(parameters);
+         parser.setParameterStore(store);
       }
       return parser;
    }
@@ -338,7 +338,7 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
    @Override
    public void setParameterStore(ParameterStore store)
    {
-      this.parameters = store;
+      this.store = store;
    }
 
    @Override

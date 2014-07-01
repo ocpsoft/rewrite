@@ -32,6 +32,8 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.spi.ServiceEnricher;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger.Level;
+import org.ocpsoft.rewrite.AbstractRewrite;
 import org.ocpsoft.rewrite.Version;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;
@@ -60,7 +62,9 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
  */
 public class RewriteFilter implements Filter
 {
-   Logger log = Logger.getLogger(RewriteFilter.class);
+   private static Logger log = Logger.getLogger(RewriteFilter.class);
+
+   private static String FILTER_COUNT_KEY = RewriteFilter.class.getName() + "_FILTER_COUNT";
 
    private List<RewriteLifecycleListener<Rewrite>> listeners;
    private List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;
@@ -75,7 +79,8 @@ public class RewriteFilter implements Filter
    @SuppressWarnings("unchecked")
    public void init(final FilterConfig filterConfig) throws ServletException
    {
-      log.info("RewriteFilter starting up...");
+      if (log.isInfoEnabled())
+         log.info("RewriteFilter starting up...");
 
       servletContext = filterConfig.getServletContext();
 
@@ -139,13 +144,15 @@ public class RewriteFilter implements Filter
 
       if ((configurations == null) || configurations.isEmpty())
       {
-         log.warn("No ConfigurationProviders were registered: " +
-                  "Rewrite will not be enabled on this application. " +
-                  "Did you forget to create a '/META-INF/services/" + ConfigurationProvider.class.getName() +
-                  " file containing the fully qualified name of your provider implementation?");
+         if (log.isWarnEnabled())
+            log.warn("No ConfigurationProviders were registered: " +
+                     "Rewrite will not be enabled on this application. " +
+                     "Did you forget to create a '/META-INF/services/" + ConfigurationProvider.class.getName() +
+                     " file containing the fully qualified name of your provider implementation?");
       }
 
-      log.info(Version.getFullName() + " initialized.");
+      if (log.isInfoEnabled())
+         log.info(Version.getFullName() + " initialized.");
    }
 
    @Override
@@ -157,11 +164,14 @@ public class RewriteFilter implements Filter
 
       if (event == null)
       {
-         log.warn("No Rewrite event was produced - RewriteFilter disabled on this request.");
+         if (log.isWarnEnabled())
+            log.warn("No Rewrite event was produced - RewriteFilter disabled on this request.");
          chain.doFilter(request, response);
       }
       else
       {
+         incrementFilterCount(request);
+
          if (request.getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY) == null)
          {
             HttpRewriteLifecycleContext context = new HttpRewriteContextImpl(inbound, outbound, listeners,
@@ -188,22 +198,35 @@ public class RewriteFilter implements Filter
             rewrite(event);
          }
          catch (ServletException e) {
-            /*
-             * This catch clause is for debugging purposes. 
-             */
+            if (getFilterCount(request) == 1)
+               AbstractRewrite.logEvaluatedRules(event, Level.ERROR);
+
+            decrementFilterCount(request);
+            throw e;
+         }
+         catch (RuntimeException e) {
+            if (getFilterCount(request) == 1)
+               AbstractRewrite.logEvaluatedRules(event, Level.ERROR);
+
+            decrementFilterCount(request);
             throw e;
          }
 
          if (!event.getFlow().is(BaseRewrite.ServletRewriteFlow.ABORT_REQUEST))
          {
-            log.debug("RewriteFilter passing control of request to underlying application.");
-            if (response.isCommitted())
+            if (log.isDebugEnabled())
+               log.debug("RewriteFilter passing control of request to underlying application.");
+
+            if (response.isCommitted() && log.isWarnEnabled())
                log.warn("Response has already been committed, and further write operations are not permitted. "
                         + "This may result in an IllegalStateException being triggered by the underlying application. To avoid this situation, "
                         + "consider adding a Rule `.when(Direction.isInbound().and(Response.isCommitted())).perform(Lifecycle.abort())`, or "
                         + "figure out where the response is being incorrectly committed and correct the bug in the offending code.");
+
             chain.doFilter(event.getRequest(), event.getResponse());
-            log.debug("Control of request returned to RewriteFilter.");
+
+            if (log.isDebugEnabled())
+               log.debug("Control of request returned to RewriteFilter.");
          }
 
          for (RewriteLifecycleListener<Rewrite> listener : listeners)
@@ -211,6 +234,11 @@ public class RewriteFilter implements Filter
             if (listener.handles(event))
                listener.afterInboundLifecycle(event);
          }
+
+         if (getFilterCount(request) == 1)
+            AbstractRewrite.logEvaluatedRules(event, Level.DEBUG);
+
+         decrementFilterCount(request);
       }
    }
 
@@ -248,7 +276,8 @@ public class RewriteFilter implements Filter
 
             if (event.getFlow().is(BaseRewrite.ServletRewriteFlow.HANDLED))
             {
-               log.debug("Event flow marked as HANDLED. No further processing will occur.");
+               if (log.isDebugEnabled())
+                  log.debug("Event flow marked as HANDLED. No further processing will occur.");
                break;
             }
          }
@@ -280,6 +309,33 @@ public class RewriteFilter implements Filter
       }
 
       log.info("RewriteFilter deactivated.");
+   }
+
+   private int getFilterCount(ServletRequest request)
+   {
+      return (Integer) request.getAttribute(FILTER_COUNT_KEY);
+   }
+
+   private void decrementFilterCount(ServletRequest request)
+   {
+      Integer count = (Integer) request.getAttribute(FILTER_COUNT_KEY);
+      if (count != null)
+      {
+         count--;
+      }
+      request.setAttribute(FILTER_COUNT_KEY, count);
+   }
+
+   private void incrementFilterCount(ServletRequest request)
+   {
+      Integer count = (Integer) request.getAttribute(FILTER_COUNT_KEY);
+
+      if (count == null)
+         count = 1;
+      else
+         count++;
+
+      request.setAttribute(FILTER_COUNT_KEY, count);
    }
 
 }

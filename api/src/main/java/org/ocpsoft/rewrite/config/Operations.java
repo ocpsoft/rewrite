@@ -15,11 +15,15 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.ocpsoft.rewrite.config.DefaultOperationBuilder.DefaultCompositeOperation;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.event.OutboundRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 
 /**
  * Utility for creating and wrapping {@link Operation} instances.
@@ -43,26 +47,42 @@ public class Operations
     */
    public static Operation onInbound(final Operation operation)
    {
-      return new InboundOperation() {
+      return new DefaultOperationBuilderInternal(operation) {
+
          @Override
-         public void performInbound(InboundRewrite event, EvaluationContext context)
+         public void perform(Rewrite event, EvaluationContext context)
          {
-            operation.perform(event, context);
+            if (event instanceof InboundRewrite)
+               operation.perform(event, context);
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Operations.onInbound(" + operation + ")";
          }
       };
    }
 
    /**
-    * Wrap the given {@link Operation} in a new {@link OutboundOperation} which will invoke the wrapped operation only
-    * for outbound rewrites.
+    * Wrap the given {@link Operation} in a new {@link Operation} which will invoke the wrapped operation only for
+    * outbound rewrites.
     */
    public static Operation onOutbound(final Operation operation)
    {
-      return new OutboundOperation() {
+      return new DefaultOperationBuilderInternal(operation) {
+
          @Override
-         public void performOutbound(OutboundRewrite event, EvaluationContext context)
+         public void perform(Rewrite event, EvaluationContext context)
          {
-            operation.perform(event, context);
+            if (event instanceof OutboundRewrite)
+               operation.perform(event, context);
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Operations.onOutbound(" + operation + ")";
          }
       };
    }
@@ -71,25 +91,53 @@ public class Operations
     * Wrap a given {@link Operation} as a new {@link DefaultOperationBuilder} that performs the action of the original
     * {@link Operation} when {@link #perform(Rewrite, EvaluationContext)} is invoked.
     */
-   public static OperationBuilder wrap(Operation operation)
+   public static OperationBuilder wrap(final Operation operation)
    {
       if (operation == null)
          return create();
       if (operation instanceof OperationBuilder)
          return (OperationBuilder) operation;
-      return new DefaultCompositeOperation(create(), operation);
+
+      return new DefaultOperationBuilderInternal(operation) {
+         @Override
+         public void perform(Rewrite event, EvaluationContext context)
+         {
+            operation.perform(event, context);
+         }
+      };
    }
 
-   public static class NoOp extends DefaultOperationBuilder
+   /**
+    * An operation that is only performed if the current {@link org.ocpsoft.rewrite.event.Rewrite} event is an
+    * {@link OutboundRewrite} event.
+    * 
+    * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+    */
+   private abstract static class DefaultOperationBuilderInternal extends DefaultOperationBuilder implements
+            Parameterized
    {
-      @Override
-      public void perform(Rewrite event, EvaluationContext context)
-      {}
+      private Operation operation;
+
+      public DefaultOperationBuilderInternal(Operation operation)
+      {
+         this.operation = operation;
+      }
 
       @Override
-      public String toString()
+      public Set<String> getRequiredParameterNames()
       {
-         return "NoOp";
+         Set<String> result = new HashSet<String>();
+         if (operation instanceof Parameterized)
+            result.addAll(((Parameterized) operation).getRequiredParameterNames());
+         return result;
+      }
+
+      @Override
+      public void setParameterStore(ParameterStore store)
+      {
+         if (operation instanceof Parameterized)
+            ((Parameterized) operation).setParameterStore(store);
       }
    }
+
 }

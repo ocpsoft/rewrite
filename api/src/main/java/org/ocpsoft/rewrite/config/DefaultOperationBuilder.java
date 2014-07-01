@@ -29,21 +29,20 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public abstract class DefaultOperationBuilder implements OperationBuilder
 {
-
    @Override
    public OperationBuilder and(final Operation other)
    {
       if (other == null)
          return this;
-      return new DefaultCompositeOperation(this, other);
+      return new DefaultOperationBuilderInternal(this, other);
    }
 
-   static class DefaultCompositeOperation extends DefaultOperationBuilder implements CompositeOperation
+   static class DefaultOperationBuilderInternal extends DefaultOperationBuilder implements CompositeOperation
    {
       private final Operation left;
       private final Operation right;
 
-      public DefaultCompositeOperation(final Operation left, final Operation right)
+      public DefaultOperationBuilderInternal(final Operation left, final Operation right)
       {
          this.left = left;
          this.right = right;
@@ -65,7 +64,10 @@ public abstract class DefaultOperationBuilder implements OperationBuilder
       @Override
       public String toString()
       {
-         return DefaultCompositeOperation.class.getSimpleName() + " [left=" + left + ", right=" + right + "]";
+         if (left instanceof NoOp)
+            return "" + right;
+
+         return left + ".and(" + right + ")";
       }
    }
 }

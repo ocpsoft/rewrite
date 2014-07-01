@@ -79,6 +79,12 @@ public abstract class PhaseOperation<T extends PhaseOperation<T>> extends HttpOp
          {
             operation.perform(event, context);
          }
+
+         @Override
+         public String toString()
+         {
+            return "PhaseOperation.enqueue(" + operation + ", " + priority + ")";
+         }
       };
    }
 

@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 
@@ -30,45 +31,21 @@ import org.ocpsoft.rewrite.test.RewriteTest;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-public class LifecycleControlTest extends RewriteTest
+public class RuleMetadataParameterTest extends RewriteTest
 {
    @Deployment(testable = false)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTest
-               .getDeployment()
-               .addPackages(true, ConfigRoot.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, LifecycleControlConfigurationProvider.class);
+      WebArchive deployment = RewriteTest.getDeployment()
+               .addPackages(true, ServletRoot.class.getPackage())
+               .addAsServiceProvider(ConfigurationProvider.class, RuleMetadataTestProvider.class);
       return deployment;
    }
 
    @Test
-   public void testAbort() throws Exception
+   public void testParameterRetrieval() throws Exception
    {
-      HttpAction<HttpGet> action = get("/aborty");
-      Assert.assertEquals(400, action.getStatusCode());
-
-      action = get("/abort");
-      Assert.assertEquals(200, action.getStatusCode());
-   }
-
-   @Test
-   public void testHandled() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/handley");
-      Assert.assertEquals(401, action.getStatusCode());
-
-      action = get("/handle");
-      Assert.assertEquals(404, action.getStatusCode());
-   }
-
-   @Test
-   public void testProceed() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/proceedy");
-      Assert.assertEquals(402, action.getStatusCode());
-
-      action = get("/proceed");
-      Assert.assertEquals(402, action.getStatusCode());
+      HttpAction<HttpGet> action = get("/metadata");
+      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
    }
 }

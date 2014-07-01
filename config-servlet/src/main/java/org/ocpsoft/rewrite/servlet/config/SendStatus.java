@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class SendStatus extends HttpOperation
+public abstract class SendStatus extends HttpOperation
 {
    private final int code;
    private String message;
@@ -71,7 +71,13 @@ public class SendStatus extends HttpOperation
     */
    public static SendStatus code(final int code)
    {
-      return new SendStatus(code);
+      return new SendStatus(code) {
+         @Override
+         public String toString()
+         {
+            return "SendStatus.code(" + code + ")";
+         }
+      };
    }
 
    /**
@@ -80,7 +86,13 @@ public class SendStatus extends HttpOperation
     */
    public static SendStatus error(final int code)
    {
-      return new SendError(code, null);
+      return new SendError(code, null) {
+         @Override
+         public String toString()
+         {
+            return "SendStatus.error(" + code + ")";
+         }
+      };
    }
 
    /**
@@ -89,10 +101,16 @@ public class SendStatus extends HttpOperation
     */
    public static SendStatus error(final int code, final String message)
    {
-      return new SendError(code, message);
+      return new SendError(code, message) {
+         @Override
+         public String toString()
+         {
+            return "SendStatus.error(" + code + ", \"" + message + "\")";
+         }
+      };
    }
 
-   private static class SendError extends SendStatus
+   private abstract static class SendError extends SendStatus
    {
       public SendError(final int code, String message)
       {

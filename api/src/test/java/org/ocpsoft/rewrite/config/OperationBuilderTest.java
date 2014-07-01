@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.config;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -58,6 +57,12 @@ public class OperationBuilderTest
       public boolean isPerformed()
       {
          return performed;
+      }
+
+      @Override
+      public String toString()
+      {
+         return "new MockOperation(performed=" + performed + ")";
       }
    }
 }

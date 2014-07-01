@@ -40,7 +40,7 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Resource extends HttpCondition implements Parameterized
+public abstract class Resource extends HttpCondition implements Parameterized
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
@@ -108,7 +108,13 @@ public class Resource extends HttpCondition implements Parameterized
     */
    public static Resource exists(final String resource)
    {
-      return new Resource(resource);
+      return new Resource(resource) {
+         @Override
+         public String toString()
+         {
+            return "Resource.exists(\"" + resource + "\")";
+         }
+      };
    }
 
    /**

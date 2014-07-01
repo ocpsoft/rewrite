@@ -38,7 +38,7 @@ import org.ocpsoft.rewrite.util.Transpositions;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Redirect extends HttpOperation implements Parameterized
+public abstract class Redirect extends HttpOperation implements Parameterized
 {
    private final RedirectType type;
 
@@ -102,7 +102,13 @@ public class Redirect extends HttpOperation implements Parameterized
     */
    public static Redirect permanent(final String location)
    {
-      return new Redirect(location, RedirectType.PERMANENT);
+      return new Redirect(location, RedirectType.PERMANENT) {
+         @Override
+         public String toString()
+         {
+            return "Redirect.permanent(\"" + location + "\")";
+         }
+      };
    }
 
    /**
@@ -135,7 +141,13 @@ public class Redirect extends HttpOperation implements Parameterized
     */
    public static Redirect temporary(final String location)
    {
-      return new Redirect(location, RedirectType.TEMPORARY);
+      return new Redirect(location, RedirectType.TEMPORARY) {
+         @Override
+         public String toString()
+         {
+            return "Redirect.temporary(\"" + location + "\")";
+         }
+      };
    }
 
    private enum RedirectType
@@ -150,6 +162,7 @@ public class Redirect extends HttpOperation implements Parameterized
          this.code = code;
       }
 
+      @SuppressWarnings("unused")
       public int getCode()
       {
          return code;
@@ -159,12 +172,6 @@ public class Redirect extends HttpOperation implements Parameterized
    public RegexParameterizedPatternBuilder getTargetExpression()
    {
       return location;
-   }
-
-   @Override
-   public String toString()
-   {
-      return "Redirect [" + type.getCode() + "] " + type.name() + " to [" + location + "]";
    }
 
    @Override

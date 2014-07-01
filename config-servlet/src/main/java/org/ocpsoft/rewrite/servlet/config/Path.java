@@ -44,7 +44,8 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Path extends HttpCondition implements Parameterized
+@SuppressWarnings("deprecation")
+public abstract class Path extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
    private boolean withRequestBinding = false;
@@ -74,7 +75,13 @@ public class Path extends HttpCondition implements Parameterized
     */
    public static Path matches(final String pattern)
    {
-      return new Path(pattern);
+      return new Path(pattern) {
+         @Override
+         public String toString()
+         {
+            return "Path.matches(\"" + pattern + "\")";
+         }
+      };
    }
 
    /**
@@ -85,7 +92,13 @@ public class Path extends HttpCondition implements Parameterized
     */
    public static Path captureIn(final String param)
    {
-      Path path = new Path("{" + param + "}");
+      Path path = new Path("{" + param + "}") {
+         @Override
+         public String toString()
+         {
+            return "Path.captureIn(\"" + param + "\")";
+         }
+      };
       path.captureIn = param;
       return path;
    }
@@ -130,12 +143,6 @@ public class Path extends HttpCondition implements Parameterized
    public ParameterizedPatternParser getExpression()
    {
       return expression;
-   }
-
-   @Override
-   public String toString()
-   {
-      return expression.toString();
    }
 
    @Override

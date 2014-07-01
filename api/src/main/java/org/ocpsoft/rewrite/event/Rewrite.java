@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.rewrite.event;
 
+import java.util.List;
+
+import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.Context;
 
 /**
@@ -26,7 +29,7 @@ import org.ocpsoft.rewrite.context.Context;
 public interface Rewrite
 {
    /**
-    * Get the {@link org.ocpsoft.rewrite.context.Context} object associated with the current {@link Rewrite} event. This
+    * Get the {@link org.ocpsoft.rewrite.context.Context} object associated with this {@link Rewrite} event. The
     * {@link Context} is created at the start of a {@link Rewrite} event, and is destroyed once the {@link Rewrite}
     * event is complete.
     */
@@ -36,4 +39,9 @@ public interface Rewrite
     * Get the current lifecycle {@link Flow}.
     */
    public Flow getFlow();
+
+   /**
+    * Returns the list of {@link Rule} instances that have been evaluated during this {@link Rewrite} event.
+    */
+   public List<Rule> getEvaluatedRules();
 }

@@ -42,7 +42,7 @@ public abstract class Stream extends HttpOperation implements Parameterized
 
    protected RegexParameterizedPatternBuilder target;
 
-   public Stream(File target)
+   private Stream(File target)
    {
       this.target = new RegexParameterizedPatternBuilder(target.getAbsolutePath());
    }
@@ -97,7 +97,7 @@ public abstract class Stream extends HttpOperation implements Parameterized
          @Override
          public String toString()
          {
-            return "Stream.from(" + target + ")";
+            return "Stream.from(\"" + target.getPattern() + "\")";
          }
       };
    }
@@ -164,7 +164,7 @@ public abstract class Stream extends HttpOperation implements Parameterized
          @Override
          public String toString()
          {
-            return "Stream.to(" + target + ")";
+            return "Stream.to(\"" + target.getPattern() + "\")";
          }
       };
    }

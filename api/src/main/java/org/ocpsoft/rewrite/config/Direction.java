@@ -51,6 +51,12 @@ public abstract class Direction extends DefaultConditionBuilder
       {
          return event instanceof InboundRewrite;
       }
+
+      @Override
+      public String toString()
+      {
+         return "Direction.isInbound()";
+      }
    }
 
    private static class Outbound extends Direction
@@ -59,6 +65,12 @@ public abstract class Direction extends DefaultConditionBuilder
       public boolean evaluate(final Rewrite event, final EvaluationContext context)
       {
          return event instanceof OutboundRewrite;
+      }
+
+      @Override
+      public String toString()
+      {
+         return "Direction.isOutbound()";
       }
    }
 }

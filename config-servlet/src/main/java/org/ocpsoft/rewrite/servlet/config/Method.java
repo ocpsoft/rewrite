@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -26,13 +27,19 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Method extends HttpCondition
+public abstract class Method extends HttpCondition
 {
    private final HttpMethod method;
 
    private enum HttpMethod
    {
       GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE
+   }
+
+   @Override
+   public String toString()
+   {
+      return "Method.is" + Strings.capitalize(method.name().toLowerCase()) + "()";
    }
 
    private Method(final HttpMethod method)
@@ -45,7 +52,7 @@ public class Method extends HttpCondition
     */
    public static Method isGet()
    {
-      return new Method(HttpMethod.GET);
+      return new Method(HttpMethod.GET) {};
    }
 
    /**
@@ -53,7 +60,7 @@ public class Method extends HttpCondition
     */
    public static Method isPost()
    {
-      return new Method(HttpMethod.POST);
+      return new Method(HttpMethod.POST) {};
    }
 
    /**
@@ -61,7 +68,7 @@ public class Method extends HttpCondition
     */
    public static Method isHead()
    {
-      return new Method(HttpMethod.HEAD);
+      return new Method(HttpMethod.HEAD) {};
    }
 
    /**
@@ -69,7 +76,7 @@ public class Method extends HttpCondition
     */
    public static Method isOptions()
    {
-      return new Method(HttpMethod.OPTIONS);
+      return new Method(HttpMethod.OPTIONS) {};
    }
 
    /**
@@ -77,7 +84,7 @@ public class Method extends HttpCondition
     */
    public static Method isPut()
    {
-      return new Method(HttpMethod.PUT);
+      return new Method(HttpMethod.PUT) {};
    }
 
    /**
@@ -85,7 +92,7 @@ public class Method extends HttpCondition
     */
    public static Method isDelete()
    {
-      return new Method(HttpMethod.DELETE);
+      return new Method(HttpMethod.DELETE) {};
    }
 
    /**
@@ -93,7 +100,7 @@ public class Method extends HttpCondition
     */
    public static Method isTrace()
    {
-      return new Method(HttpMethod.TRACE);
+      return new Method(HttpMethod.TRACE) {};
    }
 
    @Override

@@ -47,7 +47,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    private final List<RegexGroup> groups = new ArrayList<RegexGroup>();
    private RegexParameterizedPatternBuilder builder;
    private String defaultParameterPattern;
-   private ParameterStore parameters;
+   private ParameterStore store;
 
    RegexParameterizedPatternParser(RegexParameterizedPatternBuilder builder,
             String defaultParameterPattern, String pattern)
@@ -122,13 +122,13 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    @Override
    public boolean matches(String value)
    {
-      return getMatcher(parameters, value).matches();
+      return getMatcher(store, value).matches();
    }
 
    @Override
    public boolean matches(final Rewrite event, final EvaluationContext context, final String value)
    {
-      Matcher matcher = getMatcher(parameters, value);
+      Matcher matcher = getMatcher(store, value);
       boolean result = matcher.matches();
       if (result == true)
       {
@@ -141,7 +141,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
             {
                String paramValue = matcher.group(group++);
 
-               Parameter<?> globalParam = parameters.get(param.getName());
+               Parameter<?> globalParam = store.get(param.getName());
                if (!valueStore.submit(event, context, globalParam, paramValue))
                {
                   result = false;
@@ -159,7 +159,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       return result;
    }
 
-   private Matcher getMatcher(ParameterStore parameters, final String value)
+   private Matcher getMatcher(ParameterStore store, final String value)
    {
       if (compiledPattern == null)
       {
@@ -186,11 +186,11 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
             patternBuilder.append('(');
 
             StringBuilder parameterPatternBuilder = new StringBuilder();
-            if (parameters != null)
+            if (store != null)
             {
-               if (parameters.contains(group.getName()))
+               if (store.contains(group.getName()))
                {
-                  Iterator<Constraint<String>> iterator = parameters.get(group.getName()).getConstraints().iterator();
+                  Iterator<Constraint<String>> iterator = store.get(group.getName()).getConstraints().iterator();
                   while (iterator.hasNext())
                   {
                      Constraint<String> constraint = iterator.next();
@@ -230,7 +230,6 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
 
          compiledPattern = Pattern.compile(patternBuilder.toString());
       }
-
       Matcher matcher = compiledPattern.matcher(value);
       return matcher;
    }
@@ -240,12 +239,12 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    {
       Map<Parameter<?>, String> values = new LinkedHashMap<Parameter<?>, String>();
 
-      Matcher matcher = getMatcher(parameters, value);
+      Matcher matcher = getMatcher(store, value);
       if (matcher.matches())
       {
          for (RegexGroup group : groups)
          {
-            values.put(parameters.get(group.getName()), matcher.group(group.getIndex() + 1));
+            values.put(store.get(group.getName()), matcher.group(group.getIndex() + 1));
          }
       }
       return values;
@@ -258,12 +257,12 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    {
       Map<Parameter<?>, String> values = new LinkedHashMap<Parameter<?>, String>();
 
-      Matcher matcher = getMatcher(parameters, value);
+      Matcher matcher = getMatcher(store, value);
       if (matcher.matches())
       {
          for (RegexGroup group : groups)
          {
-            values.put(parameters.get(group.getName()), matcher.group(group.getIndex() + 1));
+            values.put(store.get(group.getName()), matcher.group(group.getIndex() + 1));
          }
       }
       return values;
@@ -278,7 +277,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    @Override
    public String getPattern()
    {
-      return compiledPattern.pattern();
+      return pattern;
    }
 
    @Override
@@ -287,7 +286,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       if (builder == null)
       {
          builder = new RegexParameterizedPatternBuilder(pattern, this);
-         builder.setParameterStore(parameters);
+         builder.setParameterStore(store);
       }
       return builder;
    }
@@ -339,6 +338,6 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    @Override
    public void setParameterStore(ParameterStore store)
    {
-      this.parameters = store;
+      this.store = store;
    }
 }

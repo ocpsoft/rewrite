@@ -37,7 +37,7 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Scheme extends HttpCondition implements Parameterized
+public abstract class Scheme extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
 
@@ -67,7 +67,13 @@ public class Scheme extends HttpCondition implements Parameterized
     */
    public static Scheme matches(final String pattern)
    {
-      return new Scheme(pattern);
+      return new Scheme(pattern) {
+         @Override
+         public String toString()
+         {
+            return "Scheme.matches(\"" + pattern + "\")";
+         }
+      };
    }
 
    @Override
@@ -93,12 +99,6 @@ public class Scheme extends HttpCondition implements Parameterized
    public ParameterizedPatternParser getExpression()
    {
       return expression;
-   }
-
-   @Override
-   public String toString()
-   {
-      return expression.toString();
    }
 
    @Override

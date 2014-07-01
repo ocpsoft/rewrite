@@ -65,7 +65,7 @@ public final class Not extends DefaultConditionBuilder implements CompositeCondi
    @Override
    public String toString()
    {
-      return "Not [" + condition + "]";
+      return "Not.any(" + condition + ")";
    }
 
 }

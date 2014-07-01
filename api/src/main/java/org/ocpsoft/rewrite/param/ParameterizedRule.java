@@ -13,7 +13,7 @@ import org.ocpsoft.rewrite.config.Rule;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ParameterizedRule extends Rule
+public interface ParameterizedRule extends Rule, Parameterized
 {
    /**
     * Return the {@link ParameterStore} for this {@link Rule}

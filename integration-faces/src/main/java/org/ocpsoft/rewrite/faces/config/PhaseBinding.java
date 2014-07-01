@@ -41,7 +41,7 @@ import org.ocpsoft.rewrite.util.ValueHolderUtil;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  */
-public class PhaseBinding implements Binding
+public abstract class PhaseBinding implements Binding
 {
    private final Set<PhaseId> beforePhases = new HashSet<PhaseId>();
    private final Set<PhaseId> afterPhases = new HashSet<PhaseId>();
@@ -60,9 +60,15 @@ public class PhaseBinding implements Binding
    /**
     * Create a {@link Binding} to process the given {@link Submission} during the Faces life-cycle.
     */
-   public static PhaseBinding to(Submission submission)
+   public static PhaseBinding to(final Submission submission)
    {
-      return new PhaseBinding(submission);
+      return new PhaseBinding(submission) {
+         @Override
+         public String toString()
+         {
+            return "PhaseBinding.to(" + submission + ")";
+         }
+      };
    }
 
    /**
@@ -150,7 +156,6 @@ public class PhaseBinding implements Binding
 
    private class PhaseBindingOperation extends HttpOperation
    {
-
       private Object value;
 
       public PhaseBindingOperation(Object value)

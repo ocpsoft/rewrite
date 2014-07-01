@@ -43,14 +43,18 @@ public abstract class Request extends HttpOperation
          @Override
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
-
             try {
                event.getRequest().setCharacterEncoding(encoding);
             }
             catch (UnsupportedEncodingException e) {
                throw new IllegalArgumentException("Failed to set encoding " + encoding, e);
             }
+         }
 
+         @Override
+         public String toString()
+         {
+            return "Request.setCharacterEncoding(\"" + encoding + "\")";
          }
       };
    }
@@ -80,6 +84,12 @@ public abstract class Request extends HttpOperation
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
             event.getRequest().setAttribute(name, value);
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Request.setAttribute(\"" + name + "\", \"" + value + "\")";
          }
       };
    }

@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -61,5 +62,11 @@ public class JAASRoles extends HttpCondition
       }
 
       return true;
+   }
+
+   @Override
+   public String toString()
+   {
+      return "JAASRoles.required(\"" + Strings.join(roles, "\", \"") + "\")";
    }
 }

@@ -73,7 +73,7 @@ public class ParameterConfigurationProvider extends HttpConfigurationProvider
                .addRule()
                .when(Direction.isInbound().and(Path.matches("/viewProject"))
                         .and(RequestParameter.exists("p"))
-                        .andNot(RequestParameter.exists("project'"))
+                        .andNot(RequestParameter.exists("project"))
                         .and(RequestParameter.exists("id")))
                .perform(SendStatus.code(200))
 

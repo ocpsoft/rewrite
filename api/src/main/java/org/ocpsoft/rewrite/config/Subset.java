@@ -68,16 +68,17 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
    @Override
    public void perform(Rewrite event, EvaluationContext context)
    {
-
       /*
        * Highly optimized loop - for performance reasons. Think before you change this!
        */
       List<Rule> rules = config.getRules();
 
+      Rule rule = null;
       final EvaluationContextImpl subContext = new EvaluationContextImpl();
       for (int i = 0; i < rules.size(); i++)
       {
-         Rule rule = rules.get(i);
+         rule = rules.get(i);
+         event.getEvaluatedRules().add(rule);
 
          subContext.clear();
          subContext.put(ParameterStore.class, context.get(ParameterStore.class));
@@ -90,7 +91,10 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
             if (handleBindings(event, subContext, values))
             {
                subContext.setState(RewriteState.PERFORMING);
-               log.debug("Rule [" + rule + "] matched and will be performed.");
+
+               if (log.isDebugEnabled())
+                  log.debug("Rule [" + rule + "] matched and will be performed.");
+
                List<Operation> preOperations = subContext.getPreOperations();
                for (int k = 0; k < preOperations.size(); k++) {
                   preOperations.get(k).perform(event, subContext);
@@ -118,6 +122,10 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
                   break;
                }
             }
+         }
+         else
+         {
+            event.getEvaluatedRules().remove(rule);
          }
       }
    }
@@ -297,5 +305,11 @@ public class Subset extends DefaultOperationBuilder implements CompositeOperatio
             new OperationVisit(rule).accept(operationVisitor);
          }
       }
+   }
+
+   @Override
+   public String toString()
+   {
+      return "Subset.evaluate(" + config + ")";
    }
 }

@@ -30,7 +30,7 @@ import org.ocpsoft.rewrite.spi.InvocationResultHandler;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Invoke extends DefaultOperationBuilder
+public abstract class Invoke extends DefaultOperationBuilder
 {
    private static final Logger log = Logger.getLogger(Invoke.class);
    private final Submission submission;
@@ -84,7 +84,15 @@ public class Invoke extends DefaultOperationBuilder
     */
    public static DefaultOperationBuilder binding(final Retrieval retrieval)
    {
-      return new Invoke(null, retrieval);
+      return new Invoke(null, retrieval){
+
+         @Override
+         public String toString()
+         {
+            return "Invoke.binding(" + retrieval + ")";
+         }
+         
+      };
    }
 
    /**
@@ -95,7 +103,17 @@ public class Invoke extends DefaultOperationBuilder
     */
    public static DefaultOperationBuilder binding(final Submission to, final Retrieval from)
    {
-      return new Invoke(to, from);
+      return new Invoke(to, from) {
+
+         @Override
+         public String toString()
+         {
+            return "Invoke.binding(" + to + ", " + from + ")";
+         }
+
+      };
    }
 
+   @Override
+   public abstract String toString();
 }

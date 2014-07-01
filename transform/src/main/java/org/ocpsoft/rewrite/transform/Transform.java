@@ -64,4 +64,10 @@ public class Transform extends HttpOperation
       }
    }
 
+   @Override
+   public String toString()
+   {
+      return "Transform.with(" + pipeline + ")";
+   }
+
 }

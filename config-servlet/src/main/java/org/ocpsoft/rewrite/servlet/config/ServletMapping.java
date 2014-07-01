@@ -48,7 +48,7 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ServletMapping extends HttpCondition implements Parameterized
+public abstract class ServletMapping extends HttpCondition implements Parameterized
 {
    private static final Logger log = Logger.getLogger(Resource.class);
 
@@ -82,7 +82,13 @@ public class ServletMapping extends HttpCondition implements Parameterized
     */
    public static ServletMapping includes(final String resource)
    {
-      return new ServletMapping(resource);
+      return new ServletMapping(resource) {
+         @Override
+         public String toString()
+         {
+            return "ServletMapping.includes(\"" + resource + "\")";
+         }
+      };
    }
 
    @Override

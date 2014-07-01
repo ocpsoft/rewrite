@@ -24,7 +24,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public final class Proxy extends HttpOperation implements Parameterized
+public abstract class Proxy extends HttpOperation implements Parameterized
 {
    private final ParameterizedPatternBuilder destination;
 
@@ -33,9 +33,15 @@ public final class Proxy extends HttpOperation implements Parameterized
       this.destination = new RegexParameterizedPatternBuilder(destination);
    }
 
-   public static Proxy to(String destination)
+   public static Proxy to(final String destination)
    {
-      return new Proxy(destination);
+      return new Proxy(destination) {
+         @Override
+         public String toString()
+         {
+            return "Proxy.to(\"" + destination + "\")";
+         }
+      };
    }
 
    @Override

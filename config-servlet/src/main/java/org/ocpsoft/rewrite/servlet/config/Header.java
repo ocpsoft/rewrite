@@ -39,7 +39,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Header extends HttpCondition implements Parameterized
+public abstract class Header extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser name;
    private final ParameterizedPatternParser value;
@@ -71,7 +71,13 @@ public class Header extends HttpCondition implements Parameterized
     */
    public static Header matches(final String name, final String value)
    {
-      return new Header(name, value);
+      return new Header(name, value) {
+         @Override
+         public String toString()
+         {
+            return "Header.matches(\"" + name + "\", \"" + value + "\")";
+         }
+      };
    }
 
    /**
@@ -94,7 +100,13 @@ public class Header extends HttpCondition implements Parameterized
     */
    public static Header exists(final String name)
    {
-      return new Header(name, "{" + Header.class.getName() + "_value}");
+      return new Header(name, "{" + Header.class.getName() + "_value}") {
+         @Override
+         public String toString()
+         {
+            return "Header.exists(\"" + name + "\")";
+         }
+      };
    }
 
    /**
@@ -117,7 +129,13 @@ public class Header extends HttpCondition implements Parameterized
     */
    public static Header valueExists(final String value)
    {
-      return new Header("{" + Header.class.getName() + "_name}", value);
+      return new Header("{" + Header.class.getName() + "_name}", value) {
+         @Override
+         public String toString()
+         {
+            return "Header.valueExists(\"" + value + "\")";
+         }
+      };
    }
 
    @Override

@@ -90,7 +90,7 @@ public class Forward extends HttpOperation implements Parameterized
    @Override
    public String toString()
    {
-      return location.toString();
+      return "Forward.to(\"" + location.getPattern() + "\")";
    }
 
    public ParameterizedPatternBuilder getTargetExpression()

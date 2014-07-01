@@ -40,6 +40,7 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
+@SuppressWarnings("deprecation")
 public abstract class Query extends HttpCondition implements Parameterized
 {
    /**
@@ -94,7 +95,7 @@ public abstract class Query extends HttpCondition implements Parameterized
          @Override
          public String toString()
          {
-            return "Query.matches(" + query + ")";
+            return "Query.matches(\"" + query + "\")";
          }
 
          @Override
@@ -174,7 +175,7 @@ public abstract class Query extends HttpCondition implements Parameterized
          @Override
          public String toString()
          {
-            return "Query.parameterExists(" + name + ")";
+            return "Query.parameterExists(\"" + name + "\")";
          }
 
          @Override
@@ -229,7 +230,7 @@ public abstract class Query extends HttpCondition implements Parameterized
          @Override
          public String toString()
          {
-            return "Query.valueExists(" + valuePattern + ")";
+            return "Query.valueExists(\"" + valuePattern + "\")";
          }
 
          @Override

@@ -15,12 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.container;
 
-import junit.framework.Assert;
-
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -44,8 +43,6 @@ public class ContainerSecurityTest extends RewriteTest
                .addAsWebResource("org/ocpsoft/rewrite/servlet/container/login-fail.html")
                .addAsWebResource("org/ocpsoft/rewrite/servlet/container/home.html", "/user/home.html")
                .addAsServiceProvider(ConfigurationProvider.class, ContainerSecurityTestProvider.class);
-
-      System.out.println(deployment.toString(true));
 
       return deployment;
    }

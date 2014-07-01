@@ -106,4 +106,10 @@ public class Log extends DefaultOperationBuilder implements Parameterized
       messageBuilder.setParameterStore(store);
    }
 
+   @Override
+   public String toString()
+   {
+      return "Log.message(Level." + level.name() + ", \"" + messageBuilder.getPattern() + "\")";
+   }
+
 }

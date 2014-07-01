@@ -56,6 +56,7 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
+@SuppressWarnings("deprecation")
 public class Join implements Rule, JoinPath, Parameterized
 {
    private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
@@ -70,8 +71,8 @@ public class Join implements Rule, JoinPath, Parameterized
    private Path resourcePath;
 
    private boolean inboundCorrection = false;
-
    private boolean chainingDisabled = true;
+   private boolean bindingEnabled = true;
 
    private Set<String> pathRequestParameters;
 
@@ -85,6 +86,7 @@ public class Join implements Rule, JoinPath, Parameterized
       this.requestPath = Path.matches(pattern);
       if (requestBinding)
          requestPath.withRequestBinding();
+      this.bindingEnabled = requestBinding;
    }
 
    /**
@@ -320,8 +322,19 @@ public class Join implements Rule, JoinPath, Parameterized
    @Override
    public String toString()
    {
-      return "Join [url=" + requestPattern + ", to=" + resourcePattern + ", id=" + id + ", inboundCorrection="
-               + inboundCorrection + "]";
+      String result = "Join.";
+
+      if (bindingEnabled)
+         result += "path";
+      else
+         result += "pathNonBinding";
+
+      result += "(\"" + requestPattern + "\").to(\"" + resourcePattern + "\")";
+      if (inboundCorrection)
+         result += ".withInboundCorrection()";
+      if (!chainingDisabled)
+         result += ".withChaning()";
+      return result;
    }
 
    @Override

@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.logging.Logger.Level;
+import org.ocpsoft.rewrite.AbstractRewrite;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
@@ -55,6 +57,7 @@ import org.ocpsoft.urlbuilder.AddressBuilder;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
+@SuppressWarnings("deprecation")
 public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 {
    private final HttpServletRequest request;
@@ -156,8 +159,8 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 
             ServletOutputStream outputStream = isResponseStreamWrapped() ? wrappedOutputStream : super
                      .getOutputStream();
-                     
-            if(outputStream != null)
+
+            if (outputStream != null)
                Streams.copy(new ByteArrayInputStream(buffer.getContents()), outputStream);
 
             if (printWriter != null) {
@@ -323,6 +326,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          this.stream = outputStream;
       }
 
+      @Override
       public void write(int b)
       {
          try {
@@ -333,11 +337,13 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          }
       }
 
+      @Override
       public void write(byte[] bytes) throws IOException
       {
          stream.write(bytes);
       }
 
+      @Override
       public void write(byte[] bytes, int off, int len)
       {
          try {
@@ -400,49 +406,60 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @SuppressWarnings({ "unchecked", "rawtypes" })
    private OutboundServletRewrite<ServletRequest, ServletResponse, Address> rewrite(Address address)
    {
-      RewriteLifecycleContext<ServletContext> context = (RewriteLifecycleContext<ServletContext>) request
-               .getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY);
-
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = null;
-      for (OutboundRewriteProducer producer : context.getOutboundProducers()) {
-         if (producer.handles(address))
-         {
-            event = ((OutboundRewriteProducer<ServletRequest, ServletResponse, Address>) producer)
-                     .createOutboundRewrite(request, getResponse(), servletContext, address);
-         }
-      }
+      try {
+         RewriteLifecycleContext<ServletContext> context = (RewriteLifecycleContext<ServletContext>) request
+                  .getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY);
 
-      if (event == null)
-      {
-         log.warn("No instance of [" + OutboundServletRewrite.class
-                  + "] was produced. Rewriting is disabled on this outbound event.");
-      }
-      else
-      {
-
-         for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
-         {
-            listener.beforeOutboundRewrite(event);
-         }
-
-         for (RewriteProvider<ServletContext, Rewrite> p : context.getRewriteProviders())
-         {
-            if (p.handles(event))
+         for (OutboundRewriteProducer producer : context.getOutboundProducers()) {
+            if (producer.handles(address))
             {
-               p.rewrite(event);
-               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-               {
-                  break;
-               }
+               event = ((OutboundRewriteProducer<ServletRequest, ServletResponse, Address>) producer)
+                        .createOutboundRewrite(request, getResponse(), servletContext, address);
             }
          }
 
-         for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
+         if (event == null)
          {
-            listener.afterOutboundRewrite(event);
+            log.warn("No instance of [" + OutboundServletRewrite.class
+                     + "] was produced. Rewriting is disabled on this outbound event.");
          }
+         else
+         {
+            for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
+            {
+               listener.beforeOutboundRewrite(event);
+            }
+
+            for (RewriteProvider<ServletContext, Rewrite> p : context.getRewriteProviders())
+            {
+               if (p.handles(event))
+               {
+                  p.rewrite(event);
+                  if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                  {
+                     break;
+                  }
+               }
+            }
+
+            for (RewriteLifecycleListener<Rewrite> listener : context.getRewriteLifecycleListeners())
+            {
+               listener.afterOutboundRewrite(event);
+            }
+         }
+
+         AbstractRewrite.logEvaluatedRules(event, Level.DEBUG);
+
+         return event;
       }
-      return event;
+      catch (RuntimeException e)
+      {
+         if (event != null)
+            AbstractRewrite.logEvaluatedRules(event, Level.ERROR);
+
+         throw e;
+      }
    }
 
    @Override

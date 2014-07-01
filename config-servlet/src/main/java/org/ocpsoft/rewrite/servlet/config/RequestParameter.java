@@ -39,7 +39,7 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RequestParameter extends HttpCondition implements Parameterized
+public abstract class RequestParameter extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser name;
    private final ParameterizedPatternParser value;
@@ -70,12 +70,24 @@ public class RequestParameter extends HttpCondition implements Parameterized
     */
    public static RequestParameter matches(final String name, final String value)
    {
-      return new RequestParameter(name, value);
+      return new RequestParameter(name, value) {
+         @Override
+         public String toString()
+         {
+            return "RequestParameter.matches(\"" + name + "\", \"" + value + "\")";
+         }
+      };
    }
 
    public static RequestParameter matchesAll(final String name, final String value)
    {
-      return new AllRequestParameters(name, value);
+      return new AllRequestParameters(name, value) {
+         @Override
+         public String toString()
+         {
+            return "RequestParameter.matchesAll(\"" + name + "\", \"" + value + "\")";
+         }
+      };
    }
 
    /**
@@ -96,7 +108,13 @@ public class RequestParameter extends HttpCondition implements Parameterized
     */
    public static RequestParameter exists(final String name)
    {
-      return new RequestParameter(name, "{" + RequestParameter.class.getName() + "_" + name + "_value}");
+      return new RequestParameter(name, "{" + RequestParameter.class.getName() + "_" + name + "_value}") {
+         @Override
+         public String toString()
+         {
+            return "RequestParameter.exists(\"" + name + "\")";
+         }
+      };
    }
 
    /**
@@ -117,7 +135,13 @@ public class RequestParameter extends HttpCondition implements Parameterized
     */
    public static RequestParameter valueExists(final String value)
    {
-      return new RequestParameter("{" + RequestParameter.class.getName() + "_" + value + "_name}", value);
+      return new RequestParameter("{" + RequestParameter.class.getName() + "_" + value + "_name}", value) {
+         @Override
+         public String toString()
+         {
+            return "RequestParameter.valueExists(\"" + value + "\")";
+         }
+      };
    }
 
    @Override
@@ -165,7 +189,7 @@ public class RequestParameter extends HttpCondition implements Parameterized
       return value;
    }
 
-   private static class AllRequestParameters extends RequestParameter
+   private abstract static class AllRequestParameters extends RequestParameter
    {
       public AllRequestParameters(String name, String value)
       {
@@ -203,12 +227,6 @@ public class RequestParameter extends HttpCondition implements Parameterized
          }
          return true;
       }
-   }
-
-   @Override
-   public String toString()
-   {
-      return "RequestParameter [name=" + name + ", value=" + value + "]";
    }
 
    @Override

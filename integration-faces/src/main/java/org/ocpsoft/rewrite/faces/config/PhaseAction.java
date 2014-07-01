@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.spi.InvocationResultHandler;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class PhaseAction extends PhaseOperation<PhaseAction>
+public abstract class PhaseAction extends PhaseOperation<PhaseAction>
 {
    private static final Logger log = Logger.getLogger(Invoke.class);
    private final Submission submission;
@@ -39,7 +39,15 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
     */
    public static PhaseAction retrieveFrom(final Retrieval retrieval)
    {
-      return new PhaseAction(null, retrieval).after(PhaseId.RESTORE_VIEW);
+      return new PhaseAction(null, retrieval) {
+
+         @Override
+         public String toString()
+         {
+            return "PhaseAction.retrieveFrom(" + retrieval + ")";
+         }
+
+      }.after(PhaseId.RESTORE_VIEW);
    }
 
    /**
@@ -52,7 +60,15 @@ public class PhaseAction extends PhaseOperation<PhaseAction>
     */
    public static PhaseAction submitTo(final Submission to, final Retrieval from)
    {
-      return new PhaseAction(to, from).after(PhaseId.RESTORE_VIEW);
+      return new PhaseAction(to, from) {
+
+         @Override
+         public String toString()
+         {
+            return "PhaseAction.submitTo(" + to + ", " + from + ")";
+         }
+
+      }.after(PhaseId.RESTORE_VIEW);
    }
 
    @Override

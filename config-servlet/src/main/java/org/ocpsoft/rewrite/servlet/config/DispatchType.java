@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.DispatcherType;
@@ -122,7 +123,7 @@ public class DispatchType extends HttpCondition
    @Override
    public String toString()
    {
-      return type == null ? "unknown" : type.toString();
+      return "DispatchType.is" + Strings.capitalize(type.toString().toLowerCase() + "()");
    }
 
 }

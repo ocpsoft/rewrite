@@ -63,7 +63,13 @@ public abstract class UserAgent extends HttpCondition
     */
    public static ClassificationUserAgent isMobile()
    {
-      return new ClassificationUserAgent(Classification.MOBILE);
+      return new ClassificationUserAgent(Classification.MOBILE) {
+         @Override
+         public String toString()
+         {
+            return "UserAgent.isMobile()";
+         }
+      };
    }
 
    /**
@@ -71,7 +77,13 @@ public abstract class UserAgent extends HttpCondition
     */
    public static ClassificationUserAgent isTablet()
    {
-      return new ClassificationUserAgent(Classification.TABLET);
+      return new ClassificationUserAgent(Classification.TABLET) {
+         @Override
+         public String toString()
+         {
+            return "UserAgent.isTablet()";
+         }
+      };
    }
 
    /**
@@ -79,7 +91,13 @@ public abstract class UserAgent extends HttpCondition
     */
    public static ClassificationUserAgent isDesktop()
    {
-      return new ClassificationUserAgent(Classification.DESKTOP);
+      return new ClassificationUserAgent(Classification.DESKTOP) {
+         @Override
+         public String toString()
+         {
+            return "UserAgent.isDesktop()";
+         }
+      };
    }
 
    private static enum Classification
@@ -87,7 +105,7 @@ public abstract class UserAgent extends HttpCondition
       MOBILE, TABLET, DESKTOP
    }
 
-   private static class ClassificationUserAgent extends UserAgent
+   private abstract static class ClassificationUserAgent extends UserAgent
    {
       private final Classification type;
 
@@ -107,11 +125,11 @@ public abstract class UserAgent extends HttpCondition
          switch (type)
          {
          case DESKTOP:
-            return !util.isMobile();
+            return !util.detectMobileQuick() && !util.detectTierTablet();
          case MOBILE:
-            return util.isMobile();
+            return util.detectMobileQuick();
          case TABLET:
-            return util.isTablet();
+            return util.detectTierTablet();
          }
 
          return false;

@@ -20,6 +20,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.ocpsoft.rewrite.AbstractRewrite;
 import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.exception.RewriteException;
@@ -30,7 +31,7 @@ import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public abstract class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse>
+public abstract class BaseRewrite<IN extends ServletRequest, OUT extends ServletResponse> extends AbstractRewrite
 {
 
    private IN request;
@@ -107,6 +108,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    /**
     * Get the current {@link ServletRewriteFlow} state.
     */
+   @Override
    public Flow getFlow()
    {
       return flow;
@@ -262,6 +264,7 @@ public abstract class BaseRewrite<IN extends ServletRequest, OUT extends Servlet
    /**
     * Get the {@link org.ocpsoft.rewrite.context.Context} for the current {@link org.ocpsoft.rewrite.event.Rewrite}.
     */
+   @Override
    public Context getRewriteContext()
    {
       if (this.context == null)

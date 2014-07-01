@@ -97,7 +97,7 @@ public class Domain extends HttpCondition implements Parameterized
    @Override
    public String toString()
    {
-      return expression.toString();
+      return "Domain.matches(\"" + expression.getPattern() + "\")";
    }
 
    @Override

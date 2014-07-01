@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 
@@ -91,6 +92,6 @@ public final class And extends DefaultConditionBuilder implements CompositeCondi
    @Override
    public String toString()
    {
-      return "And [" + Arrays.asList(conditions) + "]";
+      return "And.all(" + Strings.join(getConditions(), ", ") + ")";
    }
 }

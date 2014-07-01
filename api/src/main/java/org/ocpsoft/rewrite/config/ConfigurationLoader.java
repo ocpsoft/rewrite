@@ -28,6 +28,7 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.bind.Evaluation;
+import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.param.ConfigurableParameter;
 import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.Parameter;
@@ -179,30 +180,42 @@ public class ConfigurationLoader
          for (final Rule rule : list) {
             result.addRule(rule);
 
-            if (rule instanceof ParameterizedRule) {
-               ParameterizedCallback callback = new ParameterizedCallback() {
-                  @Override
-                  public void call(Parameterized parameterized)
-                  {
-                     Set<String> names = parameterized.getRequiredParameterNames();
-                     ParameterStore store = ((ParameterizedRule) rule).getParameterStore();
+            try {
+               if (rule instanceof ParameterizedRule) {
+                  ParameterizedCallback callback = new ParameterizedCallback() {
+                     @Override
+                     public void call(Parameterized parameterized)
+                     {
+                        Set<String> names = parameterized.getRequiredParameterNames();
+                        ParameterStore store = ((ParameterizedRule) rule).getParameterStore();
 
-                     if (names != null)
-                        for (String name : names) {
-                           Parameter<?> parameter = store.get(name, new DefaultParameter(name));
-                           if (parameter instanceof ConfigurableParameter<?>)
-                              ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
-                        }
+                        if (names != null)
+                           for (String name : names) {
+                              Parameter<?> parameter = store.get(name, new DefaultParameter(name));
+                              if (parameter instanceof ConfigurableParameter<?>)
+                                 ((ConfigurableParameter<?>) parameter).bindsTo(Evaluation.property(name));
+                           }
 
-                     parameterized.setParameterStore(store);
-                  }
-               };
+                        parameterized.setParameterStore(store);
+                     }
+                  };
 
-               Visitor<Condition> conditionVisitor = new ParameterizedConditionVisitor(callback);
-               new ConditionVisit(rule).accept(conditionVisitor);
+                  Visitor<Condition> conditionVisitor = new ParameterizedConditionVisitor(callback);
+                  new ConditionVisit(rule).accept(conditionVisitor);
 
-               Visitor<Operation> operationVisitor = new ParameterizedOperationVisitor(callback);
-               new OperationVisit(rule).accept(operationVisitor);
+                  Visitor<Operation> operationVisitor = new ParameterizedOperationVisitor(callback);
+                  new OperationVisit(rule).accept(operationVisitor);
+               }
+            }
+            catch (RuntimeException e) {
+               String message = "Error encountered while visiting rule: " + rule;
+
+               if (rule instanceof Context)
+               {
+                  message += " defined at " + ((Context) rule).get(RuleMetadata.PROVIDER_LOCATION) + "\n";
+               }
+               log.error(message);
+               throw e;
             }
          }
       }

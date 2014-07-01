@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.ocpsoft.common.util.Strings;
+import org.ocpsoft.rewrite.context.Context;
+
 /**
  * A fluent builder for defining {@link Configuration} objects.
  * 
@@ -57,6 +60,7 @@ public class ConfigurationBuilder implements Configuration, ConfigurationBuilder
    public ConfigurationRuleBuilderCustom addRule()
    {
       RuleBuilder rule = RuleBuilder.define();
+      setDefaultLocation(rule);
       rules.add(rule);
       return new ConfigurationRuleBuilder(this, rule);
    }
@@ -65,17 +69,46 @@ public class ConfigurationBuilder implements Configuration, ConfigurationBuilder
     * Add a {@link Rule}.
     */
    @Override
-   public ConfigurationRuleBuilder addRule(final Rule rule)
+   public ConfigurationRuleBuilder addRule(Rule rule)
    {
-      RuleBuilder wrapped = RuleBuilder.wrap(rule);
+      RuleBuilder wrapped = null;
+      if (rule instanceof RuleBuilder)
+         wrapped = (RuleBuilder) rule;
+      else
+         wrapped = RuleBuilder.wrap(rule);
+
       rules.add(wrapped);
+      setDefaultLocation(wrapped);
       return new ConfigurationRuleBuilder(this, wrapped);
+   }
+
+   private void setDefaultLocation(Rule rule)
+   {
+      if (rule instanceof Context)
+      {
+         Throwable throwable = new Throwable().fillInStackTrace();
+         StackTraceElement[] trace = throwable.getStackTrace();
+
+         StackTraceElement location = null;
+         for (StackTraceElement element : trace) {
+            if (!element.getClassName().startsWith("org.ocpsoft.rewrite.config"))
+            {
+               location = element;
+               break;
+            }
+         }
+
+         if (location != null && ((Context) rule).get(RuleMetadata.PROVIDER_LOCATION) == null)
+         {
+            ((Context) rule).put(RuleMetadata.PROVIDER_LOCATION, location.toString());
+         }
+      }
    }
 
    @Override
    public String toString()
    {
-      return "ConfigurationBuilder [rules=" + rules + "]";
+      return "ConfigurationBuilder.begin()\n" + Strings.join(rules, "\n");
    }
 
 }

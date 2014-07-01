@@ -15,12 +15,15 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedRule;
 
 /**
@@ -165,5 +168,21 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    public void perform(Rewrite event, EvaluationContext context)
    {
       rule.perform(event, context);
+   }
+
+   @Override
+   public Set<String> getRequiredParameterNames()
+   {
+      Set<String> result = new HashSet<String>();
+      if (rule instanceof Parameterized)
+         result.addAll(((Parameterized) rule).getRequiredParameterNames());
+      return result;
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      if (rule instanceof Parameterized)
+         ((Parameterized) rule).setParameterStore(store);
    }
 }

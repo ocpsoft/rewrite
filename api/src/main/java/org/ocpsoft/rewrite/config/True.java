@@ -34,6 +34,6 @@ public final class True extends DefaultConditionBuilder
    @Override
    public String toString()
    {
-      return "True";
+      return "new True()";
    }
 }

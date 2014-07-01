@@ -15,10 +15,12 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
-
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -29,7 +31,7 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ServerPort extends HttpCondition
+public abstract class ServerPort extends HttpCondition
 {
    private final int[] ports;
 
@@ -52,7 +54,13 @@ public class ServerPort extends HttpCondition
     */
    public static ServerPort is(final int... ports)
    {
-      return new ServerPort(ports);
+      return new ServerPort(ports) {
+         @Override
+         public String toString()
+         {
+            return "ServerPort.is(" + Strings.join(Arrays.asList(ports), ", ") + ")";
+         }
+      };
    }
 
    @Override

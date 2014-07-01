@@ -15,11 +15,17 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.ocpsoft.common.pattern.Weighted;
+import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
@@ -37,14 +43,17 @@ import org.ocpsoft.rewrite.util.Visitor;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class RuleBuilder implements ParameterizedRule, RelocatableRule, CompositeCondition, CompositeOperation
+public final class RuleBuilder implements ParameterizedRule, RelocatableRule, CompositeCondition, CompositeOperation,
+         Context
 {
    private final ParameterStore store;
 
    private Integer priority = null;
    private String id = "";
-   private Condition condition = new True();
+   private Condition condition;
    private Operation operation;
+   private Map<Object, Object> contextMap = new HashMap<Object, Object>();
+   private Rule wrapped;
 
    private RuleBuilder()
    {
@@ -53,11 +62,13 @@ public class RuleBuilder implements ParameterizedRule, RelocatableRule, Composit
 
    private RuleBuilder(Rule rule)
    {
-      if (rule instanceof RuleBuilder)
-         store = ((RuleBuilder) rule).getParameterStore();
-      else
-         store = new DefaultParameterStore();
-      withId(rule.getId()).when(rule).perform(rule);
+      store = new DefaultParameterStore();
+      withId(rule.getId());
+
+      if (rule instanceof Weighted)
+         withPriority(((Weighted) rule).priority());
+
+      wrapped = rule;
    }
 
    /**
@@ -109,7 +120,12 @@ public class RuleBuilder implements ParameterizedRule, RelocatableRule, Composit
     */
    public RuleBuilder when(final Condition condition)
    {
-      this.condition = Conditions.wrap(this.condition).and(condition);
+      if (this.condition == null)
+         this.condition = condition;
+      else if (condition instanceof ConditionBuilder)
+         this.condition = ((ConditionBuilder) this.condition).and(condition);
+      else
+         this.condition = Conditions.wrap(this.condition).and(condition);
       return this;
    }
 
@@ -118,7 +134,12 @@ public class RuleBuilder implements ParameterizedRule, RelocatableRule, Composit
     */
    public RuleBuilder perform(final Operation operation)
    {
-      this.operation = Operations.wrap(this.operation).and(operation);
+      if (this.operation == null)
+         this.operation = operation;
+      else if (operation instanceof OperationBuilder)
+         this.operation = ((OperationBuilder) this.operation).and(operation);
+      else
+         this.operation = Operations.wrap(this.operation).and(operation);
       return this;
    }
 
@@ -126,12 +147,23 @@ public class RuleBuilder implements ParameterizedRule, RelocatableRule, Composit
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
       context.put(ParameterStore.class, store);
-      return condition == null || condition.evaluate(event, context);
+
+      if (wrapped != null && condition != null)
+         return wrapped.evaluate(event, context) && condition.evaluate(event, context);
+      else if (wrapped != null)
+         return wrapped.evaluate(event, context);
+      else if (condition != null)
+         return condition.evaluate(event, context);
+
+      return true;
    }
 
    @Override
    public void perform(final Rewrite event, final EvaluationContext context)
    {
+      if (wrapped != null)
+         wrapped.perform(event, context);
+
       if (operation != null)
          operation.perform(event, context);
    }
@@ -191,25 +223,32 @@ public class RuleBuilder implements ParameterizedRule, RelocatableRule, Composit
    }
 
    @Override
-   public String toString()
-   {
-      return "RuleBuilder [priority=" + priority + ", id=" + id + ", condition=" + condition + ", operation="
-               + operation + "]";
-   }
-
-   @Override
    public List<Operation> getOperations()
    {
-      if (operation instanceof CompositeOperation)
-         return ((CompositeOperation) operation).getOperations();
+      if (wrapped != null && operation != null)
+         return Arrays.asList(wrapped, operation);
+
+      else if (wrapped != null)
+         return Arrays.asList((Operation) wrapped);
+
+      else if (operation != null)
+         return Arrays.asList(operation);
+
       return Collections.emptyList();
    }
 
    @Override
    public List<Condition> getConditions()
    {
-      if (condition instanceof CompositeCondition)
-         return ((CompositeCondition) condition).getConditions();
+      if (wrapped != null && condition != null)
+         return Arrays.asList(wrapped, condition);
+
+      else if (wrapped != null)
+         return Arrays.asList((Condition) wrapped);
+
+      else if (condition != null)
+         return Arrays.asList(condition);
+
       return Collections.emptyList();
    }
 
@@ -251,5 +290,128 @@ public class RuleBuilder implements ParameterizedRule, RelocatableRule, Composit
       if (!parameterNames.contains(name))
          throw new IllegalArgumentException("Parameter [" + name + "] does not exist in rule [" + this
                   + "] and cannot be configured.");
+   }
+
+   @Override
+   public Object get(Object key)
+   {
+      if (wrapped instanceof Context)
+      {
+         return ((Context) wrapped).get(key);
+      }
+      return contextMap.get(key);
+   }
+
+   @Override
+   public void put(Object key, Object value)
+   {
+      if (wrapped instanceof Context)
+      {
+         ((Context) wrapped).put(key, value);
+      }
+      contextMap.put(key, value);
+   }
+
+   @Override
+   public boolean containsKey(Object key)
+   {
+      if (wrapped instanceof Context)
+      {
+         return ((Context) wrapped).containsKey(key);
+      }
+      return contextMap.containsKey(key);
+   }
+
+   @Override
+   public Set<String> getRequiredParameterNames()
+   {
+      Set<String> result = new HashSet<String>();
+      if (condition instanceof Parameterized)
+      {
+         Set<String> names = ((Parameterized) condition).getRequiredParameterNames();
+         if (names != null)
+            result.addAll(names);
+      }
+      if (operation instanceof Parameterized)
+      {
+         Set<String> names = ((Parameterized) operation).getRequiredParameterNames();
+         if (names != null)
+            result.addAll(names);
+      }
+      if (wrapped instanceof Parameterized)
+      {
+         Set<String> names = ((Parameterized) wrapped).getRequiredParameterNames();
+         if (names != null)
+            result.addAll(names);
+      }
+      return result;
+   }
+
+   @Override
+   public void setParameterStore(ParameterStore store)
+   {
+      if (condition instanceof Parameterized)
+         ((Parameterized) condition).setParameterStore(store);
+      if (operation instanceof Parameterized)
+         ((Parameterized) operation).setParameterStore(store);
+      if (wrapped instanceof Parameterized)
+         ((Parameterized) wrapped).setParameterStore(store);
+   }
+
+   @Override
+   public String toString()
+   {
+      String result = ".addRule(";
+
+      if (wrapped != null && !(wrapped instanceof RuleBuilder))
+      {
+         result += wrapped + ")";
+      }
+      else
+      {
+         result += ")";
+
+         if (condition instanceof RuleBuilder)
+         {
+            String conditionToString = ((RuleBuilder) condition).conditionToString();
+            if (!conditionToString.isEmpty())
+               result += ".when(" + conditionToString + ")";
+         }
+         else if (condition != null)
+            result += ".when(" + condition + ")";
+
+         if (operation instanceof RuleBuilder)
+         {
+            String operationToString = ((RuleBuilder) operation).operationToString();
+            if (!operationToString.isEmpty())
+               result += ".perform(" + operationToString + ")";
+         }
+         else if (operation != null)
+            result += ".perform(" + operation + ")";
+      }
+
+      if (getId() != null && !getId().isEmpty())
+         result += ".withId(\"" + getId() + "\")";
+
+      if (priority() != 0)
+         result += ".withPriority(" + priority() + ")";
+
+      return result;
+   }
+
+   protected String conditionToString()
+   {
+      if (condition instanceof RuleBuilder)
+         return ((RuleBuilder) condition).conditionToString();
+
+      return condition == null ? "" : condition.toString();
+   }
+
+   protected String operationToString()
+   {
+      if (operation instanceof RuleBuilder)
+         return ((RuleBuilder) operation).conditionToString();
+
+      return operation == null ? "" : operation.toString();
    }
 }

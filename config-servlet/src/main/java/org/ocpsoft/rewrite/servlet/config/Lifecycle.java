@@ -40,6 +40,12 @@ public abstract class Lifecycle extends HttpOperation
          {
             event.abort();
          }
+
+         @Override
+         public String toString()
+         {
+            return "Lifecycle.abort()";
+         }
       };
    }
 
@@ -54,6 +60,12 @@ public abstract class Lifecycle extends HttpOperation
          {
             event.handled();
          }
+
+         @Override
+         public String toString()
+         {
+            return "Lifecycle.handled()";
+         }
       };
    }
 
@@ -67,6 +79,12 @@ public abstract class Lifecycle extends HttpOperation
          public void performHttp(HttpServletRewrite event, EvaluationContext context)
          {
             event.proceed();
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Lifecycle.proceed()";
          }
       };
    }

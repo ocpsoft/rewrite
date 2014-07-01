@@ -90,6 +90,12 @@ public class Filesystem implements Condition, Parameterized
          {
             return file.exists() && file.isFile();
          }
+
+         @Override
+         public String toString()
+         {
+            return "Filesystem.fileExists(" + resource.getAbsolutePath() + ")";
+         }
       });
    }
 
@@ -119,6 +125,12 @@ public class Filesystem implements Condition, Parameterized
          public boolean accept(File file)
          {
             return file.exists() && file.isDirectory();
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Filesystem.directoryExists(" + resource.getAbsolutePath() + ")";
          }
       });
    }

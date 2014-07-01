@@ -19,6 +19,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.ocpsoft.rewrite.AbstractRewrite;
 import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.mock.MockRewriteContext;
@@ -28,7 +29,7 @@ import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class MockServletRewrite implements ServletRewrite<ServletRequest, ServletResponse>
+public class MockServletRewrite extends AbstractRewrite implements ServletRewrite<ServletRequest, ServletResponse>
 {
    private Flow flow;
    private final ServletRequest request;
@@ -40,12 +41,6 @@ public class MockServletRewrite implements ServletRewrite<ServletRequest, Servle
       this.request = request;
       this.response = response;
       this.servletContext = servletContext;
-   }
-
-   @Override
-   public Context getRewriteContext()
-   {
-      return new MockRewriteContext();
    }
 
    @Override

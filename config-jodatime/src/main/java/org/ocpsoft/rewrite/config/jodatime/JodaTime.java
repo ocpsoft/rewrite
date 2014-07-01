@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.config.jodatime;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.DefaultConditionBuilder;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -28,7 +27,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class JodaTime extends DefaultConditionBuilder
+public abstract class JodaTime extends DefaultConditionBuilder
 {
    private final TimeCondition condition;
    private DateTimeZone zone;
@@ -57,21 +56,33 @@ public class JodaTime extends DefaultConditionBuilder
     * Configurators
     */
    /**
-    * Create a new {@link JodaTime} condition that, for each {@link org.ocpsoft.rewrite.event.Rewrite}, evaluates the given {@link TimeCondition}
-    * again the system's current {@link DateTime}
+    * Create a new {@link JodaTime} condition that, for each {@link org.ocpsoft.rewrite.event.Rewrite}, evaluates the
+    * given {@link TimeCondition} again the system's current {@link DateTime}
     */
    public static JodaTime matches(final TimeCondition condition)
    {
-      return new JodaTime(condition);
+      return new JodaTime(condition) {
+         @Override
+         public String toString()
+         {
+            return "JodaTime.matches(" + condition + ")";
+         }
+      };
    }
 
    /**
-    * Create a new {@link JodaTime} condition that, for each {@link org.ocpsoft.rewrite.event.Rewrite}, evaluates the given {@link TimeCondition}
-    * again the system's current {@link DateTime} using the provided {@link DateTimeZone}
+    * Create a new {@link JodaTime} condition that, for each {@link org.ocpsoft.rewrite.event.Rewrite}, evaluates the
+    * given {@link TimeCondition} again the system's current {@link DateTime} using the provided {@link DateTimeZone}
     */
    public static JodaTime matches(final TimeCondition condition, final DateTimeZone zone)
    {
-      return new JodaTime(condition, zone);
+      return new JodaTime(condition, zone) {
+         @Override
+         public String toString()
+         {
+            return "JodaTime.matches(" + condition + ", " + zone + ")";
+         }
+      };
    }
 
    /*

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -52,6 +53,7 @@ import org.ocpsoft.urlbuilder.AddressBuilder;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
+@SuppressWarnings("deprecation")
 public class EncodeQuery implements Operation
 {
    private String tokenName;
@@ -216,9 +218,7 @@ public class EncodeQuery implements Operation
    @Override
    public String toString()
    {
-      return "EncodeQuery [tokenName=" + tokenName + ", checksumStrategy=" + checksumStrategy + ", encodingStrategy="
-               + encodingStrategy + ", params=" + params + ", excludedParams=" + excludedParams
-               + ", inboundCorrection=" + inboundCorrection + ", onfailure=" + onfailure + "]";
+      return "EncodeQuery.params(\"" + Strings.join(params, "\", \"") + "\")";
    }
 
 }

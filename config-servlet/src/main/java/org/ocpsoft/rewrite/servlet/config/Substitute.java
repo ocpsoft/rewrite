@@ -44,7 +44,7 @@ import org.ocpsoft.urlbuilder.AddressBuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Substitute extends HttpOperation implements Parameterized
+public abstract class Substitute extends HttpOperation implements Parameterized
 {
    private final ParameterizedPatternParser location;
 
@@ -80,7 +80,13 @@ public class Substitute extends HttpOperation implements Parameterized
     */
    public static Substitute with(final String location)
    {
-      return new Substitute(location);
+      return new Substitute(location) {
+         @Override
+         public String toString()
+         {
+            return "Substitute.with(\"" + location + "\")";
+         }
+      };
    }
 
    @Override
@@ -97,7 +103,7 @@ public class Substitute extends HttpOperation implements Parameterized
 
          String target = builder.build(event, context, Transpositions.encodePath());
          if (((HttpOutboundServletRewrite) event).getOutboundAddress().getPath().startsWith(event.getContextPath())
-                  && target.startsWith("/") 
+                  && target.startsWith("/")
                   && !target.startsWith("//")
                   && !target.startsWith(event.getContextPath()))
          {
@@ -125,12 +131,6 @@ public class Substitute extends HttpOperation implements Parameterized
    public void setParameterStore(ParameterStore store)
    {
       location.setParameterStore(store);
-   }
-
-   @Override
-   public String toString()
-   {
-      return "Substitute [location=" + location + "]";
    }
 
 }

@@ -18,6 +18,7 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
@@ -26,6 +27,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.util.Streams;
+import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConditionBuilder;
 import org.ocpsoft.rewrite.config.Operation;
@@ -77,7 +79,7 @@ public abstract class Response extends HttpOperation
          @Override
          public String toString()
          {
-            return "Response.withOutputInterceptedBy(" + buffers + ")";
+            return "Response.withOutputInterceptedBy(" + Strings.join(Arrays.asList(buffers), ", ") + ")";
          }
       };
    }
@@ -105,7 +107,7 @@ public abstract class Response extends HttpOperation
          @Override
          public String toString()
          {
-            return "Response.withOutputStreamWrappedBy(" + wrappers + ")";
+            return "Response.withOutputStreamWrappedBy(" + Strings.join(Arrays.asList(wrappers), ", ") + ")";
          }
       };
    }
@@ -165,7 +167,7 @@ public abstract class Response extends HttpOperation
          @Override
          public String toString()
          {
-            return "Response.setContentType(\"" + contentType + ")";
+            return "Response.setContentType(\"" + contentType + "\")";
          }
       };
    }
@@ -289,7 +291,7 @@ public abstract class Response extends HttpOperation
          @Override
          public String toString()
          {
-            return "Response.write(" + value + ")";
+            return "Response.write(\"" + value + "\")";
          }
       };
    }
@@ -333,6 +335,12 @@ public abstract class Response extends HttpOperation
          {
             event.getResponse().setStatus(status);
          }
+
+         @Override
+         public String toString()
+         {
+            return "Response.setStatus(" + status + ")";
+         }
       };
 
    }
@@ -356,6 +364,12 @@ public abstract class Response extends HttpOperation
          public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context)
          {
             return event.getResponse().isCommitted();
+         }
+
+         @Override
+         public String toString()
+         {
+            return "Response.isCommitted()";
          }
       };
    }

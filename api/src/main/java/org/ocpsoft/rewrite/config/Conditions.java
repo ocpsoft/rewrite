@@ -15,6 +15,10 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.ocpsoft.rewrite.config.DefaultConditionBuilder.DefaultConditionBuilderInternal;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 /*
  * Copyright 2013 <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,19 +50,51 @@ public class Conditions
     */
    public static ConditionBuilder create()
    {
-      return new True();
+      return new DefaultConditionBuilder() {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return true;
+         }
+
+         @Override
+         public String toString()
+         {
+            return "";
+         }
+      };
    }
 
    /**
     * Wrap a given {@link Condition} as a new {@link DefaultConditionBuilder} that evaluates the the original
     * {@link Condition} when {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
     */
-   public static ConditionBuilder wrap(Condition condition)
+   public static ConditionBuilder wrap(final Condition condition)
    {
       if (condition == null)
          return create();
+
       if (condition instanceof ConditionBuilder)
          return (ConditionBuilder) condition;
-      return And.all(condition);
+
+      return new DefaultConditionBuilderInternal(condition) {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            return condition.evaluate(event, context);
+         }
+
+         @Override
+         public String toString()
+         {
+            return condition.toString();
+         }
+
+         @Override
+         public List<Condition> getConditions()
+         {
+            return Arrays.asList(condition);
+         }
+      };
    }
 }

@@ -41,7 +41,13 @@ public abstract class TrailingSlash implements Rule
     */
    public static TrailingSlash remove()
    {
-      return new RemoveTrailingSlash();
+      return new RemoveTrailingSlash() {
+         @Override
+         public String toString()
+         {
+            return "TrailingSlash.remove()";
+         }
+      };
    }
 
    /**
@@ -50,7 +56,13 @@ public abstract class TrailingSlash implements Rule
     */
    public static TrailingSlash append()
    {
-      return new AppendTrailingSlash();
+      return new AppendTrailingSlash() {
+         @Override
+         public String toString()
+         {
+            return "TrailingSlash.append()";
+         }
+      };
    }
 
    /**
@@ -62,7 +74,7 @@ public abstract class TrailingSlash implements Rule
       return this;
    }
 
-   private static class AppendTrailingSlash extends TrailingSlash
+   private abstract static class AppendTrailingSlash extends TrailingSlash
    {
       @Override
       public boolean evaluate(final Rewrite event, final EvaluationContext context)
@@ -90,7 +102,7 @@ public abstract class TrailingSlash implements Rule
       }
    }
 
-   private static class RemoveTrailingSlash extends TrailingSlash
+   private abstract static class RemoveTrailingSlash extends TrailingSlash
    {
       @Override
       public boolean evaluate(final Rewrite event, final EvaluationContext context)
@@ -124,4 +136,6 @@ public abstract class TrailingSlash implements Rule
    {
       return id;
    }
+
+   public abstract String toString();
 }
