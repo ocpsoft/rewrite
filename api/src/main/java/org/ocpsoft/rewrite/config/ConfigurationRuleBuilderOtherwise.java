@@ -22,7 +22,8 @@ import org.ocpsoft.rewrite.param.Parameter;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationRuleBuilderOtherwise extends ConfigurationBuilderRoot
+public interface ConfigurationRuleBuilderOtherwise extends ConfigurationBuilderRoot,
+         ConfigurationRuleBuilderWithMetadata
 {
    /**
     * Set the ID for the current {@link Rule}. This may be used in logging and for rule lookup purposes.

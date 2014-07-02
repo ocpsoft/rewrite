@@ -22,7 +22,7 @@ import org.ocpsoft.rewrite.param.Parameter;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationRuleBuilderPerform extends ConfigurationBuilderRoot
+public interface ConfigurationRuleBuilderPerform extends ConfigurationBuilderRoot, ConfigurationRuleBuilderWithMetadata
 {
 
    /**

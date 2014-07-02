@@ -20,6 +20,6 @@ package org.ocpsoft.rewrite.config;
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationRuleBuilderWithPriorityAndId extends ConfigurationBuilderRoot
+public interface ConfigurationRuleBuilderWithPriorityAndId extends ConfigurationBuilderRoot, ConfigurationRuleBuilderWithMetadata
 {
 }

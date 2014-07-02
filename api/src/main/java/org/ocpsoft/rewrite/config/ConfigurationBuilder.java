@@ -65,6 +65,18 @@ public class ConfigurationBuilder implements Configuration, ConfigurationBuilder
       return new ConfigurationRuleBuilder(this, rule);
    }
 
+   ConfigurationRuleBuilderCustom addOtherwiseRule(RuleBuilder origin)
+   {
+      RuleBuilder rule = RuleBuilder.define();
+
+      /**
+       * .otherwise() clauses should create a Rule that shares state with its origin.
+       */
+      rule.contextMap = origin.contextMap;
+      rules.add(rule);
+      return new ConfigurationRuleBuilder(this, rule);
+   }
+
    /**
     * Add a {@link Rule}.
     */

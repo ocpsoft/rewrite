@@ -187,6 +187,71 @@ public class ConfigurationBuilderTest
    }
 
    @Test
+   public void testMetadataAPI() throws Exception
+   {
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .withMetadata(null, null)
+               .withMetadata(null, null)
+               .addRule();
+
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .otherwise(operation)
+               .withMetadata(null, null)
+               .withMetadata(null, null)
+               .addRule();
+
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .withId(null)
+               .withMetadata(null, null)
+               .addRule();
+
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .withPriority(12)
+               .withMetadata(null, null)
+               .addRule();
+
+
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .withId(null)
+               .withPriority(12)
+               .withMetadata(null, null)
+               .addRule();
+      
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .withPriority(12)
+               .withId(null)
+               .withMetadata(null, null)
+               .addRule();
+
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .withPriority(12)
+               .withMetadata(null, null)
+               .addRule();
+
+      ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .perform(operation)
+               .otherwise(operation)
+               .withId(null)
+               .withMetadata(null, null)
+               .addRule();
+   }
+
+   @Test
    public void testWhereAPI() throws Exception
    {
       ParameterConfigurator configurator = new ParameterConfigurator() {};

@@ -138,6 +138,12 @@ public class ConfigurationRuleParameterBuilder
    {
       return parent.withPriority(priority);
    }
+   
+   @Override
+   public ConfigurationRuleBuilderWithMetadata withMetadata(Object key, Object value)
+   {
+      return parent.withMetadata(key, value);
+   }
 
    @Override
    public List<Binding> getBindings()

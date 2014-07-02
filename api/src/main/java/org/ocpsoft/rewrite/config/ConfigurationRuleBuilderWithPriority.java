@@ -15,13 +15,13 @@
  */
 package org.ocpsoft.rewrite.config;
 
-
 /**
  * An intermediate stage {@link Rule} configuration.
  *
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public interface ConfigurationRuleBuilderWithPriority extends ConfigurationBuilderRoot
+public interface ConfigurationRuleBuilderWithPriority extends ConfigurationBuilderRoot,
+         ConfigurationRuleBuilderWithMetadata
 {
 
    /**

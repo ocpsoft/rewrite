@@ -52,7 +52,7 @@ public final class RuleBuilder implements ParameterizedRule, RelocatableRule, Co
    private String id = "";
    private Condition condition;
    private Operation operation;
-   private Map<Object, Object> contextMap = new HashMap<Object, Object>();
+   protected Map<Object, Object> contextMap = new HashMap<Object, Object>();
    private Rule wrapped;
 
    private RuleBuilder()

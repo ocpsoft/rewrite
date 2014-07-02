@@ -97,7 +97,7 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    @Override
    public ConfigurationRuleBuilder otherwise(final Operation operation)
    {
-      wrapped.addRule()
+      wrapped.addOtherwiseRule(rule)
                .when(Not.any(rule))
                .perform(operation);
 
@@ -184,5 +184,12 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
    {
       if (rule instanceof Parameterized)
          ((Parameterized) rule).setParameterStore(store);
+   }
+
+   @Override
+   public ConfigurationRuleBuilderWithMetadata withMetadata(Object key, Object value)
+   {
+      rule.put(key, value);
+      return this;
    }
 }

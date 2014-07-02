@@ -71,4 +71,35 @@ public class ConfigurationBuilderMetadataTest
                         + "(ConfigurationBuilderMetadataTest.java:61)",
                location);
    }
+
+   @Test
+   public void testBuildConfigurationMetadataOtherwise()
+   {
+      Configuration config = ConfigurationBuilder.begin().addRule()
+               .perform(new Operation() {
+                  @Override
+                  public void perform(Rewrite event, EvaluationContext context)
+                  {}
+               })
+               .otherwise(new Operation() {
+
+                  @Override
+                  public void perform(Rewrite event, EvaluationContext context)
+                  {}
+               });
+
+      Assert.assertEquals(2, config.getRules().size());
+
+      for (Rule rule : config.getRules()) {
+
+         Assert.assertTrue(rule instanceof Context);
+
+         String location = (String) ((Context) rule).get(RuleMetadata.PROVIDER_LOCATION);
+         Assert.assertEquals(
+                  "org.ocpsoft.rewrite.metadata.ConfigurationBuilderMetadataTest"
+                           + ".testBuildConfigurationMetadataOtherwise"
+                           + "(ConfigurationBuilderMetadataTest.java:78)",
+                  location);
+      }
+   }
 }
