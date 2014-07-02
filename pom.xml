@@ -88,6 +88,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
+            <version>2.5</version>
             <configuration>
                <!-- Use local git repository instead of cloning the origin 
                   repository -->
