@@ -37,18 +37,13 @@ import org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider;
  */
 public class DispatchType extends HttpCondition
 {
+   private final static String PROVIDER_KEY = DispatchType.class.getName() + "_PROVIDERS";
+
    private final DispatcherType type;
-   private final List<DispatcherTypeProvider> providers;
 
    private DispatchType(final DispatcherType type)
    {
       this.type = type;
-
-      // for performance reasons only create the list of providers once
-      providers = Iterators.asList(
-               ServiceLoader.loadTypesafe(DispatcherTypeProvider.class).iterator());
-      Collections.sort(providers, new WeightedComparator());
-
    }
 
    @Override
@@ -66,13 +61,29 @@ public class DispatchType extends HttpCondition
     */
    private DispatcherType getDispatcherType(final HttpServletRewrite event)
    {
-      for (DispatcherTypeProvider provider : providers) {
+      for (DispatcherTypeProvider provider : getDispatcherTypeProviders(event)) {
          DispatcherType dispatcherType = provider.getDispatcherType(event.getRequest(), event.getServletContext());
          if (dispatcherType != null) {
             return dispatcherType;
          }
       }
       throw new IllegalStateException("Unable to determine dispatcher type of current request");
+   }
+
+   /**
+    * Simple caching mechanism for the providers on a per request basis
+    */
+   @SuppressWarnings("unchecked")
+   private List<DispatcherTypeProvider> getDispatcherTypeProviders(HttpServletRewrite event)
+   {
+      List<DispatcherTypeProvider> providers = (List<DispatcherTypeProvider>)
+               event.getRequest().getAttribute(PROVIDER_KEY);
+      if (providers == null) {
+         providers = Iterators.asList(ServiceLoader.loadTypesafe(DispatcherTypeProvider.class).iterator());
+         Collections.sort(providers, new WeightedComparator());
+         event.getRequest().setAttribute(PROVIDER_KEY, providers);
+      }
+      return providers;
    }
 
    /**
