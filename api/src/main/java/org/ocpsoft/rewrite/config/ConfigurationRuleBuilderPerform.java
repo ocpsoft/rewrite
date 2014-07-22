@@ -31,6 +31,11 @@ public interface ConfigurationRuleBuilderPerform extends ConfigurationBuilderRoo
    ConfigurationRuleBuilderOtherwise otherwise(Operation condition);
 
    /**
+    * Perform the given {@link Operation} instances when the conditions set in this {@link Rule} fail to be met.
+    */
+   ConfigurationRuleBuilderOtherwise otherwise(Operation operation, Operation ... operations);
+
+   /**
     * Set the ID for the current {@link Rule}. This may be used in logging and for rule lookup purposes.
     */
    ConfigurationRuleBuilderWithId withId(String id);

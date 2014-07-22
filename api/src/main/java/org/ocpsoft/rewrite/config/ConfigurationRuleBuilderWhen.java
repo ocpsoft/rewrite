@@ -29,7 +29,17 @@ public interface ConfigurationRuleBuilderWhen
    ConfigurationRuleBuilderPerform perform(Operation condition);
 
    /**
+    * Perform the given {@link Operation} instances when the conditions set in this {@link Rule} are met.
+    */
+   ConfigurationRuleBuilderPerform perform(Operation operation, Operation ... operations);
+
+   /**
     * Perform the given {@link Operation} when the conditions set in this {@link Rule} fail to be met.
     */
-   ConfigurationRuleBuilderOtherwise otherwise(Operation condition);
+   ConfigurationRuleBuilderOtherwise otherwise(Operation operation);
+
+   /**
+    * Perform the given {@link Operation} instances when the conditions set in this {@link Rule} fail to be met.
+    */
+   ConfigurationRuleBuilderOtherwise otherwise(Operation operation, Operation ... operations);
 }

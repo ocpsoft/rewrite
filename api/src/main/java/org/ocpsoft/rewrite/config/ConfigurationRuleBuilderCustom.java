@@ -28,7 +28,18 @@ public interface ConfigurationRuleBuilderCustom
    ConfigurationRuleBuilderWhen when(Condition condition);
 
    /**
+    * Set the {@link Condition}s of this {@link Rule} instance. This creates an implicit {@link And} between all
+    * provided {@link Condition} instances.
+    */
+   ConfigurationRuleBuilderWhen when(Condition condition, Condition... conditions);
+
+   /**
     * Perform the given {@link Operation} when the conditions set in this {@link Rule} are met.
     */
-   ConfigurationRuleBuilderPerform perform(Operation condition);
+   ConfigurationRuleBuilderPerform perform(Operation operation);
+
+   /**
+    * Perform the given {@link Operation} instances when the conditions set in this {@link Rule} are met.
+    */
+   ConfigurationRuleBuilderPerform perform(Operation operation, Operation... operations);
 }

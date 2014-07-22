@@ -15,13 +15,14 @@
  */
 package org.ocpsoft.rewrite.config;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
-import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedRule;
@@ -62,18 +63,12 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
       return wrapped.addRule();
    }
 
-   /**
-    * Configure the {@link Parameter} with the given name.
-    */
    @Override
    public ConfigurationRuleParameterBuilder where(String name)
    {
       return new ConfigurationRuleParameterBuilder(this, rule.where(name));
    }
 
-   /**
-    * Set the {@link Condition} of this {@link Rule} instance.
-    */
    @Override
    public ConfigurationRuleBuilder when(final Condition condition)
    {
@@ -81,9 +76,16 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
       return this;
    }
 
-   /**
-    * Perform the given {@link Operation} when the conditions set in this {@link Rule} are met.
-    */
+   @Override
+   public ConfigurationRuleBuilderWhen when(Condition condition, Condition... conditions)
+   {
+      List<Condition> list = new LinkedList<Condition>();
+      list.add(condition);
+      list.addAll(Arrays.asList(conditions));
+      rule.when(And.all(list.toArray(new Condition[list.size()])));
+      return this;
+   }
+
    @Override
    public ConfigurationRuleBuilder perform(final Operation operation)
    {
@@ -91,9 +93,26 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
       return this;
    }
 
-   /**
-    * Perform the given {@link Operation} when the conditions set in this {@link Rule} fail to be met.
-    */
+   @Override
+   public ConfigurationRuleBuilderPerform perform(Operation operation, Operation... operations)
+   {
+      OperationBuilder builder = Operations.wrap(operation);
+      if (operation instanceof OperationBuilder)
+      {
+         builder = (OperationBuilder) operation;
+      }
+
+      if (operations != null)
+      {
+         for (int i = 0; i < operations.length; i++) {
+            builder = builder.and(operations[i]);
+         }
+      }
+
+      rule.perform(builder);
+      return this;
+   }
+
    @Override
    public ConfigurationRuleBuilder otherwise(final Operation operation)
    {
@@ -104,11 +123,29 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
       return this;
    }
 
-   /**
-    * Set the priority of this {@link Rule} instance. If {@link #priority()} differs from the priority of the
-    * {@link ConfigurationProvider} from which this rule was returned, then relocate this rule to its new priority
-    * position in the compiled rule set.
-    */
+   @Override
+   public ConfigurationRuleBuilderOtherwise otherwise(Operation operation, Operation... operations)
+   {
+      OperationBuilder builder = Operations.wrap(operation);
+      if (operation instanceof OperationBuilder)
+      {
+         builder = (OperationBuilder) operation;
+      }
+
+      if (operations != null)
+      {
+         for (int i = 0; i < operations.length; i++) {
+            builder = builder.and(operations[i]);
+         }
+      }
+
+      wrapped.addOtherwiseRule(rule)
+               .when(Not.any(rule))
+               .perform(builder);
+
+      return this;
+   }
+
    @Override
    public ConfigurationRuleBuilder withPriority(int priority)
    {
@@ -116,9 +153,6 @@ public class ConfigurationRuleBuilder extends ConfigurationBuilder implements
       return this;
    }
 
-   /**
-    * Set the ID for the current {@link Rule}. This may be used in logging and for rule lookup purposes.
-    */
    @Override
    public ConfigurationRuleBuilder withId(String id)
    {

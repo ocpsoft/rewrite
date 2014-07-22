@@ -37,6 +37,8 @@ import org.ocpsoft.rewrite.test.MockInboundRewrite;
  */
 public class ConfigurationBuilderTest
 {
+   private int performCount = 0;
+   private int performOtherwiseCount = 0;
    private boolean performed = false;
    private boolean performedOtherwise = false;
    private Operation operation;
@@ -53,6 +55,7 @@ public class ConfigurationBuilderTest
          @Override
          public void perform(final Rewrite event, final EvaluationContext context)
          {
+            performCount++;
             performed = true;
          }
       };
@@ -60,6 +63,7 @@ public class ConfigurationBuilderTest
          @Override
          public void perform(final Rewrite event, final EvaluationContext context)
          {
+            performOtherwiseCount++;
             performedOtherwise = true;
          }
       };
@@ -71,6 +75,22 @@ public class ConfigurationBuilderTest
          if (rule.evaluate(rewrite, context))
             rule.perform(rewrite, context);
       }
+   }
+
+   @Test
+   public void testBuildConfigurationCompositeWhenPerformOnly()
+   {
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+
+      Configuration config = ConfigurationBuilder.begin().addRule()
+               .when(Direction.isInbound(), new True())
+               .perform(operation);
+
+      execute(config);
+
+      Assert.assertTrue(performed);
+      Assert.assertFalse(performedOtherwise);
    }
 
    @Test
@@ -90,6 +110,24 @@ public class ConfigurationBuilderTest
    }
 
    @Test
+   public void testBuildConfigurationPerformMultipleOnly()
+   {
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+
+      Configuration config = ConfigurationBuilder.begin().addRule()
+               .when(And.all(Direction.isInbound(), new True()))
+               .perform(operation, operation, operation);
+
+      execute(config);
+
+      Assert.assertEquals(3, performCount);
+      Assert.assertEquals(0, performOtherwiseCount);
+      Assert.assertTrue(performed);
+      Assert.assertFalse(performedOtherwise);
+   }
+
+   @Test
    public void testBuildConfigurationPerformOnlyNegative()
    {
       Assert.assertFalse(performed);
@@ -97,6 +135,22 @@ public class ConfigurationBuilderTest
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(And.all(new False()))
+               .perform(operation);
+
+      execute(config);
+
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+   }
+
+   @Test
+   public void testBuildConfigurationCompositeConditionPerformOnlyNegative()
+   {
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+
+      Configuration config = ConfigurationBuilder.begin().addRule()
+               .when(new True(), new False())
                .perform(operation);
 
       execute(config);
@@ -122,6 +176,40 @@ public class ConfigurationBuilderTest
    }
 
    @Test
+   public void testBuildConfigurationCompositeConditionOtherwiseOnly()
+   {
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+
+      Configuration config = ConfigurationBuilder.begin().addRule()
+               .when(new True(), new False())
+               .otherwise(otherwise);
+
+      execute(config);
+
+      Assert.assertFalse(performed);
+      Assert.assertTrue(performedOtherwise);
+   }
+
+   @Test
+   public void testBuildConfigurationOtherwiseMultipleOnly()
+   {
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+
+      Configuration config = ConfigurationBuilder.begin().addRule()
+               .when(new False())
+               .otherwise(otherwise, otherwise);
+
+      execute(config);
+
+      Assert.assertEquals(0, performCount);
+      Assert.assertEquals(2, performOtherwiseCount);
+      Assert.assertFalse(performed);
+      Assert.assertTrue(performedOtherwise);
+   }
+
+   @Test
    public void testBuildConfigurationOtherwiseNegative()
    {
       Assert.assertFalse(performed);
@@ -129,6 +217,22 @@ public class ConfigurationBuilderTest
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(new True())
+               .otherwise(otherwise);
+
+      execute(config);
+
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+   }
+
+   @Test
+   public void testBuildConfigurationCompositeConditionOtherwiseNegative()
+   {
+      Assert.assertFalse(performed);
+      Assert.assertFalse(performedOtherwise);
+
+      Configuration config = ConfigurationBuilder.begin().addRule()
+               .when(new True(), new True())
                .otherwise(otherwise);
 
       execute(config);
@@ -218,7 +322,6 @@ public class ConfigurationBuilderTest
                .withMetadata(null, null)
                .addRule();
 
-
       ConfigurationBuilder.begin().addRule()
                .when(new False())
                .perform(operation)
@@ -226,7 +329,7 @@ public class ConfigurationBuilderTest
                .withPriority(12)
                .withMetadata(null, null)
                .addRule();
-      
+
       ConfigurationBuilder.begin().addRule()
                .when(new False())
                .perform(operation)
@@ -354,6 +457,10 @@ public class ConfigurationBuilderTest
 
       ConfigurationBuilder.begin()
                .addRule()
+               .perform(operation, operation).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
                .perform(operation)
                .withPriority(0).addRule();
 
@@ -367,6 +474,20 @@ public class ConfigurationBuilderTest
                .addRule()
                .perform(operation)
                .otherwise(otherwise)
+               .withId("id")
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .perform(operation, operation)
+               .otherwise(otherwise, otherwise)
+               .withId("id")
+               .withPriority(0).addRule();
+
+      ConfigurationBuilder.begin()
+               .addRule()
+               .perform(operation)
+               .otherwise(otherwise, otherwise)
                .withId("id")
                .withPriority(0).addRule();
 
