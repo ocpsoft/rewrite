@@ -134,8 +134,9 @@ public abstract class PathAndQuery extends HttpCondition implements Parameterize
       else
          url = URLBuilder.createFrom(event.getInboundAddress().getPathAndQuery()).decode().toURL();
 
-      if (url.startsWith(event.getContextPath()))
-         url = url.substring(event.getContextPath().length());
+      String contextPath = event.getContextPath();
+      if (!contextPath.equals("/") && url.startsWith(contextPath))
+         url = url.substring(contextPath.length());
 
       return (expression.matches(event, context, url));
    }

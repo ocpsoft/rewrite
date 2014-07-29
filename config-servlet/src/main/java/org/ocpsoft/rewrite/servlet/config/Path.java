@@ -131,8 +131,9 @@ public abstract class Path extends HttpCondition implements Parameterized
       else
          url = URLBuilder.createFrom(event.getInboundAddress().getPath()).decode().toPath();
 
-      if (url.startsWith(event.getContextPath()))
-         url = url.substring(event.getContextPath().length());
+      String contextPath = event.getContextPath();
+      if (!contextPath.equals("/") && url.startsWith(contextPath))
+         url = url.substring(contextPath.length());
 
       return (expression.matches(event, context, url));
    }

@@ -203,9 +203,10 @@ public class UrlMappingRuleAdaptor implements Rule
       else if ((event instanceof HttpOutboundServletRewrite)
                && mapping.isOutbound()) {
          String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundAddress().toString();
-         if (outboundURL.startsWith(((HttpServletRewrite) event).getContextPath()))
+         String contextPath = ((HttpServletRewrite) event).getContextPath();
+         if (!contextPath.equals("/") && outboundURL.startsWith(contextPath))
          {
-            outboundURL = outboundURL.substring(((HttpServletRewrite) event).getContextPath().length());
+            outboundURL = outboundURL.substring(contextPath.length());
          }
 
          return evaluateOutbound(outboundURL);

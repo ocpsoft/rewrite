@@ -52,7 +52,7 @@ public class OutboundRewriteRuleAdaptor implements Rule
     */
    private String stripContextPath(final String contextPath, String uri)
    {
-      if (uri.startsWith(contextPath))
+      if (!contextPath.equals("/") && uri.startsWith(contextPath))
       {
          uri = uri.substring(contextPath.length());
       }
@@ -73,8 +73,9 @@ public class OutboundRewriteRuleAdaptor implements Rule
          Address outboundResource = ((HttpOutboundServletRewrite) event).getAddress();
          String outboundUrl = outboundResource.toString();
 
-         if (outboundUrl.startsWith(((HttpServletRewrite) event).getContextPath()))
-            outboundUrl = outboundUrl.substring(((HttpServletRewrite) event).getContextPath().length());
+         String contextPath = ((HttpServletRewrite) event).getContextPath();
+         if (!contextPath.equals("/") && outboundUrl.startsWith(contextPath))
+            outboundUrl = outboundUrl.substring(contextPath.length());
 
          if (rule.matches(URL.build(outboundUrl).decode().toURL()))
             return true;

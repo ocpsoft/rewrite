@@ -229,7 +229,7 @@ public class PrettyContext implements Serializable
     */
    public String stripContextPath(String uri)
    {
-      if (uri.startsWith(contextPath))
+      if (!contextPath.equals("/") && uri.startsWith(contextPath))
       {
          uri = uri.substring(contextPath.length());
       }

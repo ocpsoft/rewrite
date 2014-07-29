@@ -65,8 +65,9 @@ public class InboundRewriteRuleAdaptor implements Rule
          String url = URL.build(path).decode().toURL()
                   + QueryString.build(httpRewrite.getInboundAddress().getQuery()).toQueryString();
 
-         if (url.startsWith(httpRewrite.getContextPath()))
-            url = url.substring(httpRewrite.getContextPath().length());
+         String contextPath = httpRewrite.getContextPath();
+         if (!contextPath.equals("/") && url.startsWith(contextPath))
+            url = url.substring(contextPath.length());
 
          if (rule.matches(url))
          {
@@ -86,8 +87,9 @@ public class InboundRewriteRuleAdaptor implements Rule
       originalUrl = URL.build(originalUrl).decode().toURL()
                + QueryString.build(httpRewrite.getInboundAddress().getQuery()).toQueryString();
 
-      if (originalUrl.startsWith(((HttpServletRewrite) event).getContextPath()))
-         originalUrl = originalUrl.substring(((HttpServletRewrite) event).getContextPath().length());
+      String contextPath = ((HttpServletRewrite) event).getContextPath();
+      if (!contextPath.equals("/") && originalUrl.startsWith(contextPath))
+         originalUrl = originalUrl.substring(contextPath.length());
 
       String newUrl = engine.processInbound(((HttpServletRewrite) event).getRequest(),
                ((HttpServletRewrite) event).getResponse(), rule, originalUrl);
@@ -110,7 +112,7 @@ public class InboundRewriteRuleAdaptor implements Rule
             /*
              * Add context path and encode request using encodeRedirectURL().
              */
-            redirectURL = ((HttpServletRewrite) event).getContextPath() + newUrl;
+            redirectURL = contextPath + newUrl;
          }
          else if (StringUtils.isNotBlank(rule.getUrl()))
          {

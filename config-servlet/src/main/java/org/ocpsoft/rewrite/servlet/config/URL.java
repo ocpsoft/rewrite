@@ -128,7 +128,8 @@ public abstract class URL extends HttpCondition implements Parameterized
       if (event instanceof HttpOutboundServletRewrite)
       {
          requestURL = ((HttpOutboundServletRewrite) event).getOutboundAddress().toString();
-         if (requestURL.startsWith(event.getContextPath()))
+         String contextPath = event.getContextPath();
+         if (!contextPath.equals("/") && requestURL.startsWith(contextPath))
          {
             requestURL = requestURL.substring(event.getContextPath().length());
          }
