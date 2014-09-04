@@ -45,7 +45,7 @@ public class OutboundResourceTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder.begin()
                .addRule(Join.path("/outbound").to("/faces/outbound.xhtml"))
-               .addRule(Join.path("/css/{file}").to("/faces/javax.faces.resource/css/{file}?ln=test"))
+               .addRule(Join.path("/css/{file}").to("/faces/javax.faces.resource/css/{file}"))
                .addRule()
                .when(Direction.isInbound().and(DispatchType.isRequest()))
                .perform(SendStatus.error(403));

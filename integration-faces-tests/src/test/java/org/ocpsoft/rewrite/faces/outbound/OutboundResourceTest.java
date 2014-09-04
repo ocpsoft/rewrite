@@ -16,7 +16,9 @@
 package org.ocpsoft.rewrite.faces.outbound;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
+import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -24,6 +26,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.category.IgnoreForGlassfish4;
+import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.faces.annotation.RewriteFacesAnnotationsTest;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
@@ -31,7 +34,6 @@ import org.ocpsoft.rewrite.test.RewriteTestBase;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.ocpsoft.rewrite.config.ConfigurationProvider;
 
 /**
  * This test doesn't work on Glassfish 4.0 at all. For some reason Glassfish _always_ appends the JSESSIONID, even if
@@ -67,7 +69,7 @@ public class OutboundResourceTest extends RewriteTestBase
       HtmlPage page = getWebClient("/outbound").getPage();
       DomNodeList<DomElement> stylesheets = page.getElementsByTagName("link");
       assertEquals(1, stylesheets.size());
-      assertEquals("/css/style.css", stylesheets.get(0).getAttribute("href"));
+      assertThat(stylesheets.get(0).getAttribute("href"), Matchers.endsWith("/css/style.css?ln=test"));
    }
 
 }
