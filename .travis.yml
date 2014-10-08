@@ -4,7 +4,7 @@ env:
   - CONTAINER=JBOSS_AS_MANAGED_7.X
   - CONTAINER=GLASSFISH_MANAGED_3.1
   - CONTAINER=TOMEE_MANAGED_1.5
-script: "MAVEN_OPTS=-Xmx256m mvn -P ${CONTAINER} install"
+script: "MAVEN_OPTS=-Xmx512m mvn -P ${CONTAINER} install"
 matrix:
   include:
     - env: CONTAINER=WILDFLY_MANAGED_8
