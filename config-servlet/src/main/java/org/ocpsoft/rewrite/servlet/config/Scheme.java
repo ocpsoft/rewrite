@@ -90,7 +90,7 @@ public abstract class Scheme extends HttpCondition implements Parameterized
       else
          scheme = event.getRequest().getScheme();
 
-      return (scheme != null && expression.matches(event, context, scheme));
+      return (scheme != null && expression.parse(scheme).submit(event, context));
    }
 
    /**

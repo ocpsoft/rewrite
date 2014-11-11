@@ -65,7 +65,10 @@ public class PathTest
    @Test
    public void testMatchesWithParameters()
    {
-      Assert.assertTrue(Path.matches("/application/{seg}").evaluate(rewrite, new MockEvaluationContext()));
+      Path path = Path.matches("/application/{seg}");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, path);
+      Assert.assertTrue(path.evaluate(rewrite, context));
    }
 
    @Test
@@ -73,10 +76,9 @@ public class PathTest
    {
       Path path = Path.matches("/application/{seg}");
 
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, path);
-
       MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, path);
+
       Assert.assertTrue(path.evaluate(rewrite, context));
 
    }
@@ -90,7 +92,10 @@ public class PathTest
    @Test
    public void testMatchesPattern()
    {
-      Assert.assertTrue(Path.matches("/application/{param}").evaluate(rewrite, new MockEvaluationContext()));
+      Path path = Path.matches("/application/{param}");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, path);
+      Assert.assertTrue(path.evaluate(rewrite, context));
    }
 
    @Test

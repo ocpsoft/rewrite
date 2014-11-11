@@ -29,6 +29,7 @@ import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
+import org.ocpsoft.rewrite.param.ParameterizedPatternResult;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
@@ -81,10 +82,10 @@ public abstract class Query extends HttpCondition implements Parameterized
                queryString = ((HttpOutboundServletRewrite) event).getOutboundAddress().getQuery();
             }
 
-            if (pattern.matches(event, context, queryString == null ? "" : queryString))
+            if (pattern.parse(queryString == null ? "" : queryString).submit(event, context))
             {
                ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-               for (Entry<Parameter<?>, String> entry : pattern.parse(event, context, query).entrySet()) {
+               for (Entry<Parameter<?>, String> entry : pattern.parse(query).getParameters(context).entrySet()) {
                   values.submit(event, context, store.get(entry.getKey().getName()), entry.getValue());
                }
                return true;
@@ -151,18 +152,16 @@ public abstract class Query extends HttpCondition implements Parameterized
                {
                   if (parameterValues == null || (parameterValues.length == 0))
                   {
-                     return pattern.matches("");
+                     return pattern.parse("").matches();
                   }
                   else
                   {
                      for (String value : parameterValues) {
 
-                        if (pattern.matches(value))
+                        ParameterizedPatternResult parseResult = pattern.parse(value);
+                        if (parseResult.matches())
                         {
-                           // FIXME this probably isn't required since .matches() does this.
-                           ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
-                           ParameterValueStore values = (ParameterValueStore) context.get(ParameterValueStore.class);
-                           return values.submit(event, context, store.get(parameterName), value);
+                           return parseResult.submit(event, context);
                         }
                      }
                   }
@@ -217,7 +216,7 @@ public abstract class Query extends HttpCondition implements Parameterized
             for (String name : queryString.getParameterNames()) {
 
                for (String value : queryString.getParameterValues(name)) {
-                  if (value != null && pattern.matches(event, context, value))
+                  if (value != null && pattern.parse(value).submit(event, context))
                   {
                      return true;
                   }

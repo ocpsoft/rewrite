@@ -78,6 +78,7 @@ public final class And extends DefaultConditionBuilder implements CompositeCondi
          if (!conditions[i].evaluate(event, context))
          {
             result = false;
+            break;
          }
       }
       return result;

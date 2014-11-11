@@ -83,7 +83,7 @@ public class Domain extends HttpCondition implements Parameterized
       else
          hostName = event.getRequest().getServerName();
 
-      return (hostName != null && expression.matches(event, context, hostName));
+      return (hostName != null && expression.parse(hostName).submit(event, context));
    }
 
    /**

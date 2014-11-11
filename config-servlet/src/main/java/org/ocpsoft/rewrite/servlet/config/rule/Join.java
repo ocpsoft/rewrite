@@ -298,7 +298,7 @@ public class Join implements Rule, JoinPath, Parameterized
             rewrittenPath = rewrittenPath.substring(contextPath.length());
 
          if (!outboundAddress.equals(rewrittenAddress)
-                  && !requestPath.getExpression().matches(event, context, rewrittenPath))
+                  && !requestPath.getExpression().parse(rewrittenPath).submit(event, context))
          {
             ((HttpOutboundServletRewrite) event).setOutboundAddress(rewrittenAddress);
          }

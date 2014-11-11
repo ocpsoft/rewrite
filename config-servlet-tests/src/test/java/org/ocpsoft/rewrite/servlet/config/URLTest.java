@@ -69,8 +69,10 @@ public class URLTest
    @Test
    public void testMatchesWithParameters()
    {
-      Assert.assertTrue(URL.matches("http://domain.com:8080/context/application/{seg}?foo=bar&baz=bazaar").evaluate(
-               rewrite, new MockEvaluationContext()));
+      MockEvaluationContext context = new MockEvaluationContext();
+      URL url = URL.matches("http://domain.com:8080/context/application/{seg}?foo=bar&baz=bazaar");
+      ParameterUtils.initialize(context, url);
+      Assert.assertTrue(url.evaluate(rewrite, context));
    }
 
    @Test
@@ -78,13 +80,13 @@ public class URLTest
    {
       URL url = URL.matches("{prefix}/application/{seg}{suffix}");
 
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, url);
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, url);
 
-      ((ParameterConfiguration<?>) store.get("prefix")).constrainedBy(new RegexConstraint(".*"));
+      ParameterStore store = DefaultParameterStore.getInstance(context);
+      ((ParameterConfiguration<?>) store .get("prefix")).constrainedBy(new RegexConstraint(".*"));
       ((ParameterConfiguration<?>) store.get("suffix")).constrainedBy(new RegexConstraint("\\?.*"));
 
-      MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(url.evaluate(rewrite, context));
    }
 
@@ -93,10 +95,9 @@ public class URLTest
    {
       URL url = URL.captureIn("foo");
 
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, url);
-
       MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, url);
+
       Assert.assertTrue(url.evaluate(rewrite, context));
    }
 

@@ -148,7 +148,7 @@ public abstract class Header extends HttpCondition implements Parameterized
       {
          for (String header : Collections.list(headerNames))
          {
-            if (name.matches(event, context, header) && matchesValue(event, context, request, header))
+            if (name.parse(header).submit(event, context) && matchesValue(event, context, request, header))
             {
                return true;
             }
@@ -166,7 +166,7 @@ public abstract class Header extends HttpCondition implements Parameterized
       {
          for (String contents : Collections.list(headers))
          {
-            if (value.matches(event, context, contents))
+            if (value.parse(contents).submit(event, context))
             {
                return true;
             }

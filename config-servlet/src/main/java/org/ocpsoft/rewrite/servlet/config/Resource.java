@@ -78,7 +78,7 @@ public abstract class Resource extends HttpCondition implements Parameterized
             Set<String> paths = event.getServletContext().getResourcePaths("/");
             for (String path : paths)
             {
-               if (resource.matches(path))
+               if (resource.parse(path).matches())
                {
                   return true;
                }

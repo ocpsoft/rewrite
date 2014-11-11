@@ -22,6 +22,7 @@ import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -69,7 +70,8 @@ public class OutboundResourceTest extends RewriteTestBase
       HtmlPage page = getWebClient("/outbound").getPage();
       DomNodeList<DomElement> stylesheets = page.getElementsByTagName("link");
       assertEquals(1, stylesheets.size());
-      assertThat(stylesheets.get(0).getAttribute("href"), Matchers.endsWith("/css/style.css?ln=test"));
+      Assert.assertTrue(stylesheets.get(0).getAttribute("href").contains("/css/style.css"));
+      Assert.assertTrue(stylesheets.get(0).getAttribute("href").contains("?ln=test"));
    }
 
 }

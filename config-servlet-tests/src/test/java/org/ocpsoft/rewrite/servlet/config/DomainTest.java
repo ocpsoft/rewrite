@@ -23,8 +23,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
-import org.ocpsoft.rewrite.param.DefaultParameterStore;
-import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
@@ -64,8 +62,7 @@ public class DomainTest
       MockEvaluationContext context = new MockEvaluationContext();
       Domain hostname = Domain.matches("{p}.com");
 
-      ParameterStore parameters = new DefaultParameterStore();
-      ParameterUtils.initialize(parameters, hostname);
+      ParameterUtils.initialize(context, hostname);
 
       Assert.assertTrue(hostname.evaluate(inbound, context));
    }

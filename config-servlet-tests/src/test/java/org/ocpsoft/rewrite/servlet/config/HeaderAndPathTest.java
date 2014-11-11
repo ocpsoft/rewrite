@@ -27,6 +27,7 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
+import org.ocpsoft.rewrite.util.ParameterUtils;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -34,46 +35,49 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
  */
 public class HeaderAndPathTest
 {
-   private Rewrite rewrite;
-   private HttpServletRequest request;
+    private Rewrite rewrite;
+    private HttpServletRequest request;
 
-   @Before
-   public void before()
-   {
-      request = Mockito.mock(HttpServletRequest.class);
-      Mockito.when(request.getHeaderNames())
-      .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
+    @Before
+    public void before()
+    {
+        request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getHeaderNames())
+                    .thenReturn(Collections.enumeration(Arrays.asList("Accept-Charset", "Content-Length")));
 
-      Mockito.when(request.getHeaders("Content-Length"))
-      .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
+        Mockito.when(request.getHeaders("Content-Length"))
+                    .thenReturn(Collections.enumeration(Arrays.asList("06091984")));
 
-      Mockito.when(request.getHeaders("Accept-Charset"))
-      .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
+        Mockito.when(request.getHeaders("Accept-Charset"))
+                    .thenReturn(Collections.enumeration(Arrays.asList("ISO-9965", "UTF-8")));
 
-      Mockito.when(request.getRequestURI())
-      .thenReturn("/context/application/path");
+        Mockito.when(request.getRequestURI())
+                    .thenReturn("/context/application/path");
 
-      Mockito.when(request.getContextPath())
-      .thenReturn("/context");
+        Mockito.when(request.getContextPath())
+                    .thenReturn("/context");
 
-      rewrite = new HttpInboundRewriteImpl(request, null, null);
-   }
+        rewrite = new HttpInboundRewriteImpl(request, null, null);
+    }
 
-   @Test
-   public void testHeaderAndPath()
-   {
-      Assert.assertTrue(
-               Path.matches("/application/{seg}").and(
-                        Header.exists("Accept-{charset}"))
-                        .evaluate(rewrite, new MockEvaluationContext()));
-   }
+    @Test
+    public void testHeaderAndPath()
+    {
+        MockEvaluationContext context = new MockEvaluationContext();
+        Path path = Path.matches("/application/{seg}");
+        ParameterUtils.initialize(context, path);
+        Header header = Header.exists("Accept-{charset}");
+        ParameterUtils.initialize(context, header);
 
-   @Test
-   public void testHeaderAndPathDoNotMatch()
-   {
-      Assert.assertFalse(
-               Path.matches("/wrong-application/{path}").and(
-                        Header.exists("Accept-{charset}")
-                        ).evaluate(rewrite, new MockEvaluationContext()));
-   }
+        Assert.assertTrue(path.and(header).evaluate(rewrite, context));
+    }
+
+    @Test
+    public void testHeaderAndPathDoNotMatch()
+    {
+        Assert.assertFalse(
+                    Path.matches("/wrong-application/{path}").and(
+                                Header.exists("Accept-{charset}")
+                                ).evaluate(rewrite, new MockEvaluationContext()));
+    }
 }

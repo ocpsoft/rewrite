@@ -19,11 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.ocpsoft.rewrite.mock.MockEvaluationContext;
-import org.ocpsoft.rewrite.mock.MockRewrite;
 
 /**
  * This test case was intended to begin mocking out an i18n API.
@@ -32,24 +29,14 @@ import org.ocpsoft.rewrite.mock.MockRewrite;
  */
 public class ParameterizedPatternInterceptorTest
 {
-   private MockEvaluationContext context;
-   private MockRewrite rewrite;
-
-   @Before
-   public void before()
-   {
-      context = new MockEvaluationContext();
-      rewrite = new MockRewrite();
-   }
-
    @Ignore
    @Test
    public void testMatchesWithParametersRespectsTrailingCharsWithWildcardParameter()
    {
       RegexParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+",
                "/{i18n:customer}/{customer}/orders/{id}");
-      Assert.assertTrue(path.matches(rewrite, context, "/cust/lincoln/orders/3"));
-      Assert.assertFalse(path.matches(rewrite, context, "/wrong/lincoln/orders/3"));
+      Assert.assertTrue(path.parse("/cust/lincoln/orders/3").matches());
+      Assert.assertFalse(path.parse("/wrong/lincoln/orders/3").matches());
    }
 
    @Ignore

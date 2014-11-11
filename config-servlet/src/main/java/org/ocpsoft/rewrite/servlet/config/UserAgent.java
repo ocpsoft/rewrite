@@ -150,7 +150,7 @@ public abstract class UserAgent extends HttpCondition
       public boolean evaluateHttp(final HttpServletRewrite event, final EvaluationContext context)
       {
          String agent = event.getRequest().getHeader("user-agent");
-         return agent != null && expression.matches(event, context, agent);
+         return agent != null && expression.parse(agent).submit(event, context);
       }
 
       @Override

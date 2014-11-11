@@ -15,8 +15,10 @@
  */
 package org.ocpsoft.rewrite.param;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,67 +30,135 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class DefaultParameterValueStore implements ParameterValueStore, Iterable<Entry<Parameter<?>, String>>
+public class DefaultParameterValueStore implements ParameterValueStore, Iterable<Entry<Parameter<?>, List<String>>>
 {
-   Map<Parameter<?>, String> map = new LinkedHashMap<Parameter<?>, String>();
+    Map<Parameter<?>, List<String>> map = new LinkedHashMap<Parameter<?>, List<String>>();
 
-   @Override
-   public String retrieve(Parameter<?> parameter)
-   {
-      return map.get(parameter);
-   }
+    /**
+     * Create a new, empty {@link DefaultParameterValueStore} instance.
+     */
+    public DefaultParameterValueStore()
+    {
+    }
 
-   @Override
-   public boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
-   {
-      boolean result = false;
-      String stored = map.get(param);
+    /**
+     * Create a new {@link DefaultParameterValueStore} instance, copying all {@link Parameter} and value pairs from the
+     * given instance.
+     */
+    public DefaultParameterValueStore(DefaultParameterValueStore instance)
+    {
+        for (Entry<Parameter<?>, List<String>> entry : instance)
+        {
+            List<String> values = new ArrayList<String>();
+            values.addAll(entry.getValue());
+            map.put(entry.getKey(), values);
+        }
+    }
 
-      if ("*".equals(param.getName()))
-      {
-         result = true;
-      }
-      else if (stored == value || (stored != null && stored.equals(value)))
-      {
-         result = true;
-      }
-      else if (stored == null)
-      {
-         result = true;
-         for (Constraint<String> constraint : param.getConstraints()) {
+    @Override
+    public String retrieve(Parameter<?> parameter)
+    {
+        List<String> strings = map.get(parameter);
+        if (strings == null || strings.size() == 0)
+            return null;
+        if (strings.size() > 1)
+            throw new IllegalStateException("Parameter [" + parameter.getName()
+                        + "] is not a singleton: more than one value exists.");
+        return strings.get(0);
+    }
+
+    @Override
+    public boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
+    {
+        boolean result = false;
+        List<String> strings = map.get(param);
+
+        String stored = null;
+        if (strings != null)
+        {
+            if (strings.size() > 0)
+                stored = strings.get(0);
+
+            if (strings.size() > 1)
+                throw new IllegalStateException("Parameter [" + param.getName()
+                            + "] is not a singleton: more than one value exists.");
+        }
+
+        if ("*".equals(param.getName()))
+        {
+            result = true;
+        }
+        else if (stored == value || (stored != null && stored.equals(value)))
+        {
+            result = true;
+        }
+        else if (stored == null)
+        {
+            result = _submit(event, context, param, value);
+        }
+
+        return result;
+    }
+
+    private boolean _submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
+    {
+        boolean result = true;
+        for (Constraint<String> constraint : param.getConstraints())
+        {
             if (!constraint.isSatisfiedBy(event, context, value))
             {
-               result = false;
+                result = false;
             }
-         }
-         // FIXME Transposition processing will break multi-conditional matching
-         if (result)
-         {
-            for (Transposition<String> transposition : param.getTranspositions()) {
-               value = transposition.transpose(event, context, value);
+        }
+
+        // FIXME Transposition processing will break multi-conditional matching
+        if (result)
+        {
+            for (Transposition<String> transposition : param.getTranspositions())
+            {
+                value = transposition.transpose(event, context, value);
             }
-            map.put(param, value);
+
+            List<String> values = map.get(param);
+            if (values == null)
+            {
+                values = new ArrayList<String>();
+                map.put(param, values);
+            }
+
+            values.add(value);
+
             result = true;
-         }
-      }
+        }
+        return result;
+    }
 
-      return result;
-   }
+    @Override
+    public Iterator<Entry<Parameter<?>, List<String>>> iterator()
+    {
+        return map.entrySet().iterator();
+    }
 
-   public String get(Parameter<?> parameter)
-   {
-      return map.get(parameter);
-   }
+    @Override
+    public String toString()
+    {
+        return map.keySet().toString();
+    }
 
-   @Override
-   public Iterator<Entry<Parameter<?>, String>> iterator()
-   {
-      return map.entrySet().iterator();
-   }
-
-   @Override
-   public String toString()
-   {
-      return map.keySet().toString();
-   }
+    /**
+     * Retrieve the current {@link ParameterValueStore} from the given {@link EvaluationContext} instance.
+     * 
+     * @throws IllegalStateException If the {@link ParameterValueStore} could not be located.
+     */
+    public static ParameterValueStore getInstance(EvaluationContext context) throws IllegalStateException
+    {
+        ParameterValueStore valueStore = (ParameterValueStore) context.get(ParameterValueStore.class);
+        if (valueStore == null)
+        {
+            throw new IllegalStateException("Could not retrieve " + ParameterValueStore.class.getName() + " from "
+                        + EvaluationContext.class.getName() + ". Has the " + EvaluationContext.class.getSimpleName()
+                        + " been set up properly?");
+        }
+        return valueStore;
+    }
 }

@@ -139,7 +139,7 @@ public abstract class URL extends HttpCondition implements Parameterized
          requestURL = event.getAddress().toString();
       }
 
-      return expression.matches(event, context, requestURL);
+      return expression.parse(requestURL).submit(event, context);
    }
 
    /**

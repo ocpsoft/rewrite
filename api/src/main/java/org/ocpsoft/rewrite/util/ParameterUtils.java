@@ -27,6 +27,7 @@ import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.rewrite.param.DefaultParameter;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
 import org.ocpsoft.rewrite.param.Parameter;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
@@ -39,17 +40,29 @@ import org.ocpsoft.rewrite.param.Parameterized;
 public class ParameterUtils
 {
    /**
+    * Initialize the {@link Parameterized} instance with the {@link ParameterStore} from the given
+    * {@link EvaluationContext}, also record required parameter names in the {@link ParameterStore} and initialize with
+    * a new {@link Parameter} instance.
+    */
+   public static void initialize(EvaluationContext context, Object parameterized)
+   {
+      initialize(DefaultParameterStore.getInstance(context), parameterized);
+   }
+
+   /**
     * Initialize the {@link Parameterized} instance with the given {@link ParameterStore}, also record required
     * parameter names in the {@link ParameterStore} and initialize with a new {@link Parameter} instance.
     */
-   public static void initialize(ParameterStore store, Parameterized parameterized)
+   public static void initialize(ParameterStore store, Object parameterized)
    {
-      Set<String> names = parameterized.getRequiredParameterNames();
-      for (String name : names) {
-         store.get(name, new DefaultParameter(name));
+      if (parameterized instanceof Parameterized)
+      {
+         Set<String> names = ((Parameterized) parameterized).getRequiredParameterNames();
+         for (String name : names) {
+            store.get(name, new DefaultParameter(name));
+         }
+         ((Parameterized) parameterized).setParameterStore(store);
       }
-
-      parameterized.setParameterStore(store);
    }
 
    /**

@@ -23,6 +23,10 @@ import org.ocpsoft.rewrite.config.Operation;
 import org.ocpsoft.rewrite.context.ContextBase;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
+import org.ocpsoft.rewrite.param.DefaultParameterStore;
+import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
+import org.ocpsoft.rewrite.param.ParameterStore;
+import org.ocpsoft.rewrite.param.ParameterValueStore;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -32,6 +36,12 @@ public class MockEvaluationContext extends ContextBase implements EvaluationCont
 {
    private final List<Operation> preOperations = new ArrayList<Operation>();
    private final List<Operation> postOperations = new ArrayList<Operation>();
+
+   public MockEvaluationContext()
+   {
+      put(ParameterStore.class, new DefaultParameterStore());
+      put(ParameterValueStore.class, new DefaultParameterValueStore());
+   }
 
    @Override
    public void addPreOperation(final Operation operation)

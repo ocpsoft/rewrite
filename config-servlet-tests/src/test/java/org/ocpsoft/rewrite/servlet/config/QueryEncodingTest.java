@@ -102,7 +102,6 @@ public class QueryEncodingTest
       query.setParameterStore(store);
       Assert.assertTrue(query.evaluate(rewrite, context));
 
-      MockEvaluationContext context = new MockEvaluationContext();
       Assert.assertTrue(query.evaluate(rewrite, context));
    }
 

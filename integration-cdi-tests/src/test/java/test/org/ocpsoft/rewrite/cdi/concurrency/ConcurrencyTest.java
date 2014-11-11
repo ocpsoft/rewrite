@@ -78,16 +78,14 @@ public class ConcurrencyTest extends RewriteTestBase
 
       ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-      for (int thread = 0; thread < NUMBER_OF_THREADS; thread++) {
-
+      for (int thread = 0; thread < NUMBER_OF_THREADS; thread++)
+      {
          executor.submit(new Runnable() {
-
             @Override
             public void run()
             {
-
-               for (int i = 0; i < REQUESTS_PER_THREAD; i++) {
-
+               for (int i = 0; i < REQUESTS_PER_THREAD; i++)
+               {
                   String uuid = UUID.randomUUID().toString();
 
                   WebDriver driver = new HtmlUnitDriver();
@@ -96,12 +94,12 @@ public class ConcurrencyTest extends RewriteTestBase
                   if (driver.getPageSource().contains("The parameter is [" + uuid + "]")) {
                      successCounter.addAndGet(1);
                   }
-
+                  else {
+                     System.out.println("foo!");
+                  }
                }
-
             }
          });
-
       }
 
       executor.shutdown();

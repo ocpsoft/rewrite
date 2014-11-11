@@ -409,7 +409,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
       for (Entry<String, Parameter<?>> entry : store)
       {
          Parameter<?> parameter = entry.getValue();
-         String value = values.get(parameter);
+         String value = values.retrieve(parameter);
 
          if (!ParameterUtils.enqueueSubmission(event, context, parameter, value))
          {

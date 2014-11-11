@@ -69,13 +69,19 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterExists()
    {
-      Assert.assertTrue(RequestParameter.exists("foo").evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter parameter = RequestParameter.exists("foo");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, parameter);
+      Assert.assertTrue(parameter.evaluate(rewrite, context));
    }
 
    @Test
    public void testRequestParameterExists2()
    {
-      Assert.assertTrue(RequestParameter.exists("baz").evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter parameter = RequestParameter.exists("baz");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, parameter);
+      Assert.assertTrue(parameter.evaluate(rewrite, context));
    }
 
    @Test
@@ -87,59 +93,67 @@ public class RequestParameterTest
    @Test
    public void testRequestParameterContains()
    {
-      Assert.assertTrue(RequestParameter.valueExists("bar").evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter parameter = RequestParameter.valueExists("bar");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, parameter);
+      Assert.assertTrue(parameter.evaluate(rewrite, context));
    }
 
    @Test
    public void testRequestParameterMatches()
    {
-      RequestParameter requestParam = RequestParameter.matches("foo", "{value}");
+      RequestParameter parameter = RequestParameter.matches("foo", "{value}");
 
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, requestParam);
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, parameter);
+      Assert.assertTrue(parameter.evaluate(rewrite, context));
 
-      Parameter<?> parameter = store.get("value");
-      ((ParameterConfiguration<?>) parameter).constrainedBy(new RegexConstraint("(bar|baz)"));
-      Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
+      ParameterStore store = DefaultParameterStore.getInstance(context);
+      Parameter<?> p = store.get("value");
+      ((ParameterConfiguration<?>) p).constrainedBy(new RegexConstraint("(bar|baz)"));
+      Assert.assertFalse(parameter.evaluate(rewrite, context));
    }
 
    @Test
    public void testRequestParameterMatchesAll()
    {
-      RequestParameter requestParam = RequestParameter.matchesAll("baz", "{value}");
+      RequestParameter requestParam = RequestParameter.matchesAll("baz", "{*}");
 
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, requestParam);
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, requestParam);
 
-      ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("(cab|caz)"));
-      Assert.assertTrue(requestParam.evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(requestParam.evaluate(rewrite, context));
    }
 
    @Test
    public void testRequestParameterMatchesAllNamesAllValues()
    {
-      Assert.assertTrue(RequestParameter.matchesAll("{name}", "{value}")
-               .evaluate(rewrite, new MockEvaluationContext()));
+      RequestParameter parameter = RequestParameter.matchesAll("{name}", "{value}");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, parameter);
+      Assert.assertTrue(parameter.evaluate(rewrite, context));
    }
 
    @Test
    public void testRequestParameterMatchesAllNamesNotValues()
    {
-      RequestParameter requestParam = RequestParameter.matchesAll("{name}", "{value}");
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, requestParam);
+      RequestParameter parameter = RequestParameter.matchesAll("{name}", "{value}");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, parameter);
 
+      ParameterStore store = DefaultParameterStore.getInstance(context);
       ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("nothing"));
-      Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertFalse(parameter.evaluate(rewrite, context));
    }
 
    @Test
    public void testRequestParameterMatchesAllNotName()
    {
       RequestParameter requestParam = RequestParameter.matchesAll("{name}", "{value}");
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, requestParam);
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, requestParam);
 
+      ParameterStore store = DefaultParameterStore.getInstance(context);
       ((ParameterConfiguration<?>) store.get("name")).constrainedBy(new RegexConstraint("nothing"));
       Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
    }
@@ -148,11 +162,13 @@ public class RequestParameterTest
    public void testRequestParameterMatchesAllInvalid()
    {
       RequestParameter requestParam = RequestParameter.matchesAll("baz", "{value}");
-      ParameterStore store = new DefaultParameterStore();
-      ParameterUtils.initialize(store, requestParam);
+
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, requestParam);
+      ParameterStore store = DefaultParameterStore.getInstance(context);
 
       ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("(cab|xxx)"));
-      Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertFalse(requestParam.evaluate(rewrite, context));
    }
 
    @Test

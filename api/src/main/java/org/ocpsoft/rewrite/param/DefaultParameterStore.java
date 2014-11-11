@@ -26,6 +26,7 @@ import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.spi.GlobalParameterProvider;
 import org.ocpsoft.rewrite.util.ServiceLogger;
 
@@ -34,92 +35,109 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
  */
 public class DefaultParameterStore implements ParameterStore
 {
-   private final Map<String, Parameter<?>> parameters = new LinkedHashMap<String, Parameter<?>>();
-   private static List<GlobalParameterProvider> providers;
-   private static final Logger log = Logger.getLogger(DefaultParameterStore.class);
+    private final Map<String, Parameter<?>> parameters = new LinkedHashMap<String, Parameter<?>>();
+    private static List<GlobalParameterProvider> providers;
+    private static final Logger log = Logger.getLogger(DefaultParameterStore.class);
 
-   @SuppressWarnings("unchecked")
-   public DefaultParameterStore()
-   {
-      if (providers == null)
-      {
-         providers = Iterators.asList(ServiceLoader.load(GlobalParameterProvider.class));
-         ServiceLogger.logLoadedServices(log, GlobalParameterProvider.class, providers);
-      }
+    @SuppressWarnings("unchecked")
+    public DefaultParameterStore()
+    {
+        if (providers == null)
+        {
+            providers = Iterators.asList(ServiceLoader.load(GlobalParameterProvider.class));
+            ServiceLogger.logLoadedServices(log, GlobalParameterProvider.class, providers);
+        }
 
-      for (GlobalParameterProvider provider : providers)
-      {
-         Set<Parameter<?>> params = provider.getParameters();
-         if (params != null)
-         {
-            for (Parameter<?> parameter : params)
-               store(parameter);
-         }
-      }
+        for (GlobalParameterProvider provider : providers)
+        {
+            Set<Parameter<?>> params = provider.getParameters();
+            if (params != null)
+            {
+                for (Parameter<?> parameter : params)
+                    store(parameter);
+            }
+        }
 
-   }
+    }
 
-   @Override
-   public Parameter<?> get(final String name, Parameter<?> deflt)
-   {
-      Parameter<?> parameter = null;
-      if (parameters.get(name) != null)
-      {
-         parameter = parameters.get(name);
-      }
-      else
-      {
-         parameter = deflt;
-         parameters.put(name, parameter);
-      }
+    @Override
+    public Parameter<?> get(final String name, Parameter<?> deflt)
+    {
+        Parameter<?> parameter = null;
+        if (parameters.get(name) != null)
+        {
+            parameter = parameters.get(name);
+        }
+        else
+        {
+            parameter = deflt;
+            parameters.put(name, parameter);
+        }
 
-      if (parameter == null)
-         throw new IllegalArgumentException("No such parameter [" + name + "] exists in parameter store.");
+        if (parameter == null)
+            throw new IllegalArgumentException("No such parameter [" + name + "] exists in parameter store.");
 
-      return parameter;
-   }
+        return parameter;
+    }
 
-   @Override
-   public Parameter<?> get(String name)
-   {
-      if (!parameters.containsKey(name))
-         throw new IllegalArgumentException("No such parameter [" + name + "] exists in parameter store.");
-      return parameters.get(name);
-   }
+    @Override
+    public Parameter<?> get(String name)
+    {
+        if (!parameters.containsKey(name))
+            throw new IllegalArgumentException("No such parameter [" + name + "] exists in parameter store.");
+        return parameters.get(name);
+    }
 
-   @Override
-   public boolean isEmpty()
-   {
-      return parameters.isEmpty();
-   }
+    @Override
+    public boolean isEmpty()
+    {
+        return parameters.isEmpty();
+    }
 
-   public Parameter<?> store(Parameter<?> value)
-   {
-      Assert.notNull(value, "Parameter to store must not be null.");
-      return parameters.put(value.getName(), value);
-   }
+    public Parameter<?> store(Parameter<?> value)
+    {
+        Assert.notNull(value, "Parameter to store must not be null.");
+        return parameters.put(value.getName(), value);
+    }
 
-   @Override
-   public int size()
-   {
-      return parameters.size() - 1;
-   }
+    @Override
+    public int size()
+    {
+        return parameters.size() - 1;
+    }
 
-   @Override
-   public Iterator<Entry<String, Parameter<?>>> iterator()
-   {
-      return parameters.entrySet().iterator();
-   }
+    @Override
+    public Iterator<Entry<String, Parameter<?>>> iterator()
+    {
+        return parameters.entrySet().iterator();
+    }
 
-   @Override
-   public boolean contains(String name)
-   {
-      return parameters.containsKey(name);
-   }
+    @Override
+    public boolean contains(String name)
+    {
+        return parameters.containsKey(name);
+    }
 
-   @Override
-   public String toString()
-   {
-      return parameters.keySet().toString();
-   }
+    @Override
+    public String toString()
+    {
+        return parameters.keySet().toString();
+    }
+
+    /**
+     * Retrieve the current {@link ParameterStore} from the given {@link EvaluationContext} instance.
+     * 
+     * @throws IllegalStateException If the {@link ParameterValueStore} could not be located.
+     */
+    public static ParameterStore getInstance(EvaluationContext context) throws IllegalStateException
+    {
+        ParameterStore store = (ParameterStore) context.get(ParameterStore.class);
+        if (store == null)
+        {
+            throw new IllegalStateException("Could not retrieve " + ParameterStore.class.getName() + " from "
+                        + EvaluationContext.class.getName() + ". Has the " + EvaluationContext.class.getSimpleName()
+                        + " been set up properly?");
+        }
+        return store;
+    }
 }

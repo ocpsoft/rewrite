@@ -64,13 +64,19 @@ public class HeaderTest
    @Test
    public void testHeaderExists()
    {
-      Assert.assertTrue(Header.exists("Accept-{head}").evaluate(rewrite, new MockEvaluationContext()));
+      Header header = Header.exists("Accept-{head}");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, header);
+      Assert.assertTrue(header.evaluate(rewrite, context));
    }
 
    @Test
    public void testHeaderExists2()
    {
-      Assert.assertTrue(Header.exists("Content-Length").evaluate(rewrite, new MockEvaluationContext()));
+      Header header = Header.exists("Content-Length");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, header);
+      Assert.assertTrue(header.evaluate(rewrite, context));
    }
 
    @Test
@@ -82,7 +88,10 @@ public class HeaderTest
    @Test
    public void testHeaderContains()
    {
-      Assert.assertTrue(Header.valueExists("UTF-{enc}").evaluate(rewrite, new MockEvaluationContext()));
+      Header header = Header.valueExists("UTF-{enc}");
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, header);
+      Assert.assertTrue(header.evaluate(rewrite, context));
    }
 
    @Test
@@ -90,14 +99,15 @@ public class HeaderTest
    {
       Header header = Header.matches("Accept-Charset", "{enc}");
 
-      ParameterStore parameters = new DefaultParameterStore();
-      ParameterUtils.initialize(parameters, header);
+      MockEvaluationContext context = new MockEvaluationContext();
+      ParameterUtils.initialize(context, header);
 
+      ParameterStore parameters = DefaultParameterStore.getInstance(context);
       Parameter<?> parameter = parameters.get("enc");
       if (parameter instanceof ConfigurableParameter<?>)
          ((ParameterConfiguration<?>) parameter).constrainedBy(new RegexConstraint("(ISO|UTF)-\\d+"));
 
-      Assert.assertTrue(header.evaluate(rewrite, new MockEvaluationContext()));
+      Assert.assertTrue(header.evaluate(rewrite, context));
    }
 
    @Test

@@ -125,7 +125,7 @@ public abstract class DefaultConditionBuilder implements ConditionBuilder
       };
    }
 
-   public static abstract class DefaultConditionBuilderInternal extends DefaultConditionBuilder implements
+   static abstract class DefaultConditionBuilderInternal extends DefaultConditionBuilder implements
             CompositeCondition
    {
       private List<Condition> conditions;

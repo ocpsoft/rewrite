@@ -152,7 +152,7 @@ public abstract class RequestParameter extends HttpCondition implements Paramete
       while (parameterNames.hasMoreElements())
       {
          String parameter = parameterNames.nextElement().toString();
-         if (name.matches(event, context, parameter) && matchesValue(event, context, request, parameter))
+         if (name.parse(parameter).submit(event, context) && matchesValue(event, context, request, parameter))
          {
             return true;
          }
@@ -165,7 +165,7 @@ public abstract class RequestParameter extends HttpCondition implements Paramete
    {
       for (String contents : Arrays.asList(request.getParameterValues(parameterName)))
       {
-         if (value.matches(event, context, contents))
+         if (value.parse(contents).submit(event, context))
          {
             return true;
          }
@@ -204,7 +204,7 @@ public abstract class RequestParameter extends HttpCondition implements Paramete
          while (parameterNames.hasMoreElements())
          {
             String name = parameterNames.nextElement().toString();
-            if (getNameExpression().matches(event, context, name))
+            if (getNameExpression().parse(name).submit(event, context))
             {
                if (matchesValues(event, context, request, name))
                {
@@ -220,7 +220,7 @@ public abstract class RequestParameter extends HttpCondition implements Paramete
       {
          for (String contents : Arrays.asList(request.getParameterValues(name)))
          {
-            if (!getValueExpression().matches(event, context, contents))
+            if (!getValueExpression().parse(contents).submit(event, context))
             {
                return false;
             }
