@@ -78,11 +78,13 @@ public class EvaluationContextImpl extends ContextBase implements EvaluationCont
    /**
     * Clears the state of this context so that it may be reused, saving instantiation cost during rule iteration.
     */
+   @Override
    public void clear()
    {
       this.postOperations.clear();
       this.postOperations.clear();
       state = null;
+      super.clear();
    }
 
    @Override

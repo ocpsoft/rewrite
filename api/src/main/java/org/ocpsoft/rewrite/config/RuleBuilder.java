@@ -293,6 +293,16 @@ public final class RuleBuilder implements ParameterizedRule, RelocatableRule, Co
    }
 
    @Override
+   public void clear()
+   {
+      if (wrapped instanceof Context)
+      {
+         ((Context) wrapped).clear();;
+      }
+      contextMap.clear();;
+   }
+
+   @Override
    public Object get(Object key)
    {
       if (wrapped instanceof Context)

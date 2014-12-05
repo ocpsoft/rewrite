@@ -23,6 +23,11 @@ package org.ocpsoft.rewrite.context;
 public interface Context
 {
    /**
+    * Clear the contents of this context and reset to a "like-new" state.
+    */
+   void clear();
+
+   /**
     * Get the value in the context map defined by the given key. Return <code>null</code> if no such key exists, or if
     * they key maps to a <code>null</code> value.
     */

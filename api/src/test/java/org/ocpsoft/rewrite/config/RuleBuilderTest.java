@@ -31,6 +31,10 @@ public class RuleBuilderTest
    private final EvaluationContext context = new EvaluationContext() {
 
       @Override
+      public void clear()
+      {}
+
+      @Override
       public void put(Object key, Object value)
       {}
 

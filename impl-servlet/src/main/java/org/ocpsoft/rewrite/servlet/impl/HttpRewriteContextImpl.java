@@ -116,4 +116,10 @@ public class HttpRewriteContextImpl implements HttpRewriteLifecycleContext
       return map.containsKey(key);
    }
 
+   @Override
+   public void clear()
+   {
+      map.clear();
+   }
+
 }

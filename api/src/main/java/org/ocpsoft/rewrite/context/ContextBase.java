@@ -30,6 +30,12 @@ public abstract class ContextBase implements Context
    private final Map<Object, Object> map = new LinkedHashMap<Object, Object>();
 
    @Override
+   public void clear()
+   {
+      map.clear();
+   }
+
+   @Override
    public Object get(final Object key)
    {
       return map.get(key);
