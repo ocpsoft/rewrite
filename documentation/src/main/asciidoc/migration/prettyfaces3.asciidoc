@@ -58,6 +58,11 @@ Now add the Rewrite servlet and the PrettyFaces compatibility module to your +po
 </dependency>
 <dependency>
    <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-integration-faces</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-config-prettyfaces</artifactId>
    <version>${rewrite.version}</version>
 </dependency>
