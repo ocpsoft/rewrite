@@ -36,7 +36,7 @@ import com.ocpsoft.pretty.faces.util.PrettyURLBuilder;
 public class LinkRenderer extends Renderer
 {
    public static final String RENDERER_TYPE = "javax.faces.Link";
-   private final PrettyURLBuilder urlBuilder = new PrettyURLBuilder();
+   protected final PrettyURLBuilder urlBuilder = new PrettyURLBuilder();
 
    @Override
    public void encodeBegin(final FacesContext context, final UIComponent component) throws IOException
@@ -73,8 +73,7 @@ public class LinkRenderer extends Renderer
          PrettyConfig prettyConfig = prettyContext.getConfig();
          UrlMapping urlMapping = prettyConfig.getMappingById(mappingId);
 
-         String href = context.getExternalContext().getRequestContextPath()
-               + urlBuilder.build(urlMapping, true, urlBuilder.extractParameters(component));
+         String href = buildUrl(context, component, urlMapping);
 
          if ((link.getAnchor() != null) && link.getAnchor().length() > 0)
          {
@@ -119,6 +118,11 @@ public class LinkRenderer extends Renderer
       writeAttr(writer, "title", link.getTitle());
       writeAttr(writer, "type", link.getType());
 
+   }
+
+   protected String buildUrl(FacesContext context, UIComponent component, UrlMapping urlMapping) {
+      return context.getExternalContext().getRequestContextPath()
+                 + urlBuilder.build(urlMapping, true, urlBuilder.extractParameters(component));
    }
 
    private void writeAttr(final ResponseWriter writer, final String name, final String value) throws IOException
