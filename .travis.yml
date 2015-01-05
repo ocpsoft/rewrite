@@ -1,18 +1,24 @@
 language: java
-jdk: openjdk6
-env: 
-  - CONTAINER=JBOSS_AS_MANAGED_7.X
-  - CONTAINER=GLASSFISH_MANAGED_3.1
-  - CONTAINER=TOMEE_MANAGED_1.5
-script: "MAVEN_OPTS=-Xmx1024m mvn -P ${CONTAINER} install"
+sudo: false
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+script:
+  - mvn -P ${CONTAINER} install
 matrix:
   include:
+    - env: CONTAINER=JBOSS_AS_MANAGED_7.X
+      jdk: openjdk6
     - env: CONTAINER=WILDFLY_MANAGED_8
-      jdk: oraclejdk7
-    - env: CONTAINER=GLASSFISH_MANAGED_4.0
       jdk: oraclejdk7
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk8
+    - env: CONTAINER=GLASSFISH_MANAGED_3.1
+      jdk: openjdk6
+    - env: CONTAINER=GLASSFISH_MANAGED_4.0
+      jdk: oraclejdk7
+    - env: CONTAINER=TOMEE_MANAGED_1.5
+      jdk: openjdk6
 notifications:
   email:
     - "ocpsoft-ci@googlegroups.com"
