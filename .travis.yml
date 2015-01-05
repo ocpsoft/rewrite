@@ -8,9 +8,7 @@ script:
 matrix:
   include:
     - env: CONTAINER=JBOSS_AS_MANAGED_7.X
-      jdk: openjdk6
-    - env: CONTAINER=WILDFLY_MANAGED_8
-      jdk: oraclejdk7
+      jdk: openjdk7
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk8
     - env: CONTAINER=GLASSFISH_MANAGED_3.1
