@@ -28,7 +28,8 @@ public class QueryParameterTest extends RewriteTestBase
                .addAsLibrary(RewriteAnnotationTest.getRewriteCdiArchive())
                .addClass(QueryParameterBean.class)
                .addAsWebResource(new StringAsset(
-                        "Log: [${queryParameterBean.value}]"),
+                        "Log: [${queryParameterBean.value}]\n"
+                        + "IsNull: [${queryParameterBean.value == null}]"),
                         "query.jsp");
    }
 
@@ -38,6 +39,7 @@ public class QueryParameterTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/query?q=foo");
       assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
+      assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [false]"));
    }
 
    @Test
@@ -46,6 +48,16 @@ public class QueryParameterTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/query?a=b&q=foo&c=d");
       assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
+      assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [false]"));
+   }
+
+   @Test
+   public void shouldSupportMissingQueryParameter() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/query");
+      assertEquals(200, action.getStatusCode());
+      assertThat(action.getResponseContent(), Matchers.containsString("Log: []"));
+      assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [true]"));
    }
 
 }

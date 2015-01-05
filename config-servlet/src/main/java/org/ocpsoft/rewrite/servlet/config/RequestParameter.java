@@ -91,6 +91,32 @@ public abstract class RequestParameter extends HttpCondition implements Paramete
    }
 
    /**
+    * Creates a {@link RequestParameter} condition that will capture the value of the the given request parameter if it
+    * exists so you can bind to it using <code>.where()</code>.
+    * 
+    * @param name The name of the request parameter
+    */
+   public static RequestParameter captureValue(final String name)
+   {
+      return new RequestParameter(name, "{" + name + "}") {
+
+         @Override
+         public String toString()
+         {
+            return "RequestParameter.captureValue(\"" + name + "\")";
+         }
+
+         @Override
+         public boolean evaluateHttp(HttpServletRewrite event, EvaluationContext context)
+         {
+            super.evaluateHttp(event, context);
+            return true;
+         }
+
+      };
+   }
+
+   /**
     * Create a {@link Condition} that matches against the existence of a request parameter with a name matching the
     * given pattern. The parameter value is ignored.
     * <p>

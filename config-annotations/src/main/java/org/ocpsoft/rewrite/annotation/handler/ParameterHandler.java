@@ -67,15 +67,8 @@ public class ParameterHandler extends FieldAnnotationHandler<org.ocpsoft.rewrite
          log.trace("Binding parameter [{}] to field [{}]", param, field);
       }
 
-      /*
-      * Add the query parameter condition to the condition tree that will capture a 
-      * corresponding query parameter. We must make sure that
-      * the condition is evaluated even if the existing part of the tree evaluates to true.
-      */
-      Condition requestParameter = RequestParameter.matches(param, "{" + param + "}");
-      ConditionBuilder composite = context.getRuleBuilder().getConditionBuilder().and(
-               Or.any(requestParameter, new True()));
-      context.getRuleBuilder().when(composite);
+      // bind the value if there is a parameter
+      context.getRuleBuilder().when(RequestParameter.captureValue(param));
 
       // builder for this parameter
       ConfigurableParameter<?> parameterBuilder = context.getRuleBuilder().where(param);
