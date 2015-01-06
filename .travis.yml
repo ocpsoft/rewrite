@@ -6,7 +6,7 @@ cache:
 script:
   - mvn -P ${CONTAINER} install
 after_success:
-  - "./.travis-deploy.sh"
+  - "bash ./.travis-deploy.sh"
 matrix:
   include:
     - env: CONTAINER=JBOSS_AS_MANAGED_7.X
