@@ -5,6 +5,8 @@ cache:
     - '$HOME/.m2/repository'
 script:
   - mvn -P ${CONTAINER} install
+after_success:
+  - "./.travis-deploy.sh"
 matrix:
   include:
     - env: CONTAINER=JBOSS_AS_MANAGED_7.X
@@ -22,4 +24,7 @@ notifications:
     - "ocpsoft-ci@googlegroups.com"
   irc:
     - "chat.freenode.net#ocpsoft"
-
+env:
+  global:
+    - secure: "h5H7qp6EPObrKGf8nFZiNOLP6ofJtB2W87I3eP5Uj5+ztQwfQTu+tILsU35JteCNLAaB3VNfEMt0q4BI7ShZR9GzwT8eNWHkMsh3bN3QIoFus7hYzDCoBtQEkflyoK6SKI3oWgpBNW3aQuyztbGk8ZAVmMflHLYEaKfJzF9hFkg="
+    - secure: "tTZ3fE3OHnS14Ko0QcD7MrTbOwo4tNu7OPJGA1kY312NO0WqEJeuib2Re8rBZt4YT3xIXvq1l5phqGcgfqkf/fs+bhjqvxfa+Z3TI0ei5SLdzGmadLIq6nXqk0fz7CpuIhEl/w86RbqiQqbuj79ARy2+dxhx2REG8vfcT1HvTbo="
