@@ -15,12 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import junit.framework.Assert;
-
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -33,27 +32,27 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 @RunWith(Arquillian.class)
 public class ParameterWildcardConfiguration2Test extends RewriteTest
 {
-   @Deployment(testable = false)
-   public static WebArchive getDeployment()
-   {
-      WebArchive deployment = RewriteTest
-               .getDeployment()
-               .addPackages(true, ConfigRoot.class.getPackage())
-               .addAsServiceProvider(ConfigurationProvider.class, ParameterWildcardConfiguration2Provider.class);
-      return deployment;
-   }
+    @Deployment(testable = false)
+    public static WebArchive getDeployment()
+    {
+        WebArchive deployment = RewriteTest
+                    .getDeployment()
+                    .addPackages(true, ConfigRoot.class.getPackage())
+                    .addAsServiceProvider(ConfigurationProvider.class, ParameterWildcardConfiguration2Provider.class);
+        return deployment;
+    }
 
-   @Test
-   public void testWildcardParameter() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/test.txt");
-      Assert.assertEquals(200, action.getStatusCode());
-   }
+    @Test
+    public void testWildcardParameter() throws Exception
+    {
+        HttpAction<HttpGet> action = get("/test.txt");
+        Assert.assertEquals(200, action.getStatusCode());
+    }
 
-   @Test
-   public void testWildcardParameterCrossesSlashBoundary() throws Exception
-   {
-      HttpAction<HttpGet> action = get("/test/next/path.txt");
-      Assert.assertEquals(200, action.getStatusCode());
-   }
+    @Test
+    public void testWildcardParameterCrossesSlashBoundary() throws Exception
+    {
+        HttpAction<HttpGet> action = get("/test/next/path.txt");
+        Assert.assertEquals(200, action.getStatusCode());
+    }
 }

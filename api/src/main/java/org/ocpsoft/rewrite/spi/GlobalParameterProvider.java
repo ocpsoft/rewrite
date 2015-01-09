@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.rewrite.config.Configuration;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.param.Parameter;
 
 /**
@@ -32,4 +34,16 @@ public interface GlobalParameterProvider extends Weighted
     * Return the {@link Set} of {@link Parameter} types to be added to the global {@link Configuration}.
     */
    public Set<Parameter<?>> getParameters();
+
+   /**
+    * Validate the given {@link Parameter}. Only {@link Parameter} instances that were provided by this object should be
+    * passed to this method.
+    */
+   public boolean isValid(Rewrite event, EvaluationContext context, Parameter<?> param, String value);
+
+   /**
+    * Return <code>true</code> if the given {@link Parameter} supports value submission. Only {@link Parameter}
+    * instances that were provided by this object should be passed to this method.
+    */
+   public boolean supportsSubmission(Rewrite event, EvaluationContext context, Parameter<?> param);
 }

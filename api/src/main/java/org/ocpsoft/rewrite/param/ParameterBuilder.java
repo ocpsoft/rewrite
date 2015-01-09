@@ -144,7 +144,8 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    @Override
    public String toString()
    {
-      return "ParameterBuilder [" + name + " -> transpositions=" + transpositions + ", constraints=" + constraints
+      return "ParameterBuilder [name=\"" + name + "\" -> transpositions=" + transpositions + ", constraints="
+               + constraints
                + ", bindings=" + getBindings() + ", converter=" + converter + ", validator=" + validator + "]";
    }
 

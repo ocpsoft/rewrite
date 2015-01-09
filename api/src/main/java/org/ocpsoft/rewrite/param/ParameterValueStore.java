@@ -27,14 +27,21 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public interface ParameterValueStore
 {
-    /**
-     * Submit the given {@link Parameter} and value. Return false if the value does not match configured
-     * {@link Constraint} instances, or does not match an already submitted value.
-     */
-    boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value);
+   /**
+    * Submit the given {@link Parameter} and value. Return <code>false</code> if the value does not match configured
+    * {@link Constraint} instances, or does not match an already submitted value; otherwise, return <code>true</code>..
+    */
+   boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value);
 
-    /**
-     * Retrieve the value for the given {@link Parameter}. (May be <code>null</code>.)
-     */
-    String retrieve(Parameter<?> parameter);
+   /**
+    * Validate the given {@link Parameter} and value. Return <code>false</code> if the value does not match configured
+    * {@link Constraint} instances, or does not match an already submitted value; otherwise, return <code>true</code>.
+    */
+   boolean isValid(Rewrite event, EvaluationContext context, Parameter<?> param, String value);
+
+   /**
+    * Retrieve the currenet value for the given {@link Parameter}. (May be <code>null</code> if no value has been set,
+    * or if the value is <code>null</code>.)
+    */
+   String retrieve(Parameter<?> parameter);
 }

@@ -21,9 +21,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.ocpsoft.common.services.ServiceLoader;
+import org.ocpsoft.common.util.Assert;
+import org.ocpsoft.common.util.Iterators;
+import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+import org.ocpsoft.rewrite.spi.GlobalParameterProvider;
+import org.ocpsoft.rewrite.util.ServiceLogger;
 
 /**
  * Default implementation of {@link ParameterValueStore}
@@ -32,133 +39,198 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public class DefaultParameterValueStore implements ParameterValueStore, Iterable<Entry<Parameter<?>, List<String>>>
 {
-    Map<Parameter<?>, List<String>> map = new LinkedHashMap<Parameter<?>, List<String>>();
+   Map<Parameter<?>, List<String>> map = new LinkedHashMap<Parameter<?>, List<String>>();
+   private static List<GlobalParameterProvider> providers;
+   private static final Logger log = Logger.getLogger(DefaultParameterValueStore.class);
 
-    /**
-     * Create a new, empty {@link DefaultParameterValueStore} instance.
-     */
-    public DefaultParameterValueStore()
-    {
-    }
+   /**
+    * Create a new, empty {@link DefaultParameterValueStore} instance.
+    */
+   @SuppressWarnings("unchecked")
+   public DefaultParameterValueStore()
+   {
+      if (providers == null)
+      {
+         providers = Iterators.asList(ServiceLoader.load(GlobalParameterProvider.class));
+         ServiceLogger.logLoadedServices(log, GlobalParameterProvider.class, providers);
+      }
+   }
 
-    /**
-     * Create a new {@link DefaultParameterValueStore} instance, copying all {@link Parameter} and value pairs from the
-     * given instance.
-     */
-    public DefaultParameterValueStore(DefaultParameterValueStore instance)
-    {
-        for (Entry<Parameter<?>, List<String>> entry : instance)
-        {
-            List<String> values = new ArrayList<String>();
-            values.addAll(entry.getValue());
-            map.put(entry.getKey(), values);
-        }
-    }
+   /**
+    * Create a new {@link DefaultParameterValueStore} instance, copying all {@link Parameter} and value pairs from the
+    * given instance.
+    */
+   public DefaultParameterValueStore(DefaultParameterValueStore instance)
+   {
+      for (Entry<Parameter<?>, List<String>> entry : instance)
+      {
+         List<String> values = new ArrayList<String>();
+         values.addAll(entry.getValue());
+         map.put(entry.getKey(), values);
+      }
+   }
 
-    @Override
-    public String retrieve(Parameter<?> parameter)
-    {
-        List<String> strings = map.get(parameter);
-        if (strings == null || strings.size() == 0)
-            return null;
-        if (strings.size() > 1)
-            throw new IllegalStateException("Parameter [" + parameter.getName()
-                        + "] is not a singleton: more than one value exists.");
-        return strings.get(0);
-    }
+   @Override
+   public String retrieve(Parameter<?> parameter)
+   {
+      List<String> strings = map.get(parameter);
+      if (strings == null || strings.size() == 0)
+         return null;
+      if (strings.size() > 1)
+         throw new IllegalStateException("Parameter [" + parameter.getName()
+                  + "] is not a singleton: more than one value exists.");
+      return strings.get(0);
+   }
 
-    @Override
-    public boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
-    {
-        boolean result = false;
-        List<String> strings = map.get(param);
+   @Override
+   public boolean submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
+   {
+      Assert.notNull(event, "Rewrite event must not be null.");
+      Assert.notNull(context, "EvaluationContext must not be null.");
+      Assert.notNull(param, "Parameter must not be null.");
 
-        String stored = null;
-        if (strings != null)
-        {
-            if (strings.size() > 0)
-                stored = strings.get(0);
+      boolean result = false;
+      boolean supportsSubmission = supportsSubmission(event, context, param, value);
+      if (!supportsSubmission)
+      {
+         result = true;
+      }
+      else if (supportsSubmission && isValid(event, context, param, value))
+      {
+         // FIXME Transposition processing will break multi-conditional matching
+         for (Transposition<String> transposition : param.getTranspositions())
+         {
+            value = transposition.transpose(event, context, value);
+         }
 
-            if (strings.size() > 1)
-                throw new IllegalStateException("Parameter [" + param.getName()
-                            + "] is not a singleton: more than one value exists.");
-        }
+         List<String> values = map.get(param);
+         if (values == null)
+         {
+            values = new ArrayList<String>();
+            map.put(param, values);
+         }
 
-        if ("*".equals(param.getName()))
-        {
-            result = true;
-        }
-        else if (stored == value || (stored != null && stored.equals(value)))
-        {
-            result = true;
-        }
-        else if (stored == null)
-        {
-            result = _submit(event, context, param, value);
-        }
+         values.add(value);
+         result = true;
+      }
 
-        return result;
-    }
+      return result;
+   }
 
-    private boolean _submit(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
-    {
-        boolean result = true;
-        for (Constraint<String> constraint : param.getConstraints())
-        {
+   private boolean supportsSubmission(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
+   {
+      boolean result = true;
+      for (GlobalParameterProvider provider : providers)
+      {
+         Set<Parameter<?>> params = provider.getParameters();
+         if (params != null)
+         {
+            for (Parameter<?> parameter : params)
+            {
+               if (parameter != null && parameter.getName() != null && parameter.getName().equals(param.getName()))
+               {
+                  result = provider.supportsSubmission(event, context, parameter);
+                  break;
+               }
+            }
+         }
+      }
+
+      return result;
+   }
+
+   @Override
+   public boolean isValid(Rewrite event, EvaluationContext context, Parameter<?> param, String value)
+   {
+      Assert.notNull(event, "Rewrite event must not be null.");
+      Assert.notNull(context, "EvaluationContext must not be null.");
+      Assert.notNull(param, "Parameter must not be null.");
+
+      List<String> strings = map.get(param);
+
+      String stored = null;
+      if (strings != null)
+      {
+         if (strings.size() > 0)
+            stored = strings.get(0);
+
+         if (strings.size() > 1)
+            throw new IllegalStateException("Parameter [" + param.getName()
+                     + "] is not a singleton: more than one value exists.");
+      }
+
+      boolean result = false;
+      if (_doParameterProviderValidation(event, context, param, value))
+      {
+         result = true;
+      }
+      else if (stored == value || (stored != null && stored.equals(value)))
+      {
+         result = true;
+      }
+      else if (stored == null)
+      {
+         result = true;
+         for (Constraint<String> constraint : param.getConstraints())
+         {
             if (!constraint.isSatisfiedBy(event, context, value))
             {
-                result = false;
+               result = false;
             }
-        }
+         }
+      }
 
-        // FIXME Transposition processing will break multi-conditional matching
-        if (result)
-        {
-            for (Transposition<String> transposition : param.getTranspositions())
+      return result;
+   }
+
+   private boolean _doParameterProviderValidation(Rewrite event, EvaluationContext context, Parameter<?> param,
+            String value)
+   {
+      boolean result = false;
+      for (GlobalParameterProvider provider : providers)
+      {
+         Set<Parameter<?>> params = provider.getParameters();
+         if (params != null)
+         {
+            for (Parameter<?> parameter : params)
             {
-                value = transposition.transpose(event, context, value);
+               if (parameter != null && parameter.getName() != null && parameter.getName().equals(param.getName()))
+               {
+                  result = provider.isValid(event, context, param, value);
+                  break;
+               }
             }
+         }
+      }
+      return result;
+   }
 
-            List<String> values = map.get(param);
-            if (values == null)
-            {
-                values = new ArrayList<String>();
-                map.put(param, values);
-            }
+   @Override
+   public Iterator<Entry<Parameter<?>, List<String>>> iterator()
+   {
+      return map.entrySet().iterator();
+   }
 
-            values.add(value);
+   @Override
+   public String toString()
+   {
+      return map.keySet().toString();
+   }
 
-            result = true;
-        }
-        return result;
-    }
-
-    @Override
-    public Iterator<Entry<Parameter<?>, List<String>>> iterator()
-    {
-        return map.entrySet().iterator();
-    }
-
-    @Override
-    public String toString()
-    {
-        return map.keySet().toString();
-    }
-
-    /**
-     * Retrieve the current {@link ParameterValueStore} from the given {@link EvaluationContext} instance.
-     * 
-     * @throws IllegalStateException If the {@link ParameterValueStore} could not be located.
-     */
-    public static ParameterValueStore getInstance(EvaluationContext context) throws IllegalStateException
-    {
-        ParameterValueStore valueStore = (ParameterValueStore) context.get(ParameterValueStore.class);
-        if (valueStore == null)
-        {
-            throw new IllegalStateException("Could not retrieve " + ParameterValueStore.class.getName() + " from "
-                        + EvaluationContext.class.getName() + ". Has the " + EvaluationContext.class.getSimpleName()
-                        + " been set up properly?");
-        }
-        return valueStore;
-    }
+   /**
+    * Retrieve the current {@link ParameterValueStore} from the given {@link EvaluationContext} instance.
+    * 
+    * @throws IllegalStateException If the {@link ParameterValueStore} could not be located.
+    */
+   public static ParameterValueStore getInstance(EvaluationContext context) throws IllegalStateException
+   {
+      ParameterValueStore valueStore = (ParameterValueStore) context.get(ParameterValueStore.class);
+      if (valueStore == null)
+      {
+         throw new IllegalStateException("Could not retrieve " + ParameterValueStore.class.getName() + " from "
+                  + EvaluationContext.class.getName() + ". Has the " + EvaluationContext.class.getSimpleName()
+                  + " been set up properly?");
+      }
+      return valueStore;
+   }
 }
