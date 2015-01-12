@@ -249,7 +249,8 @@ public class ParameterizedPatternTest
       Assert.assertEquals("customer", parameters.get("customer").getName());
 
       Assert.assertFalse(path.parse("/lincolnX").matches());
-      Assert.assertFalse(path.parse("/lincoln/").matches());
+      Assert.assertFalse(path.parse("/lincolnX").isValid(event, context));
+      Assert.assertFalse(path.parse("/lincoln/").submit(event, context));
       Assert.assertTrue(path.parse("/lincoln.").matches());
    }
 
@@ -268,6 +269,7 @@ public class ParameterizedPatternTest
 
       ParameterizedPatternResult result = path.parse("/lincoln/orders/24/");
       Assert.assertTrue(result.matches());
+      Assert.assertTrue(result.isValid(event, context));
       Assert.assertTrue(result.submit(event, context));
       Map<Parameter<?>, String> results = result.getParameters(context);
       Assert.assertEquals("lincoln", results.get(parameters.get("customer")));
