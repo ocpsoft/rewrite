@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.param;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,9 +36,9 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class DefaultParameterValueStore implements ParameterValueStore, Iterable<Entry<Parameter<?>, List<String>>>
+public class DefaultParameterValueStore implements ParameterValueStore, Iterable<Entry<Parameter<?>, String>>
 {
-   Map<Parameter<?>, List<String>> map = new LinkedHashMap<Parameter<?>, List<String>>();
+   Map<Parameter<?>, String> map = new LinkedHashMap<Parameter<?>, String>();
    private static List<GlobalParameterProvider> providers;
    private static final Logger log = Logger.getLogger(DefaultParameterValueStore.class);
 
@@ -62,24 +61,17 @@ public class DefaultParameterValueStore implements ParameterValueStore, Iterable
     */
    public DefaultParameterValueStore(DefaultParameterValueStore instance)
    {
-      for (Entry<Parameter<?>, List<String>> entry : instance)
+      for (Entry<Parameter<?>, String> entry : instance)
       {
-         List<String> values = new ArrayList<String>();
-         values.addAll(entry.getValue());
-         map.put(entry.getKey(), values);
+         map.put(entry.getKey(), entry.getValue());
       }
    }
 
    @Override
    public String retrieve(Parameter<?> parameter)
    {
-      List<String> strings = map.get(parameter);
-      if (strings == null || strings.size() == 0)
-         return null;
-      if (strings.size() > 1)
-         throw new IllegalStateException("Parameter [" + parameter.getName()
-                  + "] is not a singleton: more than one value exists.");
-      return strings.get(0);
+      String value = map.get(parameter);
+      return value;
    }
 
    @Override
@@ -102,15 +94,7 @@ public class DefaultParameterValueStore implements ParameterValueStore, Iterable
          {
             value = transposition.transpose(event, context, value);
          }
-
-         List<String> values = map.get(param);
-         if (values == null)
-         {
-            values = new ArrayList<String>();
-            map.put(param, values);
-         }
-
-         values.add(value);
+         map.put(param, value);
          result = true;
       }
 
@@ -146,19 +130,7 @@ public class DefaultParameterValueStore implements ParameterValueStore, Iterable
       Assert.notNull(context, "EvaluationContext must not be null.");
       Assert.notNull(param, "Parameter must not be null.");
 
-      List<String> strings = map.get(param);
-
-      String stored = null;
-      if (strings != null)
-      {
-         if (strings.size() > 0)
-            stored = strings.get(0);
-
-         if (strings.size() > 1)
-            throw new IllegalStateException("Parameter [" + param.getName()
-                     + "] is not a singleton: more than one value exists.");
-      }
-
+      String stored = map.get(param);
       boolean result = false;
       if (_doParameterProviderValidation(event, context, param, value))
       {
@@ -206,7 +178,7 @@ public class DefaultParameterValueStore implements ParameterValueStore, Iterable
    }
 
    @Override
-   public Iterator<Entry<Parameter<?>, List<String>>> iterator()
+   public Iterator<Entry<Parameter<?>, String>> iterator()
    {
       return map.entrySet().iterator();
    }
