@@ -1,9 +1,11 @@
 package org.ocpsoft.urlbuilder.util;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 public class Decoder
 {
+
+   private static final Charset UTF8 = Charset.forName("UTF8");
 
    public static String path(final CharSequence path)
    {
@@ -58,7 +60,7 @@ public class Decoder
 
             // decode the byte sequence with UTF8 if no invalid byte was found
             if (!invalid) {
-               decoded.append(new String(bytes, 0, i, StandardCharsets.UTF_8));
+               decoded.append(new String(bytes, 0, i, UTF8));
             }
 
             // We represent invalid percent encoded values the same way UTF8 does it
