@@ -1,34 +1,84 @@
 package org.ocpsoft.urlbuilder.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 public class Decoder
 {
+
    public static String path(final CharSequence path)
    {
-      try
-      {
-         final URI uri = new URI("http://0.0.0.0/" + path);
-         return uri.getPath().substring(1);
-      }
-      catch (URISyntaxException e)
-      {
-         throw new IllegalArgumentException(e);
-      }
+      return decode(path, false);
    }
 
    public static String query(final CharSequence query)
    {
-      try
-      {
-         return URLDecoder.decode(query.toString(), "UTF-8");
-      }
-      catch (UnsupportedEncodingException e)
-      {
-         throw new IllegalArgumentException(e);
-      }
+      return decode(query, true);
    }
+
+   public static String decode(final CharSequence path, final boolean query)
+   {
+
+      StringBuilder decoded = new StringBuilder();
+      int length = path.length();
+      int pos = 0;
+
+      while (pos < length) {
+
+         // '+' -> ' ' for query strings
+         if (query && path.charAt(pos) == '+') {
+            decoded.append(' ');
+            pos++;
+         }
+
+         // percent-encoded values
+         if (path.charAt(pos) == '%') {
+
+            // a single Unicode char may be represented by multiple percent encoded bytes
+            byte[] bytes = new byte[length / 3];
+            int i = 0;
+            boolean invalid = false;
+
+            while (pos < length && path.charAt(pos) == '%') {
+
+               // make sure we can read the two hex characters
+               if (pos + 2 < length) {
+                  try {
+                     String hex = path.subSequence(pos + 1, pos + 3).toString();
+                     int b = Integer.parseInt(hex, 16);
+                     bytes[i++] = (byte) b;
+                  }
+                  catch (NumberFormatException e) {
+                     // not a valid hex value
+                     invalid = true;
+                  }
+               }
+               pos += 3;
+
+            }
+
+            // decode the byte sequence with UTF8 if no invalid byte was found
+            if (!invalid) {
+               decoded.append(new String(bytes, 0, i, StandardCharsets.UTF_8));
+            }
+
+            // We represent invalid percent encoded values the same way UTF8 does it
+            // http://unicode-table.com/de/search/?q=%EF%BF%BD
+            else {
+               decoded.append('\uFFFD');
+            }
+
+         }
+
+         // not escaped
+         else {
+            decoded.append(path.charAt(pos));
+            pos++;
+         }
+
+      }
+
+      return decoded.toString();
+
+   }
+
 }
