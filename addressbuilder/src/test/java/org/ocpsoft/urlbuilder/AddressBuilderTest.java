@@ -3,6 +3,7 @@ package org.ocpsoft.urlbuilder;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AddressBuilderTest
@@ -281,6 +282,14 @@ public class AddressBuilderTest
    public void testEmptyAnchorOnly()
    {
       assertEquals("#", AddressBuilder.create("#").toString());
+   }
+
+   @Test
+   @Ignore // see: https://github.com/ocpsoft/rewrite/issues/195
+   public void shouldCreateAddressFromUrlWithCurlyBrace()
+   {
+      Address address = AddressBuilder.create("http://localhost/somepath/%7Bsomething%7D");
+      assertEquals("/somepath/{something}", address.getPath());
    }
 
 }
