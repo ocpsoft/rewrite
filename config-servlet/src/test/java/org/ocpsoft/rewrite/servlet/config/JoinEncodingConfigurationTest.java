@@ -33,6 +33,7 @@ import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.common.util.Streams;
@@ -81,6 +82,30 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       String responseContent = action.getResponseContent();
       assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
       assertThat(responseContent, containsString("getParameter('param') = foo bar"));
+   }
+
+   @Test
+   @Ignore // see: https://github.com/ocpsoft/rewrite/issues/195
+   public void testJoinSupportsSingleCurlyBrace() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding/foo%7Bbar");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      String responseContent = action.getResponseContent();
+      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
+      assertThat(responseContent, containsString("getParameter('param') = foo{bar"));
+   }
+
+   @Test
+   @Ignore // see: https://github.com/ocpsoft/rewrite/issues/195
+   public void testJoinSupportsCurlyBraceGroup() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding/foo%7Bbar%7D");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      String responseContent = action.getResponseContent();
+      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
+      assertThat(responseContent, containsString("getParameter('param') = foo{bar}"));
    }
 
    /**
