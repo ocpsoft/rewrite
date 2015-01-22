@@ -1,3 +1,57 @@
+link:../[&larr; Docs Index] link:./[ &larr; Integration] 
+
 == Rewrite CDI Integration
 
-Docs coming soon.
+
+Rewrite offers an extension that enables CDI support in your service implementations, such as ConfigurationProvider instances, listeners, and more. This is useful when you need to inject beans, or create CDI @Produces methods for information gathered in a ConfigurationProvider.
+
+== Get Started
+
+1. Include the CDI integration extension in your application's POM file along with Rewrite itself:
++
+[source,xml]
+----
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-servlet</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-integration-cdi</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+----
+
+2. Use CDI in your configuration providers or listeners:
++
+[source,java]
+----
+package com.example;
+
+public class ExampleConfigurationProvider extends HttpConfigurationProvider
+{
+	@Inject
+	private ExampleBean bean;
+
+	@Override
+	public int priority()
+	{
+	    return 10;
+	}
+	
+	@Override
+	public Configuration getConfiguration(final ServletContext context)
+	{
+		return ConfigurationBuilder.begin()
+		.addRule()
+		.when(new HttpCondition()
+		{
+			public boolean evaluate(HttpServletRewrite event, EvaluationContext context) {
+			   // bean.doSomething();
+			}
+		}) 
+		.perform(Log.message("I did something with a CDI bean!"));
+	}
+}
+----

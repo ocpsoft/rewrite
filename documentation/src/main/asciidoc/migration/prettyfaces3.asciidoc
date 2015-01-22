@@ -1,3 +1,5 @@
+link:../[&larr; Docs Index] link:./[ &larr; Migration]
+
 = PrettyFaces 3.x Migration Guide
 Christian Kaltepoth
 :description: This guide described the process of migrating existing PrettyFaces applications to Rewrite

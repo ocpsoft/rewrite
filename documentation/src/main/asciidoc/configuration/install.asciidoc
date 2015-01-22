@@ -1,3 +1,5 @@
+link:../[&larr; Docs Index] link:./[ &larr; Configuration]
+
 == Install Rewrite
 
 Installation requirements:

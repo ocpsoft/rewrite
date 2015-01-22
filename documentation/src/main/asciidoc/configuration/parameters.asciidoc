@@ -1,3 +1,5 @@
+link:../[&larr; Docs Index] link:./[ &larr; Configuration]
+
 == Parameterize Rules
 
 Rule parameters allow for value extraction, modification, validation, and conversion before use in the application. Parameterization is a core feature of Rewrite, adding flexibility and power to the configuration API. Values from HTTP headers, URLs, GET and POST values, and more may all be parameterized as needed.

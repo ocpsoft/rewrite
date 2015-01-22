@@ -1,3 +1,5 @@
+link:../../[&larr; Docs Index] link:../[&larr; Configuration]
+
 == PrettyFaces Integration for Rewrite
 
 Learn how to use PrettyFaces with the Rewrite Servlet Framework. Either migrate your

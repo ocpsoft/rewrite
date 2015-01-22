@@ -1,4 +1,6 @@
-== Rewrite Configuration Manual
+link:../[&larr; Docs Index]
+
+== Rewrite Configuration Overview
 
 There are many types of configuration objects in link:../[Rewrite], so we will take a few moments to define a few of the core terms before continuing to more advanced topics. Most of the core objects can be found in the +org.ocpsoft.rewrite.config+ package, while Servlet specific objects can be found in the +org.ocpsoft.rewrite.servlet.config+ package.
 

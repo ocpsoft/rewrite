@@ -1,3 +1,5 @@
+link:../[&larr; Rewrite Home]
+
 == Learn Rewrite
 
 The following steps will guide you from knowing nothing about URL-rewriting with Rewrite, 

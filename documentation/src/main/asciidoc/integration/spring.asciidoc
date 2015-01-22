@@ -1,3 +1,58 @@
+link:../[&larr; Docs Index] link:./[ &larr; Integration] 
+
 == Rewrite Spring Integration
 
-Docs coming soon.
+
+Rewrite offers an extension that enables Spring support in your service implementations, such as ConfigurationProvider instances, listeners, and more. This is useful when you need to autowire beans, or import Spring configurations from external files.
+
+== Get Started
+
+1. Include the Spring integration extension in your application's POM file along with Rewrite itself:
++
+[source,xml]
+----
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-servlet</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+<dependency>
+   <groupId>org.ocpsoft.rewrite</groupId>
+   <artifactId>rewrite-integration-spring</artifactId>
+   <version>${rewrite.version}</version>
+</dependency>
+----
+
+2. Use Spring in your configuration providers or listeners:
++
+[source,java]
+----
+package com.example;
+
+@Component
+public class ExampleConfigurationProvider extends HttpConfigurationProvider
+{
+	@Autowired
+	private ExampleBean bean;
+
+	@Override
+	public int priority()
+	{
+	    return 10;
+	}
+	
+	@Override
+	public Configuration getConfiguration(final ServletContext context)
+	{
+		return ConfigurationBuilder.begin()
+		.addRule()
+		.when(new HttpCondition()
+		{
+			public boolean evaluate(HttpServletRewrite event, EvaluationContext context) {
+			   // bean.doSomething();
+			}
+		}) 
+		.perform(Log.message("I did something with a CDI bean!"));
+	}
+}
+----

@@ -1,3 +1,5 @@
+link:../[&larr; Rewrite Home]
+
 == Learn Rewrite
 
 The following steps will guide you from knowing nothing about URL-rewriting with Rewrite, to configuring Rewrite in your application - in only a few minutes! If you already have some knowledge of the framework, just skip the steps you don't need.

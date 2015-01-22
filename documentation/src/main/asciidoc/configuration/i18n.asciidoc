@@ -1,3 +1,5 @@
+link:../[&larr; Docs Index] link:./[ &larr; Configuration]
+
 == Internationalize your URLs
 
 One of the frequently use patterns when building multi-national or multi-lingual websites is the ability to utilize Internationalization and Localization information gathered from the URL; to serve dynamic content based on the selected Locale, and even to customize URLs for each language or locality.

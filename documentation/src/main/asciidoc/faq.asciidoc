@@ -1,3 +1,5 @@
+link:./[&larr; Docs Index]
+
 == FAQ
 
 === Which Servlet versions does Rewrite support?

@@ -1,3 +1,6 @@
+link:../[&larr; Docs Index]
+
 == Integrations and Extensions
 
-Coming soon.
+* link:cdi[CDI Integration] 
+* link:spring[Spring Integration] 
