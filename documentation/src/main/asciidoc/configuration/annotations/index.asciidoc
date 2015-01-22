@@ -1,11 +1,6 @@
 link:../../[&larr; Docs Index] link:../[&larr; Configuration]
 
-:toc:
-:toclevels: 4
-
 == Rewrite Annotations
-
-toc::[]
 
 The Rewrite annotation support offers an alternative way to configure Rewrite. Compared to configuring
 Rewrite using a +ConfigurationProvider+, the annotations allow to place the configuration very close
