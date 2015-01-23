@@ -103,7 +103,7 @@ public class DefaultParameterStore implements ParameterStore
     @Override
     public int size()
     {
-        return parameters.size() - 1;
+        return parameters.size();
     }
 
     @Override

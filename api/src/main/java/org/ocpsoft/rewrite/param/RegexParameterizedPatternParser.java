@@ -40,6 +40,8 @@ import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
  */
 public class RegexParameterizedPatternParser implements ParameterizedPatternParser
 {
+   private static final char[] REGEX_ESCAPE_END = new char[] { '\\', 'E' };
+   private static final char[] REGEX_ESCAPE_BEGIN = new char[] { '\\', 'Q' };
    private static final String DEFAULT_PARAMETER_PATTERN = ".*";
    private Pattern compiledPattern;
    private final String pattern;
@@ -91,7 +93,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
 
       this.defaultParameterPattern = defaultParameterPattern;
       this.pattern = pattern;
-      chars = pattern.toCharArray();
+      this.chars = pattern.toCharArray();
 
       if (chars.length > 0)
       {
@@ -99,19 +101,32 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
          int cursor = 0;
          while (cursor < chars.length)
          {
-            switch (chars[cursor])
+            char c = chars[cursor];
+            if (c == '{')
             {
-            case '{':
                int startPos = cursor;
                CapturingGroup group = ParseTools.balancedCapture(chars, startPos, chars.length - 1, type);
                cursor = group.getEnd();
 
                groups.add(new RegexGroup(group, parameterIndex++));
-
-               break;
-
-            default:
-               break;
+            }
+            else if (c == '\\' && !ParseTools.isEscaped(chars, cursor))
+            {
+               if (chars.length - 1 > cursor)
+               {
+                  if (chars[cursor + 1] != type.getBegin()
+                           && chars[cursor + 1] != type.getEnd()
+                           && chars[cursor + 1] != '\\')
+                  {
+                     throw new ParameterizedPatternSyntaxException("Illegal escape sequence at index " + cursor,
+                              new String(chars), cursor);
+                  }
+               }
+               else if (chars.length - 1 == cursor)
+               {
+                  throw new ParameterizedPatternSyntaxException("Illegal partial escape sequence at index " + cursor,
+                           new String(chars), cursor);
+               }
             }
 
             cursor++;
@@ -138,15 +153,17 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
 
             if ((last != null) && (last.getEnd() < capture.getStart() - 1))
             {
-               patternBuilder.append(new char[] { '\\', 'Q' });
-               patternBuilder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, capture.getStart()));
-               patternBuilder.append(new char[] { '\\', 'E' });
+               patternBuilder.append(REGEX_ESCAPE_BEGIN);
+               String literal = String.valueOf(Arrays.copyOfRange(chars, last.getEnd() + 1, capture.getStart()));
+               patternBuilder.append(unescapeBackslashes(literal));
+               patternBuilder.append(REGEX_ESCAPE_END);
             }
             else if ((last == null) && (capture.getStart() > 0))
             {
-               patternBuilder.append(new char[] { '\\', 'Q' });
-               patternBuilder.append(Arrays.copyOfRange(chars, 0, capture.getStart()));
-               patternBuilder.append(new char[] { '\\', 'E' });
+               patternBuilder.append(REGEX_ESCAPE_BEGIN);
+               String literal = String.valueOf(Arrays.copyOfRange(chars, 0, capture.getStart()));
+               patternBuilder.append(unescapeBackslashes(literal));
+               patternBuilder.append(REGEX_ESCAPE_END);
             }
 
             patternBuilder.append('(');
@@ -185,20 +202,26 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
 
          if ((last != null) && (last.getEnd() < chars.length))
          {
-            patternBuilder.append(new char[] { '\\', 'Q' });
-            patternBuilder.append(Arrays.copyOfRange(chars, last.getEnd() + 1, chars.length));
-            patternBuilder.append(new char[] { '\\', 'E' });
+            patternBuilder.append(REGEX_ESCAPE_BEGIN);
+            String literal = String.valueOf(Arrays.copyOfRange(chars, last.getEnd() + 1, chars.length));
+            patternBuilder.append(unescapeBackslashes(literal));
+            patternBuilder.append(REGEX_ESCAPE_END);
          }
          else if (last == null)
          {
-            patternBuilder.append(new char[] { '\\', 'Q' });
-            patternBuilder.append(chars);
-            patternBuilder.append(new char[] { '\\', 'E' });
+            patternBuilder.append(REGEX_ESCAPE_BEGIN);
+            patternBuilder.append(unescapeBackslashes(String.valueOf(chars)));
+            patternBuilder.append(REGEX_ESCAPE_END);
          }
 
          compiledPattern = Pattern.compile(patternBuilder.toString());
       }
       return compiledPattern;
+   }
+
+   private String unescapeBackslashes(String literal)
+   {
+      return literal.replace("\\\\", "\\");
    }
 
    @Override

@@ -43,7 +43,7 @@ public class Filesystem implements Condition, Parameterized
    {
       Assert.notNull(resource, "File path to inspect must not be null.");
       Assert.notNull(filter, "FileFilter must not be null.");
-      this.resource = new RegexParameterizedPatternParser(resource.getAbsolutePath());
+      this.resource = new RegexParameterizedPatternParser(getCanonicalPath(resource));
       this.filter = filter;
    }
 
@@ -133,6 +133,12 @@ public class Filesystem implements Condition, Parameterized
             return "Filesystem.directoryExists(" + resource.getAbsolutePath() + ")";
          }
       });
+   }
+
+   private String getCanonicalPath(final File resource)
+   {
+      String path = resource.getPath().replace(System.getProperty("file.separator"), "/");
+      return new File(path).getAbsolutePath().replace(System.getProperty("file.separator"), "/");
    }
 
    /**

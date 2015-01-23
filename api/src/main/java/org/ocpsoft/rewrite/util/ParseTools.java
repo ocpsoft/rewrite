@@ -44,13 +44,10 @@ public abstract class ParseTools
       Assert.assertTrue(chars[startPos] == type.getBegin(), "Character at starting position was [" + chars[startPos]
                + "] but expected [" + type.getBegin() + "]");
 
-      if ((startPos > 0) && (chars[startPos - 1] == ESCAPE_CHAR))
+      if (isEscaped(chars, startPos))
       {
-         if ((startPos == 1) || ((startPos > 1) && (chars[startPos - 2] != ESCAPE_CHAR)))
-         {
-            throw new IllegalArgumentException(
-                     "Character at starting position is escaped, and cannot be used in capturing a group.");
-         }
+         throw new IllegalArgumentException(
+                  "Character at starting position is escaped, and cannot be used in capturing a group.");
       }
 
       int depth = 1;

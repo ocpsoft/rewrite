@@ -24,8 +24,9 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.ocpsoft.rewrite.mock.MockEvaluationContext;
-import org.ocpsoft.rewrite.mock.MockRewrite;
+import org.ocpsoft.rewrite.MockEvaluationContext;
+import org.ocpsoft.rewrite.MockRewrite;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 
 /**
@@ -35,7 +36,7 @@ import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 public class ParameterizedPatternTest
 {
    private MockRewrite event;
-   private MockEvaluationContext context;
+   private EvaluationContext context;
 
    public static void initialize(ParameterStore store, Parameterized parameterized)
    {
@@ -85,6 +86,51 @@ public class ParameterizedPatternTest
          String value = entry.getValue();
          Assert.assertEquals(expected[index++], value);
       }
+   }
+
+   @Test
+   public void testEscapingWindowsFilePathsNoParams()
+   {
+      String pattern = "c:\\\\Users\\\\Admin\\\\Documents and Settings\\\\Folder";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
+      Assert.assertFalse(parameterized.parse(pattern).matches());
+      String value = pattern.replaceAll("\\\\\\\\", "\\\\");
+      Assert.assertTrue(parameterized.parse(value).matches());
+   }
+
+   @Test
+   public void testEscapingWindowsFilePathsWithParams()
+   {
+      String pattern = "c:\\\\Users\\\\{user}\\\\Documents and Settings\\\\Folder";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(1, parameterized.getRequiredParameterNames().size());
+      Assert.assertFalse(parameterized.parse(pattern).matches());
+      String value = pattern.replaceAll("\\\\\\\\", "\\\\");
+      Assert.assertTrue(parameterized.parse(value).matches());
+   }
+
+   @Test(expected = ParameterizedPatternSyntaxException.class)
+   public void testIllegalEscaping()
+   {
+      String pattern = "\\c";
+      new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+   }
+
+   @Test(expected = ParameterizedPatternSyntaxException.class)
+   public void testIllegalPartialEscapingAtStart()
+   {
+      String pattern = "\\";
+      new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+   }
+
+   @Test(expected = ParameterizedPatternSyntaxException.class)
+   public void testIllegalPartialEscapingAtEnd()
+   {
+      String pattern = "asdfdsf\\";
+      new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
    }
 
    @Test

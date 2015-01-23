@@ -48,6 +48,30 @@ public class ParseToolsTest
       ParseTools.balancedCapture("/foo/\\{{a}}/cab".toCharArray(), 6, 12, CaptureType.BRACE);
    }
 
+   @Test(expected = IllegalArgumentException.class)
+   public void testBalancedThrowsExceptionIfBeginCharIsEscaped2()
+   {
+      ParseTools.balancedCapture("/foo/\\\\\\{{a}}/cab".toCharArray(), 6, 12, CaptureType.BRACE);
+   }
+
+   @Test
+   public void testBalancedDoesNotThrowExceptionIfBeginCharIsNotEscaped()
+   {
+      ParseTools.balancedCapture("/foo/\\\\{a}/cab".toCharArray(), 7, 13, CaptureType.BRACE);
+   }
+
+   @Test
+   public void testBalancedDoesNotThrowExceptionIfBeginCharIsNotEscaped2()
+   {
+      ParseTools.balancedCapture("/foo/\\\\\\\\{a}/cab".toCharArray(), 9, 15, CaptureType.BRACE);
+   }
+
+   @Test
+   public void testBalancedDoesNotThrowExceptionIfBeginCharIsNotEscaped3()
+   {
+      ParseTools.balancedCapture("/foo/\\\\{{a}}/cab".toCharArray(), 7, 13, CaptureType.BRACE);
+   }
+
    @Test
    public void testBalancedCaptureIgnoresEscapedTerminations()
    {
@@ -90,6 +114,17 @@ public class ParseToolsTest
       Assert.assertFalse(ParseTools.isEscaped("/foo{bar\\\\}}".toCharArray(), 10));
    }
 
+   @Test
+   public void testIsEscapedReturnsTrueWhenCharacterIsTripleEscaped() throws Exception
+   {
+      Assert.assertFalse(ParseTools.isEscaped("/foo{bar\\\\\\}}".toCharArray(), 11));
+   }
+
+   @Test
+   public void testIsEscapedReturnsFalseWhenCharacterIsQuadrupleEscaped() throws Exception
+   {
+      Assert.assertFalse(ParseTools.isEscaped("/foo{bar\\\\\\\\}}".toCharArray(), 12));
+   }
 
    @Test
    public void testBalancedCaptureNested1()
