@@ -18,42 +18,42 @@ package org.ocpsoft.rewrite.config;
 import org.ocpsoft.rewrite.util.Visitor;
 
 /**
- * This class allows {@link Visitor}s to walk through a {@link Condition} tree which may contain
- * {@link CompositeCondition} elements.
+ * This class allows {@link Visitor} instances to walk through a {@link Rule} tree which may contain
+ * {@link CompositeCondition} or {@link CompositeOperation} elements containing other rules.
  * 
- * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class ConditionVisit
+public class RuleVisit
 {
 
-   private final Condition root;
+   private final Rule root;
 
    /**
-    * Initialize class with the supplied root {@link Condition}
+    * Initialize class with the supplied root {@link Rule}
     */
-   public ConditionVisit(Condition root)
+   public RuleVisit(Rule root)
    {
       this.root = root;
    }
 
    /**
-    * Submit the supplied visitor and apply it to all {@link Condition} instances in the tree
+    * Submit the supplied {@link Visitor} and apply it to all {@link Rule} instances in the tree
     */
-   public void accept(Visitor<Condition> visitor)
+   public void accept(Visitor<Rule> visitor)
    {
       visit(root, visitor);
    }
 
    /**
-    * Method to call the visitor for the supplied {@link Condition} and recursively calls itself, if the
-    * {@link Condition} is a {@link CompositeCondition}.
+    * Method to call the {@link Visitor} for the supplied {@link Rule} and recursively calls itself, if the {@link Rule}
+    * is a {@link CompositeRule}.
     */
-   private void visit(Condition condition, Visitor<Condition> visitor)
+   private void visit(Rule rule, Visitor<Rule> visitor)
    {
-      visitor.visit(condition);
+      visitor.visit(rule);
 
-      if (condition instanceof CompositeCondition) {
-         for (Condition child : ((CompositeCondition) condition).getConditions()) {
+      if (rule instanceof CompositeRule) {
+         for (Rule child : ((CompositeRule) rule).getRules()) {
             visit(child, visitor);
          }
       }
