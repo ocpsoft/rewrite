@@ -44,7 +44,7 @@ import org.ocpsoft.rewrite.util.Visitor;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public final class RuleBuilder implements ParameterizedRule, RelocatableRule, CompositeCondition, CompositeOperation,
-         Context
+         CompositeRule, Context
 {
    private final ParameterStore store;
 
@@ -250,6 +250,12 @@ public final class RuleBuilder implements ParameterizedRule, RelocatableRule, Co
          return Arrays.asList(condition);
 
       return Collections.emptyList();
+   }
+
+   @Override
+   public List<Rule> getRules()
+   {
+      return Arrays.asList(wrapped);
    }
 
    @Override
