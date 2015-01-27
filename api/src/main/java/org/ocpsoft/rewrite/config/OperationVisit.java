@@ -49,13 +49,13 @@ public class OperationVisit
     */
    private void visit(Operation operation, Visitor<Operation> visitor)
    {
-      // visit the operation itself
       visitor.visit(operation);
 
-      // recursive call for all children if a CompositeCondition
       if (operation instanceof CompositeOperation) {
-         for (Operation child : ((CompositeOperation) operation).getOperations()) {
-            visit(child, visitor);
+         if (((CompositeOperation) operation).getOperations() != null) {
+            for (Operation child : ((CompositeOperation) operation).getOperations()) {
+               visit(child, visitor);
+            }
          }
       }
    }

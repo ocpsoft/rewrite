@@ -53,8 +53,11 @@ public class RuleVisit
       visitor.visit(rule);
 
       if (rule instanceof CompositeRule) {
-         for (Rule child : ((CompositeRule) rule).getRules()) {
-            visit(child, visitor);
+         if (((CompositeRule) rule).getRules() != null)
+         {
+            for (Rule child : ((CompositeRule) rule).getRules()) {
+               visit(child, visitor);
+            }
          }
       }
    }

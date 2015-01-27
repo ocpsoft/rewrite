@@ -53,8 +53,10 @@ public class ConditionVisit
       visitor.visit(condition);
 
       if (condition instanceof CompositeCondition) {
-         for (Condition child : ((CompositeCondition) condition).getConditions()) {
-            visit(child, visitor);
+         if (((CompositeCondition) condition).getConditions() != null) {
+            for (Condition child : ((CompositeCondition) condition).getConditions()) {
+               visit(child, visitor);
+            }
          }
       }
    }
