@@ -22,7 +22,7 @@ public class FacesRewriteLifecycleListener extends HttpRewriteLifecycleListener
    private static final String ORIGINAL_URL = FacesRewriteLifecycleListener.class.getName()
             + "_originalRequestURL";
 
-   private List<DispatcherTypeProvider> dispatcherTypeProviders = null;
+   private volatile List<DispatcherTypeProvider> dispatcherTypeProviders = null;
 
    @Override
    public void beforeInboundLifecycle(final HttpServletRewrite event)
@@ -52,12 +52,18 @@ public class FacesRewriteLifecycleListener extends HttpRewriteLifecycleListener
     */
    private List<DispatcherTypeProvider> getDispatcherTypeProviders()
    {
-      if (dispatcherTypeProviders == null) {
-         dispatcherTypeProviders = Iterators.asList(
-                  ServiceLoader.loadTypesafe(DispatcherTypeProvider.class).iterator());
-         Collections.sort(dispatcherTypeProviders, new WeightedComparator());
+      List<DispatcherTypeProvider> result = dispatcherTypeProviders;
+      if (result == null) {
+         synchronized(this) {
+            result = dispatcherTypeProviders;
+            if (result == null) {
+               result = Iterators.asList(ServiceLoader.loadTypesafe(DispatcherTypeProvider.class).iterator());
+               Collections.sort(result, new WeightedComparator());
+               dispatcherTypeProviders = result;
+            }
+         }
       }
-      return dispatcherTypeProviders;
+      return result;
    }
 
    public static String getOriginalRequestURL(final HttpServletRequest request)
