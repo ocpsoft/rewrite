@@ -56,7 +56,7 @@ public class ParameterizedPatternSyntaxException extends IllegalArgumentExceptio
          sb.append(" near index ");
          sb.append(index);
       }
-      sb.append(System.lineSeparator());
+      sb.append(System.getProperty("line.separator"));
       sb.append(pattern);
       if (index >= 0) {
          sb.append(System.lineSeparator());
