@@ -50,16 +50,17 @@ public class ParameterizedPatternSyntaxException extends IllegalArgumentExceptio
    @Override
    public String getMessage()
    {
+      String nl = System.getProperty("line.separator");
       StringBuffer sb = new StringBuffer();
       sb.append(message);
       if (index >= 0) {
          sb.append(" near index ");
          sb.append(index);
       }
-      sb.append(System.getProperty("line.separator"));
+      sb.append(nl);
       sb.append(pattern);
       if (index >= 0) {
-         sb.append(System.lineSeparator());
+         sb.append(nl);
          for (int i = 0; i < index; i++)
             sb.append(' ');
          sb.append('^');
