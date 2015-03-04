@@ -18,6 +18,7 @@ package org.ocpsoft.rewrite.servlet.util;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -160,8 +161,8 @@ public class URLBuilderTest
       // decode
       assertEquals("/a b", URLBuilder.createNew().appendPathSegments("/a%20b").decode().toURL());
 
-      // decode plus
-      assertEquals("/a b c", URLBuilder.createNew().appendPathSegments("/a+b+c").decode().toURL());
+      // decode plus does not change anything
+      assertEquals("/a+b+c", URLBuilder.createNew().appendPathSegments("/a+b+c").decode().toURL());
    }
 
    @Test
@@ -172,6 +173,14 @@ public class URLBuilderTest
 
       // decode
       assertEquals("/a?b", URLBuilder.createNew().appendPathSegments("/a%3Fb").decode().toURL());
+   }
+
+   @Test
+   public void decodingSegmentWithPlusChararcter() {
+      // + is valid as a segment. It should not be decoded.
+      List<String> segments = URLBuilder.createFrom("foo+bar").decode().getSegments();
+      assertEquals(1, segments.size());
+      assertEquals("foo+bar", segments.get(0));
    }
 
 }

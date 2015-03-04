@@ -180,7 +180,7 @@ public class URLBuilder
    {
       try
       {
-         String prepared = ("http://localhost/" + segment).replaceAll("\\+", "%20");
+         String prepared = ("http://localhost/" + segment);
          final URI uri = new URI(prepared);
          return uri.getPath().substring(1);
       }
