@@ -37,7 +37,7 @@ public abstract class Request extends HttpOperation
     * 
     * @param encoding The encoding to apply
     */
-   public Request setCharacterEncoding(final String encoding)
+   public static Request setCharacterEncoding(final String encoding)
    {
       return new Request() {
          @Override
@@ -63,9 +63,9 @@ public abstract class Request extends HttpOperation
     * Creates an {@link HttpOperation} that calls {@link HttpServletRequest#setCharacterEncoding(String)} on the current
     * request.
     * 
-    * @param encoding The character set to apply
+    * @param charset The character set to apply
     */
-   public Request setCharacterEncoding(final Charset charset)
+   public static Request setCharacterEncoding(final Charset charset)
    {
       return setCharacterEncoding(charset.name());
    }
@@ -77,7 +77,7 @@ public abstract class Request extends HttpOperation
     * @param name The name of the request attribute
     * @param value The value to set
     */
-   public Request setAttribute(final String name, final Object value)
+   public static Request setAttribute(final String name, final Object value)
    {
       return new Request() {
          @Override
