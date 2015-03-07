@@ -67,7 +67,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    private static final Logger log = Logger.getLogger(HttpRewriteWrappedResponse.class);
 
    public HttpRewriteWrappedResponse(final HttpServletRequest request, final HttpServletResponse response,
-            final ServletContext servletContext)
+                                     final ServletContext servletContext)
    {
       super(request, response);
       this.request = request;
@@ -110,7 +110,9 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       if (areStreamsLocked())
       {
          throw new IllegalStateException(
-                  "Cannot add output buffers to Response once request processing has been passed to the application.");
+             String.format(
+                 "Cannot add output interceptors to Response %s once request processing has been passed to the application."
+                 ,this.request.getRequestURI()));
       }
       this.responseContentInterceptors.add(stage);
    }
@@ -121,7 +123,9 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       if (areStreamsLocked())
       {
          throw new IllegalStateException(
-                  "Cannot add output buffers to Response once request processing has been passed to the application.");
+             String.format(
+                 "Cannot add output wrappers to Response %s once request processing has been passed to the application."
+                 ,this.request.getRequestURI()));
       }
       this.responseStreamWrappers.add(wrapper);
    }
@@ -145,20 +149,20 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       if (isResponseContentIntercepted())
       {
          try {
-            if (bufferedResponseContent != null) {
-               bufferedResponseContent.close();
-            }
+//            if (bufferedResponseContent != null) { can never be null + four lines will produced NPE
+            bufferedResponseContent.close();
+//            }
 
             ResponseContent buffer = new ResponseContentImpl(bufferedResponseContent.toByteArray(),
-                     Charset.forName(getCharacterEncoding()));
+                Charset.forName(getCharacterEncoding()));
             new ResponseContentInterceptorChainImpl(responseContentInterceptors).begin(new HttpBufferRewriteImpl(
-                     request, this, servletContext), buffer);
+                request, this, servletContext), buffer);
 
             if (!Charset.forName(getCharacterEncoding()).equals(buffer.getCharset()))
                setCharacterEncoding(buffer.getCharset().name());
 
             ServletOutputStream outputStream = isResponseStreamWrapped() ? wrappedOutputStream : super
-                     .getOutputStream();
+                .getOutputStream();
 
             if (outputStream != null)
                Streams.copy(new ByteArrayInputStream(buffer.getContents()), outputStream);
@@ -169,7 +173,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          }
          catch (IOException e) {
             throw new RewriteException("Error occurred when flushing response content buffered by "
-                     + responseContentInterceptors, e);
+                + responseContentInterceptors, e);
          }
       }
    }
@@ -210,12 +214,12 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          if (isResponseContentIntercepted())
          {
             printWriter = new PrintWriter(new OutputStreamWriter(bufferedResponseContent,
-                     Charset.forName(getCharacterEncoding())), true);
+                Charset.forName(getCharacterEncoding())), true);
          }
          else if (isResponseStreamWrapped())
          {
             printWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(),
-                     Charset.forName(getCharacterEncoding())), true);
+                Charset.forName(getCharacterEncoding())), true);
          }
          else
          {
@@ -314,7 +318,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 
    /**
     * Buffered {@link ServletOutputStream} implementation.
-    * 
+    *
     * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
     */
    private class RewriteServletOutputStream extends ServletOutputStream
@@ -351,7 +355,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          }
          catch (IOException e) {
             throw new RewriteException("Error writing bytes to stream [" + stream + "] at offset [" + off
-                     + "] with length [" + len + "]", e);
+                + "] with length [" + len + "]", e);
          }
       }
 
@@ -409,20 +413,20 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = null;
       try {
          RewriteLifecycleContext<ServletContext> context = (RewriteLifecycleContext<ServletContext>) request
-                  .getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY);
+             .getAttribute(RewriteLifecycleContext.LIFECYCLE_CONTEXT_KEY);
 
          for (OutboundRewriteProducer producer : context.getOutboundProducers()) {
             if (producer.handles(address))
             {
                event = ((OutboundRewriteProducer<ServletRequest, ServletResponse, Address>) producer)
-                        .createOutboundRewrite(request, getResponse(), servletContext, address);
+                   .createOutboundRewrite(request, getResponse(), servletContext, address);
             }
          }
 
          if (event == null)
          {
             log.warn("No instance of [" + OutboundServletRewrite.class
-                     + "] was produced. Rewriting is disabled on this outbound event.");
+                + "] was produced. Rewriting is disabled on this outbound event.");
          }
          else
          {
