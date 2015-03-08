@@ -42,11 +42,17 @@ public class Servlet25DispatcherTypeProvider implements DispatcherTypeProvider
       if (request.getAttribute("javax.servlet.forward.request_uri") != null) {
          return DispatcherType.FORWARD;
       }
+
       if (request.getAttribute("javax.servlet.include.request_uri") != null) {
          return DispatcherType.INCLUDE;
       }
-      return DispatcherType.REQUEST;
 
+      Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
+      if (throwable != null) {
+         return DispatcherType.ERROR;
+      }
+
+      return DispatcherType.REQUEST;
    }
 
 }

@@ -81,7 +81,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    /*
     * Buffering Facilities
     */
-   private ByteArrayOutputStream bufferedResponseContent = new ByteArrayOutputStream();
+   private final ByteArrayOutputStream bufferedResponseContent = new ByteArrayOutputStream();
 
    private List<ResponseContentInterceptor> responseContentInterceptors = new ArrayList<ResponseContentInterceptor>();
    private List<ResponseStreamWrapper> responseStreamWrappers = new ArrayList<ResponseStreamWrapper>();
@@ -110,7 +110,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       if (areStreamsLocked())
       {
          throw new IllegalStateException(
-                  "Cannot add output buffers to Response once request processing has been passed to the application.");
+                  "Cannot add output buffers to response once request processing has been passed to the application.");
       }
       this.responseContentInterceptors.add(stage);
    }
@@ -121,7 +121,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       if (areStreamsLocked())
       {
          throw new IllegalStateException(
-                  "Cannot add output buffers to Response once request processing has been passed to the application.");
+                  "Cannot add output stream wrappers to response once request processing has been passed to the application.");
       }
       this.responseStreamWrappers.add(wrapper);
    }
@@ -145,9 +145,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       if (isResponseContentIntercepted())
       {
          try {
-            if (bufferedResponseContent != null) {
-               bufferedResponseContent.close();
-            }
+            bufferedResponseContent.close();
 
             ResponseContent buffer = new ResponseContentImpl(bufferedResponseContent.toByteArray(),
                      Charset.forName(getCharacterEncoding()));

@@ -128,55 +128,60 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
             for (int j = 0; j < list.size(); j++)
             {
                Rule rule = list.get(j);
-               event.getEvaluatedRules().add(rule);
+               try {
+                  event.getEvaluatedRules().add(rule);
 
-               context.clear();
-               DefaultParameterValueStore values = new DefaultParameterValueStore();
-               context.put(ParameterValueStore.class, values);
-               context.setState(RewriteState.EVALUATING);
+                  context.clear();
+                  DefaultParameterValueStore values = new DefaultParameterValueStore();
+                  context.put(ParameterValueStore.class, values);
+                  context.setState(RewriteState.EVALUATING);
 
-               if (rule.evaluate(event, context))
-               {
-                  if (handleBindings(event, context, values))
+                  if (rule.evaluate(event, context))
                   {
-                     context.setState(RewriteState.PERFORMING);
-                     if (log.isDebugEnabled())
-                        log.debug("Rule [" + rule + "] matched and will be performed.");
-
-                     List<Operation> preOperations = context.getPreOperations();
-                     for (int k = 0; k < preOperations.size(); k++)
+                     if (handleBindings(event, context, values))
                      {
-                        preOperations.get(k).perform(event, context);
-                     }
+                        context.setState(RewriteState.PERFORMING);
+                        if (log.isDebugEnabled())
+                           log.debug("Rule [" + rule + "] matched and will be performed.");
 
-                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-                     {
-                        return;
-                     }
+                        List<Operation> preOperations = context.getPreOperations();
+                        for (int k = 0; k < preOperations.size(); k++)
+                        {
+                           preOperations.get(k).perform(event, context);
+                        }
 
-                     rule.perform(event, context);
+                        if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                        {
+                           return;
+                        }
 
-                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-                     {
-                        return;
-                     }
+                        rule.perform(event, context);
 
-                     List<Operation> postOperations = context.getPostOperations();
-                     for (int k = 0; k < postOperations.size(); k++)
-                     {
-                        postOperations.get(k).perform(event, context);
-                     }
+                        if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                        {
+                           return;
+                        }
 
-                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-                     {
-                        return;
+                        List<Operation> postOperations = context.getPostOperations();
+                        for (int k = 0; k < postOperations.size(); k++)
+                        {
+                           postOperations.get(k).perform(event, context);
+                        }
+
+                        if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                        {
+                           return;
+                        }
                      }
                   }
+                  else
+                  {
+                     event.getEvaluatedRules().remove(rule);
+                     break;
+                  }
                }
-               else
-               {
-                  event.getEvaluatedRules().remove(rule);
-                  break;
+               catch (Exception e) {
+                  throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]");
                }
             }
          }
@@ -189,54 +194,59 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
       for (int i = 0; i < rules.size(); i++)
       {
          Rule rule = rules.get(i);
-         event.getEvaluatedRules().add(rule);
+         try {
+            event.getEvaluatedRules().add(rule);
 
-         context.clear();
-         DefaultParameterValueStore values = new DefaultParameterValueStore();
-         context.put(ParameterValueStore.class, values);
+            context.clear();
+            DefaultParameterValueStore values = new DefaultParameterValueStore();
+            context.put(ParameterValueStore.class, values);
 
-         context.setState(RewriteState.EVALUATING);
-         if (rule.evaluate(event, context))
-         {
-            if (handleBindings(event, context, values))
+            context.setState(RewriteState.EVALUATING);
+            if (rule.evaluate(event, context))
             {
-               context.setState(RewriteState.PERFORMING);
-               if (log.isDebugEnabled())
-                  log.debug("Rule [" + rule + "] matched and will be performed.");
-               cacheable.add(rule);
-               List<Operation> preOperations = context.getPreOperations();
-               for (int k = 0; k < preOperations.size(); k++)
+               if (handleBindings(event, context, values))
                {
-                  preOperations.get(k).perform(event, context);
-               }
+                  context.setState(RewriteState.PERFORMING);
+                  if (log.isDebugEnabled())
+                     log.debug("Rule [" + rule + "] matched and will be performed.");
+                  cacheable.add(rule);
+                  List<Operation> preOperations = context.getPreOperations();
+                  for (int k = 0; k < preOperations.size(); k++)
+                  {
+                     preOperations.get(k).perform(event, context);
+                  }
 
-               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-               {
-                  break;
-               }
+                  if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                  {
+                     break;
+                  }
 
-               rule.perform(event, context);
+                  rule.perform(event, context);
 
-               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-               {
-                  break;
-               }
+                  if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                  {
+                     break;
+                  }
 
-               List<Operation> postOperations = context.getPostOperations();
-               for (int k = 0; k < postOperations.size(); k++)
-               {
-                  postOperations.get(k).perform(event, context);
-               }
+                  List<Operation> postOperations = context.getPostOperations();
+                  for (int k = 0; k < postOperations.size(); k++)
+                  {
+                     postOperations.get(k).perform(event, context);
+                  }
 
-               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-               {
-                  break;
+                  if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                  {
+                     break;
+                  }
                }
             }
+            else
+            {
+               event.getEvaluatedRules().remove(rule);
+            }
          }
-         else
-         {
-            event.getEvaluatedRules().remove(rule);
+         catch (Exception e) {
+            throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]");
          }
       }
 
@@ -280,55 +290,60 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
             for (int j = list.size() - 1; j >= 0; j--)
             {
                Rule rule = list.get(j);
-               event.getEvaluatedRules().add(rule);
+               try {
+                  event.getEvaluatedRules().add(rule);
 
-               context.clear();
-               DefaultParameterValueStore values = new DefaultParameterValueStore();
-               context.put(ParameterValueStore.class, values);
-               context.setState(RewriteState.EVALUATING);
+                  context.clear();
+                  DefaultParameterValueStore values = new DefaultParameterValueStore();
+                  context.put(ParameterValueStore.class, values);
+                  context.setState(RewriteState.EVALUATING);
 
-               if (rule.evaluate(event, context))
-               {
-                  if (handleBindings(event, context, values))
+                  if (rule.evaluate(event, context))
                   {
-                     context.setState(RewriteState.PERFORMING);
-                     if (log.isDebugEnabled())
-                        log.debug("Rule [" + rule + "] matched and will be performed.");
-
-                     List<Operation> preOperations = context.getPreOperations();
-                     for (int k = 0; k < preOperations.size(); k++)
+                     if (handleBindings(event, context, values))
                      {
-                        preOperations.get(k).perform(event, context);
-                     }
+                        context.setState(RewriteState.PERFORMING);
+                        if (log.isDebugEnabled())
+                           log.debug("Rule [" + rule + "] matched and will be performed.");
 
-                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-                     {
-                        return;
-                     }
+                        List<Operation> preOperations = context.getPreOperations();
+                        for (int k = 0; k < preOperations.size(); k++)
+                        {
+                           preOperations.get(k).perform(event, context);
+                        }
 
-                     rule.perform(event, context);
+                        if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                        {
+                           return;
+                        }
 
-                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-                     {
-                        return;
-                     }
+                        rule.perform(event, context);
 
-                     List<Operation> postOperations = context.getPostOperations();
-                     for (int k = 0; k < postOperations.size(); k++)
-                     {
-                        postOperations.get(k).perform(event, context);
-                     }
+                        if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                        {
+                           return;
+                        }
 
-                     if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-                     {
-                        return;
+                        List<Operation> postOperations = context.getPostOperations();
+                        for (int k = 0; k < postOperations.size(); k++)
+                        {
+                           postOperations.get(k).perform(event, context);
+                        }
+
+                        if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                        {
+                           return;
+                        }
                      }
                   }
+                  else
+                  {
+                     event.getEvaluatedRules().remove(rule);
+                     break;
+                  }
                }
-               else
-               {
-                  event.getEvaluatedRules().remove(rule);
-                  break;
+               catch (Exception e) {
+                  throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]");
                }
             }
          }
@@ -341,53 +356,58 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
       for (int i = rules.size() - 1; i >= 0; i--)
       {
          Rule rule = rules.get(i);
-         event.getEvaluatedRules().add(rule);
+         try {
+            event.getEvaluatedRules().add(rule);
 
-         context.clear();
-         DefaultParameterValueStore values = new DefaultParameterValueStore();
-         context.put(ParameterValueStore.class, values);
+            context.clear();
+            DefaultParameterValueStore values = new DefaultParameterValueStore();
+            context.put(ParameterValueStore.class, values);
 
-         context.setState(RewriteState.EVALUATING);
-         if (rule.evaluate(event, context))
-         {
-            if (handleBindings(event, context, values))
+            context.setState(RewriteState.EVALUATING);
+            if (rule.evaluate(event, context))
             {
-               context.setState(RewriteState.PERFORMING);
-               if (log.isDebugEnabled())
-                  log.debug("Rule [" + rule + "] matched and will be performed.");
-               cacheable.add(rule);
-               List<Operation> preOperations = context.getPreOperations();
-               for (int k = 0; k < preOperations.size(); k++)
+               if (handleBindings(event, context, values))
                {
-                  preOperations.get(k).perform(event, context);
-               }
+                  context.setState(RewriteState.PERFORMING);
+                  if (log.isDebugEnabled())
+                     log.debug("Rule [" + rule + "] matched and will be performed.");
+                  cacheable.add(rule);
+                  List<Operation> preOperations = context.getPreOperations();
+                  for (int k = 0; k < preOperations.size(); k++)
+                  {
+                     preOperations.get(k).perform(event, context);
+                  }
 
-               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-               {
-                  break;
-               }
+                  if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                  {
+                     break;
+                  }
 
-               rule.perform(event, context);
+                  rule.perform(event, context);
 
-               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-               {
-                  break;
-               }
+                  if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                  {
+                     break;
+                  }
 
-               List<Operation> postOperations = context.getPostOperations();
-               for (int k = 0; k < postOperations.size(); k++)
-               {
-                  postOperations.get(k).perform(event, context);
-               }
+                  List<Operation> postOperations = context.getPostOperations();
+                  for (int k = 0; k < postOperations.size(); k++)
+                  {
+                     postOperations.get(k).perform(event, context);
+                  }
 
-               if (event.getFlow().is(ServletRewriteFlow.HANDLED))
-               {
-                  break;
+                  if (event.getFlow().is(ServletRewriteFlow.HANDLED))
+                  {
+                     break;
+                  }
                }
             }
+            else {
+               event.getEvaluatedRules().remove(rule);
+            }
          }
-         else {
-            event.getEvaluatedRules().remove(rule);
+         catch (Exception e) {
+            throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]");
          }
       }
 
