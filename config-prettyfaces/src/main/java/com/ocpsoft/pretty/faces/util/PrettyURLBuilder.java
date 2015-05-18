@@ -54,7 +54,11 @@ public class PrettyURLBuilder
       {
          if (child instanceof UIParameter)
          {
-            results.add((UIParameter) child);
+            final UIParameter param = (UIParameter) child;
+            if (!param.isDisable())
+            {
+               results.add(param);
+            }
          }
       }
       return results;
