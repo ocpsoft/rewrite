@@ -50,6 +50,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
    private RegexParameterizedPatternBuilder builder;
    private String defaultParameterPattern;
    private ParameterStore store;
+   private CaptureType type;
 
    RegexParameterizedPatternParser(RegexParameterizedPatternBuilder builder,
             String defaultParameterPattern, String pattern)
@@ -94,43 +95,60 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       this.defaultParameterPattern = defaultParameterPattern;
       this.pattern = pattern;
       this.chars = pattern.toCharArray();
+      this.type = type;
 
-      if (chars.length > 0)
-      {
-         int parameterIndex = 0;
-         int cursor = 0;
-         while (cursor < chars.length)
+      int cursor = 0;
+      try {
+
+         if (chars.length > 0)
          {
-            char c = chars[cursor];
-            if (c == '{')
+            int parameterIndex = 0;
+            while (cursor < chars.length)
             {
-               int startPos = cursor;
-               CapturingGroup group = ParseTools.balancedCapture(chars, startPos, chars.length - 1, type);
-               cursor = group.getEnd();
-
-               groups.add(new RegexGroup(group, parameterIndex++));
-            }
-            else if (c == '\\' && !ParseTools.isEscaped(chars, cursor))
-            {
-               if (chars.length - 1 > cursor)
+               char c = chars[cursor];
+               if (!ParseTools.isEscaped(chars, cursor))
                {
-                  if (chars[cursor + 1] != type.getBegin()
-                           && chars[cursor + 1] != type.getEnd()
-                           && chars[cursor + 1] != '\\')
+                  if (c == '{')
                   {
-                     throw new ParameterizedPatternSyntaxException("Illegal escape sequence at index " + cursor,
-                              new String(chars), cursor);
+                     int startPos = cursor;
+                     CapturingGroup group = ParseTools.balancedCapture(chars, startPos, chars.length - 1, type);
+                     cursor = group.getEnd();
+
+                     groups.add(new RegexGroup(group, parameterIndex++));
+                  }
+                  else if (c == '\\')
+                  {
+                     if (chars.length - 1 > cursor)
+                     {
+                        if (chars[cursor + 1] != type.getBegin()
+                                 && chars[cursor + 1] != type.getEnd()
+                                 && chars[cursor + 1] != '\\')
+                        {
+                           throw new ParameterizedPatternSyntaxException("Illegal escape sequence at index " + cursor,
+                                    new String(chars), cursor);
+                        }
+                     }
+                     else if (chars.length - 1 == cursor)
+                     {
+                        throw new ParameterizedPatternSyntaxException(
+                                 "Illegal partial escape sequence at index [" + cursor + "] of [" + new String(chars)
+                                          + "]", new String(chars), cursor);
+                     }
                   }
                }
-               else if (chars.length - 1 == cursor)
-               {
-                  throw new ParameterizedPatternSyntaxException("Illegal partial escape sequence at index " + cursor,
-                           new String(chars), cursor);
-               }
-            }
 
-            cursor++;
+               cursor++;
+            }
          }
+      }
+      catch (ParameterizedPatternSyntaxException e)
+      {
+         throw e;
+      }
+      catch (Exception e)
+      {
+         throw new ParameterizedPatternSyntaxException("Error parsing parameterized pattern due to: " + e.getMessage(),
+                  pattern, cursor);
       }
    }
 
@@ -155,14 +173,14 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
             {
                patternBuilder.append(REGEX_ESCAPE_BEGIN);
                String literal = String.valueOf(Arrays.copyOfRange(chars, last.getEnd() + 1, capture.getStart()));
-               patternBuilder.append(unescapeBackslashes(literal));
+               patternBuilder.append(unescape(literal));
                patternBuilder.append(REGEX_ESCAPE_END);
             }
             else if ((last == null) && (capture.getStart() > 0))
             {
                patternBuilder.append(REGEX_ESCAPE_BEGIN);
                String literal = String.valueOf(Arrays.copyOfRange(chars, 0, capture.getStart()));
-               patternBuilder.append(unescapeBackslashes(literal));
+               patternBuilder.append(unescape(literal));
                patternBuilder.append(REGEX_ESCAPE_END);
             }
 
@@ -204,13 +222,13 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
          {
             patternBuilder.append(REGEX_ESCAPE_BEGIN);
             String literal = String.valueOf(Arrays.copyOfRange(chars, last.getEnd() + 1, chars.length));
-            patternBuilder.append(unescapeBackslashes(literal));
+            patternBuilder.append(unescape(literal));
             patternBuilder.append(REGEX_ESCAPE_END);
          }
          else if (last == null)
          {
             patternBuilder.append(REGEX_ESCAPE_BEGIN);
-            patternBuilder.append(unescapeBackslashes(String.valueOf(chars)));
+            patternBuilder.append(unescape(String.valueOf(chars)));
             patternBuilder.append(REGEX_ESCAPE_END);
          }
 
@@ -219,9 +237,11 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       return compiledPattern;
    }
 
-   private String unescapeBackslashes(String literal)
+   private String unescape(String literal)
    {
-      return literal.replace("\\\\", "\\");
+      String result = literal.replace("\\\\", "\\");
+      result = result.replace("\\" + type.getBegin(), String.valueOf(type.getBegin()));
+      return result;
    }
 
    @Override

@@ -16,6 +16,7 @@
 package org.ocpsoft.rewrite.util;
 
 import java.util.Arrays;
+import java.util.Stack;
 
 import org.ocpsoft.common.util.Assert;
 
@@ -50,30 +51,41 @@ public abstract class ParseTools
                   "Character at starting position is escaped, and cannot be used in capturing a group.");
       }
 
-      int depth = 1;
-
       char begin = type.getBegin();
-      char term = type.getEnd();
+      char end = type.getEnd();
 
       int cursor = startPos + 1;
-      while ((cursor < endPos) && (depth > 0))
+      Stack<Integer> beginPositions = new Stack<Integer>();
+      beginPositions.push(cursor);
+      while ((cursor <= endPos) && (beginPositions.size() > 0))
       {
-         if (chars[cursor] == term)
+         char character = chars[cursor];
+         if (character == end)
          {
             if (!isEscaped(chars, cursor))
-               depth--;
+            {
+               beginPositions.pop();
+            }
          }
-         else if (chars[cursor] == begin)
+         else if (character == begin)
          {
             if (!isEscaped(chars, cursor))
-               depth++;
+            {
+               beginPositions.push(cursor);
+            }
          }
 
-         if (depth == 0)
+         if (beginPositions.size() == 0)
          {
             break;
          }
          cursor++;
+      }
+
+      if (beginPositions.size() > 0)
+      {
+         throw new IllegalArgumentException(
+                  "Unclosed capturing group at index [" + beginPositions.peek() + "] of [" + new String(chars) + "]");
       }
 
       return new CapturingGroup(chars, startPos, cursor);

@@ -112,6 +112,53 @@ public class ParameterizedPatternTest
       Assert.assertTrue(parameterized.parse(value).matches());
    }
 
+   @Test
+   public void testEscapingParams()
+   {
+      String pattern = "Something \\{wicked this way comes.";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("Something {wicked this way comes.").matches());
+   }
+
+   @Test
+   public void testEscapingParams1()
+   {
+      String pattern = "Something \\{wicked this way comes.}";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("Something {wicked this way comes.}").matches());
+   }
+
+   @Test
+   public void testEscapingParams2()
+   {
+      String pattern = "Something \\{{wicked this way comes}.";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(1, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("Something {cool.").matches());
+   }
+
+   @Test
+   public void testEscapingParams3()
+   {
+      String pattern = "Something \\{{wicked this way comes}. More {stuff}";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(2, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("Something {cool. More anything").matches());
+   }
+
+   @Test(expected = ParameterizedPatternSyntaxException.class)
+   public void testIllegalEscapingParams()
+   {
+      String pattern = "Something {wicked\\}.";
+      new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+   }
+
    @Test(expected = ParameterizedPatternSyntaxException.class)
    public void testIllegalEscaping()
    {
