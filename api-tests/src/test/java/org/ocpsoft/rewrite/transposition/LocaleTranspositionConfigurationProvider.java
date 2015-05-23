@@ -43,6 +43,9 @@ public class LocaleTranspositionConfigurationProvider extends HttpConfigurationP
    public Configuration getConfiguration(final ServletContext context)
    {
       Configuration config = ConfigurationBuilder.begin()
+               .addRule(Join.path("/{lang}/{path}.xhtml").to("/{path}.xhtml"))
+               .where("path").transposedBy(LocaleTransposition.bundle("bundle", "lang"))
+
                .addRule(Join.path("/{lang}/{path}").to("/{path}"))
                .where("path").configuredBy(LocaleTransposition.bundle("bundle", "lang"))
 
