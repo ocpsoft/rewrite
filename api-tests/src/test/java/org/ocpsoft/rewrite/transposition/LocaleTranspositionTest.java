@@ -46,9 +46,11 @@ public class LocaleTranspositionTest extends RewriteTest
       WebArchive deployment = RewriteTest
                .getDeployment()
                .addPackages(true, Root.class.getPackage())
+               .setWebXML(new File("src/test/webapp/WEB-INF/web.xml"))
                .addAsServiceProvider(ConfigurationProvider.class, LocaleTranspositionConfigurationProvider.class)
                .addAsWebResource(new StringAsset("search page"), "search")
                .addAsWebResource(new StringAsset("library page"), "library")
+               .addAsWebResource(new File("src/test/webapp/search.xhtml"))
                .addAsResource(new File("src/test/resources/bundle_fr.properties"))
                .addAsResource(new File("src/test/resources/bundle_en.properties"));
       return deployment;
@@ -75,6 +77,14 @@ public class LocaleTranspositionTest extends RewriteTest
       HttpAction<HttpGet> action = get("/fr/bibliothèque");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
       Assert.assertEquals("library page", action.getResponseContent());
+   }
+
+   @Test
+   public void testI18nSupportOutbound() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/en/search.xhtml");
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertThat(action.getResponseContent(), org.junit.matchers.JUnitMatchers.containsString("/en/search"));
    }
 
    /**
