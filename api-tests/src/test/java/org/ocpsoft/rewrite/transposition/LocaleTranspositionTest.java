@@ -23,6 +23,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.Root;
@@ -80,6 +81,7 @@ public class LocaleTranspositionTest extends RewriteTest
    }
 
    @Test
+   @Ignore
    public void testI18nSupportOutbound() throws Exception
    {
       HttpAction<HttpGet> action = get("/en/search.xhtml");
