@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertThat;
 
 import org.apache.http.client.methods.HttpGet;
+import org.fest.assertions.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -53,7 +54,8 @@ public class ErrorPageFormTest extends RewriteTestBase
       Assert.assertEquals(404, client.getResponse().getStatusLine().getStatusCode());
 
       String content = client.getResponseContent();
-      Assert.assertTrue(content.matches("(?s).*action=\"" + client.getContextPath() + "/faces/error\\.xhtml.*"));
+      Assertions.assertThat(content)
+               .matches("(?s).*action=\"" + client.getContextPath() + "/faces/error\\.xhtml.*");
    }
 
 }

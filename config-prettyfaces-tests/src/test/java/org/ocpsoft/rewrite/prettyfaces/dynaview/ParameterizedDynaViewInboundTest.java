@@ -1,6 +1,7 @@
 package org.ocpsoft.rewrite.prettyfaces.dynaview;
 
 import org.apache.http.client.methods.HttpGet;
+import org.fest.assertions.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -40,7 +41,8 @@ public class ParameterizedDynaViewInboundTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/queryparam?param=correct");
 
       Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("The parameter was correctly injected"));
+      Assertions.assertThat(action.getResponseContent())
+               .contains("The parameter was correctly injected");
    }
 
    @Test
