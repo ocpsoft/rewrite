@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.annotation.forward;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.http.client.methods.HttpGet;

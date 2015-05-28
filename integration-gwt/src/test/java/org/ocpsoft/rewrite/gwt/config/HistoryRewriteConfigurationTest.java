@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.gwt.config;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;

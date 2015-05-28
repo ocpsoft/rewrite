@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;

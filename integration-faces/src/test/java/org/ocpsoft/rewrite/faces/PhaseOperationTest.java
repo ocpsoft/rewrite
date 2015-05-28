@@ -16,7 +16,7 @@ package org.ocpsoft.rewrite.faces;
  * limitations under the License.
  */
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;

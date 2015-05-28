@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.annotation.visit;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;

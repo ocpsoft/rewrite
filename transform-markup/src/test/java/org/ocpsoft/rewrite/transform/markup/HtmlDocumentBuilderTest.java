@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.ocpsoft.rewrite.transform.markup.HtmlDocumentBuilder;
