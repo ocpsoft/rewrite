@@ -29,6 +29,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.category.IgnoreForAS7;
 import org.ocpsoft.rewrite.category.IgnoreForGlassfish3;
+import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.faces.annotation.RewriteFacesAnnotationsTest;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
@@ -43,6 +44,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
          // For some reason both containers don't add the jsessionid at all to form postback URLs.
          // Not sure why, but it seems to have nothing to do with #147.
          IgnoreForAS7.class,
+         IgnoreForWildfly.class,
          IgnoreForGlassfish3.class
 })
 public class JSessionIdTest extends RewriteTestBase
