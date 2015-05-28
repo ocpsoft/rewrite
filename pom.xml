@@ -32,7 +32,7 @@
       <version.arquillian.tomcat>1.0.0.CR5</version.arquillian.tomcat>
       <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
-      <version.wildfly>8.0.0.CR1</version.wildfly>
+      <version.wildfly>8.2.0.Final</version.wildfly>
       <version.tomcat>7.0.42</version.tomcat>
       <version.glassfish3>3.1.2.2</version.glassfish3>
       <version.glassfish4>4.0</version.glassfish4>

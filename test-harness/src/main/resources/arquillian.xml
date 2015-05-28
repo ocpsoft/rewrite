@@ -58,7 +58,7 @@
 
    <container qualifier="wildfly_managed">
       <configuration>
-         <property name="jbossHome">target/container/wildfly-8.0.0.CR1/</property>
+         <property name="jbossHome">target/container/wildfly-8.2.0.Final/</property>
       </configuration>
    </container>
 
