@@ -67,6 +67,7 @@ public class JsMinifyTest extends RewriteTest
    }
 
    @Test
+   @Category(IgnoreForWildfly.class)
    public void testNotExistingSourceFile() throws Exception
    {
       HttpAction<HttpGet> action = get("/not-existing.js");

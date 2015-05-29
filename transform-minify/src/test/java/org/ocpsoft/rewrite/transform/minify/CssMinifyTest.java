@@ -80,6 +80,7 @@ public class CssMinifyTest extends RewriteTest
    }
 
    @Test
+   @Category(IgnoreForWildfly.class)
    public void testNotExistingSourceFile() throws Exception
    {
       HttpAction<HttpGet> action = get("/not-existing.css");
