@@ -1,4 +1,4 @@
-Rewrite:
+Rewrite [![Build Status](https://travis-ci.org/ocpsoft/rewrite.svg?branch=master)](https://travis-ci.org/ocpsoft/rewrite)
 =================================================
 
 A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 2.5+ applications, supporting integration with:
