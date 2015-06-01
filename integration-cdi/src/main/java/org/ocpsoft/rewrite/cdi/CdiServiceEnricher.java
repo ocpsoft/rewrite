@@ -78,7 +78,7 @@ public class CdiServiceEnricher extends BeanManagerAware implements ServiceEnric
 
          if ((context != null) && log.isDebugEnabled())
          {
-            log.debug("Enriched non-contextual intance of service [" + service.getClass().getName() + "]");
+            log.debug("Enriched non-contextual instance of service [" + service.getClass().getName() + "]");
          }
       }
    }
