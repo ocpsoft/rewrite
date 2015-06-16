@@ -16,7 +16,7 @@
    <parent>
       <groupId>org.ocpsoft</groupId>
       <artifactId>ocpsoft-parent</artifactId>
-      <version>10</version>
+      <version>11</version>
    </parent>
 
    <properties>
