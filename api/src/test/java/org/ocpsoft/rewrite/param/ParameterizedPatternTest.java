@@ -89,6 +89,38 @@ public class ParameterizedPatternTest
    }
 
    @Test
+   public void testComplexMatchingWithGroupsInRegexConstraints() throws Exception
+   {
+      String url = "http://domain.com:8080/context/application/pathy?foo=bar&baz=bazaar";
+
+      ParameterizedPatternParser path = new RegexParameterizedPatternParser(
+               "{prefix}/application/{seg}{suffix}");
+
+      ParameterStore store = DefaultParameterStore.getInstance(context);
+      initialize(store, path);
+
+      ((ConfigurableParameter<?>) store.get("prefix")).constrainedBy(new RegexConstraint("((.*)?)"));
+      ((ConfigurableParameter<?>) store.get("seg"))
+               .constrainedBy(new RegexConstraint("([^/]+)"))
+               .constrainedBy(new RegexConstraint("(pathy)"));
+      ((ConfigurableParameter<?>) store.get("suffix")).constrainedBy(new RegexConstraint("\\?.*"));
+
+      initialize(store, path);
+
+      Assert.assertTrue(path.parse(url).matches());
+
+      String[] expected = new String[] { "http://domain.com:8080/context", "pathy", "?foo=bar&baz=bazaar" };
+      Map<Parameter<?>, String> parsed = path.parse(url).getParameters(context);
+
+      int index = 0;
+      for (Entry<Parameter<?>, String> entry : parsed.entrySet())
+      {
+         String value = entry.getValue();
+         Assert.assertEquals(expected[index++], value);
+      }
+   }
+
+   @Test
    public void testEscapingWindowsFilePathsNoParams()
    {
       String pattern = "c:\\\\Users\\\\Admin\\\\Documents and Settings\\\\Folder";

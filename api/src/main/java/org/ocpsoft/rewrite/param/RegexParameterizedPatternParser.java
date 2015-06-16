@@ -198,7 +198,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
                      if (constraint instanceof RegexConstraint)
                      {
                         parameterPatternBuilder.append("(?:");
-                        parameterPatternBuilder.append(((RegexConstraint) constraint).getPattern());
+                        parameterPatternBuilder.append(sanitizePattern(constraint));
                         parameterPatternBuilder.append(")");
 
                         if (iterator.hasNext())
@@ -235,6 +235,25 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
          compiledPattern = Pattern.compile(patternBuilder.toString());
       }
       return compiledPattern;
+   }
+
+   private String sanitizePattern(Constraint<String> constraint)
+   {
+      StringBuilder result = new StringBuilder();
+      String regex = ((RegexConstraint) constraint).getPattern();
+      char[] pattern = regex.toCharArray();
+      for (int i = 0; i < pattern.length; i++)
+      {
+         result.append(pattern[i]);
+         if (pattern[i] == '(' && !ParseTools.isEscaped(pattern, i))
+         {
+            if (pattern[i + 1] != '?')
+            {
+               result.append("?:");
+            }
+         }
+      }
+      return result.toString();
    }
 
    private String unescape(String literal)
