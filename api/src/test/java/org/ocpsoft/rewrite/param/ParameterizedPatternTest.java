@@ -102,7 +102,8 @@ public class ParameterizedPatternTest
       ((ConfigurableParameter<?>) store.get("prefix")).constrainedBy(new RegexConstraint("((.*)?)"));
       ((ConfigurableParameter<?>) store.get("seg"))
                .constrainedBy(new RegexConstraint("([^/]+)"))
-               .constrainedBy(new RegexConstraint("(pathy)"));
+               .constrainedBy(new RegexConstraint("(pathy)"))
+               .constrainedBy(new RegexConstraint("\\w{5}"));
       ((ConfigurableParameter<?>) store.get("suffix")).constrainedBy(new RegexConstraint("\\?.*"));
 
       initialize(store, path);

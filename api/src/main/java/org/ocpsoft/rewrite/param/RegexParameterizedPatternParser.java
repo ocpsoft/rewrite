@@ -197,12 +197,12 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
                      Constraint<String> constraint = iterator.next();
                      if (constraint instanceof RegexConstraint)
                      {
-                        parameterPatternBuilder.append("(?:");
+                        if (iterator.hasNext())
+                           parameterPatternBuilder.append("(?=");
+                        else
+                           parameterPatternBuilder.append("(?:");
                         parameterPatternBuilder.append(sanitizePattern(constraint));
                         parameterPatternBuilder.append(")");
-
-                        if (iterator.hasNext())
-                           parameterPatternBuilder.append("|");
                      }
                   }
                }
