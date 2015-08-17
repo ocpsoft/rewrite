@@ -96,7 +96,12 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       this.pattern = pattern;
       this.chars = pattern.toCharArray();
       this.type = type;
+      this.groups.addAll(getGroups(type, chars));
+   }
 
+   protected static List<RegexGroup> getGroups(final CaptureType type, final char[] chars)
+   {
+      List<RegexGroup> groups = new ArrayList<RegexGroup>();
       int cursor = 0;
       try {
 
@@ -148,8 +153,9 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       catch (Exception e)
       {
          throw new ParameterizedPatternSyntaxException("Error parsing parameterized pattern due to: " + e.getMessage(),
-                  pattern, cursor);
+                  new String(chars), cursor);
       }
+      return groups;
    }
 
    @Override
@@ -286,7 +292,7 @@ public class RegexParameterizedPatternParser implements ParameterizedPatternPars
       return builder;
    }
 
-   class RegexGroup
+   static class RegexGroup
    {
       private final CapturingGroup capture;
       private final int index;

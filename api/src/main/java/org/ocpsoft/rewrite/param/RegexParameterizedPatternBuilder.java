@@ -29,8 +29,8 @@ import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.exception.ParameterizationException;
+import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser.RegexGroup;
 import org.ocpsoft.rewrite.util.ParameterUtils;
-import org.ocpsoft.rewrite.util.ParseTools;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
 
@@ -91,34 +91,9 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       Assert.notNull(pattern, "Pattern must not be null");
 
       this.defaultParameterPattern = defaultParameterPattern;
-
       this.pattern = pattern;
-      chars = pattern.toCharArray();
-
-      if (chars.length > 0)
-      {
-         int parameterIndex = 0;
-         int cursor = 0;
-         while (cursor < chars.length)
-         {
-            switch (chars[cursor])
-            {
-            case '{':
-               int startPos = cursor;
-               CapturingGroup group = ParseTools.balancedCapture(chars, startPos, chars.length - 1, type);
-               cursor = group.getEnd();
-
-               groups.add(new RegexGroup(group, parameterIndex++));
-
-               break;
-
-            default:
-               break;
-            }
-
-            cursor++;
-         }
-      }
+      this.chars = pattern.toCharArray();
+      this.groups.addAll(RegexParameterizedPatternParser.getGroups(type, chars));
    }
 
    @Override
@@ -274,38 +249,6 @@ public class RegexParameterizedPatternBuilder implements ParameterizedPatternBui
       return new String(chars);
    }
 
-   class RegexGroup
-   {
-      private final CapturingGroup capture;
-      private final int index;
-
-      public RegexGroup(final CapturingGroup capture, int index)
-      {
-         this.capture = capture;
-         this.index = index;
-      }
-
-      public int getIndex()
-      {
-         return index;
-      }
-
-      public String getName()
-      {
-         return new String(capture.getCaptured());
-      }
-
-      public CapturingGroup getCapture()
-      {
-         return capture;
-      }
-
-      @Override
-      public String toString()
-      {
-         return "RegexParameter [name=" + getName() + ", capture=" + capture + "]";
-      }
-   }
 
    @Override
    public String getPattern()

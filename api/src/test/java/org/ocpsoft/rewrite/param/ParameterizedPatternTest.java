@@ -206,6 +206,16 @@ public class ParameterizedPatternTest
    }
 
    @Test
+   public void testEscapingParamsWithNewlines2()
+   {
+      String pattern = "beginning \\{\n                                 ...\n                             } end";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("beginning {\n                                 ...\n                             } end").matches());
+   }
+
+   @Test
    public void testEscapingWithNewlines()
    {
       String pattern = "beginning \\{\nmiddle\n} end";
