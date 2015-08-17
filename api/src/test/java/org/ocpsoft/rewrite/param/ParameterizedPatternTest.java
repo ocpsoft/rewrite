@@ -185,6 +185,36 @@ public class ParameterizedPatternTest
       Assert.assertTrue(parameterized.parse("Something {cool. More anything").matches());
    }
 
+   @Test
+   public void testEscapingParams4()
+   {
+      String pattern = "beginning \\{middle\\} end";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("beginning {middle\\} end").matches());
+   }
+
+   @Test
+   public void testEscapingParamsWithNewlines()
+   {
+      String pattern = "beginning {\nmiddle\n} end";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(1, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("beginning middle end").matches());
+   }
+
+   @Test
+   public void testEscapingWithNewlines()
+   {
+      String pattern = "beginning \\{\nmiddle\n} end";
+      ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
+
+      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
+      Assert.assertTrue(parameterized.parse("beginning {\nmiddle\n} end").matches());
+   }
+
    @Test(expected = ParameterizedPatternSyntaxException.class)
    public void testIllegalEscapingParams()
    {
