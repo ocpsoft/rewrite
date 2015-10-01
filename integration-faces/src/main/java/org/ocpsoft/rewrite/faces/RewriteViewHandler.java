@@ -41,7 +41,7 @@ public class RewriteViewHandler extends ViewHandler
 {
    protected ViewHandler parent;
    private final ThreadLocal<Boolean> bookmarkable = new ThreadLocal<Boolean>();
-   private List<FacesActionUrlProvider> providers;
+   private volatile List<FacesActionUrlProvider> providers;
 
    /**
     * <b>NOTE:</b> This method should only be used by the getBookmarkableURL and getActionURL methods, for the purposes
