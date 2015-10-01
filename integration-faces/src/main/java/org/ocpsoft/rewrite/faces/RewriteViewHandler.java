@@ -145,12 +145,22 @@ public class RewriteViewHandler extends ViewHandler
    @SuppressWarnings("unchecked")
    public List<FacesActionUrlProvider> getProviders()
    {
-      if (providers == null)
+      List<FacesActionUrlProvider> result = providers;
+
+      if (result == null)
       {
-         providers = Iterators.asList(ServiceLoader.load(FacesActionUrlProvider.class));
-         Collections.sort(providers, new WeightedComparator());
+        synchronized (this)
+        {
+          result = providers;
+          if (result == null)
+          {
+            result = Iterators.asList(ServiceLoader.load(FacesActionUrlProvider.class));
+            Collections.sort(result, new WeightedComparator());
+            providers = result;
+          }
+        }
       }
-      return providers;
+      return result;
    }
 
    @Override
