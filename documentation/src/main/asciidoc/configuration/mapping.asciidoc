@@ -1,4 +1,4 @@
-link:../[&larr; Docs Index] link:./[ &larr; Configuration]
+link:../index.asciidoc[&larr; Docs Index] link:./index.asciidoc[ &larr; Configuration]
 
 == Create your first URL-mapping
 
@@ -39,7 +39,7 @@ URL:                       Resource:
 "/external-url-value2" --> "/internal-resource.html?param=value2
 ----
 
-NOTE: By default, parameters in `Path` and `Join` conditions do not match over `/` characters in the URL. You must use the `.where("param").matches(".*")` clause in order to extend a parameter over multiple path segments. To learn more, visit the chapter on rule link:parameters[parameterization].
+NOTE: By default, parameters in `Path` and `Join` conditions do not match over `/` characters in the URL. You must use the `.where("param").matches(".*")` clause in order to extend a parameter over multiple path segments. To learn more, visit the chapter on rule link:parameters.asciidoc[parameterization].
 
 === Using-parameters as conditional values:
 
@@ -52,4 +52,4 @@ Parameters may also be queried and re-used in other conditional or operational v
 .otherwise(Redirect.to("http://example.com/search?q={page}"))
 ----
 
-For additional details about using rule parameters, please read the chapter on how to link:parameters[parameterize rules]
+For additional details about using rule parameters, please read the chapter on how to link:parameters.asciidoc[parameterize rules]
