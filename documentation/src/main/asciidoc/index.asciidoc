@@ -1,4 +1,4 @@
-link:../[&larr; Rewrite Home]
+link:http://ocpsoft.org/rewrite/[&larr; Rewrite Home]
 
 == Learn Rewrite
 
