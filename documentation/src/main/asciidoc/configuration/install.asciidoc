@@ -1,4 +1,4 @@
-link:../[&larr; Docs Index] link:./[ &larr; Configuration]
+link:../index.asciidoc[&larr; Docs Index] link:./index.asciidoc[ &larr; Configuration]
 
 == Install Rewrite
 
@@ -9,7 +9,7 @@ Installation requirements:
 
 == 1. Include Rewrite in your Project
 
-The first step to installing link:../[Rewrite] is to add the required Maven dependencies to your pom.xml file. If you are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[download the Rewrite distribution]
+The first step to installing link:../index.asciidoc[Rewrite] is to add the required Maven dependencies to your pom.xml file. If you are not using Maven, you may also http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[download the Rewrite distribution]
  from the Maven central repository - a list of all available versions is available http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.ocpsoft.rewrite%22%20AND%20a%3A%22rewrite-distribution%22[here]:
 
 [source,xml]
@@ -34,7 +34,7 @@ The first step to installing link:../[Rewrite] is to add the required Maven depe
 </repository>
 ----
 
-If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ folder of your web application. You do not need any other JARs unless you are using Rewrite link:../integration/[extensions]. In the case of an EAR, ensure that you do not include Rewrite twice (once in the EAR/lib, and again in the WAR/lib), this will cause deployment errors; Rewrite dependencies should be marked as "provided" in the WAR POM.
+If you are not using maven, copy +rewrite-servlet.jar+ into the +/WEB-INF/lib+ folder of your web application. You do not need any other JARs unless you are using Rewrite link:../integration/index.asciidoc[extensions]. In the case of an EAR, ensure that you do not include Rewrite twice (once in the EAR/lib, and again in the WAR/lib), this will cause deployment errors; Rewrite dependencies should be marked as "provided" in the WAR POM.
 
 
 Additionally, if you are using Servlet 2.5, or are deploying an EAR with link:http://maven.apache.org/plugins/maven-ear-plugin/examples/skinny-wars.html[skinny WARs], you will need to add the Rewrite Servlet configuration to the `WEB-INF/web.xml` file in each WAR. 
@@ -126,13 +126,13 @@ To register providers in a JAR file, simply use this same activation mechanism, 
 registration file in each JAR containing configurations. This registration file will be located at
 +jar:/META-INF/org.ocpsoft.rewrite.config.ConfigurationProvider+. 
 
-NOTE: Alternate methods of configuration are available, such as link:./annotations/[Rewrite Annotations],
-link:./prettyfaces/[PrettyFaces XML and Annotations], and via link:../../integration/cdi[cdi] and 
-link:../../integration/spring[spring]; these methods may be used to avoid the need for a provider registration file.
+NOTE: Alternate methods of configuration are available, such as link:./annotations/index.asciidoc[Rewrite Annotations],
+link:./prettyfaces/index.asciidoc[PrettyFaces XML and Annotations], and via link:../../integration/cdi.asciidoc[cdi] and 
+link:../../integration/spring.asciidoc[spring]; these methods may be used to avoid the need for a provider registration file.
 
 === 4. Verify that your configuration is installed
 
-Before link:./[configuring Rewrite], you may wish to verify that your provider has
+Before link:./index.asciidoc[configuring Rewrite], you may wish to verify that your provider has
 been properly installed and activated. To do this, start your application and look at the server output, where
 you should see a summary of each active Rewrite extension, and all of your registered configuration providers:
 
@@ -190,11 +190,11 @@ public Configuration getConfiguration(ServletContext context)
 
 Rewrite is a highly extendable framework, and there are many pre-defined configuration options available to help achieve specialized and specific results; however, if no pre-defined configuration object exists, it is easy to create one that fills the gaps.
  
-Read the link:./[configuration manual] for more information on creating custom rules and rule primitives.
+Read the link:./index.asciidoc[configuration manual] for more information on creating custom rules and rule primitives.
 
 === Explore Rewrite Extensions
 Once you have a grasp on the basic Rewrite features, you may wish to get a bit fancier, and try out some of
-the provided link:../integration/[Rewrite extensions]. Of course, you can always create your own extension simply by building a
+the provided link:../integration/index.asciidoc[Rewrite extensions]. Of course, you can always create your own extension simply by building a
 custom configuration or some configuration objects, but there may also be an existing extension that meets
 your needs.
 
