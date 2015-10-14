@@ -1,4 +1,4 @@
-link:../[&larr; Docs Index] link:./[ &larr; Integration] 
+link:../index.asciidoc[&larr; Docs Index] link:./index.asciidoc[ &larr; Integration] 
 
 == Rewrite CDI Integration
 
