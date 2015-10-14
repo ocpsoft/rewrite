@@ -9,24 +9,24 @@ of the framework, just skip the steps you don't need.
 
 === Getting started with Rewrite
 
-* link:configuration/install[Install Rewrite] 
-* link:configuration/mapping[Create your first URL mapping]
-* link:configuration/[Anatomy of a Rewrite Rule]
+* link:configuration/install.asciidoc[Install Rewrite] 
+* link:configuration/mapping.asciidoc[Create your first URL mapping]
+* link:configuration/index.asciidoc[Anatomy of a Rewrite Rule]
 
 === Working with Rewrite
 
-* link:configuration/parameters[Parameterize Rules]
-* link:configuration/annotations/[Simplify with Annotations]
+* link:configuration/parameters.asciidoc[Parameterize Rules]
+* link:configuration/annotations/index.asciidoc[Simplify with Annotations]
 * Response Interception
 * Resource Transformation
-* link:configuration/i18n[Internationalize your URLs]
-* link:migration/prettyfaces3[PrettyFaces 3.x Migration Guide]
+* link:configuration/i18n.asciidoc[Internationalize your URLs]
+* link:migration/prettyfaces3.asciidoc[PrettyFaces 3.x Migration Guide]
 
 === Integrate Rewrite with other Frameworks
 
-* link:integration/cdi[Integrating with CDI]
+* link:integration/cdi.asciidoc[Integrating with CDI]
 * Integrating with JSF
-* link:integration/spring[Integrating with Spring]
+* link:integration/spring.asciidoc[Integrating with Spring]
 
 === Extending Rewrite
 
@@ -35,4 +35,4 @@ of the framework, just skip the steps you don't need.
 
 === Frequently Asked Questions
 
-* link:faq[FAQ]
+* link:faq.asciidoc[FAQ]
