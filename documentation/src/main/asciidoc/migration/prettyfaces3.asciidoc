@@ -1,4 +1,4 @@
-link:../[&larr; Docs Index] link:./[ &larr; Migration]
+link:../index.asciidoc[&larr; Docs Index] link:./index.asciidoc[ &larr; Migration]
 
 = PrettyFaces 3.x Migration Guide
 Christian Kaltepoth
