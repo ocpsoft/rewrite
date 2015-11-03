@@ -18,6 +18,8 @@ package org.ocpsoft.rewrite.config;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.test.MockRewrite;
 
@@ -39,5 +41,49 @@ public class NotTest
    {
       Condition condition = Not.any(new True());
       Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testNotCountOdd()
+   {
+      Condition assertCountOdd = new Condition()
+      {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            Assert.assertEquals(1, Conditions.getNegationCount(context));
+            Assert.assertTrue(Conditions.isNegated(context));
+            return true;
+         }
+      };
+      Condition condition = Not.any(assertCountOdd);
+      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+   }
+
+   @Test
+   public void testNotCountEvent()
+   {
+      Condition assertCountOdd = new Condition()
+      {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            Assert.assertEquals(3, Conditions.getNegationCount(context));
+            Assert.assertTrue(Conditions.isNegated(context));
+            return true;
+         }
+      };
+      Condition assertCountEven = new Condition()
+      {
+         @Override
+         public boolean evaluate(Rewrite event, EvaluationContext context)
+         {
+            Assert.assertEquals(4, Conditions.getNegationCount(context));
+            Assert.assertFalse(Conditions.isNegated(context));
+            return true;
+         }
+      };
+      Condition condition = Not.any(Not.any(Not.any(And.all(assertCountOdd, Not.any(assertCountEven)))));
+      Assert.assertTrue(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
    }
 }

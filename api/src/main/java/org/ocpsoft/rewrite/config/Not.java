@@ -53,7 +53,15 @@ public final class Not extends DefaultConditionBuilder implements CompositeCondi
    @Override
    public boolean evaluate(final Rewrite event, final EvaluationContext context)
    {
-      return condition.evaluate(event, context) != true;
+      Conditions.incrementNegationCount(context, 1);
+      try
+      {
+         return condition.evaluate(event, context) != true;
+      }
+      finally
+      {
+         Conditions.incrementNegationCount(context, -1);
+      }
    }
 
    @Override
@@ -67,5 +75,6 @@ public final class Not extends DefaultConditionBuilder implements CompositeCondi
    {
       return "Not.any(" + condition + ")";
    }
+
 
 }
