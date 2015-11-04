@@ -8,7 +8,7 @@ toc::[]
 
 include::index.asciidoc[]
 
-include::install.asciidoc[]
+include::configuration/install.asciidoc[]
 
 include::configuration/index.asciidoc[]
 
