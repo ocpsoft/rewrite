@@ -114,6 +114,7 @@
                      <link>http://docs.oracle.com/javase/7/docs/api/</link>
                      <link>http://docs.oracle.com/javaee/6/api/</link>
                   </links>
+                  <additionalparam>-Xdoclint:none</additionalparam>
                </configuration>
             </plugin>
          </plugins>
