@@ -42,8 +42,52 @@ import org.ocpsoft.rewrite.event.Rewrite;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class Conditions
+public final class Conditions
 {
+   public static final String NEGATION_COUNT_KEY = Conditions.class.getCanonicalName() + "_NotCount";
+
+   /**
+    * Indicates whether the current {@link Condition} is being negated.
+    */
+   public static boolean isNegated(final EvaluationContext context)
+   {
+      return getNegationCount(context) % 2 == 1;
+   }
+
+   /**
+    * Returns the number of "Not"s that have been evaluated in the current evaluation process.
+    *
+    * For example, when(Not.any(MyCondition)) would have a "NotCount" of "1" during the evaluation of "MyCondition".
+    *
+    * when(Not.any(Not.any(MyCondition))) would have a "NotCount" of "2" during the evaluation of "MyCondition".
+    *
+    * This is useful for conditions that may have side effects, as they will know whether or not their condition is being
+    * negated.
+    */
+   public static int getNegationCount(final EvaluationContext context)
+   {
+      if (context == null)
+         return 0;
+
+      Integer count = (Integer)context.get(NEGATION_COUNT_KEY);
+      return count == null ? 0 : count;
+   }
+
+   /**
+    * This increments the number of negations, allowing us to determine (during evaluation) whether the results of a particular
+    * {@link Condition} will be negated.
+    */
+   static void incrementNegationCount(final EvaluationContext context, int adjustment)
+   {
+      if (context == null)
+         return;
+
+      Integer count = Conditions.getNegationCount(context);
+      count += adjustment;
+      context.put(NEGATION_COUNT_KEY, count);
+   }
+
+
    /**
     * Return a new {@link DefaultConditionBuilder} that evaluates to {@link True} when
     * {@link #evaluate(Rewrite, EvaluationContext)} is invoked.
