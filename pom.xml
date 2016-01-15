@@ -24,7 +24,7 @@
       <version.jboss.spec>3.0.2.Final</version.jboss.spec>
       <version.junit>4.11</version.junit>
       <version.common>1.0.5.Final</version.common>
-      <version.logging>1.0.3.Final</version.logging>
+      <version.logging>1.0.4.Final</version.logging>
       <version.arquillian>1.1.1.Final</version.arquillian>
       <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
       <version.arquillian.jetty>1.0.0.CR2</version.arquillian.jetty>
