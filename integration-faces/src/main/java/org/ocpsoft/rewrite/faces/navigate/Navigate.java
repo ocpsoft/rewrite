@@ -126,10 +126,10 @@ public class Navigate
     */
    private String buildRedirectOutcome()
    {
-      AddressBuilderPath builderPath = AddressBuilder.begin().path(viewId);
+      AddressBuilderPath builderPath = AddressBuilder.begin().pathEncoded(viewId);
       for (Entry<String, List<String>> param : parameters.entrySet()) {
          String[] values = param.getValue().toArray(new String[param.getValue().size()]);
-         builderPath.query(param.getKey(), (Object[]) values);
+         builderPath.queryEncoded(param.getKey(), (Object[]) values);
       }
       String url = builderPath.toString();
       return RewriteNavigationHandler.REDIRECT_PREFIX + url;

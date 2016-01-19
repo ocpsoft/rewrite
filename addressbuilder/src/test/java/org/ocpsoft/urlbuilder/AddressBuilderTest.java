@@ -3,7 +3,6 @@ package org.ocpsoft.urlbuilder;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AddressBuilderTest
@@ -21,8 +20,9 @@ public class AddressBuilderTest
                         .path("/{s}/{t}")
                         .set("s", "search")
                         .set("t", "table")
-                        .query("q", "query string")
+                        .queryEncoded("q", "query string")
                         .anchor("foo")
+                        .build()
                         .toString());
    }
 
@@ -38,7 +38,7 @@ public class AddressBuilderTest
                         .path("/{s}/{t}")
                         .set("s", "search")
                         .set("t", "table")
-                        .query("q", "query string")
+                        .queryEncoded("q", "query string")
                         .anchor("foo")
                         .build()
                         .toString());
@@ -146,7 +146,7 @@ public class AddressBuilderTest
    public void testBuildPathWithOneParameter()
    {
       Assert.assertEquals("/store/23",
-               AddressBuilder.begin().path("/store/{item}").set("item", 23).toString());
+               AddressBuilder.begin().path("/store/{item}").set("item", 23).build().toString());
    }
 
    @Test
@@ -160,7 +160,8 @@ public class AddressBuilderTest
    public void testBuildPathWithParameters()
    {
       Assert.assertEquals("/store/23/buy",
-               AddressBuilder.begin().path("/store/{item}/{action}").set("item", 23).set("action", "buy").toString());
+               AddressBuilder.begin().path("/store/{item}/{action}").set("item", 23).set("action", "buy").build()
+                        .toString());
    }
 
    @Test
@@ -177,7 +178,16 @@ public class AddressBuilderTest
       Assert.assertEquals("//ocpsoft.org/store/23/buy",
                AddressBuilder.begin()
                         .domain("ocpsoft.org")
-                        .path("/store/{item}/{action}").set("item", 23).set("action", "buy").toString());
+                        .path("/store/{item}/{action}").set("item", 23).set("action", "buy").build().toString());
+   }
+
+   @Test
+   public void testBuildHostAndQuery()
+   {
+      Assert.assertEquals("//ocpsoft.org/?buy=23",
+               AddressBuilder.begin()
+                        .domain("ocpsoft.org")
+                        .query("buy", "23").build().toString());
    }
 
    @Test
@@ -239,6 +249,18 @@ public class AddressBuilderTest
    }
 
    @Test
+   public void testFromStringOnlyWithPathAndQuery2()
+   {
+      Address address = AddressBuilder.create("search?q=foobar");
+      assertEquals(null, address.getScheme());
+      assertEquals(null, address.getDomain());
+      assertEquals(null, address.getPort());
+      assertEquals("search", address.getPath());
+      assertEquals("q=foobar", address.getQuery());
+      assertEquals("search?q=foobar", address.getPathAndQuery());
+   }
+
+   @Test
    public void testCreateSchemalessUrl()
    {
 
@@ -257,7 +279,7 @@ public class AddressBuilderTest
    {
       Assert.assertEquals("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!",
                AddressBuilder.begin()
-                         .scheme("mailto")
+                        .scheme("mailto")
                         .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
                         .toString());
    }
@@ -267,9 +289,9 @@ public class AddressBuilderTest
    {
       Assert.assertEquals("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!",
                AddressBuilder.begin()
-               .scheme("mailto")
-               .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
-               .build().toString());
+                        .scheme("mailto")
+                        .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
+                        .build().toString());
    }
 
    @Test
@@ -285,11 +307,11 @@ public class AddressBuilderTest
    }
 
    @Test
-   @Ignore // see: https://github.com/ocpsoft/rewrite/issues/195
    public void shouldCreateAddressFromUrlWithCurlyBrace()
    {
-      Address address = AddressBuilder.create("http://localhost/somepath/%7Bsomething%7D");
-      assertEquals("/somepath/{something}", address.getPath());
+      Address address = AddressBuilder.createLiteral("http://localhost/somepath/%7Bsomething%7D");
+      assertEquals("/somepath/%7Bsomething%7D", address.getPath());
+      assertEquals("http://localhost/somepath/%7Bsomething%7D", address.toString());
    }
 
 }

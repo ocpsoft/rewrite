@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.urlbuilder.AddressBuilder;
+import org.ocpsoft.urlbuilder.util.Decoder;
+import org.ocpsoft.urlbuilder.util.Encoder;
 
 /**
  * Utility for building URL strings. Also manages the URL query string with the help of {@link QueryStringBuilder}.
@@ -171,50 +173,11 @@ public class URLBuilder
    }
 
    /**
-    * Decodes a segment using the {@link URI} class.
-    * 
-    * @param segment The segment to decode
-    * @return the decoded segment
-    */
-   private String decodeSegment(final String segment)
-   {
-      try
-      {
-         String prepared = ("http://localhost/" + segment);
-         final URI uri = new URI(prepared);
-         return uri.getPath().substring(1);
-      }
-      catch (URISyntaxException e)
-      {
-         throw new IllegalArgumentException(e);
-      }
-   }
-
-   /**
     * Return this {@link URLBuilder} after path segments and query parameters have been encoded.
     */
    public URLBuilder encode()
    {
       return new URLBuilder(getEncodedSegments(), metadata, query.encode());
-   }
-
-   /**
-    * Encodes a segment using the {@link URI} class.
-    * 
-    * @param segment The segment to encode
-    * @return the encoded segment
-    */
-   private String encodeSegment(final String segment)
-   {
-      try
-      {
-         final URI uri = new URI("http", "localhost", "/" + segment, null);
-         return uri.toASCIIString().substring(17);
-      }
-      catch (URISyntaxException e)
-      {
-         throw new IllegalArgumentException(e);
-      }
    }
 
    private List<String> getDecodedSegments()
@@ -224,7 +187,7 @@ public class URLBuilder
        */
       List<String> result = new ArrayList<String>();
       for (int i = 0; i < segments.size(); i++) {
-         result.add(decodeSegment(segments.get(i)));
+         result.add(Decoder.path(segments.get(i)));
       }
       return result;
    }
@@ -236,7 +199,7 @@ public class URLBuilder
        */
       List<String> result = new ArrayList<String>();
       for (int i = 0; i < segments.size(); i++) {
-         result.add(encodeSegment(segments.get(i)));
+         result.add(Encoder.path(segments.get(i)));
       }
       return result;
    }

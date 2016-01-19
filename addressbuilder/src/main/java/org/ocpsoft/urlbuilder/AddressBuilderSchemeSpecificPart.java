@@ -20,7 +20,7 @@ package org.ocpsoft.urlbuilder;
  * 
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
  */
-public class AddressBuilderSchemeSpecificPart
+public class AddressBuilderSchemeSpecificPart implements BuildableAddress
 {
    private AddressBuilder parent;
 
@@ -30,11 +30,42 @@ public class AddressBuilderSchemeSpecificPart
    }
 
    /**
-    * Generate an {@link Address} representing the current state of this {@link AddressBuilder}.
+    * Set a parameter name and value or values. The supplied values will be stored without additional encoding.
     */
+   public AddressBuilderSchemeSpecificPart set(CharSequence name, Object... values)
+   {
+      parent.set(name, values);
+      return this;
+   }
+
+   /**
+    * Set a parameter name and value or values. The values will be decoded before they are stored.
+    */
+   public AddressBuilderSchemeSpecificPart setDecoded(CharSequence name, Object... values)
+   {
+      parent.setDecoded(name, values);
+      return this;
+   }
+
+   /**
+    * Set a parameter name and value or values. The values will be encoded before they are stored.
+    */
+   public AddressBuilderSchemeSpecificPart setEncoded(CharSequence name, Object... values)
+   {
+      parent.setEncoded(name, values);
+      return this;
+   }
+
+   @Override
    public Address build()
    {
       return parent.build();
+   }
+
+   @Override
+   public Address buildLiteral()
+   {
+      return parent.buildLiteral();
    }
 
    @Override

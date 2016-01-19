@@ -105,7 +105,6 @@ public class ForwardEncodingTest extends RewriteTest
                Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
       assertThat(action.getResponseContent(),
                Matchers.containsString("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
-
    }
 
    @Test
@@ -116,13 +115,14 @@ public class ForwardEncodingTest extends RewriteTest
       assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
 
       // Not really sure if this is the expected result
+      // Lincoln: This is the behavior of the underlying HttpServletRequest, so we've really not changed/modified any
+      // behavior here. Recommend leaving this alone.
       assertThat(action.getResponseContent(),
                Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo bar.dyn]"));
 
       // IMHO this should be the result as it is consistent with the non-forwarded case
       assertThat(action.getResponseContent(),
                Matchers.containsString("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
-
    }
 
 }

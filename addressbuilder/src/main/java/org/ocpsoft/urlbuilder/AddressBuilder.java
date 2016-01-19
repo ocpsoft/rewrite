@@ -18,6 +18,7 @@ package org.ocpsoft.urlbuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,8 @@ import org.ocpsoft.urlbuilder.util.Decoder;
 import org.ocpsoft.urlbuilder.util.Encoder;
 
 /**
- * Representation of a uniform resource locator, or web address. Internal state is not encoded, plain UTF-8.
+ * Representation of a uniform resource locator, or web address. Internal state is stored as it is originally provided,
+ * and must be encoded or decoded as necessary.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -61,14 +63,29 @@ public class AddressBuilder
    {
       if (address == null)
       {
+         address = new ParameterizedAddressResult(this);
+      }
+      return address;
+   }
+
+   /**
+    * Generate an {@link Address} representing the current literal state of this {@link AddressBuilder}.
+    * <p>
+    * (Does not apply parameterization. E.g. The URL `/{foo}` will be treated as literal text, as opposed to calling
+    * {@link #build()}, which would result in `foo` being treated as a parameterized expression)
+    */
+   protected Address buildLiteral()
+   {
+      if (address == null)
+      {
          address = new AddressResult(this);
       }
       return address;
    }
 
    /**
-    * Create a new {@link Address} from the given fully encoded URL. Improperly formatted or encoded URLs are not
-    * parse-able and will result in an exception.
+    * Create a new {@link Address} from the given URL. Improperly formatted or encoded URLs are not parse-able and will
+    * result in an exception.
     * 
     * @see http://en.wikipedia.org/wiki/URI_scheme
     * @throws IllegalArgumentException when the input URL or URL fragment is not valid.
@@ -79,16 +96,48 @@ public class AddressBuilder
          URI u = new URI(url);
          String scheme = u.getScheme();
          String host = u.getHost();
-         if(scheme != null && host == null)
-            return AddressBuilder.begin().scheme(u.getScheme()).schemeSpecificPart(u.getRawSchemeSpecificPart()).build();
+         if (scheme != null && host == null)
+            return AddressBuilder.begin().scheme(u.getScheme()).schemeSpecificPart(u.getRawSchemeSpecificPart())
+                     .build();
          else
-           return AddressBuilder.begin().scheme(scheme).domain(host).port(u.getPort())
-             .pathEncoded(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment()).build();
+            return AddressBuilder.begin().scheme(scheme).domain(host).port(u.getPort())
+                     .path(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment()).build();
       }
       catch (URISyntaxException e) {
          throw new IllegalArgumentException(
                   "[" + url + "] is not a valid URL fragment. Consider encoding relevant portions of the URL with ["
-                           + Encoder.class + "]", e);
+                           + Encoder.class
+                           + "], or use the provided builder pattern via this class to specify part encoding.", e);
+      }
+   }
+
+   /**
+    * Create a new {@link Address} from the given URL. Improperly formatted or encoded URLs are not parse-able and will
+    * result in an exception.
+    * <p>
+    * 
+    * @see http://en.wikipedia.org/wiki/URI_scheme
+    * @throws IllegalArgumentException when the input URL or URL fragment is not valid.
+    */
+   public static Address createLiteral(String url) throws IllegalArgumentException
+   {
+      try {
+         URI u = new URI(url);
+         String scheme = u.getScheme();
+         String host = u.getHost();
+         if (scheme != null && host == null)
+            return AddressBuilder.begin().scheme(u.getScheme()).schemeSpecificPart(u.getRawSchemeSpecificPart())
+                     .buildLiteral();
+         else
+            return AddressBuilder.begin().scheme(scheme).domain(host).port(u.getPort())
+                     .path(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment())
+                     .buildLiteral();
+      }
+      catch (URISyntaxException e) {
+         throw new IllegalArgumentException(
+                  "[" + url + "] is not a valid URL fragment. Consider encoding relevant portions of the URL with ["
+                           + Encoder.class
+                           + "], or use the provided builder pattern via this class to specify part encoding", e);
       }
    }
 
@@ -130,8 +179,8 @@ public class AddressBuilder
    }
 
    /**
-    * Set the non-encoded path section of this {@link Address}. The given value will be stored without additional
-    * encoding or decoding.
+    * Set the path section of this {@link Address}. The given value will be stored without additional encoding or
+    * decoding.
     */
    AddressBuilderPath path(CharSequence path)
    {
@@ -140,31 +189,70 @@ public class AddressBuilder
    }
 
    /**
-    * Set the encoded path section of this {@link Address}. The given value will be decoded before it is stored.
+    * Set the path section of this {@link Address}. The given value will be decoded before it is stored.
     */
-   AddressBuilderPath pathEncoded(CharSequence path)
+   AddressBuilderPath pathDecoded(CharSequence path)
    {
       this.path = Decoder.path(path);
       return new AddressBuilderPath(this);
    }
 
    /**
-    * Set a query-parameter to a value or multiple values. The given name and values will be encoded before they are
-    * stored.
+    * Set the path section of this {@link Address}. The given value will be encoded before it is stored.
+    */
+   AddressBuilderPath pathEncoded(CharSequence path)
+   {
+      this.path = Encoder.path(path);
+      return new AddressBuilderPath(this);
+   }
+
+   /**
+    * Set a query-parameter to a value or multiple values. The given name and values will be stored without additional
+    * encoding or decoding.
     */
    AddressBuilderQuery query(CharSequence name, Object... values)
    {
-      this.queries.put(Encoder.query(name.toString()), Parameter.create(name.toString(), true, values));
+      this.queries.put(name.toString(), Parameter.create(name.toString(), values));
       return new AddressBuilderQuery(this);
    }
 
    /**
-    * Set a pre-encoded query-parameter to a pre-encoded value or multiple values. The given name and values be stored
-    * without additional encoding or decoding.
+    * Set a query-parameter value or multiple values. The given name and values be decoded before they are stored.
+    */
+   AddressBuilderQuery queryDecoded(CharSequence name, Object... values)
+   {
+      if (values != null)
+      {
+         List<Object> encodedValues = new ArrayList<Object>(values.length);
+         for (Object value : values)
+         {
+            if (value == null)
+               encodedValues.add(value);
+            else
+               encodedValues.add(Decoder.query(value.toString()));
+         }
+         this.queries.put(Decoder.query(name.toString()), Parameter.create(name.toString(), encodedValues));
+      }
+      return new AddressBuilderQuery(this);
+   }
+
+   /**
+    * Set a query-parameter to a value or multiple values. The given name and values be encoded before they are stored.
     */
    AddressBuilderQuery queryEncoded(CharSequence name, Object... values)
    {
-      this.queries.put(name.toString(), Parameter.create(name.toString(), false, values));
+      if (values != null)
+      {
+         List<Object> encodedValues = new ArrayList<Object>(values.length);
+         for (Object value : values)
+         {
+            if (value == null)
+               encodedValues.add(value);
+            else
+               encodedValues.add(Encoder.query(value.toString()));
+         }
+         this.queries.put(Encoder.query(name.toString()), Parameter.create(name.toString(), encodedValues));
+      }
       return new AddressBuilderQuery(this);
    }
 
@@ -224,7 +312,7 @@ public class AddressBuilder
          }
 
          for (Entry<CharSequence, List<CharSequence>> entry : params.entrySet()) {
-            queryEncoded(entry.getKey(), entry.getValue().toArray());
+            query(entry.getKey(), entry.getValue().toArray());
          }
       }
       return new AddressBuilderQuery(this);
@@ -253,26 +341,102 @@ public class AddressBuilder
    }
 
    /**
-    * Set a parameter name and value or values. Any supplied values will be encoded appropriately for their location in
-    * the {@link Address}.
+    * Set a parameter name and value or values. The supplied values will be stored without additional encoding.
     */
    void set(CharSequence name, Object... values)
    {
-      this.parameters.put(name.toString(), Parameter.create(name.toString(), true, values));
+      this.parameters.put(name.toString(), Parameter.create(name.toString(), values));
    }
 
    /**
-    * Set a pre-encoded parameter name and value or values. The values will be stored with no additional encoding or
-    * decoding.
+    * Set a parameter name and value or values. The values will be decoded before they are stored.
+    */
+   void setDecoded(CharSequence name, Object... values)
+   {
+      if (values != null)
+      {
+         List<Object> encodedValues = new ArrayList<Object>(values.length);
+         for (Object value : values)
+         {
+            if (value == null)
+               encodedValues.add(value);
+            else
+               encodedValues.add(Decoder.path(value.toString()));
+         }
+         this.parameters.put(name.toString(), Parameter.create(name.toString(), encodedValues));
+      }
+   }
+
+   /**
+    * Set a parameter name and value or values. The values will be encoded before they are stored.
     */
    void setEncoded(CharSequence name, Object... values)
    {
-      this.parameters.put(name.toString(), Parameter.create(name.toString(), false, values));
+      if (values != null)
+      {
+         List<Object> encodedValues = new ArrayList<Object>(values.length);
+         for (Object value : values)
+         {
+            if (value == null)
+               encodedValues.add(value);
+            else
+               encodedValues.add(Encoder.path(value.toString()));
+         }
+         this.parameters.put(name.toString(), Parameter.create(name.toString(), encodedValues));
+      }
    }
 
    @Override
    public String toString()
    {
-      return build().toString();
+      return buildLiteral().toString();
+   }
+
+   /**
+    * Package private method for {@link Address} implementations to use for rendering.
+    */
+   static StringBuilder toString(Address address)
+   {
+      StringBuilder result = new StringBuilder();
+
+      if (address.isSchemeSet())
+         result.append(address.getScheme()).append(":");
+
+      if (address.isSchemeSpecificPartSet())
+      {
+         result.append(address.getSchemeSpecificPart());
+      }
+      else
+      {
+         if (address.isDomainSet())
+            result.append("//").append(address.getDomain());
+
+         if (address.isPortSet())
+            result.append(":").append(address.getPort());
+
+         if (address.isPathSet())
+            result.append(address.getPath());
+
+         if (address.isQuerySet())
+         {
+            if (address.isDomainSet() && !address.isPathSet())
+               result.append("/");
+            result.append('?').append(address.getQuery());
+         }
+
+         if (address.isAnchorSet())
+            result.append('#').append(address.getAnchor());
+      }
+      return result;
+   }
+
+   Map<String, List<Object>> getQueries()
+   {
+      Map<String, List<Object>> result = new LinkedHashMap<String, List<Object>>();
+      for (Entry<CharSequence, Parameter> entry : this.queries.entrySet()) {
+         CharSequence key = entry.getKey();
+         result.put(key == null ? null : key.toString(), entry.getValue().getValues());
+      }
+      return Collections.unmodifiableMap(result);
    }
 }

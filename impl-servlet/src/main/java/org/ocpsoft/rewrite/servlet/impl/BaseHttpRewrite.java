@@ -89,8 +89,8 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
                   .scheme(getRequest().getScheme())
                   .domain(getRequest().getServerName())
                   .port(getRequest().getServerPort())
-                  .pathEncoded(requestURI)
-                  .queryLiteral(getRequest().getQueryString()).build();
+                  .path(requestURI)
+                  .queryLiteral(getRequest().getQueryString()).buildLiteral();
       }
       return this.address;
    }

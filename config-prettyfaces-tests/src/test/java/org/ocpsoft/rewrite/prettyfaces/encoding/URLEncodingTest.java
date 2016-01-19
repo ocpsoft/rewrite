@@ -16,7 +16,6 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.encoding;
 
-
 import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
@@ -129,8 +128,9 @@ public class URLEncodingTest extends RewriteTestBase
       HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo%20Bar");
 
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo%20Bar"));
-      Assert.assertTrue(action.getResponseContent().contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar"));
-      Assert.assertTrue(action.getResponseContent().contains("beanQueryText=Fooo Bar"));
+      String responseContent = action.getResponseContent();
+      Assert.assertTrue(responseContent.contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar"));
+      Assert.assertTrue(responseContent.contains("beanQueryText=Fooo Bar"));
    }
 
    @Test
@@ -141,7 +141,6 @@ public class URLEncodingTest extends RewriteTestBase
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo%20Bar"));
       Assert.assertTrue(action.getResponseContent().contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar"));
       Assert.assertTrue(action.getResponseContent().contains("beanPathText=Vračar"));
-      Assert.assertTrue(action.getResponseContent().contains("beanQueryText=Fooo Bar"));
    }
 
    @Test
@@ -177,5 +176,19 @@ public class URLEncodingTest extends RewriteTestBase
       browser.findElement(By.id("input1")).sendKeys("%");
       browser.findElement(By.id("submit")).click();
       Assert.assertTrue(browser.getPageSource().contains("viewId=/encoding.xhtml"));
+   }
+
+   @Test
+   public void testBracesAndBracketsInURL() throws Exception
+   {
+      browser.get(getBaseURL() + getContextPath() + "/basic/[]{}");
+      Assert.assertNotNull(browser.findElement(By.id("form")));
+   }
+
+   @Test
+   public void testBracesAndBracketsInURLEncoded() throws Exception
+   {
+      browser.get(getBaseURL() + getContextPath() + "/basic/%5B%5D%7B%7D");
+      Assert.assertNotNull(browser.findElement(By.id("form")));
    }
 }
