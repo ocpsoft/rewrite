@@ -37,10 +37,18 @@ public abstract class StreamResources extends HttpOperation implements Parameter
     return new StreamResources(resourceLocation) {
       @Override
       public void performHttp(HttpServletRewrite httpServletRewrite, EvaluationContext evaluationContext) {
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(resourceLocation))) {
+        BufferedInputStream bufferedInputStream = null;
+        try {
+          bufferedInputStream = new BufferedInputStream(getClass().getClassLoader().getResourceAsStream(resourceLocation));
           Response.write(bufferedInputStream).perform(httpServletRewrite, evaluationContext);
-        } catch (IOException e) {
-          throw new RewriteException("Error closing stream.", e);
+        } finally {
+          if (bufferedInputStream != null) {
+            try {
+              bufferedInputStream.close();
+            } catch (IOException e) {
+              throw new RewriteException("Error closing stream.", e);
+            }
+          }
         }
       }
     };
