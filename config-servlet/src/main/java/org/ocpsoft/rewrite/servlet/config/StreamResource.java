@@ -16,14 +16,14 @@ import java.util.Set;
  * Allow operation for stream resource file to response
  * @author Francois Robert
  */
-public abstract class StreamResources extends HttpOperation implements Parameterized {
+public abstract class StreamResource extends HttpOperation implements Parameterized {
 
-  public static final Logger log = Logger.getLogger(StreamResources.class);
+  public static final Logger log = Logger.getLogger(StreamResource.class);
 
   private final String resourceLocation;
   protected RegexParameterizedPatternBuilder target;
 
-  public StreamResources(String resourceLocation) {
+  public StreamResource(String resourceLocation) {
     this.target = new RegexParameterizedPatternBuilder(resourceLocation);
     this.resourceLocation = resourceLocation;
   }
@@ -33,8 +33,8 @@ public abstract class StreamResources extends HttpOperation implements Parameter
    * @param resourceLocation resource location
    * @return StreamResource (HttpOperation)
    */
-  public static StreamResources from(final String resourceLocation) {
-    return new StreamResources(resourceLocation) {
+  public static StreamResource from(final String resourceLocation) {
+    return new StreamResource(resourceLocation) {
       @Override
       public void performHttp(HttpServletRewrite httpServletRewrite, EvaluationContext evaluationContext) {
         BufferedInputStream bufferedInputStream = null;
