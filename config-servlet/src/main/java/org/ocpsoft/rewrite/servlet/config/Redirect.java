@@ -28,6 +28,7 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
+import org.ocpsoft.rewrite.param.Transposition;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.util.Transpositions;
@@ -44,10 +45,13 @@ public abstract class Redirect extends HttpOperation implements Parameterized
 
    private final RegexParameterizedPatternBuilder location;
 
-   private Redirect(final String location, final RedirectType type)
+   private final boolean shouldEncodeUrl;
+
+   private Redirect(final String location, final RedirectType type, final boolean shouldEncodeUrl)
    {
       this.location = new RegexParameterizedPatternBuilder("[^/]+", location);
       this.type = type;
+      this.shouldEncodeUrl = shouldEncodeUrl;
    }
 
    @Override
@@ -55,7 +59,8 @@ public abstract class Redirect extends HttpOperation implements Parameterized
    {
       if (event instanceof HttpInboundServletRewrite)
       {
-         String target = location.build(event, context, Transpositions.encodePath());
+         Transposition<String> transposition = shouldEncodeUrl ? Transpositions.encodePath() : Transpositions.identity();
+         String target = location.build(event, context, transposition);
          switch (type)
          {
          case PERMANENT:
@@ -97,12 +102,53 @@ public abstract class Redirect extends HttpOperation implements Parameterized
     * <p>
     * 
     * @param location {@link ParameterizedPattern} specifying the target location.
-    * 
+    * @param shouldEncodeUrl - whether url should be encoded after redirect
+    *
+    * @see ConfigurationRuleParameterBuilder#where(String)
+    */
+   public static Redirect permanent(final String location, final boolean shouldEncodeUrl)
+   {
+      return new Redirect(location, RedirectType.PERMANENT, shouldEncodeUrl) {
+         @Override
+         public String toString()
+         {
+            return "Redirect.permanent(\"" + location + "\")";
+         }
+      };
+   }
+
+   /**
+    * Create an {@link Operation} that issues a permanent {@link Redirect} ( 301
+    * {@link HttpServletResponse#SC_MOVED_PERMANENTLY} ) to the given location. If the given location is not the same as
+    * {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL} and result in a new request.
+    *
+    * <p>
+    * Note that in order to redirect to a resource within the {@link ServletContext}, you must prepend the
+    * {@link ServletContext#getContextPath()}.
+    *
+    * <p>
+    * For example:<br/>
+    * <code>
+    *    Redirect.permanent(contextPath + "/example/location.html") <br>
+    * </code>
+    *
+    * <p>
+    * The given location may be parameterized:
+    * <p>
+    * <code>
+    *    /store/global
+    *    /store/{category} <br>
+    *    /store/{category}/item/{itemId} <br>
+    *    ...
+    * </code>
+    * <p>
+    *
+    * @param location {@link ParameterizedPattern} specifying the target location.
     * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Redirect permanent(final String location)
    {
-      return new Redirect(location, RedirectType.PERMANENT) {
+      return new Redirect(location, RedirectType.PERMANENT, true) {
          @Override
          public String toString()
          {
@@ -136,12 +182,52 @@ public abstract class Redirect extends HttpOperation implements Parameterized
     * <p>
     * 
     * @param location {@link ParameterizedPattern} specifying the target location.
-    * 
+    * @param shouldEncodeUrl - whether url should be encoded after redirect
+    *
+    * @see ConfigurationRuleParameterBuilder#where(String)
+    */
+   public static Redirect temporary(final String location, final boolean shouldEncodeUrl)
+   {
+      return new Redirect(location, RedirectType.TEMPORARY, shouldEncodeUrl) {
+         @Override
+         public String toString()
+         {
+            return "Redirect.temporary(\"" + location + "\")";
+         }
+      };
+   }
+
+   /**
+    * Create an {@link Operation} that issues a temporary {@link Redirect} ( 302
+    * {@link HttpServletResponse#SC_MOVED_TEMPORARILY} ) to the given location. If the given location is not the same as
+    * {@link HttpServletRewrite#getAddress()}, this will change the browser {@link URL} and result in a new request.
+    * <p>
+    * Note that in order to redirect within the {@link ServletContext}, you must prepend the
+    * {@link ServletContext#getContextPath()}.
+    * <p>
+    * For example:<br/>
+    * <code>
+    *    Redirect.temporary(contextPath + "/example/location.html") <br>
+    * </code>
+    *
+    * <p>
+    * The given location may be parameterized:
+    * <p>
+    * <code>
+    *    /store/global
+    *    /store/{category} <br>
+    *    /store/{category}/item/{itemId} <br>
+    *    ...
+    * </code>
+    * <p>
+    *
+    * @param location {@link ParameterizedPattern} specifying the target location.
+    *
     * @see ConfigurationRuleParameterBuilder#where(String)
     */
    public static Redirect temporary(final String location)
    {
-      return new Redirect(location, RedirectType.TEMPORARY) {
+      return new Redirect(location, RedirectType.TEMPORARY, true) {
          @Override
          public String toString()
          {
