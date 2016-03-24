@@ -19,7 +19,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -66,6 +65,9 @@ public class ByteCodeFilter
    private final static int CONSTANT_Double = 6;
    private final static int CONSTANT_NameAndType = 12;
    private final static int CONSTANT_Utf8 = 1;
+   private static final int CONSTANT_MethodHandle = 15;
+   private static final int CONSTANT_MethodType = 16;
+   private static final int CONSTANT_InvokeDynamic = 18;
 
    /**
     * The strings to look for in the constants table
@@ -240,6 +242,40 @@ public class ByteCodeFilter
                return true;
             }
             break;
+            
+         case CONSTANT_MethodHandle:
+           /*
+            * CONSTANT_MethodHandle_info {
+            *     u1 tag;
+            *     u1 reference_kind;
+            *     u2 reference_index;
+            * }
+            */
+           in.readByte();
+           in.readShort();
+           break;
+           
+         case CONSTANT_MethodType:
+           /*
+            * CONSTANT_MethodType_info {
+            *     u1 tag;
+            *     u2 descriptor_index;
+            * }
+            */
+           in.readShort();
+           break;
+           
+         case CONSTANT_InvokeDynamic:
+           /*
+            * CONSTANT_InvokeDynamic_info {
+            *     u1 tag;
+            *     u2 bootstrap_method_attr_index;
+            *     u2 name_and_type_index;
+            * }
+            */
+           in.readShort();
+           in.readShort();
+           break;
 
          default:
             /*
