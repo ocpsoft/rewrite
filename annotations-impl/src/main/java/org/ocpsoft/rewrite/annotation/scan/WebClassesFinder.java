@@ -24,14 +24,13 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.ocpsoft.rewrite.annotation.ClassVisitorImpl;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;
 
 /**
  * Implementation of {@link ClassFinder} that searches for classes in the <code>/WEB-INF/classes</code> directory of a
  * web application. Please note that this class is stateful. It should be used only for one call to
- * {@link #findClasses(ClassVisitorImpl)}.
+ * {@link #findClasses(ClassVisitor)}.
  * 
  * @author Christian Kaltepoth
  */
@@ -84,7 +83,7 @@ public class WebClassesFinder extends AbstractClassFinder
 
    /**
     * Scan for classes in a single directory. This method will call itself recursively if it finds other directories and
-    * call {@link #processClass(String, InputStream, ClassVisitorImpl) when it finds a file ending with ".class" and
+    * call {@link #processClass(String, InputStream, ClassVisitor)} when it finds a file ending with ".class" and
     * that is accepted by the {@link PackageFilter}
     * 
     * @param absoluteUrl The absolute URL of the WEB-INF node to scan
@@ -208,7 +207,7 @@ public class WebClassesFinder extends AbstractClassFinder
    }
 
    /**
-    * @param path
+    * @param path The path
     * @return last node in a a string representation of URL path. For example for "/a/b/c/d/" returns "d/", for
     *         "/a/b/c/d.class" returns "d.class"
     */
