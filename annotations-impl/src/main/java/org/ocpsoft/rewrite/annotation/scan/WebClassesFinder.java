@@ -141,7 +141,7 @@ public class WebClassesFinder extends AbstractClassFinder
          }
          if (childNodeRelative.endsWith(".class"))
          {
-            handleClassEntry(childNodeUrl, childNodeName, visitor);
+            handleClassEntry(childNodeName, visitor);
          }
       }
    }
@@ -149,7 +149,7 @@ public class WebClassesFinder extends AbstractClassFinder
    /**
     * Handles class entry in a WEB-INF.
     */
-   private void handleClassEntry(URL entryUrl, String entryName, ClassVisitor visitor)
+   private void handleClassEntry(String entryName, ClassVisitor visitor)
    {
 
       // build class name from relative name
