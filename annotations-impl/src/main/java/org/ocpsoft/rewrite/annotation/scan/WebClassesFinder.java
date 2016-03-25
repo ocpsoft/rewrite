@@ -174,13 +174,13 @@ public class WebClassesFinder extends AbstractClassFinder
              */
             try
             {
-               classFileStream = entryUrl.openStream();
+              classFileStream = servletContext.getResourceAsStream(entryName);
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                if (log.isDebugEnabled())
                {
-                  log.debug("Cound not obtain InputStream for class file: " + entryUrl.toString(), e);
+                  log.debug("Cound not obtain InputStream for class file: " + entryName, e);
                }
             }
 
