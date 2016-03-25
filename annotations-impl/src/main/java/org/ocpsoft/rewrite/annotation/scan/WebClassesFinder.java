@@ -170,17 +170,15 @@ public class WebClassesFinder extends AbstractClassFinder
          {
 
             /*
-             * Try to open the .class file. If an IOException is thrown, we will scan it anyway.
+             * Try to open the .class file. if this isn't possible, we will scan it anyway.
              */
-            try
-            {
-              classFileStream = servletContext.getResourceAsStream(entryName);
-            }
-            catch (Exception e)
+            classFileStream = servletContext.getResourceAsStream(entryName);
+
+            if (classFileStream == null)
             {
                if (log.isDebugEnabled())
                {
-                  log.debug("Cound not obtain InputStream for class file: " + entryName, e);
+                  log.debug("Could not obtain InputStream for class file: " + entryName);
                }
             }
 
