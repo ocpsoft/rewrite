@@ -196,7 +196,7 @@ public abstract class AbstractClassFinder implements ClassFinder
       try
       {
          // request this class from the ClassLoader
-         Class<?> clazz = Class.forName(className, false, classLoader);
+         Class<?> clazz = classLoader.loadClass(className);
 
          // call handler
          visitor.visit(clazz);

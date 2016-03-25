@@ -24,13 +24,14 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.ocpsoft.rewrite.annotation.ClassVisitorImpl;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;
 
 /**
  * Implementation of {@link ClassFinder} that searches for classes in the <code>/WEB-INF/classes</code> directory of a
  * web application. Please note that this class is stateful. It should be used only for one call to
- * {@link #findClasses(ClassVisitor)}.
+ * {@link #findClasses(ClassVisitorImpl)}.
  * 
  * @author Christian Kaltepoth
  */
@@ -83,7 +84,7 @@ public class WebClassesFinder extends AbstractClassFinder
 
    /**
     * Scan for classes in a single directory. This method will call itself recursively if it finds other directories and
-    * call {@link #processClass(String, InputStream, ClassVisitor)} when it finds a file ending with ".class" and
+    * call {@link #processClass(String, InputStream, ClassVisitorImpl) when it finds a file ending with ".class" and
     * that is accepted by the {@link PackageFilter}
     * 
     * @param absoluteUrl The absolute URL of the WEB-INF node to scan
@@ -140,7 +141,7 @@ public class WebClassesFinder extends AbstractClassFinder
          }
          if (childNodeRelative.endsWith(".class"))
          {
-            handleClassEntry(childNodeName, visitor);
+            handleClassEntry(childNodeUrl, childNodeName, visitor);
          }
       }
    }
@@ -148,7 +149,7 @@ public class WebClassesFinder extends AbstractClassFinder
    /**
     * Handles class entry in a WEB-INF.
     */
-   private void handleClassEntry(String entryName, ClassVisitor visitor)
+   private void handleClassEntry(URL entryUrl, String entryName, ClassVisitor visitor)
    {
 
       // build class name from relative name
@@ -169,15 +170,17 @@ public class WebClassesFinder extends AbstractClassFinder
          {
 
             /*
-             * Try to open the .class file. if this isn't possible, we will scan it anyway.
+             * Try to open the .class file. If an IOException is thrown, we will scan it anyway.
              */
-            classFileStream = servletContext.getResourceAsStream(entryName);
-
-            if (classFileStream == null)
+            try
+            {
+              classFileStream = servletContext.getResourceAsStream(entryName);
+            }
+            catch (Exception e)
             {
                if (log.isDebugEnabled())
                {
-                  log.debug("Could not obtain InputStream for class file: " + entryName);
+                  log.debug("Cound not obtain InputStream for class file: " + entryName, e);
                }
             }
 
@@ -207,7 +210,7 @@ public class WebClassesFinder extends AbstractClassFinder
    }
 
    /**
-    * @param path The path
+    * @param path
     * @return last node in a a string representation of URL path. For example for "/a/b/c/d/" returns "d/", for
     *         "/a/b/c/d.class" returns "d.class"
     */
