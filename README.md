@@ -1,6 +1,8 @@
 Rewrite [![Build Status](https://travis-ci.org/ocpsoft/rewrite.svg?branch=master)](https://travis-ci.org/ocpsoft/rewrite)
 =================================================
 
+[![Join the chat at https://gitter.im/ocpsoft/rewrite](https://badges.gitter.im/ocpsoft/rewrite.svg)](https://gitter.im/ocpsoft/rewrite?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A highly configurable URL-rewriting tool for Java EE 6+ and Servlet 2.5+ applications, supporting integration with:
 
  * CDI
