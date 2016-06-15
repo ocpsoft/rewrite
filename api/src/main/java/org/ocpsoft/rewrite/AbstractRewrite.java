@@ -57,11 +57,11 @@ public abstract class AbstractRewrite implements Rewrite
       {
       case INFO:
          if (log.isInfoEnabled())
-            log.error(buildLogOutput(event).toString());
+            log.info(buildLogOutput(event).toString());
          break;
       case WARN:
          if (log.isWarnEnabled())
-            log.error(buildLogOutput(event).toString());
+            log.warn(buildLogOutput(event).toString());
          break;
       case ERROR:
          if (log.isErrorEnabled())
@@ -69,11 +69,11 @@ public abstract class AbstractRewrite implements Rewrite
          break;
       case DEBUG:
          if (log.isDebugEnabled())
-            log.error(buildLogOutput(event).toString());
+            log.debug(buildLogOutput(event).toString());
          break;
       case TRACE:
          if (log.isTraceEnabled())
-            log.error(buildLogOutput(event).toString());
+            log.trace(buildLogOutput(event).toString());
          break;
 
       default:
