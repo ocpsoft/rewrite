@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.servlet;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.Filter;
@@ -26,6 +27,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
@@ -62,9 +65,10 @@ import org.ocpsoft.rewrite.util.ServiceLogger;
  */
 public class RewriteFilter implements Filter
 {
-   private static Logger log = Logger.getLogger(RewriteFilter.class);
+   private static final Logger log = Logger.getLogger(RewriteFilter.class);
 
-   private static String FILTER_COUNT_KEY = RewriteFilter.class.getName() + "_FILTER_COUNT";
+   private static final String NEWLINE = System.getProperty("line.separator");
+   private static final String FILTER_COUNT_KEY = RewriteFilter.class.getName() + "_FILTER_COUNT";
 
    private List<RewriteLifecycleListener<Rewrite>> listeners;
    private List<RequestCycleWrapper<ServletRequest, ServletResponse>> wrappers;
@@ -202,6 +206,7 @@ public class RewriteFilter implements Filter
                AbstractRewrite.logEvaluatedRules(event, Level.ERROR);
 
             decrementFilterCount(request);
+            logRequestWarning(request, e);
             throw e;
          }
          catch (RuntimeException e) {
@@ -209,6 +214,7 @@ public class RewriteFilter implements Filter
                AbstractRewrite.logEvaluatedRules(event, Level.ERROR);
 
             decrementFilterCount(request);
+            logRequestWarning(request, e);
             throw e;
          }
 
@@ -239,6 +245,126 @@ public class RewriteFilter implements Filter
             AbstractRewrite.logEvaluatedRules(event, Level.DEBUG);
 
          decrementFilterCount(request);
+         logRequestDebug(request);
+      }
+   }
+
+   /**
+    * Log details of ServletRequest as WARN, along with exception.
+    */
+   private void logRequestWarning(ServletRequest request, Throwable e)
+   {
+      if (log.isWarnEnabled())
+      {
+         StringBuilder sb = new StringBuilder(2000);
+         sb.append("Error processing request:");
+         addRequestDetails(sb, request);
+         log.warn(sb.toString(), e);
+      }
+   }
+
+   /**
+    * Log details of ServletRequest as DEBUG.
+    */
+   private void logRequestDebug(ServletRequest request)
+   {
+      if (log.isDebugEnabled())
+      {
+         StringBuilder sb = new StringBuilder(2000);
+         sb.append("Request processed:");
+         addRequestDetails(sb, request);
+         log.debug(sb.toString());
+      }
+   }
+
+   private void addRequestDetails(StringBuilder sb, ServletRequest request) {
+      if (request instanceof HttpServletRequest)
+      {
+         HttpServletRequest req = (HttpServletRequest) request;
+         sb.append(NEWLINE);
+         sb.append("  method: ");
+         sb.append(req.getMethod());
+
+         sb.append(NEWLINE);
+         sb.append("  requestUrl: ");
+         sb.append(req.getRequestURL().toString());
+
+         sb.append(NEWLINE);
+         sb.append("  queryString: ");
+         sb.append(req.getQueryString());
+
+         sb.append(NEWLINE);
+         sb.append("  remoteHost: ");
+         sb.append(req.getRemoteHost());
+         sb.append(NEWLINE);
+         sb.append("  remotePort: ");
+         sb.append(req.getRemotePort());
+
+         sb.append(NEWLINE);
+         sb.append("  contextPath: ");
+         sb.append(req.getContextPath());
+         sb.append(NEWLINE);
+         sb.append("  servletPath: ");
+         sb.append(req.getServletPath());
+         sb.append(NEWLINE);
+         sb.append("  pathInfo: ");
+         sb.append(req.getPathInfo());
+
+         sb.append(NEWLINE);
+         sb.append("  contentType: ");
+         sb.append(req.getContentType());
+
+         addCookies(sb, req.getCookies());
+         addHeaders(sb, req);
+         sb.append(NEWLINE);
+         sb.append("\n");
+      }
+      else
+      {
+         sb.append(request).toString();
+      }
+   }
+
+   private void addCookies(StringBuilder sb, /* @Nullable */ Cookie[] cookies)
+   {
+      if (cookies != null)
+      {
+         for (Cookie c : cookies)
+         {
+            sb.append(NEWLINE);
+            sb.append("  cookie:");
+            sb.append(" domain=");
+            sb.append(c.getDomain());
+            sb.append(" path=");
+            sb.append(c.getPath());
+            sb.append(" name=");
+            sb.append(c.getName());
+            sb.append(" value=");
+            sb.append(c.getValue());
+         }
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   private void addHeaders(StringBuilder sb, HttpServletRequest req)
+   {
+      sb.append(NEWLINE);
+      sb.append("  headers: ");
+
+      Enumeration<String> headerNames = req.getHeaderNames();
+      while (headerNames.hasMoreElements())
+      {
+         String key = headerNames.nextElement();
+         Enumeration<String> values = req.getHeaders(key);
+         while (values.hasMoreElements())
+         {
+            String value = values.nextElement();
+            sb.append(NEWLINE);
+            sb.append("      ");
+            sb.append(key);
+            sb.append(": ");
+            sb.append(value);
+         }
       }
    }
 
