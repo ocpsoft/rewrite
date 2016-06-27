@@ -91,7 +91,7 @@ public class ApplicationConfigurationProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder.begin()
          .addRule()
-         .perform(Log.message(Log.message(Level.INFO, "Rewrite is active.")))
+         .perform(Log.message(Level.INFO, "Rewrite is active."))
       ; 
    }
 
