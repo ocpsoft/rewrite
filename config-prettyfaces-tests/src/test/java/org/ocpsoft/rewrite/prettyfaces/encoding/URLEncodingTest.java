@@ -123,6 +123,26 @@ public class URLEncodingTest extends RewriteTestBase
    }
 
    @Test
+   public void testURLDecodingWithPoundSignEncoded() throws Exception
+   {
+      browser.get(getBaseURL() + getContextPath() + "/encoding/V%23r?dis=gt%23%232206");
+      String pageSource = browser.getPageSource();
+      Assert.assertTrue(pageSource.contains("/encoding/V%23r?dis=gt%23%232206"));
+      Assert.assertTrue(pageSource.contains("beanPathText=V#r"));
+      Assert.assertTrue(pageSource.contains("beanQueryText=gt##2206"));
+   }
+
+   @Test
+   public void testURLDecodingWithPoundSign() throws Exception
+   {
+      browser.get(getBaseURL() + getContextPath() + "/encoding/V%23r?dis=gt##2206");
+      String pageSource = browser.getPageSource();
+      Assert.assertTrue(pageSource.contains("/encoding/V%23r?dis=gt"));
+      Assert.assertTrue(pageSource.contains("beanPathText=V#r"));
+      Assert.assertTrue(pageSource.contains("beanQueryText=gt"));
+   }
+
+   @Test
    public void testQueryDecoding() throws Exception
    {
       HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo%20Bar");
