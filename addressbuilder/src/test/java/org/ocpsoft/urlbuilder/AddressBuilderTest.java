@@ -309,7 +309,7 @@ public class AddressBuilderTest
    @Test
    public void shouldCreateAddressFromUrlWithCurlyBrace()
    {
-      Address address = AddressBuilder.createLiteral("http://localhost/somepath/%7Bsomething%7D");
+      Address address = AddressBuilder.create("http://localhost/somepath/%7Bsomething%7D");
       assertEquals("/somepath/%7Bsomething%7D", address.getPath());
       assertEquals("http://localhost/somepath/%7Bsomething%7D", address.toString());
    }

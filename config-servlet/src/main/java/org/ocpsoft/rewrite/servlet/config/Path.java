@@ -36,15 +36,14 @@ import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * A {@link Condition} that inspects the value of {@link HttpServletRewrite#getRequestPath()}
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("deprecation")
 public abstract class Path extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
@@ -129,7 +128,7 @@ public abstract class Path extends HttpCondition implements Parameterized
             return false;
       }
       else
-         url = URLBuilder.createFrom(event.getInboundAddress().getPath()).decode().toPath();
+         url = AddressBuilder.begin().pathDecoded(event.getInboundAddress().getPath()).buildLiteral().toString();
 
       String contextPath = event.getContextPath();
       if (!contextPath.equals("/") && url.startsWith(contextPath))

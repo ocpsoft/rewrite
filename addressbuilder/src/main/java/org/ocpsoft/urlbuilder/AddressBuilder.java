@@ -85,7 +85,7 @@ public class AddressBuilder
 
    /**
     * Create a new {@link Address} from the given URL. Improperly formatted or encoded URLs are not parse-able and will
-    * result in an exception.
+    * result in an exception. No builder parameterization is possible using this method.
     * 
     * @see http://en.wikipedia.org/wiki/URI_scheme
     * @throws IllegalArgumentException when the input URL or URL fragment is not valid.
@@ -98,46 +98,16 @@ public class AddressBuilder
          String host = u.getHost();
          if (scheme != null && host == null)
             return AddressBuilder.begin().scheme(u.getScheme()).schemeSpecificPart(u.getRawSchemeSpecificPart())
-                     .build();
+                     .buildLiteral();
          else
             return AddressBuilder.begin().scheme(scheme).domain(host).port(u.getPort())
-                     .path(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment()).build();
+                     .path(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment()).buildLiteral();
       }
       catch (URISyntaxException e) {
          throw new IllegalArgumentException(
                   "[" + url + "] is not a valid URL fragment. Consider encoding relevant portions of the URL with ["
                            + Encoder.class
                            + "], or use the provided builder pattern via this class to specify part encoding.", e);
-      }
-   }
-
-   /**
-    * Create a new {@link Address} from the given URL. Improperly formatted or encoded URLs are not parse-able and will
-    * result in an exception.
-    * <p>
-    * 
-    * @see http://en.wikipedia.org/wiki/URI_scheme
-    * @throws IllegalArgumentException when the input URL or URL fragment is not valid.
-    */
-   public static Address createLiteral(String url) throws IllegalArgumentException
-   {
-      try {
-         URI u = new URI(url);
-         String scheme = u.getScheme();
-         String host = u.getHost();
-         if (scheme != null && host == null)
-            return AddressBuilder.begin().scheme(u.getScheme()).schemeSpecificPart(u.getRawSchemeSpecificPart())
-                     .buildLiteral();
-         else
-            return AddressBuilder.begin().scheme(scheme).domain(host).port(u.getPort())
-                     .path(u.getRawPath()).queryLiteral(u.getRawQuery()).anchor(u.getRawFragment())
-                     .buildLiteral();
-      }
-      catch (URISyntaxException e) {
-         throw new IllegalArgumentException(
-                  "[" + url + "] is not a valid URL fragment. Consider encoding relevant portions of the URL with ["
-                           + Encoder.class
-                           + "], or use the provided builder pattern via this class to specify part encoding", e);
       }
    }
 
