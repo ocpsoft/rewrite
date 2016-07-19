@@ -15,8 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.config.rule;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,8 +49,9 @@ import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
-import org.ocpsoft.rewrite.servlet.util.QueryStringBuilder;
 import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
+import org.ocpsoft.urlbuilder.AddressBuilderBase;
 
 /**
  * {@link Rule} that creates a bi-directional rewrite rule between an externally facing {@link Address} and an internal
@@ -56,7 +60,6 @@ import org.ocpsoft.urlbuilder.Address;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("deprecation")
 public class Join implements Rule, JoinPath, Parameterized
 {
    private static final String JOIN_DISABLED_KEY = Join.class.getName() + "_DISABLED";
@@ -268,25 +271,36 @@ public class Join implements Rule, JoinPath, Parameterized
 
       else if (event instanceof HttpOutboundServletRewrite)
       {
-         Set<String> parameters = getPathRequestParameters();
+         Address outboundAddress = ((HttpOutboundServletRewrite) event).getOutboundAddress();
 
-         String outboundURL = ((HttpOutboundServletRewrite) event).getOutboundAddress().toString();
-         QueryStringBuilder query = QueryStringBuilder.createNew();
-         if (outboundURL.contains("?"))
+         /*
+          * Remove known path parameters from query parameter list to be included in new URL
+          */
+         Set<String> pathParameters = getPathRequestParameters();
+         AddressBuilderBase queryBuilder = AddressBuilder.begin();
+         if (outboundAddress.isQuerySet())
          {
-            query.addParameters(outboundURL);
-            for (String string : parameters) {
-               List<String> values = query.removeParameter(string);
-               if (values.size() > 1)
+            // Create a new query string without the parameters that were used in building the path
+            Map<String, List<Object>> queryParameters = outboundAddress.getQueryParameters();
+            for (Entry<String, List<Object>> queryParameter : queryParameters.entrySet()) {
+               String parameterName = queryParameter.getKey();
+               List<Object> parameterValues = queryParameter.getValue();
+               if (pathParameters.contains(parameterName))
                {
-                  query.addParameter(string, values.subList(1, values.size()).toArray(new String[] {}));
+                  List<Object> newParameterValues = new ArrayList<Object>(parameterValues);
+                  newParameterValues.remove(0);
+                  if (!newParameterValues.isEmpty())
+                     queryBuilder.query(parameterName, newParameterValues.toArray());
+               }
+               else
+               {
+                  queryBuilder.query(parameterName, parameterValues.toArray());
                }
             }
          }
+         Address queryResult = queryBuilder.buildLiteral();
 
-         Address outboundAddress = ((HttpOutboundServletRewrite) event).getOutboundAddress();
-
-         Substitute substitute = Substitute.with(requestPattern + query.toQueryString());
+         Substitute substitute = Substitute.with(requestPattern + queryResult.toString());
          substitute.setParameterStore(store);
 
          substitute.perform(event, context);

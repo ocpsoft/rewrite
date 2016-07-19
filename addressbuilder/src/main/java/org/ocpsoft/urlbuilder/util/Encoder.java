@@ -6,15 +6,22 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
+/**
+ * Utility class to encode URL path and query parts.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 public class Encoder
 {
 
    private static final Charset UTF8 = Charset.forName("UTF-8");
 
    /**
-    * Encodes the given string as described in RFC 2396
+    * Encodes the given string using HTML form encoding as described in RFC 2396.
+    * 
+    * @throws IllegalArgumentException when illegal URI syntax is attempted.
     */
-   public static String path(CharSequence s)
+   public static String path(CharSequence s) throws IllegalArgumentException
    {
       try
       {
@@ -28,15 +35,17 @@ public class Encoder
    }
 
    /**
-    * Encodes the given string using HTML form encoding
+    * Encodes the given string using HTML form encoding as described in RFC 2396.
+    * 
+    * @throws IllegalArgumentException when illegal URI syntax is attempted.
     */
-   public static String query(CharSequence s)
+   public static String query(CharSequence s) throws IllegalArgumentException
    {
       try {
          return URLEncoder.encode(s.toString(), UTF8.name());
       }
       catch (UnsupportedEncodingException e) {
-         throw new IllegalStateException(e);
+         throw new IllegalArgumentException(e);
       }
    }
 

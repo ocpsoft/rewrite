@@ -41,5 +41,9 @@
       <pattern value="/custom/form"/>
       <view-id value="/encoding.jsf"/>
    </url-mapping>
+   <url-mapping id="basic">
+      <pattern value="/basic/#{/.*/ encodingBean.pathText }"/>
+      <view-id value="/encoding.jsf"/>
+   </url-mapping>
 
 </pretty-config>

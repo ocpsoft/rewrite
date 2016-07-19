@@ -34,7 +34,8 @@ public interface HttpServletRewrite extends
    public String getContextPath();
 
    /**
-    * Get the full {@link Address} of the current request.
+    * Get the full {@link Address} of the current request. This is the original URL of the request and has not been
+    * encoded or decoded.
     */
    Address getInboundAddress();
 

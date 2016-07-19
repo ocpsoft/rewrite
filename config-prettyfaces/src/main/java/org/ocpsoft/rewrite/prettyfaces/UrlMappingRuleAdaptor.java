@@ -121,7 +121,8 @@ public class UrlMappingRuleAdaptor implements Rule
       return result;
    }
 
-   private boolean evaluateOutbound(String outboundURL) {
+   private boolean evaluateOutbound(String outboundURL)
+   {
       QueryString outboundQueryString = new QueryString();
       if (outboundURL.contains("?")) {
          outboundQueryString.addParameters(outboundURL);
@@ -169,7 +170,7 @@ public class UrlMappingRuleAdaptor implements Rule
                for (String outboundParamValue : outboundParam.getValue())
                {
                   if ((mappingViewParamValue == outboundParamValue)
-                        || (mappingViewParamValue != null && mappingViewParamValue.equals(outboundParamValue)))
+                           || (mappingViewParamValue != null && mappingViewParamValue.equals(outboundParamValue)))
                   {
                      found = true;
                      break;
@@ -217,11 +218,12 @@ public class UrlMappingRuleAdaptor implements Rule
    @Override
    public void perform(final Rewrite event, final EvaluationContext ec)
    {
-      PrettyContext context = PrettyContext.getCurrentInstance(((HttpServletRewrite) event).getRequest());
+      HttpServletRewrite httpServletRewrite = (HttpServletRewrite) event;
+      PrettyContext context = PrettyContext.getCurrentInstance(httpServletRewrite.getRequest());
 
       if (event instanceof HttpInboundServletRewrite)
       {
-         ((HttpServletRewrite) event).getRequest().setAttribute(REWRITE_MAPPING_ID_KEY,
+         httpServletRewrite.getRequest().setAttribute(REWRITE_MAPPING_ID_KEY,
                   REWRITE_MAPPING_ID_KEY + ":" + mapping.getId());
 
          URL url = context.getRequestURL();
@@ -234,9 +236,9 @@ public class UrlMappingRuleAdaptor implements Rule
          {
             String viewId = mapping.getViewId();
             log.trace("Forwarding mapped request [" + url.toURL() + "] to resource [" + viewId + "]");
-            if (url.decode().toURL().equals(viewId))
+            if (url.toURL().equals(viewId))
             {
-               ((HttpServletRewrite) event).proceed();
+               httpServletRewrite.proceed();
             }
             else
             {
@@ -247,7 +249,7 @@ public class UrlMappingRuleAdaptor implements Rule
       else if ((event instanceof HttpOutboundServletRewrite) && mapping.isOutbound())
       {
          HttpOutboundServletRewrite outboundRewrite = (HttpOutboundServletRewrite) event;
-         String newUrl = rewritePrettyMappings(context.getConfig(), ((HttpServletRewrite) event).getContextPath(),
+         String newUrl = rewritePrettyMappings(context.getConfig(), httpServletRewrite.getContextPath(),
                   outboundRewrite.getOutboundAddress().toString());
          outboundRewrite.setOutboundAddress(AddressBuilder.create(newUrl));
       }

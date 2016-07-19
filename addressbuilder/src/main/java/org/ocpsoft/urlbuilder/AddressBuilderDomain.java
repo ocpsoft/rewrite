@@ -20,7 +20,7 @@ package org.ocpsoft.urlbuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class AddressBuilderDomain
+public class AddressBuilderDomain implements BuildableAddress
 {
    private AddressBuilder parent;
 
@@ -29,12 +29,43 @@ public class AddressBuilderDomain
       this.parent = parent;
    }
 
-   /**
-    * Generate an {@link Address} representing the current state of this {@link AddressBuilder}.
-    */
+   @Override
    public Address build()
    {
       return parent.build();
+   }
+
+   @Override
+   public Address buildLiteral()
+   {
+      return parent.buildLiteral();
+   }
+
+   /**
+    * Set a parameter name and value or values. The supplied values will be stored without additional encoding.
+    */
+   public AddressBuilderDomain set(CharSequence name, Object... values)
+   {
+      parent.set(name, values);
+      return this;
+   }
+
+   /**
+    * Set a parameter name and value or values. The values will be decoded before they are stored.
+    */
+   public AddressBuilderDomain setDecoded(CharSequence name, Object... values)
+   {
+      parent.setDecoded(name, values);
+      return this;
+   }
+
+   /**
+    * Set a parameter name and value or values. The values will be encoded before they are stored.
+    */
+   public AddressBuilderDomain setEncoded(CharSequence name, Object... values)
+   {
+      parent.setEncoded(name, values);
+      return this;
    }
 
    /**
@@ -46,8 +77,8 @@ public class AddressBuilderDomain
    }
 
    /**
-    * Set the non-encoded path section of this {@link Address}. The given value will be stored without additional
-    * encoding or decoding.
+    * Set the path section of this {@link Address}. The given value will be stored without additional encoding or
+    * decoding.
     */
    public AddressBuilderPath path(CharSequence path)
    {
@@ -55,7 +86,15 @@ public class AddressBuilderDomain
    }
 
    /**
-    * Set the encoded path section of this {@link Address}. The given value will be decoded before it is stored.
+    * Set the path section of this {@link Address}. The given value will be decoded before it is stored.
+    */
+   public AddressBuilderPath pathDecoded(CharSequence path)
+   {
+      return parent.pathDecoded(path);
+   }
+
+   /**
+    * Set the path section of this {@link Address}. The given value will be encoded before it is stored.
     */
    public AddressBuilderPath pathEncoded(CharSequence path)
    {
@@ -63,8 +102,8 @@ public class AddressBuilderDomain
    }
 
    /**
-    * Set a query-parameter to a value or multiple values. The given name and values will be encoded before they are
-    * stored.
+    * Set a query-parameter to a value or multiple values. The given name and values will be stored without additional
+    * encoding or decoding.
     */
    public AddressBuilderQuery query(CharSequence name, Object... values)
    {
@@ -72,8 +111,15 @@ public class AddressBuilderDomain
    }
 
    /**
-    * Set a pre-encoded query-parameter to a pre-encoded value or multiple values. The given name and values be stored
-    * without additional encoding or decoding.
+    * Set a query-parameter value or multiple values. The given name and values be decoded before they are stored.
+    */
+   public AddressBuilderQuery queryDecoded(CharSequence name, Object... values)
+   {
+      return parent.queryDecoded(name, values);
+   }
+
+   /**
+    * Set a query-parameter to a value or multiple values. The given name and values be encoded before they are stored.
     */
    public AddressBuilderQuery queryEncoded(CharSequence name, Object... values)
    {

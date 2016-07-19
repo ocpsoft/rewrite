@@ -20,7 +20,7 @@ package org.ocpsoft.urlbuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class AddressBuilderPort
+public class AddressBuilderPort implements BuildableAddress
 {
    private AddressBuilder parent;
 
@@ -29,16 +29,20 @@ public class AddressBuilderPort
       this.parent = parent;
    }
 
-   /**
-    * Generate an {@link Address} representing the current state of this {@link AddressBuilder}.
-    */
+   @Override
    public Address build()
    {
       return parent.build();
    }
 
+   @Override
+   public Address buildLiteral()
+   {
+      return parent.buildLiteral();
+   }
+
    /**
-    * Set the non-encoded path section of this {@link Address}. The given value will be stored without additional
+    * Set the path section of this {@link Address}. The given value will be stored without additional
     * encoding or decoding.
     */
    public AddressBuilderPath path(CharSequence path)
@@ -47,16 +51,24 @@ public class AddressBuilderPort
    }
 
    /**
-    * Set the encoded path section of this {@link Address}. The given value will be decoded before it is stored.
+    * Set the path section of this {@link Address}. The given value will be decoded before it is stored.
     */
-   public AddressBuilderPath pathEncoded(CharSequence path)
+   public AddressBuilderPath pathDecoded(CharSequence path)
    {
-      return parent.pathEncoded(path);
+      return parent.pathDecoded(path);
    }
 
    /**
-    * Set a query-parameter to a value or multiple values. The given name and values will be encoded before they are
-    * stored.
+    * Set the path section of this {@link Address}. The given value will be encoded before it is stored.
+    */
+   public AddressBuilderPath pathEncoded(CharSequence path)
+   {
+      return parent.pathDecoded(path);
+   }
+
+   /**
+    * Set a query-parameter to a value or multiple values. The given name and values will be stored without additional
+    * encoding or decoding.
     */
    public AddressBuilderQuery query(CharSequence name, Object... values)
    {
@@ -64,8 +76,15 @@ public class AddressBuilderPort
    }
 
    /**
-    * Set a pre-encoded query-parameter to a pre-encoded value or multiple values. The given name and values be stored
-    * without additional encoding or decoding.
+    * Set a query-parameter value or multiple values. The given name and values be decoded before they are stored.
+    */
+   public AddressBuilderQuery queryDecoded(CharSequence name, Object... values)
+   {
+      return parent.queryDecoded(name, values);
+   }
+
+   /**
+    * Set a query-parameter to a value or multiple values. The given name and values be encoded before they are stored.
     */
    public AddressBuilderQuery queryEncoded(CharSequence name, Object... values)
    {

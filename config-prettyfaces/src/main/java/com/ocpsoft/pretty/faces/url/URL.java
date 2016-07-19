@@ -15,8 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.url;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,8 +22,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ocpsoft.urlbuilder.util.Decoder;
+import org.ocpsoft.urlbuilder.util.Encoder;
+
 import com.ocpsoft.pretty.faces.util.StringUtils;
 
+/**
+ * Utility class providing common functionality required when interacting with and asking questions of URLs.
+ * 
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ */
 public class URL
 {
    private Metadata metadata = new Metadata();
@@ -96,7 +102,7 @@ public class URL
          List<String> result = new ArrayList<String>();
          for (String segment : segments)
          {
-            result.add(decodeSegment(segment));
+            result.add(Decoder.path(segment));
          }
          decodedSegments.put(encoding, Collections.unmodifiableList(result));
       }
@@ -111,63 +117,9 @@ public class URL
       List<String> resultSegments = new ArrayList<String>();
       for (String segment : segments)
       {
-         resultSegments.add(encodeSegment(segment));
+         resultSegments.add(Encoder.path(segment));
       }
       return resultSegments;
-   }
-
-   /**
-    * Encodes a segment using the {@link URI} class.
-    * 
-    * @param segment The segment to encode
-    * @return the encoded segment
-    */
-   private static String encodeSegment(final String segment)
-   {
-      try
-      {
-         final URI uri = new URI("http", "localhost", "/" + segment, null);
-         return uri.toASCIIString().substring(17);
-      }
-      catch (URISyntaxException e)
-      {
-         throw new IllegalArgumentException(e);
-      }
-   }
-
-   /**
-    * Decodes a segment using the {@link URI} class.
-    * 
-    * @param segment The segment to decode
-    * @return the decoded segment
-    */
-   private static String decodeSegment(final String segment)
-   {
-      try
-      {
-
-         /*
-          * Note: The replacement allows to call decode() on an already decoded URL 
-          * and supports decoding of strings that contain not encoded characters. 
-          * IHMO this is only needed because there seem to be situation in PrettyFaces 
-          * where decoded URLs are decoded again.
-          */
-
-         final URI uri = new URI(("http://localhost/" + segment)
-                  .replace(" ", "%20")
-                  .replace("\"", "%22")
-                  .replace("[", "%5B")
-                  .replace("]", "%5D")
-                  .replace("<", "%3C")
-                  .replace(">", "%3E")
-                  .replace("|", "%7C")
-                  );
-         return uri.getPath().substring(1);
-      }
-      catch (URISyntaxException e)
-      {
-         throw new IllegalArgumentException(e);
-      }
    }
 
    /**

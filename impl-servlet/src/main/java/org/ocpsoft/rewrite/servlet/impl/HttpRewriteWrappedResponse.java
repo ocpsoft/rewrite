@@ -49,7 +49,6 @@ import org.ocpsoft.rewrite.servlet.event.OutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.OutboundRewriteProducer;
 import org.ocpsoft.rewrite.servlet.spi.RewriteLifecycleListener;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
 import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
@@ -57,7 +56,6 @@ import org.ocpsoft.urlbuilder.AddressBuilder;
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("deprecation")
 public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
 {
    private final HttpServletRequest request;
@@ -378,7 +376,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeRedirectURL(final String url)
    {
-      Address address = AddressBuilder.create(URLBuilder.createFrom(url).toURL());
+      Address address = AddressBuilder.create(url);
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(ServletRewriteFlow.ABORT_REQUEST))
@@ -391,7 +389,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeURL(final String url)
    {
-      Address address = AddressBuilder.create(URLBuilder.createFrom(url).toURL());
+      Address address = AddressBuilder.create(url);
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(ServletRewriteFlow.ABORT_REQUEST))

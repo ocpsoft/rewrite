@@ -15,6 +15,9 @@
  */
 package org.ocpsoft.urlbuilder;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Represents a valid web address, or valid web address fragment.
  * 
@@ -84,7 +87,8 @@ public interface Address
    String getSchemeSpecificPart();
 
    /**
-    * Return <code>true</code> if this {@link Address} has a scheme specific part section, otherwise return <code>false</code>.
+    * Return <code>true</code> if this {@link Address} has a scheme specific part section, otherwise return
+    * <code>false</code>.
     */
    boolean isSchemeSpecificPartSet();
 
@@ -92,6 +96,11 @@ public interface Address
     * Get the query section of this {@link Address}, or <code>null</code> if no query is set.
     */
    String getQuery();
+
+   /**
+    * Get the query parameters of this {@link Address}, or <code>null</code> if no query is set.
+    */
+   Map<String, List<Object>> getQueryParameters();
 
    /**
     * Return <code>true</code> if this {@link Address} contains a query section, otherwise return <code>false</code>.

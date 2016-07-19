@@ -32,20 +32,18 @@ import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternParser;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternParser;
-import org.ocpsoft.rewrite.servlet.config.HttpCondition;
 import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.servlet.spi.RequestParameterProvider;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 /**
  * A {@link Condition} that inspects the value of {@link HttpServletRewrite#getAddress()} path and query string.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-@SuppressWarnings("deprecation")
 public abstract class PathAndQuery extends HttpCondition implements Parameterized
 {
    private final ParameterizedPatternParser expression;
@@ -132,7 +130,8 @@ public abstract class PathAndQuery extends HttpCondition implements Parameterize
             return false;
       }
       else
-         url = URLBuilder.createFrom(event.getInboundAddress().getPathAndQuery()).decode().toURL();
+         url = AddressBuilder.begin().pathDecoded(event.getInboundAddress().getPath())
+                  .queryDecoded(event.getInboundAddress().getQuery()).build().toString();
 
       String contextPath = event.getContextPath();
       if (!contextPath.equals("/") && url.startsWith(contextPath))

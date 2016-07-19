@@ -20,7 +20,7 @@ package org.ocpsoft.urlbuilder;
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class AddressBuilderQuery
+public class AddressBuilderQuery implements BuildableAddress
 {
    private AddressBuilder parent;
 
@@ -29,17 +29,21 @@ public class AddressBuilderQuery
       this.parent = parent;
    }
 
-   /**
-    * Generate an {@link Address} representing the current state of this {@link AddressBuilder}.
-    */
+   @Override
    public Address build()
    {
       return parent.build();
    }
 
+   @Override
+   public Address buildLiteral()
+   {
+      return parent.buildLiteral();
+   }
+
    /**
-    * Set a query-parameter to a value or multiple values. The given name and values will be encoded before they are
-    * stored.
+    * Set a query-parameter to a value or multiple values. The given name and values will be stored without additional
+    * encoding or decoding.
     */
    public AddressBuilderQuery query(CharSequence name, Object value)
    {
@@ -47,8 +51,15 @@ public class AddressBuilderQuery
    }
 
    /**
-    * Set a pre-encoded query-parameter to a pre-encoded value or multiple values. The given name and values be stored
-    * without additional encoding or decoding.
+    * Set a query-parameter value or multiple values. The given name and values be decoded before they are stored.
+    */
+   public AddressBuilderQuery queryDecoded(CharSequence name, Object... values)
+   {
+      return parent.queryDecoded(name, values);
+   }
+
+   /**
+    * Set a query-parameter to a value or multiple values. The given name and values be encoded before they are stored.
     */
    public AddressBuilderQuery queryEncoded(CharSequence name, Object value)
    {

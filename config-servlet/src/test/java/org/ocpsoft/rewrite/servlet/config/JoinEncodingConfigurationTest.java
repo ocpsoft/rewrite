@@ -33,7 +33,6 @@ import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.common.util.Streams;
@@ -85,7 +84,6 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    }
 
    @Test
-   @Ignore // see: https://github.com/ocpsoft/rewrite/issues/195
    public void testJoinSupportsSingleCurlyBrace() throws Exception
    {
       HttpAction<HttpGet> action = get("/encoding/foo%7Bbar");
@@ -97,7 +95,17 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    }
 
    @Test
-   @Ignore // see: https://github.com/ocpsoft/rewrite/issues/195
+   public void testJoinSupportsCurlyBracketGroup() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/encoding/foo%5B%5D");
+      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+
+      String responseContent = action.getResponseContent();
+      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
+      assertThat(responseContent, containsString("getParameter('param') = foo[]"));
+   }
+
+   @Test
    public void testJoinSupportsCurlyBraceGroup() throws Exception
    {
       HttpAction<HttpGet> action = get("/encoding/foo%7Bbar%7D");
@@ -174,7 +182,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
 
    /**
     * Make sure that an URL containing a space in the query string (encoded as '+') is rewritten to a path containing
-    * the space encoded as %20.
+    * the space encoded as %20. This effectively tests if proper encoding/decoding is occurring throughout the entire
+    * life-cycle of the parameter.
     */
    @Test
    public void testOutboundRewritingSpaceCharacter() throws Exception
