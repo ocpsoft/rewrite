@@ -20,7 +20,16 @@
    </parent>
 
    <properties>
+
+      <!-- Encoding -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+      <!-- JDK version -->
+      <maven.compiler.target>1.6</maven.compiler.target>
+      <maven.compiler.source>1.6</maven.compiler.source>
+
+      <!-- Versions -->
       <version.jboss.spec>3.0.2.Final</version.jboss.spec>
       <version.junit>4.11</version.junit>
       <version.common>1.0.5.Final</version.common>
@@ -33,6 +42,7 @@
       <version.glassfish3>3.1.2.2</version.glassfish3>
       <version.glassfish4>4.0</version.glassfish4>
       <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
+
    </properties>
 
    <modules>
