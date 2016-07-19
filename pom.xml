@@ -27,13 +27,9 @@
       <version.logging>1.0.4.Final</version.logging>
       <version.arquillian>1.1.1.Final</version.arquillian>
       <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
-      <version.arquillian.jetty>1.0.0.CR2</version.arquillian.jetty>
       <version.arquillian.glassfish>1.0.0.CR4</version.arquillian.glassfish>
-      <version.arquillian.tomcat>1.0.0.CR5</version.arquillian.tomcat>
-      <version.jetty>8.1.2.v20120308</version.jetty>
       <version.jbossas>7.1.1.Final</version.jbossas>
       <version.wildfly>8.2.0.Final</version.wildfly>
-      <version.tomcat>7.0.42</version.tomcat>
       <version.glassfish3>3.1.2.2</version.glassfish3>
       <version.glassfish4>4.0</version.glassfish4>
       <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
@@ -414,93 +410,6 @@
 
    <profiles>
       <profile>
-         <id>JETTY_EMBEDDED_8.X</id>
-         <dependencies>
-            <dependency>
-               <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-jetty-embedded-7</artifactId>
-               <version>${version.arquillian.jetty}</version>
-               <scope>test</scope>
-               <exclusions>
-                  <!-- Don't include the old version of arquillian-container-spi -->
-                  <exclusion>
-                     <groupId>org.jboss.arquillian.container</groupId>
-                     <artifactId>arquillian-container-spi</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
-            <dependency>
-               <groupId>org.eclipse.jetty</groupId>
-               <artifactId>jetty-webapp</artifactId>
-               <version>${version.jetty}</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.eclipse.jetty</groupId>
-               <artifactId>jetty-plus</artifactId>
-               <version>${version.jetty}</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-simple</artifactId>
-               <version>1.5.10</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-log4j12</artifactId>
-               <version>1.5.10</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.ocpsoft.logging</groupId>
-               <artifactId>logging-adapter-slf4j</artifactId>
-               <scope>test</scope>
-            </dependency>
-
-            <!-- Weld servlet, EL and JSP required for testing CDI injections -->
-            <!-- Don't use 'org.jboss.weld.servlet:weld-servlet' as it has an incompatible slf4j version shaded in -->
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet-core</artifactId>
-               <version>1.1.4.Final</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.jboss.weld</groupId>
-               <artifactId>weld-core</artifactId>
-               <version>1.1.4.Final</version>
-               <scope>test</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.enterprise</groupId>
-               <artifactId>cdi-api</artifactId>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.glassfish</groupId>
-               <artifactId>javax.faces</artifactId>
-               <version>2.1.7</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <version>2.2</version>
-               <scope>test</scope>
-            </dependency>
-            <dependency>
-               <groupId>javax.servlet.jsp</groupId>
-               <artifactId>jsp-api</artifactId>
-               <version>2.2</version>
-               <scope>test</scope>
-            </dependency>
-         </dependencies>
-      </profile>
-
-      <profile>
          <id>JBOSS_AS_MANAGED_7.X</id>
          <build>
             <plugins>
@@ -797,92 +706,6 @@
                <version>${version.jboss.spec}</version>
                <type>pom</type>
                <scope>provided</scope>
-            </dependency>
-         </dependencies>
-      </profile>
-
-      <profile>
-         <id>TOMCAT_MANAGED_7_WELD</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <artifactId>maven-antrun-plugin</artifactId>
-                  <version>1.7</version>
-                  <executions>
-                     <execution>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                           <goal>run</goal>
-                        </goals>
-                        <configuration>
-                           <target>
-                              <mkdir dir="${container.download.dir}" />
-                              <get dest="${container.download.dir}" verbose="true" skipexisting="true" src="http://archive.apache.org/dist/tomcat/tomcat-7/v${version.tomcat}/bin/apache-tomcat-${version.tomcat}.zip" />
-                              <unzip src="${container.download.dir}/apache-tomcat-${version.tomcat}.zip" dest="${project.build.directory}/container" />
-                              <move file="${project.build.directory}/container/apache-tomcat-${version.tomcat}" tofile="${project.build.directory}/container/apache-tomcat-7" />
-                              <!-- Change all TCP ports from "xxxx" to "3xxxx" -->
-                              <replace file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml" token="port=&quot;8005&quot;" value="port=&quot;38005&quot;" />
-                              <replace file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml" token="port=&quot;8080&quot;" value="port=&quot;38080&quot;" />
-                              <replace file="${project.build.directory}/container/apache-tomcat-7/conf/server.xml" token="port=&quot;8009&quot;" value="port=&quot;38009&quot;" />
-                              <!-- Authentication for Tomcat Manager -->
-                              <echo file="${project.build.directory}/container/apache-tomcat-7/conf/tomcat-users.xml">
-                                 <![CDATA[
-                                 <?xml version="1.0" encoding="UTF-8"?>
-                                 <tomcat-users>
-                                    <role rolename="manager-script" />
-                                    <user username="arquillian" password="arquillian" roles="manager-script" />
-                                 </tomcat-users>
-                                 ]]>
-                              </echo>
-                           </target>
-                        </configuration>
-                     </execution>
-                  </executions>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>
-                     <systemProperties>
-                        <arquillian.launch>tomcat_managed</arquillian.launch>
-                        <rewrite.test.cdi>weld</rewrite.test.cdi>
-                     </systemProperties>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-         <dependencies>
-            <dependency>
-               <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-tomcat-managed-7</artifactId>
-               <version>${version.arquillian.tomcat}</version>
-               <scope>test</scope>
-            </dependency>
-         </dependencies>
-      </profile>
-
-      <profile>
-         <id>TOMCAT_MANAGED_7_OWB</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>
-                     <systemProperties>
-                        <arquillian.launch>tomcat_managed</arquillian.launch>
-                        <rewrite.test.cdi>owb</rewrite.test.cdi>
-                     </systemProperties>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-         <dependencies>
-            <dependency>
-               <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-tomcat-managed-7</artifactId>
-               <version>${version.arquillian.tomcat}</version>
-               <scope>test</scope>
             </dependency>
          </dependencies>
       </profile>
