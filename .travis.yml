@@ -14,11 +14,11 @@ matrix:
     - env: CONTAINER=WILDFLY_MANAGED_8
       jdk: oraclejdk8
     - env: CONTAINER=GLASSFISH_MANAGED_3.1
-      jdk: openjdk6
+      jdk: openjdk7
     - env: CONTAINER=GLASSFISH_MANAGED_4.0
       jdk: oraclejdk7
     - env: CONTAINER=TOMEE_MANAGED_1.5
-      jdk: openjdk6
+      jdk: openjdk7
 notifications:
   email:
     - "ocpsoft-ci@googlegroups.com"
