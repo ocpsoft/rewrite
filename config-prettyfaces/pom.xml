@@ -33,6 +33,7 @@
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-annotations-impl</artifactId>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
