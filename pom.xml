@@ -29,6 +29,10 @@
       <maven.compiler.target>1.7</maven.compiler.target>
       <maven.compiler.source>1.7</maven.compiler.source>
 
+      <!-- Required by ocpsoft-parent for the compiler configuration -->
+      <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
+      <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
+
       <!-- Versions -->
       <version.jboss.spec>3.0.2.Final</version.jboss.spec>
       <version.junit>4.11</version.junit>
