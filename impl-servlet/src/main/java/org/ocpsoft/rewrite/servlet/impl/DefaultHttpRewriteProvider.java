@@ -181,7 +181,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                   }
                }
                catch (Exception e) {
-                  throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]");
+                  throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]", e);
                }
             }
          }
@@ -343,7 +343,7 @@ public class DefaultHttpRewriteProvider extends HttpRewriteProvider implements N
                   }
                }
                catch (Exception e) {
-                  throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]");
+                  throw new RewriteException("Error during [" + event + "] while executing rule [" + rule + "]", e);
                }
             }
          }
