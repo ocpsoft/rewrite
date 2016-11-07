@@ -182,7 +182,10 @@ public class AddressBuilder
     */
    AddressBuilderQuery query(CharSequence name, Object... values)
    {
-      this.queries.put(name.toString(), Parameter.create(name.toString(), values));
+      if (name != null && values != null)
+      {
+         this.queries.put(name.toString(), Parameter.create(name.toString(), values));
+      }
       return new AddressBuilderQuery(this);
    }
 
@@ -191,7 +194,7 @@ public class AddressBuilder
     */
    AddressBuilderQuery queryDecoded(CharSequence name, Object... values)
    {
-      if (values != null)
+      if (name != null && values != null)
       {
          List<Object> encodedValues = new ArrayList<Object>(values.length);
          for (Object value : values)
@@ -211,7 +214,7 @@ public class AddressBuilder
     */
    AddressBuilderQuery queryEncoded(CharSequence name, Object... values)
    {
-      if (values != null)
+      if (name != null && values != null)
       {
          List<Object> encodedValues = new ArrayList<Object>(values.length);
          for (Object value : values)
@@ -323,7 +326,7 @@ public class AddressBuilder
     */
    void setDecoded(CharSequence name, Object... values)
    {
-      if (values != null)
+      if (name != null && values != null)
       {
          List<Object> encodedValues = new ArrayList<Object>(values.length);
          for (Object value : values)
@@ -342,7 +345,7 @@ public class AddressBuilder
     */
    void setEncoded(CharSequence name, Object... values)
    {
-      if (values != null)
+      if (name != null && values != null)
       {
          List<Object> encodedValues = new ArrayList<Object>(values.length);
          for (Object value : values)

@@ -314,4 +314,33 @@ public class AddressBuilderTest
       assertEquals("http://localhost/somepath/%7Bsomething%7D", address.toString());
    }
 
+   @Test
+   public void testQueryWithNull() {
+      assertEquals("",
+              AddressBuilder.begin().query(null).build().toString());
+   }
+
+   @Test
+   public void testQueryDecodedWithNull() {
+      assertEquals("",
+              AddressBuilder.begin().queryDecoded(null).build().toString());
+   }
+
+   @Test
+   public void testQueryEncodedWithNull() {
+      assertEquals("",
+              AddressBuilder.begin().queryEncoded(null).build().toString());
+   }
+
+   @Test
+   public void testSetEncodedWithNull() {
+      assertEquals("//localhost",
+              AddressBuilder.begin().domain("localhost").setEncoded(null).build().toString());
+   }
+
+   @Test
+   public void testSetDecodedWithNull() {
+      assertEquals("//localhost",
+              AddressBuilder.begin().domain("localhost").setDecoded(null).build().toString());
+   }
 }
