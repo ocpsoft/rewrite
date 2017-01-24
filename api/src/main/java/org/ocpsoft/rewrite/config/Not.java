@@ -33,7 +33,7 @@ import org.ocpsoft.rewrite.event.Rewrite;
  */
 public final class Not extends DefaultConditionBuilder implements CompositeCondition
 {
-   private final Condition condition;
+   private Condition condition;
 
    private Not(final Condition condition)
    {
@@ -68,6 +68,11 @@ public final class Not extends DefaultConditionBuilder implements CompositeCondi
    public List<Condition> getConditions()
    {
       return Arrays.asList(condition);
+   }
+
+   public void setCondition(final Condition condition)
+   {
+      this.condition = condition;
    }
 
    @Override
