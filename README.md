@@ -67,6 +67,8 @@ Get Started
         ---
         com.example.ExampleConfigurationProvider
 
+Note that your annotated class won't be found, by default, if your ConfigurationProvider is in a jar inside a war. You can either set the servlet parameter `org.ocpsoft.rewrite.annotation.SCAN_LIB_DIRECTORY` to `true`, or use the ServiceLoader approach instead.
+
 5. Add rules to your configuration. Condition objects such as 'Direction.isInbound()' and 'Path.matches(...)' can be found in the 'org.ocpsoft.rewrite.config.*' and 'org.ocpsoft.rewrite.servlet.config.*' packages.
 
 6. Consider using Rewrite extensions for extra power:
