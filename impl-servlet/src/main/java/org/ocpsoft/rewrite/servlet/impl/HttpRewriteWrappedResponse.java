@@ -389,7 +389,21 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    @Override
    public String encodeURL(final String url)
    {
-      Address address = AddressBuilder.create(url);
+
+      /*
+       * In some situations "url" may be not valid according to the rules defined in the RFC.
+       * In this case AddressBuilder.create() will fail. In these situations we basically
+       * skip outbound rewriting and just return the result of the super class.
+       */
+      Address address;
+      try
+      {
+         address = AddressBuilder.create(url);
+      }
+      catch (IllegalArgumentException e) {
+         return super.encodeURL(url);
+      }
+
       OutboundServletRewrite<ServletRequest, ServletResponse, Address> event = rewrite(address);
 
       if (event.getFlow().is(ServletRewriteFlow.ABORT_REQUEST))
@@ -397,6 +411,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          return event.getOutboundAddress().toString();
       }
       return super.encodeURL(event.getOutboundAddress().toString());
+
    }
 
    @SuppressWarnings({ "unchecked", "rawtypes" })
