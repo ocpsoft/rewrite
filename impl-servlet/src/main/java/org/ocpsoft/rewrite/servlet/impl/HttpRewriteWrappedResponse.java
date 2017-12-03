@@ -401,6 +401,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
          address = AddressBuilder.create(url);
       }
       catch (IllegalArgumentException e) {
+         log.warn("Skipping outbound rewriting of invalid URL: " + url);
          return super.encodeURL(url);
       }
 
