@@ -17,19 +17,17 @@ public class Decoder
       return decode(query, true);
    }
 
-   public static String decode(final CharSequence path, final boolean query)
-   {
-
+   public static String decode(final CharSequence path, final boolean query) {
       StringBuilder decoded = new StringBuilder();
       int length = path.length();
       int pos = 0;
 
       while (pos < length) {
-
          // '+' -> ' ' for query strings
          if (query && path.charAt(pos) == '+') {
             decoded.append(' ');
             pos++;
+            continue;
          }
 
          // percent-encoded values
@@ -68,7 +66,6 @@ public class Decoder
             else {
                decoded.append('\uFFFD');
             }
-
          }
 
          // not escaped
@@ -76,11 +73,7 @@ public class Decoder
             decoded.append(path.charAt(pos));
             pos++;
          }
-
       }
-
       return decoded.toString();
-
    }
-
 }

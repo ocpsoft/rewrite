@@ -29,6 +29,14 @@ public class DecoderTest
    }
 
    @Test
+   public void queryEndingWithSpaceDecoding()
+   {
+      assertEquals("foo ", Decoder.decode("foo%20", true));
+      assertEquals("foo ", Decoder.decode("foo ", true));
+      assertEquals("foo ", Decoder.decode("foo+", true));
+   }
+
+   @Test
    public void pathSpaceDecoding()
    {
       assertEquals("/foo bar", Decoder.path("/foo%20bar"));
