@@ -13,7 +13,7 @@
    <parent>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-parent</artifactId>
-      <version>3.4.2-SNAPSHOT</version>
+      <version>3.4.2.Final</version>
       <relativePath>../</relativePath>
    </parent>
 
