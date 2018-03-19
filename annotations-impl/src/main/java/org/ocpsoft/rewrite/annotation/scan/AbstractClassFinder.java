@@ -123,6 +123,11 @@ public abstract class AbstractClassFinder implements ClassFinder
    protected boolean mustProcessClass(String className)
    {
 
+      // skip versioned classes in Java 9 Multi-release JAR files
+      if (className.startsWith("META-INF.versions")) {
+         return false;
+      }
+       
       // the default package
       String packageName = "";
 
