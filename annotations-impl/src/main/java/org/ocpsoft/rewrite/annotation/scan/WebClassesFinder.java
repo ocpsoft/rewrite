@@ -64,11 +64,13 @@ public class WebClassesFinder extends AbstractClassFinder
       {
          // get the absolute URL of the classes folder
          URL classesFolderUrl = servletContext.getResource(CLASSES_FOLDER);
-
+         if (classesFolderUrl == null)
+        	 classesFolderUrl = Thread.currentThread().getContextClassLoader().getResource("");
+         
          // abort if classes folder is missing
          if (classesFolderUrl == null)
          {
-            log.warn("Cannot find classes folder: " + CLASSES_FOLDER);
+            log.warn("Cannot find classes folder");
             return;
          }
 
