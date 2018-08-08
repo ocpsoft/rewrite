@@ -111,7 +111,7 @@ public abstract class AbstractClassFinder implements ClassFinder
       String relativePath = filename.substring(0, endIndex);
 
       // replace / by . to create FQCN
-      return relativePath.replace('/', '.');
+      return relativePath.replace('/', '.').replace('\\', '.');
    }
 
    /**

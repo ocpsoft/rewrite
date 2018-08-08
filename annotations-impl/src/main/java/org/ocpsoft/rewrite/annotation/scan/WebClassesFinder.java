@@ -15,12 +15,16 @@
  */
 package org.ocpsoft.rewrite.annotation.scan;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.jar.JarEntry;
 
 import javax.servlet.ServletContext;
 
@@ -47,6 +51,10 @@ public class WebClassesFinder extends AbstractClassFinder
     * Manage a set of classes already processed
     */
    private final Set<String> processedClasses = new LinkedHashSet<String>();
+   
+	public static final String CLASS_EXTENSION = ".class";
+	public static final int CLASS_EXTENSION_LENGTH = CLASS_EXTENSION.length();
+	public static final String META_INF = "META-INF";
 
    /**
     * Initialization
@@ -56,7 +64,7 @@ public class WebClassesFinder extends AbstractClassFinder
    {
       super(servletContext, classLoader, packageFilter, byteCodeFilter);
    }
-
+   
    @Override
    public void findClasses(ClassVisitor visitor)
    {
@@ -64,27 +72,85 @@ public class WebClassesFinder extends AbstractClassFinder
       {
          // get the absolute URL of the classes folder
          URL classesFolderUrl = servletContext.getResource(CLASSES_FOLDER);
-         if (classesFolderUrl == null)
-        	 classesFolderUrl = Thread.currentThread().getContextClassLoader().getResource("");
+         if (classesFolderUrl != null) {
+             // call recursive directory processing method
+             processDirectory(classesFolderUrl, CLASSES_FOLDER, visitor);
+             return;
+         }
+       	 classesFolderUrl = Thread.currentThread().getContextClassLoader().getResource("");
+       	 if (classesFolderUrl != null) {
+			processUrl(visitor, classesFolderUrl);
+			return;
+		}
          
          // abort if classes folder is missing
-         if (classesFolderUrl == null)
-         {
-            log.warn("Cannot find classes folder");
-            return;
-         }
-
-         // call recursive directory processing method
-         processDirectory(classesFolderUrl, CLASSES_FOLDER, visitor);
-
+         log.warn("Cannot find classes folder");
       }
       catch (MalformedURLException e)
       {
          throw new IllegalStateException("Invalid URL: " + e.getMessage(), e);
       }
    }
+   
+   public void processUrl(ClassVisitor visitor, URL url) {
+		try {
+			if ("file".equals(url.getProtocol())) {
+				File file = new File(url.getFile());
+				scanDir(visitor, file, file.getAbsolutePath().length() + 1);
+			} else if ("jar".equals(url.getProtocol())) {
+				JarURLConnection connection = (JarURLConnection)url.openConnection();
+				scanJar(visitor, connection);
+			}
+		} catch (Exception exception) {
+			throw new IllegalArgumentException("Error scanning url '" + url.toExternalForm() + "'", exception);
+		}
+   }
+	private void scanDir(ClassVisitor visitor, File file, int prefix) throws Exception {
+		if (file.isDirectory()) {
+			for (File child : file.listFiles()) {
+				scanDir(visitor, child, prefix);
+			}
+		} else if (file.getName().endsWith(CLASS_EXTENSION)) {
+			String className = getClassName(file.getAbsolutePath().substring(prefix));
+			handleClassUrl(visitor, file.toURI().toURL(), className);
+		}
+	}
+	private void scanJar(ClassVisitor visitor, JarURLConnection connection) throws Exception {
+		for (Enumeration<JarEntry> enumeration = connection.getJarFile().entries(); enumeration.hasMoreElements();) {
+			JarEntry entry = enumeration.nextElement();
+			if (!entry.isDirectory() && !entry.getName().startsWith(META_INF) &&
+					entry.getName().endsWith(CLASS_EXTENSION)) {
+				String className = getClassName(entry.getName());
+				URL url = new URL(connection.getURL(), entry.getName());
+				handleClassUrl(visitor, url, className);
+			}
+		}
+	}
+	private void handleClassUrl(ClassVisitor visitor, URL url, String className) {
+		if (mustProcessClass(className) && !processedClasses.contains(className)) {
+			processedClasses.add(className);
+			InputStream classFileStream = null;
+			try {
+				try {
+					classFileStream = url.openStream();
+				} catch (Exception e) {
+					if (log.isDebugEnabled())
+						log.debug("Cound not obtain InputStream for class: " + className, e);
+				}
+				processClass(className, classFileStream, visitor);
+			} finally {
+				try {
+					if (classFileStream != null)
+						classFileStream.close();
+				} catch (IOException e) {
+					if (log.isDebugEnabled())
+						log.debug("Failed to close input stream: " + e.getMessage());
+				}
+			}
+		}
+	}	
 
-   /**
+/**
     * Scan for classes in a single directory. This method will call itself recursively if it finds other directories and
     * call {@link #processClass(String, InputStream, ClassVisitorImpl) when it finds a file ending with ".class" and
     * that is accepted by the {@link PackageFilter}
