@@ -40,6 +40,7 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
 {
    private final Logger log = Logger.getLogger(AnnotationConfigProvider.class);
 
+   public static final String CONFIG_SCAN_CLASSES_DIR = "org.ocpsoft.rewrite.annotation.SCAN_CLASSES_DIRECTORY";
    public static final String CONFIG_SCAN_LIB_DIR = "org.ocpsoft.rewrite.annotation.SCAN_LIB_DIRECTORY";
    public static final String CONFIG_BASE_PACKAGES = "org.ocpsoft.rewrite.annotation.BASE_PACKAGES";
 
@@ -61,9 +62,17 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
       // retrieve the optional package filter configuration parameter
       String packageFilters = servletContext.getInitParameter(CONFIG_BASE_PACKAGES);
 
+      // does the user not want to scan the WEB-INF/classes directory
+      boolean scanClassesDir = true;
+      String jarConfig = servletContext.getInitParameter(CONFIG_SCAN_CLASSES_DIR);
+      if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("false"))
+      {
+    	  scanClassesDir = false;
+      }
+      
       // does the user want to scan the WEB-INF/lib directory
       boolean scanLibDir = false;
-      String jarConfig = servletContext.getInitParameter(CONFIG_SCAN_LIB_DIR);
+      jarConfig = servletContext.getInitParameter(CONFIG_SCAN_LIB_DIR);
       if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("true"))
       {
          scanLibDir = true;
@@ -121,7 +130,10 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
       // TODO this should be pulled out into a utility allowing it to run in Java SE
       // compile a list of class finders to run
       List<ClassFinder> classFinders = new ArrayList<ClassFinder>();
-      classFinders.add(new WebClassesFinder(servletContext, classloader, packageFilter, byteCodeFilter));
+      if (scanClassesDir)
+      {
+         classFinders.add(new WebClassesFinder(servletContext, classloader, packageFilter, byteCodeFilter));
+      }
       if (scanLibDir)
       {
          classFinders.add(new WebLibFinder(servletContext, classloader, packageFilter, byteCodeFilter));
