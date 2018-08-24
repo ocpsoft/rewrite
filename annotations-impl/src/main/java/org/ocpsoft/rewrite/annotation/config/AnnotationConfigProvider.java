@@ -64,16 +64,16 @@ public class AnnotationConfigProvider extends HttpConfigurationProvider
 
       // does the user not want to scan the WEB-INF/classes directory
       boolean scanClassesDir = true;
-      String jarConfig = servletContext.getInitParameter(CONFIG_SCAN_CLASSES_DIR);
-      if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("false"))
+      String classesConfig = servletContext.getInitParameter(CONFIG_SCAN_CLASSES_DIR);
+      if ((classesConfig != null) && classesConfig.trim().equalsIgnoreCase("false"))
       {
     	  scanClassesDir = false;
       }
       
       // does the user want to scan the WEB-INF/lib directory
       boolean scanLibDir = false;
-      jarConfig = servletContext.getInitParameter(CONFIG_SCAN_LIB_DIR);
-      if ((jarConfig != null) && jarConfig.trim().equalsIgnoreCase("true"))
+      String libConfig = servletContext.getInitParameter(CONFIG_SCAN_LIB_DIR);
+      if ((libConfig != null) && libConfig.trim().equalsIgnoreCase("true"))
       {
          scanLibDir = true;
       }
