@@ -57,10 +57,11 @@ public class PrettyFacesWrappedRequest extends HttpServletRequestWrapper
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Map<String, String[]> getParameterMap()
     {
-       Map<String, String[]> allParameters = new TreeMap<String, String[]>();
+       Map<String, String[]> allParameters = new TreeMap<>();
        allParameters.putAll(super.getParameterMap());
        allParameters.putAll(modifiableParameters);
        return Collections.unmodifiableMap(allParameters);

@@ -51,7 +51,7 @@ public class MockClassLoader extends URLClassLoader
       }
    }
 
-   private <T> Enumeration<T> enumeration(final T... elements)
+   private <T> Enumeration<T> enumeration(@SuppressWarnings("unchecked") final T... elements)
    {
       return new Enumeration<T>()
       {
