@@ -22,6 +22,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+/*
+ * FIXME:  Remove references to deprecated code.
+ * Leaving test class while the code is still usable.  
+ * Adding task as a better method of tracking.  
+ */
+@Deprecated
 public class URLBuilderTest
 {
    @Test(expected = IllegalArgumentException.class)

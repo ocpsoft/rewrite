@@ -86,7 +86,7 @@ public class LocaleTranspositionTest extends RewriteTest
    {
       HttpAction<HttpGet> action = get("/en/search.xhtml");
       Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertThat(action.getResponseContent(), org.junit.matchers.JUnitMatchers.containsString("/en/search"));
+      Assert.assertThat(action.getResponseContent(), org.hamcrest.CoreMatchers.containsString("/en/search"));
    }
 
    /**
