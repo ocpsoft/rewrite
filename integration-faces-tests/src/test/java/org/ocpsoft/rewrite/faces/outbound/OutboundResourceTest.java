@@ -16,9 +16,7 @@
 package org.ocpsoft.rewrite.faces.outbound;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;

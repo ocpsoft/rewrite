@@ -15,7 +15,7 @@ matrix:
     - env: CONTAINER=GLASSFISH_MANAGED_3.1
       jdk: openjdk7
     - env: CONTAINER=GLASSFISH_MANAGED_4.0
-      jdk: oraclejdk7
+      jdk: oraclejdk8
     - env: CONTAINER=TOMEE_MANAGED_1.5
       jdk: openjdk7
 notifications:

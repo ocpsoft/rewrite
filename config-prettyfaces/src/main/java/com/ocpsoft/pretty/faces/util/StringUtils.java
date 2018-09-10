@@ -78,4 +78,19 @@ public class StringUtils
       return result;
    }
 
+   public static String removePathPrefix(String prefix, String url)
+   {
+       // if the remaining path does not start with a / 
+       // then don't remove the context path
+       // this handles context paths like / or /context/ that remove too much 
+       // or URLs like /contextPathPlus that don't actually match /contextPath
+       // this also addresses https://github.com/ocpsoft/rewrite/issues/180
+       if (url.charAt(prefix.length()) == '/' && url.startsWith(prefix))
+       {
+          url = url.substring(prefix.length());
+       }
+
+       return url;
+   }
+
 }

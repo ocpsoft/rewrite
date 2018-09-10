@@ -63,11 +63,14 @@ public class PrettyFacesWrappedResponse extends HttpServletResponseWrapper
       this.prettyConfig = config;
    }
 
+   // they changed the API to use URL instead of Url
+   // someday they will remove it and this can be removed
+   // in the meantime, mark as deprecated so people don't use it
+   @Deprecated
    @Override
-   @SuppressWarnings("deprecation")
    public String encodeRedirectUrl(final String url)
    {
-      return super.encodeRedirectUrl(url);
+      return super.encodeRedirectURL(url);
    }
 
    @Override
@@ -76,11 +79,14 @@ public class PrettyFacesWrappedResponse extends HttpServletResponseWrapper
       return super.encodeRedirectURL(url);
    }
 
+   // they changed the API to use URL instead of Url
+   // someday they will remove it and this can be removed
+   // in the meantime, mark as deprecated so people don't use it
+   @Deprecated
    @Override
-   @SuppressWarnings("deprecation")
    public String encodeUrl(final String url)
    {
-      return super.encodeUrl(url);
+      return super.encodeURL(url);
    }
 
    @Override
