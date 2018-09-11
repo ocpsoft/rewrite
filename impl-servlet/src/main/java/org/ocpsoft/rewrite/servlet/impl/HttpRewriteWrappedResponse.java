@@ -356,6 +356,7 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       {
          return stream.toString();
       }
+   }
 
    /*
     * End buffering facilities
