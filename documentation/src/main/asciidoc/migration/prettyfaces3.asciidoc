@@ -116,7 +116,7 @@ Remove this entry completely and replace it with the corresponding entry for the
 </filter-mapping>
 ----
 
-NOTE: Please not that if you are using a Servlet 3.x container and your +web.xml+ doesn't set
+NOTE: Please note that if you are using a Servlet 3.x container and your +web.xml+ doesn't set
 +metadata-complete="true"+, you don't have to register the Rewrite filter manually, because
 this is done automatically. In this case just make sure to remove the old +PrettyFilter+ entry. 
 
@@ -277,7 +277,7 @@ code for an example:
 ).where("category").bindsTo(El.property("bean.category"))
 |===
 
-If your bean uses a JSF-specifc scope like +@ViewScoped+), you have to wrap 
+If your bean uses a JSF-specific scope like +@ViewScoped+), you have to wrap 
 the +El+ binding in a +PhaseBinding+. This will tell PrettyFaces to submit the 
 binding in the specified JSF phase which ensures, that the scope of the bean will
 be active.
@@ -531,7 +531,7 @@ public void action() {
 }
 |===
 
-TIP: Thie +@IgnorePostback+ annotation can also be used with +@Parameter+.
+TIP: The +@IgnorePostback+ annotation can also be used with +@Parameter+.
 
 If the annotated bean has a scope that requires an active JSF lifecycle like for example
 +@ViewScope+, you have to _defer_ the invocation so that it is executed within the JSF lifecycle. 
@@ -575,7 +575,7 @@ public class CustomerDetailsBean {
 
 PrettyFaces shipped with a special JSF component that simplified creating links to mapped URLs.
 However JSF 2.0 introduced +<h:link>+, which works fine for creating such links. Rewrite doesn't
-include any special JSF component. It is recomended to use the standard JSF component for rendering
+include any special JSF component. It is recommended to use the standard JSF component for rendering
 links.
 
 Using +<h:link>+ for creating links to Rewrite URLs is very easy. Just use the URL you
