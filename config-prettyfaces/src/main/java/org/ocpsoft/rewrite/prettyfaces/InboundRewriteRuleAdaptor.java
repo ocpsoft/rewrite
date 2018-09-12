@@ -21,12 +21,17 @@
  */
 package org.ocpsoft.rewrite.prettyfaces;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
+import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
+import org.ocpsoft.urlbuilder.util.Encoder;
 
 import com.ocpsoft.pretty.faces.config.rewrite.Redirect;
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
@@ -88,8 +93,7 @@ public class InboundRewriteRuleAdaptor implements Rule
                + QueryString.build(httpRewrite.getInboundAddress().getQuery()).toQueryString();
 
       String contextPath = ((HttpServletRewrite) event).getContextPath();
-      if (!contextPath.equals("/") && originalUrl.startsWith(contextPath))
-         originalUrl = originalUrl.substring(contextPath.length());
+      originalUrl = StringUtils.removePathPrefix(contextPath, originalUrl);
 
       String newUrl = engine.processInbound(((HttpServletRewrite) event).getRequest(),
                ((HttpServletRewrite) event).getResponse(), rule, originalUrl);
@@ -110,14 +114,14 @@ public class InboundRewriteRuleAdaptor implements Rule
          {
 
             /*
-             * Add context path and encode request using encodeRedirectURL().
+             * Add context path.
              */
             redirectURL = contextPath + newUrl;
          }
          else if (StringUtils.isNotBlank(rule.getUrl()))
          {
             /*
-             * This is a custom location - don't call encodeRedirectURL() and don't add context path, just
+             * This is a custom location - don't add context path, just
              * redirect to the encoded URL
              */
             redirectURL = newUrl.trim();
@@ -126,8 +130,30 @@ public class InboundRewriteRuleAdaptor implements Rule
 
          if (redirectURL != null)
          {
-            URLBuilder encodedRedirectUrl = URLBuilder.createFrom(redirectURL).encode();
-            redirectURL = encodedRedirectUrl.toString();
+            try
+            {
+                URI uri = new URI(redirectURL);
+                if (uri.getScheme() == null && uri.getHost() != null) {
+                    Address encodedRedirectAddress
+                        = AddressBuilder.begin()
+                                        .scheme(uri.getScheme())
+                                        .domain(uri.getHost())
+                                        .port(uri.getPort())
+                                        .pathEncoded(uri.getPath())
+                                        .queryLiteral(QueryString.build(uri.getQuery()).toQueryString())
+                                        .anchor(uri.getRawFragment())
+                                        .buildLiteral();
+                    redirectURL = encodedRedirectAddress.toString();
+                }
+            }
+            catch (URISyntaxException e)
+            {
+                throw new IllegalArgumentException(
+                        "[" + redirectURL + "] is not a valid URL fragment. Consider encoding relevant portions of the URL with ["
+                                 + Encoder.class
+                                 + "], or use the provided builder pattern to specify part encoding.", e);
+            }
+
             if (Redirect.PERMANENT.equals(rule.getRedirect()))
                ((HttpInboundServletRewrite) event).redirectPermanent(redirectURL);
             if (Redirect.TEMPORARY.equals(rule.getRedirect()))
