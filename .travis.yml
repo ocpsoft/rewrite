@@ -18,6 +18,8 @@ matrix:
       jdk: oraclejdk8
     - env: CONTAINER=TOMEE_MANAGED_1.5
       jdk: openjdk7
+  allow_failures:
+    - env: CONTAINER=TOMEE_MANAGED_1.5
 notifications:
   email:
     - "ocpsoft-ci@googlegroups.com"
