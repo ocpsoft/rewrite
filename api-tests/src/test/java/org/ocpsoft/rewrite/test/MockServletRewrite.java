@@ -20,9 +20,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.AbstractRewrite;
-import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.event.Flow;
-import org.ocpsoft.rewrite.mock.MockRewriteContext;
 import org.ocpsoft.rewrite.servlet.event.BaseRewrite.ServletRewriteFlow;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
 
