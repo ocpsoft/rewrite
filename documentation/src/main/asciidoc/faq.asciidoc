@@ -35,8 +35,8 @@ According to the Servlet spec +HttpServletRequest.getParameter*()+ and
 for +multipart/form-data+ request. Using these methods outside of such
 Servlets results in undefined behavior.
 
-Apache Tomcat provides an configuration parameter which changes this and
-allows to access these methods from a Servlet filter. To enable this
+Apache Tomcat provides a configuration parameter which changes this and
+allows access to these methods from a Servlet filter. To enable this
 behavior, create a file +META-INF/context.xml+ in your WAR file 
 (in case of Maven use +src/main/webapp/META-INF/context.xml+) and add
 the following content:

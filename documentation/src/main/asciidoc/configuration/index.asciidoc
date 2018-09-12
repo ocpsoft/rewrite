@@ -16,11 +16,11 @@ ConfigurationProvider:: An object that provides +Configuration+ instances to the
 
 Configuration:: A collection of +Rule+ objects that are processed in order until the system has determined the current inbound or oubound Rewrite event has been handled. Configurations may be provided by extensions, cached for performance, or built dynamically at run-time.
 
-ConfigurationBuilder:: This is likely the object you will interact with most when configuring the Rewrite system. Start with a +ConfigurationBuilder+ in each situation where you find yourself in need of a +Configuration+ object; this class may be used to add pre-constructed, or contruct custom +Rule+ instances for Rewrite.
+ConfigurationBuilder:: This is likely the object you will interact with most when configuring the Rewrite system. Start with a +ConfigurationBuilder+ in each situation where you find yourself in need of a +Configuration+ object; this class may be used to add pre-constructed, or construct custom +Rule+ instances for Rewrite.
 
 Condition:: Defines a requirement that must be met in order for rule evaluation to return true. You may create custom +Condition+ implementations. If creating custom implementations, you should likely extend +DefaultConditionBuilder+, which  adds logical operators +.and()+, +.or()+, and +.not()+.
 
-Operation:: Defines behavior to be performed after evaluation a +Rewrite+ event. These objects may be as simple or as complex as desired, ranging from simple logging to request forwarding. Typically +Operation+ instances may be chained to achieve more complex tasks. If creating custom umplementations, you should likely extend +DefaultOperationBuilder+, which adds logical chaining via +.and()+.
+Operation:: Defines behavior to be performed after evaluation a +Rewrite+ event. These objects may be as simple or as complex as desired, ranging from simple logging to request forwarding. Typically +Operation+ instances may be chained to achieve more complex tasks. If creating custom implementations, you should likely extend +DefaultOperationBuilder+, which adds logical chaining via +.and()+.
 
 Parameter:: Specifies a fragment of an HTTP request that may be referenced in both +Condition+ and +Operation+ instances. Parameters are defined using the +.where()+ method of the +ConfigurationBuilder+, which is available once the first +Rule+ (with conditions or operations) has been added.
 
@@ -91,7 +91,7 @@ java.lang.IllegalArgumentException: No such parameter [ foo ] exists.
 
 ==== A closer look
 
-Now that we have written a rule that uses a few different +Operation+ and +Condition+ objects, lets take a look at how the interaction works - we will break down the entire rule:
+Now that we have written a rule that uses a few different +Operation+ and +Condition+ objects, let's take a look at how the interaction works - we will break down the entire rule:
 
 [source,java]
 ----
