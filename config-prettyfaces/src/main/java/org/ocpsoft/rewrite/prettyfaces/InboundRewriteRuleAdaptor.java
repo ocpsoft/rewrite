@@ -130,6 +130,20 @@ public class InboundRewriteRuleAdaptor implements Rule
 
          if (redirectURL != null)
          {
+            if (redirectURL.contains(" ")) {
+                String[] parts = redirectURL.split("?", 2);
+                String[] encodedParts = new String[parts.length];
+                encodedParts[0] = Encoder.path(parts[0]);
+                if (parts.length > 1) {
+                    encodedParts[1] = Encoder.query(parts[1]);
+                    redirectURL = String.join("?", encodedParts);
+                }
+                else
+                {
+                    redirectURL = encodedParts[1];
+                }
+            }
+
             try
             {
                 URI uri = new URI(redirectURL);
