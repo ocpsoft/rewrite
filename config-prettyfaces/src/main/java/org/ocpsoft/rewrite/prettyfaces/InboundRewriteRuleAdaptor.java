@@ -144,7 +144,7 @@ public class InboundRewriteRuleAdaptor implements Rule
                 }
                 else
                 {
-                    redirectURL = encodedParts[1];
+                    redirectURL = encodedParts[0];
                 }
             }
 
