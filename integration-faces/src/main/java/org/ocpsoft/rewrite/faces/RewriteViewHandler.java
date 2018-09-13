@@ -151,7 +151,7 @@ public class RewriteViewHandler extends ViewHandler
                                            .scheme(uri.getScheme())
                                            .domain(uri.getHost())
                                            .port(uri.getPort())
-                                           .pathEncoded(uri.getPath())
+                                           .pathDecoded(uri.getPath())
                                            .queryLiteral(query.toString())
                                            .anchor(uri.getRawFragment())
                                            .buildLiteral();
