@@ -136,7 +136,11 @@ public class InboundRewriteRuleAdaptor implements Rule
                 encodedParts[0] = Encoder.path(parts[0]);
                 if (parts.length > 1) {
                     encodedParts[1] = Encoder.query(parts[1]);
-                    redirectURL = String.join("?", encodedParts);
+
+                    StringBuilder joiner = new StringBuilder(encodedParts[0]);
+                    joiner.append("?").append(encodedParts[1]);
+
+                    redirectURL = joiner.toString();
                 }
                 else
                 {
