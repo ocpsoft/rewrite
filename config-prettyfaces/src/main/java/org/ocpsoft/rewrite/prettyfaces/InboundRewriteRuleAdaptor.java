@@ -134,12 +134,19 @@ public class InboundRewriteRuleAdaptor implements Rule
             {
                 URI uri = new URI(redirectURL);
                 if (uri.getScheme() == null && uri.getHost() != null) {
+                    String path = uri.getPath();
+                    if (StringUtils.hasLeadingSlash(path))
+                    {
+                        path = path.substring(1);
+                    }
+
                     Address encodedRedirectAddress
                         = AddressBuilder.begin()
                                         .scheme(uri.getScheme())
                                         .domain(uri.getHost())
                                         .port(uri.getPort())
-                                        .pathEncoded(uri.getPath())
+                                        .path("/{p}")
+                                        .setEncoded("p", path)
                                         .queryLiteral(QueryString.build(uri.getQuery()).toQueryString())
                                         .anchor(uri.getRawFragment())
                                         .buildLiteral();
