@@ -23,6 +23,7 @@ package org.ocpsoft.rewrite.prettyfaces;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.regex.Pattern;
 
 import org.ocpsoft.rewrite.config.Rule;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -131,9 +132,10 @@ public class InboundRewriteRuleAdaptor implements Rule
          if (redirectURL != null)
          {
             if (redirectURL.contains(" ")) {
-                String[] parts = redirectURL.split("?", 2);
+                String[] parts = redirectURL.split(Pattern.quote("?"), 2);
                 String[] encodedParts = new String[parts.length];
                 encodedParts[0] = Encoder.path(parts[0]);
+
                 if (parts.length > 1) {
                     encodedParts[1] = Encoder.query(parts[1]);
 
