@@ -93,11 +93,11 @@ public class InboundRewriteRuleAdaptor implements Rule
       originalUrl = URL.build(originalUrl).decode().toURL()
                + QueryString.build(httpRewrite.getInboundAddress().getQuery()).toQueryString();
 
-      String contextPath = ((HttpServletRewrite) event).getContextPath();
+      String contextPath = httpRewrite.getContextPath();
       originalUrl = StringUtils.removePathPrefix(contextPath, originalUrl);
 
-      String newUrl = engine.processInbound(((HttpServletRewrite) event).getRequest(),
-               ((HttpServletRewrite) event).getResponse(), rule, originalUrl);
+      String newUrl = engine.processInbound(httpRewrite.getRequest(),
+              httpRewrite.getResponse(), rule, originalUrl);
 
       if (!Redirect.CHAIN.equals(rule.getRedirect()))
       {
