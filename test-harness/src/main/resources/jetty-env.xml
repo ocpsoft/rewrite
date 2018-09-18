@@ -5,7 +5,7 @@
 
    <Set class="org.eclipse.jetty.util.resource.Resource" name="defaultUseCaches">false</Set>
    <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
-      <Arg><Ref id="webAppCtx"/></Arg>
+      <Arg><Ref refid="webAppCtx"/></Arg>
       <Arg>type</Arg>
       <Arg type="java.lang.String">Embedded</Arg>
       <Arg type="boolean">true</Arg>
@@ -17,7 +17,7 @@
    </New>
    <!-- I can't figure out why org.eclipse.jetty.plus.jndi.Resource doesn't work here, but it doesn't -->
    <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
-      <Arg><Ref id="webAppCtx"/></Arg>
+      <Arg><Ref refid="webAppCtx"/></Arg>
       <Arg>BeanManager</Arg>
       <Arg>
          <New class="javax.naming.Reference">
