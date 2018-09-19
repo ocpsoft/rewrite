@@ -36,19 +36,14 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.AbortableHttpRequest;
-import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.message.HeaderGroup;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.ocpsoft.logging.Logger;
 
@@ -70,6 +65,9 @@ public class ProxyServlet
 {
    /* INIT PARAMETER NAME CONSTANTS */
 
+   // FIXME:  determine if this should be serializable
+   // if so, implement interface; if not, remove serialVersionUID
+   @SuppressWarnings("unused")
    private static final long serialVersionUID = -362164247914670579L;
 
    /**
@@ -87,7 +85,7 @@ public class ProxyServlet
    protected boolean doLog = false;
    protected URI targetUriObj;
    protected String targetUri;
-   protected HttpClient proxyClient;
+   protected CloseableHttpClient proxyClient;
 
    private ServletConfig servletConfig;
 
@@ -117,53 +115,19 @@ public class ProxyServlet
       }
       targetUri = targetUriObj.toString();
 
-      HttpParams hcParams = new BasicHttpParams();
-      readConfigParam(hcParams, ClientPNames.HANDLE_REDIRECTS, Boolean.class);
-      proxyClient = createHttpClient(hcParams);
-   }
-
-   /**
-    * Called from {@link #init(javax.servlet.ServletConfig)}. HttpClient offers many opportunities for customization.
-    */
-   protected HttpClient createHttpClient(HttpParams hcParams)
-   {
-      return new DefaultHttpClient(new ThreadSafeClientConnManager(), hcParams);
-   }
-
-   protected void readConfigParam(HttpParams hcParams, String hcParamName, Class type)
-   {
-      String val_str = getServletConfig().getInitParameter(hcParamName);
-      if (val_str == null)
-         return;
-      Object val_obj;
-      if (type == String.class)
-      {
-         val_obj = val_str;
-      }
-      else
-      {
-         try
-         {
-            /*
-             * noinspection unchecked
-             */
-            val_obj = type.getMethod("valueOf", String.class).invoke(type, val_str);
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException(e);
-         }
-      }
-      hcParams.setParameter(hcParamName, val_obj);
+      proxyClient = HttpClientBuilder.create().build();
    }
 
    public void destroy()
    {
-      /*
-       * shutdown() must be called according to documentation.
-       */
-      if (proxyClient != null)
-         proxyClient.getConnectionManager().shutdown();
+      try
+      {
+         if (proxyClient != null) proxyClient.close();
+      }
+      catch (IOException e)
+      {
+         logger.error("The proxyClient threw an exception on closing.", e);
+      }
    }
 
    protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
@@ -220,11 +184,7 @@ public class ProxyServlet
             return;
          }
 
-         /*
-          * Pass the response code. This method with the "reason phrase" is deprecated but it's the only way to pass the
-          * reason along too. noinspection deprecation
-          */
-         servletResponse.setStatus(statusCode, proxyResponse.getStatusLine().getReasonPhrase());
+         setResponseStatus(servletResponse, statusCode, proxyResponse.getStatusLine().getReasonPhrase());
 
          copyResponseHeaders(proxyResponse, servletResponse);
 
@@ -236,14 +196,6 @@ public class ProxyServlet
       }
       catch (Exception e)
       {
-         /*
-          * abort request, according to best practice with HttpClient
-          */
-         if (proxyRequest instanceof AbortableHttpRequest)
-         {
-            AbortableHttpRequest abortableHttpRequest = (AbortableHttpRequest) proxyRequest;
-            abortableHttpRequest.abort();
-         }
          if (e instanceof RuntimeException)
             throw (RuntimeException) e;
          if (e instanceof ServletException)
@@ -253,6 +205,15 @@ public class ProxyServlet
             throw (IOException) e;
          throw new RuntimeException(e);
       }
+   }
+
+   @SuppressWarnings("deprecation")
+   private void setResponseStatus(HttpServletResponse servletResponse, int statusCode, String reason) {
+       /*
+        * Pass the response code. This method with the "reason phrase" is deprecated but it's the only way to pass the
+        * reason along too. noinspection deprecation
+        */
+       servletResponse.setStatus(statusCode, reason);
    }
 
    protected boolean doResponseRedirectOrNotModifiedLogic(
@@ -281,6 +242,7 @@ public class ProxyServlet
          servletResponse.sendRedirect(locStr);
          return true;
       }
+
       /*
        * 304 needs special handling. See: http://www.ics.uci.edu/pub/ietf/http/rfc1945.html#Code304 . We get a 304
        * whenever passed an 'If-Modified-Since' header and the data on disk has not changed; server responds w/ a 304
@@ -331,23 +293,23 @@ public class ProxyServlet
       /*
        * Get an Enumeration of all of the header names sent by the client
        */
-      Enumeration<String> enumerationOfHeaderNames = servletRequest.getHeaderNames();
+      Enumeration<?> enumerationOfHeaderNames = servletRequest.getHeaderNames();
       while (enumerationOfHeaderNames.hasMoreElements())
       {
-         String headerName = enumerationOfHeaderNames.nextElement();
+         String headerName = (String) enumerationOfHeaderNames.nextElement();
          // Instead the content-length is effectively set via InputStreamEntity
          if (headerName.equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH))
             continue;
          if (hopByHopHeaders.containsHeader(headerName))
             continue;
 
-         Enumeration<String> headers = servletRequest.getHeaders(headerName);
+         Enumeration<?> headers = servletRequest.getHeaders(headerName);
          while (headers.hasMoreElements())
          {
             /*
              * sometimes more than one value
              */
-            String headerValue = headers.nextElement();
+            String headerValue = (String) headers.nextElement();
             /*
              * In case the proxy host is running multiple virtual servers, rewrite the Host header to ensure that we get
              * content from the correct virtual server
@@ -457,6 +419,7 @@ public class ProxyServlet
              */
             escape = false;
          }
+
          if (!escape)
          {
             if (outBuf != null)
@@ -479,6 +442,7 @@ public class ProxyServlet
             formatter.format("%%%02X", (int) c);// TODO
          }
       }
+
       return outBuf != null ? outBuf : in;
    }
 
