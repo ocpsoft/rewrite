@@ -107,12 +107,12 @@ public class PrettyConfigReloader
    {
 
       // create the ServiceLoader for the SPI
-      ServiceLoader<DevelopmentModeDetector> serviceLoader = ServiceLoader.load(DevelopmentModeDetector.class);
+      ServiceLoader<?> serviceLoader = ServiceLoader.load(DevelopmentModeDetector.class);
 
       // we need a list to be able to sort it
       List<DevelopmentModeDetector> detectors = new ArrayList<DevelopmentModeDetector>();
-      for (DevelopmentModeDetector detector : serviceLoader) {
-         detectors.add(detector);
+      for (Object detector : serviceLoader) {
+         detectors.add((DevelopmentModeDetector) detector);
       }
 
       // sort them by priority
