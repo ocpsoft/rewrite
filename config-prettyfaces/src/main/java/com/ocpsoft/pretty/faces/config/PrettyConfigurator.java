@@ -57,10 +57,10 @@ public class PrettyConfigurator
       {
          final PrettyConfigBuilder builder = new PrettyConfigBuilder();
 
-         ServiceLoader<?> configLoader = ServiceLoader.load(ConfigurationProvider.class);
-         for (Object p : configLoader)
+         ServiceLoader<ConfigurationProvider> configLoader = ServiceLoader.loadTypesafe(ConfigurationProvider.class);
+         for (ConfigurationProvider p : configLoader)
          {
-            builder.addFromConfig(((ConfigurationProvider) p).loadConfiguration(servletContext));
+            builder.addFromConfig(p.loadConfiguration(servletContext));
          }
 
          config = builder.build();
@@ -73,10 +73,10 @@ public class PrettyConfigurator
 
          config = parenting.processConfiguration(servletContext, config);
 
-         ServiceLoader<?> postProcessors = ServiceLoader.load(ConfigurationPostProcessor.class);
-         for (Object p : postProcessors)
+         ServiceLoader<ConfigurationPostProcessor> postProcessors = ServiceLoader.loadTypesafe(ConfigurationPostProcessor.class);
+         for (ConfigurationPostProcessor p : postProcessors)
          {
-            config = ((ConfigurationPostProcessor) p).processConfiguration(servletContext, config);
+            config = p.processConfiguration(servletContext, config);
          }
 
          ConfigurationPostProcessor validating = new ValidatingPostProcessor();
