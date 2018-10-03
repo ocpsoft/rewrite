@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Lincoln Baxter, III
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,16 +18,14 @@ package org.ocpsoft.rewrite.annotation.scan;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
 import javax.servlet.ServletContext;
-
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;
 
 /**
  * Base class for implementations of the {@link ClassFinder} interface.
- * 
+ *
  * @see ClassFinder
  * @author Christian Kaltepoth
  */
@@ -60,7 +58,7 @@ public abstract class AbstractClassFinder implements ClassFinder
 
    /**
     * Initialization procedure
-    * 
+    *
     * @param servletContext The {@link ServletContext} of the web application.
     * @param classLoader The {@link ClassLoader} to use for loading classes
     * @param packageFilter The {@link PackageFilter} used to check if a package has to be scanned.
@@ -76,7 +74,7 @@ public abstract class AbstractClassFinder implements ClassFinder
 
    /**
     * Strip everything up to and including a given prefix from a string.
-    * 
+    *
     * @param str The string to process
     * @param prefix The prefix
     * @return the stripped string or <code>null</code> if the prefix has not been found
@@ -97,7 +95,7 @@ public abstract class AbstractClassFinder implements ClassFinder
     * <p>
     * Creates a FQCN from an {@link URL} representing a <code>.class</code> file.
     * </p>
-    * 
+    *
     * @param url The path of the class file
     * @return the FQCN of the class
     */
@@ -116,7 +114,7 @@ public abstract class AbstractClassFinder implements ClassFinder
 
    /**
     * Checks if a supplied class has to be processed by checking the package name against the {@link PackageFilter}.
-    * 
+    *
     * @param className FQCN of the class
     * @return <code>true</code> for classes to process, <code>false</code> for classes to ignore
     */
@@ -127,7 +125,7 @@ public abstract class AbstractClassFinder implements ClassFinder
       if (className.startsWith("META-INF.versions")) {
          return false;
       }
-       
+
       // the default package
       String packageName = "";
 
@@ -157,13 +155,16 @@ public abstract class AbstractClassFinder implements ClassFinder
     * <p>
     * Please not the the called of this method is responsible to close the supplied {@link InputStream}!
     * </p>
-    * 
+    *
     * @param className The FQCN of the class
     * @param classFileStream The Java class file of the class (may be <code>null</code>)
     * @param visitor the visitor
     */
    protected void processClass(String className, InputStream classFileStream, ClassVisitor visitor)
    {
+
+      // skip Java 9 module metadata class files
+      if (className.equals("module-info")) return ;
 
       // bytecode check is only performed if the InputStream is available
       if (classFileStream != null)
