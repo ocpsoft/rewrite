@@ -30,7 +30,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -357,23 +356,6 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
       {
          return stream.toString();
       }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletOutputStream#isReady()
-     */
-    @Override
-    public boolean isReady() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
-     */
-    @Override
-    public void setWriteListener(WriteListener writeListener) {
-        // TODO Auto-generated method stub
-    }
    }
 
    /*
