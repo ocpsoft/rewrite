@@ -55,3 +55,23 @@ For more details about this issue, have a look at this great
 link:http://stackoverflow.com/a/8050589/395181[stackoverflow answer]
 by link:http://stackoverflow.com/users/157882/balusc[BalusC].
 
+=== Why am I getting errors when I run tests?  
+
+If you are getting errors about not being able to find a class that is 
+in a package not included by the current module under test or if you 
+are receiving the following error:  
+
+____
+org.jboss.arquillian.container.test.impl.client.deployment.ValidationException: +
+DeploymentScenario contains a target (_DEFAULT_) not matching 
+any defined Container in the registry. +
+Please include at least 1 Deployable Container on your Classpath.
+____
+
+This may mean that you do not have a Maven profile defined for that 
+project.  Without the Maven profile, Arquillian does not know where 
+to deploy the code for testing.  You can find the different profiles 
+defined in the Rewrite parent pom.xml file.  The GLASSFISH_MANAGED_3.1 
+and GLASSFISH_MANAGED_4.0 profiles will download the container server 
+for you.  
+
