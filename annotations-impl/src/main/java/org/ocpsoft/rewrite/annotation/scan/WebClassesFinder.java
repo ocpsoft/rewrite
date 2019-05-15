@@ -248,7 +248,7 @@ public class WebClassesFinder extends AbstractClassFinder
             {
                if (log.isDebugEnabled())
                {
-                  log.debug("Cound not obtain InputStream for class file: " + entryName, e);
+                  log.debug("Could not obtain InputStream for class file: " + entryName, e);
                }
             }
 
