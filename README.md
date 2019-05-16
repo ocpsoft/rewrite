@@ -55,7 +55,7 @@ Get Started
            public Configuration getConfiguration(final ServletContext context)
            {
              return ConfigurationBuilder.begin()
-               .defineRule()
+               .addRule()
                  .when(Direction.isInbound().and(Path.matches("/some/page/{p}/")))
                  .perform(Forward.to("/new-page/{p}.html"));
             }
