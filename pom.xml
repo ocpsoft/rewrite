@@ -30,19 +30,31 @@
       <maven.compiler.source>1.7</maven.compiler.source>
 
       <!-- Required by ocpsoft-parent for the compiler configuration -->
-      <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
-      <maven.compiler.argument.source>1.7</maven.compiler.argument.source>
+      <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
+      <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
+
+      <!-- Standard Specifications -->
+      <javaee.spec>6.0</javaee.spec>
+      <servlet.spec>2.5</servlet.spec>
+      <jsf.spec>2.1</jsf.spec>
+      <el.spec>2.2</el.spec>
 
       <!-- Versions -->
       <version.jboss.spec>3.0.2.Final</version.jboss.spec>
-      <version.junit>4.11</version.junit>
+      <version.junit>4.12</version.junit>
+      <version.servlet.2.5>1.0.1.Final</version.servlet.2.5>
+      <version.servlet.3.0>1.0.1.Final</version.servlet.3.0>
+      <version.servlet.3.1>1.0.2.Final</version.servlet.3.1>
+      <version.cdi.api>1.0-SP4</version.cdi.api>
       <version.common>1.0.5.Final</version.common>
       <version.logging>1.0.5.Final</version.logging>
       <version.arquillian>1.1.1.Final</version.arquillian>
       <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
       <version.arquillian.glassfish>1.0.0.CR4</version.arquillian.glassfish>
+      <version.arquillian.tomcat>1.1.0.Final</version.arquillian.tomcat>
       <version.jbossas>7.1.1.Final</version.jbossas>
       <version.wildfly>8.2.0.Final</version.wildfly>
+      <version.tomcat>8.5.34</version.tomcat>
       <version.glassfish3>3.1.2.2</version.glassfish3>
       <version.glassfish4>4.0</version.glassfish4>
       <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
@@ -96,12 +108,10 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
-            <version>2.4.2</version>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>2.5.3</version>
             <configuration>
                <localCheckout>true</localCheckout>
                <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -118,7 +128,7 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-surefire-plugin</artifactId>
-               <version>2.16</version>
+               <version>2.22.0</version>
                <configuration>
                   <argLine>-Xms256m -Xmx512m -XX:MaxPermSize=512m</argLine>
                </configuration>
@@ -126,12 +136,12 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-javadoc-plugin</artifactId>
-               <version>2.9</version>
+               <version>3.01</version>
                <configuration>
                   <failOnError>false</failOnError>
                   <links>
-                     <link>http://docs.oracle.com/javase/7/docs/api/</link>
-                     <link>http://docs.oracle.com/javaee/6/api/</link>
+                     <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                     <link>http://docs.oracle.com/javaee/7/api/</link>
                   </links>
                   <additionalparam>-Xdoclint:none</additionalparam>
                </configuration>
@@ -362,7 +372,7 @@
 
          <dependency>
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-6.0</artifactId>
+            <artifactId>jboss-javaee-${javaee.spec}</artifactId>
             <version>${version.jboss.spec}</version>
             <type>pom</type>
             <scope>import</scope>
@@ -379,9 +389,24 @@
          <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_2.5_spec</artifactId>
-            <version>1.0.1.Final</version>
+            <version>${version.servlet.2.5}</version>
             <scope>provided</scope>
          </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>${version.servlet.3.0}</version>
+            <scope>provided</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+            <version>${version.servlet.3.1}</version>
+            <scope>provided</scope>
+         </dependency>
+
 
          <dependency>
             <groupId>junit</groupId>
@@ -390,13 +415,19 @@
             <scope>test</scope>
          </dependency>
 
+         <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+         </dependency>
 
-         <!-- Enfore new ShrinkWrap Resolvers version -->
+
+         <!-- Enforce new ShrinkWrap Resolvers version -->
          <!-- Overwrites 1.x.y pulled in by Arquillian -->
          <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-bom</artifactId>
-            <version>2.0.0</version>
+            <version>3.1.3</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
@@ -491,8 +522,8 @@
          <dependencies>
             <dependency>
                <groupId>org.jboss.spec</groupId>
-               <artifactId>jboss-javaee-web-6.0</artifactId>
-               <version>3.0.1.Final</version>
+               <artifactId>jboss-javaee-web-${javaee.spec}</artifactId>
+               <version>${version.jboss.spec}</version>
                <type>pom</type>
                <scope>test</scope>
             </dependency>
@@ -523,8 +554,8 @@
          <dependencies>
             <dependency>
                <groupId>org.jboss.spec</groupId>
-               <artifactId>jboss-javaee-web-6.0</artifactId>
-               <version>3.0.1.Final</version>
+               <artifactId>jboss-javaee-web-${javaee.spec}</artifactId>
+               <version>${version.jboss.spec}</version>
                <type>pom</type>
                <scope>test</scope>
             </dependency>
@@ -590,7 +621,7 @@
             </dependency>
             <dependency>
                <groupId>org.jboss.spec</groupId>
-               <artifactId>jboss-javaee-6.0</artifactId>
+               <artifactId>jboss-javaee-${javaee.spec}</artifactId>
                <version>${version.jboss.spec}</version>
                <type>pom</type>
                <scope>provided</scope>
@@ -625,7 +656,7 @@
             </dependency>
             <dependency>
                <groupId>org.jboss.spec</groupId>
-               <artifactId>jboss-javaee-6.0</artifactId>
+               <artifactId>jboss-javaee-${javaee.spec}</artifactId>
                <version>${version.jboss.spec}</version>
                <type>pom</type>
                <scope>provided</scope>
@@ -686,7 +717,7 @@
             </dependency>
             <dependency>
                <groupId>org.jboss.spec</groupId>
-               <artifactId>jboss-javaee-6.0</artifactId>
+               <artifactId>jboss-javaee-${javaee.spec}</artifactId>
                <version>${version.jboss.spec}</version>
                <type>pom</type>
                <scope>provided</scope>
@@ -721,7 +752,7 @@
             </dependency>
             <dependency>
                <groupId>org.jboss.spec</groupId>
-               <artifactId>jboss-javaee-6.0</artifactId>
+               <artifactId>jboss-javaee-${javaee.spec}</artifactId>
                <version>${version.jboss.spec}</version>
                <type>pom</type>
                <scope>provided</scope>
@@ -768,6 +799,12 @@
                <artifactId>wildfly-arquillian-container-remote</artifactId>
                <version>${version.wildfly}</version>
                <scope>test</scope>
+               <exclusions>
+                  <exclusion>
+                     <groupId>sun.jdk</groupId>
+                     <artifactId>jconsole</artifactId>
+                  </exclusion>
+               </exclusions>
             </dependency>
          </dependencies>
       </profile>

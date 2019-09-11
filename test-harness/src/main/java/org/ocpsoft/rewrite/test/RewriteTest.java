@@ -98,25 +98,27 @@ public class RewriteTest extends RewriteTestBase
       // Tomcat specific stuff
       if (isTomcat()) {
 
+          archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api:1.2"));
+          archive.addAsLibraries(resolveDependencies("javax.inject:javax.inject:1"));
+
          // setup Weld
          if (isWeld()) {
-            archive.addAsLibraries(resolveDependencies("org.jboss.weld:weld-core:1.1.9.Final"));
-            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet-core:1.1.9.Final"));
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld:weld-core:2.4.7.Final"));
+            archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet-core:2.4.7.Final"));
             archive.addAsWebResource("tomcat-weld-context.xml", "META-INF/context.xml");
          }
 
          // setup OWB
          if (isOWB()) {
-            archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api:1.0-SP4"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-impl:1.1.5"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-web:1.1.5"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-spi:1.1.5"));
-            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-resource:1.1.5"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-impl:2.0.7"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-web:2.0.7"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-spi:2.0.7"));
+            archive.addAsLibraries(resolveDependencies("org.apache.openwebbeans:openwebbeans-resource:2.0.7"));
             archive.addAsWebResource("tomcat-owb-context.xml", "META-INF/context.xml");
          }
 
          // setup Mojarra
-         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:2.1.13"));
+         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:2.3.7"));
          archive.addAsLibraries(resolveDependencies("javax.servlet:jstl:1.2"));
 
       }
@@ -140,7 +142,7 @@ public class RewriteTest extends RewriteTestBase
    {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       try {
-         classLoader.loadClass("org.jboss.arquillian.container.tomcat.managed_7.TomcatManagedContainer");
+         classLoader.loadClass("org.jboss.arquillian.container.tomcat.managed.Tomcat8ManagedContainer");
          return true;
       }
       catch (ClassNotFoundException e) {
