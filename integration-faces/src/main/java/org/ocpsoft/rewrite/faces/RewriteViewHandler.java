@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
+import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
@@ -37,7 +38,7 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
  */
-public class RewriteViewHandler extends ViewHandler
+public class RewriteViewHandler extends ViewHandlerWrapper
 {
    protected ViewHandler parent;
    private final ThreadLocal<Boolean> bookmarkable = new ThreadLocal<Boolean>();
@@ -187,6 +188,11 @@ public class RewriteViewHandler extends ViewHandler
    public String getResourceURL(final FacesContext facesContext, final String path)
    {
       return parent.getResourceURL(facesContext, path);
+   }
+
+   @Override
+   public String getWebsocketURL(FacesContext context, String channel) {
+      return parent.getWebsocketURL(context, channel);
    }
 
    @Override
