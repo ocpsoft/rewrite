@@ -40,7 +40,6 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  */
 public class RewriteViewHandler extends ViewHandlerWrapper
 {
-   protected ViewHandler parent;
    private final ThreadLocal<Boolean> bookmarkable = new ThreadLocal<Boolean>();
    private volatile List<FacesActionUrlProvider> providers;
 
@@ -61,12 +60,6 @@ public class RewriteViewHandler extends ViewHandlerWrapper
       return result;
    }
 
-   @Override
-   public String deriveLogicalViewId(final FacesContext context, final String rawViewId)
-   {
-      return parent.deriveLogicalViewId(context, rawViewId);
-   }
-
    private void setBookmarkable(final boolean value)
    {
       bookmarkable.set(value);
@@ -74,34 +67,7 @@ public class RewriteViewHandler extends ViewHandlerWrapper
 
    public RewriteViewHandler(final ViewHandler viewHandler)
    {
-      super();
-      parent = viewHandler;
-   }
-
-   @Override
-   public Locale calculateLocale(final FacesContext facesContext)
-   {
-      return parent.calculateLocale(facesContext);
-   }
-
-   @Override
-   public String calculateRenderKitId(final FacesContext facesContext)
-   {
-      return parent.calculateRenderKitId(facesContext);
-   }
-
-   @Override
-   public UIViewRoot createView(final FacesContext context, final String viewId)
-   {
-      UIViewRoot view = parent.createView(context, viewId);
-      return view;
-   }
-
-   @Override
-   public UIViewRoot restoreView(final FacesContext context, final String viewId)
-   {
-      UIViewRoot view = parent.restoreView(context, viewId);
-      return view;
+      super(viewHandler);
    }
 
    @Override
@@ -129,7 +95,7 @@ public class RewriteViewHandler extends ViewHandlerWrapper
 
          if (result != null)
          {
-            String parentActionURL = parent.getActionURL(context, viewId);
+            String parentActionURL = getWrapped().getActionURL(context, viewId);
             if (parentActionURL.contains("?"))
             {
                URLBuilder builder = URLBuilder.createFrom(result);
@@ -139,7 +105,7 @@ public class RewriteViewHandler extends ViewHandlerWrapper
          }
       }
       if (result == null)
-         result = parent.getActionURL(context, viewId);
+         result = getWrapped().getActionURL(context, viewId);
       return result;
    }
 
@@ -172,40 +138,9 @@ public class RewriteViewHandler extends ViewHandlerWrapper
        * When this method is called for <h:link> tags, getActionURL is called as part of the parent call
        */
       setBookmarkable(true);
-      String result = parent.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+      String result = getWrapped().getBookmarkableURL(context, viewId, parameters, includeViewParams);
       setBookmarkable(false);
       return result;
-   }
-
-   @Override
-   public String getRedirectURL(final FacesContext context, final String viewId,
-            final Map<String, List<String>> parameters, final boolean includeViewParams)
-   {
-      return parent.getRedirectURL(context, viewId, parameters, includeViewParams);
-   }
-
-   @Override
-   public String getResourceURL(final FacesContext facesContext, final String path)
-   {
-      return parent.getResourceURL(facesContext, path);
-   }
-
-   @Override
-   public String getWebsocketURL(FacesContext context, String channel) {
-      return parent.getWebsocketURL(context, channel);
-   }
-
-   @Override
-   public void renderView(final FacesContext facesContext, final UIViewRoot viewRoot) throws IOException,
-            FacesException
-   {
-      parent.renderView(facesContext, viewRoot);
-   }
-
-   @Override
-   public void writeState(final FacesContext facesContext) throws IOException
-   {
-      parent.writeState(facesContext);
    }
 
    /**
@@ -215,24 +150,6 @@ public class RewriteViewHandler extends ViewHandlerWrapper
    public String deriveViewId(final FacesContext context, final String rawViewId)
    {
       String canonicalViewId = new URLDuplicatePathCanonicalizer().canonicalize(rawViewId);
-      return parent.deriveViewId(context, canonicalViewId);
-   }
-
-   @Override
-   public String calculateCharacterEncoding(final FacesContext context)
-   {
-      return parent.calculateCharacterEncoding(context);
-   }
-
-   @Override
-   public ViewDeclarationLanguage getViewDeclarationLanguage(final FacesContext context, final String viewId)
-   {
-      return parent.getViewDeclarationLanguage(context, viewId);
-   }
-
-   @Override
-   public void initView(final FacesContext context) throws FacesException
-   {
-      parent.initView(context);
+      return getWrapped().deriveViewId(context, canonicalViewId);
    }
 }
