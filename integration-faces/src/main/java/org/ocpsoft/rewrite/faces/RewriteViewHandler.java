@@ -40,6 +40,7 @@ import org.ocpsoft.rewrite.servlet.util.URLBuilder;
  */
 public class RewriteViewHandler extends ViewHandlerWrapper
 {
+   protected ViewHandler parent;
    private final ThreadLocal<Boolean> bookmarkable = new ThreadLocal<Boolean>();
    private volatile List<FacesActionUrlProvider> providers;
 
@@ -67,7 +68,8 @@ public class RewriteViewHandler extends ViewHandlerWrapper
 
    public RewriteViewHandler(final ViewHandler viewHandler)
    {
-      super(viewHandler);
+      super();
+      parent = viewHandler;
    }
 
    @Override
@@ -95,7 +97,7 @@ public class RewriteViewHandler extends ViewHandlerWrapper
 
          if (result != null)
          {
-            String parentActionURL = getWrapped().getActionURL(context, viewId);
+            String parentActionURL = parent.getActionURL(context, viewId);
             if (parentActionURL.contains("?"))
             {
                URLBuilder builder = URLBuilder.createFrom(result);
@@ -105,7 +107,7 @@ public class RewriteViewHandler extends ViewHandlerWrapper
          }
       }
       if (result == null)
-         result = getWrapped().getActionURL(context, viewId);
+         result = parent.getActionURL(context, viewId);
       return result;
    }
 
@@ -138,7 +140,7 @@ public class RewriteViewHandler extends ViewHandlerWrapper
        * When this method is called for <h:link> tags, getActionURL is called as part of the parent call
        */
       setBookmarkable(true);
-      String result = getWrapped().getBookmarkableURL(context, viewId, parameters, includeViewParams);
+      String result = parent.getBookmarkableURL(context, viewId, parameters, includeViewParams);
       setBookmarkable(false);
       return result;
    }
@@ -150,6 +152,12 @@ public class RewriteViewHandler extends ViewHandlerWrapper
    public String deriveViewId(final FacesContext context, final String rawViewId)
    {
       String canonicalViewId = new URLDuplicatePathCanonicalizer().canonicalize(rawViewId);
-      return getWrapped().deriveViewId(context, canonicalViewId);
+      return parent.deriveViewId(context, canonicalViewId);
+   }
+
+   @Override
+   public ViewHandler getWrapped()
+   {
+      return parent;
    }
 }
