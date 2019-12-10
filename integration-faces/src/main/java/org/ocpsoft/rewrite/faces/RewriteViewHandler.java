@@ -61,12 +61,6 @@ public class RewriteViewHandler extends ViewHandlerWrapper
       return result;
    }
 
-   @Override
-   public String deriveLogicalViewId(final FacesContext context, final String rawViewId)
-   {
-      return parent.deriveLogicalViewId(context, rawViewId);
-   }
-
    private void setBookmarkable(final boolean value)
    {
       bookmarkable.set(value);
@@ -76,32 +70,6 @@ public class RewriteViewHandler extends ViewHandlerWrapper
    {
       super();
       parent = viewHandler;
-   }
-
-   @Override
-   public Locale calculateLocale(final FacesContext facesContext)
-   {
-      return parent.calculateLocale(facesContext);
-   }
-
-   @Override
-   public String calculateRenderKitId(final FacesContext facesContext)
-   {
-      return parent.calculateRenderKitId(facesContext);
-   }
-
-   @Override
-   public UIViewRoot createView(final FacesContext context, final String viewId)
-   {
-      UIViewRoot view = parent.createView(context, viewId);
-      return view;
-   }
-
-   @Override
-   public UIViewRoot restoreView(final FacesContext context, final String viewId)
-   {
-      UIViewRoot view = parent.restoreView(context, viewId);
-      return view;
    }
 
    @Override
@@ -177,37 +145,6 @@ public class RewriteViewHandler extends ViewHandlerWrapper
       return result;
    }
 
-   @Override
-   public String getRedirectURL(final FacesContext context, final String viewId,
-            final Map<String, List<String>> parameters, final boolean includeViewParams)
-   {
-      return parent.getRedirectURL(context, viewId, parameters, includeViewParams);
-   }
-
-   @Override
-   public String getResourceURL(final FacesContext facesContext, final String path)
-   {
-      return parent.getResourceURL(facesContext, path);
-   }
-
-   @Override
-   public String getWebsocketURL(FacesContext context, String channel) {
-      return parent.getWebsocketURL(context, channel);
-   }
-
-   @Override
-   public void renderView(final FacesContext facesContext, final UIViewRoot viewRoot) throws IOException,
-            FacesException
-   {
-      parent.renderView(facesContext, viewRoot);
-   }
-
-   @Override
-   public void writeState(final FacesContext facesContext) throws IOException
-   {
-      parent.writeState(facesContext);
-   }
-
    /**
     * Canonicalize the given viewId, then pass that viewId to the next ViewHandler in the chain.
     */
@@ -219,20 +156,8 @@ public class RewriteViewHandler extends ViewHandlerWrapper
    }
 
    @Override
-   public String calculateCharacterEncoding(final FacesContext context)
+   public ViewHandler getWrapped()
    {
-      return parent.calculateCharacterEncoding(context);
-   }
-
-   @Override
-   public ViewDeclarationLanguage getViewDeclarationLanguage(final FacesContext context, final String viewId)
-   {
-      return parent.getViewDeclarationLanguage(context, viewId);
-   }
-
-   @Override
-   public void initView(final FacesContext context) throws FacesException
-   {
-      parent.initView(context);
+      return parent;
    }
 }
