@@ -37,12 +37,12 @@ Get Started
            <version>${rewrite.version}</version>
         </dependency>
 	
-	...
+You may wish to also add the sonatype-snapshots repo definition in your pom.xml:
 	
-	<repository>
-	  <id>sonatype-snapshots</id>
-	  <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-	</repository>
+        <repository>
+          <id>sonatype-snapshots</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
 
 3. Add a configuration provider implementing the 'org.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
 
