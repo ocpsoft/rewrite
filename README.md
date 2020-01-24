@@ -36,6 +36,13 @@ Get Started
            <artifactId>rewrite-servlet</artifactId>
            <version>${rewrite.version}</version>
         </dependency>
+	
+	...
+	
+	<repository>
+	  <id>sonatype-snapshots</id>
+	  <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	</repository>
 
 3. Add a configuration provider implementing the 'org.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
 
