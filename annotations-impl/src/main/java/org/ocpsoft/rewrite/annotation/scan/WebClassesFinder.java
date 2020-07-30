@@ -77,7 +77,14 @@ public class WebClassesFinder extends AbstractClassFinder
              processDirectory(classesFolderUrl, CLASSES_FOLDER, visitor);
              return;
          }
-       	 classesFolderUrl = Thread.currentThread().getContextClassLoader().getResource("");
+         String main = System.getProperty("sun.java.command");
+		 if (main.endsWith(".jar")) {
+			classesFolderUrl = Thread.currentThread().getContextClassLoader().getResource("");
+		 } else {
+			classesFolderUrl = Class.forName(main).getProtectionDomain().getCodeSource().getLocation();
+			if ("file".equals(classesFolderUrl.getProtocol()) && classesFolderUrl.getPath().endsWith(".jar"))
+				classesFolderUrl = new URL("jar:" + classesFolderUrl.toExternalForm() + "!/");
+		 }
        	 if (classesFolderUrl != null) {
 			processUrl(visitor, classesFolderUrl);
 			return;
@@ -86,7 +93,7 @@ public class WebClassesFinder extends AbstractClassFinder
          // abort if classes folder is missing
          log.warn("Cannot find classes folder");
       }
-      catch (MalformedURLException e)
+      catch (Exception e)
       {
          throw new IllegalStateException("Invalid URL: " + e.getMessage(), e);
       }
@@ -97,7 +104,7 @@ public class WebClassesFinder extends AbstractClassFinder
 			if ("file".equals(url.getProtocol())) {
 				File file = new File(url.getFile());
 				scanDir(visitor, file, file.getAbsolutePath().length() + 1);
-			} else if ("jar".equals(url.getProtocol())) {
+			} else if ("jar".equals(url.getProtocol()) || url.getPath().endsWith(".jar")) {
 				JarURLConnection connection = (JarURLConnection)url.openConnection();
 				scanJar(visitor, connection);
 			}
