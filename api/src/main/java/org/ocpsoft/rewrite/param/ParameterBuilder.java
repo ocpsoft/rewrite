@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.param;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.ocpsoft.rewrite.bind.Binding;
 
@@ -65,12 +66,29 @@ public abstract class ParameterBuilder<IMPLTYPE extends ParameterBuilder<IMPLTYP
    @SuppressWarnings("unchecked")
    public IMPLTYPE bindsTo(final Binding binding)
    {
-      /*
-       * Bindings must be added to the front of the list, since we want the
-       * ability to override the default binding if necessary.
-       */
-      this.bindings.add(0, binding);
+      addOrReplaceBinding(binding);
       return (IMPLTYPE) this;
+   }
+   
+   /*
+    * Bindings must be added to the front of the list, since we want the
+    * ability to override the default binding if necessary.
+    */
+   private void addOrReplaceBinding(final Binding binding)
+   {
+      ListIterator<Binding> iterator = this.bindings.listIterator();
+      while(iterator.hasNext())
+      {
+         Binding current = iterator.next();
+         if(current.toString().equals(binding.toString())) // binding does not implements equals/hashCode
+         {  
+            iterator.remove();
+            iterator.add(binding);
+            return;
+         }
+      }
+      
+      this.bindings.add(0, binding);
    }
 
    @Override
