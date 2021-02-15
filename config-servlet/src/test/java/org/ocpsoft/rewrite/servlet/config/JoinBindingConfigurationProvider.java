@@ -19,8 +19,10 @@ import javax.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -39,7 +41,19 @@ public class JoinBindingConfigurationProvider extends HttpConfigurationProvider
       Configuration config = ConfigurationBuilder.begin()
                .addRule(Join.path("/bind/{id}").to("/bind.html"))
                .where("id").bindsTo(RequestBinding.parameter("join-id"))
-
+               
+               .addRule(Join.path("/users/{userId}").to("/user.html"))
+               .perform(new HttpOperation() {
+                  @Override
+                  public void performHttp(HttpServletRewrite event, EvaluationContext context)
+                  {
+                     for (String userId : event.getRequest().getParameterValues("userId")) {
+                        event.getResponse().addHeader("userId", userId);
+                     }
+                     SendStatus.code(200).perform(event, context);
+                  }
+               })
+              
                .addRule()
                .when(Path.matches("/bind.html").and(RequestParameter.exists("join-id")))
                .perform(SendStatus.code(201));

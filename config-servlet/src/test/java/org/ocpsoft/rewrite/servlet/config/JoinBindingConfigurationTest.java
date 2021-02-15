@@ -56,4 +56,14 @@ public class JoinBindingConfigurationTest extends RewriteTest
       HttpAction<HttpGet> action = get("/bind.html");
       Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
    }
+   
+   @Test
+   public void testUrlMappingWithoutRepeatedParameters() throws Exception
+   {
+      HttpAction<HttpGet> action = get("/users/didiez");
+      String[] expected = new String[]{"didiez"};
+      
+      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertArrayEquals(expected, action.getResponseHeaderValues("userId").toArray());
+   }
 }
