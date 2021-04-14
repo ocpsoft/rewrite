@@ -35,7 +35,7 @@
    <repositories>
       <repository>
          <id>ocpsoft</id>
-         <url>http://ocpsoft.org/repository/</url>
+         <url>https://ocpsoft.org/repository/</url>
       </repository>
    </repositories>
 
