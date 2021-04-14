@@ -41,7 +41,7 @@
 
       <!-- Versions -->
       <version.jboss.spec>1.0.4.Final</version.jboss.spec>
-      <version.junit>4.12</version.junit>
+      <version.junit>4.13.1</version.junit>
       <version.servlet.2.5>1.0.1.Final</version.servlet.2.5>
       <version.servlet.3.0>1.0.1.Final</version.servlet.3.0>
       <version.servlet.3.1>1.0.2.Final</version.servlet.3.1>
