@@ -23,13 +23,11 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
-@Ignore // ignored since we now user Class.forName(name, false, cl) which we cannot mock
 public class WebClassesFinderTest
 {
 

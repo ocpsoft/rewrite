@@ -109,7 +109,7 @@ public abstract class AbstractClassFinder implements ClassFinder
       String relativePath = filename.substring(0, endIndex);
 
       // replace / by . to create FQCN
-      return relativePath.replace('/', '.');
+      return relativePath.replace('/', '.').replace('\\', '.');
    }
 
    /**
@@ -202,7 +202,7 @@ public abstract class AbstractClassFinder implements ClassFinder
       try
       {
          // request this class from the ClassLoader
-         Class<?> clazz = Class.forName(className, false, classLoader);
+         Class<?> clazz = classLoader.loadClass(className);
 
          // call handler
          visitor.visit(clazz);
