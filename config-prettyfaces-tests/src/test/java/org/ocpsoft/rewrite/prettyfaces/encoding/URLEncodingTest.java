@@ -72,7 +72,8 @@ public class URLEncodingTest extends RewriteTestBase
 
       HttpAction<HttpGet> action = get(target);
 
-      Assert.assertTrue(action.getCurrentURL().endsWith(expected));
+      Assert.assertTrue(action.getCurrentURL() + " should end with " + expected,
+              action.getCurrentURL().endsWith(expected));
       Assert.assertTrue(action.getResponseContent().contains(expected));
    }
 
