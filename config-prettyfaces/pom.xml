@@ -12,6 +12,7 @@
 
    <properties>
       <version.digester>2.0</version.digester>
+      <version.beanutils>1.9.4</version.beanutils>
    </properties>
 
    <dependencies>
@@ -43,6 +44,11 @@
          <groupId>commons-digester</groupId>
          <artifactId>commons-digester</artifactId>
          <version>${version.digester}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <version>${version.beanutils}</version>
       </dependency>
       <dependency>
          <groupId>org.jboss.spec.javax.servlet</groupId>
