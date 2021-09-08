@@ -771,18 +771,18 @@
       </profile>
 
       <profile>
-         <id>TOMEE_MANAGED_1.5</id>
+         <id>TOMEE_MANAGED_8</id>
          <dependencies>
             <dependency>
-               <groupId>org.apache.openejb</groupId>
+               <groupId>org.apache.tomee</groupId>
                <artifactId>tomee-embedded</artifactId>
-               <version>1.5.2</version>
+               <version>8.0.7</version>
                <scope>test</scope>
             </dependency>
             <dependency>
-               <groupId>org.apache.openejb</groupId>
+               <groupId>org.apache.tomee</groupId>
                <artifactId>arquillian-tomee-remote</artifactId>
-               <version>1.5.2</version>
+               <version>8.0.7</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
