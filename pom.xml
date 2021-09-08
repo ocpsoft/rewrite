@@ -10,7 +10,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-parent</artifactId>
-   <version>3.5.1-SNAPSHOT</version>
+   <version>3.5.1.Final</version>
    <packaging>pom</packaging>
 
    <parent>
@@ -904,7 +904,7 @@
       <connection>scm:git:git://github.com/ocpsoft/rewrite.git</connection>
       <developerConnection>scm:git:git@github.com:ocpsoft/rewrite.git</developerConnection>
       <url>http://github.com/ocpsoft/rewrite</url>
-      <tag>HEAD</tag>
+      <tag>3.5.1.Final</tag>
    </scm>
 
    <issueManagement>
