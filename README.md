@@ -79,6 +79,13 @@ Note that your annotated class won't be found, by default, if your Configuration
 
 7. Run your application!
 
+BUILDING
+========
+```
+mvn package -PWILDFLY_MANAGED_8
+```
+(Or use any of the other profiles in pom.xml - Note, most seem to be failing right now due to stale maven packages. Pull requests fixing test proviles are appreciated!)
+
 FEEDBACK
 ========
 
