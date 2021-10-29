@@ -77,7 +77,7 @@
       <module>rewrite-servlet</module>
 <!--       <module>showcase</module> -->
       <module>distribution</module>
-      <module>examples</module>
+<!--       <module>examples</module> -->
 <!--       <module>documentation</module> -->
    </modules>
 
