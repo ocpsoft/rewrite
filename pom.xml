@@ -75,7 +75,7 @@
       <module>integration-spring</module>
       <module>security-integration-shiro</module>
       <module>rewrite-servlet</module>
-      <module>showcase</module>
+<!--       <module>showcase</module> -->
       <module>distribution</module>
       <module>examples</module>
 <!--       <module>documentation</module> -->
