@@ -1,7 +1,9 @@
 .classpath
 .project
+.sdkmanrc
 .settings
 .DS_Store
+.vscode/
 target/
 */dependency-reduced-pom.xml
 *.iml
