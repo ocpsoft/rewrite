@@ -21,4 +21,4 @@ jobs:
           distribution: 'temurin'
 
       - run: mvn --batch-mode --update-snapshots package -DskipTests
-      - run: mvn --batch-mode --update-snapshots -P GLASSFISH_MANAGED_4.0 verify
+      - run: mvn --batch-mode --update-snapshots verify
