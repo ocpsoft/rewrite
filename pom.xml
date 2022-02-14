@@ -34,7 +34,6 @@
       <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
       <!-- Versions -->
-      <version.jboss.spec>1.0.4.Final</version.jboss.spec>
       <version.junit>4.13.1</version.junit>
       <version.common>1.0.5.Final</version.common>
       <version.logging>1.0.5.Final</version.logging>
@@ -42,12 +41,6 @@
       <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
       <version.arquillian.glassfish>1.0.0.CR4</version.arquillian.glassfish>
       <version.arquillian.tomcat>1.1.0.Final</version.arquillian.tomcat>
-      <version.jbossas>7.1.1.Final</version.jbossas>
-      <version.wildfly>8.2.0.Final</version.wildfly>
-      <version.tomcat>8.5.34</version.tomcat>
-      <version.glassfish3>3.1.2.2</version.glassfish3>
-      <version.glassfish4>4.0</version.glassfish4>
-      <container.download.dir>${java.io.tmpdir}/rewrite-arquillian-containers</container.download.dir>
 
       <version.war.plugin>3.3.2</version.war.plugin>
    </properties>
