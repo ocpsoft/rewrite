@@ -15,8 +15,8 @@
    <dependencies>
 
       <dependency>
-         <groupId>org.jboss.spec</groupId>
-         <artifactId>jboss-javaee-${javaee.spec}</artifactId>
+         <groupId>jakarta.platform</groupId>
+         <artifactId>jakarta.jakartaee-bom</artifactId>
          <type>pom</type>
          <scope>provided</scope>
       </dependency>

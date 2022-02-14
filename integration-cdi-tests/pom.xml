@@ -36,13 +36,13 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>org.jboss.spec.javax.faces</groupId>
-         <artifactId>jboss-jsf-api_${jsf.spec}_spec</artifactId>
+         <groupId>jakarta.faces</groupId>
+         <artifactId>jakarta.faces-api</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>org.jboss.spec.javax.el</groupId>
-         <artifactId>jboss-el-api_${el.spec}_spec</artifactId>
+         <groupId>jakarta.el</groupId>
+         <artifactId>jakarta.el-api</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
@@ -51,8 +51,8 @@
          <scope>test</scope>
       </dependency>
       <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
+         <groupId>jakarta.enterprise</groupId>
+         <artifactId>jakarta.enterprise.cdi-api</artifactId>
          <scope>test</scope>
       </dependency>
    </dependencies>
