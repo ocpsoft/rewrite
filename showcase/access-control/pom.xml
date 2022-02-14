@@ -14,8 +14,7 @@
    <dependencies>
       <dependency>
          <groupId>jakarta.platform</groupId>
-         <artifactId>jakarta.jakartaee-bom</artifactId>
-         <type>pom</type>
+         <artifactId>jakarta.jakartaee-api</artifactId>
          <scope>provided</scope>
       </dependency>
 
