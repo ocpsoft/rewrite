@@ -36,8 +36,8 @@
          <artifactId>rewrite-impl-servlet-3.0</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.jboss.spec.javax.servlet</groupId>
-         <artifactId>jboss-servlet-api_${servlet.spec}_spec</artifactId>
+         <groupId>jakarta.servlet</groupId>
+         <artifactId>jakarta.servlet-api</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
