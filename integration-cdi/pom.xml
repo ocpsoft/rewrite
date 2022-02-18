@@ -10,10 +10,6 @@
 
    <artifactId>rewrite-integration-cdi</artifactId>
 
-   <properties>
-      <version.cdi-api>1.2</version.cdi-api>
-   </properties>
-
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
@@ -22,18 +18,18 @@
       </dependency>
 
       <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
+         <groupId>jakarta.enterprise</groupId>
+         <artifactId>jakarta.enterprise.cdi-api</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>org.jboss.spec.javax.servlet</groupId>
-         <artifactId>jboss-servlet-api_${servlet.spec}_spec</artifactId>
+         <groupId>jakarta.servlet</groupId>
+         <artifactId>jakarta.servlet-api</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>org.jboss.spec.javax.el</groupId>
-         <artifactId>jboss-el-api_${el.spec}_spec</artifactId>
+         <groupId>jakarta.el</groupId>
+         <artifactId>jakarta.el-api</artifactId>
          <scope>provided</scope>
       </dependency>
 

@@ -23,10 +23,9 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-${javaee.spec}</artifactId>
-				<version>${version.jboss.spec}</version>
-				<type>pom</type>
+				<groupId>jakarta.platform</groupId>
+				<artifactId>jakarta.jakartaee-api</artifactId>
+				<version>8.0.0</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>

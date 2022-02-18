@@ -3,19 +3,13 @@ cache:
   directories:
     - '$HOME/.m2/repository'
 script:
-  - mvn -P ${CONTAINER} install
+  - mvn install
 after_success:
   - "bash ./.travis-deploy.sh"
 matrix:
   include:
-    - env: CONTAINER=WILDFLY_MANAGED_8
-      jdk: openjdk8
-    - env: CONTAINER=GLASSFISH_MANAGED_4.0
-      jdk: openjdk8
-    - env: CONTAINER=WILDFLY_MANAGED_8
-      jdk: openjdk11
-    - env: CONTAINER=GLASSFISH_MANAGED_4.0
-      jdk: openjdk11
+    - jdk: openjdk8
+    - jdk: openjdk11
 notifications:
   email:
     - "ocpsoft-ci@googlegroups.com"
