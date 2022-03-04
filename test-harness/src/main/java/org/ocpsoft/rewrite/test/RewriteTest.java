@@ -215,16 +215,8 @@ public class RewriteTest extends RewriteTestBase
        * each other when added to the archive.
        */
       archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider",
-               "org.ocpsoft.rewrite.servlet.impl.Servlet3ServletRegistrationProvider",
                "org.ocpsoft.rewrite.servlet.impl.WebXmlServletRegistrationProvider");
-      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider",
-               "org.ocpsoft.rewrite.servlet.impl.Servlet3DispatcherTypeProvider",
-               "org.ocpsoft.rewrite.servlet.impl.Servlet25DispatcherTypeProvider");
-
-      addAsResource(archive, new File("../impl-servlet-2.5/target/classes/org"));
-      addAsResource(archive, new File("../impl-servlet-2.5/target/classes/META-INF"));
-      addAsResource(archive, new File("../impl-servlet-3.0/target/classes/org"));
-      addAsResource(archive, new File("../impl-servlet-3.0/target/classes/META-INF"));
+      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider");
 
       addAsResource(archive, new File("../impl-servlet/target/classes/org"));
       addAsResource(archive, new File("../impl-servlet/target/classes/META-INF"));
