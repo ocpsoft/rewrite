@@ -11,7 +11,7 @@
    <artifactId>rewrite-integration-spring</artifactId>
 
    <properties>
-      <version.spring>4.3.30.RELEASE</version.spring>
+      <version.spring>5.3.16</version.spring>
    </properties>
 
    <dependencies>
