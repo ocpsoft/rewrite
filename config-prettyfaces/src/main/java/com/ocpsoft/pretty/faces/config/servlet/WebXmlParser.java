@@ -17,24 +17,18 @@ package com.ocpsoft.pretty.faces.config.servlet;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ocpsoft.common.pattern.WeightedComparator;
-import org.ocpsoft.common.services.ServiceLoader;
-import org.ocpsoft.common.util.Iterators;
-import org.ocpsoft.rewrite.servlet.ServletRegistration;
-import org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider;
 import org.xml.sax.SAXException;
 
 /**
- * This class is used to detect the mapping of the {@link FacesServlet}. The new implementation is based on Rewrite's
- * {@link ServletRegistrationProvider} SPI. This class should not be removed, because 3rd party frameworks like Seam
+ * This class is used to detect the mapping of the {@link FacesServlet}.
+ * This class should not be removed, because 3rd party frameworks like Seam
  * Faces are using it.
  * 
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -48,37 +42,22 @@ public class WebXmlParser
 
    private String facesMapping = null;
 
-   public void parse(final ServletContext context) throws IOException, SAXException
-   {
+   public void parse(final ServletContext context) throws IOException, SAXException {
 
-      List<ServletRegistrationProvider> providers = Iterators.asList(
-               ServiceLoader.loadTypesafe(ServletRegistrationProvider.class).iterator());
-      Collections.sort(providers, new WeightedComparator());
-
-      for (ServletRegistrationProvider provider : providers) {
-         List<ServletRegistration> registrations = provider.getServletRegistrations(context);
-         if (registrations != null) {
-
-            for (ServletRegistration s : registrations)
-            {
-               if (s.getClassName() != null && s.getClassName().equalsIgnoreCase(FACES_SERVLET))
-               {
-                  Collection<String> mappings = s.getMappings();
-                  if (!mappings.isEmpty())
-                  {
-                     facesMapping = mappings.iterator().next();
-                     break;
-                  }
-               }
+      for (ServletRegistration s : context.getServletRegistrations().values()) {
+         if (s.getClassName() != null && s.getClassName().equalsIgnoreCase(FACES_SERVLET)) {
+            Collection<String> mappings = s.getMappings();
+            if (!mappings.isEmpty()) {
+               facesMapping = mappings.iterator().next();
+               break;
             }
-
-            if (facesMapping == null)
-            {
-               log.warn("Faces Servlet (javax.faces.webapp.FacesServlet) not found in web context - cannot configure PrettyFaces DynaView");
-            }
-
          }
       }
+
+      if (facesMapping == null) {
+         log.warn("Faces Servlet (javax.faces.webapp.FacesServlet) not found in web context - cannot configure PrettyFaces DynaView");
+      }
+
    }
 
    public boolean isFacesPresent()

@@ -25,6 +25,7 @@ import java.util.List;
  * 
  * @author Christian Kaltepoth
  */
+@Deprecated
 public class ServletRegistration
 {
 
