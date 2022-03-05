@@ -209,15 +209,6 @@ public class RewriteTest extends RewriteTestBase
       addAsResource(archive, new File("../addressbuilder/target/classes/org"));
       addAsResource(archive, new File("../api-servlet/target/classes/org"));
 
-      /*
-       * We have to manually create the META-NF/services entry for ServletRegistrationProvider
-       * and DispatcherTypeProvider, because the existing ones from the two modules overwrite 
-       * each other when added to the archive.
-       */
-      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider",
-               "org.ocpsoft.rewrite.servlet.impl.WebXmlServletRegistrationProvider");
-      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider");
-
       addAsResource(archive, new File("../impl-servlet/target/classes/org"));
       addAsResource(archive, new File("../impl-servlet/target/classes/META-INF"));
 
