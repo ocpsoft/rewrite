@@ -36,4 +36,18 @@
       </dependency>
 
    </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <classpathDependencyExcludes>
+                  <classpathDependencyExclude>jakarta.servlet:jakarta.servlet-api</classpathDependencyExclude>
+               </classpathDependencyExcludes>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>
