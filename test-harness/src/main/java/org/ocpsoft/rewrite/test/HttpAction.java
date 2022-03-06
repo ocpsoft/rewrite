@@ -23,37 +23,30 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.ocpsoft.rewrite.exception.RewriteException;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  *
  */
-public class HttpAction<T extends HttpRequest>
+public class HttpAction
 {
-   private final HttpClient client;
-   private final T request;
-   private final HttpResponse response;
-   private final HttpContext context;
+   private final OkHttpClient client;
+   private final Request request;
+   private final Response response;
    private final String baseUrl;
    private final String contextPath;
    private String responseContent;
 
-   public HttpAction(final HttpClient client, final HttpContext context, final T request,
-            final HttpResponse response, final String baseUrl, final String contextPath)
+   public HttpAction(final OkHttpClient client, final Request request,
+                     final Response response, final String baseUrl, final String contextPath)
    {
       this.client = client;
       this.request = request;
-      this.context = context;
       this.response = response;
       this.baseUrl = baseUrl;
       this.contextPath = contextPath;
@@ -64,11 +57,7 @@ public class HttpAction<T extends HttpRequest>
     */
    public String getCurrentURL()
    {
-      HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(
-               ExecutionContext.HTTP_REQUEST);
-      HttpHost currentHost = (HttpHost) context.getAttribute(
-               ExecutionContext.HTTP_TARGET_HOST);
-      String currentUrl = currentHost.toURI() + currentReq.getURI();
+      String currentUrl = response.request().url().toString();
 
       if (currentUrl.startsWith(baseUrl))
       {
@@ -96,28 +85,20 @@ public class HttpAction<T extends HttpRequest>
     */
    public String getHost()
    {
-      HttpHost currentHost = (HttpHost) context.getAttribute(
-               ExecutionContext.HTTP_TARGET_HOST);
-
-      return currentHost.toURI();
+      return request.url().host();
    }
 
-   public HttpClient getClient()
+   public OkHttpClient getClient()
    {
       return client;
    }
 
-   public T getRequest()
+   public Request getRequest()
    {
       return request;
    }
 
-   public HttpContext getContext()
-   {
-      return context;
-   }
-
-   public HttpResponse getResponse()
+   public Response getResponse()
    {
       return response;
    }
@@ -129,17 +110,12 @@ public class HttpAction<T extends HttpRequest>
 
    public List<String> getResponseHeaderValues(final String name)
    {
-      List<String> result = new ArrayList<String>();
-      Header[] headers = getResponse().getHeaders(name);
-      for (Header header : headers) {
-         result.add(header.getValue());
-      }
-      return result;
+      return response.headers(name);
    }
 
    public int getStatusCode()
    {
-      return response.getStatusLine().getStatusCode();
+      return response.code();
    }
 
    public String getResponseContent()
@@ -147,10 +123,10 @@ public class HttpAction<T extends HttpRequest>
       if (responseContent == null)
       {
          try {
-            HttpEntity entity = getResponse().getEntity();
+            ResponseBody entity = getResponse().body();
             if (entity != null)
             {
-               responseContent = toString(entity.getContent());
+               responseContent = entity.string();
             }
          }
          catch (Exception e) {

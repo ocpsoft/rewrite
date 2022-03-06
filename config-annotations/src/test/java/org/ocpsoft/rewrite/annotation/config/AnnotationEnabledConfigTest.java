@@ -2,7 +2,6 @@ package org.ocpsoft.rewrite.annotation.config;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,7 +26,7 @@ public class AnnotationEnabledConfigTest extends RewriteTestBase
    @Test
    public void testConfigEnabledByAnnotations() throws Exception
    {
-      HttpAction<HttpGet> action = get("/config-enabled-by-annotation");
+      HttpAction action = get("/config-enabled-by-annotation");
       assertEquals(299, action.getStatusCode());
    }
 

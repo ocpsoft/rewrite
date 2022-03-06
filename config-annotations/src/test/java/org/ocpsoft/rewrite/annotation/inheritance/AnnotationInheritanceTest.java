@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.annotation.inheritance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -56,7 +55,7 @@ public class AnnotationInheritanceTest extends RewriteTestBase
    @Test
    public void testParametersInSuperClass() throws Exception
    {
-      HttpAction<HttpGet> action = get("/fields?param1=foo&param2=bar");
+      HttpAction action = get("/fields?param1=foo&param2=bar");
       assertEquals(200, action.getStatusCode());
       assertThat("Parameter in sub class not injected",
                action.getResponseContent(), Matchers.containsString("param1=[foo]"));
@@ -67,7 +66,7 @@ public class AnnotationInheritanceTest extends RewriteTestBase
    @Test
    public void testMethodsInSuperClass() throws Exception
    {
-      HttpAction<HttpGet> action = get("/methods");
+      HttpAction action = get("/methods");
       assertEquals(200, action.getStatusCode());
       assertThat("Method in sub class not invoked",
                action.getResponseContent(), Matchers.containsString("[action1 invoked]"));

@@ -54,13 +54,18 @@
          <scope>compile</scope>
       </dependency>
 
-      <!-- Exactly these versions are required by Drone -->
       <dependency>
-         <groupId>org.apache.httpcomponents</groupId>
-         <artifactId>httpclient</artifactId>
-         <version>4.5.13</version>
-         <scope>compile</scope>
+         <groupId>com.squareup.okhttp3</groupId>
+         <artifactId>okhttp</artifactId>
+         <version>4.9.3</version>
       </dependency>
+      <dependency>
+         <groupId>com.squareup.okhttp3</groupId>
+         <artifactId>logging-interceptor</artifactId>
+         <version>4.9.3</version>
+      </dependency>
+
+      <!-- Exactly these versions are required by Drone -->
       <dependency>
          <groupId>net.sourceforge.htmlunit</groupId>
          <artifactId>htmlunit</artifactId>

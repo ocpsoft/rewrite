@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.prettyfaces.interaction;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,7 +45,7 @@ public class RewriteEngineUrlMappingInteractionTest extends RewriteTestBase
    @Test
    public void testSimpleUrlMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/page");
+      HttpAction action = get("/page");
       assertTrue(action.getCurrentURL().endsWith("/page"));
       assertTrue(action.getResponseContent().contains("The page rendered fine!"));
    }
@@ -57,7 +56,7 @@ public class RewriteEngineUrlMappingInteractionTest extends RewriteTestBase
    @Test
    public void testDynaViewUrlMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/dyna/page");
+      HttpAction action = get("/dyna/page");
       assertTrue(action.getCurrentURL().endsWith("/dyna/page"));
       assertTrue(action.getResponseContent().contains("The page rendered fine!"));
    }
@@ -68,7 +67,7 @@ public class RewriteEngineUrlMappingInteractionTest extends RewriteTestBase
    @Test
    public void testRewriteForwardsToUrlMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/rewrite-forwards-to-page-mapping");
+      HttpAction action = get("/rewrite-forwards-to-page-mapping");
       assertTrue(action.getCurrentURL().endsWith("/rewrite-forwards-to-page-mapping"));
       assertTrue(action.getResponseContent().contains("The page rendered fine!"));
    }
@@ -79,7 +78,7 @@ public class RewriteEngineUrlMappingInteractionTest extends RewriteTestBase
    @Test
    public void testRewriteRedirectsToUrlMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/rewrite-redirects-to-page-mapping");
+      HttpAction action = get("/rewrite-redirects-to-page-mapping");
       assertTrue(action.getCurrentURL().endsWith("/page"));
       assertTrue(action.getResponseContent().contains("The page rendered fine!"));
    }
@@ -90,7 +89,7 @@ public class RewriteEngineUrlMappingInteractionTest extends RewriteTestBase
    @Test
    public void testRewriteForwardsToDynaviewMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/rewrite-forwards-to-dynaview");
+      HttpAction action = get("/rewrite-forwards-to-dynaview");
       assertTrue(action.getCurrentURL().endsWith("/rewrite-forwards-to-dynaview"));
       assertTrue(action.getResponseContent().contains("The page rendered fine!"));
    }
@@ -101,7 +100,7 @@ public class RewriteEngineUrlMappingInteractionTest extends RewriteTestBase
    @Test
    public void testRewriteRedirectsToDynaviewMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/rewrite-redirects-to-dynaview");
+      HttpAction action = get("/rewrite-redirects-to-dynaview");
       assertTrue(action.getCurrentURL().endsWith("/dyna/page"));
       assertTrue(action.getResponseContent().contains("The page rendered fine!"));
    }
@@ -112,7 +111,7 @@ public class RewriteEngineUrlMappingInteractionTest extends RewriteTestBase
    @Test
    public void testJsfViewIdRedirectsToMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/page.jsf");
+      HttpAction action = get("/page.jsf");
       assertTrue(action.getCurrentURL().endsWith("/page"));
       assertTrue(action.getResponseContent().contains("The page rendered fine!"));
    }

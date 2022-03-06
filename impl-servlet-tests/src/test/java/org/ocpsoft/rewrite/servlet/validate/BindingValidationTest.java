@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.servlet.validate;
 
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,21 +45,21 @@ public class BindingValidationTest extends RewriteTest
    @Test
    public void testConfigurationProviderForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/v/valid");
-      Assert.assertEquals(205, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/v/valid");
+      Assert.assertEquals(205, action.getStatusCode());
    }
 
    @Test
    public void testConfigurationIngoresUnconfiguredRequests() throws Exception
    {
-      HttpAction<HttpGet> action = get("/v/bar");
-      Assert.assertEquals(206, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/v/bar");
+      Assert.assertEquals(206, action.getStatusCode());
    }
 
    @Test
    public void testConfigurationProviderRedirect() throws Exception
    {
-      HttpAction<HttpGet> action = get("/v/not-v4lid");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/v/not-v4lid");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 }

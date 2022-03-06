@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.annotation.visit;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,35 +49,35 @@ public class AnnotationConfigurationTest extends RewriteTest
    @Test
    public void testControl() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/control");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/control");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testTypeAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/type");
-      Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/type");
+      Assert.assertEquals(204, action.getStatusCode());
    }
 
    @Test
    public void testFieldAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/field");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/field");
+      Assert.assertEquals(201, action.getStatusCode());
    }
 
    @Test
    public void testMethodAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/method");
-      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/method");
+      Assert.assertEquals(202, action.getStatusCode());
    }
 
    @Test
    public void testParameterAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/parameter");
-      Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/parameter");
+      Assert.assertEquals(203, action.getStatusCode());
    }
 }

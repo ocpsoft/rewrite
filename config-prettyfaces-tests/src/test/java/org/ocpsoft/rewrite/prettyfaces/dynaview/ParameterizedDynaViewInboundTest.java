@@ -1,6 +1,5 @@
 package org.ocpsoft.rewrite.prettyfaces.dynaview;
 
-import org.apache.http.client.methods.HttpGet;
 import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -29,7 +28,7 @@ public class ParameterizedDynaViewInboundTest extends RewriteTestBase
    @Test
    public void testPathParamInjectionHappensBeforeViewDetermination() throws Exception
    {
-      HttpAction<HttpGet> action = get("/pathparam/correct");
+      HttpAction action = get("/pathparam/correct");
 
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("The parameter was correctly injected"));
@@ -38,7 +37,7 @@ public class ParameterizedDynaViewInboundTest extends RewriteTestBase
    @Test
    public void testQueryParamInjectionHappensBeforeViewDetermination() throws Exception
    {
-      HttpAction<HttpGet> action = get("/queryparam?param=correct");
+      HttpAction action = get("/queryparam?param=correct");
 
       Assert.assertEquals(200, action.getStatusCode());
       Assertions.assertThat(action.getResponseContent())
@@ -48,14 +47,14 @@ public class ParameterizedDynaViewInboundTest extends RewriteTestBase
    @Test
    public void testInvalidPathParamWithDynaView() throws Exception
    {
-      HttpAction<HttpGet> action = get("/pathparam/invalid");
+      HttpAction action = get("/pathparam/invalid");
       Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testInvalidQueryParamWithDynaView() throws Exception
    {
-      HttpAction<HttpGet> action = get("/queryparam?param=invalid");
+      HttpAction action = get("/queryparam?param=invalid");
       Assert.assertEquals(404, action.getStatusCode());
    }
 

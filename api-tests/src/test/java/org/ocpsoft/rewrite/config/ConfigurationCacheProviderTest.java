@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
@@ -50,8 +49,8 @@ public class ConfigurationCacheProviderTest extends RewriteTest
    @Test
    public void testCachingConfiguration() throws Exception
    {
-      HttpAction<HttpGet> action = get("/cache1");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/cache1");
+      Assert.assertEquals(201, action.getStatusCode());
    }
 
    @Test
@@ -85,14 +84,14 @@ public class ConfigurationCacheProviderTest extends RewriteTest
       @Override
       public void run()
       {
-         HttpAction<HttpGet> action = null;
+         HttpAction action = null;
          try {
             action = get("/cache1");
          }
          catch (Exception e) {
             throw new RuntimeException(e);
          }
-         configBuildCount = action.getResponse().getStatusLine().getStatusCode() - 200;
+         configBuildCount = action.getStatusCode() - 200;
          vote();
       }
    };

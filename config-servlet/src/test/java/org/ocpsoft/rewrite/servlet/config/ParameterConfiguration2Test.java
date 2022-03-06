@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,14 +44,14 @@ public class ParameterConfiguration2Test extends RewriteTest
    @Test
    public void testParameterCanBeConfigured() throws Exception
    {
-      HttpAction<HttpGet> action = get("/paramconfig");
-      Assert.assertEquals(245, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/paramconfig");
+      Assert.assertEquals(245, action.getStatusCode());
    }
 
    @Test
    public void testParameterCanBeConfigured2() throws Exception
    {
-      HttpAction<HttpGet> action = get("/badconfig");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/badconfig");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 }

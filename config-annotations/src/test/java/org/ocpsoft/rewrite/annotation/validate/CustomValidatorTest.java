@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.annotation.validate;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -34,7 +33,7 @@ public class CustomValidatorTest extends RewriteTestBase
    @Test
    public void testValidationWithValidValue() throws Exception
    {
-      HttpAction<HttpGet> action = get("/validate/abcd/");
+      HttpAction action = get("/validate/abcd/");
       assertEquals(200, action.getStatusCode());
       assertTrue(action.getResponseContent().contains("Value: [abcd]"));
    }
@@ -42,7 +41,7 @@ public class CustomValidatorTest extends RewriteTestBase
    @Test
    public void testValidationWithInvalidValue() throws Exception
    {
-      HttpAction<HttpGet> action = get("/validate/abc/");
+      HttpAction action = get("/validate/abc/");
       assertEquals(404, action.getStatusCode());
    }
 

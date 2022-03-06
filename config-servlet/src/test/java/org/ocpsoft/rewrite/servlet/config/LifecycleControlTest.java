@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,7 +44,7 @@ public class LifecycleControlTest extends RewriteTest
    @Test
    public void testAbort() throws Exception
    {
-      HttpAction<HttpGet> action = get("/aborty");
+      HttpAction action = get("/aborty");
       Assert.assertEquals(400, action.getStatusCode());
 
       action = get("/abort");
@@ -55,7 +54,7 @@ public class LifecycleControlTest extends RewriteTest
    @Test
    public void testHandled() throws Exception
    {
-      HttpAction<HttpGet> action = get("/handley");
+      HttpAction action = get("/handley");
       Assert.assertEquals(401, action.getStatusCode());
 
       action = get("/handle");
@@ -65,7 +64,7 @@ public class LifecycleControlTest extends RewriteTest
    @Test
    public void testProceed() throws Exception
    {
-      HttpAction<HttpGet> action = get("/proceedy");
+      HttpAction action = get("/proceedy");
       Assert.assertEquals(402, action.getStatusCode());
 
       action = get("/proceed");

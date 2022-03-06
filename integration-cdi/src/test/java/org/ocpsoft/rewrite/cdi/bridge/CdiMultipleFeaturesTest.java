@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.cdi.bridge;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -54,15 +53,15 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    @Test
    public void testRewriteProviderBridgeAcceptsChanges() throws Exception
    {
-      HttpAction<HttpGet> action = get("/success");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/success");
+      Assert.assertEquals(200, action.getStatusCode());
    }
 
    @Test
    public void testRewriteRedirect301() throws Exception
    {
-      HttpAction<HttpGet> action = get("/redirect-301");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/redirect-301");
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertEquals("/outbound-rewritten", action.getCurrentContextRelativeURL());
    }
 
@@ -72,8 +71,8 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    @Test
    public void testCdiServiceEnricherProvidesEnrichment() throws Exception
    {
-      HttpAction<HttpGet> action = get("/cdi/inject");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/cdi/inject");
+      Assert.assertEquals(200, action.getStatusCode());
    }
 
    /*
@@ -82,24 +81,24 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    @Test
    public void testParameterExpressionBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/one/2");
+      HttpAction action = get("/one/2");
       Assert.assertEquals("/result/2/one", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(200, action.getStatusCode());
    }
 
    @Test
    public void testParameterRegexValidationIgnoresInvalidInput1() throws Exception
    {
-      HttpAction<HttpGet> action = get("/one/44");
+      HttpAction action = get("/one/44");
       Assert.assertEquals("/one/44", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testParameterRegexValidationIgnoresInvalidInput2() throws Exception
    {
-      HttpAction<HttpGet> action = get("/one/two");
+      HttpAction action = get("/one/two");
       Assert.assertEquals("/one/two", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(404, action.getStatusCode());
    }
 }

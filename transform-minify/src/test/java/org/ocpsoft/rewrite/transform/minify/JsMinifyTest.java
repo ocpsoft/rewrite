@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.transform.minify;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -61,8 +60,8 @@ public class JsMinifyTest extends RewriteTest
    @Category(IgnoreForWildfly.class)
    public void testJavaScriptCompression() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.js");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/test.js");
+      assertEquals(200, action.getStatusCode());
       assertEquals("var text=\"hello\";alert(text);", action.getResponseContent());
    }
 
@@ -70,8 +69,8 @@ public class JsMinifyTest extends RewriteTest
    @Category(IgnoreForWildfly.class)
    public void testNotExistingSourceFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.js");
-      assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/not-existing.js");
+      assertEquals(404, action.getStatusCode());
    }
 
 }

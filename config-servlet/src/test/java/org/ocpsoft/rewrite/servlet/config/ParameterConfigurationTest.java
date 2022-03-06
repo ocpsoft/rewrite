@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,8 +44,8 @@ public class ParameterConfigurationTest extends RewriteTest
    @Test
    public void testPathParameterRequestBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/lincoln/order/3");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/lincoln/order/3");
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertEquals("lincoln", action.getResponseHeaderValues("User-Name").get(0));
       Assert.assertEquals("3", action.getResponseHeaderValues("Order-ID").get(0));
    }
@@ -54,21 +53,21 @@ public class ParameterConfigurationTest extends RewriteTest
    @Test
    public void testTestPathParameterNotMatchingRegexes() throws Exception
    {
-      HttpAction<HttpGet> action = get("/lincoln3/order/z42");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/lincoln3/order/z42");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testTestPathAndForwardUseEvaluationContextByDefault() throws Exception
    {
-      HttpAction<HttpGet> action = get("/p/rewrite/story/50");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/p/rewrite/story/50");
+      Assert.assertEquals(200, action.getStatusCode());
    }
 
    @Test
    public void testFailedBindingRaisesException() throws Exception
    {
-      HttpAction<HttpGet> action = get("/lincoln/profile");
-      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/lincoln/profile");
+      Assert.assertEquals(500, action.getStatusCode());
    }
 }

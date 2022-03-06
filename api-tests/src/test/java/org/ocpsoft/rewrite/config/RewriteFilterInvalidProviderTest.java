@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -47,8 +46,8 @@ public class RewriteFilterInvalidProviderTest extends RewriteTest
    @Test
    public void testInvalidProvidersAreIgnored() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.html");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/index.html");
+      Assert.assertEquals(200, action.getStatusCode());
    }
 
 }

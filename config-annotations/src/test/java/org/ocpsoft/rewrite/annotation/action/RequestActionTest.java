@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.annotation.action;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -34,7 +33,7 @@ public class RequestActionTest extends RewriteTestBase
    @Test
    public void testRequestAction() throws Exception
    {
-      HttpAction<HttpGet> action = get("/action");
+      HttpAction action = get("/action");
       assertEquals(200, action.getStatusCode());
       assertTrue(action.getResponseContent().contains("Log: [action invoked]"));
    }

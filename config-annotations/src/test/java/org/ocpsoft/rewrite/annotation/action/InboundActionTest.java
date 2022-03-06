@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.annotation.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -36,7 +35,7 @@ public class InboundActionTest extends RewriteTestBase
    @Test
    public void testRequestActionOnlyInvokedForInboundRewrites() throws Exception
    {
-      HttpAction<HttpGet> action = get("/page-with-link.jsp");
+      HttpAction action = get("/page-with-link.jsp");
       assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("/rewritten-url"));
    }

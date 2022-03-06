@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.servlet.wrapper;
 
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -48,21 +47,21 @@ public class HttpForwardConfigurationTest extends RewriteTest
    @Test
    public void testForwardedParameterAddedToRequestParameterMap() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward?foo=bar");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/forward?foo=bar");
+      Assert.assertEquals(200, action.getStatusCode());
    }
 
    @Test
    public void testRequestParameterConditionRequired() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward-fail?foo=bar");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/forward-fail?foo=bar");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testRequestParameterPreservedWhenForwardedFromJSP() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward.jsp");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/forward.jsp");
+      Assert.assertEquals(201, action.getStatusCode());
    }
 }

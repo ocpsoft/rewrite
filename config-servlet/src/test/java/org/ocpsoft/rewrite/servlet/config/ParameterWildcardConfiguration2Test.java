@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,14 +44,14 @@ public class ParameterWildcardConfiguration2Test extends RewriteTest
     @Test
     public void testWildcardParameter() throws Exception
     {
-        HttpAction<HttpGet> action = get("/test.txt");
+        HttpAction action = get("/test.txt");
         Assert.assertEquals(200, action.getStatusCode());
     }
 
     @Test
     public void testWildcardParameterCrossesSlashBoundary() throws Exception
     {
-        HttpAction<HttpGet> action = get("/test/next/path.txt");
+        HttpAction action = get("/test/next/path.txt");
         Assert.assertEquals(200, action.getStatusCode());
     }
 }

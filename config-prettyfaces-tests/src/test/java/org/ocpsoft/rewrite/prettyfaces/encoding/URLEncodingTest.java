@@ -16,7 +16,6 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.encoding;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
@@ -53,7 +52,7 @@ public class URLEncodingTest extends RewriteTestBase
       String target = "/virtual/rewrite/substitute";
       String expected = "/virtu%C3%A1ln%C3%AD";
 
-      HttpAction<HttpGet> action = get(target);
+      HttpAction action = get(target);
 
       String responseContent = action.getResponseContent();
       Assert.assertTrue(responseContent.contains(action.getContextPath() + expected));
@@ -70,7 +69,7 @@ public class URLEncodingTest extends RewriteTestBase
       String target = "/virtual/rewrite/url";
       String expected = "/virtu%C3%A1ln%C3%AD";
 
-      HttpAction<HttpGet> action = get(target);
+      HttpAction action = get(target);
 
       Assert.assertTrue(action.getCurrentURL().endsWith(expected));
       Assert.assertTrue(action.getResponseContent().contains(expected));
@@ -81,7 +80,7 @@ public class URLEncodingTest extends RewriteTestBase
    {
       String expected = "/custom/form";
 
-      HttpAction<HttpGet> action = get(expected);
+      HttpAction action = get(expected);
 
       Assert.assertTrue(action.getCurrentURL().endsWith(expected));
       Assert.assertTrue(action.getResponseContent().contains(expected));
@@ -93,7 +92,7 @@ public class URLEncodingTest extends RewriteTestBase
    {
       String expected = "/foo/bar/baz/car/";
 
-      HttpAction<HttpGet> action = get(expected);
+      HttpAction action = get(expected);
 
       Assert.assertTrue(action.getCurrentURL().endsWith(expected));
       Assert.assertTrue(action.getResponseContent().contains(expected));
@@ -104,7 +103,7 @@ public class URLEncodingTest extends RewriteTestBase
    @Test
    public void testNonMappedRequestRendersRewrittenURL() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding.jsf");
+      HttpAction action = get("/encoding.jsf");
 
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding.jsf"));
       Assert.assertTrue(action.getResponseContent().contains("/custom/form"));
@@ -145,7 +144,7 @@ public class URLEncodingTest extends RewriteTestBase
    @Test
    public void testQueryDecoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo%20Bar");
+      HttpAction action = get("/encoding/Vračar?dis=Fooo%20Bar");
 
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo%20Bar"));
       String responseContent = action.getResponseContent();
@@ -156,7 +155,7 @@ public class URLEncodingTest extends RewriteTestBase
    @Test
    public void testEncodedPathDecoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo%20Bar");
+      HttpAction action = get("/encoding/Vračar?dis=Fooo%20Bar");
 
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo%20Bar"));
       Assert.assertTrue(action.getResponseContent().contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar"));
@@ -166,7 +165,7 @@ public class URLEncodingTest extends RewriteTestBase
    @Test
    public void testQueryWithGermanUmlaut() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/Vračar?dis=%C3%BC");
+      HttpAction action = get("/encoding/Vračar?dis=%C3%BC");
       Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=%C3%BC"));
       Assert.assertTrue(action.getResponseContent().contains(getContextPath() + "/encoding/Vra%C4%8Dar?dis=%C3%BC"));
       Assert.assertTrue(action.getResponseContent().contains("beanPathText=Vračar"));

@@ -2,7 +2,6 @@ package org.ocpsoft.rewrite.prettyfaces.dynaview;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -31,7 +30,7 @@ public class ParameterizedDynaViewOutboundTest extends RewriteTestBase
    @Test
    public void testPathParamInjectionHappensBeforeViewDetermination() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.jsf");
+      HttpAction action = get("/index.jsf");
 
       Assert.assertEquals(200, action.getStatusCode());
       assertTrue(action.getResponseContent().contains("/pathparam/correct"));

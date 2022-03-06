@@ -1,6 +1,5 @@
 package org.ocpsoft.rewrite.prettyfaces.loop;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,7 +24,7 @@ public class ViewIdMatchTest extends RewriteTestBase
    @Test
    public void testPatternMatchingViewId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/path/christian");
+      HttpAction action = get("/path/christian");
       Assert.assertTrue(action.getResponseContent().contains("Injected value: [christian]"));
    }
 

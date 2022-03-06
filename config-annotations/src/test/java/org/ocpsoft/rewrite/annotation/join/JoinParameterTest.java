@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.annotation.join;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -34,7 +33,7 @@ public class JoinParameterTest extends RewriteTestBase
    public void testJoinWithParameter() throws Exception
    {
 
-      HttpAction<HttpGet> action = get("/join/test/");
+      HttpAction action = get("/join/test/");
       assertEquals(200, action.getStatusCode());
       assertTrue(action.getResponseContent().contains("Value: [test]"));
    }

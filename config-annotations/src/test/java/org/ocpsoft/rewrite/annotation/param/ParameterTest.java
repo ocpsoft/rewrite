@@ -1,6 +1,5 @@
 package org.ocpsoft.rewrite.annotation.param;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,7 +34,7 @@ public class ParameterTest extends RewriteTestBase
    @Test
    public void testParameterBindingAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/param/christian/");
+      HttpAction action = get("/param/christian/");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertThat(action.getResponseContent(), Matchers.containsString("Value: [christian]"));
    }

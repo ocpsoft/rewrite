@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -69,8 +68,8 @@ public class LessIntegrationTest extends RewriteTest
    @Test
    public void testSimpleLessFileRendering() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.css");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/test.css");
+      assertEquals(200, action.getStatusCode());
       assertTrue(action.getResponseContent().contains("width: 3"));
    }
 
@@ -78,8 +77,8 @@ public class LessIntegrationTest extends RewriteTest
    @Category(IgnoreForWildfly.class)
    public void testNotExistingLessFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.css");
-      assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/not-existing.css");
+      assertEquals(404, action.getStatusCode());
    }
 
 }

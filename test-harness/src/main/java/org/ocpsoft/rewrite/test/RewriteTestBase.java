@@ -7,14 +7,11 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -31,6 +28,17 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 public abstract class RewriteTestBase
 {
+   protected final OkHttpClient client;
+
+   protected RewriteTestBase() {
+      HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+      loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+      client = new OkHttpClient.Builder()
+              .addInterceptor(loggingInterceptor)
+              .build();
+   }
+
    /**
     * Resolve an {@link Archive} from Maven coordinates.
     */
@@ -59,9 +67,8 @@ public abstract class RewriteTestBase
     * 
     * @throws Exception
     */
-   protected HttpAction<HttpGet> get(final String path) throws Exception
+   protected HttpAction get(final String path) throws Exception
    {
-      DefaultHttpClient client = new DefaultHttpClient();
       return get(client, path);
    }
 
@@ -73,9 +80,9 @@ public abstract class RewriteTestBase
     * 
     * @throws Exception
     */
-   protected HttpAction<HttpGet> get(HttpClient client, String path) throws Exception
+   protected HttpAction get(OkHttpClient client, String path) throws Exception
    {
-      return get(client, path, new Header[0]);
+      return get(client, path, Headers.of());
    }
 
    /**
@@ -86,16 +93,15 @@ public abstract class RewriteTestBase
     * 
     * @throws Exception
     */
-   protected HttpAction<HttpGet> get(HttpClient client, String path, Header... headers) throws Exception
+   protected HttpAction get(OkHttpClient client, String path, Headers headers) throws Exception
    {
-      HttpGet request = new HttpGet(getBaseURL() + getContextPath() + path);
-      if (headers != null && headers.length > 0) {
-         request.setHeaders(headers);
-      }
-      HttpContext context = new BasicHttpContext();
-      HttpResponse response = client.execute(request, context);
+      Request request = new Request.Builder().get()
+              .url(getBaseURL() + getContextPath() + path)
+              .headers(headers)
+              .build();
+      Response response = client.newCall(request).execute();
 
-      return new HttpAction<HttpGet>(client, context, request, response, getBaseURL(), getContextPath());
+      return new HttpAction(client, request, response, getBaseURL(), getContextPath());
    }
 
    /**
@@ -104,16 +110,17 @@ public abstract class RewriteTestBase
     * <p>
     * E.g: A path of '/example' will be sent as '/rewrite-test/example'
     */
-   protected HttpAction<HttpHead> head(final String path)
+   protected HttpAction head(final String path)
    {
-      DefaultHttpClient client = new DefaultHttpClient();
       try
       {
-         HttpHead request = new HttpHead(getBaseURL() + getContextPath() + path);
-         HttpContext context = new BasicHttpContext();
-         HttpResponse response = client.execute(request, context);
+         Request request = new Request.Builder()
+                 .head()
+                 .url(getBaseURL() + getContextPath() + path)
+                 .build();
+         Response response = client.newCall(request).execute();
 
-         return new HttpAction<HttpHead>(client, context, request, response, getBaseURL(), getContextPath());
+         return new HttpAction(client, request, response, getBaseURL(), getContextPath());
       }
       catch (Exception e)
       {

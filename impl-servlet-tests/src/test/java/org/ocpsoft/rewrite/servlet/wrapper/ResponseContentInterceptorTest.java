@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.servlet.wrapper;
 
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -51,7 +50,7 @@ public class ResponseContentInterceptorTest extends RewriteTest
    @Test
    public void testResponseBufferingAppliesAllBuffers() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.html");
+      HttpAction action = get("/index.html");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertEquals("lowercase", action.getResponseContent());
    }
@@ -59,7 +58,7 @@ public class ResponseContentInterceptorTest extends RewriteTest
    @Test
    public void testResponseBufferingOnlyAppliesWhenBuffersRegistered() throws Exception
    {
-      HttpAction<HttpGet> action = get("/unbuffered");
+      HttpAction action = get("/unbuffered");
       Assert.assertEquals(201, action.getStatusCode());
       Assert.assertEquals("UPPERCASE", action.getResponseContent());
    }
@@ -67,7 +66,7 @@ public class ResponseContentInterceptorTest extends RewriteTest
    @Test
    public void testResponseBufferingAcceptedAfterForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/bufferforward");
+      HttpAction action = get("/bufferforward");
       Assert.assertEquals(202, action.getStatusCode());
       Assert.assertEquals("uppercase", action.getResponseContent());
    }
@@ -75,7 +74,7 @@ public class ResponseContentInterceptorTest extends RewriteTest
    @Test
    public void testResponseBufferingRejectedAfterStreamAccessed() throws Exception
    {
-      HttpAction<HttpGet> action = get("/bufferfail");
+      HttpAction action = get("/bufferfail");
       Assert.assertEquals(503, action.getStatusCode());
    }
 }

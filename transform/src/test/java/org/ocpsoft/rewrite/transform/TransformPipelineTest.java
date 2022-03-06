@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.transform;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -51,16 +50,16 @@ public class TransformPipelineTest extends RewriteTest
    @Test
    public void testPipelineWithOneTransformer() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.one");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/test.one");
+      assertEquals(200, action.getStatusCode());
       assertEquals("this is bar", action.getResponseContent());
    }
 
    @Test
    public void testPipelineWithTwoTransformers() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.two");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/test.two");
+      assertEquals(200, action.getStatusCode());
       assertEquals("THIS IS BAR", action.getResponseContent());
    }
 

@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.spring;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -57,8 +56,8 @@ public class SpringFeaturesTest extends RewriteTest
    @Test
    public void testSpringFeatures() throws Exception
    {
-      HttpAction<HttpGet> action = get("/name-christian");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/name-christian");
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertEquals("/hello/CHRISTIAN", action.getCurrentContextRelativeURL());
    }
 

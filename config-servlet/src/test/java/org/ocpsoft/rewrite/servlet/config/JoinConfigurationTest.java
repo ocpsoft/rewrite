@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,8 +44,8 @@ public class JoinConfigurationTest extends RewriteTest
    @Test
    public void testUrlMappingConfiguration() throws Exception
    {
-      HttpAction<HttpGet> action = get("/p/rewrite");
-      Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/p/rewrite");
+      Assert.assertEquals(203, action.getStatusCode());
 
       Assert.assertEquals("rewrite", action.getResponseHeaderValues("Project").get(0));
       Assert.assertEquals(action.getContextPath() + "/p/rewrite", action.getResponseHeaderValues("Encoded-URL").get(0));
@@ -55,8 +54,8 @@ public class JoinConfigurationTest extends RewriteTest
    @Test
    public void testUrlMappingConfigurationWithoutInboundCorrection() throws Exception
    {
-      HttpAction<HttpGet> action = get("/viewProject.xhtml");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/viewProject.xhtml");
+      Assert.assertEquals(404, action.getStatusCode());
 
       Assert.assertEquals("/viewProject.xhtml", action.getCurrentContextRelativeURL());
    }
@@ -64,8 +63,8 @@ public class JoinConfigurationTest extends RewriteTest
    @Test
    public void testUrlMappingConfigurationWithInboundCorrection() throws Exception
    {
-      HttpAction<HttpGet> action = get("/list.xhtml?p1=foo&p2=bar");
-      Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/list.xhtml?p1=foo&p2=bar");
+      Assert.assertEquals(204, action.getStatusCode());
 
       Assert.assertEquals("/foo/bar", action.getCurrentContextRelativeURL());
    }
@@ -73,8 +72,8 @@ public class JoinConfigurationTest extends RewriteTest
    @Test
    public void testSubstitutionWithExtraQueryParams() throws Exception
    {
-      HttpAction<HttpGet> action = get("/1/querypath/2/?in=out");
-      Assert.assertEquals(207, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/1/querypath/2/?in=out");
+      Assert.assertEquals(207, action.getStatusCode());
 
       Assert.assertEquals("/1/querypath/2/?in=out", action.getCurrentContextRelativeURL());
       Assert.assertEquals(getContextPath() + "/1-query.xhtml?in=out",

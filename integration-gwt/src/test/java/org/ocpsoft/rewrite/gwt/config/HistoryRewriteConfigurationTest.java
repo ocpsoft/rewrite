@@ -17,8 +17,6 @@ package org.ocpsoft.rewrite.gwt.config;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -49,8 +47,8 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    @Test
    public void testContextPathServedFromHeadRequest()
    {
-      HttpAction<HttpHead> action = head("/?org.ocpsoft.rewrite.gwt.history.contextPath");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = head("/?org.ocpsoft.rewrite.gwt.history.contextPath");
+      Assert.assertEquals(200, action.getStatusCode());
 
       Assert.assertEquals(action.getContextPath(),
                action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").get(0));
@@ -59,8 +57,8 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    @Test
    public void testContextPathNotServedFromGetRequest() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.html?org.ocpsoft.rewrite.gwt.history.contextPath");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/index.html?org.ocpsoft.rewrite.gwt.history.contextPath");
+      Assert.assertEquals(200, action.getStatusCode());
 
       Assert.assertTrue(action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").isEmpty());
    }
@@ -68,8 +66,8 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    @Test
    public void testContextPathServedFromCookieOnNormalRequest() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.html");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/index.html");
+      Assert.assertEquals(200, action.getStatusCode());
 
       String cookie = action.getResponseHeaderValues("Set-Cookie").get(0);
       Assert.assertTrue(cookie.contains("org.ocpsoft.rewrite.gwt.history.contextPath=" + action.getContextPath()));

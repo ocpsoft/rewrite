@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.faces;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,53 +49,53 @@ public class PhaseOperationTest extends RewriteTest
    @Test
    public void testDeferOperationRestoreView() throws Exception
    {
-      HttpAction<HttpGet> action = get("/empty.xhtml?adf=blah");
+      HttpAction action = get("/empty.xhtml?adf=blah");
       String content = action.getResponseContent();
       Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(203, action.getStatusCode());
    }
 
    @Test
    public void testDeferOperationRenderResponse() throws Exception
    {
-      HttpAction<HttpGet> action = get("/render_response");
+      HttpAction action = get("/render_response");
       String content = action.getResponseContent();
       Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(204, action.getStatusCode());
    }
 
    @Test
    public void testPhaseBindingDefersValue() throws Exception
    {
-      HttpAction<HttpGet> action = get("/binding/lincoln");
+      HttpAction action = get("/binding/lincoln");
       String content = action.getResponseContent();
       Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(205, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(205, action.getStatusCode());
       Assert.assertEquals("lincoln", action.getResponseHeaderValues("Value").get(0));
    }
 
    @Test
    public void testPhaseBindingDefersValidationAndConversion() throws Exception
    {
-      HttpAction<HttpGet> action = get("/defer_validation/true");
+      HttpAction action = get("/defer_validation/true");
       String content = action.getResponseContent();
       Assert.assertTrue(content.contains("Empty"));
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(200, action.getStatusCode());
    }
 
    @Test
    public void testPhaseBindingDefersValidationAndConversionStillDisplays404Page() throws Exception
    {
-      HttpAction<HttpGet> action = get("/defer_validation/false");
+      HttpAction action = get("/defer_validation/false");
       action.getResponseContent();
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testEagerValidationFailureDisplays404Page() throws Exception
    {
-      HttpAction<HttpGet> action = get("/eager_validation/false");
+      HttpAction action = get("/eager_validation/false");
       action.getResponseContent();
-      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(500, action.getStatusCode());
    }
 }

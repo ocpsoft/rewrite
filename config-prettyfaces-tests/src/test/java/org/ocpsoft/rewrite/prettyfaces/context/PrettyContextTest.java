@@ -16,7 +16,6 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.context;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -43,7 +42,7 @@ public class PrettyContextTest extends RewriteTest
    @Test
    public void testIsPrettyRequest() throws Exception
    {
-      HttpAction<HttpGet> action = get("/");
+      HttpAction action = get("/");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("url=/"));
       Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
@@ -52,7 +51,7 @@ public class PrettyContextTest extends RewriteTest
    @Test
    public void testIsNotPrettyRequest() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.jsf");
+      HttpAction action = get("/index.jsf");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("url=/index.jsf"));
       Assert.assertTrue(action.getResponseContent().contains("prettyRequest=false"));
@@ -61,7 +60,7 @@ public class PrettyContextTest extends RewriteTest
    @Test
    public void testJSessionIdRemovedAutomatically() throws Exception
    {
-      HttpAction<HttpGet> action = get("/;jsessionid=F97KJHsf9876sdf?foo=bar");
+      HttpAction action = get("/;jsessionid=F97KJHsf9876sdf?foo=bar");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("url=/"));
       Assert.assertTrue(action.getResponseContent().contains("query=?foo=bar"));
@@ -71,7 +70,7 @@ public class PrettyContextTest extends RewriteTest
    @Test
    public void testJSessionIdRemovedAutomaticallyCluster() throws Exception
    {
-      HttpAction<HttpGet> action = get("/;jsessionid=2437ae534134eeae.server1?foo=bar");
+      HttpAction action = get("/;jsessionid=2437ae534134eeae.server1?foo=bar");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("url=/"));
       Assert.assertTrue(action.getResponseContent().contains("query=?foo=bar"));
@@ -81,7 +80,7 @@ public class PrettyContextTest extends RewriteTest
    @Test
    public void testJSessionIdRemovedAutomaticallyGAE() throws Exception
    {
-      HttpAction<HttpGet> action = get("/;jsessionid=1E-y6jzfx53ou9wymGmcfw?foo=bar");
+      HttpAction action = get("/;jsessionid=1E-y6jzfx53ou9wymGmcfw?foo=bar");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("url=/"));
       Assert.assertTrue(action.getResponseContent().contains("query=?foo=bar"));

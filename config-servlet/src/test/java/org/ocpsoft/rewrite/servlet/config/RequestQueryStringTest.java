@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,8 +44,8 @@ public class RequestQueryStringTest extends RewriteTest
    @Test
    public void testCanParseEmptyQueryString() throws Exception
    {
-      HttpAction<HttpGet> action = get("/something?");
-      Assert.assertEquals(209, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/something?");
+      Assert.assertEquals(209, action.getStatusCode());
    }
 
    @Test
@@ -55,13 +54,13 @@ public class RequestQueryStringTest extends RewriteTest
       /*
        * Contains a query parameter with an correctly encoded ampersand.
        */
-      HttpAction<HttpGet> action = get("/ampersand?param=foo%26bar"); // foo&bar
+      HttpAction action = get("/ampersand?param=foo%26bar"); // foo&bar
 
       /*
        * Rule #1 should match. HttpInboundRewriteImpl.getURL() used to decode the query string to '?param=foo&bar' which
        * QueryStringBuilder could not parse. Therefore rule #2 matched, which was not correct!
        */
-      Assert.assertEquals(209, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(209, action.getStatusCode());
 
    }
 

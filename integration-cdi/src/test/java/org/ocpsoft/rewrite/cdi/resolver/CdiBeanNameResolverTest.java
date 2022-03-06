@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.cdi.resolver;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -45,8 +44,8 @@ public class CdiBeanNameResolverTest extends RewriteTest
    @Test
    public void testCdiBeanNameResolver() throws Exception
    {
-      HttpAction<HttpGet> action = get("/name/christian");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/name/christian");
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertEquals("/hello/CHRISTIAN", action.getCurrentContextRelativeURL());
    }
 

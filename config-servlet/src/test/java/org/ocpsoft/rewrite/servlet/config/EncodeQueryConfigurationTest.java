@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,16 +45,16 @@ public class EncodeQueryConfigurationTest extends RewriteTest
    @Test
    public void testQueryEncoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequery?foo=bar");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encodequery?foo=bar");
+      Assert.assertEquals(210, action.getStatusCode());
       Assert.assertTrue(action.getCurrentContextRelativeURL().contains("/encodequery?c="));
    }
 
    @Test
    public void testQueryEncodingExclusions() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequeryexcluding?foo=bar&keep=this");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encodequeryexcluding?foo=bar&keep=this");
+      Assert.assertEquals(210, action.getStatusCode());
       Assert.assertTrue(action.getCurrentContextRelativeURL().contains("c="));
       Assert.assertTrue(action.getCurrentContextRelativeURL().contains("keep=this"));
    }
@@ -63,8 +62,8 @@ public class EncodeQueryConfigurationTest extends RewriteTest
    @Test
    public void testQueryEncodingInclusions() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequeryspecific?encode1=value1&keep=this&encode2=value2");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encodequeryspecific?encode1=value1&keep=this&encode2=value2");
+      Assert.assertEquals(210, action.getStatusCode());
       Assert.assertTrue(action.getCurrentContextRelativeURL().contains("c="));
       Assert.assertTrue(action.getCurrentContextRelativeURL().contains("keep=this"));
       Assert.assertFalse(action.getCurrentContextRelativeURL().contains("encode1=value1"));
@@ -74,7 +73,7 @@ public class EncodeQueryConfigurationTest extends RewriteTest
    @Test
    public void testQueryEncodingUnchanged() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequery");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encodequery");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 }

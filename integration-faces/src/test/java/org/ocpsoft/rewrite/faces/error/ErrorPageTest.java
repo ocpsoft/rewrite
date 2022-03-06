@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.faces.error;
 
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -51,14 +50,14 @@ public class ErrorPageTest extends RewriteTestBase
    @Test
    public void shouldRewriteOutboundLinksWithDirectAccess() throws Exception
    {
-      HttpAction<HttpGet> action = get("/404.xhtml");
+      HttpAction action = get("/404.xhtml");
       assertThat(action.getResponseContent(), Matchers.containsString("/rewritten"));
    }
 
    @Test
    public void shouldRewriteOutboundLinksForErrorPage() throws Exception
    {
-      HttpAction<HttpGet> action = get("/does-not-exist");
+      HttpAction action = get("/does-not-exist");
       assertThat(action.getResponseContent(), Matchers.containsString("/rewritten"));
    }
 

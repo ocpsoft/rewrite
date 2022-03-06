@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.prettyfaces.dynaview;
 
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -54,7 +53,7 @@ public class AmbiguousViewidTest extends RewriteTestBase
    @Test
    public void testLinkGenerationSelectsCorrectMapping() throws Exception
    {
-      HttpAction<HttpGet> action = get("/foo");
+      HttpAction action = get("/foo");
 
       Assert.assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("action=\"" + action.getContextPath() + "/foo\""));
@@ -67,7 +66,7 @@ public class AmbiguousViewidTest extends RewriteTestBase
    @Test
    public void testRendersCorrectURLForDynaview() throws Exception
    {
-      HttpAction<HttpGet> action = get("/baz");
+      HttpAction action = get("/baz");
 
       Assert.assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("action=\"" + action.getContextPath() + "/baz\""));

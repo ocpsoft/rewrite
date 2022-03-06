@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -59,15 +58,15 @@ public class JSessionIdHandlingTest extends RewriteTest
    @Category(IgnoreForWildfly.class)
    public void testPathRuleMatchesWithRedirectedSessionId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/getsession");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/getsession");
+      assertEquals(210, action.getStatusCode());
    };
 
    @Test
    public void testPathRuleMatchesWithoutSessionId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/path");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/path");
+      assertEquals(210, action.getStatusCode());
    }
 
    /*
@@ -79,68 +78,68 @@ public class JSessionIdHandlingTest extends RewriteTest
    @Ignore
    public void testPathRuleMatchesWithMissingSessionId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/path;jsessionid=");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/path;jsessionid=");
+      assertEquals(210, action.getStatusCode());
    }
 
    @Test
    public void testPathRuleMatchesWithSessionId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/path;jsessionid=8970B4E77CAFE4390B0A2ED374C1815B");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/path;jsessionid=8970B4E77CAFE4390B0A2ED374C1815B");
+      assertEquals(210, action.getStatusCode());
    }
 
    @Test
    public void testPathRuleMatchesWithGoogleAppEngineSessionId() throws Exception
    {
       // see: https://github.com/ocpsoft/prettyfaces/issues/15
-      HttpAction<HttpGet> action = get("/path;jsessionid=1E-y6jzfx53ou9wymGmcfw");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/path;jsessionid=1E-y6jzfx53ou9wymGmcfw");
+      assertEquals(210, action.getStatusCode());
    }
 
    @Test
    public void testPathRuleMatchesWithJBoss713() throws Exception
    {
       // see: https://github.com/ocpsoft/rewrite/issues/173
-      HttpAction<HttpGet> action = get("/path;jsessionid=1E+y6jzfx53ou9wymGmcfw");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/path;jsessionid=1E+y6jzfx53ou9wymGmcfw");
+      assertEquals(210, action.getStatusCode());
    }
 
    @Test
    public void testPathRuleMatchesWithTomcatClusterSessionId() throws Exception
    {
       // see: http://ocpsoft.com/support/topic/problem-with-jsessionid-in-url-and-cluster
-      HttpAction<HttpGet> action = get("/path;jsessionid=2437ae534134eeae.server1");
-      assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/path;jsessionid=2437ae534134eeae.server1");
+      assertEquals(210, action.getStatusCode());
    }
 
    @Test
    public void testJoinRuleMatchesWithoutSessionId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/join");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/join");
+      assertEquals(200, action.getStatusCode());
    }
 
    @Test
    public void testJoinRuleMatchesWithSessionId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/join;jsessionid=8970B4E77CAFE4390B0A2ED374C1815B");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/join;jsessionid=8970B4E77CAFE4390B0A2ED374C1815B");
+      assertEquals(200, action.getStatusCode());
    }
 
    public void testJoinRuleMatchesWithGoogleAppEngineSessionId() throws Exception
    {
       // see: https://github.com/ocpsoft/prettyfaces/issues/15
-      HttpAction<HttpGet> action = get("/join;jsessionid=1E-y6jzfx53ou9wymGmcfw");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/join;jsessionid=1E-y6jzfx53ou9wymGmcfw");
+      assertEquals(200, action.getStatusCode());
    }
 
    @Test
    public void testJoinRuleMatchesWithTomcatClusterSessionId() throws Exception
    {
       // see: http://ocpsoft.com/support/topic/problem-with-jsessionid-in-url-and-cluster
-      HttpAction<HttpGet> action = get("/join;jsessionid=2437ae534134eeae.server1");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/join;jsessionid=2437ae534134eeae.server1");
+      assertEquals(200, action.getStatusCode());
    }
 
 }

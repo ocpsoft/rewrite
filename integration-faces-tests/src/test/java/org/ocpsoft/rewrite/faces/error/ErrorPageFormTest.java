@@ -18,7 +18,6 @@ package org.ocpsoft.rewrite.faces.error;
 import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -49,9 +48,9 @@ public class ErrorPageFormTest extends RewriteTestBase
    @Test
    public void testNavigateWithSimpleString() throws Exception
    {
-      HttpAction<HttpGet> client = get("/missingresource");
+      HttpAction client = get("/missingresource");
       assertThat(client.getCurrentURL(), endsWith("/missingresource"));
-      Assert.assertEquals(404, client.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(404, client.getStatusCode());
 
       String content = client.getResponseContent();
       Assertions.assertThat(content)

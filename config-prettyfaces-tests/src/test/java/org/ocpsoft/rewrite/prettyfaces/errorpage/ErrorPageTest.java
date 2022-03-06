@@ -2,7 +2,6 @@ package org.ocpsoft.rewrite.prettyfaces.errorpage;
 
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -41,7 +40,7 @@ public class ErrorPageTest extends RewriteTestBase
    @Test
    public void successfulValidationShouldRenderView() throws Exception
    {
-      HttpAction<HttpGet> action = get("/validate/foobar");
+      HttpAction action = get("/validate/foobar");
 
       assertThat(action.getStatusCode(), Matchers.is(200));
       assertThat(action.getResponseContent(), Matchers.containsString("Parameter is valid"));
@@ -50,7 +49,7 @@ public class ErrorPageTest extends RewriteTestBase
    @Test
    public void directlyAccessed404PageRendersCorrectly() throws Exception
    {
-      HttpAction<HttpGet> action = get("/404.jsf");
+      HttpAction action = get("/404.jsf");
 
       assertThat(action.getStatusCode(), Matchers.is(200));
       assertThat(action.getResponseContent(), Matchers.containsString("Custom 404 page"));
@@ -61,7 +60,7 @@ public class ErrorPageTest extends RewriteTestBase
    // https://github.com/ocpsoft/rewrite/issues/96
    public void failedValidationShouldRenderCustom404FacesView() throws Exception
    {
-      HttpAction<HttpGet> action = get("/validate/invalid");
+      HttpAction action = get("/validate/invalid");
 
       assertThat(action.getStatusCode(), Matchers.is(404));
       assertThat(action.getResponseContent(), Matchers.containsString("Custom 404 page"));

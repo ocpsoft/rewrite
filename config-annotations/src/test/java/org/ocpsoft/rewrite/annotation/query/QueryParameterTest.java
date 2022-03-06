@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.annotation.query;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -36,7 +35,7 @@ public class QueryParameterTest extends RewriteTestBase
    @Test
    public void testQueryParameter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/query?q=foo");
+      HttpAction action = get("/query?q=foo");
       assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
       assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [false]"));
@@ -45,7 +44,7 @@ public class QueryParameterTest extends RewriteTestBase
    @Test
    public void shouldFindCorrectQueryParameterIfOthersExist() throws Exception
    {
-      HttpAction<HttpGet> action = get("/query?a=b&q=foo&c=d");
+      HttpAction action = get("/query?a=b&q=foo&c=d");
       assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
       assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [false]"));
@@ -54,7 +53,7 @@ public class QueryParameterTest extends RewriteTestBase
    @Test
    public void shouldSupportMissingQueryParameter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/query");
+      HttpAction action = get("/query");
       assertEquals(200, action.getStatusCode());
       assertThat(action.getResponseContent(), Matchers.containsString("Log: []"));
       assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [true]"));

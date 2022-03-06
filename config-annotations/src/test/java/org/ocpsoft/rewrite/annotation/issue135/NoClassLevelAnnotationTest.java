@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.annotation.issue135;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -33,7 +32,7 @@ public class NoClassLevelAnnotationTest extends RewriteTestBase
    public void requestPhysicalFile() throws Exception
    {
       // request a physical file deployed with the WAR
-      HttpAction<HttpGet> action = get("/file.txt");
+      HttpAction action = get("/file.txt");
 
       // the file should be served without NoClassLevelAnnotationBean#action() beeing invoked
       assertEquals(200, action.getStatusCode());

@@ -16,7 +16,6 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.pathparams;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -41,7 +40,7 @@ public class PathParametersTest extends RewriteTestBase
    @Test
    public void testNamedPathParameterWithDefaultRegex() throws Exception
    {
-      HttpAction<HttpGet> action = get("/default/1234");
+      HttpAction action = get("/default/1234");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("url=/default/1234"));
       Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
@@ -51,7 +50,7 @@ public class PathParametersTest extends RewriteTestBase
    @Test
    public void testNamedPathParameterWithCustomRegex() throws Exception
    {
-      HttpAction<HttpGet> action = get("/digits/1234");
+      HttpAction action = get("/digits/1234");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("url=/digits/1234"));
       Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
@@ -61,7 +60,7 @@ public class PathParametersTest extends RewriteTestBase
    @Test
    public void testNamedPathParameterWithCustomRegexFailingPattern() throws Exception
    {
-      HttpAction<HttpGet> action = get("/digits/1234s");
+      HttpAction action = get("/digits/1234s");
       Assert.assertEquals(404, action.getStatusCode());
    }
 

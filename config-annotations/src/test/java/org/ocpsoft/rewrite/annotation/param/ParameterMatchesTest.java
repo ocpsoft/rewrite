@@ -1,6 +1,5 @@
 package org.ocpsoft.rewrite.annotation.param;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -32,7 +31,7 @@ public class ParameterMatchesTest extends RewriteTestBase
    @Test
    public void testMatchesWithValidUrl() throws Exception
    {
-      HttpAction<HttpGet> action = get("/param/abcd/");
+      HttpAction action = get("/param/abcd/");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertEquals("Value: [abcd]", action.getResponseContent());
    }
@@ -40,7 +39,7 @@ public class ParameterMatchesTest extends RewriteTestBase
    @Test
    public void testMatchesWithInvalidUrl() throws Exception
    {
-      HttpAction<HttpGet> action = get("/param/abcde/");
+      HttpAction action = get("/param/abcde/");
       Assert.assertEquals(404, action.getStatusCode());
    }
 

@@ -1,6 +1,5 @@
 package org.ocpsoft.rewrite.prettyfaces.loop;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,7 +24,7 @@ public class InfiniteLoopTest extends RewriteTestBase
    @Test
    public void testRewriteTrailingSlashToLowerCase() throws Exception
    {
-      HttpAction<HttpGet> action = get("/loop.jsf");
+      HttpAction action = get("/loop.jsf");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("Loop avoided."));
    }

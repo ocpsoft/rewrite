@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.annotation.forward;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -31,7 +30,7 @@ public class SimpleForwardTest extends RewriteTestBase
    @Test
    public void testSimpleForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward");
+      HttpAction action = get("/forward");
       assertEquals(200, action.getStatusCode());
       assertTrue(action.getResponseContent().contains("Simple Forward"));
    }

@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -49,8 +48,8 @@ public class CDNConfigurationTest extends RewriteTest
    @Test
    public void testCDNRelocation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/relocate");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/relocate");
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains(
                "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"));
       Assert.assertTrue(action.getResponseContent().contains(
@@ -62,8 +61,8 @@ public class CDNConfigurationTest extends RewriteTest
    public void testCDNRelocationWithSchemalessURL() throws Exception
    {
 
-      HttpAction<HttpGet> action = get("/relocate");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/relocate");
+      Assert.assertEquals(200, action.getStatusCode());
 
       assertThat(action.getResponseContent(), Matchers.containsString(
                "[//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js]"));

@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.container;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,16 +49,16 @@ public class ContainerSecurityTest extends RewriteTest
    @Test
    public void testContainerSecurityFunctionsWithRewriteJoin() throws Exception
    {
-      HttpAction<HttpGet> action = get("/user/home");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/user/home");
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("LOGIN PAGE"));
    }
 
    @Test
    public void testContainerSecurityFunctionsWithRewriteUnHandled() throws Exception
    {
-      HttpAction<HttpGet> action = get("/user/x");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/user/x");
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("LOGIN PAGE"));
    }
 }

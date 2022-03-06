@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -48,15 +47,15 @@ public class ResourceReadParamsInConditionTest extends RewriteTest
    @Test
    public void testParamReadsForMatchingCondition() throws Exception
    {
-      HttpAction<HttpGet> action = get("/exists.txt");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/exists.txt");
+      Assert.assertEquals(210, action.getStatusCode());
    }
 
    @Test
    public void testParamReadsForNotMatchingCondition() throws Exception
    {
-      HttpAction<HttpGet> action = get("/missing.txt");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/missing.txt");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
 }

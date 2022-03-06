@@ -3,7 +3,6 @@ package org.ocpsoft.rewrite.faces;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -31,7 +30,7 @@ public class NavigateBeforeRestoreViewTest extends RewriteTestBase
   @Test
   public void testNavigateBeforeRestoreView() throws Exception
   {
-    HttpAction<HttpGet> action = get("/navigate");
+    HttpAction action = get("/navigate");
     assertThat(200, equalTo(action.getStatusCode()));
   }
 }

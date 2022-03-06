@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.client.methods.HttpGet;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -61,7 +60,7 @@ public class CommittedResponseTest extends RewriteTest
    {
 
       // WHEN the request is sent
-      HttpAction<HttpGet> action = get("/path");
+      HttpAction action = get("/path");
 
       // THEN the 3rd party filter should send the redirect, and call chain.doFilter()
       // AND the Join should _not_ forward again
@@ -73,7 +72,7 @@ public class CommittedResponseTest extends RewriteTest
    {
 
       // WHEN the request is sent
-      HttpAction<HttpGet> action = get("/path-handled");
+      HttpAction action = get("/path-handled");
 
       // THEN the 3rd party filter should send the redirect, and call chain.doFilter()
       // AND rewrite should abort the lifecycle
@@ -86,7 +85,7 @@ public class CommittedResponseTest extends RewriteTest
    {
 
       // WHEN the request is sent
-      HttpAction<HttpGet> action = get("/path-unhandled");
+      HttpAction action = get("/path-unhandled");
 
       // THEN the 3rd party filter should send the redirect, and call chain.doFilter()
       // AND rewrite should call chain.doFilter(...)

@@ -22,20 +22,16 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.ByteString;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
@@ -61,8 +57,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testJoinEncodingSimpleString() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/foo");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encoding/foo");
+      assertEquals(200, action.getStatusCode());
 
       String responseContent = action.getResponseContent();
       assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
@@ -75,8 +71,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testJoinEncodingSpaceCharacter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/foo%20bar");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encoding/foo%20bar");
+      assertEquals(200, action.getStatusCode());
 
       String responseContent = action.getResponseContent();
       assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
@@ -86,8 +82,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testJoinSupportsSingleCurlyBrace() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/foo%7Bbar");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encoding/foo%7Bbar");
+      assertEquals(200, action.getStatusCode());
 
       String responseContent = action.getResponseContent();
       assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
@@ -97,8 +93,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testJoinSupportsCurlyBracketGroup() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/foo%5B%5D");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encoding/foo%5B%5D");
+      assertEquals(200, action.getStatusCode());
 
       String responseContent = action.getResponseContent();
       assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
@@ -108,8 +104,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testJoinSupportsCurlyBraceGroup() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/foo%7Bbar%7D");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encoding/foo%7Bbar%7D");
+      assertEquals(200, action.getStatusCode());
 
       String responseContent = action.getResponseContent();
       assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
@@ -123,8 +119,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testJoinEncodingAmpersandCharacter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/foo&bar");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encoding/foo&bar");
+      assertEquals(200, action.getStatusCode());
 
       String responseContent = action.getResponseContent();
       assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
@@ -137,9 +133,9 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testInboundCorrectionSimpleString() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding.html?param=foo");
+      HttpAction action = get("/encoding.html?param=foo");
 
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      assertEquals(200, action.getStatusCode());
       assertEquals("/encoding/foo", action.getCurrentContextRelativeURL());
    }
 
@@ -150,9 +146,9 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testInboundCorrectionSpaceCharacter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding.html?param=foo+bar");
+      HttpAction action = get("/encoding.html?param=foo+bar");
 
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      assertEquals(200, action.getStatusCode());
       assertEquals("/encoding/foo%20bar", action.getCurrentContextRelativeURL());
    }
 
@@ -162,9 +158,9 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    @Test
    public void testInboundCorrectionAmpersandCharacter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding.html?param=foo%26bar");
+      HttpAction action = get("/encoding.html?param=foo%26bar");
 
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      assertEquals(200, action.getStatusCode());
       assertEquals("/encoding/foo&bar", action.getCurrentContextRelativeURL());
    }
 
@@ -175,7 +171,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    public void testOutboundRewritingSimpleString() throws Exception
    {
       String url = "/encoding.html?param=foo";
-      String rewritten = post("/outbound", new StringEntity(url));
+      String rewritten = post("/outbound", RequestBody.create(ByteString.encodeUtf8(url), MediaType.get("text/plain")));
 
       assertThat(rewritten, is("/encoding/foo"));
    }
@@ -189,7 +185,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    public void testOutboundRewritingSpaceCharacter() throws Exception
    {
       String url = "/encoding.html?param=foo+bar";
-      String rewritten = post("/outbound", new StringEntity(url));
+      String rewritten = post("/outbound", RequestBody.create(ByteString.encodeUtf8(url), MediaType.get("text/plain")));
 
       assertThat(rewritten, is("/encoding/foo%20bar"));
    }
@@ -201,7 +197,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    public void testOutboundRewritingAmpersandCharacter() throws Exception
    {
       String url = "/encoding.html?param=foo%26bar";
-      String rewritten = post("/outbound", new StringEntity(url));
+      String rewritten = post("/outbound", RequestBody.create(ByteString.encodeUtf8(url), MediaType.get("text/plain")));
 
       assertThat(rewritten, is("/encoding/foo&bar"));
    }
@@ -210,13 +206,15 @@ public class JoinEncodingConfigurationTest extends RewriteTest
     * Helper methods
     */
 
-   private String post(String path, HttpEntity entity) throws IOException
+   private String post(String path, RequestBody entity) throws IOException
    {
-      HttpPost post = new HttpPost(getBaseURL() + getContextPath() + path);
-      post.setEntity(entity);
-      HttpContext context = new BasicHttpContext();
-      HttpResponse response = new DefaultHttpClient().execute(post, context);
-      return Streams.toString(response.getEntity().getContent()).trim();
+      Request post = new Request.Builder().post(entity)
+              .url(getBaseURL() + getContextPath() + path)
+              .build();
+
+      try (Response response = client.newCall(post).execute()) {
+         return response.body().string();
+      }
    }
 
 }

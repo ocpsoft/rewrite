@@ -16,7 +16,6 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -47,21 +46,21 @@ public class RequestConstraintTransformTest extends RewriteTest
    @Test
    public void testUnsatisfiedConstraintPreventsRuleExecution() throws Exception
    {
-      HttpAction<HttpGet> action = get("/constraint/ONE/2");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/constraint/ONE/2");
+      Assert.assertEquals(404, action.getStatusCode());
    }
 
    @Test
    public void testSatisfiedConstraintPreventsRuleExecution() throws Exception
    {
-      HttpAction<HttpGet> action = get("/constraint/ONE/TWO");
-      Assert.assertEquals(211, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/constraint/ONE/TWO");
+      Assert.assertEquals(211, action.getStatusCode());
    }
 
    @Test
    public void testTransformModifiesIncomingValue() throws Exception
    {
-      HttpAction<HttpGet> action = get("/constraint/ONE/TWO");
+      HttpAction action = get("/constraint/ONE/TWO");
       Assert.assertEquals("ONE", action.getResponseHeaderValues("one").get(0));
       Assert.assertEquals("two", action.getResponseHeaderValues("two").get(0));
    }
@@ -69,7 +68,7 @@ public class RequestConstraintTransformTest extends RewriteTest
    @Test
    public void testTransformModifiesOutboundValue() throws Exception
    {
-      HttpAction<HttpGet> action = get("/constraint/ONE/TWO");
+      HttpAction action = get("/constraint/ONE/TWO");
       Assert.assertEquals(action.getContextPath() + "/outbound/three", action.getResponseHeaderValues("three").get(0));
    }
 

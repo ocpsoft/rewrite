@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,7 +44,7 @@ public class HttpRequestParameterTest extends RewriteTest
    @Test
    public void testParameterRetrieval() throws Exception
    {
-      HttpAction<HttpGet> action = get("/param?foo");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/param?foo");
+      Assert.assertEquals(201, action.getStatusCode());
    }
 }

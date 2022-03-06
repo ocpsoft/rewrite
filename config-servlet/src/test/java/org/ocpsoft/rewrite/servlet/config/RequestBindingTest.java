@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,8 +45,8 @@ public class RequestBindingTest extends RewriteTest
    @Test
    public void testRequestBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/requestBinding/ONE/TWO");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/requestBinding/ONE/TWO");
+      Assert.assertEquals(210, action.getStatusCode());
 
       Assert.assertEquals("ONE", action.getResponseHeaderValues("one").get(0));
       Assert.assertEquals("TWO", action.getResponseHeaderValues("two").get(0));

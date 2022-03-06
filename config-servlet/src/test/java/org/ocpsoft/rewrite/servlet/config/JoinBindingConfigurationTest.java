@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import org.junit.Assert;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -46,24 +45,24 @@ public class JoinBindingConfigurationTest extends RewriteTest
    @Test
    public void testUrlMappingConfiguration() throws Exception
    {
-      HttpAction<HttpGet> action = get("/bind/23");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/bind/23");
+      Assert.assertEquals(201, action.getStatusCode());
    }
 
    @Test
    public void testUrlMappingConfigurationWithoutInboundCorrection() throws Exception
    {
-      HttpAction<HttpGet> action = get("/bind.html");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/bind.html");
+      Assert.assertEquals(404, action.getStatusCode());
    }
    
    @Test
    public void testUrlMappingWithoutRepeatedParameters() throws Exception
    {
-      HttpAction<HttpGet> action = get("/users/didiez");
+      HttpAction action = get("/users/didiez");
       String[] expected = new String[]{"didiez"};
       
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      Assert.assertEquals(200, action.getStatusCode());
       Assert.assertArrayEquals(expected, action.getResponseHeaderValues("userId").toArray());
    }
 }

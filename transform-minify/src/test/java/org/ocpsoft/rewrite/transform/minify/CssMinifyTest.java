@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -74,8 +73,8 @@ public class CssMinifyTest extends RewriteTest
    @Category(IgnoreForWildfly.class)
    public void testCssFileCompression() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.css");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/test.css");
+      assertEquals(200, action.getStatusCode());
       assertEquals(".class{width:100px}", action.getResponseContent());
    }
 
@@ -83,8 +82,8 @@ public class CssMinifyTest extends RewriteTest
    @Category(IgnoreForWildfly.class)
    public void testNotExistingSourceFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.css");
-      assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/not-existing.css");
+      assertEquals(404, action.getStatusCode());
    }
 
 }

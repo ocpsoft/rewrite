@@ -16,7 +16,6 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.ruleNaming;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -44,7 +43,7 @@ public class MapingIdNamingTest extends RewriteTest
    @Test
    public void testLinkRendersWithColonInMappingId() throws Exception
    {
-      HttpAction<HttpGet> action = get("/");
+      HttpAction action = get("/");
       Assert.assertEquals(200, action.getStatusCode());
       Assert.assertTrue(action.getResponseContent().contains("/test-link"));
       Assert.assertTrue(action.getResponseContent().contains("url=/"));
