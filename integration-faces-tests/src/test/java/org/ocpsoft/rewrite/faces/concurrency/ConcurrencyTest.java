@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.concurrency;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +34,8 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test to reproduce #155
@@ -106,7 +106,7 @@ public class ConcurrencyTest extends RewriteTestBase
       executor.awaitTermination(20, TimeUnit.SECONDS);
       executor.shutdownNow();
 
-      assertEquals(NUMBER_OF_THREADS * REQUESTS_PER_THREAD, successCounter.get());
+      assertThat(successCounter.get()).isEqualTo(NUMBER_OF_THREADS * REQUESTS_PER_THREAD);
 
    }
 }

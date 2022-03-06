@@ -15,10 +15,11 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -38,10 +39,10 @@ public class OperationBuilderTest
 
       composite.perform(null, null);
 
-      Assert.assertTrue(one.isPerformed());
-      Assert.assertTrue(two.isPerformed());
-      Assert.assertTrue(three.isPerformed());
-      Assert.assertTrue(four.isPerformed());
+      assertThat(one.isPerformed()).isTrue();
+      assertThat(two.isPerformed()).isTrue();
+      assertThat(three.isPerformed()).isTrue();
+      assertThat(four.isPerformed()).isTrue();
    }
 
    private class MockOperation extends DefaultOperationBuilder

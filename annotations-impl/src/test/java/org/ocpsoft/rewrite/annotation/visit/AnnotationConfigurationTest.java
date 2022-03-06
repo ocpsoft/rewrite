@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.annotation.visit;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,6 +25,8 @@ import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -50,34 +50,34 @@ public class AnnotationConfigurationTest extends RewriteTest
    public void testControl() throws Exception
    {
       HttpAction action = get("/annotation/control");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testTypeAnnotation() throws Exception
    {
       HttpAction action = get("/annotation/type");
-      Assert.assertEquals(204, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(204);
    }
 
    @Test
    public void testFieldAnnotation() throws Exception
    {
       HttpAction action = get("/annotation/field");
-      Assert.assertEquals(201, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
    @Test
    public void testMethodAnnotation() throws Exception
    {
       HttpAction action = get("/annotation/method");
-      Assert.assertEquals(202, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(202);
    }
 
    @Test
    public void testParameterAnnotation() throws Exception
    {
       HttpAction action = get("/annotation/parameter");
-      Assert.assertEquals(203, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(203);
    }
 }

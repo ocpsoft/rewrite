@@ -18,13 +18,14 @@ package org.ocpsoft.rewrite.servlet.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
@@ -47,7 +48,7 @@ public class RequestNullBindingTest extends RewriteTest
    public void testNotNullBinding() throws Exception
    {
       HttpAction action = get("/foo/123");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    //"abc" can't be converted to Long so we're expecting an error 500 here.
@@ -55,7 +56,7 @@ public class RequestNullBindingTest extends RewriteTest
    public void testNonLongBinding() throws Exception
    {
       HttpAction action = get("/foo/abc");
-      Assert.assertEquals(500, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(500);
    }
    
    // "" should be converted to null
@@ -63,7 +64,7 @@ public class RequestNullBindingTest extends RewriteTest
    public void testNullBinding1() throws Exception
    {
       HttpAction action = get("/foo/");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    // idem
@@ -71,6 +72,6 @@ public class RequestNullBindingTest extends RewriteTest
    public void testNullBinding2() throws Exception
    {
       HttpAction action = get("/bar//");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 }

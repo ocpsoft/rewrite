@@ -18,12 +18,13 @@ package org.ocpsoft.rewrite.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.spi.RewriteProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -47,7 +48,7 @@ public class RewriteFilterInvalidProviderTest extends RewriteTest
    public void testInvalidProvidersAreIgnored() throws Exception
    {
       HttpAction action = get("/index.html");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
 }

@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -25,6 +24,8 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -49,19 +50,19 @@ public class PortTest
    @Test
    public void testPortMatches()
    {
-      Assert.assertTrue(ServerPort.is(8080).evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(ServerPort.is(8080).evaluate(rewrite, new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testMultiPortMatches()
    {
-      Assert.assertTrue(ServerPort.is(8080, 9090).evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(ServerPort.is(8080, 9090).evaluate(rewrite, new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testMultiPortDoesNotMatch()
    {
-      Assert.assertFalse(ServerPort.is(9080, 9090).evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(ServerPort.is(9080, 9090).evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -85,6 +86,6 @@ public class PortTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(ServerPort.is(9090).evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(ServerPort.is(9090).evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 }

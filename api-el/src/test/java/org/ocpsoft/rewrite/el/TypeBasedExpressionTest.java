@@ -15,9 +15,9 @@
  */
 package org.ocpsoft.rewrite.el;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeBasedExpressionTest
 {
@@ -26,7 +26,7 @@ public class TypeBasedExpressionTest
    public void testTypeBasedExpression() throws Exception
    {
       TypeBasedExpression expression = new TypeBasedExpression(BeanWithElBeanNameAnnotation.class, "sayHello");
-      assertEquals("myBean.sayHello", expression.getExpression());
+      assertThat(expression.getExpression()).isEqualTo("myBean.sayHello");
    }
 
    @ELBeanName("myBean")

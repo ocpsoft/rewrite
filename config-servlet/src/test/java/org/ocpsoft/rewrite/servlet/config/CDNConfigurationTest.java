@@ -15,19 +15,17 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.servlet.config.ConfigRoot;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -49,11 +47,9 @@ public class CDNConfigurationTest extends RewriteTest
    public void testCDNRelocation() throws Exception
    {
       HttpAction action = get("/relocate");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains(
-               "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"));
-      Assert.assertTrue(action.getResponseContent().contains(
-               "http://mycdn.com/foo-1.2.3.js"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js");
+      assertThat(action.getResponseContent()).contains("http://mycdn.com/foo-1.2.3.js");
 
    }
 
@@ -62,10 +58,9 @@ public class CDNConfigurationTest extends RewriteTest
    {
 
       HttpAction action = get("/relocate");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
-      assertThat(action.getResponseContent(), Matchers.containsString(
-               "[//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js]"));
+      assertThat(action.getResponseContent()).contains("[//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js]");
 
    }
 

@@ -15,10 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.junit.Test;
@@ -28,6 +24,8 @@ import com.ocpsoft.pretty.faces.config.mapping.PathValidator;
 import com.ocpsoft.pretty.faces.config.mapping.UrlMapping;
 import com.ocpsoft.pretty.faces.url.URL;
 import com.ocpsoft.pretty.faces.url.URLPatternParser;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author lb3
@@ -48,7 +46,7 @@ public class PrettyUrlMappingTest
    public void testGetPatternParser()
    {
       URLPatternParser parser = m.getPatternParser();
-      assertEquals(1, parser.getParameterCount());
+      assertThat(parser.getParameterCount()).isEqualTo(1);
    }
 
    @Test
@@ -59,20 +57,20 @@ public class PrettyUrlMappingTest
       p.setPosition(0);
 
       List<PathValidator> validators = m.getValidatorsForPathParam(p);
-      assertEquals(1, validators.size());
+      assertThat(validators.size()).isEqualTo(1);
 
       PathParameter p2 = new PathParameter();
       p2.setPosition(2);
 
       validators = m.getValidatorsForPathParam(p2);
-      assertEquals(1, validators.size());
+      assertThat(validators.size()).isEqualTo(1);
    }
 
    @Test
    public void testMatches()
    {
-      assertTrue(m.matches(new URL("/project/scrumshark")));
-      assertFalse(m.matches(new URL("/project/foo/bar")));
+      assertThat(m.matches(new URL("/project/scrumshark"))).isTrue();
+      assertThat(m.matches(new URL("/project/foo/bar"))).isFalse();
    }
 
 }

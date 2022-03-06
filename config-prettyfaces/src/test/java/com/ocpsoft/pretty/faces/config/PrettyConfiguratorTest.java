@@ -22,13 +22,14 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 
 import org.easymock.EasyMock;
-import org.junit.Assert;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.ocpsoft.pretty.PrettyContext;
 import com.ocpsoft.pretty.faces.config.spi.ClassLoaderConfigurationProvider;
 import com.ocpsoft.pretty.faces.config.spi.DefaultXMLConfigurationProvider;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Aleksei Valikov
@@ -52,7 +53,7 @@ public class PrettyConfiguratorTest
       EasyMock.replay(servletContext);
       configurator.configure();
       final PrettyConfig config = configurator.getConfig();
-      Assert.assertEquals(10, config.getMappings().size());
+      assertThat(config.getMappings().size()).isEqualTo(10);
    }
 
    @Test
@@ -71,7 +72,7 @@ public class PrettyConfiguratorTest
       EasyMock.replay(servletContext);
       configurator.configure();
       final PrettyConfig config = configurator.getConfig();
-      Assert.assertEquals(30, config.getMappings().size());
+      assertThat(config.getMappings().size()).isEqualTo(30);
 
    }
 

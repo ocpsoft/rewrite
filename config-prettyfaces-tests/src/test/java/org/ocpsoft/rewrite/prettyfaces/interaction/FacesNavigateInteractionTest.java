@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class FacesNavigateInteractionTest extends RewriteTestBase
@@ -28,6 +28,6 @@ public class FacesNavigateInteractionTest extends RewriteTestBase
    {
       HtmlPage firstPage = getWebClient("/page").getPage();
       HtmlPage secondPage = firstPage.getHtmlElementById("navigate").click();
-      assertEquals(secondPage.getUrl().getPath(), getContextPath() + "/page");
+      assertThat(getContextPath() + "/page").isEqualTo(secondPage.getUrl().getPath());
    }
 }

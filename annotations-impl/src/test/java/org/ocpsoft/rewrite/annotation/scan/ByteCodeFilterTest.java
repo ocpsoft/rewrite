@@ -15,10 +15,6 @@
  */
 package org.ocpsoft.rewrite.annotation.scan;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +25,8 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ByteCodeFilterTest
 {
@@ -52,54 +50,54 @@ public class ByteCodeFilterTest
    @Test
    public void testInvalidClass() throws IOException
    {
-      assertFalse(filter.accept(new ByteArrayInputStream(new byte[] {
-               // some random bytes
-               (byte) 0x12, (byte) 0x34, (byte) 0xd3, (byte) 0x45,
-               (byte) 0x13, (byte) 0x35, (byte) 0xd4, (byte) 0x46,
-               (byte) 0x14, (byte) 0x36, (byte) 0xd5, (byte) 0x47,
-               (byte) 0x15, (byte) 0x37, (byte) 0xd6, (byte) 0x48
-      })));
+      assertThat(filter.accept(new ByteArrayInputStream(new byte[]{
+              // some random bytes
+              (byte) 0x12, (byte) 0x34, (byte) 0xd3, (byte) 0x45,
+              (byte) 0x13, (byte) 0x35, (byte) 0xd4, (byte) 0x46,
+              (byte) 0x14, (byte) 0x36, (byte) 0xd5, (byte) 0x47,
+              (byte) 0x15, (byte) 0x37, (byte) 0xd6, (byte) 0x48
+      }))).isFalse();
    }
 
    @Test
    public void testJdk14Class() throws IOException
    {
-      assertFalse(filter.accept(new ByteArrayInputStream(new byte[] {
-               (byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe, // magic
-               (byte) 0x00, (byte) 0x00, // minor
-               (byte) 0x00, (byte) 48 // major 48 = JDK14
-      })));
+      assertThat(filter.accept(new ByteArrayInputStream(new byte[]{
+              (byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte) 0xbe, // magic
+              (byte) 0x00, (byte) 0x00, // minor
+              (byte) 0x00, (byte) 48 // major 48 = JDK14
+      }))).isFalse();
    }
 
    @Test
    public void testNoAnnotationsOnClass() throws IOException
    {
-      assertFalse(filter.accept(getByteCodeInputStream(ClassWithoutAnnotations.class)));
+      assertThat(filter.accept(getByteCodeInputStream(ClassWithoutAnnotations.class))).isFalse();
    }
 
    @Test
    public void testUrlMappingAnnotationOnClass() throws IOException
    {
-      assertTrue(filter.accept(getByteCodeInputStream(ClassWithUrlMapping.class)));
+      assertThat(filter.accept(getByteCodeInputStream(ClassWithUrlMapping.class))).isTrue();
    }
 
    @Test
    public void testClassWithLongValueInConstantPool() throws IOException
    {
-      assertFalse(filter.accept(getByteCodeInputStream(ClassWithLongValueInConstantPool.class)));
+      assertThat(filter.accept(getByteCodeInputStream(ClassWithLongValueInConstantPool.class))).isFalse();
    }
 
    @Test
    public void testUrlActionOnMethod() throws IOException
    {
-      assertTrue(filter.accept(getByteCodeInputStream(ClassWithUrlAction.class)));
+      assertThat(filter.accept(getByteCodeInputStream(ClassWithUrlAction.class))).isTrue();
    }
 
    private InputStream getByteCodeInputStream(Class<?> clazz)
    {
       String name = clazz.getName().replace(".", "/") + ".class";
       InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-      assertNotNull("Cannot find class file: " + name, stream);
+      assertThat(stream).as("Cannot find class file: " + name).isNotNull();
       return stream;
    }
 

@@ -15,8 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.config.spi;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,6 +34,8 @@ import com.ocpsoft.pretty.faces.config.PrettyConfig;
 import com.ocpsoft.pretty.faces.config.PrettyConfigBuilder;
 import com.ocpsoft.pretty.faces.config.PrettyConfigurator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
@@ -54,10 +54,10 @@ public class ParentingPostProcessorTest
                getClass().getClassLoader().getResourceAsStream("parenting-pretty-config.xml"));
       PrettyConfig config = builder.build();
 
-      assertEquals("", config.getMappingById("parent").getParentId());
-      assertEquals("parent", config.getMappingById("child").getParentId());
-      assertEquals("child", config.getMappingById("grandchild").getParentId());
-      assertEquals("parent", config.getMappingById("child2").getParentId());
+      assertThat(config.getMappingById("parent").getParentId()).isEqualTo("");
+      assertThat(config.getMappingById("child").getParentId()).isEqualTo("parent");
+      assertThat(config.getMappingById("grandchild").getParentId()).isEqualTo("child");
+      assertThat(config.getMappingById("child2").getParentId()).isEqualTo("parent");
    }
 
    @Test
@@ -79,43 +79,43 @@ public class ParentingPostProcessorTest
 
       final PrettyConfig config = configurator.getConfig();
 
-      assertEquals(4, config.getMappings().size());
-      assertEquals("/parent", config.getMappingById("parent").getPattern());
-      assertEquals("/parent/child/#{name}", config.getMappingById("child").getPattern());
-      assertEquals("/parent/child/#{name}/grandchild/#{gname}", config.getMappingById("grandchild").getPattern());
+      assertThat(config.getMappings().size()).isEqualTo(4);
+      assertThat(config.getMappingById("parent").getPattern()).isEqualTo("/parent");
+      assertThat(config.getMappingById("child").getPattern()).isEqualTo("/parent/child/#{name}");
+      assertThat(config.getMappingById("grandchild").getPattern()).isEqualTo("/parent/child/#{name}/grandchild/#{gname}");
 
-      assertEquals(2, config.getMappingById("grandchild").getPathValidators().size());
-      assertEquals("validator1", config.getMappingById("grandchild").getPathValidators().get(0).getValidatorIds());
-      assertEquals("validator2", config.getMappingById("grandchild").getPathValidators().get(1).getValidatorIds());
-      assertEquals(0, config.getMappingById("grandchild").getPathValidators().get(0).getIndex());
-      assertEquals(1, config.getMappingById("grandchild").getPathValidators().get(1).getIndex());
+      assertThat(config.getMappingById("grandchild").getPathValidators().size()).isEqualTo(2);
+      assertThat(config.getMappingById("grandchild").getPathValidators().get(0).getValidatorIds()).isEqualTo("validator1");
+      assertThat(config.getMappingById("grandchild").getPathValidators().get(1).getValidatorIds()).isEqualTo("validator2");
+      assertThat(config.getMappingById("grandchild").getPathValidators().get(0).getIndex()).isEqualTo(0);
+      assertThat(config.getMappingById("grandchild").getPathValidators().get(1).getIndex()).isEqualTo(1);
 
       // actions
-      assertEquals(2, config.getMappingById("grandchild").getActions().size());
-      assertEquals("#{myBean.parentAction}", config.getMappingById("grandchild").getActions().get(0).getAction().getELExpression());
-      assertEquals("#{myBean.grandchildAction}", config.getMappingById("grandchild").getActions().get(1).getAction().getELExpression());
-      assertEquals(2, config.getMappingById("child").getActions().size());
-      assertEquals("#{myBean.parentAction}", config.getMappingById("child").getActions().get(0).getAction().getELExpression());
-      assertEquals("#{myBean.childAction}", config.getMappingById("child").getActions().get(1).getAction().getELExpression());
-      assertEquals(2, config.getMappingById("child2").getActions().size());
-      assertEquals("#{myBean.parentAction}", config.getMappingById("child2").getActions().get(0).getAction().getELExpression());
-      assertEquals("#{myBean.child2Action}", config.getMappingById("child2").getActions().get(1).getAction().getELExpression());
-      assertEquals(1, config.getMappingById("parent").getActions().size());
-      assertEquals("#{myBean.parentAction}", config.getMappingById("parent").getActions().get(0).getAction().getELExpression());
+      assertThat(config.getMappingById("grandchild").getActions().size()).isEqualTo(2);
+      assertThat(config.getMappingById("grandchild").getActions().get(0).getAction().getELExpression()).isEqualTo("#{myBean.parentAction}");
+      assertThat(config.getMappingById("grandchild").getActions().get(1).getAction().getELExpression()).isEqualTo("#{myBean.grandchildAction}");
+      assertThat(config.getMappingById("child").getActions().size()).isEqualTo(2);
+      assertThat(config.getMappingById("child").getActions().get(0).getAction().getELExpression()).isEqualTo("#{myBean.parentAction}");
+      assertThat(config.getMappingById("child").getActions().get(1).getAction().getELExpression()).isEqualTo("#{myBean.childAction}");
+      assertThat(config.getMappingById("child2").getActions().size()).isEqualTo(2);
+      assertThat(config.getMappingById("child2").getActions().get(0).getAction().getELExpression()).isEqualTo("#{myBean.parentAction}");
+      assertThat(config.getMappingById("child2").getActions().get(1).getAction().getELExpression()).isEqualTo("#{myBean.child2Action}");
+      assertThat(config.getMappingById("parent").getActions().size()).isEqualTo(1);
+      assertThat(config.getMappingById("parent").getActions().get(0).getAction().getELExpression()).isEqualTo("#{myBean.parentAction}");
 
       // query parameters
-      assertEquals(3, config.getMappingById("grandchild").getQueryParams().size());
-      assertEquals("parent", config.getMappingById("grandchild").getQueryParams().get(0).getName());
-      assertEquals("child", config.getMappingById("grandchild").getQueryParams().get(1).getName());
-      assertEquals("grandchild", config.getMappingById("grandchild").getQueryParams().get(2).getName());
-      assertEquals(2, config.getMappingById("child").getQueryParams().size());
-      assertEquals("parent", config.getMappingById("child").getQueryParams().get(0).getName());
-      assertEquals("child", config.getMappingById("child").getQueryParams().get(1).getName());
-      assertEquals(2, config.getMappingById("child2").getQueryParams().size());
-      assertEquals("parent", config.getMappingById("child2").getQueryParams().get(0).getName());
-      assertEquals("child2", config.getMappingById("child2").getQueryParams().get(1).getName());
-      assertEquals(1, config.getMappingById("parent").getQueryParams().size());
-      assertEquals("parent", config.getMappingById("parent").getQueryParams().get(0).getName());
+      assertThat(config.getMappingById("grandchild").getQueryParams().size()).isEqualTo(3);
+      assertThat(config.getMappingById("grandchild").getQueryParams().get(0).getName()).isEqualTo("parent");
+      assertThat(config.getMappingById("grandchild").getQueryParams().get(1).getName()).isEqualTo("child");
+      assertThat(config.getMappingById("grandchild").getQueryParams().get(2).getName()).isEqualTo("grandchild");
+      assertThat(config.getMappingById("child").getQueryParams().size()).isEqualTo(2);
+      assertThat(config.getMappingById("child").getQueryParams().get(0).getName()).isEqualTo("parent");
+      assertThat(config.getMappingById("child").getQueryParams().get(1).getName()).isEqualTo("child");
+      assertThat(config.getMappingById("child2").getQueryParams().size()).isEqualTo(2);
+      assertThat(config.getMappingById("child2").getQueryParams().get(0).getName()).isEqualTo("parent");
+      assertThat(config.getMappingById("child2").getQueryParams().get(1).getName()).isEqualTo("child2");
+      assertThat(config.getMappingById("parent").getQueryParams().size()).isEqualTo(1);
+      assertThat(config.getMappingById("parent").getQueryParams().get(0).getName()).isEqualTo("parent");
 
    }
 

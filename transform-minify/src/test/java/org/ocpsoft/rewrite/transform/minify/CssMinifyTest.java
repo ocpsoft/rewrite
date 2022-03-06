@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.transform.minify;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -33,6 +31,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.transform.minify.CssMinify;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 
@@ -74,8 +74,8 @@ public class CssMinifyTest extends RewriteTest
    public void testCssFileCompression() throws Exception
    {
       HttpAction action = get("/test.css");
-      assertEquals(200, action.getStatusCode());
-      assertEquals(".class{width:100px}", action.getResponseContent());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo(".class{width:100px}");
    }
 
    @Test
@@ -83,7 +83,7 @@ public class CssMinifyTest extends RewriteTest
    public void testNotExistingSourceFile() throws Exception
    {
       HttpAction action = get("/not-existing.css");
-      assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
 }

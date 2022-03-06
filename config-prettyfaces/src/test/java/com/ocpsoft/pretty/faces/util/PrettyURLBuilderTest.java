@@ -15,9 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +29,8 @@ import com.ocpsoft.pretty.faces.component.Link;
 import com.ocpsoft.pretty.faces.config.mapping.QueryParameter;
 import com.ocpsoft.pretty.faces.config.mapping.UrlAction;
 import com.ocpsoft.pretty.faces.config.mapping.UrlMapping;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author lb3
@@ -91,12 +90,12 @@ public class PrettyURLBuilderTest
    public void testExtractParameters()
    {
       List<UIParameter> parameters = builder.extractParameters(link);
-      assertEquals(5, parameters.size());
-      assertTrue(parameters.contains(param1));
-      assertTrue(parameters.contains(param2));
-      assertTrue(parameters.contains(param3));
-      assertTrue(parameters.contains(param4));
-      assertTrue(parameters.contains(param5));
+      assertThat(parameters.size()).isEqualTo(5);
+      assertThat(parameters).contains(param1);
+      assertThat(parameters).contains(param2);
+      assertThat(parameters).contains(param3);
+      assertThat(parameters).contains(param4);
+      assertThat(parameters).contains(param5);
    }
 
    @Test
@@ -104,9 +103,9 @@ public class PrettyURLBuilderTest
    {
       List<UIParameter> parameters = builder.extractParameters(link);
       String mappedUrl = builder.build(mapping, false, parameters);
-      assertTrue(mappedUrl.startsWith(expectedPath));
-      assertTrue(mappedUrl.contains(param1.getName() + "=" + param1.getValue()));
-      assertTrue(mappedUrl.contains(param3.getName() + "=" + param3.getValue()));
+      assertThat(mappedUrl.startsWith(expectedPath)).isTrue();
+      assertThat(mappedUrl).contains(param1.getName() + "=" + param1.getValue());
+      assertThat(mappedUrl).contains(param3.getName() + "=" + param3.getValue());
    }
 
    @Test
@@ -114,9 +113,9 @@ public class PrettyURLBuilderTest
    {
       List<UIParameter> parameters = builder.extractParameters(link);
       String mappedUrl = builder.build(mapping, false, parameters);
-      assertTrue(mappedUrl.startsWith(expectedPath));
-      assertTrue(mappedUrl.contains(param5.getName() + "=" + ((Object[]) param5.getValue())[0]));
-      assertTrue(mappedUrl.contains(param5.getName() + "=" + ((Object[]) param5.getValue())[1]));
+      assertThat(mappedUrl.startsWith(expectedPath)).isTrue();
+      assertThat(mappedUrl).contains(param5.getName() + "=" + ((Object[]) param5.getValue())[0]);
+      assertThat(mappedUrl).contains(param5.getName() + "=" + ((Object[]) param5.getValue())[1]);
    }
 
    @Test
@@ -128,7 +127,7 @@ public class PrettyURLBuilderTest
       parameters.add(param);
 
       String mappedUrl = builder.build(mapping, false, parameters);
-      assertTrue(mappedUrl.startsWith(expectedPath));
+      assertThat(mappedUrl.startsWith(expectedPath)).isTrue();
    }
 
    @Test
@@ -140,7 +139,7 @@ public class PrettyURLBuilderTest
       parameters.add(param);
 
       String mappedUrl = builder.build(mapping, false, parameters);
-      assertTrue(mappedUrl.startsWith(expectedPath));
+      assertThat(mappedUrl.startsWith(expectedPath)).isTrue();
    }
 
    @Test(expected = PrettyException.class)
@@ -167,21 +166,21 @@ public class PrettyURLBuilderTest
       
       // encoded
       String encodedUrl = builder.build(mapping, true, params);
-      assertTrue(encodedUrl.startsWith("/test/%E2%82%AC/mapping/%C5%82?"));
-      assertTrue(encodedUrl.contains("key1=%C2%A3"));
-      assertTrue(encodedUrl.contains("key2=%D9%84"));
+      assertThat(encodedUrl.startsWith("/test/%E2%82%AC/mapping/%C5%82?")).isTrue();
+      assertThat(encodedUrl).contains("key1=%C2%A3");
+      assertThat(encodedUrl).contains("key2=%D9%84");
 
       // unicode
       String unicodeUrl = builder.build(mapping, false, params);
-      assertTrue(unicodeUrl.startsWith("/test/\u20ac/mapping/\u0142?"));
-      assertTrue(unicodeUrl.contains("key1=%C2%A3"));
-      assertTrue(unicodeUrl.contains("key2=%D9%84"));
+      assertThat(unicodeUrl.startsWith("/test/\u20ac/mapping/\u0142?")).isTrue();
+      assertThat(unicodeUrl).contains("key1=%C2%A3");
+      assertThat(unicodeUrl).contains("key2=%D9%84");
 
       // unicode
       String oldUrl = builder.build(mapping, false, params);
-      assertTrue(oldUrl.startsWith("/test/\u20ac/mapping/\u0142?"));
-      assertTrue(oldUrl.contains("key1=%C2%A3"));
-      assertTrue(oldUrl.contains("key2=%D9%84"));
+      assertThat(oldUrl.startsWith("/test/\u20ac/mapping/\u0142?")).isTrue();
+      assertThat(oldUrl).contains("key1=%C2%A3");
+      assertThat(oldUrl).contains("key2=%D9%84");
 
    }
    

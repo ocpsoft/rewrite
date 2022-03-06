@@ -15,13 +15,14 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.test.MockInboundRewrite;
 import org.ocpsoft.rewrite.test.MockOutboundRewrite;
 import org.ocpsoft.rewrite.test.MockRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -34,27 +35,27 @@ public class DirectionTest
    public void testInboundReturnsTrue()
    {
       Condition condition = Direction.isInbound();
-      Assert.assertTrue(condition.evaluate(new MockInboundRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockInboundRewrite(), new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testNotInboundReturnsFalse()
    {
       Condition condition = Direction.isInbound();
-      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 
    @Test
    public void testOutboundReturnsTrue()
    {
       Condition condition = Direction.isOutbound();
-      Assert.assertTrue(condition.evaluate(new MockOutboundRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockOutboundRewrite(), new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testNotOutboundReturnsFalse()
    {
       Condition condition = Direction.isOutbound();
-      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 }

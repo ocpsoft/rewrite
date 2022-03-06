@@ -18,12 +18,13 @@ package org.ocpsoft.rewrite.servlet.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,29 +46,29 @@ public class LifecycleControlTest extends RewriteTest
    public void testAbort() throws Exception
    {
       HttpAction action = get("/aborty");
-      Assert.assertEquals(400, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(400);
 
       action = get("/abort");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
    public void testHandled() throws Exception
    {
       HttpAction action = get("/handley");
-      Assert.assertEquals(401, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(401);
 
       action = get("/handle");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testProceed() throws Exception
    {
       HttpAction action = get("/proceedy");
-      Assert.assertEquals(402, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(402);
 
       action = get("/proceed");
-      Assert.assertEquals(402, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(402);
    }
 }

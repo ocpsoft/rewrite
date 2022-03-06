@@ -20,7 +20,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -29,6 +28,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -52,8 +53,8 @@ public class WrappedResponseStreamTest extends RewriteTest
    public void testWrappedResponseStreamToUppercase() throws Exception
    {
       HttpAction action = get("/index.html");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("LOWERCASE", action.getResponseContent());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("LOWERCASE");
    }
 
    /**
@@ -75,8 +76,8 @@ public class WrappedResponseStreamTest extends RewriteTest
               .build();
 
       HttpAction action = get(client, "/gzip.html");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("gzip", action.getResponseHeaderValues("Content-Encoding").get(0));
-      Assert.assertEquals("zip me to gzip please and make it zippy", action.getResponseContent());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseHeaderValues("Content-Encoding").get(0)).isEqualTo("gzip");
+      assertThat(action.getResponseContent()).isEqualTo("zip me to gzip please and make it zippy");
    }
 }

@@ -1,8 +1,5 @@
 package org.ocpsoft.rewrite.annotation.action;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -13,6 +10,8 @@ import org.ocpsoft.rewrite.annotation.RewriteAnnotationTest;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class RequestActionTest extends RewriteTestBase
@@ -34,8 +33,8 @@ public class RequestActionTest extends RewriteTestBase
    public void testRequestAction() throws Exception
    {
       HttpAction action = get("/action");
-      assertEquals(200, action.getStatusCode());
-      assertTrue(action.getResponseContent().contains("Log: [action invoked]"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Log: [action invoked]");
    }
 
 }

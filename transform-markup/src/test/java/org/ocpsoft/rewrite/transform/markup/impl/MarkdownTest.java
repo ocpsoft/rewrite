@@ -15,11 +15,6 @@
  */
 package org.ocpsoft.rewrite.transform.markup.impl;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 
 import javax.servlet.ServletContext;
@@ -33,6 +28,8 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.markup.Markdown;
 import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MarkdownTest
 {
@@ -63,7 +60,7 @@ public class MarkdownTest
       String markdown = "This is **bold**!";
       String html = Markdown.partialDocument().transform(event, markdown);
 
-      assertEquals("\n<p>This is <strong>bold</strong>!</p>\n", html);
+      assertThat(html).isEqualTo("\n<p>This is <strong>bold</strong>!</p>\n");
 
    }
 
@@ -74,7 +71,7 @@ public class MarkdownTest
       String markdown = "# Header\n\n##Section\n\nSome text!";
       String html = Markdown.partialDocument().transform(event, markdown);
 
-      assertEquals("<h1 id=\"header\">Header</h1><h2 id=\"section\">Section</h2><p>Some text!</p>", normalize(html));
+      assertThat(normalize(html)).isEqualTo("<h1 id=\"header\">Header</h1><h2 id=\"section\">Section</h2><p>Some text!</p>");
 
    }
 
@@ -85,7 +82,7 @@ public class MarkdownTest
       String markdown = "> Some quote";
       String html = Markdown.partialDocument().transform(event, markdown);
 
-      assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
+      assertThat(normalize(html)).isEqualTo("<blockquote><p>Some quote</p></blockquote>");
 
    }
 
@@ -96,7 +93,7 @@ public class MarkdownTest
       String markdown = "* One\n* Two";
       String html = Markdown.partialDocument().transform(event, markdown);
 
-      assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html));
+      assertThat(normalize(html)).isEqualTo("<ul><li>One</li><li>Two</li></ul>");
 
    }
 
@@ -107,7 +104,7 @@ public class MarkdownTest
       String markdown = "    private int n = 0;";
       String html = Markdown.partialDocument().transform(event, markdown);
 
-      assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
+      assertThat(normalize(html)).isEqualTo("<pre><code>private int n = 0;</code></pre>");
 
    }
 
@@ -118,10 +115,10 @@ public class MarkdownTest
       String markdown = "some text";
       String html = Markdown.fullDocument().transform(event, markdown);
 
-      assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html"));
-      assertTrue("html tag is missing", html.contains("<html"));
-      assertTrue("body tag is missing", html.contains("<body>"));
-      assertTrue("Expected text missing", html.contains("<p>some text</p>"));
+      assertThat(html.contains("<!DOCTYPE html")).as("DOCTYPE is missing").isTrue();
+      assertThat(html.contains("<html")).as("html tag is missing").isTrue();
+      assertThat(html.contains("<body>")).as("body tag is missing").isTrue();
+      assertThat(html.contains("<p>some text</p>")).as("Expected text missing").isTrue();
 
    }
 
@@ -132,7 +129,7 @@ public class MarkdownTest
       String textile = "some text";
       String html = Markdown.fullDocument().withTitle("My Title").transform(event, textile);
 
-      assertThat(html, containsString("<title>My Title</title>"));
+      assertThat(html).contains("<title>My Title</title>");
 
    }
 
@@ -143,7 +140,7 @@ public class MarkdownTest
       String textile = "some text";
       String html = Markdown.fullDocument().addStylesheet("http://localhost/style.css").transform(event, textile);
 
-      assertThat(html, containsString("http://localhost/style.css"));
+      assertThat(html).contains("http://localhost/style.css");
 
    }
 

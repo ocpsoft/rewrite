@@ -21,7 +21,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +28,8 @@ import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This test class requires /src/test/resources/bundle_en.properties and bundle_fr.properties files.
@@ -66,8 +67,8 @@ public class LocaleTranspositionTest extends RewriteTest
    {
       // 'rechercher' should be translated to 'search' and 'lang' should be joined
       HttpAction action = get("/fr/rechercher");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("search page", action.getResponseContent());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("search page");
    }
 
    @Test
@@ -75,8 +76,8 @@ public class LocaleTranspositionTest extends RewriteTest
    {
       // 'bibliothèque' should be translated to 'library' and 'lang' should be joined
       HttpAction action = get("/fr/bibliothèque");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("library page", action.getResponseContent());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("library page");
    }
 
    @Test
@@ -84,8 +85,8 @@ public class LocaleTranspositionTest extends RewriteTest
    public void testI18nSupportOutbound() throws Exception
    {
       HttpAction action = get("/en/search.xhtml");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertThat(action.getResponseContent(), org.hamcrest.CoreMatchers.containsString("/en/search"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("/en/search");
    }
 
    /**
@@ -97,7 +98,7 @@ public class LocaleTranspositionTest extends RewriteTest
    public void testI18nSupportFailureNoHandling() throws Exception
    {
       HttpAction action = get("/zz/library");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    /**
@@ -110,8 +111,8 @@ public class LocaleTranspositionTest extends RewriteTest
    public void testI18nSupportTranspositionFailureNoHandling() throws Exception
    {
       HttpAction action = get("/zz/library/transposition_only");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("library page", action.getResponseContent());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("library page");
    }
 
    /**
@@ -124,7 +125,7 @@ public class LocaleTranspositionTest extends RewriteTest
    public void testLocaleTranspositionFailureWithHandling() throws Exception
    {
       HttpAction action = get("/zz/library/transposition_failed_1");
-      Assert.assertEquals(201, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
    /**
@@ -137,6 +138,6 @@ public class LocaleTranspositionTest extends RewriteTest
    public void testLocaleTranspositionMissingKeyWithHandling() throws Exception
    {
       HttpAction action = get("/en/missinglibrary/transposition_failed_2");
-      Assert.assertEquals(202, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(202);
    }
 }

@@ -15,11 +15,11 @@
  */
 package com.ocpsoft.pretty.faces.url;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class URLTest
 {
@@ -31,14 +31,10 @@ public class URLTest
       final String URL_WITH_LEADING_AND_TRAILING_EMPTY_SEGMENTS = "//test//";
       final String URL_WITH_INNER_EMPTY_SEGMENTS = "/test//test2/";
       
-      assertEquals(URL_WITH_TRAILING_EMPTY_SEGMENT, 
-           new URL(URL_WITH_TRAILING_EMPTY_SEGMENT).decode().toURL());
-      assertEquals(URL_WITH_LEADING_EMPTY_SEGMENT, 
-           new URL(URL_WITH_LEADING_EMPTY_SEGMENT).decode().toURL());
-      assertEquals(URL_WITH_LEADING_AND_TRAILING_EMPTY_SEGMENTS, 
-           new URL(URL_WITH_LEADING_AND_TRAILING_EMPTY_SEGMENTS).decode().toURL());
-      assertEquals(URL_WITH_INNER_EMPTY_SEGMENTS, 
-            new URL(URL_WITH_INNER_EMPTY_SEGMENTS).decode().toURL());
+      assertThat(new URL(URL_WITH_TRAILING_EMPTY_SEGMENT).decode().toURL()).isEqualTo(URL_WITH_TRAILING_EMPTY_SEGMENT);
+      assertThat(new URL(URL_WITH_LEADING_EMPTY_SEGMENT).decode().toURL()).isEqualTo(URL_WITH_LEADING_EMPTY_SEGMENT);
+      assertThat(new URL(URL_WITH_LEADING_AND_TRAILING_EMPTY_SEGMENTS).decode().toURL()).isEqualTo(URL_WITH_LEADING_AND_TRAILING_EMPTY_SEGMENTS);
+      assertThat(new URL(URL_WITH_INNER_EMPTY_SEGMENTS).decode().toURL()).isEqualTo(URL_WITH_INNER_EMPTY_SEGMENTS);
    }
    
    @Test
@@ -46,7 +42,7 @@ public class URLTest
    {
       String value = "/com/ocpsoft/pretty/";
       URL url = new URL(value);
-      assertEquals(value, url.toURL());
+      assertThat(url.toURL()).isEqualTo(value);
    }
 
    @Test
@@ -55,7 +51,7 @@ public class URLTest
       String value = "/com/ocpsoft/pretty/";
       URL url = new URL(value);
       url.setEncoding("UTF-8");
-      assertEquals(value, url.decode().toURL());
+      assertThat(url.decode().toURL()).isEqualTo(value);
    }
 
    @Test
@@ -65,8 +61,8 @@ public class URLTest
       metadata.setTrailingSlash(true);
       URL url = new URL(new ArrayList<String>(), metadata);
 
-      assertEquals("/", url.toURL());
-      assertEquals("/", url.decode().toURL());
+      assertThat(url.toURL()).isEqualTo("/");
+      assertThat(url.decode().toURL()).isEqualTo("/");
    }
 
    @Test
@@ -75,7 +71,7 @@ public class URLTest
       String value = "/\u010d";
       URL url = new URL(value);
       URL encoded = url.encode();
-      assertEquals("/%C4%8D", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/%C4%8D");
    }
 
    @Test
@@ -84,9 +80,9 @@ public class URLTest
       String value = "/\u010d";
       URL url = new URL(value);
       URL encoded = url.encode();
-      assertEquals("/%C4%8D", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/%C4%8D");
       URL original = encoded.decode();
-      assertEquals("/\u010d", original.toURL());
+      assertThat(original.toURL()).isEqualTo("/\u010d");
    }
 
    @Test
@@ -95,9 +91,9 @@ public class URLTest
       String value = "/foo/bar";
       URL url = new URL(value);
       URL encoded = url.encode();
-      assertEquals("/foo/bar", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/foo/bar");
       URL original = encoded.decode();
-      assertEquals("/foo/bar", original.toURL());
+      assertThat(original.toURL()).isEqualTo("/foo/bar");
    }
    
    @Test
@@ -106,30 +102,30 @@ public class URLTest
       String value = "/\u00e4";
       URL url = new URL(value);
       URL encoded = url.encode();
-      assertEquals("/%C3%A4", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/%C3%A4");
       URL original = encoded.decode();
-      assertEquals("/\u00e4", original.toURL());
+      assertThat(original.toURL()).isEqualTo("/\u00e4");
    }
    
    @Test
    public void testCommaEncodingAndDecoding() throws Exception
    {
       // the comma is allowed and should not be encoded/decoded
-      assertEquals("/a,b", new URL("/a,b").encode().toURL());
-      assertEquals("/a,b", new URL("/a,b").decode().toURL());
+      assertThat(new URL("/a,b").encode().toURL()).isEqualTo("/a,b");
+      assertThat(new URL("/a,b").decode().toURL()).isEqualTo("/a,b");
    }
 
    @Test
    public void testSpaceEncodingAndDecoding() throws Exception
    {
       // encode
-      assertEquals("/a%20b", new URL("/a b").encode().toURL());
+      assertThat(new URL("/a b").encode().toURL()).isEqualTo("/a%20b");
       
       // decode
-      assertEquals("/a b", new URL("/a%20b").decode().toURL());
+      assertThat(new URL("/a%20b").decode().toURL()).isEqualTo("/a b");
       
       // decode of not-encoded character
-      assertEquals("/a b", new URL("/a b").decode().toURL());
+      assertThat(new URL("/a b").decode().toURL()).isEqualTo("/a b");
       
    }
 
@@ -137,10 +133,10 @@ public class URLTest
    public void testQuestionMarkEncodingAndDecoding() throws Exception
    {
      // encode
-     assertEquals("/a%3Fb", new URL("/a?b").encode().toURL());
+     assertThat(new URL("/a?b").encode().toURL()).isEqualTo("/a%3Fb");
 
      // decode
-     assertEquals("/a?b", new URL("/a%3Fb").decode().toURL());
+     assertThat(new URL("/a%3Fb").decode().toURL()).isEqualTo("/a?b");
      
    }
    
@@ -149,13 +145,13 @@ public class URLTest
    {
       
       // encode
-      assertEquals("/a%22b", new URL("/a\"b").encode().toURL());
+      assertThat(new URL("/a\"b").encode().toURL()).isEqualTo("/a%22b");
       
       // decode
-      assertEquals("/a\"b", new URL("/a%22b").decode().toURL());
+      assertThat(new URL("/a%22b").decode().toURL()).isEqualTo("/a\"b");
       
       // decode of not-encoded character
-      assertEquals("/a\"b", new URL("/a\"b").decode().toURL());
+      assertThat(new URL("/a\"b").decode().toURL()).isEqualTo("/a\"b");
       
    }
 
@@ -164,13 +160,13 @@ public class URLTest
    {
 
       // encode
-      assertEquals("/%5Ba%5D", new URL("/[a]").encode().toURL());
+      assertThat(new URL("/[a]").encode().toURL()).isEqualTo("/%5Ba%5D");
 
       // decode
-      assertEquals("/[a]", new URL("/%5Ba%5D").decode().toURL());
+      assertThat(new URL("/%5Ba%5D").decode().toURL()).isEqualTo("/[a]");
 
       // decode of not-encoded character
-      assertEquals("/[a]", new URL("/[a]").decode().toURL());
+      assertThat(new URL("/[a]").decode().toURL()).isEqualTo("/[a]");
 
    }
 
@@ -179,13 +175,13 @@ public class URLTest
    {
 
       // encode
-      assertEquals("/%3Ca%3E", new URL("/<a>").encode().toURL());
+      assertThat(new URL("/<a>").encode().toURL()).isEqualTo("/%3Ca%3E");
 
       // decode
-      assertEquals("/<a>", new URL("/%3Ca%3E").decode().toURL());
+      assertThat(new URL("/%3Ca%3E").decode().toURL()).isEqualTo("/<a>");
 
       // decode of not-encoded character
-      assertEquals("/<a>", new URL("/<a>").decode().toURL());
+      assertThat(new URL("/<a>").decode().toURL()).isEqualTo("/<a>");
 
    }
 
@@ -194,13 +190,13 @@ public class URLTest
    {
 
       // encode
-      assertEquals("/%7C", new URL("/|").encode().toURL());
+      assertThat(new URL("/|").encode().toURL()).isEqualTo("/%7C");
 
       // decode
-      assertEquals("/|", new URL("/%7C").decode().toURL());
+      assertThat(new URL("/%7C").decode().toURL()).isEqualTo("/|");
 
       // decode of not-encoded character
-      assertEquals("/|", new URL("/|").decode().toURL());
+      assertThat(new URL("/|").decode().toURL()).isEqualTo("/|");
 
    }
    

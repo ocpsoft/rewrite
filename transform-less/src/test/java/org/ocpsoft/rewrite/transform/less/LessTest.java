@@ -15,10 +15,10 @@
  */
 package org.ocpsoft.rewrite.transform.less;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.ocpsoft.rewrite.transform.less.Less;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LessTest
 {
@@ -49,7 +49,7 @@ public class LessTest
 
    private static void assertSameCSS(String expected, String actual)
    {
-      assertEquals(normalize(expected), normalize(actual));
+      assertThat(normalize(actual)).isEqualTo(normalize(expected));
    }
 
    private static String normalize(String s)

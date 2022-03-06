@@ -3,12 +3,13 @@ package org.ocpsoft.rewrite.prettyfaces.loop;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class ViewIdMatchTest extends RewriteTestBase
@@ -25,7 +26,7 @@ public class ViewIdMatchTest extends RewriteTestBase
    public void testPatternMatchingViewId() throws Exception
    {
       HttpAction action = get("/path/christian");
-      Assert.assertTrue(action.getResponseContent().contains("Injected value: [christian]"));
+      assertThat(action.getResponseContent()).contains("Injected value: [christian]");
    }
 
 }

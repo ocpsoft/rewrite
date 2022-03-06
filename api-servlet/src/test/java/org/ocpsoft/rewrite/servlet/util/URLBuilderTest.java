@@ -15,12 +15,12 @@
  */
 package org.ocpsoft.rewrite.servlet.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /*
  * FIXME:  Remove references to deprecated code.
@@ -41,7 +41,7 @@ public class URLBuilderTest
    {
       String value = "/com/ocpsoft/pretty/";
       URLBuilder builder = URLBuilder.createFrom(value);
-      assertEquals(value, builder.toURL());
+      assertThat(builder.toURL()).isEqualTo(value);
    }
 
    @Test
@@ -50,7 +50,7 @@ public class URLBuilderTest
       String value = "/com/ocpsoft/pretty/";
       URLBuilder builder = URLBuilder.createFrom(value);
       builder.setEncoding("UTF-8");
-      assertEquals(value, builder.decode().toURL());
+      assertThat(builder.decode().toURL()).isEqualTo(value);
    }
 
    @Test
@@ -58,43 +58,43 @@ public class URLBuilderTest
    public void testEmptySegmentsPreserved() throws Exception
    {
       // middle segment is empty
-      assertEquals("/test//test/", URLBuilder.createFrom("/test//test/").toURL());
-      assertEquals("/test//test/", URLBuilder.createFrom("/test//test/").decode().toURL());
-      assertEquals("/test//test/", URLBuilder.createFrom("/test//test/").encode().toURL());
+      assertThat(URLBuilder.createFrom("/test//test/").toURL()).isEqualTo("/test//test/");
+      assertThat(URLBuilder.createFrom("/test//test/").decode().toURL()).isEqualTo("/test//test/");
+      assertThat(URLBuilder.createFrom("/test//test/").encode().toURL()).isEqualTo("/test//test/");
 
       // last segment is empty
-      assertEquals("/test//", URLBuilder.createFrom("/test//").toURL());
-      assertEquals("/test//", URLBuilder.createFrom("/test//").decode().toURL());
-      assertEquals("/test//", URLBuilder.createFrom("/test//").encode().toURL());
+      assertThat(URLBuilder.createFrom("/test//").toURL()).isEqualTo("/test//");
+      assertThat(URLBuilder.createFrom("/test//").decode().toURL()).isEqualTo("/test//");
+      assertThat(URLBuilder.createFrom("/test//").encode().toURL()).isEqualTo("/test//");
 
       // first segment is empty
-      assertEquals("//test/", URLBuilder.createFrom("//test/").toURL());
-      assertEquals("//test/", URLBuilder.createFrom("//test/").decode().toURL());
-      assertEquals("//test/", URLBuilder.createFrom("//test/").encode().toURL());
+      assertThat(URLBuilder.createFrom("//test/").toURL()).isEqualTo("//test/");
+      assertThat(URLBuilder.createFrom("//test/").decode().toURL()).isEqualTo("//test/");
+      assertThat(URLBuilder.createFrom("//test/").encode().toURL()).isEqualTo("//test/");
 
       // only segment is empty
-      assertEquals("//", URLBuilder.createFrom("//").toURL());
-      assertEquals("//", URLBuilder.createFrom("//").decode().toURL());
-      assertEquals("//", URLBuilder.createFrom("//").encode().toURL());
+      assertThat(URLBuilder.createFrom("//").toURL()).isEqualTo("//");
+      assertThat(URLBuilder.createFrom("//").decode().toURL()).isEqualTo("//");
+      assertThat(URLBuilder.createFrom("//").encode().toURL()).isEqualTo("//");
 
       // multiple segments are empty
-      assertEquals("///", URLBuilder.createFrom("///").toURL());
-      assertEquals("///", URLBuilder.createFrom("///").decode().toURL());
-      assertEquals("///", URLBuilder.createFrom("///").encode().toURL());
-      assertEquals("////", URLBuilder.createFrom("////").toURL());
-      assertEquals("////", URLBuilder.createFrom("////").decode().toURL());
-      assertEquals("////", URLBuilder.createFrom("////").encode().toURL());
-      assertEquals("/////", URLBuilder.createFrom("/////").toURL());
-      assertEquals("/////", URLBuilder.createFrom("/////").decode().toURL());
-      assertEquals("/////", URLBuilder.createFrom("/////").encode().toURL());
+      assertThat(URLBuilder.createFrom("///").toURL()).isEqualTo("///");
+      assertThat(URLBuilder.createFrom("///").decode().toURL()).isEqualTo("///");
+      assertThat(URLBuilder.createFrom("///").encode().toURL()).isEqualTo("///");
+      assertThat(URLBuilder.createFrom("////").toURL()).isEqualTo("////");
+      assertThat(URLBuilder.createFrom("////").decode().toURL()).isEqualTo("////");
+      assertThat(URLBuilder.createFrom("////").encode().toURL()).isEqualTo("////");
+      assertThat(URLBuilder.createFrom("/////").toURL()).isEqualTo("/////");
+      assertThat(URLBuilder.createFrom("/////").decode().toURL()).isEqualTo("/////");
+      assertThat(URLBuilder.createFrom("/////").encode().toURL()).isEqualTo("/////");
    }
 
    @Test
    public void testSingleSlashPreserved() throws Exception
    {
-      assertEquals("/", URLBuilder.createFrom("/").toURL());
-      assertEquals("/", URLBuilder.createFrom("/").encode().toURL());
-      assertEquals("/", URLBuilder.createFrom("/").decode().toURL());
+      assertThat(URLBuilder.createFrom("/").toURL()).isEqualTo("/");
+      assertThat(URLBuilder.createFrom("/").encode().toURL()).isEqualTo("/");
+      assertThat(URLBuilder.createFrom("/").decode().toURL()).isEqualTo("/");
    }
 
    @Test
@@ -104,8 +104,8 @@ public class URLBuilderTest
       metadata.setTrailingSlash(true);
       URLBuilder builder = URLBuilder.createFrom(new ArrayList<String>(), metadata, QueryStringBuilder.createNew());
 
-      assertEquals("/", builder.toURL());
-      assertEquals("/", builder.decode().toURL());
+      assertThat(builder.toURL()).isEqualTo("/");
+      assertThat(builder.decode().toURL()).isEqualTo("/");
    }
 
    @Test
@@ -114,7 +114,7 @@ public class URLBuilderTest
       String value = "/\u010d";
       URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
-      assertEquals("/%C4%8D", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/%C4%8D");
    }
 
    @Test
@@ -123,9 +123,9 @@ public class URLBuilderTest
       String value = "/\u010d";
       URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
-      assertEquals("/%C4%8D", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/%C4%8D");
       URLBuilder original = encoded.decode();
-      assertEquals("/\u010d", original.toURL());
+      assertThat(original.toURL()).isEqualTo("/\u010d");
    }
 
    @Test
@@ -134,9 +134,9 @@ public class URLBuilderTest
       String value = "/foo/bar";
       URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
-      assertEquals("/foo/bar", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/foo/bar");
       URLBuilder original = encoded.decode();
-      assertEquals("/foo/bar", original.toURL());
+      assertThat(original.toURL()).isEqualTo("/foo/bar");
    }
 
    @Test
@@ -145,48 +145,48 @@ public class URLBuilderTest
       String value = "/\u00e4";
       URLBuilder builder = URLBuilder.createNew().appendPathSegments(value);
       URLBuilder encoded = builder.encode();
-      assertEquals("/%C3%A4", encoded.toURL());
+      assertThat(encoded.toURL()).isEqualTo("/%C3%A4");
       URLBuilder original = encoded.decode();
-      assertEquals("/\u00e4", original.toURL());
+      assertThat(original.toURL()).isEqualTo("/\u00e4");
    }
 
    @Test
    public void testCommaEncodingAndDecoding() throws Exception
    {
       // the comma is allowed and should not be encoded/decoded
-      assertEquals("/a,b", URLBuilder.createNew().appendPathSegments("/a,b").encode().toURL());
-      assertEquals("/a,b", URLBuilder.createNew().appendPathSegments("/a,b").decode().toURL());
+      assertThat(URLBuilder.createNew().appendPathSegments("/a,b").encode().toURL()).isEqualTo("/a,b");
+      assertThat(URLBuilder.createNew().appendPathSegments("/a,b").decode().toURL()).isEqualTo("/a,b");
    }
 
    @Test
    public void testSpaceEncodingAndDecoding() throws Exception
    {
       // encode
-      assertEquals("/a%20b", URLBuilder.createNew().appendPathSegments("/a b").encode().toURL());
+      assertThat(URLBuilder.createNew().appendPathSegments("/a b").encode().toURL()).isEqualTo("/a%20b");
 
       // decode
-      assertEquals("/a b", URLBuilder.createNew().appendPathSegments("/a%20b").decode().toURL());
+      assertThat(URLBuilder.createNew().appendPathSegments("/a%20b").decode().toURL()).isEqualTo("/a b");
 
       // decode plus does not change anything
-      assertEquals("/a+b+c", URLBuilder.createNew().appendPathSegments("/a+b+c").decode().toURL());
+      assertThat(URLBuilder.createNew().appendPathSegments("/a+b+c").decode().toURL()).isEqualTo("/a+b+c");
    }
 
    @Test
    public void testQuestionMarkEncodingAndDecoding() throws Exception
    {
       // encode
-      assertEquals("/a%3Fb", URLBuilder.createNew().appendPathSegments("/a?b").encode().toURL());
+      assertThat(URLBuilder.createNew().appendPathSegments("/a?b").encode().toURL()).isEqualTo("/a%3Fb");
 
       // decode
-      assertEquals("/a?b", URLBuilder.createNew().appendPathSegments("/a%3Fb").decode().toURL());
+      assertThat(URLBuilder.createNew().appendPathSegments("/a%3Fb").decode().toURL()).isEqualTo("/a?b");
    }
 
    @Test
    public void decodingSegmentWithPlusChararcter() {
       // + is valid as a segment. It should not be decoded.
       List<String> segments = URLBuilder.createFrom("foo+bar").decode().getSegments();
-      assertEquals(1, segments.size());
-      assertEquals("foo+bar", segments.get(0));
+      assertThat(segments.size()).isEqualTo(1);
+      assertThat(segments.get(0)).isEqualTo("foo+bar");
    }
 
 }

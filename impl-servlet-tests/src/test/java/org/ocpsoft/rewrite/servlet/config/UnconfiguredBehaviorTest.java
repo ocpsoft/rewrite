@@ -15,10 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,9 +44,10 @@ public class UnconfiguredBehaviorTest extends RewriteTest
    public void testErrorPageIsDisplayed() throws Exception
    {
       HttpAction action = get("/other");
-      assertEquals(404, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.anyOf(
-               Matchers.containsString("404"),           // most containers
-               Matchers.containsString("Not Found")));   // Wildfly
+      assertThat(action.getStatusCode()).isEqualTo(404);
+      assertThat(action.getResponseContent()).containsAnyOf(
+              "404",      // most containers
+              "Not Found" // Wildfly
+      );
    }
 }

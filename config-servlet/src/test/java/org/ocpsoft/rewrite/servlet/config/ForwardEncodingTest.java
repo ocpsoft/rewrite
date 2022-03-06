@@ -15,10 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -28,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class ForwardEncodingTest extends RewriteTest
@@ -48,48 +46,48 @@ public class ForwardEncodingTest extends RewriteTest
    public void simpleFileDirect() throws Exception
    {
       HttpAction action = get("/direct/static/foobar.txt");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("foobar"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("foobar");
    }
 
    @Test
    public void simpleFileForward() throws Exception
    {
       HttpAction action = get("/forward/static/foobar.txt");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("foobar"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("foobar");
    }
 
    @Test
    public void fileWithSpacesDirect() throws Exception
    {
       HttpAction action = get("/direct/static/with%20spaces.txt");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("spaces"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("spaces");
    }
 
    @Test
    public void fileWithSpacesForward() throws Exception
    {
       HttpAction action = get("/forward/static/with%20spaces.txt");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("spaces"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("spaces");
    }
 
    @Test
    public void fileWithHashDirect() throws Exception
    {
       HttpAction action = get("/direct/static/with%23hash.txt");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("hash"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("hash");
    }
 
    @Test
    public void fileWithHashForward() throws Exception
    {
       HttpAction action = get("/forward/static/with%23hash.txt");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("hash"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("hash");
    }
 
    @Test
@@ -97,13 +95,11 @@ public class ForwardEncodingTest extends RewriteTest
    {
 
       HttpAction action = get("/direct/debug/foo%20bar.dyn");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       // we should get the encoded space character in both URLs
-      assertThat(action.getResponseContent(),
-               Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
-      assertThat(action.getResponseContent(),
-               Matchers.containsString("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+      assertThat(action.getResponseContent()).contains("getRequestURI: [/rewrite-test/direct/debug/foo%20bar.dyn]");
+      assertThat(action.getResponseContent()).contains("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]");
    }
 
    @Test
@@ -111,17 +107,15 @@ public class ForwardEncodingTest extends RewriteTest
    {
 
       HttpAction action = get("/forward/debug/foo%20bar.dyn");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       // Not really sure if this is the expected result
       // Lincoln: This is the behavior of the underlying HttpServletRequest, so we've really not changed/modified any
       // behavior here. Recommend leaving this alone.
-      assertThat(action.getResponseContent(),
-               Matchers.containsString("getRequestURI: [/rewrite-test/direct/debug/foo bar.dyn]"));
+      assertThat(action.getResponseContent()).contains("getRequestURI: [/rewrite-test/direct/debug/foo bar.dyn]");
 
       // IMHO this should be the result as it is consistent with the non-forwarded case
-      assertThat(action.getResponseContent(),
-               Matchers.containsString("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]"));
+      assertThat(action.getResponseContent()).contains("inboundAddressPath: [/rewrite-test/direct/debug/foo%20bar.dyn]");
    }
 
 }

@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.outbound;
 
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,6 +28,8 @@ import org.ocpsoft.rewrite.test.RewriteTestBase;
 
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This test doesn't work on Glassfish 4.0 at all. For some reason Glassfish _always_ appends the JSESSIONID, even if
@@ -60,7 +60,7 @@ public class OutboundSpecialCasesTest extends RewriteTestBase
    {
       HtmlPage page = getWebClient("/faces/outbound.xhtml").getPage();
       DomElement link = page.getElementById("javascript");
-      assertEquals("javascript:void(0)", link.getAttribute("href"));
+      assertThat(link.getAttribute("href")).isEqualTo("javascript:void(0)");
    }
 
    @Test
@@ -68,7 +68,7 @@ public class OutboundSpecialCasesTest extends RewriteTestBase
    {
       HtmlPage page = getWebClient("/faces/outbound.xhtml").getPage();
       DomElement link = page.getElementById("anchor");
-      assertEquals("#foobar", link.getAttribute("href"));
+      assertThat(link.getAttribute("href")).isEqualTo("#foobar");
    }
 
    @Test
@@ -76,7 +76,7 @@ public class OutboundSpecialCasesTest extends RewriteTestBase
    {
       HtmlPage page = getWebClient("/faces/outbound.xhtml").getPage();
       DomElement link = page.getElementById("emptyAnchor");
-      assertEquals("#", link.getAttribute("href"));
+      assertThat(link.getAttribute("href")).isEqualTo("#");
    }
 
 }

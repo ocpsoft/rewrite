@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -27,6 +26,8 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.urlbuilder.AddressBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -53,7 +54,7 @@ public class SchemeTest
    @Test
    public void testSchemeMatchesInbound()
    {
-      Assert.assertTrue(Scheme.matches("https").evaluate(inbound, new MockEvaluationContext()));
+      assertThat(Scheme.matches("https").evaluate(inbound, new MockEvaluationContext())).isTrue();
    }
 
    @Test
@@ -64,24 +65,24 @@ public class SchemeTest
 
       ParameterUtils.initialize(context, scheme);
 
-      Assert.assertTrue(scheme.evaluate(inbound, context));
+      assertThat(scheme.evaluate(inbound, context)).isTrue();
    }
 
    @Test
    public void testSchemeNotMatchesInbound()
    {
-      Assert.assertFalse(Scheme.matches("ftp").evaluate(inbound, new MockEvaluationContext()));
+      assertThat(Scheme.matches("ftp").evaluate(inbound, new MockEvaluationContext())).isFalse();
    }
 
    @Test
    public void testSchemeMatchesOutbound()
    {
-      Assert.assertTrue(Scheme.matches("http").evaluate(outbound, new MockEvaluationContext()));
+      assertThat(Scheme.matches("http").evaluate(outbound, new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testSchemeNotMatchesOutbound()
    {
-      Assert.assertFalse(Scheme.matches("scp").evaluate(outbound, new MockEvaluationContext()));
+      assertThat(Scheme.matches("scp").evaluate(outbound, new MockEvaluationContext())).isFalse();
    }
 }

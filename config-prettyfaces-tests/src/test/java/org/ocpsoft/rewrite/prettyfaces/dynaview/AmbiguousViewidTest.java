@@ -16,13 +16,9 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.dynaview;
 
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -30,6 +26,8 @@ import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Ignored for Wildfly Beta1 because it ships with Mojarra 2.2.3 which ALWAYS appends 'jftfdi' and 'jffi' parameters.
@@ -55,12 +53,12 @@ public class AmbiguousViewidTest extends RewriteTestBase
    {
       HttpAction action = get("/foo");
 
-      Assert.assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("action=\"" + action.getContextPath() + "/foo\""));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("action=\"" + action.getContextPath() + "/foo\"");
 
-      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/foo\""));
-      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/bar\""));
-      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/baz\""));
+      assertThat(action.getResponseContent()).contains("href=\"" + action.getContextPath() + "/foo\"");
+      assertThat(action.getResponseContent()).contains("href=\"" + action.getContextPath() + "/bar\"");
+      assertThat(action.getResponseContent()).contains("href=\"" + action.getContextPath() + "/baz\"");
    }
 
    @Test
@@ -68,11 +66,11 @@ public class AmbiguousViewidTest extends RewriteTestBase
    {
       HttpAction action = get("/baz");
 
-      Assert.assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("action=\"" + action.getContextPath() + "/baz\""));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("action=\"" + action.getContextPath() + "/baz\"");
 
-      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/foo\""));
-      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/bar\""));
-      assertThat(action.getResponseContent(), Matchers.containsString("href=\"" + action.getContextPath() + "/baz\""));
+      assertThat(action.getResponseContent()).contains("href=\"" + action.getContextPath() + "/foo\"");
+      assertThat(action.getResponseContent()).contains("href=\"" + action.getContextPath() + "/bar\"");
+      assertThat(action.getResponseContent()).contains("href=\"" + action.getContextPath() + "/baz\"");
    }
 }

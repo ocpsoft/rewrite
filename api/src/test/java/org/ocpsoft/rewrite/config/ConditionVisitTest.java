@@ -15,13 +15,13 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 import org.ocpsoft.rewrite.util.Visitor;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConditionVisitTest
 {
@@ -49,7 +49,7 @@ public class ConditionVisitTest
       });
 
       // all 5 conditions should have been visited (3x True, 1x And, 1x Or)
-      assertEquals(5, visited.size());
+      assertThat(visited.size()).isEqualTo(5);
 
    }
 

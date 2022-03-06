@@ -15,11 +15,11 @@
  */
 package com.ocpsoft.pretty.faces;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.config.dynaview.DynaviewEngine;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DynaviewEngineTest
 {
@@ -30,7 +30,7 @@ public class DynaviewEngineTest
     {
         String mapping = "/";
         String viewId = dynaview.buildDynaViewId(mapping);
-        assertEquals("/" + DynaviewEngine.DYNAVIEW + ".jsf", viewId);
+        assertThat(viewId).isEqualTo("/" + DynaviewEngine.DYNAVIEW + ".jsf");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class DynaviewEngineTest
     {
         String mapping = "*.faces";
         String viewId = dynaview.buildDynaViewId(mapping);
-        assertEquals("/" + DynaviewEngine.DYNAVIEW + ".faces", viewId);
+        assertThat(viewId).isEqualTo("/" + DynaviewEngine.DYNAVIEW + ".faces");
     }
 
     @Test
@@ -46,6 +46,6 @@ public class DynaviewEngineTest
     {
         String mapping = "/faces/*";
         String viewId = dynaview.buildDynaViewId(mapping);
-        assertEquals("/faces/" + DynaviewEngine.DYNAVIEW + ".jsf", viewId);
+        assertThat(viewId).isEqualTo("/faces/" + DynaviewEngine.DYNAVIEW + ".jsf");
     }
 }

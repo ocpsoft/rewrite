@@ -18,12 +18,13 @@ package org.ocpsoft.rewrite.servlet.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,7 +46,7 @@ public class RequestQueryStringTest extends RewriteTest
    public void testCanParseEmptyQueryString() throws Exception
    {
       HttpAction action = get("/something?");
-      Assert.assertEquals(209, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(209);
    }
 
    @Test
@@ -60,7 +61,7 @@ public class RequestQueryStringTest extends RewriteTest
        * Rule #1 should match. HttpInboundRewriteImpl.getURL() used to decode the query string to '?param=foo&bar' which
        * QueryStringBuilder could not parse. Therefore rule #2 matched, which was not correct!
        */
-      Assert.assertEquals(209, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(209);
 
    }
 

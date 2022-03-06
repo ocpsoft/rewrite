@@ -15,11 +15,8 @@
  */
 package org.ocpsoft.rewrite.faces.actionurl;
 
-import static org.junit.Assert.assertThat;
-
 import java.net.URL;
 
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -30,6 +27,8 @@ import org.ocpsoft.rewrite.faces.annotation.RewriteFacesAnnotationsTest;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test for reproducing #166.
@@ -67,11 +66,11 @@ public class ActionUrlAfterPostbackTest extends RewriteTestBase
 
       // The form URL on page2 should NOT point to page1
       String actionUrl = driver.findElementById("form2").getAttribute("action");
-      assertThat(actionUrl, Matchers.containsString("page2"));
+      assertThat(actionUrl).contains("page2");
 
       // Click the button which creates a FacesMessage. Due to #166 this fails with a ViewExpiredException
       driver.findElementById("form2:create-message").click();
-      assertThat(driver.getPageSource(), Matchers.containsString("Action method got executed"));
+      assertThat(driver.getPageSource()).contains("Action method got executed");
 
    }
 

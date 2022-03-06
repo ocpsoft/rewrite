@@ -19,13 +19,14 @@ package org.ocpsoft.rewrite.servlet.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -47,29 +48,29 @@ public class RequestConstraintTransformTest extends RewriteTest
    public void testUnsatisfiedConstraintPreventsRuleExecution() throws Exception
    {
       HttpAction action = get("/constraint/ONE/2");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testSatisfiedConstraintPreventsRuleExecution() throws Exception
    {
       HttpAction action = get("/constraint/ONE/TWO");
-      Assert.assertEquals(211, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(211);
    }
 
    @Test
    public void testTransformModifiesIncomingValue() throws Exception
    {
       HttpAction action = get("/constraint/ONE/TWO");
-      Assert.assertEquals("ONE", action.getResponseHeaderValues("one").get(0));
-      Assert.assertEquals("two", action.getResponseHeaderValues("two").get(0));
+      assertThat(action.getResponseHeaderValues("one").get(0)).isEqualTo("ONE");
+      assertThat(action.getResponseHeaderValues("two").get(0)).isEqualTo("two");
    }
 
    @Test
    public void testTransformModifiesOutboundValue() throws Exception
    {
       HttpAction action = get("/constraint/ONE/TWO");
-      Assert.assertEquals(action.getContextPath() + "/outbound/three", action.getResponseHeaderValues("three").get(0));
+      assertThat(action.getResponseHeaderValues("three").get(0)).isEqualTo(action.getContextPath() + "/outbound/three");
    }
 
 }

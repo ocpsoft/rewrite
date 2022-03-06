@@ -1,16 +1,15 @@
 package org.ocpsoft.rewrite.security.shiro;
 
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class ShiroUsersTest extends RewriteTestBase
@@ -38,7 +37,7 @@ public class ShiroUsersTest extends RewriteTestBase
    public void testShiroAsAnonymousUser() throws Exception
    {
       HttpAction action = get("/admin/something");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
       action.getResponseContent(); // consume response
    }
 
@@ -48,27 +47,27 @@ public class ShiroUsersTest extends RewriteTestBase
 
       // before login
       HttpAction beforeLogin = get(client, "/admin/something");
-      Assert.assertEquals(404, beforeLogin.getStatusCode());
+      assertThat(beforeLogin.getStatusCode()).isEqualTo(404);
       beforeLogin.getResponseContent(); // consume response
 
       // login as admin
       HttpAction login = get(client, "/login?user=ck");
-      Assert.assertEquals(200, login.getStatusCode());
-      Assert.assertFalse(login.getResponseContent().contains("404"));
+      assertThat(login.getStatusCode()).isEqualTo(200);
+      assertThat(login.getResponseContent()).doesNotContain("404");
 
       // page is available
       HttpAction afterLogin = get(client, "/admin/something");
-      Assert.assertEquals(200, afterLogin.getStatusCode());
-      Assert.assertTrue(afterLogin.getResponseContent().contains("Protected admin page"));
+      assertThat(afterLogin.getStatusCode()).isEqualTo(200);
+      assertThat(afterLogin.getResponseContent()).contains("Protected admin page");
 
       // logout as admin
       HttpAction logout = get(client, "/logout");
-      assertEquals(200, logout.getStatusCode());
-      Assert.assertFalse(logout.getResponseContent().contains("404"));
+      assertThat(logout.getStatusCode()).isEqualTo(200);
+      assertThat(logout.getResponseContent()).doesNotContain("404");
 
       // after logout
       HttpAction afterLogout = get(client, "/admin/something");
-      assertEquals(404, afterLogout.getStatusCode());
+      assertThat(afterLogout.getStatusCode()).isEqualTo(404);
       afterLogout.getResponseContent(); // consume response
 
    }
@@ -79,27 +78,27 @@ public class ShiroUsersTest extends RewriteTestBase
 
       // before login
       HttpAction beforeLogin = get(client, "/admin/something");
-      Assert.assertEquals(404, beforeLogin.getStatusCode());
+      assertThat(beforeLogin.getStatusCode()).isEqualTo(404);
       beforeLogin.getResponseContent(); // consume response
 
       // login as someone else
       HttpAction login = get(client, "/login?user=somebody");
-      assertEquals(200, login.getStatusCode());
-      Assert.assertFalse(login.getResponseContent().contains("404"));
+      assertThat(login.getStatusCode()).isEqualTo(200);
+      assertThat(login.getResponseContent()).doesNotContain("404");
 
       // wrong role
       HttpAction afterLogin = get(client, "/admin/something");
-      Assert.assertEquals(404, afterLogin.getStatusCode());
+      assertThat(afterLogin.getStatusCode()).isEqualTo(404);
       afterLogin.getResponseContent(); // consume response
 
       // logout as someone else
       HttpAction logout = get(client, "/logout");
-      assertEquals(200, logout.getStatusCode());
-      Assert.assertFalse(logout.getResponseContent().contains("404"));
+      assertThat(logout.getStatusCode()).isEqualTo(200);
+      assertThat(logout.getResponseContent()).doesNotContain("404");
 
       // after logout
       HttpAction afterLogout = get(client, "/admin/something");
-      assertEquals(404, afterLogout.getStatusCode());
+      assertThat(afterLogout.getStatusCode()).isEqualTo(404);
       afterLogout.getResponseContent(); // consume response
 
    }

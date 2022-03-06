@@ -15,10 +15,6 @@
  */
 package org.ocpsoft.rewrite.annotation.inheritance;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -29,6 +25,8 @@ import org.ocpsoft.rewrite.annotation.RewriteAnnotationTest;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class AnnotationInheritanceTest extends RewriteTestBase
@@ -56,22 +54,18 @@ public class AnnotationInheritanceTest extends RewriteTestBase
    public void testParametersInSuperClass() throws Exception
    {
       HttpAction action = get("/fields?param1=foo&param2=bar");
-      assertEquals(200, action.getStatusCode());
-      assertThat("Parameter in sub class not injected",
-               action.getResponseContent(), Matchers.containsString("param1=[foo]"));
-      assertThat("Parameter in super class not injected",
-               action.getResponseContent(), Matchers.containsString("param2=[bar]"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).as("Parameter in sub class not injected").contains("param1=[foo]");
+      assertThat(action.getResponseContent()).as("Parameter in super class not injected").contains("param2=[bar]");
    }
 
    @Test
    public void testMethodsInSuperClass() throws Exception
    {
       HttpAction action = get("/methods");
-      assertEquals(200, action.getStatusCode());
-      assertThat("Method in sub class not invoked",
-               action.getResponseContent(), Matchers.containsString("[action1 invoked]"));
-      assertThat("Method in super class not invoked",
-               action.getResponseContent(), Matchers.containsString("[action2 invoked]"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).as("Method in sub class not invoked").contains("[action1 invoked]");
+      assertThat(action.getResponseContent()).as("Method in super class not invoked").contains("[action2 invoked]");
    }
 
 }

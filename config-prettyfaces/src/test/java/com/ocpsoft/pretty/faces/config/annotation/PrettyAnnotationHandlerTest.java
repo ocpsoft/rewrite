@@ -15,9 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.config.annotation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +38,8 @@ import com.ocpsoft.pretty.faces.config.mapping.UrlMapping;
 import com.ocpsoft.pretty.faces.el.ConstantExpression;
 import com.ocpsoft.pretty.faces.el.LazyExpression;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class PrettyAnnotationHandlerTest
 {
 
@@ -57,8 +56,8 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(0, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(0);
 
    }
 
@@ -76,19 +75,19 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(1, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(1);
 
       // validate mapping properties
       UrlMapping mapping = config.getMappings().get(0);
-      assertEquals("simple", mapping.getId());
-      assertEquals("/some/url", mapping.getPattern());
-      assertEquals("/view.jsf", mapping.getViewId());
-      assertEquals(false, mapping.isOutbound());
-      assertEquals(false, mapping.isOnPostback());
-      assertEquals(0, mapping.getActions().size());
-      assertEquals(0, mapping.getQueryParams().size());
-      assertEquals(0, mapping.getPathValidators().size());
+      assertThat(mapping.getId()).isEqualTo("simple");
+      assertThat(mapping.getPattern()).isEqualTo("/some/url");
+      assertThat(mapping.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mapping.isOutbound()).isEqualTo(false);
+      assertThat(mapping.isOnPostback()).isEqualTo(false);
+      assertThat(mapping.getActions().size()).isEqualTo(0);
+      assertThat(mapping.getQueryParams().size()).isEqualTo(0);
+      assertThat(mapping.getPathValidators().size()).isEqualTo(0);
 
    }
 
@@ -106,25 +105,25 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(1, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(1);
 
       // validate mapping properties
       UrlMapping mapping = config.getMappings().get(0);
-      assertEquals("simple", mapping.getId());
-      assertEquals("/some/url", mapping.getPattern());
-      assertEquals("/view.jsf", mapping.getViewId());
-      assertEquals(true, mapping.isOutbound());
-      assertEquals(true, mapping.isOnPostback());
-      assertEquals(0, mapping.getActions().size());
-      assertEquals(0, mapping.getQueryParams().size());
-      assertEquals(1, mapping.getPathValidators().size());
+      assertThat(mapping.getId()).isEqualTo("simple");
+      assertThat(mapping.getPattern()).isEqualTo("/some/url");
+      assertThat(mapping.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mapping.isOutbound()).isEqualTo(true);
+      assertThat(mapping.isOnPostback()).isEqualTo(true);
+      assertThat(mapping.getActions().size()).isEqualTo(0);
+      assertThat(mapping.getQueryParams().size()).isEqualTo(0);
+      assertThat(mapping.getPathValidators().size()).isEqualTo(1);
 
       // check path validation
       PathValidator validator = mapping.getPathValidators().get(0);
-      assertEquals(0, validator.getIndex());
-      assertEquals("#{bean.action}", validator.getOnError());
-      assertEquals("myValidator myOtherValidator", validator.getValidatorIds());
+      assertThat(validator.getIndex()).isEqualTo(0);
+      assertThat(validator.getOnError()).isEqualTo("#{bean.action}");
+      assertThat(validator.getValidatorIds()).isEqualTo("myValidator myOtherValidator");
 
    }
 
@@ -142,30 +141,30 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(1, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(1);
 
       // validate mapping properties
       UrlMapping mapping = config.getMappings().get(0);
-      assertEquals("singleLazyExpressionAction", mapping.getId());
-      assertEquals("/some/url", mapping.getPattern());
-      assertEquals("/view.jsf", mapping.getViewId());
-      assertEquals(true, mapping.isOutbound());
-      assertEquals(true, mapping.isOnPostback());
-      assertEquals(0, mapping.getQueryParams().size());
-      assertEquals(1, mapping.getActions().size());
-      assertEquals(0, mapping.getPathValidators().size());
+      assertThat(mapping.getId()).isEqualTo("singleLazyExpressionAction");
+      assertThat(mapping.getPattern()).isEqualTo("/some/url");
+      assertThat(mapping.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mapping.isOutbound()).isEqualTo(true);
+      assertThat(mapping.isOnPostback()).isEqualTo(true);
+      assertThat(mapping.getQueryParams().size()).isEqualTo(0);
+      assertThat(mapping.getActions().size()).isEqualTo(1);
+      assertThat(mapping.getPathValidators().size()).isEqualTo(0);
 
       // validate action
       UrlAction action = mapping.getActions().get(0);
-      assertEquals(PhaseId.RESTORE_VIEW, action.getPhaseId());
+      assertThat(action.getPhaseId()).isEqualTo(PhaseId.RESTORE_VIEW);
 
       // validate PrettyExpression
-      assertNotNull(action.getAction());
-      assertEquals(LazyExpression.class, action.getAction().getClass());
+      assertThat(action.getAction()).isNotNull();
+      assertThat(action.getAction().getClass()).isEqualTo(LazyExpression.class);
       LazyExpression actionExpression = (LazyExpression) action.getAction();
-      assertEquals(ClassWithSingleLazyExpressionAction.class, actionExpression.getBeanClass());
-      assertEquals("actionMethod", actionExpression.getComponent());
+      assertThat(actionExpression.getBeanClass()).isEqualTo(ClassWithSingleLazyExpressionAction.class);
+      assertThat(actionExpression.getComponent()).isEqualTo("actionMethod");
 
    }
 
@@ -183,28 +182,28 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(1, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(1);
 
       // validate mapping properties
       UrlMapping mapping = config.getMappings().get(0);
-      assertEquals("singleConstantExpressionAction", mapping.getId());
-      assertEquals("/some/url", mapping.getPattern());
-      assertEquals("/view.jsf", mapping.getViewId());
-      assertEquals(true, mapping.isOutbound());
-      assertEquals(true, mapping.isOnPostback());
-      assertEquals(0, mapping.getQueryParams().size());
-      assertEquals(1, mapping.getActions().size());
-      assertEquals(0, mapping.getPathValidators().size());
+      assertThat(mapping.getId()).isEqualTo("singleConstantExpressionAction");
+      assertThat(mapping.getPattern()).isEqualTo("/some/url");
+      assertThat(mapping.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mapping.isOutbound()).isEqualTo(true);
+      assertThat(mapping.isOnPostback()).isEqualTo(true);
+      assertThat(mapping.getQueryParams().size()).isEqualTo(0);
+      assertThat(mapping.getActions().size()).isEqualTo(1);
+      assertThat(mapping.getPathValidators().size()).isEqualTo(0);
 
       // validate action
       UrlAction action = mapping.getActions().get(0);
-      assertEquals(PhaseId.RESTORE_VIEW, action.getPhaseId());
+      assertThat(action.getPhaseId()).isEqualTo(PhaseId.RESTORE_VIEW);
 
       // validate PrettyExpression
-      assertNotNull(action.getAction());
-      assertEquals(ConstantExpression.class, action.getAction().getClass());
-      assertEquals("#{someBean.actionMethod}", action.getAction().getELExpression());
+      assertThat(action.getAction()).isNotNull();
+      assertThat(action.getAction().getClass()).isEqualTo(ConstantExpression.class);
+      assertThat(action.getAction().getELExpression()).isEqualTo("#{someBean.actionMethod}");
 
    }
 
@@ -222,37 +221,37 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(1, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(1);
 
       // validate mapping properties
       UrlMapping mapping = config.getMappings().get(0);
-      assertEquals("multipleActions", mapping.getId());
-      assertEquals("/some/url", mapping.getPattern());
-      assertEquals("/view.jsf", mapping.getViewId());
-      assertEquals(true, mapping.isOutbound());
-      assertEquals(true, mapping.isOnPostback());
-      assertEquals(0, mapping.getQueryParams().size());
-      assertEquals(2, mapping.getActions().size());
-      assertEquals(0, mapping.getPathValidators().size());
+      assertThat(mapping.getId()).isEqualTo("multipleActions");
+      assertThat(mapping.getPattern()).isEqualTo("/some/url");
+      assertThat(mapping.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mapping.isOutbound()).isEqualTo(true);
+      assertThat(mapping.isOnPostback()).isEqualTo(true);
+      assertThat(mapping.getQueryParams().size()).isEqualTo(0);
+      assertThat(mapping.getActions().size()).isEqualTo(2);
+      assertThat(mapping.getPathValidators().size()).isEqualTo(0);
 
       // validate first action
       UrlAction firstAction = mapping.getActions().get(0);
-      assertEquals(PhaseId.RENDER_RESPONSE, firstAction.getPhaseId());
-      assertNotNull(firstAction.getAction());
-      assertEquals(LazyExpression.class, firstAction.getAction().getClass());
+      assertThat(firstAction.getPhaseId()).isEqualTo(PhaseId.RENDER_RESPONSE);
+      assertThat(firstAction.getAction()).isNotNull();
+      assertThat(firstAction.getAction().getClass()).isEqualTo(LazyExpression.class);
       LazyExpression firstActionExpression = (LazyExpression) firstAction.getAction();
-      assertEquals(ClassWithMultipleActions.class, firstActionExpression.getBeanClass());
-      assertEquals("actionMethod", firstActionExpression.getComponent());
+      assertThat(firstActionExpression.getBeanClass()).isEqualTo(ClassWithMultipleActions.class);
+      assertThat(firstActionExpression.getComponent()).isEqualTo("actionMethod");
 
       // validate second action
       UrlAction secondAction = mapping.getActions().get(1);
-      assertEquals(PhaseId.INVOKE_APPLICATION, secondAction.getPhaseId());
-      assertNotNull(secondAction.getAction());
-      assertEquals(LazyExpression.class, secondAction.getAction().getClass());
+      assertThat(secondAction.getPhaseId()).isEqualTo(PhaseId.INVOKE_APPLICATION);
+      assertThat(secondAction.getAction()).isNotNull();
+      assertThat(secondAction.getAction().getClass()).isEqualTo(LazyExpression.class);
       LazyExpression secondActionExpression = (LazyExpression) secondAction.getAction();
-      assertEquals(ClassWithMultipleActions.class, secondActionExpression.getBeanClass());
-      assertEquals("actionMethod", secondActionExpression.getComponent());
+      assertThat(secondActionExpression.getBeanClass()).isEqualTo(ClassWithMultipleActions.class);
+      assertThat(secondActionExpression.getComponent()).isEqualTo("actionMethod");
 
    }
 
@@ -270,29 +269,29 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(1, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(1);
 
       // validate mapping properties
       UrlMapping mapping = config.getMappings().get(0);
-      assertEquals("singleQueryParamater", mapping.getId());
-      assertEquals("/some/url", mapping.getPattern());
-      assertEquals("/view.jsf", mapping.getViewId());
-      assertEquals(true, mapping.isOutbound());
-      assertEquals(true, mapping.isOnPostback());
-      assertEquals(0, mapping.getActions().size());
-      assertEquals(1, mapping.getQueryParams().size());
-      assertEquals(0, mapping.getPathValidators().size());
+      assertThat(mapping.getId()).isEqualTo("singleQueryParamater");
+      assertThat(mapping.getPattern()).isEqualTo("/some/url");
+      assertThat(mapping.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mapping.isOutbound()).isEqualTo(true);
+      assertThat(mapping.isOnPostback()).isEqualTo(true);
+      assertThat(mapping.getActions().size()).isEqualTo(0);
+      assertThat(mapping.getQueryParams().size()).isEqualTo(1);
+      assertThat(mapping.getPathValidators().size()).isEqualTo(0);
 
       // validate query parameter
       QueryParameter queryParameter = mapping.getQueryParams().get(0);
-      assertEquals("myQueryParam", queryParameter.getName());
-      assertEquals(true, queryParameter.isOnPostback());
+      assertThat(queryParameter.getName()).isEqualTo("myQueryParam");
+      assertThat(queryParameter.isOnPostback()).isEqualTo(true);
 
       // validate PrettyExpression
-      assertNotNull(queryParameter.getExpression());
-      assertEquals(ConstantExpression.class, queryParameter.getExpression().getClass());
-      assertEquals("#{myQueryParamBean.someParameter}", queryParameter.getExpression().getELExpression());
+      assertThat(queryParameter.getExpression()).isNotNull();
+      assertThat(queryParameter.getExpression().getClass()).isEqualTo(ConstantExpression.class);
+      assertThat(queryParameter.getExpression().getELExpression()).isEqualTo("#{myQueryParamBean.someParameter}");
 
    }
 
@@ -310,32 +309,32 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(1, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(1);
 
       // validate mapping properties
       UrlMapping mapping = config.getMappings().get(0);
-      assertEquals("singleQueryParamater", mapping.getId());
-      assertEquals("/some/url", mapping.getPattern());
-      assertEquals("/view.jsf", mapping.getViewId());
-      assertEquals(true, mapping.isOutbound());
-      assertEquals(true, mapping.isOnPostback());
-      assertEquals(0, mapping.getActions().size());
-      assertEquals(1, mapping.getQueryParams().size());
-      assertEquals(0, mapping.getPathValidators().size());
+      assertThat(mapping.getId()).isEqualTo("singleQueryParamater");
+      assertThat(mapping.getPattern()).isEqualTo("/some/url");
+      assertThat(mapping.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mapping.isOutbound()).isEqualTo(true);
+      assertThat(mapping.isOnPostback()).isEqualTo(true);
+      assertThat(mapping.getActions().size()).isEqualTo(0);
+      assertThat(mapping.getQueryParams().size()).isEqualTo(1);
+      assertThat(mapping.getPathValidators().size()).isEqualTo(0);
 
       // validate query parameter
       QueryParameter queryParameter = mapping.getQueryParams().get(0);
-      assertEquals("myQueryParam", queryParameter.getName());
-      assertEquals(false, queryParameter.isOnPostback());
-      assertEquals("#{bean.action}", queryParameter.getOnError());
-      assertEquals(2, queryParameter.getValidatorIdList().size());
-      assertEquals("myValidator myOtherValidator", queryParameter.getValidatorIds());
+      assertThat(queryParameter.getName()).isEqualTo("myQueryParam");
+      assertThat(queryParameter.isOnPostback()).isEqualTo(false);
+      assertThat(queryParameter.getOnError()).isEqualTo("#{bean.action}");
+      assertThat(queryParameter.getValidatorIdList().size()).isEqualTo(2);
+      assertThat(queryParameter.getValidatorIds()).isEqualTo("myValidator myOtherValidator");
 
       // validate PrettyExpression
-      assertNotNull(queryParameter.getExpression());
-      assertEquals(ConstantExpression.class, queryParameter.getExpression().getClass());
-      assertEquals("#{myQueryParamBean.someParameter}", queryParameter.getExpression().getELExpression());
+      assertThat(queryParameter.getExpression()).isNotNull();
+      assertThat(queryParameter.getExpression().getClass()).isEqualTo(ConstantExpression.class);
+      assertThat(queryParameter.getExpression().getELExpression()).isEqualTo("#{myQueryParamBean.someParameter}");
 
    }
 
@@ -353,22 +352,21 @@ public class PrettyAnnotationHandlerTest
       PrettyConfig config = configBuilder.build();
 
       // no mappings added
-      assertNotNull(config.getMappings());
-      assertEquals(2, config.getMappings().size());
+      assertThat(config.getMappings()).isNotNull();
+      assertThat(config.getMappings().size()).isEqualTo(2);
 
       // validate mapping properties for mappingA
       UrlMapping mappingA = config.getMappingById("mappingA");
-      assertNotNull(mappingA);
-      assertEquals("mappingA", mappingA.getId());
-      assertEquals("/some/url/a", mappingA.getPattern());
-      assertEquals("/view.jsf", mappingA.getViewId());
-      assertEquals(true, mappingA.isOutbound());
-      assertEquals(true, mappingA.isOnPostback());
-      assertEquals(1, mappingA.getActions().size());
-      assertEquals(2, mappingA.getQueryParams().size());
-      assertEquals(0, mappingA.getPathValidators().size());
-      assertEquals("#{multiMappingBean.actionForBoth}",
-               mappingA.getActions().get(0).getAction().getELExpression());
+      assertThat(mappingA).isNotNull();
+      assertThat(mappingA.getId()).isEqualTo("mappingA");
+      assertThat(mappingA.getPattern()).isEqualTo("/some/url/a");
+      assertThat(mappingA.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mappingA.isOutbound()).isEqualTo(true);
+      assertThat(mappingA.isOnPostback()).isEqualTo(true);
+      assertThat(mappingA.getActions().size()).isEqualTo(1);
+      assertThat(mappingA.getQueryParams().size()).isEqualTo(2);
+      assertThat(mappingA.getPathValidators().size()).isEqualTo(0);
+      assertThat(mappingA.getActions().get(0).getAction().getELExpression()).isEqualTo("#{multiMappingBean.actionForBoth}");
 
       // we don't know the order in which the query parameters are added
       List<String> queryParamExpressionsA = Arrays.asList(
@@ -376,22 +374,21 @@ public class PrettyAnnotationHandlerTest
                mappingA.getQueryParams().get(1).getExpression().getELExpression()
                );
       Collections.sort(queryParamExpressionsA);
-      assertEquals("#{multiMappingBean.queryParameterForA}", queryParamExpressionsA.get(0));
-      assertEquals("#{multiMappingBean.queryParameterForBoth}", queryParamExpressionsA.get(1));
+      assertThat(queryParamExpressionsA.get(0)).isEqualTo("#{multiMappingBean.queryParameterForA}");
+      assertThat(queryParamExpressionsA.get(1)).isEqualTo("#{multiMappingBean.queryParameterForBoth}");
 
       // validate mapping properties for mappingB
       UrlMapping mappingB = config.getMappingById("mappingB");
-      assertNotNull(mappingB);
-      assertEquals("mappingB", mappingB.getId());
-      assertEquals("/some/url/b", mappingB.getPattern());
-      assertEquals("/view.jsf", mappingB.getViewId());
-      assertEquals(true, mappingB.isOutbound());
-      assertEquals(true, mappingB.isOnPostback());
-      assertEquals(2, mappingB.getActions().size());
-      assertEquals(1, mappingB.getQueryParams().size());
-      assertEquals(0, mappingB.getPathValidators().size());
-      assertEquals("#{multiMappingBean.queryParameterForBoth}",
-               mappingB.getQueryParams().get(0).getExpression().getELExpression());
+      assertThat(mappingB).isNotNull();
+      assertThat(mappingB.getId()).isEqualTo("mappingB");
+      assertThat(mappingB.getPattern()).isEqualTo("/some/url/b");
+      assertThat(mappingB.getViewId()).isEqualTo("/view.jsf");
+      assertThat(mappingB.isOutbound()).isEqualTo(true);
+      assertThat(mappingB.isOnPostback()).isEqualTo(true);
+      assertThat(mappingB.getActions().size()).isEqualTo(2);
+      assertThat(mappingB.getQueryParams().size()).isEqualTo(1);
+      assertThat(mappingB.getPathValidators().size()).isEqualTo(0);
+      assertThat(mappingB.getQueryParams().get(0).getExpression().getELExpression()).isEqualTo("#{multiMappingBean.queryParameterForBoth}");
 
       // we don't know the order in which the actions are added
       List<String> actionExpressionsB = Arrays.asList(
@@ -399,8 +396,8 @@ public class PrettyAnnotationHandlerTest
                mappingB.getActions().get(1).getAction().getELExpression()
                );
       Collections.sort(actionExpressionsB);
-      assertEquals("#{multiMappingBean.actionForBoth}", actionExpressionsB.get(0));
-      assertEquals("#{multiMappingBean.actionForB}", actionExpressionsB.get(1));
+      assertThat(actionExpressionsB.get(0)).isEqualTo("#{multiMappingBean.actionForBoth}");
+      assertThat(actionExpressionsB.get(1)).isEqualTo("#{multiMappingBean.actionForB}");
 
    }
 

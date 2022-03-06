@@ -1,8 +1,8 @@
 package org.ocpsoft.urlbuilder.util;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EncoderTest
 {
@@ -10,24 +10,24 @@ public class EncoderTest
    @Test
    public void testPath()
    {
-      assertEquals("test", Encoder.path("test"));
-      assertEquals("hello%20world", Encoder.path("hello world"));
-      assertEquals("a%7Cb", Encoder.path("a|b"));
-      assertEquals("%5Btest%5D", Encoder.path("[test]"));
-      assertEquals("%22a%22", Encoder.path("\"a\""));
-      assertEquals("Really%3F", Encoder.path("Really?"));
-      assertEquals("foo&bar", Encoder.path("foo&bar"));
+      assertThat(Encoder.path("test")).isEqualTo("test");
+      assertThat(Encoder.path("hello world")).isEqualTo("hello%20world");
+      assertThat(Encoder.path("a|b")).isEqualTo("a%7Cb");
+      assertThat(Encoder.path("[test]")).isEqualTo("%5Btest%5D");
+      assertThat(Encoder.path("\"a\"")).isEqualTo("%22a%22");
+      assertThat(Encoder.path("Really?")).isEqualTo("Really%3F");
+      assertThat(Encoder.path("foo&bar")).isEqualTo("foo&bar");
    }
 
    @Test
    public void testQuery()
    {
-      assertEquals("test", Encoder.query("test"));
-      assertEquals("hello+world", Encoder.query("hello world"));
-      assertEquals("a%7Cb", Encoder.query("a|b"));
-      assertEquals("%5Btest%5D", Encoder.query("[test]"));
-      assertEquals("%22a%22", Encoder.query("\"a\""));
-      assertEquals("Really%3F", Encoder.query("Really?"));
+      assertThat(Encoder.query("test")).isEqualTo("test");
+      assertThat(Encoder.query("hello world")).isEqualTo("hello+world");
+      assertThat(Encoder.query("a|b")).isEqualTo("a%7Cb");
+      assertThat(Encoder.query("[test]")).isEqualTo("%5Btest%5D");
+      assertThat(Encoder.query("\"a\"")).isEqualTo("%22a%22");
+      assertThat(Encoder.query("Really?")).isEqualTo("Really%3F");
    }
 
 }

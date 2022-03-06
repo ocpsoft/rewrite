@@ -19,13 +19,14 @@ package org.ocpsoft.rewrite.servlet.validate;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,20 +47,20 @@ public class BindingValidationTest extends RewriteTest
    public void testConfigurationProviderForward() throws Exception
    {
       HttpAction action = get("/v/valid");
-      Assert.assertEquals(205, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(205);
    }
 
    @Test
    public void testConfigurationIngoresUnconfiguredRequests() throws Exception
    {
       HttpAction action = get("/v/bar");
-      Assert.assertEquals(206, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(206);
    }
 
    @Test
    public void testConfigurationProviderRedirect() throws Exception
    {
       HttpAction action = get("/v/not-v4lid");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 }

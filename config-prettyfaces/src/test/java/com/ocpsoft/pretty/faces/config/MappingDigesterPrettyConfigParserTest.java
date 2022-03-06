@@ -15,11 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.config;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -33,6 +28,8 @@ import com.ocpsoft.pretty.faces.config.mapping.RequestParameter;
 import com.ocpsoft.pretty.faces.config.mapping.UrlAction;
 import com.ocpsoft.pretty.faces.config.mapping.UrlMapping;
 import com.ocpsoft.pretty.faces.el.ConstantExpression;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MappingDigesterPrettyConfigParserTest
 {
@@ -52,57 +49,57 @@ public class MappingDigesterPrettyConfigParserTest
    {
       UrlMapping mapping = config.getMappingById("0");
 
-      assertEquals("0", mapping.getId());
-      assertEquals("/project/#{viewProjectBean.projectId}/", mapping.getPattern());
-      assertEquals("#{viewProjectBean.getPrettyTarget}", mapping.getViewId());
+      assertThat(mapping.getId()).isEqualTo("0");
+      assertThat(mapping.getPattern()).isEqualTo("/project/#{viewProjectBean.projectId}/");
+      assertThat(mapping.getViewId()).isEqualTo("#{viewProjectBean.getPrettyTarget}");
 
       List<UrlAction> actions = mapping.getActions();
-      assertTrue(actions.contains(new UrlAction("#{viewProjectBean.load}")));
-      assertTrue(actions.contains(new UrlAction("#{viewProjectBean.authorize}")));
+      assertThat(actions).contains(new UrlAction("#{viewProjectBean.load}"));
+      assertThat(actions).contains(new UrlAction("#{viewProjectBean.authorize}"));
    }
 
    @Test
    public void testOnPostbackDefaultsToTrue()
    {
       UrlMapping mapping = config.getMappingById("0");
-      assertEquals(true, mapping.isOnPostback());
+      assertThat(mapping.isOnPostback()).isEqualTo(true);
    }
 
    @Test
    public void testOnPostbackSetToFalse()
    {
       UrlMapping mapping = config.getMappingById("1");
-      assertEquals(false, mapping.isOnPostback());
+      assertThat(mapping.isOnPostback()).isEqualTo(false);
    }
 
    @Test
    public void testParseWithPostbackAction() throws Exception
    {
       UrlMapping mapping = config.getMappingById("1");
-      assertFalse(mapping.getActions().get(0).onPostback());
-      assertTrue(mapping.getActions().get(1).onPostback());
+      assertThat(mapping.getActions().get(0).onPostback()).isFalse();
+      assertThat(mapping.getActions().get(1).onPostback()).isTrue();
    }
 
    @Test
    public void testParseActionDefaultsToPostbackTrue() throws Exception
    {
       UrlMapping mapping = config.getMappingById("2");
-      assertTrue(mapping.getActions().get(0).onPostback());
-      assertTrue(mapping.getActions().get(1).onPostback());
+      assertThat(mapping.getActions().get(0).onPostback()).isTrue();
+      assertThat(mapping.getActions().get(1).onPostback()).isTrue();
    }
 
    @Test
    public void testParseWithAnyPhaseAction() throws Exception
    {
       UrlMapping mapping = config.getMappingById("2");
-      assertEquals(PhaseId.ANY_PHASE, mapping.getActions().get(1).getPhaseId());
+      assertThat(mapping.getActions().get(1).getPhaseId()).isEqualTo(PhaseId.ANY_PHASE);
    }
 
    @Test
    public void testParseWithPreRenderAction() throws Exception
    {
       UrlMapping mapping = config.getMappingById("3");
-      assertEquals(PhaseId.RENDER_RESPONSE, mapping.getActions().get(1).getPhaseId());
+      assertThat(mapping.getActions().get(1).getPhaseId()).isEqualTo(PhaseId.RENDER_RESPONSE);
    }
 
    @Test
@@ -111,10 +108,10 @@ public class MappingDigesterPrettyConfigParserTest
       UrlMapping mapping = config.getMappingById("4");
       List<QueryParameter> params = mapping.getQueryParams();
 
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
       RequestParameter param = params.get(0);
       RequestParameter expected = new QueryParameter("user", null, new ConstantExpression("#{deleteUserBean.userName}"));
-      assertEquals(expected, param);
+      assertThat(param).isEqualTo(expected);
    }
 
    @Test
@@ -123,10 +120,10 @@ public class MappingDigesterPrettyConfigParserTest
       UrlMapping mapping = config.getMappingById("6");
       List<QueryParameter> params = mapping.getQueryParams();
 
-      assertEquals(2, params.size());
+      assertThat(params.size()).isEqualTo(2);
       RequestParameter name = new QueryParameter("name", null, new ConstantExpression("#{searchUserBean.userName}"));
       RequestParameter gender = new QueryParameter("gender", null, new ConstantExpression("#{searchUserBean.userGender}"));
-      assertArrayEquals(new Object[] { name, gender }, params.toArray());
+      assertThat(params.toArray()).isEqualTo(new Object[]{name, gender});
    }
 
    @Test
@@ -134,26 +131,26 @@ public class MappingDigesterPrettyConfigParserTest
    {
       UrlMapping mapping = config.getMappingById("7");
       List<QueryParameter> params = mapping.getQueryParams();
-      assertEquals(0, params.size());
+      assertThat(params.size()).isEqualTo(0);
    }
 
    @Test
    public void testParseWithPathValidators() throws Exception
    {
       UrlMapping mapping = config.getMappingById("validate");
-      assertEquals("/validate/#{validationBean.pathInput}", mapping.getPattern());
-      assertEquals(2, mapping.getPathValidators().size());
-      assertEquals(0, mapping.getPathValidators().get(0).getIndex());
-      assertEquals("validator1", mapping.getPathValidators().get(0).getValidatorIds());
-      assertEquals("#{validationBean.handle}", mapping.getPathValidators().get(0).getOnError());
-      assertEquals(null, mapping.getPathValidators().get(0).getValidatorExpression());
+      assertThat(mapping.getPattern()).isEqualTo("/validate/#{validationBean.pathInput}");
+      assertThat(mapping.getPathValidators().size()).isEqualTo(2);
+      assertThat(mapping.getPathValidators().get(0).getIndex()).isEqualTo(0);
+      assertThat(mapping.getPathValidators().get(0).getValidatorIds()).isEqualTo("validator1");
+      assertThat(mapping.getPathValidators().get(0).getOnError()).isEqualTo("#{validationBean.handle}");
+      assertThat(mapping.getPathValidators().get(0).getValidatorExpression()).isEqualTo(null);
 
-      assertEquals(1, mapping.getPathValidators().get(1).getIndex());
-      assertEquals("validator2", mapping.getPathValidators().get(1).getValidatorIds());
-      assertEquals("#{validationBean.handle2}", mapping.getPathValidators().get(1).getOnError());
-      assertEquals("#{validationBean.validateMethod}", mapping.getPathValidators().get(1).getValidatorExpression().getELExpression());
+      assertThat(mapping.getPathValidators().get(1).getIndex()).isEqualTo(1);
+      assertThat(mapping.getPathValidators().get(1).getValidatorIds()).isEqualTo("validator2");
+      assertThat(mapping.getPathValidators().get(1).getOnError()).isEqualTo("#{validationBean.handle2}");
+      assertThat(mapping.getPathValidators().get(1).getValidatorExpression().getELExpression()).isEqualTo("#{validationBean.validateMethod}");
       List<QueryParameter> params = mapping.getQueryParams();
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
    }
 
    @Test
@@ -161,13 +158,13 @@ public class MappingDigesterPrettyConfigParserTest
    {
       UrlMapping mapping = config.getMappingById("validate");
       List<QueryParameter> params = mapping.getQueryParams();
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       QueryParameter p = params.get(0);
-      assertEquals("validator1 validator2", p.getValidatorIds());
-      assertEquals("pretty:demo", p.getOnError());
-      assertEquals("p", p.getName());
-      assertEquals("#{validationBean.validateMethod}", p.getValidatorExpression().getELExpression());
+      assertThat(p.getValidatorIds()).isEqualTo("validator1 validator2");
+      assertThat(p.getOnError()).isEqualTo("pretty:demo");
+      assertThat(p.getName()).isEqualTo("p");
+      assertThat(p.getValidatorExpression().getELExpression()).isEqualTo("#{validationBean.validateMethod}");
 
    }
 
@@ -176,16 +173,16 @@ public class MappingDigesterPrettyConfigParserTest
    {
       UrlMapping mapping = config.getMappingById("8");
       List<QueryParameter> params = mapping.getQueryParams();
-      assertEquals(3, params.size());
+      assertThat(params.size()).isEqualTo(3);
 
-      assertEquals("withoutAttribute", params.get(0).getName());
-      assertEquals(true, params.get(0).isOnPostback());
+      assertThat(params.get(0).getName()).isEqualTo("withoutAttribute");
+      assertThat(params.get(0).isOnPostback()).isEqualTo(true);
 
-      assertEquals("attributeSetToFalse", params.get(1).getName());
-      assertEquals(false, params.get(1).isOnPostback());
+      assertThat(params.get(1).getName()).isEqualTo("attributeSetToFalse");
+      assertThat(params.get(1).isOnPostback()).isEqualTo(false);
 
-      assertEquals("attributeSetToTrue", params.get(2).getName());
-      assertEquals(true, params.get(2).isOnPostback());
+      assertThat(params.get(2).getName()).isEqualTo("attributeSetToTrue");
+      assertThat(params.get(2).isOnPostback()).isEqualTo(true);
 
    }
 

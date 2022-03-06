@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.resolver;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,6 +24,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Kaltepoth
@@ -49,9 +49,9 @@ public class FacesBeanNameResolverTest extends RewriteTest
    public void testFacesBeanNameResolverFeatures() throws Exception
    {
       HttpAction action = get("/name/christian");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("Name = [christian]"));
-      Assert.assertTrue(action.getResponseContent().contains("Uppercase = [CHRISTIAN]"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Name = [christian]");
+      assertThat(action.getResponseContent()).contains("Uppercase = [CHRISTIAN]");
    }
 
 }

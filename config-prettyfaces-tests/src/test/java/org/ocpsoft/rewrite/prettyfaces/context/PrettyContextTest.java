@@ -19,12 +19,13 @@ package org.ocpsoft.rewrite.prettyfaces.context;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class PrettyContextTest extends RewriteTest
@@ -43,48 +44,48 @@ public class PrettyContextTest extends RewriteTest
    public void testIsPrettyRequest() throws Exception
    {
       HttpAction action = get("/");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("url=/"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("url=/");
+      assertThat(action.getResponseContent()).contains("prettyRequest=true");
    }
 
    @Test
    public void testIsNotPrettyRequest() throws Exception
    {
       HttpAction action = get("/index.jsf");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("url=/index.jsf"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=false"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("url=/index.jsf");
+      assertThat(action.getResponseContent()).contains("prettyRequest=false");
    }
 
    @Test
    public void testJSessionIdRemovedAutomatically() throws Exception
    {
       HttpAction action = get("/;jsessionid=F97KJHsf9876sdf?foo=bar");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("url=/"));
-      Assert.assertTrue(action.getResponseContent().contains("query=?foo=bar"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("url=/");
+      assertThat(action.getResponseContent()).contains("query=?foo=bar");
+      assertThat(action.getResponseContent()).contains("prettyRequest=true");
    }
 
    @Test
    public void testJSessionIdRemovedAutomaticallyCluster() throws Exception
    {
       HttpAction action = get("/;jsessionid=2437ae534134eeae.server1?foo=bar");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("url=/"));
-      Assert.assertTrue(action.getResponseContent().contains("query=?foo=bar"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("url=/");
+      assertThat(action.getResponseContent()).contains("query=?foo=bar");
+      assertThat(action.getResponseContent()).contains("prettyRequest=true");
    }
 
    @Test
    public void testJSessionIdRemovedAutomaticallyGAE() throws Exception
    {
       HttpAction action = get("/;jsessionid=1E-y6jzfx53ou9wymGmcfw?foo=bar");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("url=/"));
-      Assert.assertTrue(action.getResponseContent().contains("query=?foo=bar"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("url=/");
+      assertThat(action.getResponseContent()).contains("query=?foo=bar");
+      assertThat(action.getResponseContent()).contains("prettyRequest=true");
    }
 
 }

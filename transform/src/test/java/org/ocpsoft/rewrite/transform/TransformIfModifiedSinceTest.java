@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.transform;
 
-import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,6 +31,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test for correct handling of the 'If-Modified-Since' header.
@@ -59,8 +59,8 @@ public class TransformIfModifiedSinceTest extends RewriteTest
        * No 'If-Modified-Since' header is set. Therefore the result should be a 200 OK with the expected content.
        */
       HttpAction first = get("/test.txt");
-      assertEquals(200, first.getStatusCode());
-      assertEquals("SOMETHING", first.getResponseContent());
+      assertThat(first.getStatusCode()).isEqualTo(200);
+      assertThat(first.getResponseContent()).isEqualTo("SOMETHING");
    }
 
    @Test
@@ -73,8 +73,8 @@ public class TransformIfModifiedSinceTest extends RewriteTest
        * has to be sent again.
        */
       HttpAction request = get(client, "/test.txt", ifModifiedSinceHeaderNowPlusHours(-1));
-      assertEquals(200, request.getStatusCode());
-      assertEquals("SOMETHING", request.getResponseContent());
+      assertThat(request.getStatusCode()).isEqualTo(200);
+      assertThat(request.getResponseContent()).isEqualTo("SOMETHING");
    }
 
    @Test
@@ -87,7 +87,7 @@ public class TransformIfModifiedSinceTest extends RewriteTest
        * Therefore the server can send a '304 Not Modified' response.
        */
       HttpAction second = get(client, "/test.txt", ifModifiedSinceHeaderNowPlusHours(1));
-      assertEquals(304, second.getStatusCode());
+      assertThat(second.getStatusCode()).isEqualTo(304);
    }
 
    private Headers ifModifiedSinceHeaderNowPlusHours(int hours)

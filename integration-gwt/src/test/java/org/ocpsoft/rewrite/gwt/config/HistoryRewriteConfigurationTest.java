@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.gwt.config;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -27,6 +25,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.gwt.server.history.HistoryRewriteConfiguration;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -48,29 +48,28 @@ public class HistoryRewriteConfigurationTest extends RewriteTest
    public void testContextPathServedFromHeadRequest()
    {
       HttpAction action = head("/?org.ocpsoft.rewrite.gwt.history.contextPath");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
-      Assert.assertEquals(action.getContextPath(),
-               action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").get(0));
+      assertThat(action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").get(0)).isEqualTo(action.getContextPath());
    }
 
    @Test
    public void testContextPathNotServedFromGetRequest() throws Exception
    {
       HttpAction action = get("/index.html?org.ocpsoft.rewrite.gwt.history.contextPath");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
-      Assert.assertTrue(action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").isEmpty());
+      assertThat(action.getResponseHeaderValues("org.ocpsoft.rewrite.gwt.history.contextPath").isEmpty()).isTrue();
    }
 
    @Test
    public void testContextPathServedFromCookieOnNormalRequest() throws Exception
    {
       HttpAction action = get("/index.html");
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       String cookie = action.getResponseHeaderValues("Set-Cookie").get(0);
-      Assert.assertTrue(cookie.contains("org.ocpsoft.rewrite.gwt.history.contextPath=" + action.getContextPath()));
+      assertThat(cookie.contains("org.ocpsoft.rewrite.gwt.history.contextPath=" + action.getContextPath())).isTrue();
    }
 
 }

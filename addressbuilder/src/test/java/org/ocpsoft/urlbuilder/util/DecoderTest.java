@@ -15,9 +15,9 @@
  */
 package org.ocpsoft.urlbuilder.util;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DecoderTest
 {
@@ -25,101 +25,101 @@ public class DecoderTest
    @Test
    public void pathNotEncoded()
    {
-      assertEquals("/foobar", Decoder.path("/foobar"));
+      assertThat(Decoder.path("/foobar")).isEqualTo("/foobar");
    }
 
    @Test
    public void queryEndingWithSpaceDecoding()
    {
-      assertEquals("foo ", Decoder.decode("foo%20", true));
-      assertEquals("foo ", Decoder.decode("foo ", true));
-      assertEquals("foo ", Decoder.decode("foo+", true));
+      assertThat(Decoder.decode("foo%20", true)).isEqualTo("foo ");
+      assertThat(Decoder.decode("foo ", true)).isEqualTo("foo ");
+      assertThat(Decoder.decode("foo+", true)).isEqualTo("foo ");
    }
 
    @Test
    public void pathSpaceDecoding()
    {
-      assertEquals("/foo bar", Decoder.path("/foo%20bar"));
-      assertEquals("/foo bar", Decoder.path("/foo bar"));
+      assertThat(Decoder.path("/foo%20bar")).isEqualTo("/foo bar");
+      assertThat(Decoder.path("/foo bar")).isEqualTo("/foo bar");
    }
 
    @Test
    public void pathQuotationMark()
    {
-      assertEquals("/foo\"bar", Decoder.path("/foo%22bar"));
-      assertEquals("/foo\"bar", Decoder.path("/foo\"bar"));
+      assertThat(Decoder.path("/foo%22bar")).isEqualTo("/foo\"bar");
+      assertThat(Decoder.path("/foo\"bar")).isEqualTo("/foo\"bar");
    }
 
    @Test
    public void pathQuestionMark()
    {
-      assertEquals("/foo?bar", Decoder.path("/foo%3Fbar"));
-      assertEquals("/foo?bar", Decoder.path("/foo%3fbar"));
-      assertEquals("/foo?bar", Decoder.path("/foo?bar"));
+      assertThat(Decoder.path("/foo%3Fbar")).isEqualTo("/foo?bar");
+      assertThat(Decoder.path("/foo%3fbar")).isEqualTo("/foo?bar");
+      assertThat(Decoder.path("/foo?bar")).isEqualTo("/foo?bar");
    }
 
    @Test
    public void pathLetterAWithDiaeresis()
    {
-      assertEquals("/foo\u00E4bar", Decoder.path("/foo%C3%A4bar"));
-      assertEquals("/foo\u00E4bar", Decoder.path("/foo\u00E4bar"));
+      assertThat(Decoder.path("/foo%C3%A4bar")).isEqualTo("/foo\u00E4bar");
+      assertThat(Decoder.path("/foo\u00E4bar")).isEqualTo("/foo\u00E4bar");
    }
 
    @Test
    public void pathMultipleLettersAWithDiaeresis()
    {
-      assertEquals("/foo\u00E4\u00E4\u00E4bar", Decoder.path("/foo%C3%A4%C3%A4%C3%A4bar"));
+      assertThat(Decoder.path("/foo%C3%A4%C3%A4%C3%A4bar")).isEqualTo("/foo\u00E4\u00E4\u00E4bar");
    }
 
    @Test
    public void pathArmenianCapitalLetterCheh()
    {
-      assertEquals("/foo\u0543bar", Decoder.path("/foo%D5%83bar"));
-      assertEquals("/foo\u0543bar", Decoder.path("/foo\u0543bar"));
+      assertThat(Decoder.path("/foo%D5%83bar")).isEqualTo("/foo\u0543bar");
+      assertThat(Decoder.path("/foo\u0543bar")).isEqualTo("/foo\u0543bar");
    }
 
    @Test
    public void pathInvalidByteSequenceConvertedToReplacementChars()
    {
-      assertEquals("/foo\uFFFD\uFFFDbar", Decoder.path("/foo%83%83bar"));
+      assertThat(Decoder.path("/foo%83%83bar")).isEqualTo("/foo\uFFFD\uFFFDbar");
    }
 
    @Test
    public void pathSingleContinuationCharConvertedToReplacementChars()
    {
-      assertEquals("/foo\uFFFD", Decoder.path("/foo%83"));
+      assertThat(Decoder.path("/foo%83")).isEqualTo("/foo\uFFFD");
    }
 
 
    @Test
    public void pathTrailingPercentSign()
    {
-      assertEquals("/foo", Decoder.path("/foo%"));
+      assertThat(Decoder.path("/foo%")).isEqualTo("/foo");
    }
 
    @Test
    public void pathTrailingIncompleteEscapeSequence()
    {
-      assertEquals("/foo", Decoder.path("/foo%3"));
+      assertThat(Decoder.path("/foo%3")).isEqualTo("/foo");
    }
 
    @Test
    public void pathNonHexValueAfterPercent()
    {
-      assertEquals("/f\uFFFDbar", Decoder.path("/f%oobar"));
+      assertThat(Decoder.path("/f%oobar")).isEqualTo("/f\uFFFDbar");
    }
    
    @Test
    public void pathNonHexValueInContinuationByte()
    {
-      assertEquals("/foo\uFFFDbar", Decoder.path("/foo%C3%xxbar"));
+      assertThat(Decoder.path("/foo%C3%xxbar")).isEqualTo("/foo\uFFFDbar");
    }
    
    @Test
    public void querySpaceDecoding()
    {
-      assertEquals("foo bar", Decoder.query("foo+bar"));
-      assertEquals("foo bar", Decoder.query("foo bar"));
+      assertThat(Decoder.query("foo+bar")).isEqualTo("foo bar");
+      assertThat(Decoder.query("foo bar")).isEqualTo("foo bar");
    }
 
    

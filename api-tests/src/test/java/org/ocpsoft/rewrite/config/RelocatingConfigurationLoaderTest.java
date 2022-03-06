@@ -17,11 +17,12 @@ package org.ocpsoft.rewrite.config;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,28 +47,28 @@ public class RelocatingConfigurationLoaderTest extends RewriteTest
    public void testRelocatedRuleExecutesInNewOrderUp() throws Exception
    {
       HttpAction action = get("/priority");
-      Assert.assertEquals(201, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
    @Test
    public void testRelocatedRuleExecutesInNewOrderDown() throws Exception
    {
       HttpAction action = get("/priority2");
-      Assert.assertEquals(202, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(202);
    }
 
    @Test
    public void testRelocatedRuleExecutesInNewOrderUpUp() throws Exception
    {
       HttpAction action = get("/priority3");
-      Assert.assertEquals(203, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(203);
    }
 
    @Test
    public void testRelocatedRulePriorityOverlapFollowsProviderPriorityOrder() throws Exception
    {
       HttpAction action = get("/priority4");
-      Assert.assertEquals(202, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(202);
    }
 
 }

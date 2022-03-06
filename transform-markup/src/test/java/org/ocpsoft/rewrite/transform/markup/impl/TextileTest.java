@@ -15,11 +15,6 @@
  */
 package org.ocpsoft.rewrite.transform.markup.impl;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 
 import javax.servlet.ServletContext;
@@ -34,6 +29,8 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.markup.Textile;
 import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore
 public class TextileTest
@@ -65,7 +62,7 @@ public class TextileTest
       String textile = "This is *bold*!";
       String html = Textile.partialDocument().transform(event, textile);
 
-      assertEquals("<p>This is <strong>bold</strong>!</p>", html);
+      assertThat(html).isEqualTo("<p>This is <strong>bold</strong>!</p>");
 
    }
 
@@ -76,7 +73,7 @@ public class TextileTest
       String textile = "h1. Header\n\nh2. Section\n\nSome text!";
       String html = Textile.partialDocument().transform(event, textile);
 
-      assertEquals("<h1>Header</h1><h2>Section</h2><p>Some text!</p>", normalize(html));
+      assertThat(normalize(html)).isEqualTo("<h1>Header</h1><h2>Section</h2><p>Some text!</p>");
 
    }
 
@@ -87,7 +84,7 @@ public class TextileTest
       String textile = "bq. Some quote";
       String html = Textile.partialDocument().transform(event, textile);
 
-      assertEquals("<blockquote><p>Some quote</p></blockquote>", normalize(html));
+      assertThat(normalize(html)).isEqualTo("<blockquote><p>Some quote</p></blockquote>");
 
    }
 
@@ -98,7 +95,7 @@ public class TextileTest
       String textile = "* One\n* Two";
       String html = Textile.partialDocument().transform(event, textile);
 
-      assertEquals("<ul><li>One</li><li>Two</li></ul>", normalize(html).replaceAll(" ", ""));
+      assertThat(normalize(html).replaceAll(" ", "")).isEqualTo("<ul><li>One</li><li>Two</li></ul>");
 
    }
 
@@ -109,7 +106,7 @@ public class TextileTest
       String textile = "bc. private int n = 0;";
       String html = Textile.partialDocument().transform(event, textile);
 
-      assertEquals("<pre><code>private int n = 0;</code></pre>", normalize(html));
+      assertThat(normalize(html)).isEqualTo("<pre><code>private int n = 0;</code></pre>");
 
    }
 
@@ -120,10 +117,10 @@ public class TextileTest
       String textile = "some text";
       String html = Textile.fullDocument().transform(event, textile);
 
-      assertTrue("DOCTYPE is missing", html.contains("<!DOCTYPE html"));
-      assertTrue("html tag is missing", html.contains("<html"));
-      assertTrue("body tag is missing", html.contains("<body>"));
-      assertTrue("Expected text missing", html.contains("<p>some text</p>"));
+      assertThat(html.contains("<!DOCTYPE html")).as("DOCTYPE is missing").isTrue();
+      assertThat(html.contains("<html")).as("html tag is missing").isTrue();
+      assertThat(html.contains("<body>")).as("body tag is missing").isTrue();
+      assertThat(html.contains("<p>some text</p>")).as("Expected text missing").isTrue();
 
    }
 
@@ -134,7 +131,7 @@ public class TextileTest
       String textile = "some text";
       String html = Textile.fullDocument().withTitle("My Title").transform(event, textile);
 
-      assertThat(html, containsString("<title>My Title</title>"));
+      assertThat(html).contains("<title>My Title</title>");
 
    }
 
@@ -145,7 +142,7 @@ public class TextileTest
       String textile = "some text";
       String html = Textile.fullDocument().addStylesheet("http://localhost/style.css").transform(event, textile);
 
-      assertThat(html, containsString("http://localhost/style.css"));
+      assertThat(html).contains("http://localhost/style.css");
 
    }
 

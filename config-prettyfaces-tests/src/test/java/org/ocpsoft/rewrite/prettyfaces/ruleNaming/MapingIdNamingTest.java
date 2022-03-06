@@ -19,12 +19,13 @@ package org.ocpsoft.rewrite.prettyfaces.ruleNaming;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class MapingIdNamingTest extends RewriteTest
@@ -44,10 +45,10 @@ public class MapingIdNamingTest extends RewriteTest
    public void testLinkRendersWithColonInMappingId() throws Exception
    {
       HttpAction action = get("/");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("/test-link"));
-      Assert.assertTrue(action.getResponseContent().contains("url=/"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("/test-link");
+      assertThat(action.getResponseContent()).contains("url=/");
+      assertThat(action.getResponseContent()).contains("prettyRequest=true");
    }
 
 }

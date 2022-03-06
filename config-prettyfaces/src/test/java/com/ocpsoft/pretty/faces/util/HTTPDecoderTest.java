@@ -15,12 +15,12 @@
  */
 package com.ocpsoft.pretty.faces.util;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.PrettyException;
 import com.ocpsoft.pretty.faces.util.HTTPDecoder;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author lb3
@@ -33,21 +33,21 @@ public class HTTPDecoderTest
     public void testDecodeValidInputReturnsDecodedInput()
     {
         String value = "foo+bar";
-        assertEquals("foo bar", decoder.decode(value));
+        assertThat(decoder.decode(value)).isEqualTo("foo bar");
     }
 
     @Test(expected = PrettyException.class)
     public void testDecodeInvalidInputThrowsException()
     {
         String value = "foo+bar%";
-        assertEquals("foo+bar%", decoder.decode(value));
+        assertThat(decoder.decode(value)).isEqualTo("foo+bar%");
     }
 
     @Test
     public void testDecodeNullProducesNull()
     {
         String value = null;
-        assertEquals(null, decoder.decode(value));
+        assertThat(decoder.decode(value)).isEqualTo(null);
     }
 
 }

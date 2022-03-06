@@ -15,10 +15,10 @@
  */
 package com.ocpsoft.pretty.faces.el;
 
-import static org.junit.Assert.assertEquals;
-
 import org.easymock.classextension.EasyMock;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LazyExpressionTest
 {
@@ -34,8 +34,8 @@ public class LazyExpressionTest
 
       // create expression and evaluate it twice (to check LazyBeanNameFinder is called only once)
       PrettyExpression expr = new LazyExpression(beanNameFinder, SomeTestBean.class, "property");
-      assertEquals("#{someTestBean.property}", expr.getELExpression());
-      assertEquals("#{someTestBean.property}", expr.getELExpression());
+      assertThat(expr.getELExpression()).isEqualTo("#{someTestBean.property}");
+      assertThat(expr.getELExpression()).isEqualTo("#{someTestBean.property}");
 
       // verify mock
       EasyMock.verify(beanNameFinder);

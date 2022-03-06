@@ -15,17 +15,17 @@
  */
 package com.ocpsoft.pretty.faces.event;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.faces.event.PhaseId;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PrettyPhaseListenerTest
 {
    @Test
    public void testGetPhaseId()
    {
-      assertEquals(PhaseId.ANY_PHASE, new PrettyPhaseListener().getPhaseId());
+      assertThat(new PrettyPhaseListener().getPhaseId()).isEqualTo(PhaseId.ANY_PHASE);
    }
 }

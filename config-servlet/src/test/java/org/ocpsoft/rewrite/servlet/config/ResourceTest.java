@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -26,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @see https://github.com/ocpsoft/rewrite/issues/81
@@ -49,27 +49,27 @@ public class ResourceTest extends RewriteTest
    public void testResourceParamForMatchingCondition() throws Exception
    {
       HttpAction action = get("/exists.txt");
-      Assert.assertEquals(210, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(210);
    }
 
    @Test
    public void testResourceParamNotMatchingCondition() throws Exception
    {
       HttpAction action = get("/missing.css");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testResourceParamReadsForMissingParameter() throws Exception
    {
       HttpAction action = get("/file.bah");
-      Assert.assertEquals(211, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(211);
    }
 
    @Test
    public void testResourceParamReadsForNotMatchingCondition() throws Exception
    {
       HttpAction action = get("/missing.bah");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 }

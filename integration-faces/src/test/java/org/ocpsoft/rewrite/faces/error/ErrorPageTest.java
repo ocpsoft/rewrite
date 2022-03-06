@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.error;
 
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -28,6 +25,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class ErrorPageTest extends RewriteTestBase
@@ -51,14 +50,14 @@ public class ErrorPageTest extends RewriteTestBase
    public void shouldRewriteOutboundLinksWithDirectAccess() throws Exception
    {
       HttpAction action = get("/404.xhtml");
-      assertThat(action.getResponseContent(), Matchers.containsString("/rewritten"));
+      assertThat(action.getResponseContent()).contains("/rewritten");
    }
 
    @Test
    public void shouldRewriteOutboundLinksForErrorPage() throws Exception
    {
       HttpAction action = get("/does-not-exist");
-      assertThat(action.getResponseContent(), Matchers.containsString("/rewritten"));
+      assertThat(action.getResponseContent()).contains("/rewritten");
    }
 
 }

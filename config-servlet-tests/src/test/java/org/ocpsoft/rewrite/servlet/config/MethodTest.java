@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -25,6 +24,8 @@ import org.mockito.Mockito;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -47,12 +48,12 @@ public class MethodTest
    @Test
    public void testMethod()
    {
-      Assert.assertTrue(Method.isHead().evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(Method.isHead().evaluate(rewrite, new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testMethodNegative()
    {
-      Assert.assertFalse(Method.isGet().evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(Method.isGet().evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 }

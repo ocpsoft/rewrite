@@ -1,8 +1,8 @@
 package org.ocpsoft.rewrite.util;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimerTest
 {
@@ -11,11 +11,11 @@ public class TimerTest
    public void testStart() throws InterruptedException
    {
       Timer timer = Timer.getTimer();
-      assertEquals(0, timer.getElapsedMilliseconds());
-      assertEquals(0, timer.getLapMilliseconds());
+      assertThat(timer.getElapsedMilliseconds()).isEqualTo(0);
+      assertThat(timer.getLapMilliseconds()).isEqualTo(0);
       timer.start();
       Thread.sleep(1);
-      assertTrue(timer.getElapsedMilliseconds() > 0);
+      assertThat(timer.getElapsedMilliseconds() > 0).isTrue();
    }
 
    @Test(expected = IllegalStateException.class)
@@ -43,8 +43,8 @@ public class TimerTest
       Thread.sleep(1);
       timer.lap();
       Thread.sleep(1);
-      assertTrue(timer.getLapMilliseconds() > 0);
-      assertTrue(timer.getElapsedMilliseconds() > timer.getLapMilliseconds());
+      assertThat(timer.getLapMilliseconds() > 0).isTrue();
+      assertThat(timer.getElapsedMilliseconds() > timer.getLapMilliseconds()).isTrue();
    }
 
    @Test(expected = IllegalStateException.class)
@@ -62,30 +62,30 @@ public class TimerTest
       timer.lap();
       Thread.sleep(1);
       timer.reset();
-      assertEquals(0, timer.getElapsedMilliseconds());
-      assertEquals(0, timer.getLapMilliseconds());
+      assertThat(timer.getElapsedMilliseconds()).isEqualTo(0);
+      assertThat(timer.getLapMilliseconds()).isEqualTo(0);
    }
 
    @Test
    public void testGetElapsedMilliseconds() throws InterruptedException
    {
       Timer timer = Timer.getTimer();
-      assertEquals(0, timer.getElapsedMilliseconds());
+      assertThat(timer.getElapsedMilliseconds()).isEqualTo(0);
       timer.start();
       timer.lap();
       Thread.sleep(1);
-      assertTrue(timer.getLapMilliseconds() > 0);
+      assertThat(timer.getLapMilliseconds() > 0).isTrue();
    }
 
    @Test
    public void testGetLapMilliseconds() throws InterruptedException
    {
       Timer timer = Timer.getTimer();
-      assertEquals(0, timer.getElapsedMilliseconds());
+      assertThat(timer.getElapsedMilliseconds()).isEqualTo(0);
       timer.start();
       timer.lap();
       Thread.sleep(1);
-      assertTrue(timer.getElapsedMilliseconds() > 0);
+      assertThat(timer.getElapsedMilliseconds() > 0).isTrue();
    }
 
 }

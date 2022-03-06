@@ -15,12 +15,11 @@
  */
 package com.ocpsoft.pretty.faces.config.mapping;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.config.mapping.PathParameter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathParameterTest
 {
@@ -28,7 +27,7 @@ public class PathParameterTest
     public void testIsNamedFalseWhenNameNull()
     {
         PathParameter parameter = new PathParameter();
-        assertFalse(parameter.isNamed());
+        assertThat(parameter.isNamed()).isFalse();
     }
 
     @Test
@@ -36,7 +35,7 @@ public class PathParameterTest
     {
         PathParameter parameter = new PathParameter();
         parameter.setName("");
-        assertFalse(parameter.isNamed());
+        assertThat(parameter.isNamed()).isFalse();
     }
 
     @Test
@@ -44,6 +43,6 @@ public class PathParameterTest
     {
         PathParameter parameter = new PathParameter();
         parameter.setName("name");
-        assertTrue(parameter.isNamed());
+        assertThat(parameter.isNamed()).isTrue();
     }
 }

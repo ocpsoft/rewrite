@@ -1,8 +1,5 @@
 package org.ocpsoft.rewrite.prettyfaces.errorpage;
 
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -13,6 +10,8 @@ import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Completely fails on Wildfly with some kind of sendError() recursion. We need some more time to debug this. As this
@@ -42,8 +41,8 @@ public class ErrorPageTest extends RewriteTestBase
    {
       HttpAction action = get("/validate/foobar");
 
-      assertThat(action.getStatusCode(), Matchers.is(200));
-      assertThat(action.getResponseContent(), Matchers.containsString("Parameter is valid"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Parameter is valid");
    }
 
    @Test
@@ -51,9 +50,9 @@ public class ErrorPageTest extends RewriteTestBase
    {
       HttpAction action = get("/404.jsf");
 
-      assertThat(action.getStatusCode(), Matchers.is(200));
-      assertThat(action.getResponseContent(), Matchers.containsString("Custom 404 page"));
-      assertThat(action.getResponseContent(), Matchers.containsString("#{1+1} = 2"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Custom 404 page");
+      assertThat(action.getResponseContent()).contains("#{1+1} = 2");
    }
 
    @Test
@@ -62,9 +61,9 @@ public class ErrorPageTest extends RewriteTestBase
    {
       HttpAction action = get("/validate/invalid");
 
-      assertThat(action.getStatusCode(), Matchers.is(404));
-      assertThat(action.getResponseContent(), Matchers.containsString("Custom 404 page"));
-      assertThat(action.getResponseContent(), Matchers.containsString("#{1+1} = 2"));
+      assertThat(action.getStatusCode()).isEqualTo(404);
+      assertThat(action.getResponseContent()).contains("Custom 404 page");
+      assertThat(action.getResponseContent()).contains("#{1+1} = 2");
    }
 
 }

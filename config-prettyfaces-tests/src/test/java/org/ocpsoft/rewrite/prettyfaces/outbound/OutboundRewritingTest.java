@@ -1,10 +1,7 @@
 package org.ocpsoft.rewrite.prettyfaces.outbound;
 
-import static org.junit.Assert.assertThat;
-
 import java.net.URL;
 
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
@@ -19,6 +16,8 @@ import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Ignored for Wildfly Beta1 because it ships with Mojarra 2.2.3 which ALWAYS appends 'jftfdi' and 'jffi' parameters.
@@ -55,7 +54,7 @@ public class OutboundRewritingTest extends RewriteTestBase
    {
       browser.get(url + "/outbound.jsf");
       String href = browser.findElement(By.id("no-param")).getAttribute("href");
-      assertThat(href, Matchers.endsWith("/no-param"));
+      assertThat(href).endsWith("/no-param");
    }
 
    /**
@@ -67,7 +66,7 @@ public class OutboundRewritingTest extends RewriteTestBase
    {
       browser.get(url + "/outbound.jsf");
       String href = browser.findElement(By.id("no-param-plus-query")).getAttribute("href");
-      assertThat(href, Matchers.endsWith("/no-param?foo=bar"));
+      assertThat(href).endsWith("/no-param?foo=bar");
    }
 
    /**
@@ -79,7 +78,7 @@ public class OutboundRewritingTest extends RewriteTestBase
    {
       browser.get(url + "/outbound.jsf");
       String href = browser.findElement(By.id("with-param")).getAttribute("href");
-      assertThat(href, Matchers.endsWith("/with-param/foobar"));
+      assertThat(href).endsWith("/with-param/foobar");
    }
 
    /**
@@ -92,7 +91,7 @@ public class OutboundRewritingTest extends RewriteTestBase
    {
       browser.get(url + "/outbound.jsf");
       String href = browser.findElement(By.id("with-param-plus-query")).getAttribute("href");
-      assertThat(href, Matchers.endsWith("/with-param/foobar?foo=bar"));
+      assertThat(href).endsWith("/with-param/foobar?foo=bar");
    }
 
 }

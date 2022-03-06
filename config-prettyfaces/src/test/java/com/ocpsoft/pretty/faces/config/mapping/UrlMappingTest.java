@@ -15,10 +15,9 @@
  */
 package com.ocpsoft.pretty.faces.config.mapping;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UrlMappingTest
 {
@@ -27,11 +26,11 @@ public class UrlMappingTest
    public void testSetPatternSetsPatternParser()
    {
       UrlMapping mapping = new UrlMapping();
-      assertEquals("", mapping.getPatternParser().getPattern());
+      assertThat(mapping.getPatternParser().getPattern()).isEqualTo("");
 
       mapping.setPattern("/foo/bar");
-      assertNotNull(mapping.getPatternParser());
-      assertEquals("/foo/bar", mapping.getPatternParser().getPattern());
+      assertThat(mapping.getPatternParser()).isNotNull();
+      assertThat(mapping.getPatternParser().getPattern()).isEqualTo("/foo/bar");
    }
 
 }

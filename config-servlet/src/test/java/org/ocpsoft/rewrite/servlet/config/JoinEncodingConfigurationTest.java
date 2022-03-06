@@ -15,11 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import java.io.IOException;
 
 import okhttp3.MediaType;
@@ -35,6 +30,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Kaltepoth
@@ -58,11 +55,11 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    public void testJoinEncodingSimpleString() throws Exception
    {
       HttpAction action = get("/encoding/foo");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
-      assertThat(responseContent, containsString("getParameter('param') = foo"));
+      assertThat(responseContent).contains("getRequestPath() = " + getContextPath() + "/encoding.html");
+      assertThat(responseContent).contains("getParameter('param') = foo");
    }
 
    /**
@@ -72,44 +69,44 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    public void testJoinEncodingSpaceCharacter() throws Exception
    {
       HttpAction action = get("/encoding/foo%20bar");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
-      assertThat(responseContent, containsString("getParameter('param') = foo bar"));
+      assertThat(responseContent).contains("getRequestPath() = " + getContextPath() + "/encoding.html");
+      assertThat(responseContent).contains("getParameter('param') = foo bar");
    }
 
    @Test
    public void testJoinSupportsSingleCurlyBrace() throws Exception
    {
       HttpAction action = get("/encoding/foo%7Bbar");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
-      assertThat(responseContent, containsString("getParameter('param') = foo{bar"));
+      assertThat(responseContent).contains("getRequestPath() = " + getContextPath() + "/encoding.html");
+      assertThat(responseContent).contains("getParameter('param') = foo{bar");
    }
 
    @Test
    public void testJoinSupportsCurlyBracketGroup() throws Exception
    {
       HttpAction action = get("/encoding/foo%5B%5D");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
-      assertThat(responseContent, containsString("getParameter('param') = foo[]"));
+      assertThat(responseContent).contains("getRequestPath() = " + getContextPath() + "/encoding.html");
+      assertThat(responseContent).contains("getParameter('param') = foo[]");
    }
 
    @Test
    public void testJoinSupportsCurlyBraceGroup() throws Exception
    {
       HttpAction action = get("/encoding/foo%7Bbar%7D");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
-      assertThat(responseContent, containsString("getParameter('param') = foo{bar}"));
+      assertThat(responseContent).contains("getRequestPath() = " + getContextPath() + "/encoding.html");
+      assertThat(responseContent).contains("getParameter('param') = foo{bar}");
    }
 
    /**
@@ -120,11 +117,11 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    public void testJoinEncodingAmpersandCharacter() throws Exception
    {
       HttpAction action = get("/encoding/foo&bar");
-      assertEquals(200, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(200);
 
       String responseContent = action.getResponseContent();
-      assertThat(responseContent, containsString("getRequestPath() = " + getContextPath() + "/encoding.html"));
-      assertThat(responseContent, containsString("getParameter('param') = foo&bar"));
+      assertThat(responseContent).contains("getRequestPath() = " + getContextPath() + "/encoding.html");
+      assertThat(responseContent).contains("getParameter('param') = foo&bar");
    }
 
    /**
@@ -135,8 +132,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    {
       HttpAction action = get("/encoding.html?param=foo");
 
-      assertEquals(200, action.getStatusCode());
-      assertEquals("/encoding/foo", action.getCurrentContextRelativeURL());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/encoding/foo");
    }
 
    /**
@@ -148,8 +145,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    {
       HttpAction action = get("/encoding.html?param=foo+bar");
 
-      assertEquals(200, action.getStatusCode());
-      assertEquals("/encoding/foo%20bar", action.getCurrentContextRelativeURL());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/encoding/foo%20bar");
    }
 
    /**
@@ -160,8 +157,8 @@ public class JoinEncodingConfigurationTest extends RewriteTest
    {
       HttpAction action = get("/encoding.html?param=foo%26bar");
 
-      assertEquals(200, action.getStatusCode());
-      assertEquals("/encoding/foo&bar", action.getCurrentContextRelativeURL());
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/encoding/foo&bar");
    }
 
    /**
@@ -173,7 +170,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       String url = "/encoding.html?param=foo";
       String rewritten = post("/outbound", RequestBody.create(ByteString.encodeUtf8(url), MediaType.get("text/plain")));
 
-      assertThat(rewritten, is("/encoding/foo"));
+      assertThat(rewritten).isEqualTo("/encoding/foo");
    }
 
    /**
@@ -187,7 +184,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       String url = "/encoding.html?param=foo+bar";
       String rewritten = post("/outbound", RequestBody.create(ByteString.encodeUtf8(url), MediaType.get("text/plain")));
 
-      assertThat(rewritten, is("/encoding/foo%20bar"));
+      assertThat(rewritten).isEqualTo("/encoding/foo%20bar");
    }
 
    /**
@@ -199,7 +196,7 @@ public class JoinEncodingConfigurationTest extends RewriteTest
       String url = "/encoding.html?param=foo%26bar";
       String rewritten = post("/outbound", RequestBody.create(ByteString.encodeUtf8(url), MediaType.get("text/plain")));
 
-      assertThat(rewritten, is("/encoding/foo&bar"));
+      assertThat(rewritten).isEqualTo("/encoding/foo&bar");
    }
 
    /*

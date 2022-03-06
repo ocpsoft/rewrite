@@ -15,11 +15,12 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Assert;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import static org.assertj.core.api.Fail.fail;
 
 /**
  * Base utility class for Rewrite Tests.
@@ -162,7 +163,7 @@ public abstract class RewriteTestBase
    protected static void assertContains(String text, String s)
    {
       if (text == null || s == null || !text.contains(s)) {
-         Assert.fail("Could not find [" + s + "] in text: " + text);
+         fail("Could not find [" + s + "] in text: " + text);
       }
    }
 

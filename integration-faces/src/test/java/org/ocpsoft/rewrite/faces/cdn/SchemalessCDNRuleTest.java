@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.cdn;
 
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -28,6 +25,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class SchemalessCDNRuleTest extends RewriteTestBase
@@ -49,8 +48,7 @@ public class SchemalessCDNRuleTest extends RewriteTestBase
 
       HttpAction action = get("/page.xhtml");
 
-      assertThat(action.getResponseContent(), Matchers.containsString(
-               "src=\"//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"));
+      assertThat(action.getResponseContent()).contains("src=\"//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js");
 
    }
 }

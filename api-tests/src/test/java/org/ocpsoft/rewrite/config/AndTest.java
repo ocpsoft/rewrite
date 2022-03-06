@@ -15,9 +15,10 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.test.MockRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -28,29 +29,29 @@ public class AndTest
    @Test
    public void testTrueAndTrueIsTrue()
    {
-      Assert.assertTrue(And.all(new True(), new True()).evaluate(new MockRewrite(), null));
+      assertThat(And.all(new True(), new True()).evaluate(new MockRewrite(), null)).isTrue();
    }
 
    @Test
    public void testTrueAndFalseIsFalse()
    {
-      Assert.assertFalse(And.all(new True(), new False()).evaluate(new MockRewrite(), null));
+      assertThat(And.all(new True(), new False()).evaluate(new MockRewrite(), null)).isFalse();
    }
 
    @Test
    public void testFalseAndFalseIsFalse()
    {
-      Assert.assertFalse(And.all(new False(), new False()).evaluate(new MockRewrite(), null));
+      assertThat(And.all(new False(), new False()).evaluate(new MockRewrite(), null)).isFalse();
    }
 
    @Test
    public void testFlattensNestedAnds() throws Exception
    {
       And and = And.all(new True(), And.all(new True(), new False()));
-      Assert.assertEquals(3, and.getConditions().size());
-      Assert.assertFalse(and.evaluate(new MockRewrite(), null));
-      Assert.assertTrue(and.getConditions().get(0) instanceof True);
-      Assert.assertTrue(and.getConditions().get(1) instanceof True);
-      Assert.assertTrue(and.getConditions().get(2) instanceof False);
+      assertThat(and.getConditions().size()).isEqualTo(3);
+      assertThat(and.evaluate(new MockRewrite(), null)).isFalse();
+      assertThat(and.getConditions().get(0) instanceof True).isTrue();
+      assertThat(and.getConditions().get(1) instanceof True).isTrue();
+      assertThat(and.getConditions().get(2) instanceof False).isTrue();
    }
 }

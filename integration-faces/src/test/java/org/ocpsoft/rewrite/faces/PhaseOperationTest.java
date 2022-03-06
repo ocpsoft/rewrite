@@ -16,8 +16,6 @@ package org.ocpsoft.rewrite.faces;
  * limitations under the License.
  */
 
-import org.junit.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,6 +25,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -51,8 +51,8 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction action = get("/empty.xhtml?adf=blah");
       String content = action.getResponseContent();
-      Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(203, action.getStatusCode());
+      assertThat(content == null || content.isEmpty()).isTrue();
+      assertThat(action.getStatusCode()).isEqualTo(203);
    }
 
    @Test
@@ -60,8 +60,8 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction action = get("/render_response");
       String content = action.getResponseContent();
-      Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(204, action.getStatusCode());
+      assertThat(content == null || content.isEmpty()).isTrue();
+      assertThat(action.getStatusCode()).isEqualTo(204);
    }
 
    @Test
@@ -69,9 +69,9 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction action = get("/binding/lincoln");
       String content = action.getResponseContent();
-      Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(205, action.getStatusCode());
-      Assert.assertEquals("lincoln", action.getResponseHeaderValues("Value").get(0));
+      assertThat(content == null || content.isEmpty()).isTrue();
+      assertThat(action.getStatusCode()).isEqualTo(205);
+      assertThat(action.getResponseHeaderValues("Value").get(0)).isEqualTo("lincoln");
    }
 
    @Test
@@ -79,8 +79,8 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction action = get("/defer_validation/true");
       String content = action.getResponseContent();
-      Assert.assertTrue(content.contains("Empty"));
-      Assert.assertEquals(200, action.getStatusCode());
+      assertThat(content).contains("Empty");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
@@ -88,7 +88,7 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction action = get("/defer_validation/false");
       action.getResponseContent();
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
@@ -96,6 +96,6 @@ public class PhaseOperationTest extends RewriteTest
    {
       HttpAction action = get("/eager_validation/false");
       action.getResponseContent();
-      Assert.assertEquals(500, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(500);
    }
 }

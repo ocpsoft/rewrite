@@ -18,12 +18,13 @@ package org.ocpsoft.rewrite.servlet.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,41 +46,40 @@ public class JoinConfigurationTest extends RewriteTest
    public void testUrlMappingConfiguration() throws Exception
    {
       HttpAction action = get("/p/rewrite");
-      Assert.assertEquals(203, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(203);
 
-      Assert.assertEquals("rewrite", action.getResponseHeaderValues("Project").get(0));
-      Assert.assertEquals(action.getContextPath() + "/p/rewrite", action.getResponseHeaderValues("Encoded-URL").get(0));
+      assertThat(action.getResponseHeaderValues("Project").get(0)).isEqualTo("rewrite");
+      assertThat(action.getResponseHeaderValues("Encoded-URL").get(0)).isEqualTo(action.getContextPath() + "/p/rewrite");
    }
 
    @Test
    public void testUrlMappingConfigurationWithoutInboundCorrection() throws Exception
    {
       HttpAction action = get("/viewProject.xhtml");
-      Assert.assertEquals(404, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(404);
 
-      Assert.assertEquals("/viewProject.xhtml", action.getCurrentContextRelativeURL());
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/viewProject.xhtml");
    }
 
    @Test
    public void testUrlMappingConfigurationWithInboundCorrection() throws Exception
    {
       HttpAction action = get("/list.xhtml?p1=foo&p2=bar");
-      Assert.assertEquals(204, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(204);
 
-      Assert.assertEquals("/foo/bar", action.getCurrentContextRelativeURL());
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/foo/bar");
    }
 
    @Test
    public void testSubstitutionWithExtraQueryParams() throws Exception
    {
       HttpAction action = get("/1/querypath/2/?in=out");
-      Assert.assertEquals(207, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(207);
 
-      Assert.assertEquals("/1/querypath/2/?in=out", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(getContextPath() + "/1-query.xhtml?in=out",
-               action.getResponseHeaderValues("InboundURL").get(0));
-      Assert.assertEquals("/12345/querypath/cab/?foo=bar&kitty=meow", action.getResponseHeaderValues("OutboundURL")
-               .get(0));
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/1/querypath/2/?in=out");
+      assertThat(action.getResponseHeaderValues("InboundURL").get(0)).isEqualTo(getContextPath() + "/1-query.xhtml?in=out");
+      assertThat(action.getResponseHeaderValues("OutboundURL")
+              .get(0)).isEqualTo("/12345/querypath/cab/?foo=bar&kitty=meow");
    }
 
 }

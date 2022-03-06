@@ -15,9 +15,9 @@
  */
 package com.ocpsoft.pretty.faces.util;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FacesNavigationURLCanonicalizerTest
 {
@@ -28,7 +28,7 @@ public class FacesNavigationURLCanonicalizerTest
    @Test
    public void testNormalizeRequestUriWithNullArguments()
    {
-      assertEquals(null, FacesNavigationURLCanonicalizer.normalizeRequestURI(null, null, null));
+      assertThat(FacesNavigationURLCanonicalizer.normalizeRequestURI(null, null, null)).isEqualTo(null);
    }
 
    /**
@@ -37,7 +37,7 @@ public class FacesNavigationURLCanonicalizerTest
    @Test
    public void testNormalizeRequestUriWithExtensionMapping()
    {
-      assertEquals("/page2.jsf", FacesNavigationURLCanonicalizer.normalizeRequestURI("/page1.jsf", null, "/page2.jsf"));
+      assertThat(FacesNavigationURLCanonicalizer.normalizeRequestURI("/page1.jsf", null, "/page2.jsf")).isEqualTo("/page2.jsf");
    }
 
    /**
@@ -46,7 +46,7 @@ public class FacesNavigationURLCanonicalizerTest
    @Test
    public void testNormalizeRequestUriWithPathMapping()
    {
-      assertEquals("/page2.xhtml", FacesNavigationURLCanonicalizer.normalizeRequestURI("/faces", "/page1.xhtml", "/faces/page2.xhtml"));
+      assertThat(FacesNavigationURLCanonicalizer.normalizeRequestURI("/faces", "/page1.xhtml", "/faces/page2.xhtml")).isEqualTo("/page2.xhtml");
    }
 
 }

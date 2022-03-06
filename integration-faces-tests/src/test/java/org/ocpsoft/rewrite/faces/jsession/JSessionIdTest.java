@@ -15,11 +15,8 @@
  */
 package org.ocpsoft.rewrite.faces.jsession;
 
-import static org.junit.Assert.assertThat;
-
 import java.net.URL;
 
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -38,6 +35,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 @Category({
@@ -69,16 +68,16 @@ public class JSessionIdTest extends RewriteTestBase
 
       // GIVEN a browser with cookies enabled
       WebDriver driver = createBrowserAndLoadPage(true);
-      assertThat(driver.getPageSource(), Matchers.not(Matchers.containsString("jsessionid")));
+      assertThat(driver.getPageSource()).doesNotContain("jsessionid");
 
       // WHEN a JSF action redirects with a standard outcome
       driver.findElement(By.id("form:standardOutcome")).click();
 
       // THEN the browser should be redirected
-      assertThat(driver.getCurrentUrl(), Matchers.containsString("redirected=true"));
+      assertThat(driver.getCurrentUrl()).contains("redirected=true");
 
       // AND there should be no jsessionid in the URL
-      assertThat(driver.getCurrentUrl(), Matchers.not(Matchers.containsString("jsessionid")));
+      assertThat(driver.getCurrentUrl()).doesNotContain("jsessionid");
 
    }
 
@@ -88,16 +87,16 @@ public class JSessionIdTest extends RewriteTestBase
 
       // GIVEN a browser with cookies enabled
       WebDriver driver = createBrowserAndLoadPage(true);
-      assertThat(driver.getPageSource(), Matchers.not(Matchers.containsString("jsessionid")));
+      assertThat(driver.getPageSource()).doesNotContain("jsessionid");
 
       // WHEN a JSF action redirects with a standard outcome
       driver.findElement(By.id("form:navigateOutcome")).click();
 
       // THEN the browser should be redirected
-      assertThat(driver.getCurrentUrl(), Matchers.containsString("redirected=true"));
+      assertThat(driver.getCurrentUrl()).contains("redirected=true");
 
       // AND there should be no jsessionid in the URL
-      assertThat(driver.getCurrentUrl(), Matchers.not(Matchers.containsString("jsessionid")));
+      assertThat(driver.getCurrentUrl()).doesNotContain("jsessionid");
 
    }
 
@@ -107,16 +106,16 @@ public class JSessionIdTest extends RewriteTestBase
 
       // GIVEN a browser with cookies disabled
       WebDriver driver = createBrowserAndLoadPage(false);
-      assertThat(driver.getPageSource(), Matchers.containsString("jsessionid"));
+      assertThat(driver.getPageSource()).contains("jsessionid");
 
       // WHEN a JSF action redirects with a standard outcome
       driver.findElement(By.id("form:standardOutcome")).click();
 
       // THEN the browser should be redirected
-      assertThat(driver.getCurrentUrl(), Matchers.containsString("redirected=true"));
+      assertThat(driver.getCurrentUrl()).contains("redirected=true");
 
       // AND there should be a jsessionid in the URL
-      assertThat(driver.getCurrentUrl(), Matchers.containsString("jsessionid"));
+      assertThat(driver.getCurrentUrl()).contains("jsessionid");
 
    }
 
@@ -126,16 +125,16 @@ public class JSessionIdTest extends RewriteTestBase
 
       // GIVEN a browser with cookies disabled
       WebDriver driver = createBrowserAndLoadPage(false);
-      assertThat(driver.getPageSource(), Matchers.containsString("jsessionid"));
+      assertThat(driver.getPageSource()).contains("jsessionid");
 
       // WHEN a JSF action redirects with a standard outcome
       driver.findElement(By.id("form:navigateOutcome")).click();
 
       // THEN the browser should be redirected
-      assertThat(driver.getCurrentUrl(), Matchers.containsString("redirected=true"));
+      assertThat(driver.getCurrentUrl()).contains("redirected=true");
 
       // AND there should be a jsessionid in the URL
-      assertThat(driver.getCurrentUrl(), Matchers.containsString("jsessionid"));
+      assertThat(driver.getCurrentUrl()).contains("jsessionid");
 
    }
 

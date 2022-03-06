@@ -17,13 +17,15 @@ package org.ocpsoft.rewrite.config;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.util.Timer;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -50,7 +52,7 @@ public class ConfigurationCacheProviderTest extends RewriteTest
    public void testCachingConfiguration() throws Exception
    {
       HttpAction action = get("/cache1");
-      Assert.assertEquals(201, action.getStatusCode());
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
    @Test
@@ -69,7 +71,7 @@ public class ConfigurationCacheProviderTest extends RewriteTest
             Thread.sleep(10);
             if (configBuildCount > 1)
             {
-               Assert.fail();
+               fail("");
             }
          }
          catch (InterruptedException e) {}

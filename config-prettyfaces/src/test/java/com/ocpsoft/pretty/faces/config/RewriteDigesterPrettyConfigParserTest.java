@@ -15,9 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +27,8 @@ import com.ocpsoft.pretty.faces.config.rewrite.Case;
 import com.ocpsoft.pretty.faces.config.rewrite.Redirect;
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
 import com.ocpsoft.pretty.faces.config.rewrite.TrailingSlash;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RewriteDigesterPrettyConfigParserTest
 {
@@ -48,13 +47,13 @@ public class RewriteDigesterPrettyConfigParserTest
    public void testDefaultRewriteValues() throws Exception
    {
       RewriteRule c = new RewriteRule();
-      assertEquals("", c.getMatch());
-      assertEquals("", c.getSubstitute());
-      assertEquals("", c.getUrl());
-      assertEquals(Redirect.PERMANENT, c.getRedirect());
-      assertEquals(true, c.isOutbound());
-      assertEquals(Case.IGNORE, c.getToCase());
-      assertEquals(TrailingSlash.IGNORE, c.getTrailingSlash());
+      assertThat(c.getMatch()).isEqualTo("");
+      assertThat(c.getSubstitute()).isEqualTo("");
+      assertThat(c.getUrl()).isEqualTo("");
+      assertThat(c.getRedirect()).isEqualTo(Redirect.PERMANENT);
+      assertThat(c.isOutbound()).isEqualTo(true);
+      assertThat(c.getToCase()).isEqualTo(Case.IGNORE);
+      assertThat(c.getTrailingSlash()).isEqualTo(TrailingSlash.IGNORE);
    }
 
    @Test
@@ -62,29 +61,29 @@ public class RewriteDigesterPrettyConfigParserTest
    {
       List<RewriteRule> rules = config.getGlobalRewriteRules();
       RewriteRule r = rules.get(0);
-      assertEquals("^(.*[^/])$", r.getMatch());
-      assertEquals("$1/", r.getSubstitute());
-      assertEquals(Redirect.CHAIN, r.getRedirect());
-      assertTrue(r.isOutbound());
-      assertEquals(Case.IGNORE, r.getToCase());
-      assertEquals(TrailingSlash.IGNORE, r.getTrailingSlash());
+      assertThat(r.getMatch()).isEqualTo("^(.*[^/])$");
+      assertThat(r.getSubstitute()).isEqualTo("$1/");
+      assertThat(r.getRedirect()).isEqualTo(Redirect.CHAIN);
+      assertThat(r.isOutbound()).isTrue();
+      assertThat(r.getToCase()).isEqualTo(Case.IGNORE);
+      assertThat(r.getTrailingSlash()).isEqualTo(TrailingSlash.IGNORE);
 
       r = rules.get(1);
-      assertEquals("", r.getMatch());
-      assertEquals("", r.getSubstitute());
-      assertEquals(Redirect.PERMANENT, r.getRedirect());
-      assertEquals(true, r.isOutbound());
-      assertEquals(Case.LOWERCASE, r.getToCase());
-      assertEquals(TrailingSlash.APPEND, r.getTrailingSlash());
+      assertThat(r.getMatch()).isEqualTo("");
+      assertThat(r.getSubstitute()).isEqualTo("");
+      assertThat(r.getRedirect()).isEqualTo(Redirect.PERMANENT);
+      assertThat(r.isOutbound()).isEqualTo(true);
+      assertThat(r.getToCase()).isEqualTo(Case.LOWERCASE);
+      assertThat(r.getTrailingSlash()).isEqualTo(TrailingSlash.APPEND);
 
       r = rules.get(2);
-      assertEquals("", r.getMatch());
-      assertEquals("", r.getSubstitute());
-      assertEquals("http://www.google.com", r.getUrl());
-      assertEquals(Redirect.TEMPORARY, r.getRedirect());
-      assertEquals(false, r.isOutbound());
-      assertEquals(Case.UPPERCASE, r.getToCase());
-      assertEquals(TrailingSlash.REMOVE, r.getTrailingSlash());
+      assertThat(r.getMatch()).isEqualTo("");
+      assertThat(r.getSubstitute()).isEqualTo("");
+      assertThat(r.getUrl()).isEqualTo("http://www.google.com");
+      assertThat(r.getRedirect()).isEqualTo(Redirect.TEMPORARY);
+      assertThat(r.isOutbound()).isEqualTo(false);
+      assertThat(r.getToCase()).isEqualTo(Case.UPPERCASE);
+      assertThat(r.getTrailingSlash()).isEqualTo(TrailingSlash.REMOVE);
    }
 
    @Test
@@ -92,9 +91,9 @@ public class RewriteDigesterPrettyConfigParserTest
    {
       UrlMapping mapping = config.getMappingById("0");
 
-      assertEquals("0", mapping.getId());
-      assertEquals("/project/#{pid:viewProjectBean.projectId}/", mapping.getPattern());
-      assertEquals("/faces/viewProject.xhtml", mapping.getViewId());
+      assertThat(mapping.getId()).isEqualTo("0");
+      assertThat(mapping.getPattern()).isEqualTo("/project/#{pid:viewProjectBean.projectId}/");
+      assertThat(mapping.getViewId()).isEqualTo("/faces/viewProject.xhtml");
    }
 
 }

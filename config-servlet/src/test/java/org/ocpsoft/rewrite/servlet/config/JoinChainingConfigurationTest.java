@@ -18,12 +18,13 @@ package org.ocpsoft.rewrite.servlet.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,42 +46,42 @@ public class JoinChainingConfigurationTest extends RewriteTest
    public void testJoinWithChaining() throws Exception
    {
       HttpAction action = get("/chain");
-      Assert.assertEquals(201, action.getStatusCode());
-      Assert.assertEquals("/chain", action.getCurrentContextRelativeURL());
+      assertThat(action.getStatusCode()).isEqualTo(201);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/chain");
    }
 
    @Test
    public void testJoinChainingFromInternalServletForward() throws Exception
    {
       HttpAction action = get("/chain-from-servlet");
-      Assert.assertEquals(201, action.getStatusCode());
-      Assert.assertEquals("/chain-from-servlet", action.getCurrentContextRelativeURL());
+      assertThat(action.getStatusCode()).isEqualTo(201);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/chain-from-servlet");
    }
 
    @Test
    public void testJoinWithoutChaining() throws Exception
    {
       HttpAction action = get("/nochain");
-      Assert.assertEquals(404, action.getStatusCode());
-      Assert.assertEquals("/nochain", action.getCurrentContextRelativeURL());
-      Assert.assertEquals("true", action.getResponseHeaderValues("No-Chain").get(0));
+      assertThat(action.getStatusCode()).isEqualTo(404);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/nochain");
+      assertThat(action.getResponseHeaderValues("No-Chain").get(0)).isEqualTo("true");
    }
 
    @Test
    public void testMultipleJoinsWithoutChaining() throws Exception
    {
       HttpAction action = get("/nochain-many");
-      Assert.assertEquals(404, action.getStatusCode());
-      Assert.assertEquals("/nochain-many", action.getCurrentContextRelativeURL());
-      Assert.assertTrue(action.getResponseHeaderValues("No-Chain").isEmpty());
+      assertThat(action.getStatusCode()).isEqualTo(404);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/nochain-many");
+      assertThat(action.getResponseHeaderValues("No-Chain").isEmpty()).isTrue();
    }
 
    @Test
    public void testJoinWithChainingToWithoutChaining() throws Exception
    {
       HttpAction action = get("/chain-nochain");
-      Assert.assertEquals(404, action.getStatusCode());
-      Assert.assertEquals("/chain-nochain", action.getCurrentContextRelativeURL());
-      Assert.assertEquals("true", action.getResponseHeaderValues("No-Chain").get(0));
+      assertThat(action.getStatusCode()).isEqualTo(404);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/chain-nochain");
+      assertThat(action.getResponseHeaderValues("No-Chain").get(0)).isEqualTo("true");
    }
 }

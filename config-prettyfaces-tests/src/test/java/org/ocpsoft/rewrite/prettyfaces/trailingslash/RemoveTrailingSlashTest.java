@@ -1,8 +1,5 @@
 package org.ocpsoft.rewrite.prettyfaces.trailingslash;
 
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -12,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class RemoveTrailingSlashTest extends RewriteTestBase
@@ -30,8 +29,8 @@ public class RemoveTrailingSlashTest extends RewriteTestBase
    {
       HttpAction action = get("/foobar.txt");
 
-      assertThat(action.getStatusCode(), Matchers.is(200));
-      assertThat(action.getResponseContent(), Matchers.containsString("some content"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("some content");
    }
 
    @Test
@@ -40,8 +39,8 @@ public class RemoveTrailingSlashTest extends RewriteTestBase
    {
       HttpAction action = get("/foobar.txt/");
 
-      assertThat(action.getStatusCode(), Matchers.is(200));
-      assertThat(action.getResponseContent(), Matchers.containsString("some content"));
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("some content");
    }
 
 }

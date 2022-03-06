@@ -15,11 +15,12 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.test.MockRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -30,29 +31,29 @@ public class OrTest
    @Test
    public void testTrueAndTrueIsTrue()
    {
-      Assert.assertTrue(Or.any(new True(), new True()).evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(Or.any(new True(), new True()).evaluate(new MockRewrite(), new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testTrueAndFalseIsTrue()
    {
-      Assert.assertTrue(Or.any(new True(), new False()).evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(Or.any(new True(), new False()).evaluate(new MockRewrite(), new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testFalseAndFalseIsFalse()
    {
-      Assert.assertFalse(Or.any(new False(), new False()).evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(Or.any(new False(), new False()).evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 
    @Test
    public void testFlattensNestedOrs() throws Exception
    {
       Or or = Or.any(new False(), Or.any(new False(), new True()));
-      Assert.assertEquals(3, or.getConditions().size());
-      Assert.assertTrue(or.evaluate(new MockRewrite(), null));
-      Assert.assertTrue(or.getConditions().get(0) instanceof False);
-      Assert.assertTrue(or.getConditions().get(1) instanceof False);
-      Assert.assertTrue(or.getConditions().get(2) instanceof True);
+      assertThat(or.getConditions().size()).isEqualTo(3);
+      assertThat(or.evaluate(new MockRewrite(), null)).isTrue();
+      assertThat(or.getConditions().get(0) instanceof False).isTrue();
+      assertThat(or.getConditions().get(1) instanceof False).isTrue();
+      assertThat(or.getConditions().get(2) instanceof True).isTrue();
    }
 }

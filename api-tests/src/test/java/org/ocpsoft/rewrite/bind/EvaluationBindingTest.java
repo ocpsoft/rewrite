@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.bind;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -26,6 +25,9 @@ import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.urlbuilder.AddressBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -68,14 +70,14 @@ public class EvaluationBindingTest
       MockEvaluationContext context = new MockEvaluationContext();
       try {
          Evaluation.property("property").retrieve(inbound, context);
-         Assert.fail();
+         fail("");
       }
       catch (IllegalArgumentException e) {}
 
       Evaluation.property("property").submit(inbound, context, "Foo");
       Object value = Evaluation.property("property").retrieve(inbound, context);
 
-      Assert.assertEquals("Foo", value);
+      assertThat(value).isEqualTo("Foo");
    }
 
    @Test
@@ -84,14 +86,14 @@ public class EvaluationBindingTest
       MockEvaluationContext context = new MockEvaluationContext();
       try {
          Evaluation.property("property").retrieve(outbound, context);
-         Assert.fail();
+         fail("");
       }
       catch (IllegalArgumentException e) {}
 
       Evaluation.property("property").submit(outbound, context, "Foo");
       Object value = Evaluation.property("property").retrieve(outbound, context);
 
-      Assert.assertEquals("Foo", value);
+      assertThat(value).isEqualTo("Foo");
    }
 
 }

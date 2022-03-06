@@ -15,13 +15,13 @@
  */
 package com.ocpsoft.pretty.faces.url;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.config.mapping.PathParameter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -34,14 +34,14 @@ public class URLPatternParserRegexOverrideTest
    {
       URLPatternParser parser = new URLPatternParser("/foo/#{ /(?!=admin)[^/]+/ named}/");
       List<PathParameter> params = parser.parse(new URL("/foo/love/"));
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("love", p.getValue());
-      assertEquals("named", p.getName());
-      assertEquals("#{named}", p.getExpression().getELExpression());
-      assertEquals("(?!=admin)[^/]+", p.getRegex());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("love");
+      assertThat(p.getName()).isEqualTo("named");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{named}");
+      assertThat(p.getRegex()).isEqualTo("(?!=admin)[^/]+");
    }
 
    @Test
@@ -49,14 +49,14 @@ public class URLPatternParserRegexOverrideTest
    {
       URLPatternParser parser = new URLPatternParser("/foo/#{ /.*/ named}/");
       List<PathParameter> params = parser.parse(new URL("/foo/love/again/"));
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("love/again", p.getValue());
-      assertEquals("named", p.getName());
-      assertEquals("#{named}", p.getExpression().getELExpression());
-      assertEquals(".*", p.getRegex());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("love/again");
+      assertThat(p.getName()).isEqualTo("named");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{named}");
+      assertThat(p.getRegex()).isEqualTo(".*");
    }
 
    @Test
@@ -64,14 +64,14 @@ public class URLPatternParserRegexOverrideTest
    {
       URLPatternParser parser = new URLPatternParser("/#{ /.*/ named}/");
       List<PathParameter> params = parser.parse(new URL("/foo/love/again/"));
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("foo/love/again", p.getValue());
-      assertEquals("named", p.getName());
-      assertEquals("#{named}", p.getExpression().getELExpression());
-      assertEquals(".*", p.getRegex());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("foo/love/again");
+      assertThat(p.getName()).isEqualTo("named");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{named}");
+      assertThat(p.getRegex()).isEqualTo(".*");
    }
 
    @Test
@@ -79,14 +79,14 @@ public class URLPatternParserRegexOverrideTest
    {
       URLPatternParser parser = new URLPatternParser("/foo/#{ /(\\\\d+/\\\\w+)/ inje.cted}/");
       List<PathParameter> params = parser.parse(new URL("/foo/2010/again/"));
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("2010/again", p.getValue());
-      assertEquals("com.ocpsoft.vP_0", p.getName());
-      assertEquals("#{inje.cted}", p.getExpression().getELExpression());
-      assertEquals("(\\\\d+/\\\\w+)", p.getRegex());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("2010/again");
+      assertThat(p.getName()).isEqualTo("com.ocpsoft.vP_0");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{inje.cted}");
+      assertThat(p.getRegex()).isEqualTo("(\\\\d+/\\\\w+)");
    }
 
    @Test
@@ -94,14 +94,14 @@ public class URLPatternParserRegexOverrideTest
    {
       URLPatternParser parser = new URLPatternParser("/foo/#{ /(\\\\d+/\\\\w+)/ inje.cted}/and-#{valued}");
       List<PathParameter> params = parser.parse(new URL("/foo/2010/again/and-avalue"));
-      assertEquals(2, params.size());
+      assertThat(params.size()).isEqualTo(2);
 
       PathParameter p = params.get(1);
-      assertEquals(1, p.getPosition());
-      assertEquals("avalue", p.getValue());
-      assertEquals("valued", p.getName());
-      assertEquals("#{valued}", p.getExpression().getELExpression());
-      assertEquals("[^/]+", p.getRegex());
+      assertThat(p.getPosition()).isEqualTo(1);
+      assertThat(p.getValue()).isEqualTo("avalue");
+      assertThat(p.getName()).isEqualTo("valued");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{valued}");
+      assertThat(p.getRegex()).isEqualTo("[^/]+");
    }
 
    @Test(expected = IllegalArgumentException.class)

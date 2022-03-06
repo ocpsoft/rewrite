@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -30,6 +29,8 @@ import org.ocpsoft.rewrite.param.Transposition;
 import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.test.MockInboundRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -80,8 +81,8 @@ public class ConfigurationBuilderTest
    @Test
    public void testBuildConfigurationCompositeWhenPerformOnly()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(Direction.isInbound(), new True())
@@ -89,15 +90,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertTrue(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isTrue();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationPerformOnly()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(And.all(Direction.isInbound(), new True()))
@@ -105,15 +106,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertTrue(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isTrue();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationPerformMultipleOnly()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(And.all(Direction.isInbound(), new True()))
@@ -121,17 +122,17 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertEquals(3, performCount);
-      Assert.assertEquals(0, performOtherwiseCount);
-      Assert.assertTrue(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performCount).isEqualTo(3);
+      assertThat(performOtherwiseCount).isEqualTo(0);
+      assertThat(performed).isTrue();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationPerformOnlyNegative()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(And.all(new False()))
@@ -139,15 +140,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationCompositeConditionPerformOnlyNegative()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(new True(), new False())
@@ -155,15 +156,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationOtherwiseOnly()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(new False())
@@ -171,15 +172,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertFalse(performed);
-      Assert.assertTrue(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isTrue();
    }
 
    @Test
    public void testBuildConfigurationCompositeConditionOtherwiseOnly()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(new True(), new False())
@@ -187,15 +188,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertFalse(performed);
-      Assert.assertTrue(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isTrue();
    }
 
    @Test
    public void testBuildConfigurationOtherwiseMultipleOnly()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(new False())
@@ -203,17 +204,17 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertEquals(0, performCount);
-      Assert.assertEquals(2, performOtherwiseCount);
-      Assert.assertFalse(performed);
-      Assert.assertTrue(performedOtherwise);
+      assertThat(performCount).isEqualTo(0);
+      assertThat(performOtherwiseCount).isEqualTo(2);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isTrue();
    }
 
    @Test
    public void testBuildConfigurationOtherwiseNegative()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(new True())
@@ -221,15 +222,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationCompositeConditionOtherwiseNegative()
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin().addRule()
                .when(new True(), new True())
@@ -237,15 +238,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationPerformAndOtherwise() throws Exception
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin()
                .addRule()
@@ -255,15 +256,15 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertTrue(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isTrue();
+      assertThat(performedOtherwise).isFalse();
    }
 
    @Test
    public void testBuildConfigurationPerformAndOtherwiseNegative() throws Exception
    {
-      Assert.assertFalse(performed);
-      Assert.assertFalse(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isFalse();
 
       Configuration config = ConfigurationBuilder.begin()
                .addRule()
@@ -273,8 +274,8 @@ public class ConfigurationBuilderTest
 
       execute(config);
 
-      Assert.assertFalse(performed);
-      Assert.assertTrue(performedOtherwise);
+      assertThat(performed).isFalse();
+      assertThat(performedOtherwise).isTrue();
    }
 
    @Test
