@@ -21,6 +21,7 @@ package org.ocpsoft.rewrite.servlet;
  * 
  * @author Christian Kaltepoth
  */
+@Deprecated
 public enum DispatcherType
 {
    FORWARD,

@@ -15,20 +15,13 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import java.util.Collections;
-import java.util.List;
-
+import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 
-import org.ocpsoft.common.pattern.WeightedComparator;
-import org.ocpsoft.common.services.ServiceLoader;
-import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.context.EvaluationContext;
-import org.ocpsoft.rewrite.servlet.DispatcherType;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider;
 
 /**
  * A {@link Condition} that inspects the value of {@link HttpServletRequest#getDispatcherType()}.
@@ -37,7 +30,6 @@ import org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider;
  */
 public class DispatchType extends HttpCondition
 {
-   private final static String PROVIDER_KEY = DispatchType.class.getName() + "_PROVIDERS";
 
    private final DispatcherType type;
 
@@ -57,33 +49,11 @@ public class DispatchType extends HttpCondition
    }
 
    /**
-    * Determines the {@link DispatcherType} of the current request using the {@link DispatcherTypeProvider} SPI.
+    * Determines the {@link DispatcherType} of the current request.
     */
    private DispatcherType getDispatcherType(final HttpServletRewrite event)
    {
-      for (DispatcherTypeProvider provider : getDispatcherTypeProviders(event)) {
-         DispatcherType dispatcherType = provider.getDispatcherType(event.getRequest(), event.getServletContext());
-         if (dispatcherType != null) {
-            return dispatcherType;
-         }
-      }
-      throw new IllegalStateException("Unable to determine dispatcher type of current request");
-   }
-
-   /**
-    * Simple caching mechanism for the providers on a per request basis
-    */
-   @SuppressWarnings("unchecked")
-   private List<DispatcherTypeProvider> getDispatcherTypeProviders(HttpServletRewrite event)
-   {
-      List<DispatcherTypeProvider> providers = (List<DispatcherTypeProvider>)
-               event.getRequest().getAttribute(PROVIDER_KEY);
-      if (providers == null) {
-         providers = Iterators.asList(ServiceLoader.loadTypesafe(DispatcherTypeProvider.class).iterator());
-         Collections.sort(providers, new WeightedComparator());
-         event.getRequest().setAttribute(PROVIDER_KEY, providers);
-      }
-      return providers;
+      return event.getRequest().getDispatcherType();
    }
 
    /**

@@ -26,6 +26,7 @@ import org.ocpsoft.rewrite.servlet.DispatcherType;
  * 
  * @author Christian Kaltepoth
  */
+@Deprecated
 public interface DispatcherTypeProvider extends Weighted
 {
 

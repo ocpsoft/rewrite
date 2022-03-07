@@ -29,6 +29,7 @@ import org.ocpsoft.rewrite.servlet.ServletRegistration;
  * 
  * @author Christian Kaltepoth
  */
+@Deprecated
 public interface ServletRegistrationProvider extends Weighted
 {
 

@@ -16,17 +16,12 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 import java.net.MalformedURLException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 
-import org.ocpsoft.common.pattern.WeightedComparator;
-import org.ocpsoft.common.services.ServiceLoader;
-import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
@@ -36,9 +31,7 @@ import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.param.ParameterizedPattern;
 import org.ocpsoft.rewrite.param.ParameterizedPatternBuilder;
 import org.ocpsoft.rewrite.param.RegexParameterizedPatternBuilder;
-import org.ocpsoft.rewrite.servlet.ServletRegistration;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
-import org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider;
 import org.ocpsoft.rewrite.util.Transpositions;
 import org.ocpsoft.urlbuilder.Address;
 
@@ -53,8 +46,6 @@ public abstract class ServletMapping extends HttpCondition implements Parameteri
    private static final Logger log = Logger.getLogger(Resource.class);
 
    private final RegexParameterizedPatternBuilder resource;
-
-   private List<ServletRegistrationProvider> servletRegistrationProviders = null;
 
    private ServletMapping(final String resource)
    {
@@ -133,33 +124,13 @@ public abstract class ServletMapping extends HttpCondition implements Parameteri
    }
 
    /**
-    * Obtains the list of registered {@link Servlet} instances using the {@link ServletRegistrationProvider} SPI.
+    * Obtains the list of registered {@link Servlet} instances.
     */
-   private List<ServletRegistration> getServletRegistration(ServletContext context)
+   private Collection<ServletRegistration> getServletRegistration(ServletContext context)
    {
-      for (ServletRegistrationProvider provider : getServletRegistrationProviders())
-      {
-         List<ServletRegistration> registrations = provider.getServletRegistrations(context);
-         if (registrations != null)
-         {
-            return registrations;
-         }
-      }
-      throw new IllegalStateException("Unable to find the Servlet registrations of the application");
-   }
+      Map<String, ? extends ServletRegistration> servletRegistrations = context.getServletRegistrations();
 
-   /**
-    * Returns the list of {@link ServletRegistrationProvider} implementations.
-    */
-   private List<ServletRegistrationProvider> getServletRegistrationProviders()
-   {
-      if (servletRegistrationProviders == null)
-      {
-         servletRegistrationProviders = Iterators.asList(
-                  ServiceLoader.loadTypesafe(ServletRegistrationProvider.class).iterator());
-         Collections.sort(servletRegistrationProviders, new WeightedComparator());
-      }
-      return servletRegistrationProviders;
+      return new ArrayList<>(servletRegistrations.values());
    }
 
    /**
