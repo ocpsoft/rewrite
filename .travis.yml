@@ -3,7 +3,7 @@ cache:
   directories:
     - '$HOME/.m2/repository'
 script:
-  - mvn install
+  - ./mvnw install
 after_success:
   - "bash ./.travis-deploy.sh"
 matrix:

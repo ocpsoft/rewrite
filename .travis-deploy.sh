@@ -7,7 +7,7 @@ if [ "$TRAVIS_REPO_SLUG" == "ocpsoft/rewrite" ] &&
     [ "$CONTAINER" == "JBOSS_AS_MANAGED_7.X" ]; then
 
   echo "Starting snapshot deployment..."
-  mvn -s .travis-settings.xml -DperformRelease -DskipTests -Dgpg.skip=true deploy
+  ./mvnw -s .travis-settings.xml -DperformRelease -DskipTests -Dgpg.skip=true deploy
   echo "Snapshots deployed!"
 
 else
