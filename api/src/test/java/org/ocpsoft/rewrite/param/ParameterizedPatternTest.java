@@ -21,13 +21,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.rewrite.MockEvaluationContext;
 import org.ocpsoft.rewrite.MockRewrite;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -75,7 +76,7 @@ public class ParameterizedPatternTest
 
       initialize(store, path);
 
-      Assert.assertTrue(path.parse(url).matches());
+      assertThat(path.parse(url).matches()).isTrue();
 
       String[] expected = new String[] { "http://domain.com:8080/context", "pathy", "?foo=bar&baz=bazaar" };
       Map<Parameter<?>, String> parsed = path.parse(url).getParameters(context);
@@ -84,7 +85,7 @@ public class ParameterizedPatternTest
       for (Entry<Parameter<?>, String> entry : parsed.entrySet())
       {
          String value = entry.getValue();
-         Assert.assertEquals(expected[index++], value);
+         assertThat(value).isEqualTo(expected[index++]);
       }
    }
 
@@ -108,7 +109,7 @@ public class ParameterizedPatternTest
 
       initialize(store, path);
 
-      Assert.assertTrue(path.parse(url).matches());
+      assertThat(path.parse(url).matches()).isTrue();
 
       String[] expected = new String[] { "http://domain.com:8080/context", "pathy", "?foo=bar&baz=bazaar" };
       Map<Parameter<?>, String> parsed = path.parse(url).getParameters(context);
@@ -117,7 +118,7 @@ public class ParameterizedPatternTest
       for (Entry<Parameter<?>, String> entry : parsed.entrySet())
       {
          String value = entry.getValue();
-         Assert.assertEquals(expected[index++], value);
+         assertThat(value).isEqualTo(expected[index++]);
       }
    }
 
@@ -127,10 +128,10 @@ public class ParameterizedPatternTest
       String pattern = "c:\\\\Users\\\\Admin\\\\Documents and Settings\\\\Folder";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
-      Assert.assertFalse(parameterized.parse(pattern).matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(parameterized.parse(pattern).matches()).isFalse();
       String value = pattern.replaceAll("\\\\\\\\", "\\\\");
-      Assert.assertTrue(parameterized.parse(value).matches());
+      assertThat(parameterized.parse(value).matches()).isTrue();
    }
 
    @Test
@@ -139,10 +140,10 @@ public class ParameterizedPatternTest
       String pattern = "c:\\\\Users\\\\{user}\\\\Documents and Settings\\\\Folder";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(1, parameterized.getRequiredParameterNames().size());
-      Assert.assertFalse(parameterized.parse(pattern).matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(1);
+      assertThat(parameterized.parse(pattern).matches()).isFalse();
       String value = pattern.replaceAll("\\\\\\\\", "\\\\");
-      Assert.assertTrue(parameterized.parse(value).matches());
+      assertThat(parameterized.parse(value).matches()).isTrue();
    }
 
    @Test
@@ -151,8 +152,8 @@ public class ParameterizedPatternTest
       String pattern = "Something \\{wicked this way comes.";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("Something {wicked this way comes.").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(parameterized.parse("Something {wicked this way comes.").matches()).isTrue();
    }
 
    @Test
@@ -161,8 +162,8 @@ public class ParameterizedPatternTest
       String pattern = "Something \\{wicked this way comes.}";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("Something {wicked this way comes.}").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(parameterized.parse("Something {wicked this way comes.}").matches()).isTrue();
    }
 
    @Test
@@ -171,8 +172,8 @@ public class ParameterizedPatternTest
       String pattern = "Something \\{{wicked this way comes}.";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(1, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("Something {cool.").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(1);
+      assertThat(parameterized.parse("Something {cool.").matches()).isTrue();
    }
 
    @Test
@@ -181,8 +182,8 @@ public class ParameterizedPatternTest
       String pattern = "Something \\{{wicked this way comes}. More {stuff}";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(2, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("Something {cool. More anything").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(2);
+      assertThat(parameterized.parse("Something {cool. More anything").matches()).isTrue();
    }
 
    @Test
@@ -191,8 +192,8 @@ public class ParameterizedPatternTest
       String pattern = "beginning \\{middle\\} end";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("beginning {middle\\} end").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(parameterized.parse("beginning {middle\\} end").matches()).isTrue();
    }
 
    @Test
@@ -201,8 +202,8 @@ public class ParameterizedPatternTest
       String pattern = "beginning {\nmiddle\n} end";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(1, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("beginning middle end").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(1);
+      assertThat(parameterized.parse("beginning middle end").matches()).isTrue();
    }
 
    @Test
@@ -211,8 +212,8 @@ public class ParameterizedPatternTest
       String pattern = "beginning \\{\n                                 ...\n                             } end";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("beginning {\n                                 ...\n                             } end").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(parameterized.parse("beginning {\n                                 ...\n                             } end").matches()).isTrue();
    }
 
    @Test
@@ -221,8 +222,8 @@ public class ParameterizedPatternTest
       String pattern = "beginning \\{\nmiddle\n} end";
       ParameterizedPatternParser parameterized = new RegexParameterizedPatternParser(CaptureType.BRACE, pattern);
 
-      Assert.assertEquals(0, parameterized.getRequiredParameterNames().size());
-      Assert.assertTrue(parameterized.parse("beginning {\nmiddle\n} end").matches());
+      assertThat(parameterized.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(parameterized.parse("beginning {\nmiddle\n} end").matches()).isTrue();
    }
 
    @Test(expected = ParameterizedPatternSyntaxException.class)
@@ -258,8 +259,8 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(CaptureType.BRACE, ".*");
 
-      Assert.assertEquals(0, path.getRequiredParameterNames().size());
-      Assert.assertFalse(path.parse("/omg/doesnt/matter").matches());
+      assertThat(path.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(path.parse("/omg/doesnt/matter").matches()).isFalse();
    }
 
    @Test
@@ -267,10 +268,10 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(CaptureType.BRACE, "");
 
-      Assert.assertEquals(0, path.getRequiredParameterNames().size());
-      Assert.assertTrue(path.parse("").matches());
+      assertThat(path.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(path.parse("").matches()).isTrue();
       Map<Parameter<?>, String> results = path.parse("").getParameters(context);
-      Assert.assertNotNull(results);
+      assertThat(results).isNotNull();
    }
 
    @Test
@@ -278,10 +279,10 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser(CaptureType.BRACE, "");
 
-      Assert.assertEquals(0, path.getRequiredParameterNames().size());
-      Assert.assertTrue(path.parse("").matches());
+      assertThat(path.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(path.parse("").matches()).isTrue();
       Map<Parameter<?>, String> results = path.parse("").getParameters(context);
-      Assert.assertNotNull(results);
+      assertThat(results).isNotNull();
    }
 
    @Test
@@ -289,11 +290,11 @@ public class ParameterizedPatternTest
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("/");
 
-      Assert.assertEquals(0, path.getRequiredParameterNames().size());
-      Assert.assertTrue(path.parse("/").matches());
+      assertThat(path.getRequiredParameterNames().size()).isEqualTo(0);
+      assertThat(path.parse("/").matches()).isTrue();
 
       Map<Parameter<?>, String> results = path.parse("/").getParameters(context);
-      Assert.assertNotNull(results);
+      assertThat(results).isNotNull();
    }
 
    @Test
@@ -305,13 +306,13 @@ public class ParameterizedPatternTest
 
       initialize(parameters, path);
 
-      Assert.assertEquals(2, parameters.size());
-      Assert.assertEquals("customer", parameters.get("customer").getName());
-      Assert.assertEquals("id", parameters.get("id").getName());
+      assertThat(parameters.size()).isEqualTo(2);
+      assertThat(parameters.get("customer").getName()).isEqualTo("customer");
+      assertThat(parameters.get("id").getName()).isEqualTo("id");
 
       Map<Parameter<?>, String> results = path.parse("/lincoln/orders/24").getParameters(context);
-      Assert.assertEquals("lincoln", results.get(parameters.get("customer")));
-      Assert.assertEquals("24", results.get(parameters.get("id")));
+      assertThat(results.get(parameters.get("customer"))).isEqualTo("lincoln");
+      assertThat(results.get(parameters.get("id"))).isEqualTo("24");
    }
 
    @Test
@@ -322,13 +323,13 @@ public class ParameterizedPatternTest
       ParameterStore parameters = DefaultParameterStore.getInstance(context);
       initialize(parameters, path);
 
-      Assert.assertEquals(2, parameters.size());
-      Assert.assertEquals("customer", parameters.get("customer").getName());
-      Assert.assertEquals("id", parameters.get("id").getName());
+      assertThat(parameters.size()).isEqualTo(2);
+      assertThat(parameters.get("customer").getName()).isEqualTo("customer");
+      assertThat(parameters.get("id").getName()).isEqualTo("id");
 
       Map<Parameter<?>, String> results = path.parse("/lincoln/orders/24").getParameters(context);
-      Assert.assertEquals("lincoln", results.get(parameters.get("customer")));
-      Assert.assertEquals("24", results.get(parameters.get("id")));
+      assertThat(results.get(parameters.get("customer"))).isEqualTo("lincoln");
+      assertThat(results.get(parameters.get("id"))).isEqualTo("24");
    }
 
    @Test
@@ -339,16 +340,16 @@ public class ParameterizedPatternTest
       ParameterStore parameters = new DefaultParameterStore();
       initialize(parameters, path);
 
-      Assert.assertTrue(path.parse("/lincoln/").matches());
-      Assert.assertFalse(path.parse("/lincoln/foo").matches());
+      assertThat(path.parse("/lincoln/").matches()).isTrue();
+      assertThat(path.parse("/lincoln/foo").matches()).isFalse();
    }
 
    @Test
    public void testRegularExpressionsAreDisabled()
    {
       ParameterizedPatternParser path = new RegexParameterizedPatternParser("[^/]+", ".*/{customer}/");
-      Assert.assertTrue(path.parse(".*/lincoln/").matches());
-      Assert.assertFalse(path.parse("foobar/lincoln/").matches());
+      assertThat(path.parse(".*/lincoln/").matches()).isTrue();
+      assertThat(path.parse("foobar/lincoln/").matches()).isFalse();
    }
 
    @Test
@@ -360,7 +361,7 @@ public class ParameterizedPatternTest
       initialize(parameters, path);
 
       Parameter<?> parameter = parameters.get("customer");
-      Assert.assertNotNull(parameter);
+      assertThat(parameter).isNotNull();
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -384,8 +385,8 @@ public class ParameterizedPatternTest
 
       ((ConfigurableParameter<?>) parameters.get("f")).constrainedBy(new RegexConstraint("foo"));
 
-      Assert.assertTrue(path.parse("/foo/foo/").matches());
-      Assert.assertFalse(path.parse("/foo/bar/").matches());
+      assertThat(path.parse("/foo/foo/").matches()).isTrue();
+      assertThat(path.parse("/foo/bar/").matches()).isFalse();
    }
 
    @Test
@@ -396,11 +397,11 @@ public class ParameterizedPatternTest
       ParameterStore parameters = DefaultParameterStore.getInstance(context);
       initialize(parameters, path);
 
-      Assert.assertEquals(1, parameters.size());
-      Assert.assertEquals("customer", parameters.get("customer").getName());
+      assertThat(parameters.size()).isEqualTo(1);
+      assertThat(parameters.get("customer").getName()).isEqualTo("customer");
 
       Map<Parameter<?>, String> results = path.parse("/lincoln/").getParameters(context);
-      Assert.assertEquals("lincoln", results.get(parameters.get("customer")));
+      assertThat(results.get(parameters.get("customer"))).isEqualTo("lincoln");
    }
 
    @Test
@@ -411,13 +412,13 @@ public class ParameterizedPatternTest
       ParameterStore parameters = DefaultParameterStore.getInstance(context);
       initialize(parameters, path);
 
-      Assert.assertEquals(1, parameters.size());
-      Assert.assertEquals("customer", parameters.get("customer").getName());
+      assertThat(parameters.size()).isEqualTo(1);
+      assertThat(parameters.get("customer").getName()).isEqualTo("customer");
 
-      Assert.assertFalse(path.parse("/lincolnX").matches());
-      Assert.assertFalse(path.parse("/lincolnX").isValid(event, context));
-      Assert.assertFalse(path.parse("/lincoln/").submit(event, context));
-      Assert.assertTrue(path.parse("/lincoln.").matches());
+      assertThat(path.parse("/lincolnX").matches()).isFalse();
+      assertThat(path.parse("/lincolnX").isValid(event, context)).isFalse();
+      assertThat(path.parse("/lincoln/").submit(event, context)).isFalse();
+      assertThat(path.parse("/lincoln.").matches()).isTrue();
    }
 
    @Test
@@ -429,38 +430,38 @@ public class ParameterizedPatternTest
       ParameterStore parameters = DefaultParameterStore.getInstance(context);
       initialize(parameters, path);
 
-      Assert.assertEquals(2, parameters.size());
-      Assert.assertEquals("customer", parameters.get("customer").getName());
-      Assert.assertEquals("id", parameters.get("id").getName());
+      assertThat(parameters.size()).isEqualTo(2);
+      assertThat(parameters.get("customer").getName()).isEqualTo("customer");
+      assertThat(parameters.get("id").getName()).isEqualTo("id");
 
       ParameterizedPatternResult result = path.parse("/lincoln/orders/24/");
-      Assert.assertTrue(result.matches());
-      Assert.assertTrue(result.isValid(event, context));
-      Assert.assertTrue(result.submit(event, context));
+      assertThat(result.matches()).isTrue();
+      assertThat(result.isValid(event, context)).isTrue();
+      assertThat(result.submit(event, context)).isTrue();
       Map<Parameter<?>, String> results = result.getParameters(context);
-      Assert.assertEquals("lincoln", results.get(parameters.get("customer")));
-      Assert.assertEquals("24", results.get(parameters.get("id")));
+      assertThat(results.get(parameters.get("customer"))).isEqualTo("lincoln");
+      assertThat(results.get(parameters.get("id"))).isEqualTo("24");
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testBuildNull()
    {
       ParameterizedPatternBuilder path = new RegexParameterizedPatternBuilder(null);
-      Assert.assertEquals("", path.build(new LinkedHashMap<String, Object>()));
+      assertThat(path.build(new LinkedHashMap<String, Object>())).isEqualTo("");
    }
 
    @Test
    public void testBuildEmpty()
    {
       ParameterizedPatternBuilder path = new RegexParameterizedPatternBuilder("");
-      Assert.assertEquals("", path.build(new LinkedHashMap<String, Object>()));
+      assertThat(path.build(new LinkedHashMap<String, Object>())).isEqualTo("");
    }
 
    @Test
    public void testBuildBarePath()
    {
       ParameterizedPatternBuilder path = new RegexParameterizedPatternBuilder("/");
-      Assert.assertEquals("/", path.build(new LinkedHashMap<String, Object>()));
+      assertThat(path.build(new LinkedHashMap<String, Object>())).isEqualTo("/");
    }
 
    @Test
@@ -471,14 +472,14 @@ public class ParameterizedPatternTest
       Map<String, Object> map = new LinkedHashMap<String, Object>();
       map.put("customer", "lincoln");
       map.put("id", "24");
-      Assert.assertEquals("/lincoln/orders/24", path.build(map));
+      assertThat(path.build(map)).isEqualTo("/lincoln/orders/24");
    }
 
    @Test
    public void testBuildWithListParameters()
    {
       ParameterizedPatternBuilder path = new RegexParameterizedPatternBuilder("[^/]*", "/{customer}/orders/{id}");
-      Assert.assertEquals("/lincoln/orders/24", path.build(Arrays.<Object> asList("lincoln", "24")));
+      assertThat(path.build(Arrays.<Object>asList("lincoln", "24"))).isEqualTo("/lincoln/orders/24");
    }
 
 }

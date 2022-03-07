@@ -15,16 +15,17 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.spi.ConfigurationCacheProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.util.Timer;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -50,8 +51,8 @@ public class ConfigurationCacheProviderTest extends RewriteTest
    @Test
    public void testCachingConfiguration() throws Exception
    {
-      HttpAction<HttpGet> action = get("/cache1");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/cache1");
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
    @Test
@@ -70,7 +71,7 @@ public class ConfigurationCacheProviderTest extends RewriteTest
             Thread.sleep(10);
             if (configBuildCount > 1)
             {
-               Assert.fail();
+               fail("");
             }
          }
          catch (InterruptedException e) {}
@@ -85,14 +86,14 @@ public class ConfigurationCacheProviderTest extends RewriteTest
       @Override
       public void run()
       {
-         HttpAction<HttpGet> action = null;
+         HttpAction action = null;
          try {
             action = get("/cache1");
          }
          catch (Exception e) {
             throw new RuntimeException(e);
          }
-         configBuildCount = action.getResponse().getStatusLine().getStatusCode() - 200;
+         configBuildCount = action.getStatusCode() - 200;
          vote();
       }
    };

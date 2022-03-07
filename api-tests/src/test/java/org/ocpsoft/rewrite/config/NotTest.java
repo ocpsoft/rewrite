@@ -15,13 +15,14 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.test.MockRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -33,14 +34,14 @@ public class NotTest
    public void testNotFalseIsTrue()
    {
       Condition condition = Not.any(new False());
-      Assert.assertTrue(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockRewrite(), new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testNotTrueIsFalse()
    {
       Condition condition = Not.any(new True());
-      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 
    @Test
@@ -51,13 +52,13 @@ public class NotTest
          @Override
          public boolean evaluate(Rewrite event, EvaluationContext context)
          {
-            Assert.assertEquals(1, Conditions.getNegationCount(context));
-            Assert.assertTrue(Conditions.isNegated(context));
+            assertThat(Conditions.getNegationCount(context)).isEqualTo(1);
+            assertThat(Conditions.isNegated(context)).isTrue();
             return true;
          }
       };
       Condition condition = Not.any(assertCountOdd);
-      Assert.assertFalse(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 
    @Test
@@ -68,8 +69,8 @@ public class NotTest
          @Override
          public boolean evaluate(Rewrite event, EvaluationContext context)
          {
-            Assert.assertEquals(3, Conditions.getNegationCount(context));
-            Assert.assertTrue(Conditions.isNegated(context));
+            assertThat(Conditions.getNegationCount(context)).isEqualTo(3);
+            assertThat(Conditions.isNegated(context)).isTrue();
             return true;
          }
       };
@@ -78,12 +79,12 @@ public class NotTest
          @Override
          public boolean evaluate(Rewrite event, EvaluationContext context)
          {
-            Assert.assertEquals(4, Conditions.getNegationCount(context));
-            Assert.assertFalse(Conditions.isNegated(context));
+            assertThat(Conditions.getNegationCount(context)).isEqualTo(4);
+            assertThat(Conditions.isNegated(context)).isFalse();
             return true;
          }
       };
       Condition condition = Not.any(Not.any(Not.any(And.all(assertCountOdd, Not.any(assertCountEven)))));
-      Assert.assertTrue(condition.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(condition.evaluate(new MockRewrite(), new MockEvaluationContext())).isTrue();
    }
 }

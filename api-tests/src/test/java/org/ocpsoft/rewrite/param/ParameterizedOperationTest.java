@@ -15,16 +15,16 @@
  */
 package org.ocpsoft.rewrite.param;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,8 +46,8 @@ public class ParameterizedOperationTest extends RewriteTest
    @Test
    public void testParameterizedOperationReturningNullParametersDeploysNormally() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.html");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/index.html");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
 }

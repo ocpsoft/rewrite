@@ -15,17 +15,17 @@
  */
 package org.ocpsoft.rewrite.servlet.container;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -50,16 +50,16 @@ public class ContainerSecurityTest extends RewriteTest
    @Test
    public void testContainerSecurityFunctionsWithRewriteJoin() throws Exception
    {
-      HttpAction<HttpGet> action = get("/user/home");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("LOGIN PAGE"));
+      HttpAction action = get("/user/home");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("LOGIN PAGE");
    }
 
    @Test
    public void testContainerSecurityFunctionsWithRewriteUnHandled() throws Exception
    {
-      HttpAction<HttpGet> action = get("/user/x");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("LOGIN PAGE"));
+      HttpAction action = get("/user/x");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("LOGIN PAGE");
    }
 }

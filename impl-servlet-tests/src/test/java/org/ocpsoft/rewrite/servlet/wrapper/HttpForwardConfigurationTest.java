@@ -16,17 +16,17 @@
 package org.ocpsoft.rewrite.servlet.wrapper;
 
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -48,21 +48,21 @@ public class HttpForwardConfigurationTest extends RewriteTest
    @Test
    public void testForwardedParameterAddedToRequestParameterMap() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward?foo=bar");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/forward?foo=bar");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
    public void testRequestParameterConditionRequired() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward-fail?foo=bar");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/forward-fail?foo=bar");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testRequestParameterPreservedWhenForwardedFromJSP() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward.jsp");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/forward.jsp");
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 }

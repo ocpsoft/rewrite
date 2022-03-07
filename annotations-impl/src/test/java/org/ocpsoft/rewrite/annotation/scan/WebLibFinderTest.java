@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.annotation.scan;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,6 +34,8 @@ import javax.servlet.ServletContext;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class WebLibFinderTest
@@ -110,7 +110,7 @@ public class WebLibFinderTest
                   // read the original class file from the classpath
                   ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
                   InputStream classStream = classLoader.getResourceAsStream(classLocation);
-                  assertNotNull("Cannot find test class", classStream);
+                  assertThat(classStream).as("Cannot find test class").isNotNull();
 
                   // prepare the in-memory JAR file
                   ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();

@@ -15,16 +15,16 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,14 +45,14 @@ public class ParameterWildcardConfiguration2Test extends RewriteTest
     @Test
     public void testWildcardParameter() throws Exception
     {
-        HttpAction<HttpGet> action = get("/test.txt");
-        Assert.assertEquals(200, action.getStatusCode());
+        HttpAction action = get("/test.txt");
+        assertThat(action.getStatusCode()).isEqualTo(200);
     }
 
     @Test
     public void testWildcardParameterCrossesSlashBoundary() throws Exception
     {
-        HttpAction<HttpGet> action = get("/test/next/path.txt");
-        Assert.assertEquals(200, action.getStatusCode());
+        HttpAction action = get("/test/next/path.txt");
+        assertThat(action.getStatusCode()).isEqualTo(200);
     }
 }

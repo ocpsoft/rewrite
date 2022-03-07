@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompositeMapTest
 {
@@ -35,10 +35,10 @@ public class CompositeMapTest
       map.addDelegate(delegate);
 
       Set<Entry<String, String>> entries = map.entrySet();
-      Assert.assertNotNull(entries);
+      assertThat(entries).isNotNull();
       for (Entry<String, String> entry : entries) {
-         Assert.assertEquals("foo", entry.getKey());
-         Assert.assertEquals("bar", entry.getValue());
+         assertThat(entry.getKey()).isEqualTo("foo");
+         assertThat(entry.getValue()).isEqualTo("bar");
       }
    }
 

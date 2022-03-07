@@ -1,16 +1,15 @@
 package org.ocpsoft.urlbuilder;
 
-import org.junit.Assert;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AddressBuilderEncodingTest
 {
    @Test
    public void testCreateEverything()
    {
-      Assert.assertEquals("http://example.com:8080/search/table?q=query+string#foo",
-               AddressBuilder.create("http://example.com:8080/search/table?q=query+string#foo").toString());
+      assertThat(AddressBuilder.create("http://example.com:8080/search/table?q=query+string#foo").toString()).isEqualTo("http://example.com:8080/search/table?q=query+string#foo");
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -25,83 +24,79 @@ public class AddressBuilderEncodingTest
    @Test
    public void testPathEncoded()
    {
-      Assert.assertEquals("foo%20bar", AddressBuilder.begin().path("foo%20bar").build().toString());
+      assertThat(AddressBuilder.begin().path("foo%20bar").build().toString()).isEqualTo("foo%20bar");
    }
 
    @Test
    public void testCreateEncodedSpaceInPath() throws Exception
    {
-      Assert.assertEquals("/encoding/foo%20bar", AddressBuilder.create("/encoding/foo%20bar")
-               .toString());
+      assertThat(AddressBuilder.create("/encoding/foo%20bar")
+              .toString()).isEqualTo("/encoding/foo%20bar");
    }
 
    @Test
    public void testCreateEncodedAmpersandInQuery() throws Exception
    {
-      Assert.assertEquals("/encoding.html?param=foo%26bar", AddressBuilder.create("/encoding.html?param=foo%26bar")
-               .toString());
+      assertThat(AddressBuilder.create("/encoding.html?param=foo%26bar")
+              .toString()).isEqualTo("/encoding.html?param=foo%26bar");
    }
 
    @Test
    public void testCreateUnencodedAmpersandInQuery() throws Exception
    {
-      Assert.assertEquals("/encoding.html?param=foo&bar", AddressBuilder.create("/encoding.html?param=foo&bar")
-               .toString());
+      assertThat(AddressBuilder.create("/encoding.html?param=foo&bar")
+              .toString()).isEqualTo("/encoding.html?param=foo&bar");
    }
 
    @Test
    public void testParameterEncodingDomainWithQuery()
    {
-      Assert.assertEquals("http://a%20b/?q=a+b",
-               AddressBuilder.begin()
-                        .scheme("http")
-                        .domain("{p}")
-                        .setEncoded("p", "a b")
-                        .queryEncoded("q", "a b")
-                        .build()
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("http")
+              .domain("{p}")
+              .setEncoded("p", "a b")
+              .queryEncoded("q", "a b")
+              .build()
+              .toString()).isEqualTo("http://a%20b/?q=a+b");
    }
 
    @Test
    public void testParameterEncodingPathWithQuery()
    {
-      Assert.assertEquals("http://localhost/a%20b?q=a+b",
-               AddressBuilder.begin()
-                        .scheme("http")
-                        .domain("localhost")
-                        .path("/{p}")
-                        .setEncoded("p", "a b")
-                        .queryEncoded("q", "a b")
-                        .build()
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("http")
+              .domain("localhost")
+              .path("/{p}")
+              .setEncoded("p", "a b")
+              .queryEncoded("q", "a b")
+              .build()
+              .toString()).isEqualTo("http://localhost/a%20b?q=a+b");
    }
 
    @Test
    public void testParameterEncodingResult()
    {
-      Assert.assertEquals("http://localhost/a%20b?q=a+b",
-               AddressBuilder.begin()
-                        .scheme("http")
-                        .domain("localhost")
-                        .path("/{p}")
-                        .setEncoded("p", "a b")
-                        .queryEncoded("q", "a b")
-                        .build()
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("http")
+              .domain("localhost")
+              .path("/{p}")
+              .setEncoded("p", "a b")
+              .queryEncoded("q", "a b")
+              .build()
+              .toString()).isEqualTo("http://localhost/a%20b?q=a+b");
    }
 
    @Test
    public void testParametersWithoutEncoding()
    {
-      Assert.assertEquals("http://localhost/a%20b?q=a+b",
-               AddressBuilder.begin()
-                        .scheme("http")
-                        .domain("localhost")
-                        .path("/{p}")
-                        .set("p", "a%20b")
-                        .query("q", "a+b")
-                        .build()
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("http")
+              .domain("localhost")
+              .path("/{p}")
+              .set("p", "a%20b")
+              .query("q", "a+b")
+              .build()
+              .toString()).isEqualTo("http://localhost/a%20b?q=a+b");
    }
 
    @Test
@@ -112,42 +107,37 @@ public class AddressBuilderEncodingTest
        * but since we are just testing behavior of the builder, this is fine. 
        * Just don't use this as a "good example".
        */
-      Assert.assertEquals("http://localhost/a b?q=a b",
-               AddressBuilder.begin()
-                        .scheme("http")
-                        .domain("localhost")
-                        .path("/{p}")
-                        .set("p", "a b")
-                        .query("q", "a b")
-                        .build()
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("http")
+              .domain("localhost")
+              .path("/{p}")
+              .set("p", "a b")
+              .query("q", "a b")
+              .build()
+              .toString()).isEqualTo("http://localhost/a b?q=a b");
    }
 
    @Test
    public void testBuildQueryWithAmpersandInName()
    {
-      Assert.assertEquals("?q%26q=200",
-               AddressBuilder.begin().queryEncoded("q&q", 200).toString());
+      assertThat(AddressBuilder.begin().queryEncoded("q&q", 200).toString()).isEqualTo("?q%26q=200");
    }
 
    @Test
    public void testBuildQueryWithAmpersandInValue()
    {
-      Assert.assertEquals("?q=%26200",
-               AddressBuilder.begin().queryEncoded("q", "&200").toString());
+      assertThat(AddressBuilder.begin().queryEncoded("q", "&200").toString()).isEqualTo("?q=%26200");
    }
 
    @Test
    public void testBuildQueryWithQuestionMarkInName()
    {
-      Assert.assertEquals("??q=200",
-               AddressBuilder.begin().query("?q=200").toString());
+      assertThat(AddressBuilder.begin().query("?q=200").toString()).isEqualTo("??q=200");
    }
 
    @Test
    public void testBuildQueryWithQuestionMarkInValue()
    {
-      Assert.assertEquals("?q=?200",
-               AddressBuilder.begin().query("q", "?200").toString());
+      assertThat(AddressBuilder.begin().query("q", "?200").toString()).isEqualTo("?q=?200");
    }
 }

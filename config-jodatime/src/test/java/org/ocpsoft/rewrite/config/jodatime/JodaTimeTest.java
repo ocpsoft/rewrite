@@ -15,13 +15,13 @@
  */
 package org.ocpsoft.rewrite.config.jodatime;
 
-import org.junit.Assert;
-
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -41,7 +41,7 @@ public class JodaTimeTest
          }
       });
 
-      Assert.assertTrue(jodaTime.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(jodaTime.evaluate(new MockRewrite(), new MockEvaluationContext())).isTrue();
    }
 
    @Test
@@ -55,7 +55,7 @@ public class JodaTimeTest
          }
       });
 
-      Assert.assertFalse(jodaTime.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(jodaTime.evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 
 }

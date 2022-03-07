@@ -16,16 +16,16 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.pathparams;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class PathParametersTest extends RewriteTestBase
@@ -41,28 +41,28 @@ public class PathParametersTest extends RewriteTestBase
    @Test
    public void testNamedPathParameterWithDefaultRegex() throws Exception
    {
-      HttpAction<HttpGet> action = get("/default/1234");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("url=/default/1234"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
-      Assert.assertTrue(action.getResponseContent().contains("paramDigits=1234"));
+      HttpAction action = get("/default/1234");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("url=/default/1234");
+      assertThat(action.getResponseContent()).contains("prettyRequest=true");
+      assertThat(action.getResponseContent()).contains("paramDigits=1234");
    }
 
    @Test
    public void testNamedPathParameterWithCustomRegex() throws Exception
    {
-      HttpAction<HttpGet> action = get("/digits/1234");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertTrue(action.getResponseContent().contains("url=/digits/1234"));
-      Assert.assertTrue(action.getResponseContent().contains("prettyRequest=true"));
-      Assert.assertTrue(action.getResponseContent().contains("paramDigits=1234"));
+      HttpAction action = get("/digits/1234");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("url=/digits/1234");
+      assertThat(action.getResponseContent()).contains("prettyRequest=true");
+      assertThat(action.getResponseContent()).contains("paramDigits=1234");
    }
 
    @Test
    public void testNamedPathParameterWithCustomRegexFailingPattern() throws Exception
    {
-      HttpAction<HttpGet> action = get("/digits/1234s");
-      Assert.assertEquals(404, action.getStatusCode());
+      HttpAction action = get("/digits/1234s");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
 }

@@ -15,21 +15,17 @@
  */
 package com.ocpsoft.pretty.faces.url;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.ocpsoft.pretty.PrettyException;
 import com.ocpsoft.pretty.faces.config.mapping.PathParameter;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -40,9 +36,9 @@ public class URLPatternParserTest
    public void testSimplestMatch() throws Exception
    {
       URLPatternParser parser = new URLPatternParser("/");
-      assertTrue(parser.matches(new URL("/")));
+      assertThat(parser.matches(new URL("/"))).isTrue();
       List<PathParameter> parameters = parser.parse(new URL("/"));
-      assertEquals(0, parameters.size());
+      assertThat(parameters.size()).isEqualTo(0);
    }
 
    @Test
@@ -50,13 +46,13 @@ public class URLPatternParserTest
    {
       URLPatternParser namedParamParser = new URLPatternParser("/foo/#{named}/");
       List<PathParameter> params = namedParamParser.parse(new URL("/foo/love/"));
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("love", p.getValue());
-      assertEquals("named", p.getName());
-      assertEquals("#{named}", p.getExpression().getELExpression());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("love");
+      assertThat(p.getName()).isEqualTo("named");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{named}");
    }
 
    @Test
@@ -64,12 +60,12 @@ public class URLPatternParserTest
    {
       URLPatternParser namedParamParser = new URLPatternParser("/foo/#{:injected}/");
       List<PathParameter> params = namedParamParser.parse(new URL("/foo/love/"));
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("love", p.getValue());
-      assertEquals("#{injected}", p.getExpression().getELExpression());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("love");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{injected}");
    }
 
    @Test
@@ -77,13 +73,13 @@ public class URLPatternParserTest
    {
       URLPatternParser namedValuedParamParser = new URLPatternParser("/foo/#{named:bean.value}/");
       List<PathParameter> params = namedValuedParamParser.parse(new URL("/foo/love/"));
-      assertEquals(1, params.size());
+      assertThat(params.size()).isEqualTo(1);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("love", p.getValue());
-      assertEquals("named", p.getName());
-      assertEquals("#{bean.value}", p.getExpression().getELExpression());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("love");
+      assertThat(p.getName()).isEqualTo("named");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{bean.value}");
    }
 
    @Test
@@ -91,45 +87,45 @@ public class URLPatternParserTest
    {
       URLPatternParser parser = new URLPatternParser(
                "/project/#{paramsBean.project}/#{paramsBean.iteration}/#{paramsBean.story}");
-      assertTrue(parser.matches(new URL("/project/starfish1/starfish2/story1")));
-      assertFalse(parser.matches(new URL("project/starfish1/starfish2/story1")));
-      assertFalse(parser.matches(new URL("/project/starfish1/starfish2/story1/")));
-      assertFalse(parser.matches(new URL("project/starfish1/starfish2/story1/test")));
-      assertFalse(parser.matches(new URL("project/starfish2/story1")));
-      assertFalse(parser.matches(new URL("project/starfish1/starfish2")));
-      assertFalse(parser.matches(new URL("project/starfish1/starfish2/")));
+      assertThat(parser.matches(new URL("/project/starfish1/starfish2/story1"))).isTrue();
+      assertThat(parser.matches(new URL("project/starfish1/starfish2/story1"))).isFalse();
+      assertThat(parser.matches(new URL("/project/starfish1/starfish2/story1/"))).isFalse();
+      assertThat(parser.matches(new URL("project/starfish1/starfish2/story1/test"))).isFalse();
+      assertThat(parser.matches(new URL("project/starfish2/story1"))).isFalse();
+      assertThat(parser.matches(new URL("project/starfish1/starfish2"))).isFalse();
+      assertThat(parser.matches(new URL("project/starfish1/starfish2/"))).isFalse();
    }
 
    @Test
    public void testMatchesPrefixedSegmentExpressionInjected()
    {
       URLPatternParser parser = new URLPatternParser("/project/#{paramsBean.project}/story-#{paramsBean.story}/");
-      assertTrue(parser.matches(new URL("/project/starfish/story-1/")));
-      assertFalse(parser.matches(new URL("/project/starfish/story-1/-")));
-      assertFalse(parser.matches(new URL("/project/starfish/story-/")));
-      assertFalse(parser.matches(new URL("project/starfish/story-23/")));
+      assertThat(parser.matches(new URL("/project/starfish/story-1/"))).isTrue();
+      assertThat(parser.matches(new URL("/project/starfish/story-1/-"))).isFalse();
+      assertThat(parser.matches(new URL("/project/starfish/story-/"))).isFalse();
+      assertThat(parser.matches(new URL("project/starfish/story-23/"))).isFalse();
    }
 
    @Test
    public void testMatchesPrefixedSegmentExpressionNamed()
    {
       URLPatternParser parser = new URLPatternParser("/project/#{paramsBean.project}/story-#{story}/");
-      assertTrue(parser.matches(new URL("/project/starfish/story-1/")));
+      assertThat(parser.matches(new URL("/project/starfish/story-1/"))).isTrue();
    }
 
    @Test
    public void testMatchesMultipleExpressionNamedSegment()
    {
       URLPatternParser parser = new URLPatternParser("/project/#{paramsBean.project}/story-#{story}-#{comment}");
-      assertTrue(parser.matches(new URL("/project/starfish/story-1-23")));
-      assertFalse(parser.matches(new URL("/project/starfish/story-1-23/")));
+      assertThat(parser.matches(new URL("/project/starfish/story-1-23"))).isTrue();
+      assertThat(parser.matches(new URL("/project/starfish/story-1-23/"))).isFalse();
    }
 
    @Test
    public void testMatchesPrefixedSegmentExpressionNamedInjected()
    {
       URLPatternParser parser = new URLPatternParser("/project/#{paramsBean.project}/story-#{story:paramsBean.story}/");
-      assertTrue(parser.matches(new URL("/project/starfish/story-1/")));
+      assertThat(parser.matches(new URL("/project/starfish/story-1/"))).isTrue();
    }
 
    @Test
@@ -138,10 +134,10 @@ public class URLPatternParserTest
       URLPatternParser parser = new URLPatternParser(
                "/project/#{paramsBean.project}/#{paramsBean.iteration}/#{paramsBean.story}");
       List<PathParameter> params = parser.parse(new URL("/project/starfish1/sprint1/story1"));
-      assertEquals(3, params.size());
-      assertEquals("starfish1", params.get(0).getValue());
-      assertEquals("sprint1", params.get(1).getValue());
-      assertEquals("story1", params.get(2).getValue());
+      assertThat(params.size()).isEqualTo(3);
+      assertThat(params.get(0).getValue()).isEqualTo("starfish1");
+      assertThat(params.get(1).getValue()).isEqualTo("sprint1");
+      assertThat(params.get(2).getValue()).isEqualTo("story1");
    }
 
    @Test
@@ -150,10 +146,10 @@ public class URLPatternParserTest
       URLPatternParser duplicateParamsParser = new URLPatternParser(
                "/project/#{paramsBean.project}/#{paramsBean.project}/#{paramsBean.story}");
       List<PathParameter> params = duplicateParamsParser.parse(new URL("/project/starfish1/sprint1/story1"));
-      assertEquals(3, params.size());
-      assertEquals("starfish1", params.get(0).getValue());
-      assertEquals("sprint1", params.get(1).getValue());
-      assertEquals("story1", params.get(2).getValue());
+      assertThat(params.size()).isEqualTo(3);
+      assertThat(params.get(0).getValue()).isEqualTo("starfish1");
+      assertThat(params.get(1).getValue()).isEqualTo("sprint1");
+      assertThat(params.get(2).getValue()).isEqualTo("story1");
    }
 
    @Test
@@ -162,22 +158,22 @@ public class URLPatternParserTest
       URLPatternParser parser = new URLPatternParser(
                "/project/#{paramsBean.project}/#{paramsBean.iteration}/#{paramsBean.story}");
       List<PathParameter> params = parser.parse(new URL("/project/starfish1/sprint1/story1"));
-      assertEquals(3, params.size());
+      assertThat(params.size()).isEqualTo(3);
 
       PathParameter p = params.get(0);
-      assertEquals(0, p.getPosition());
-      assertEquals("starfish1", p.getValue());
-      assertEquals("#{paramsBean.project}", p.getExpression().getELExpression());
+      assertThat(p.getPosition()).isEqualTo(0);
+      assertThat(p.getValue()).isEqualTo("starfish1");
+      assertThat(p.getExpression().getELExpression()).isEqualTo("#{paramsBean.project}");
 
       PathParameter p1 = params.get(1);
-      assertEquals(1, p1.getPosition());
-      assertEquals("sprint1", p1.getValue());
-      assertEquals("#{paramsBean.iteration}", p1.getExpression().getELExpression());
+      assertThat(p1.getPosition()).isEqualTo(1);
+      assertThat(p1.getValue()).isEqualTo("sprint1");
+      assertThat(p1.getExpression().getELExpression()).isEqualTo("#{paramsBean.iteration}");
 
       PathParameter p2 = params.get(2);
-      assertEquals(2, p2.getPosition());
-      assertEquals("story1", p2.getValue());
-      assertEquals("#{paramsBean.story}", p2.getExpression().getELExpression());
+      assertThat(p2.getPosition()).isEqualTo(2);
+      assertThat(p2.getValue()).isEqualTo("story1");
+      assertThat(p2.getExpression().getELExpression()).isEqualTo("#{paramsBean.story}");
    }
 
    @Test
@@ -186,7 +182,7 @@ public class URLPatternParserTest
       URLPatternParser parser = new URLPatternParser(
                "/project/#{paramsBean.project}/#{paramsBean.iteration}/#{paramsBean.story}");
       String mappedUrl = parser.getMappedURL("p1", 22, 55).toURL();
-      assertEquals("/project/p1/22/55", mappedUrl);
+      assertThat(mappedUrl).isEqualTo("/project/p1/22/55");
    }
 
    @Test
@@ -194,7 +190,7 @@ public class URLPatternParserTest
    {
       URLPatternParser parser = new URLPatternParser(
                "/project/#{paramsBean.project}/#{paramsBean.iteration}/#{paramsBean.story}");
-      assertEquals(3, parser.getParameterCount());
+      assertThat(parser.getParameterCount()).isEqualTo(3);
    }
 
    @Test
@@ -207,19 +203,19 @@ public class URLPatternParserTest
       params.add(22);
       params.add(55);
       String mappedUrl = parser.getMappedURL(params).toURL();
-      assertEquals("/project/p1/22/55", mappedUrl);
+      assertThat(mappedUrl).isEqualTo("/project/p1/22/55");
       params.remove(2);
       try
       {
          mappedUrl = parser.getMappedURL(params, 55).toURL();
-         assertEquals("/project/p1/22/55", mappedUrl);
-         assertTrue("Parameter count is wrong.", false);
+         assertThat(mappedUrl).isEqualTo("/project/p1/22/55");
+         assertThat(false).as("Parameter count is wrong.").isTrue();
       }
       catch (PrettyException pe)
       {
-         assertTrue(true);
+         assertThat(true).isTrue();
       }
-      assertNotSame("/project/p1/22/55", parser.getMappedURL(params, 22, 55).toURL());
+      assertThat(parser.getMappedURL(params, 22, 55).toURL()).isNotSameAs("/project/p1/22/55");
    }
 
    @Test
@@ -232,20 +228,20 @@ public class URLPatternParserTest
       params[1] = 22;
       params[2] = 55;
       String mappedUrl = parser.getMappedURL(params).toURL();
-      assertEquals("/project/p1/22/55", mappedUrl);
+      assertThat(mappedUrl).isEqualTo("/project/p1/22/55");
       params[2] = null;
       params[1] = null;
       try
       {
          mappedUrl = parser.getMappedURL(params, 55).toURL();
-         assertEquals("/project/p1/22/55", mappedUrl);
-         assertTrue("An exception should have been thrown by now", false);
+         assertThat(mappedUrl).isEqualTo("/project/p1/22/55");
+         assertThat(false).as("An exception should have been thrown by now").isTrue();
       }
       catch (PrettyException pe)
       {
-         assertTrue(true);
+         assertThat(true).isTrue();
       }
-      assertNotSame("/project/p1/22/55", parser.getMappedURL(params, 22, 55).toURL());
+      assertThat(parser.getMappedURL(params, 22, 55).toURL()).isNotSameAs("/project/p1/22/55");
    }
 
    @Test
@@ -260,13 +256,13 @@ public class URLPatternParserTest
       try
       {
          String mappedUrl = parser.getMappedURL(params).toURL();
-         assertEquals("An exception should have been thrown: Map parameters are not supported at this time.", mappedUrl);
+         assertThat(mappedUrl).isEqualTo("An exception should have been thrown: Map parameters are not supported at this time.");
       }
       catch (PrettyException pe)
       {
-         assertTrue(true);
+         assertThat(true).isTrue();
       }
-      assertNotSame("/project/p1/22/55", parser.getMappedURL(params, 22, 55).toURL());
+      assertThat(parser.getMappedURL(params, 22, 55).toURL()).isNotSameAs("/project/p1/22/55");
    }
 
    @Test
@@ -275,7 +271,7 @@ public class URLPatternParserTest
       URLPatternParser noParamsParser = new URLPatternParser("/no/param");
       List<?> params = new ArrayList<Object>();
       String mappedUrl = noParamsParser.getMappedURL(params).toURL();
-      assertEquals("Empty list failed", "/no/param", mappedUrl);
+      assertThat(mappedUrl).as("Empty list failed").isEqualTo("/no/param");
    }
 
    @Test
@@ -284,7 +280,7 @@ public class URLPatternParserTest
       URLPatternParser noParamsParser = new URLPatternParser("/no/param");
       List<?> params = null;
       String mappedUrl = noParamsParser.getMappedURL(params).toURL();
-      assertEquals("Null param failed", "/no/param", mappedUrl);
+      assertThat(mappedUrl).as("Null param failed").isEqualTo("/no/param");
    }
 
    @Test
@@ -292,7 +288,7 @@ public class URLPatternParserTest
    {
       URLPatternParser regexParser = new URLPatternParser("/(foo|bar|baz|cat|dog).jsf");
       List<PathParameter> params = regexParser.parse(new URL("/foo.jsf"));
-      Assert.assertTrue(params.isEmpty());
+      assertThat(params.isEmpty()).isTrue();
    }
    
    @Test
@@ -304,11 +300,11 @@ public class URLPatternParserTest
       
       // parse an URL containing a \ character
       List<PathParameter> params = regexParser.parse(new URL("/\\/"));
-      assertEquals(1, params.size());
-      assertEquals("\\", params.get(0).getValue());
+      assertThat(params.size()).isEqualTo(1);
+      assertThat(params.get(0).getValue()).isEqualTo("\\");
       
       // generate URL
       URL url = regexParser.getMappedURL(new Object[] { "\\" });
-      assertEquals("/\\/", url.toURL());
+      assertThat(url.toURL()).isEqualTo("/\\/");
    }
 }

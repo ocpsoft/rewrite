@@ -98,14 +98,16 @@ public class RewriteTest extends RewriteTestBase
       // Tomcat specific stuff
       if (isTomcat()) {
 
-          archive.addAsLibraries(resolveDependencies("javax.enterprise:cdi-api:1.2"));
-          archive.addAsLibraries(resolveDependencies("javax.inject:javax.inject:1"));
+          archive.addAsLibraries(resolveDependencies("jakarta.enterprise:jakarta.enterprise.cdi-api:2.0.2"));
+          archive.addAsLibraries(resolveDependencies("jakarta.inject:jakarta.inject-api:1.0.5"));
 
          // setup Weld
          if (isWeld()) {
             archive.addAsLibraries(resolveDependencies("org.jboss.weld:weld-core:2.4.7.Final"));
             archive.addAsLibraries(resolveDependencies("org.jboss.weld.servlet:weld-servlet-core:2.4.7.Final"));
             archive.addAsWebResource("tomcat-weld-context.xml", "META-INF/context.xml");
+         } else {
+            archive.addAsWebResource("tomcat-context.xml", "META-INF/context.xml");
          }
 
          // setup OWB
@@ -128,21 +130,19 @@ public class RewriteTest extends RewriteTestBase
 
    public static boolean isJetty()
    {
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      try {
-         classLoader.loadClass("org.jboss.arquillian.container.jetty.embedded_7.JettyEmbeddedContainer");
-         return true;
-      }
-      catch (ClassNotFoundException e) {
-         return false;
-      }
+      return isClassPresent("org.jboss.arquillian.container.jetty.embedded_7.JettyEmbeddedContainer");
    }
 
    public static boolean isTomcat()
    {
+      return isClassPresent("org.jboss.arquillian.container.tomcat.managed.Tomcat8ManagedContainer")
+              || isClassPresent("org.jboss.arquillian.container.tomcat.embedded.Tomcat8EmbeddedContainer");
+   }
+
+   private static boolean isClassPresent(String name) {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       try {
-         classLoader.loadClass("org.jboss.arquillian.container.tomcat.managed.Tomcat8ManagedContainer");
+         classLoader.loadClass(name);
          return true;
       }
       catch (ClassNotFoundException e) {
@@ -208,23 +208,6 @@ public class RewriteTest extends RewriteTestBase
       addAsResource(archive, new File("../impl/target/classes/META-INF"));
       addAsResource(archive, new File("../addressbuilder/target/classes/org"));
       addAsResource(archive, new File("../api-servlet/target/classes/org"));
-
-      /*
-       * We have to manually create the META-NF/services entry for ServletRegistrationProvider
-       * and DispatcherTypeProvider, because the existing ones from the two modules overwrite 
-       * each other when added to the archive.
-       */
-      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.ServletRegistrationProvider",
-               "org.ocpsoft.rewrite.servlet.impl.Servlet3ServletRegistrationProvider",
-               "org.ocpsoft.rewrite.servlet.impl.WebXmlServletRegistrationProvider");
-      archive.addAsServiceProvider("org.ocpsoft.rewrite.servlet.spi.DispatcherTypeProvider",
-               "org.ocpsoft.rewrite.servlet.impl.Servlet3DispatcherTypeProvider",
-               "org.ocpsoft.rewrite.servlet.impl.Servlet25DispatcherTypeProvider");
-
-      addAsResource(archive, new File("../impl-servlet-2.5/target/classes/org"));
-      addAsResource(archive, new File("../impl-servlet-2.5/target/classes/META-INF"));
-      addAsResource(archive, new File("../impl-servlet-3.0/target/classes/org"));
-      addAsResource(archive, new File("../impl-servlet-3.0/target/classes/META-INF"));
 
       addAsResource(archive, new File("../impl-servlet/target/classes/org"));
       addAsResource(archive, new File("../impl-servlet/target/classes/META-INF"));

@@ -15,16 +15,16 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,14 +45,14 @@ public class ParameterConfiguration2Test extends RewriteTest
    @Test
    public void testParameterCanBeConfigured() throws Exception
    {
-      HttpAction<HttpGet> action = get("/paramconfig");
-      Assert.assertEquals(245, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/paramconfig");
+      assertThat(action.getStatusCode()).isEqualTo(245);
    }
 
    @Test
    public void testParameterCanBeConfigured2() throws Exception
    {
-      HttpAction<HttpGet> action = get("/badconfig");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/badconfig");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 }

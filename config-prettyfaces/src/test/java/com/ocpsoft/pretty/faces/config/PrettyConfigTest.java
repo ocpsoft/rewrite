@@ -15,10 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +23,8 @@ import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.config.mapping.UrlMapping;
 import com.ocpsoft.pretty.faces.url.URL;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PrettyConfigTest
 {
@@ -61,41 +59,41 @@ public class PrettyConfigTest
    public void testGetMappingById()
    {
       UrlMapping mapping2 = config.getMappingById("testid");
-      assertEquals(mapping, mapping2);
+      assertThat(mapping2).isEqualTo(mapping);
    }
 
    @Test
    public void testGetMappingByNullIdReturnsNull()
    {
       UrlMapping mapping2 = config.getMappingById(null);
-      assertEquals(null, mapping2);
+      assertThat(mapping2).isEqualTo(null);
    }
 
    @Test
    public void testGetMappingForUrl()
    {
       UrlMapping mapping2 = config.getMappingForUrl(new URL("/home/en/test/"));
-      assertEquals(mapping, mapping2);
+      assertThat(mapping2).isEqualTo(mapping);
    }
 
    @Test
    public void isViewMapped() throws Exception
    {
-      assertTrue(config.isViewMapped("/faces/view.jsf"));
-      assertFalse(config.isViewMapped("/faces/view2.jsf"));
+      assertThat(config.isViewMapped("/faces/view.jsf")).isTrue();
+      assertThat(config.isViewMapped("/faces/view2.jsf")).isFalse();
    }
 
    @Test
    public void isNullViewMappedReturnsFalse() throws Exception
    {
-      assertFalse(config.isViewMapped(null));
+      assertThat(config.isViewMapped(null)).isFalse();
    }
 
    @Test
    public void testIsURLMapped() throws Exception
    {
-      assertTrue(config.isURLMapped(new URL("/home/en/test/")));
-      assertFalse(config.isViewMapped("/home/en/notmapped/okthen"));
+      assertThat(config.isURLMapped(new URL("/home/en/test/"))).isTrue();
+      assertThat(config.isViewMapped("/home/en/notmapped/okthen")).isFalse();
    }
 
 }

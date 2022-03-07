@@ -1,13 +1,9 @@
 package org.ocpsoft.rewrite.transform.markup;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertThat;
-import org.junit.Assert;
-
 import org.junit.Test;
 import org.ocpsoft.rewrite.transform.markup.HtmlDocumentBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HtmlDocumentBuilderTest
 {
@@ -16,65 +12,65 @@ public class HtmlDocumentBuilderTest
    public void shouldCreateHtml5Doctype()
    {
       String result = new HtmlDocumentBuilder().build(null);
-      assertThat(result, startsWith("<!DOCTYPE html>"));
+      assertThat(result).startsWith("<!DOCTYPE html>");
    }
 
    @Test
    public void shouldCreateHeadElement()
    {
       String result = new HtmlDocumentBuilder().build(null);
-      assertThat(result, containsString("<head>"));
-      assertThat(result, containsString("</head>"));
+      assertThat(result).contains("<head>");
+      assertThat(result).contains("</head>");
    }
 
    @Test
    public void shouldCreateBody()
    {
       String result = new HtmlDocumentBuilder().build(null);
-      assertThat(result, containsString("<body>"));
-      assertThat(result, containsString("</body>"));
+      assertThat(result).contains("<body>");
+      assertThat(result).contains("</body>");
    }
 
    @Test
    public void shouldAddNoTitleByDefault()
    {
       String result = new HtmlDocumentBuilder().build(null);
-      assertThat(result, not(containsString("<title>")));
-      assertThat(result, not(containsString("</title>")));
+      assertThat(result).doesNotContain("<title>");
+      assertThat(result).doesNotContain("</title>");
    }
 
    @Test
    public void shouldAddTitleIfTitleIsSet()
    {
       String result = new HtmlDocumentBuilder().withTitle("foo").build(null);
-      assertThat(result, containsString("<title>foo</title>"));
+      assertThat(result).contains("<title>foo</title>");
    }
 
    @Test
    public void shouldAddNoStylesheetByDefault()
    {
       String result = new HtmlDocumentBuilder().build(null);
-      assertThat(result, not(containsString("<link")));
+      assertThat(result).doesNotContain("<link");
    }
 
    @Test
    public void shouldAddNoHeaderInjectionByDefault()
    {
       String result = new HtmlDocumentBuilder().build(null);
-      Assert.assertEquals("<!DOCTYPE html>\n" +
-               "<html>\n" +
-               "<head>\n" +
-               "</head>\n" +
-               "<body>\n" +
-               "</body>\n" +
-               "</html>\n", result);
+      assertThat(result).isEqualTo("<!DOCTYPE html>\n" +
+              "<html>\n" +
+              "<head>\n" +
+              "</head>\n" +
+              "<body>\n" +
+              "</body>\n" +
+              "</html>\n");
    }
 
    @Test
    public void shouldAddStylesheetIfFileWasAdded()
    {
       String result = new HtmlDocumentBuilder().addStylesheet("styles.css").build(null);
-      assertThat(result, containsString("<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\">"));
+      assertThat(result).contains("<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\">");
    }
 
    @Test
@@ -84,15 +80,15 @@ public class HtmlDocumentBuilderTest
                .addStylesheet("foo.css")
                .addStylesheet("bar.css")
                .build(null);
-      assertThat(result, containsString("<link rel=\"stylesheet\" type=\"text/css\" href=\"foo.css\">"));
-      assertThat(result, containsString("<link rel=\"stylesheet\" type=\"text/css\" href=\"bar.css\">"));
+      assertThat(result).contains("<link rel=\"stylesheet\" type=\"text/css\" href=\"foo.css\">");
+      assertThat(result).contains("<link rel=\"stylesheet\" type=\"text/css\" href=\"bar.css\">");
    }
 
    @Test
    public void shouldAddBody()
    {
       String result = new HtmlDocumentBuilder().build("content");
-      assertThat(result, containsString("<body>\ncontent\n</body>"));
+      assertThat(result).contains("<body>\ncontent\n</body>");
    }
 
 }

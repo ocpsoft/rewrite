@@ -15,16 +15,16 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,30 +45,30 @@ public class ParameterConfigurationTest extends RewriteTest
    @Test
    public void testPathParameterRequestBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/lincoln/order/3");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("lincoln", action.getResponseHeaderValues("User-Name").get(0));
-      Assert.assertEquals("3", action.getResponseHeaderValues("Order-ID").get(0));
+      HttpAction action = get("/lincoln/order/3");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseHeaderValues("User-Name").get(0)).isEqualTo("lincoln");
+      assertThat(action.getResponseHeaderValues("Order-ID").get(0)).isEqualTo("3");
    }
 
    @Test
    public void testTestPathParameterNotMatchingRegexes() throws Exception
    {
-      HttpAction<HttpGet> action = get("/lincoln3/order/z42");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/lincoln3/order/z42");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testTestPathAndForwardUseEvaluationContextByDefault() throws Exception
    {
-      HttpAction<HttpGet> action = get("/p/rewrite/story/50");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/p/rewrite/story/50");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
    public void testFailedBindingRaisesException() throws Exception
    {
-      HttpAction<HttpGet> action = get("/lincoln/profile");
-      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/lincoln/profile");
+      assertThat(action.getStatusCode()).isEqualTo(500);
    }
 }

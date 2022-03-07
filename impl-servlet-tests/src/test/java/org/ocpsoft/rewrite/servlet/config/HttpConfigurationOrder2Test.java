@@ -16,18 +16,18 @@
 package org.ocpsoft.rewrite.servlet.config;
 
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -51,15 +51,15 @@ public class HttpConfigurationOrder2Test extends RewriteTest
    @Test
    public void testOrder1() throws Exception
    {
-      HttpAction<HttpGet> action = get("/foobar");
-      Assert.assertEquals(403, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/foobar");
+      assertThat(action.getStatusCode()).isEqualTo(403);
    }
 
    @Test
    public void testOrder2() throws Exception
    {
-      HttpAction<HttpGet> action = get("/login");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("test page", action.getResponseContent());
+      HttpAction action = get("/login");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("test page");
    }
 }

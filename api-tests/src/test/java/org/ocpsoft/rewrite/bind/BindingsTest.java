@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.bind;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -25,6 +24,8 @@ import org.ocpsoft.rewrite.param.DefaultParameter;
 import org.ocpsoft.rewrite.param.Validator;
 import org.ocpsoft.rewrite.test.MockRewrite;
 import org.ocpsoft.rewrite.util.ParameterUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,9 +47,9 @@ public class BindingsTest
       MockEvaluationContext context = new MockEvaluationContext();
 
       DefaultParameter parameter = new DefaultParameter("lincoln");
-      Assert.assertTrue(ParameterUtils.enqueueSubmission(rewrite, context,
-               parameter.bindsTo(Evaluation.property("lincoln")), "baxter"));
-      Assert.assertEquals("baxter", Evaluation.property("lincoln").retrieve(rewrite, context));
+      assertThat(ParameterUtils.enqueueSubmission(rewrite, context,
+              parameter.bindsTo(Evaluation.property("lincoln")), "baxter")).isTrue();
+      assertThat(Evaluation.property("lincoln").retrieve(rewrite, context)).isEqualTo("baxter");
    }
 
    @Test
@@ -64,8 +65,8 @@ public class BindingsTest
          }
       };
 
-      Assert.assertFalse(ParameterUtils.enqueueSubmission(rewrite, context,
-               new DefaultParameter("lincoln").bindsTo(Evaluation.property("lincoln")).validatedBy(validator), "baxter"));
+      assertThat(ParameterUtils.enqueueSubmission(rewrite, context,
+              new DefaultParameter("lincoln").bindsTo(Evaluation.property("lincoln")).validatedBy(validator), "baxter")).isFalse();
    }
 
 }

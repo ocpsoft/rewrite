@@ -15,12 +15,8 @@
  */
 package org.ocpsoft.rewrite.transform.less;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -35,6 +31,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.transform.less.Less;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 
@@ -69,17 +67,17 @@ public class LessIntegrationTest extends RewriteTest
    @Test
    public void testSimpleLessFileRendering() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.css");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      assertTrue(action.getResponseContent().contains("width: 3"));
+      HttpAction action = get("/test.css");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("width: 3");
    }
 
    @Test
    @Category(IgnoreForWildfly.class)
    public void testNotExistingLessFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.css");
-      assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/not-existing.css");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
 }

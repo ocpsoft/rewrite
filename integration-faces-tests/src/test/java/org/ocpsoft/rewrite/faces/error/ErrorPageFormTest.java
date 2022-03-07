@@ -15,21 +15,19 @@
  */
 package org.ocpsoft.rewrite.faces.error;
 
-import static org.hamcrest.Matchers.endsWith;
-import static org.junit.Assert.assertThat;
-
-import org.apache.http.client.methods.HttpGet;
 import org.assertj.core.api.Assertions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.faces.annotation.RewriteFacesAnnotationsTest;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @RunWith(Arquillian.class)
 public class ErrorPageFormTest extends RewriteTestBase
@@ -49,9 +47,9 @@ public class ErrorPageFormTest extends RewriteTestBase
    @Test
    public void testNavigateWithSimpleString() throws Exception
    {
-      HttpAction<HttpGet> client = get("/missingresource");
-      assertThat(client.getCurrentURL(), endsWith("/missingresource"));
-      Assert.assertEquals(404, client.getResponse().getStatusLine().getStatusCode());
+      HttpAction client = get("/missingresource");
+      assertThat(client.getCurrentURL()).endsWith("/missingresource");
+      assertThat(client.getStatusCode()).isEqualTo(404);
 
       String content = client.getResponseContent();
       Assertions.assertThat(content)

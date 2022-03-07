@@ -15,13 +15,12 @@
  */
 package com.ocpsoft.pretty.faces.beans;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.annotation.URLAction.PhaseId;
 import com.ocpsoft.pretty.faces.config.mapping.UrlAction;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author lb3
@@ -35,7 +34,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(true);
-      assertTrue(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true)).isTrue();
    }
 
    @Test
@@ -43,7 +42,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(true);
-      assertTrue(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
    }
 
    @Test
@@ -51,7 +50,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertTrue(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
    }
 
    @Test
@@ -59,7 +58,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertFalse(executor.shouldExecute(action, javax.faces.event.PhaseId.APPLY_REQUEST_VALUES, false));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.APPLY_REQUEST_VALUES, false)).isFalse();
    }
 
    @Test
@@ -67,7 +66,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertTrue(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true)).isTrue();
    }
 
    @Test
@@ -75,7 +74,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertFalse(executor.shouldExecute(action, javax.faces.event.PhaseId.APPLY_REQUEST_VALUES, true));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.APPLY_REQUEST_VALUES, true)).isFalse();
    }
 
    @Test
@@ -83,7 +82,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(false);
-      assertFalse(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true)).isFalse();
    }
 
    @Test
@@ -91,7 +90,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(false);
-      assertTrue(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false));
+      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
    }
 
 }

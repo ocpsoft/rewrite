@@ -15,11 +15,8 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import static org.junit.Assert.assertTrue;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -32,6 +29,9 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.Parameterized;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.ocpsoft.rewrite.servlet.config.Path.matches;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -59,7 +59,7 @@ public class PathTest
    @Test
    public void testPathImplementsParameterized() throws Exception
    {
-      Assert.assertTrue(Path.matches("") instanceof Parameterized);
+      assertThat(matches("")).isInstanceOf(Parameterized.class);
    }
 
    @Test
@@ -68,7 +68,7 @@ public class PathTest
       Path path = Path.matches("/application/{seg}");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, path);
-      Assert.assertTrue(path.evaluate(rewrite, context));
+      assertThat(path.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -79,14 +79,14 @@ public class PathTest
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, path);
 
-      Assert.assertTrue(path.evaluate(rewrite, context));
+      assertThat(path.evaluate(rewrite, context)).isTrue();
 
    }
 
    @Test
    public void testMatchesLiteral()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(Path.matches("/application/path").evaluate(rewrite, new MockEvaluationContext())).isTrue();
    }
 
    @Test
@@ -95,13 +95,13 @@ public class PathTest
       Path path = Path.matches("/application/{param}");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, path);
-      Assert.assertTrue(path.evaluate(rewrite, context));
+      assertThat(path.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Path.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(Path.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -119,7 +119,7 @@ public class PathTest
 
       Parameter<?> p1 = store.get("param");
       Parameter<?> p2 = store.get("param");
-      assertTrue(p1 == p2);
+      assertThat(p1 == p2).isTrue();
    }
 
 }

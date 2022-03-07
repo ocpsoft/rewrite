@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -30,6 +29,8 @@ import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -66,7 +67,7 @@ public class QuerySimpleTest
    @Test
    public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(Query.matches("foo=bar&bar=baz&ee").evaluate(rewrite, context));
+      assertThat(Query.matches("foo=bar&bar=baz&ee").evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -75,7 +76,7 @@ public class QuerySimpleTest
       store.get("t", new DefaultParameter("t"));
       Query query = Query.matches("foo=bar{t}");
       query.setParameterStore(store);
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -84,7 +85,7 @@ public class QuerySimpleTest
       Query query = Query.parameterExists("foo");
       query.setParameterStore(store);
       store.get("foo", new DefaultParameter("foo"));
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -93,13 +94,13 @@ public class QuerySimpleTest
       Query query = Query.parameterExists("ee");
       query.setParameterStore(store);
       store.get("ee", new DefaultParameter("ee"));
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testQueryStringParameterDoesNotExist()
    {
-      Assert.assertFalse(Query.parameterExists("nothing").evaluate(rewrite, context));
+      assertThat(Query.parameterExists("nothing").evaluate(rewrite, context)).isFalse();
    }
 
    @Test
@@ -108,19 +109,19 @@ public class QuerySimpleTest
       Query query = Query.valueExists("{b}ar");
       query.setParameterStore(store);
       store.get("b", new DefaultParameter("b"));
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testQueryStringValueDoesNotExist()
    {
-      Assert.assertFalse(Query.valueExists("nothing").evaluate(rewrite, context));
+      assertThat(Query.valueExists("nothing").evaluate(rewrite, context)).isFalse();
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Query.matches(".*").evaluate(new MockRewrite(), context));
+      assertThat(Query.matches(".*").evaluate(new MockRewrite(), context)).isFalse();
    }
 
    @Test(expected = IllegalArgumentException.class)

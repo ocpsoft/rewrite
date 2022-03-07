@@ -1,10 +1,5 @@
 package org.ocpsoft.rewrite.annotation.query;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import org.apache.http.client.methods.HttpGet;
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -15,6 +10,8 @@ import org.ocpsoft.rewrite.annotation.RewriteAnnotationTest;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class QueryParameterTest extends RewriteTestBase
@@ -36,28 +33,28 @@ public class QueryParameterTest extends RewriteTestBase
    @Test
    public void testQueryParameter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/query?q=foo");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
-      assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [false]"));
+      HttpAction action = get("/query?q=foo");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Log: [foo]");
+      assertThat(action.getResponseContent()).contains("IsNull: [false]");
    }
 
    @Test
    public void shouldFindCorrectQueryParameterIfOthersExist() throws Exception
    {
-      HttpAction<HttpGet> action = get("/query?a=b&q=foo&c=d");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("Log: [foo]"));
-      assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [false]"));
+      HttpAction action = get("/query?a=b&q=foo&c=d");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Log: [foo]");
+      assertThat(action.getResponseContent()).contains("IsNull: [false]");
    }
 
    @Test
    public void shouldSupportMissingQueryParameter() throws Exception
    {
-      HttpAction<HttpGet> action = get("/query");
-      assertEquals(200, action.getStatusCode());
-      assertThat(action.getResponseContent(), Matchers.containsString("Log: []"));
-      assertThat(action.getResponseContent(), Matchers.containsString("IsNull: [true]"));
+      HttpAction action = get("/query");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Log: []");
+      assertThat(action.getResponseContent()).contains("IsNull: [true]");
    }
 
 }

@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.junit.Assert;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,11 +45,11 @@ public class RequestBindingTest extends RewriteTest
    @Test
    public void testRequestBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/requestBinding/ONE/TWO");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/requestBinding/ONE/TWO");
+      assertThat(action.getStatusCode()).isEqualTo(210);
 
-      Assert.assertEquals("ONE", action.getResponseHeaderValues("one").get(0));
-      Assert.assertEquals("TWO", action.getResponseHeaderValues("two").get(0));
+      assertThat(action.getResponseHeaderValues("one").get(0)).isEqualTo("ONE");
+      assertThat(action.getResponseHeaderValues("two").get(0)).isEqualTo("TWO");
    }
 
 }

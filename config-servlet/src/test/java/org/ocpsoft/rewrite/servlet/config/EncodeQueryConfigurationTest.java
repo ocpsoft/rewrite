@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.junit.Assert;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -46,35 +45,35 @@ public class EncodeQueryConfigurationTest extends RewriteTest
    @Test
    public void testQueryEncoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequery?foo=bar");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getCurrentContextRelativeURL().contains("/encodequery?c="));
+      HttpAction action = get("/encodequery?foo=bar");
+      assertThat(action.getStatusCode()).isEqualTo(210);
+      assertThat(action.getCurrentContextRelativeURL()).contains("/encodequery?c=");
    }
 
    @Test
    public void testQueryEncodingExclusions() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequeryexcluding?foo=bar&keep=this");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getCurrentContextRelativeURL().contains("c="));
-      Assert.assertTrue(action.getCurrentContextRelativeURL().contains("keep=this"));
+      HttpAction action = get("/encodequeryexcluding?foo=bar&keep=this");
+      assertThat(action.getStatusCode()).isEqualTo(210);
+      assertThat(action.getCurrentContextRelativeURL()).contains("c=");
+      assertThat(action.getCurrentContextRelativeURL()).contains("keep=this");
    }
 
    @Test
    public void testQueryEncodingInclusions() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequeryspecific?encode1=value1&keep=this&encode2=value2");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertTrue(action.getCurrentContextRelativeURL().contains("c="));
-      Assert.assertTrue(action.getCurrentContextRelativeURL().contains("keep=this"));
-      Assert.assertFalse(action.getCurrentContextRelativeURL().contains("encode1=value1"));
-      Assert.assertFalse(action.getCurrentContextRelativeURL().contains("encode2=value2"));
+      HttpAction action = get("/encodequeryspecific?encode1=value1&keep=this&encode2=value2");
+      assertThat(action.getStatusCode()).isEqualTo(210);
+      assertThat(action.getCurrentContextRelativeURL()).contains("c=");
+      assertThat(action.getCurrentContextRelativeURL()).contains("keep=this");
+      assertThat(action.getCurrentContextRelativeURL()).doesNotContain("encode1=value1");
+      assertThat(action.getCurrentContextRelativeURL()).doesNotContain("encode2=value2");
    }
 
    @Test
    public void testQueryEncodingUnchanged() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encodequery");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/encodequery");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 }

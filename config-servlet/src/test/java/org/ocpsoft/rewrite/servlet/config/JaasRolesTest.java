@@ -1,7 +1,5 @@
 package org.ocpsoft.rewrite.servlet.config;
 
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -9,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.common.services.ServiceProvider;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class JaasRolesTest extends RewriteTest
@@ -25,7 +25,7 @@ public class JaasRolesTest extends RewriteTest
    @Test
    public void testJAASAnonymousUser() throws Exception
    {
-      assertEquals(404, get("/admin/something").getStatusCode());
+      assertThat(get("/admin/something").getStatusCode()).isEqualTo(404);
    }
 
 }

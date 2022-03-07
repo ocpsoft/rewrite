@@ -15,17 +15,17 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
@@ -47,31 +47,31 @@ public class RequestNullBindingTest extends RewriteTest
    @Test
    public void testNotNullBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/foo/123");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/foo/123");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    //"abc" can't be converted to Long so we're expecting an error 500 here.
    @Test
    public void testNonLongBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/foo/abc");
-      Assert.assertEquals(500, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/foo/abc");
+      assertThat(action.getStatusCode()).isEqualTo(500);
    }
    
    // "" should be converted to null
    @Test
    public void testNullBinding1() throws Exception
    {
-      HttpAction<HttpGet> action = get("/foo/");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/foo/");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    // idem
    @Test
    public void testNullBinding2() throws Exception
    {
-      HttpAction<HttpGet> action = get("/bar//");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/bar//");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 }

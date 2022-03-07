@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -25,6 +24,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.urlbuilder.AddressBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:fabmars@gmail.com">Fabien Marsaud</a>
@@ -50,13 +51,13 @@ public class NoPathTest
    @Test
    public void testDomainNoPath() throws Exception
    {
-      Assert.assertFalse(Path.matches("").evaluate(outboundDryDomain, new MockEvaluationContext()));
+      assertThat(Path.matches("").evaluate(outboundDryDomain, new MockEvaluationContext())).isFalse();
    }
 
    @Test
    public void testLoneAnchor() throws Exception
    {
-      Assert.assertFalse(Path.matches("").evaluate(outboundLoneAnchor, new MockEvaluationContext()));
+      assertThat(Path.matches("").evaluate(outboundLoneAnchor, new MockEvaluationContext())).isFalse();
    }
 
 }

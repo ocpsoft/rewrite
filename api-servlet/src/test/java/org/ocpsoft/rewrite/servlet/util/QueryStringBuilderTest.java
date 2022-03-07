@@ -15,18 +15,15 @@
  */
 package org.ocpsoft.rewrite.servlet.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.Assert;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /*
  * FIXME:  Remove references to deprecated code.
@@ -43,10 +40,10 @@ public class QueryStringBuilderTest
 
       QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
-      assertEquals("", queryString);
+      assertThat(queryString).isEqualTo("");
 
       qs = QueryStringBuilder.createFromEncoded(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -57,10 +54,10 @@ public class QueryStringBuilderTest
 
       String result = qs.toQueryString();
 
-      assertTrue(result.startsWith("?"));
-      assertTrue(result.contains("bar=555"));
-      assertTrue(result.contains("foo=hello"));
-      assertTrue(result.contains("foo=friend"));
+      assertThat(result).startsWith("?");
+      assertThat(result).contains("bar=555");
+      assertThat(result).contains("foo=hello");
+      assertThat(result).contains("foo=friend");
    }
 
    @Test
@@ -71,10 +68,10 @@ public class QueryStringBuilderTest
 
       String result = qs.toQueryString();
 
-      assertTrue(result.startsWith("?"));
-      assertTrue(result.contains("bar=555"));
-      assertTrue(result.contains("foo=hello"));
-      assertTrue(result.contains("foo=friend"));
+      assertThat(result).startsWith("?");
+      assertThat(result).contains("bar=555");
+      assertThat(result).contains("foo=hello");
+      assertThat(result).contains("foo=friend");
    }
 
    @Test
@@ -85,7 +82,7 @@ public class QueryStringBuilderTest
 
       String result = qs.toQueryString();
 
-      assertTrue(result.length() == 0);
+      assertThat(result.length() == 0).isTrue();
    }
 
    @Test
@@ -96,8 +93,8 @@ public class QueryStringBuilderTest
 
       String result = qs.toQueryString();
 
-      Assert.assertEquals("???", new ArrayList<String>(qs.getParameterNames()).get(0));
-      Assert.assertEquals("????", result);
+      assertThat(new ArrayList<String>(qs.getParameterNames()).get(0)).isEqualTo("???");
+      assertThat(result).isEqualTo("????");
    }
 
    @Test
@@ -108,8 +105,8 @@ public class QueryStringBuilderTest
 
       String result = qs.decode().toQueryString();
 
-      Assert.assertEquals("%26%26%26", new ArrayList<String>(qs.getParameterNames()).get(0));
-      Assert.assertEquals("?&&&", result);
+      assertThat(new ArrayList<String>(qs.getParameterNames()).get(0)).isEqualTo("%26%26%26");
+      assertThat(result).isEqualTo("?&&&");
    }
 
    @Test
@@ -121,10 +118,10 @@ public class QueryStringBuilderTest
       QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1=val1", queryString);
+      assertThat(queryString).isEqualTo("?p1=val1");
 
       qs = QueryStringBuilder.createFromEncoded(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -136,10 +133,10 @@ public class QueryStringBuilderTest
       QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1", queryString);
+      assertThat(queryString).isEqualTo("?p1");
 
       qs = QueryStringBuilder.createFromEncoded(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -151,10 +148,10 @@ public class QueryStringBuilderTest
       QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1=", queryString);
+      assertThat(queryString).isEqualTo("?p1=");
 
       qs = QueryStringBuilder.createFromEncoded(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -166,10 +163,10 @@ public class QueryStringBuilderTest
       QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1=val1&p1=val2", queryString);
+      assertThat(queryString).isEqualTo("?p1=val1&p1=val2");
 
       qs = QueryStringBuilder.createFromEncoded(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -182,14 +179,14 @@ public class QueryStringBuilderTest
       QueryStringBuilder qs = QueryStringBuilder.createFromArrays(params);
       String queryString = qs.toQueryString();
 
-      assertTrue(queryString.startsWith("?"));
-      assertTrue(queryString.contains("p1=val1"));
-      assertTrue(queryString.contains("p1=val2"));
-      assertTrue(queryString.contains("p2=val3"));
-      assertTrue(queryString.contains("p2=val4"));
+      assertThat(queryString).startsWith("?");
+      assertThat(queryString).contains("p1=val1");
+      assertThat(queryString).contains("p1=val2");
+      assertThat(queryString).contains("p2=val3");
+      assertThat(queryString).contains("p2=val4");
 
       qs = QueryStringBuilder.createFromEncoded(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -211,14 +208,14 @@ public class QueryStringBuilderTest
       QueryStringBuilder qs = QueryStringBuilder.createNew().addParameterLists(paramMap);
       String queryString = qs.toQueryString();
 
-      assertTrue(queryString.startsWith("?"));
-      assertTrue(queryString.contains("p1=val1"));
-      assertTrue(queryString.contains("p1=val2"));
-      assertTrue(queryString.contains("p2=val3"));
-      assertTrue(queryString.contains("p2=val4"));
+      assertThat(queryString).startsWith("?");
+      assertThat(queryString).contains("p1=val1");
+      assertThat(queryString).contains("p1=val2");
+      assertThat(queryString).contains("p2=val3");
+      assertThat(queryString).contains("p2=val4");
 
       qs = QueryStringBuilder.createFromEncoded(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -226,7 +223,7 @@ public class QueryStringBuilderTest
    {
       QueryStringBuilder qs = new QueryStringBuilder();
       qs.addParameters("a=b");
-      assertEquals("?a=b", qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo("?a=b");
    }
 
    @Test
@@ -234,7 +231,7 @@ public class QueryStringBuilderTest
    {
       QueryStringBuilder qs = new QueryStringBuilder();
       qs.addParameters("a=b+c&d=e");
-      assertEquals("?a=b+c&d=e", qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo("?a=b+c&d=e");
    }
 
    @Test
@@ -243,7 +240,7 @@ public class QueryStringBuilderTest
       // http://code.google.com/p/prettyfaces/issues/detail?id=104
       QueryStringBuilder qs = new QueryStringBuilder();
       qs.addParameters("a=b&amp;c=d");
-      assertEquals("?a=b&c=d", qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo("?a=b&c=d");
    }
 
    @Test
@@ -251,7 +248,7 @@ public class QueryStringBuilderTest
    {
       QueryStringBuilder qs = new QueryStringBuilder();
       qs.addParameter("a", "b%26c=d");
-      assertEquals("?a=b&c=d", qs.decode().toQueryString());
+      assertThat(qs.decode().toQueryString()).isEqualTo("?a=b&c=d");
    }
 
    @Test
@@ -259,7 +256,7 @@ public class QueryStringBuilderTest
    {
       QueryStringBuilder qs = new QueryStringBuilder();
       qs.addParameter("a", "b&c=d");
-      assertEquals("?a=b%26c%3Dd", qs.encode().toQueryString());
+      assertThat(qs.encode().toQueryString()).isEqualTo("?a=b%26c%3Dd");
    }
 
 }

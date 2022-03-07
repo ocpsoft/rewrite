@@ -1,9 +1,8 @@
 package org.ocpsoft.urlbuilder;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AddressBuilderTest
 {
@@ -11,253 +10,226 @@ public class AddressBuilderTest
    @Test
    public void testBuildEverything()
    {
-      Assert.assertEquals("http://example.com:8080/search/table?q=query+string#foo",
-
-               AddressBuilder.begin()
-                        .scheme("http")
-                        .domain("example.com")
-                        .port(8080)
-                        .path("/{s}/{t}")
-                        .set("s", "search")
-                        .set("t", "table")
-                        .queryEncoded("q", "query string")
-                        .anchor("foo")
-                        .build()
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("http")
+              .domain("example.com")
+              .port(8080)
+              .path("/{s}/{t}")
+              .set("s", "search")
+              .set("t", "table")
+              .queryEncoded("q", "query string")
+              .anchor("foo")
+              .build()
+              .toString()).isEqualTo("http://example.com:8080/search/table?q=query+string#foo");
    }
 
    @Test
    public void testBuildEverythingResult()
    {
-      Assert.assertEquals("http://example.com:8080/search/table?q=query+string#foo",
-
-               AddressBuilder.begin()
-                        .scheme("http")
-                        .domain("example.com")
-                        .port(8080)
-                        .path("/{s}/{t}")
-                        .set("s", "search")
-                        .set("t", "table")
-                        .queryEncoded("q", "query string")
-                        .anchor("foo")
-                        .build()
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("http")
+              .domain("example.com")
+              .port(8080)
+              .path("/{s}/{t}")
+              .set("s", "search")
+              .set("t", "table")
+              .queryEncoded("q", "query string")
+              .anchor("foo")
+              .build()
+              .toString()).isEqualTo("http://example.com:8080/search/table?q=query+string#foo");
    }
 
    @Test
    public void testBuildQuery()
    {
-      Assert.assertEquals("?q=200",
-               AddressBuilder.begin().query("q", 200).toString());
+      assertThat(AddressBuilder.begin().query("q", 200).toString()).isEqualTo("?q=200");
    }
 
    @Test
    public void testBuildQueryResult()
    {
-      Assert.assertEquals("?q=200",
-               AddressBuilder.begin().query("q", 200).build().toString());
+      assertThat(AddressBuilder.begin().query("q", 200).build().toString()).isEqualTo("?q=200");
    }
 
    @Test
    public void testBuildQueryMultipleNames()
    {
-      Assert.assertEquals("?q=query&e=string",
-               AddressBuilder.begin().query("q", "query").query("e", "string").toString());
+      assertThat(AddressBuilder.begin().query("q", "query").query("e", "string").toString()).isEqualTo("?q=query&e=string");
    }
 
    @Test
    public void testBuildQueryMultipleNamesResult()
    {
-      Assert.assertEquals("?q=query&e=string",
-               AddressBuilder.begin().query("q", "query").query("e", "string").build().toString());
+      assertThat(AddressBuilder.begin().query("q", "query").query("e", "string").build().toString()).isEqualTo("?q=query&e=string");
    }
 
    @Test
    public void testBuildQueryMultipleValues()
    {
-      Assert.assertEquals("?q=10&q=20",
-               AddressBuilder.begin().query("q", 10, 20).toString());
+      assertThat(AddressBuilder.begin().query("q", 10, 20).toString()).isEqualTo("?q=10&q=20");
    }
 
    @Test
    public void testBuildQueryMultipleValuesResult()
    {
-      Assert.assertEquals("?q=10&q=20",
-               AddressBuilder.begin().query("q", 10, 20).build().toString());
+      assertThat(AddressBuilder.begin().query("q", 10, 20).build().toString()).isEqualTo("?q=10&q=20");
    }
 
    @Test
    public void testBuildQueryLiteral()
    {
-      Assert.assertEquals("?q=200",
-               AddressBuilder.begin().queryLiteral("q=200").toString());
+      assertThat(AddressBuilder.begin().queryLiteral("q=200").toString()).isEqualTo("?q=200");
    }
 
    @Test
    public void testBuildQueryLiteralResult()
    {
-      Assert.assertEquals("?q=200",
-               AddressBuilder.begin().queryLiteral("q=200").build().toString());
+      assertThat(AddressBuilder.begin().queryLiteral("q=200").build().toString()).isEqualTo("?q=200");
    }
 
    @Test
    public void testBuildQueryLiteralMultipleNames()
    {
-      Assert.assertEquals("?q=query&e=string",
-               AddressBuilder.begin().queryLiteral("q=query&e=string").toString());
+      assertThat(AddressBuilder.begin().queryLiteral("q=query&e=string").toString()).isEqualTo("?q=query&e=string");
    }
 
    @Test
    public void testBuildQueryLiteralMultipleNamesResult()
    {
-      Assert.assertEquals("?q=query&e=string",
-               AddressBuilder.begin().queryLiteral("q=query&e=string").build().toString());
+      assertThat(AddressBuilder.begin().queryLiteral("q=query&e=string").build().toString()).isEqualTo("?q=query&e=string");
    }
 
    @Test
    public void testBuildQueryLiteralMultipleValues()
    {
-      Assert.assertEquals("?q=10&q=20",
-               AddressBuilder.begin().queryLiteral("q=10&q=20").toString());
+      assertThat(AddressBuilder.begin().queryLiteral("q=10&q=20").toString()).isEqualTo("?q=10&q=20");
    }
 
    @Test
    public void testBuildQueryLiteralMultipleValuesResult()
    {
-      Assert.assertEquals("?q=10&q=20",
-               AddressBuilder.begin().queryLiteral("q=10&q=20").build().toString());
+      assertThat(AddressBuilder.begin().queryLiteral("q=10&q=20").build().toString()).isEqualTo("?q=10&q=20");
    }
 
    @Test
    public void testBuildPathSimple()
    {
-      Assert.assertEquals("/store/23",
-               AddressBuilder.begin().path("/store/23").toString());
+      assertThat(AddressBuilder.begin().path("/store/23").toString()).isEqualTo("/store/23");
    }
 
    @Test
    public void testBuildPathSimpleResult()
    {
-      Assert.assertEquals("/store/23",
-               AddressBuilder.begin().path("/store/23").build().toString());
+      assertThat(AddressBuilder.begin().path("/store/23").build().toString()).isEqualTo("/store/23");
    }
 
    @Test
    public void testBuildPathWithOneParameter()
    {
-      Assert.assertEquals("/store/23",
-               AddressBuilder.begin().path("/store/{item}").set("item", 23).build().toString());
+      assertThat(AddressBuilder.begin().path("/store/{item}").set("item", 23).build().toString()).isEqualTo("/store/23");
    }
 
    @Test
    public void testBuildPathWithOneParameterResult()
    {
-      Assert.assertEquals("/store/23",
-               AddressBuilder.begin().path("/store/{item}").set("item", 23).build().toString());
+      assertThat(AddressBuilder.begin().path("/store/{item}").set("item", 23).build().toString()).isEqualTo("/store/23");
    }
 
    @Test
    public void testBuildPathWithParameters()
    {
-      Assert.assertEquals("/store/23/buy",
-               AddressBuilder.begin().path("/store/{item}/{action}").set("item", 23).set("action", "buy").build()
-                        .toString());
+      assertThat(AddressBuilder.begin().path("/store/{item}/{action}").set("item", 23).set("action", "buy").build()
+              .toString()).isEqualTo("/store/23/buy");
    }
 
    @Test
    public void testBuildPathWithParametersResult()
    {
-      Assert.assertEquals("/store/23/buy",
-               AddressBuilder.begin().path("/store/{item}/{action}").set("item", 23).set("action", "buy").build()
-                        .toString());
+      assertThat(AddressBuilder.begin().path("/store/{item}/{action}").set("item", 23).set("action", "buy").build()
+              .toString()).isEqualTo("/store/23/buy");
    }
 
    @Test
    public void testBuildHostAndPath()
    {
-      Assert.assertEquals("//ocpsoft.org/store/23/buy",
-               AddressBuilder.begin()
-                        .domain("ocpsoft.org")
-                        .path("/store/{item}/{action}").set("item", 23).set("action", "buy").build().toString());
+      assertThat(AddressBuilder.begin()
+              .domain("ocpsoft.org")
+              .path("/store/{item}/{action}").set("item", 23).set("action", "buy").build().toString()).isEqualTo("//ocpsoft.org/store/23/buy");
    }
 
    @Test
    public void testBuildHostAndQuery()
    {
-      Assert.assertEquals("//ocpsoft.org/?buy=23",
-               AddressBuilder.begin()
-                        .domain("ocpsoft.org")
-                        .query("buy", "23").build().toString());
+      assertThat(AddressBuilder.begin()
+              .domain("ocpsoft.org")
+              .query("buy", "23").build().toString()).isEqualTo("//ocpsoft.org/?buy=23");
    }
 
    @Test
    public void testBuildHostAndPathResult()
    {
-      Assert.assertEquals("//ocpsoft.org/store/23/buy",
-               AddressBuilder.begin().domain("ocpsoft.org")
-                        .path("/store/{item}/{action}").set("item", 23).set("action", "buy").build().toString());
+      assertThat(AddressBuilder.begin().domain("ocpsoft.org")
+              .path("/store/{item}/{action}").set("item", 23).set("action", "buy").build().toString()).isEqualTo("//ocpsoft.org/store/23/buy");
    }
 
    @Test
    public void testProtocolAndPort()
    {
-      Assert.assertEquals("file::80",
-               AddressBuilder.begin().scheme("file").port(80).toString());
+      assertThat(AddressBuilder.begin().scheme("file").port(80).toString()).isEqualTo("file::80");
    }
 
    @Test
    public void testProtocolAndPortResult()
    {
-      Assert.assertEquals("file::80",
-               AddressBuilder.begin().scheme("file").port(80).build().toString());
+      assertThat(AddressBuilder.begin().scheme("file").port(80).build().toString()).isEqualTo("file::80");
    }
 
    @Test
    public void testFromStringWithFullUrl()
    {
       Address address = AddressBuilder.create("http://www.google.com:80/search?q=foobar");
-      assertEquals("http", address.getScheme());
-      assertEquals("www.google.com", address.getDomain());
-      assertEquals(Integer.valueOf(80), address.getPort());
-      assertEquals("/search", address.getPath());
-      assertEquals("q=foobar", address.getQuery());
-      assertEquals("/search?q=foobar", address.getPathAndQuery());
+      assertThat(address.getScheme()).isEqualTo("http");
+      assertThat(address.getDomain()).isEqualTo("www.google.com");
+      assertThat(address.getPort()).isEqualTo(Integer.valueOf(80));
+      assertThat(address.getPath()).isEqualTo("/search");
+      assertThat(address.getQuery()).isEqualTo("q=foobar");
+      assertThat(address.getPathAndQuery()).isEqualTo("/search?q=foobar");
    }
 
    @Test
    public void testFromStringWithoutPort()
    {
       Address address = AddressBuilder.create("http://www.google.com/search?q=foobar");
-      assertEquals("http", address.getScheme());
-      assertEquals("www.google.com", address.getDomain());
-      assertEquals(null, address.getPort());
-      assertEquals("/search", address.getPath());
-      assertEquals("q=foobar", address.getQuery());
-      assertEquals("/search?q=foobar", address.getPathAndQuery());
+      assertThat(address.getScheme()).isEqualTo("http");
+      assertThat(address.getDomain()).isEqualTo("www.google.com");
+      assertThat(address.getPort()).isEqualTo(null);
+      assertThat(address.getPath()).isEqualTo("/search");
+      assertThat(address.getQuery()).isEqualTo("q=foobar");
+      assertThat(address.getPathAndQuery()).isEqualTo("/search?q=foobar");
    }
 
    @Test
    public void testFromStringOnlyWithPathAndQuery()
    {
       Address address = AddressBuilder.create("/search?q=foobar");
-      assertEquals(null, address.getScheme());
-      assertEquals(null, address.getDomain());
-      assertEquals(null, address.getPort());
-      assertEquals("/search", address.getPath());
-      assertEquals("q=foobar", address.getQuery());
-      assertEquals("/search?q=foobar", address.getPathAndQuery());
+      assertThat(address.getScheme()).isEqualTo(null);
+      assertThat(address.getDomain()).isEqualTo(null);
+      assertThat(address.getPort()).isEqualTo(null);
+      assertThat(address.getPath()).isEqualTo("/search");
+      assertThat(address.getQuery()).isEqualTo("q=foobar");
+      assertThat(address.getPathAndQuery()).isEqualTo("/search?q=foobar");
    }
 
    @Test
    public void testFromStringOnlyWithPathAndQuery2()
    {
       Address address = AddressBuilder.create("search?q=foobar");
-      assertEquals(null, address.getScheme());
-      assertEquals(null, address.getDomain());
-      assertEquals(null, address.getPort());
-      assertEquals("search", address.getPath());
-      assertEquals("q=foobar", address.getQuery());
-      assertEquals("search?q=foobar", address.getPathAndQuery());
+      assertThat(address.getScheme()).isEqualTo(null);
+      assertThat(address.getDomain()).isEqualTo(null);
+      assertThat(address.getPort()).isEqualTo(null);
+      assertThat(address.getPath()).isEqualTo("search");
+      assertThat(address.getQuery()).isEqualTo("q=foobar");
+      assertThat(address.getPathAndQuery()).isEqualTo("search?q=foobar");
    }
 
    @Test
@@ -270,77 +242,70 @@ public class AddressBuilderTest
                .path("/test.txt")
                .build();
 
-      assertEquals("//example.com/test.txt", address.toString());
+      assertThat(address.toString()).isEqualTo("//example.com/test.txt");
 
    }
 
    @Test
    public void testBuildSchemeSpecificPart()
    {
-      Assert.assertEquals("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!",
-               AddressBuilder.begin()
-                        .scheme("mailto")
-                        .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
-                        .toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("mailto")
+              .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
+              .toString()).isEqualTo("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!");
    }
 
    @Test
    public void testBuildSchemeSpecificPartResult()
    {
-      Assert.assertEquals("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!",
-               AddressBuilder.begin()
-                        .scheme("mailto")
-                        .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
-                        .build().toString());
+      assertThat(AddressBuilder.begin()
+              .scheme("mailto")
+              .schemeSpecificPart("contact@ocpsoft.org?subject=Howdy Lincoln!")
+              .build().toString()).isEqualTo("mailto:contact@ocpsoft.org?subject=Howdy Lincoln!");
    }
 
    @Test
    public void testAnchorOnly()
    {
-      assertEquals("#foobar", AddressBuilder.create("#foobar").toString());
+      assertThat(AddressBuilder.create("#foobar").toString()).isEqualTo("#foobar");
    }
 
    @Test
    public void testEmptyAnchorOnly()
    {
-      assertEquals("#", AddressBuilder.create("#").toString());
+      assertThat(AddressBuilder.create("#").toString()).isEqualTo("#");
    }
 
    @Test
    public void shouldCreateAddressFromUrlWithCurlyBrace()
    {
       Address address = AddressBuilder.create("http://localhost/somepath/%7Bsomething%7D");
-      assertEquals("/somepath/%7Bsomething%7D", address.getPath());
-      assertEquals("http://localhost/somepath/%7Bsomething%7D", address.toString());
+      assertThat(address.getPath()).isEqualTo("/somepath/%7Bsomething%7D");
+      assertThat(address.toString()).isEqualTo("http://localhost/somepath/%7Bsomething%7D");
    }
 
    @Test
    public void testQueryWithNull() {
-      assertEquals("",
-              AddressBuilder.begin().query(null).build().toString());
+      assertThat(AddressBuilder.begin().query(null).build().toString()).isEqualTo("");
    }
 
    @Test
    public void testQueryDecodedWithNull() {
-      assertEquals("",
-              AddressBuilder.begin().queryDecoded(null).build().toString());
+      assertThat(AddressBuilder.begin().queryDecoded(null).build().toString()).isEqualTo("");
    }
 
    @Test
    public void testQueryEncodedWithNull() {
-      assertEquals("",
-              AddressBuilder.begin().queryEncoded(null).build().toString());
+      assertThat(AddressBuilder.begin().queryEncoded(null).build().toString()).isEqualTo("");
    }
 
    @Test
    public void testSetEncodedWithNull() {
-      assertEquals("//localhost",
-              AddressBuilder.begin().domain("localhost").setEncoded(null).build().toString());
+      assertThat(AddressBuilder.begin().domain("localhost").setEncoded(null).build().toString()).isEqualTo("//localhost");
    }
 
    @Test
    public void testSetDecodedWithNull() {
-      assertEquals("//localhost",
-              AddressBuilder.begin().domain("localhost").setDecoded(null).build().toString());
+      assertThat(AddressBuilder.begin().domain("localhost").setDecoded(null).build().toString()).isEqualTo("//localhost");
    }
 }

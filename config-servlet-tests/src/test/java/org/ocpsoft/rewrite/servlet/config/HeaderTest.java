@@ -20,7 +20,6 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -35,6 +34,8 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -67,7 +68,7 @@ public class HeaderTest
       Header header = Header.exists("Accept-{head}");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, header);
-      Assert.assertTrue(header.evaluate(rewrite, context));
+      assertThat(header.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -76,13 +77,13 @@ public class HeaderTest
       Header header = Header.exists("Content-Length");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, header);
-      Assert.assertTrue(header.evaluate(rewrite, context));
+      assertThat(header.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testHeaderExistsFalse()
    {
-      Assert.assertFalse(Header.exists("Host").evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(Header.exists("Host").evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 
    @Test
@@ -91,7 +92,7 @@ public class HeaderTest
       Header header = Header.valueExists("UTF-{enc}");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, header);
-      Assert.assertTrue(header.evaluate(rewrite, context));
+      assertThat(header.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -107,7 +108,7 @@ public class HeaderTest
       if (parameter instanceof ConfigurableParameter<?>)
          ((ParameterConfiguration<?>) parameter).constrainedBy(new RegexConstraint("(ISO|UTF)-\\d+"));
 
-      Assert.assertTrue(header.evaluate(rewrite, context));
+      assertThat(header.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -118,7 +119,7 @@ public class HeaderTest
       ParameterStore parameters = new DefaultParameterStore();
       ParameterUtils.initialize(parameters, header);
 
-      Assert.assertFalse(header.evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(header.evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -147,6 +148,6 @@ public class HeaderTest
       ParameterStore parameters = new DefaultParameterStore();
       ParameterUtils.initialize(parameters, header);
 
-      Assert.assertFalse(header.evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(header.evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 }

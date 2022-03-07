@@ -15,10 +15,11 @@
  */
 package org.ocpsoft.rewrite.util;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.util.ParseTools.CaptureType;
 import org.ocpsoft.rewrite.util.ParseTools.CapturingGroup;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -30,16 +31,16 @@ public class ParseToolsTest
    public void testBalancedCapture()
    {
       CapturingGroup group = ParseTools.balancedCapture("/foo/{bar}/cab".toCharArray(), 5, 12, CaptureType.BRACE);
-      Assert.assertEquals(9, group.getEnd());
-      Assert.assertArrayEquals("bar".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(9);
+      assertThat(group.getCaptured()).isEqualTo("bar".toCharArray());
 
       group = ParseTools.balancedCapture("/foo/{{a}}/cab".toCharArray(), 5, 12, CaptureType.BRACE);
-      Assert.assertEquals(9, group.getEnd());
-      Assert.assertArrayEquals("{a}".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(9);
+      assertThat(group.getCaptured()).isEqualTo("{a}".toCharArray());
 
       group = ParseTools.balancedCapture("/foo/{{a}}/cab".toCharArray(), 0, 12, CaptureType.REGEX);
-      Assert.assertEquals(4, group.getEnd());
-      Assert.assertArrayEquals("foo".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(4);
+      assertThat(group.getCaptured()).isEqualTo("foo".toCharArray());
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -76,54 +77,54 @@ public class ParseToolsTest
    public void testBalancedCaptureIgnoresEscapedTerminations()
    {
       CapturingGroup group = ParseTools.balancedCapture("/foo/{bar\\}}/cab".toCharArray(), 5, 12, CaptureType.BRACE);
-      Assert.assertEquals(11, group.getEnd());
-      Assert.assertArrayEquals("bar\\}".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(11);
+      assertThat(group.getCaptured()).isEqualTo("bar\\}".toCharArray());
    }
 
    @Test
    public void testBalancedCaptureIgnoresEscapedNestedBeginChars()
    {
       CapturingGroup group = ParseTools.balancedCapture("/foo/{\\{a}}/cab".toCharArray(), 5, 12, CaptureType.BRACE);
-      Assert.assertEquals(9, group.getEnd());
-      Assert.assertArrayEquals("\\{a".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(9);
+      assertThat(group.getCaptured()).isEqualTo("\\{a".toCharArray());
    }
 
    @Test
    public void testBalancedCaptureReturnsEmptyForEmptyCapture() throws Exception
    {
       CapturingGroup group = ParseTools.balancedCapture("/foo/{}/cab".toCharArray(), 5, 8, CaptureType.BRACE);
-      Assert.assertEquals(6, group.getEnd());
-      Assert.assertArrayEquals("".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(6);
+      assertThat(group.getCaptured()).isEqualTo("".toCharArray());
    }
 
    @Test
    public void testIsEscapedReturnsTrueWhenCharacterIsEscaped() throws Exception
    {
-      Assert.assertTrue(ParseTools.isEscaped("/foo{bar\\}}".toCharArray(), 9));
+      assertThat(ParseTools.isEscaped("/foo{bar\\}}".toCharArray(), 9)).isTrue();
    }
 
    @Test
    public void testIsEscapedReturnsTrueWhenSecondCharacterIsEscaped() throws Exception
    {
-      Assert.assertTrue(ParseTools.isEscaped("\\{".toCharArray(), 1));
+      assertThat(ParseTools.isEscaped("\\{".toCharArray(), 1)).isTrue();
    }
 
    @Test
    public void testIsEscapedReturnsFalseWhenCharacterIsDoubleEscaped() throws Exception
    {
-      Assert.assertFalse(ParseTools.isEscaped("/foo{bar\\\\}}".toCharArray(), 10));
+      assertThat(ParseTools.isEscaped("/foo{bar\\\\}}".toCharArray(), 10)).isFalse();
    }
 
    @Test
    public void testIsEscapedReturnsTrueWhenCharacterIsTripleEscaped() throws Exception
    {
-      Assert.assertFalse(ParseTools.isEscaped("/foo{bar\\\\\\}}".toCharArray(), 11));
+      assertThat(ParseTools.isEscaped("/foo{bar\\\\\\}}".toCharArray(), 11)).isFalse();
    }
 
    @Test
    public void testIsEscapedReturnsFalseWhenCharacterIsQuadrupleEscaped() throws Exception
    {
-      Assert.assertFalse(ParseTools.isEscaped("/foo{bar\\\\\\\\}}".toCharArray(), 12));
+      assertThat(ParseTools.isEscaped("/foo{bar\\\\\\\\}}".toCharArray(), 12)).isFalse();
    }
 
    @Test
@@ -131,8 +132,8 @@ public class ParseToolsTest
    {
       CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 0, 28,
                CaptureType.PAREN);
-      Assert.assertEquals(28, group.getEnd());
-      Assert.assertArrayEquals("one(two)(three(four(five)))".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(28);
+      assertThat(group.getCaptured()).isEqualTo("one(two)(three(four(five)))".toCharArray());
    }
 
    @Test
@@ -140,8 +141,8 @@ public class ParseToolsTest
    {
       CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 4, 28,
                CaptureType.PAREN);
-      Assert.assertEquals(8, group.getEnd());
-      Assert.assertArrayEquals("two".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(8);
+      assertThat(group.getCaptured()).isEqualTo("two".toCharArray());
    }
 
    @Test
@@ -149,8 +150,8 @@ public class ParseToolsTest
    {
       CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 9, 28,
                CaptureType.PAREN);
-      Assert.assertEquals(27, group.getEnd());
-      Assert.assertArrayEquals("three(four(five))".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(27);
+      assertThat(group.getCaptured()).isEqualTo("three(four(five))".toCharArray());
    }
 
    @Test
@@ -158,8 +159,8 @@ public class ParseToolsTest
    {
       CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 15, 28,
                CaptureType.PAREN);
-      Assert.assertEquals(26, group.getEnd());
-      Assert.assertArrayEquals("four(five)".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(26);
+      assertThat(group.getCaptured()).isEqualTo("four(five)".toCharArray());
    }
 
    @Test
@@ -167,8 +168,8 @@ public class ParseToolsTest
    {
       CapturingGroup group = ParseTools.balancedCapture("(one(two)(three(four(five))))".toCharArray(), 20, 28,
                CaptureType.PAREN);
-      Assert.assertEquals(25, group.getEnd());
-      Assert.assertArrayEquals("five".toCharArray(), group.getCaptured());
+      assertThat(group.getEnd()).isEqualTo(25);
+      assertThat(group.getCaptured()).isEqualTo("five".toCharArray());
    }
 
 }

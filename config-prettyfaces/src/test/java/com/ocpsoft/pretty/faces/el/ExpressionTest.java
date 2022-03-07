@@ -15,54 +15,53 @@
  */
 package com.ocpsoft.pretty.faces.el;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.el.Expressions;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExpressionTest
 {
    @Test
    public void testEmpty() throws Exception
    {
-      assertFalse(Expressions.isEL(""));
-      assertFalse(Expressions.containsEL(""));
+      assertThat(Expressions.isEL("")).isFalse();
+      assertThat(Expressions.containsEL("")).isFalse();
    }
 
    @Test
    public void testNotAnExpression() throws Exception
    {
-      assertFalse(Expressions.isEL("Not an expression."));
-      assertFalse(Expressions.containsEL("Not an expression."));
+      assertThat(Expressions.isEL("Not an expression.")).isFalse();
+      assertThat(Expressions.containsEL("Not an expression.")).isFalse();
    }
 
    @Test
    public void testEmbeddedExpression() throws Exception
    {
-      assertFalse(Expressions.isEL("This contains an #{expression}."));
-      assertTrue(Expressions.containsEL("This contains an #{expression}."));
+      assertThat(Expressions.isEL("This contains an #{expression}.")).isFalse();
+      assertThat(Expressions.containsEL("This contains an #{expression}.")).isTrue();
    }
 
    @Test
    public void testErroneousExpressionLeft() throws Exception
    {
-      assertFalse(Expressions.isEL("#{expre{ssion}"));
+      assertThat(Expressions.isEL("#{expre{ssion}")).isFalse();
    }
 
    @Test
    public void testErroneousExpressionRight() throws Exception
    {
-      assertFalse(Expressions.isEL("#{expre}ssion}"));
-      assertTrue(Expressions.containsEL("#{expre}ssion}"));
-      assertTrue(Expressions.containsEL("This contains an #{expre}ssion}."));
+      assertThat(Expressions.isEL("#{expre}ssion}")).isFalse();
+      assertThat(Expressions.containsEL("#{expre}ssion}")).isTrue();
+      assertThat(Expressions.containsEL("This contains an #{expre}ssion}.")).isTrue();
    }
 
    @Test
    public void testIsExpression() throws Exception
    {
-      assertTrue(Expressions.isEL("#{this.is.an.expression}"));
-      assertTrue(Expressions.containsEL("#{this.is.an.expression}"));
+      assertThat(Expressions.isEL("#{this.is.an.expression}")).isTrue();
+      assertThat(Expressions.containsEL("#{this.is.an.expression}")).isTrue();
    }
 }

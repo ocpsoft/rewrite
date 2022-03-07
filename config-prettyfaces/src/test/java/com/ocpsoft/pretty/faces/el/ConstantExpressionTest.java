@@ -15,10 +15,9 @@
  */
 package com.ocpsoft.pretty.faces.el;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConstantExpressionTest
 {
@@ -28,7 +27,7 @@ public class ConstantExpressionTest
    {
 
       PrettyExpression expr = new ConstantExpression("#{someBean.someProperty}");
-      assertEquals("#{someBean.someProperty}", expr.getELExpression());
+      assertThat(expr.getELExpression()).isEqualTo("#{someBean.someProperty}");
 
    }
 
@@ -39,8 +38,8 @@ public class ConstantExpressionTest
       PrettyExpression expr1 = new ConstantExpression("#{someBean.someProperty}");
       PrettyExpression expr2 = new ConstantExpression("#{someBean.someProperty}");
 
-      assertTrue(expr1.equals(expr2));
-      assertEquals(expr1.hashCode(), expr2.hashCode());
+      assertThat(expr1.equals(expr2)).isTrue();
+      assertThat(expr2.hashCode()).isEqualTo(expr1.hashCode());
 
    }
 

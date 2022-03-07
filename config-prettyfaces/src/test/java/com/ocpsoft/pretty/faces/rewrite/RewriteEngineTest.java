@@ -15,14 +15,14 @@
  */
 package com.ocpsoft.pretty.faces.rewrite;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.config.rewrite.Case;
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
 import com.ocpsoft.pretty.faces.config.rewrite.TrailingSlash;
 import com.ocpsoft.pretty.faces.rewrite.processor.MockCustomClassProcessor;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RewriteEngineTest
 {
@@ -36,7 +36,7 @@ public class RewriteEngineTest
       c.setMatch("foo");
       c.setSubstitute("bar");
 
-      assertEquals("/my/bar/is/COOL", rewriteEngine.processInbound(null, null, c, url));
+      assertThat(rewriteEngine.processInbound(null, null, c, url)).isEqualTo("/my/bar/is/COOL");
    }
 
    @Test
@@ -44,7 +44,7 @@ public class RewriteEngineTest
    {
       RewriteRule c = new RewriteRule();
       c.setTrailingSlash(TrailingSlash.APPEND);
-      assertEquals("/my/foo/is/COOL/", rewriteEngine.processInbound(null, null, c, url));
+      assertThat(rewriteEngine.processInbound(null, null, c, url)).isEqualTo("/my/foo/is/COOL/");
    }
 
    @Test
@@ -52,7 +52,7 @@ public class RewriteEngineTest
    {
       RewriteRule c = new RewriteRule();
       c.setTrailingSlash(TrailingSlash.APPEND);
-      assertEquals("/", rewriteEngine.processInbound(null, null, c, "/"));
+      assertThat(rewriteEngine.processInbound(null, null, c, "/")).isEqualTo("/");
    }
 
    @Test
@@ -60,7 +60,7 @@ public class RewriteEngineTest
    {
       RewriteRule c = new RewriteRule();
       c.setToCase(Case.LOWERCASE);
-      assertEquals("/my/foo/is/cool", rewriteEngine.processInbound(null, null, c, url));
+      assertThat(rewriteEngine.processInbound(null, null, c, url)).isEqualTo("/my/foo/is/cool");
    }
 
    @Test
@@ -68,6 +68,6 @@ public class RewriteEngineTest
    {
       RewriteRule c = new RewriteRule();
       c.setProcessor(MockCustomClassProcessor.class.getName());
-      assertEquals(MockCustomClassProcessor.RESULT, rewriteEngine.processInbound(null, null, c, url));
+      assertThat(rewriteEngine.processInbound(null, null, c, url)).isEqualTo(MockCustomClassProcessor.RESULT);
    }
 }

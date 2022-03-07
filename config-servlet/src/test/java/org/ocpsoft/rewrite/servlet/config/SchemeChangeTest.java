@@ -15,22 +15,18 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.junit.Assert;
+import okhttp3.OkHttpClient;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolException;
-import org.apache.http.client.RedirectStrategy;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HttpContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
+import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -49,34 +45,15 @@ public class SchemeChangeTest extends RewriteTest
    }
 
    @Test
-   public void testRedirectToHttps()
-   {
-      DefaultHttpClient client = new DefaultHttpClient();
-      client.setRedirectStrategy(new RedirectStrategy() {
+   public void testRedirectToHttps() throws Exception {
+      OkHttpClient client = this.client.newBuilder()
+              .followRedirects(false)
+              .followSslRedirects(false)
+              .build();
 
-         @Override
-         public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context)
-                  throws ProtocolException
-         {
-            if (response.getFirstHeader("Location").getValue().contains("https"))
-               throw new RuntimeException("Success!");
-            return false;
-         }
+      HttpAction httpAction = get(client, "/login");
+      String location = httpAction.getResponse().header("location");
 
-         @Override
-         public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context)
-                  throws ProtocolException
-         {
-            throw new IllegalStateException("Not implemented.");
-         }
-
-      });
-      try {
-         get(client, "/login");
-      }
-      catch (Exception e) {
-         if (!"Success!".equals(e.getMessage()))
-            Assert.fail();
-      }
+      assertThat(location).startsWith("https");
    }
 }

@@ -15,9 +15,6 @@
  */
 package com.ocpsoft.pretty.faces.url;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +25,8 @@ import org.junit.Test;
 import com.ocpsoft.pretty.faces.config.mapping.QueryParameter;
 import com.ocpsoft.pretty.faces.config.mapping.RequestParameter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class QueryStringTest
 {
    @Test
@@ -37,10 +36,10 @@ public class QueryStringTest
 
       QueryString qs = QueryString.build(params);
       String queryString = qs.toQueryString();
-      assertEquals("", queryString);
+      assertThat(queryString).isEqualTo("");
 
       qs = QueryString.build(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -51,10 +50,10 @@ public class QueryStringTest
 
       String result = qs.toQueryString();
 
-      assertTrue(result.startsWith("?"));
-      assertTrue(result.contains("bar=555"));
-      assertTrue(result.contains("foo=hello"));
-      assertTrue(result.contains("foo=friend"));
+      assertThat(result.startsWith("?")).isTrue();
+      assertThat(result).contains("bar=555");
+      assertThat(result).contains("foo=hello");
+      assertThat(result).contains("foo=friend");
    }
 
    @Test
@@ -65,10 +64,10 @@ public class QueryStringTest
 
       String result = qs.toQueryString();
 
-      assertTrue(result.startsWith("?"));
-      assertTrue(result.contains("bar=555"));
-      assertTrue(result.contains("foo=hello"));
-      assertTrue(result.contains("foo=friend"));
+      assertThat(result.startsWith("?")).isTrue();
+      assertThat(result).contains("bar=555");
+      assertThat(result).contains("foo=hello");
+      assertThat(result).contains("foo=friend");
    }
 
    @Test
@@ -79,7 +78,7 @@ public class QueryStringTest
 
       String result = qs.toQueryString();
 
-      assertTrue(result.length() == 0);
+      assertThat(result.length() == 0).isTrue();
    }
 
    @Test
@@ -91,10 +90,10 @@ public class QueryStringTest
       QueryString qs = QueryString.build(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1=val1", queryString);
+      assertThat(queryString).isEqualTo("?p1=val1");
 
       qs = QueryString.build(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -106,10 +105,10 @@ public class QueryStringTest
       QueryString qs = QueryString.build(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1", queryString);
+      assertThat(queryString).isEqualTo("?p1");
 
       qs = QueryString.build(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -121,10 +120,10 @@ public class QueryStringTest
       QueryString qs = QueryString.build(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1=", queryString);
+      assertThat(queryString).isEqualTo("?p1=");
 
       qs = QueryString.build(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -136,10 +135,10 @@ public class QueryStringTest
       QueryString qs = QueryString.build(params);
       String queryString = qs.toQueryString();
 
-      assertEquals("?p1=val1&p1=val2", queryString);
+      assertThat(queryString).isEqualTo("?p1=val1&p1=val2");
 
       qs = QueryString.build(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -152,14 +151,14 @@ public class QueryStringTest
       QueryString qs = QueryString.build(params);
       String queryString = qs.toQueryString();
 
-      assertTrue(queryString.startsWith("?"));
-      assertTrue(queryString.contains("p1=val1"));
-      assertTrue(queryString.contains("p1=val2"));
-      assertTrue(queryString.contains("p2=val3"));
-      assertTrue(queryString.contains("p2=val4"));
+      assertThat(queryString.startsWith("?")).isTrue();
+      assertThat(queryString).contains("p1=val1");
+      assertThat(queryString).contains("p1=val2");
+      assertThat(queryString).contains("p2=val3");
+      assertThat(queryString).contains("p2=val4");
 
       qs = QueryString.build(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
 
    @Test
@@ -174,14 +173,14 @@ public class QueryStringTest
       QueryString qs = QueryString.build(params);
       String queryString = qs.toQueryString();
 
-      assertTrue(queryString.startsWith("?"));
-      assertTrue(queryString.contains("p1=val1"));
-      assertTrue(queryString.contains("p1=val2"));
-      assertTrue(queryString.contains("p2=val3"));
-      assertTrue(queryString.contains("p2=val4"));
+      assertThat(queryString.startsWith("?")).isTrue();
+      assertThat(queryString).contains("p1=val1");
+      assertThat(queryString).contains("p1=val2");
+      assertThat(queryString).contains("p2=val3");
+      assertThat(queryString).contains("p2=val4");
 
       qs = QueryString.build(queryString);
-      assertEquals(queryString, qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo(queryString);
    }
    
    @Test
@@ -189,7 +188,7 @@ public class QueryStringTest
    {
       QueryString qs = new QueryString();
       qs.addParameters("a=b");
-      assertEquals("?a=b", qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo("?a=b");
    }
 
    @Test
@@ -197,7 +196,7 @@ public class QueryStringTest
    {
       QueryString qs = new QueryString();
       qs.addParameters("a=b+c&d=e");
-      assertEquals("?a=b+c&d=e", qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo("?a=b+c&d=e");
    }
 
    @Test
@@ -206,7 +205,7 @@ public class QueryStringTest
       // http://code.google.com/p/prettyfaces/issues/detail?id=104
       QueryString qs = new QueryString();
       qs.addParameters("a=b&amp;c=d");
-      assertEquals("?a=b&c=d", qs.toQueryString());
+      assertThat(qs.toQueryString()).isEqualTo("?a=b&c=d");
    }
 
 }

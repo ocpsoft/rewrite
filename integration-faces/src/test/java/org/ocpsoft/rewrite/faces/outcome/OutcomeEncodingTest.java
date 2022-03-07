@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.outcome;
 
-import static org.hamcrest.Matchers.endsWith;
-import static org.junit.Assert.assertThat;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,6 +26,8 @@ import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class OutcomeEncodingTest extends RewriteTestBase
@@ -51,7 +50,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
       HtmlPage startPage = getWebClient("/start").getPage();
       HtmlPage secondPage = startPage.getHtmlElementById("form:redirectSimple").click();
 
-      assertThat(secondPage.getUrl().toString(), endsWith("/page/foo?query=foo"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/page/foo?query=foo");
 
    }
 
@@ -62,7 +61,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
       HtmlPage startPage = getWebClient("/start").getPage();
       HtmlPage secondPage = startPage.getHtmlElementById("form:redirectWithSpace").click();
 
-      assertThat(secondPage.getUrl().toString(), endsWith("/page/foo%20bar?query=foo+bar"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/page/foo%20bar?query=foo+bar");
 
    }
 
@@ -78,7 +77,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
       HtmlPage startPage = getWebClient("/start").getPage();
       HtmlPage secondPage = startPage.getHtmlElementById("form:redirectWithEqual").click();
 
-      assertThat(secondPage.getUrl().toString(), endsWith("/page/foo%3Dbar&query=foo%3Dbar"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/page/foo%3Dbar&query=foo%3Dbar");
 
    }
 
@@ -101,7 +100,7 @@ public class OutcomeEncodingTest extends RewriteTestBase
       /*
        * Lincoln thinks:
        */
-      assertThat(secondPage.getUrl().toString(), endsWith("/page/foo?bar&query=foo&bar"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/page/foo?bar&query=foo&bar");
 
    }
 

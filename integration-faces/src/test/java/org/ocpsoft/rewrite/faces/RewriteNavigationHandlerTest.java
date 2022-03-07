@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.faces;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,7 +55,7 @@ public class RewriteNavigationHandlerTest
       /*
        * THEN it will return the correct navigation case from the parent handler
        */
-      assertEquals(navigationCase, result);
+      assertThat(result).isEqualTo(navigationCase);
 
    }
 

@@ -15,25 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.wrapper;
 
-import java.io.IOException;
-
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.client.entity.GzipDecompressingEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HttpContext;
+import okhttp3.OkHttpClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -42,6 +28,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -64,9 +52,9 @@ public class WrappedResponseStreamTest extends RewriteTest
    @Test
    public void testWrappedResponseStreamToUppercase() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.html");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("LOWERCASE", action.getResponseContent());
+      HttpAction action = get("/index.html");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("LOWERCASE");
    }
 
    /**
@@ -79,51 +67,17 @@ public class WrappedResponseStreamTest extends RewriteTest
    public void testWrappedResponseStreamToGZip() throws Exception
    {
 
-      DefaultHttpClient client = new DefaultHttpClient();
-      client.addRequestInterceptor(new HttpRequestInterceptor()
-      {
+      OkHttpClient client = this.client.newBuilder()
+              .addNetworkInterceptor(chain -> chain.proceed(
+                      chain.request().newBuilder()
+                              .header("Accept-Encoding", "gzip")
+                              .build()
+              ))
+              .build();
 
-         @Override
-         public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException
-         {
-            if (!request.containsHeader("Accept-Encoding"))
-            {
-               request.addHeader("Accept-Encoding", "gzip");
-            }
-         }
-
-      });
-
-      client.addResponseInterceptor(new HttpResponseInterceptor()
-      {
-
-         @Override
-         public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException
-         {
-            HttpEntity entity = response.getEntity();
-            if (entity != null)
-            {
-               Header header = entity.getContentEncoding();
-               if (header != null)
-               {
-                  HeaderElement[] codecs = header.getElements();
-                  for (int i = 0; i < codecs.length; i++)
-                  {
-                     if (codecs[i].getName().equalsIgnoreCase("gzip"))
-                     {
-                        response.setEntity(new GzipDecompressingEntity(response.getEntity()));
-                        return;
-                     }
-                  }
-               }
-            }
-         }
-
-      });
-
-      HttpAction<HttpGet> action = get(client, "/gzip.html");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("gzip", action.getResponseHeaderValues("Content-Encoding").get(0));
-      Assert.assertEquals("zip me to gzip please and make it zippy", action.getResponseContent());
+      HttpAction action = get(client, "/gzip.html");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseHeaderValues("Content-Encoding").get(0)).isEqualTo("gzip");
+      assertThat(action.getResponseContent()).isEqualTo("zip me to gzip please and make it zippy");
    }
 }

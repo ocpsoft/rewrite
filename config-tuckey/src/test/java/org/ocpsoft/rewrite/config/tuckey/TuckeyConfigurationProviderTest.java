@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.config.tuckey;
 
-import org.junit.Assert;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -28,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -52,33 +51,33 @@ public class TuckeyConfigurationProviderTest extends RewriteTest
    @Test
    public void testConfigurationIntegratesWithRedirectFlow() throws Exception
    {
-      HttpAction<HttpGet> action = get("/some/olddir/value");
-      Assert.assertEquals("/very/newdir/value", action.getCurrentURL());
-      Assert.assertEquals(404, action.getStatusCode());
+      HttpAction action = get("/some/olddir/value");
+      assertThat(action.getCurrentURL()).isEqualTo("/very/newdir/value");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testConfigurationIntegratesWithForwardFlow() throws Exception
    {
-      HttpAction<HttpGet> action = get("/some/fordir/value");
-      Assert.assertEquals("/very/newdir/value", action.getCurrentURL());
-      Assert.assertEquals(404, action.getStatusCode());
+      HttpAction action = get("/some/fordir/value");
+      assertThat(action.getCurrentURL()).isEqualTo("/very/newdir/value");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testConfigurationIntegratesWithForwardFlowNonRedirecting() throws Exception
    {
-      HttpAction<HttpGet> action = get("/some/fordir/nonredirect");
-      Assert.assertEquals("/some/fordir/nonredirect", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(200, action.getStatusCode());
+      HttpAction action = get("/some/fordir/nonredirect");
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/some/fordir/nonredirect");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
    public void testConfigurationIntegratesWithForwardFlowNonRedirecting404() throws Exception
    {
-      HttpAction<HttpGet> action = get("/some/404/dir");
-      Assert.assertEquals("/some/404/dir", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(404, action.getStatusCode());
+      HttpAction action = get("/some/404/dir");
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/some/404/dir");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
 }

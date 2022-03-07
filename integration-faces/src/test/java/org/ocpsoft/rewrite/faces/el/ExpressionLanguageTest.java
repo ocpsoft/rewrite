@@ -15,11 +15,9 @@
  */
 package org.ocpsoft.rewrite.faces.el;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
@@ -27,6 +25,8 @@ import org.ocpsoft.rewrite.faces.resolver.FacesBeanNameResolverBean;
 import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Kaltepoth
@@ -49,10 +49,10 @@ public class ExpressionLanguageTest extends RewriteTest
    @Test
    public void testExpressionLanguageFromJSF() throws Exception
    {
-      HttpAction<HttpGet> action = get("/name/christian");
+      HttpAction action = get("/name/christian");
       String content = action.getResponseContent();
-      Assert.assertTrue(content.contains("Name = [christian]"));
-      Assert.assertTrue(content.contains("Uppercase = [CHRISTIAN]"));
+      assertThat(content).contains("Name = [christian]");
+      assertThat(content).contains("Uppercase = [CHRISTIAN]");
    }
 
 }

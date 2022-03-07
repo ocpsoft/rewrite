@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.junit.Assert;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -47,16 +46,16 @@ public class JoinRequestBindingConfigurationTest extends RewriteTest
    public void testWithRequestBinding() throws Exception
    {
 
-      HttpAction<HttpGet> action = get("/rb/value");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/rb/value");
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
    
    @Test
    public void testWithoutRequestBinding() throws Exception
    {
 
-      HttpAction<HttpGet> action = get("/norb/value");
-      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/norb/value");
+      assertThat(action.getStatusCode()).isEqualTo(202);
    }
 
 }

@@ -1,12 +1,13 @@
 package org.ocpsoft.rewrite.param;
 
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.test.MockRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ParameterBuilderTest
 {
@@ -44,10 +45,10 @@ public class ParameterBuilderTest
       boolean valid = ((Validator<Object>) parameter.getValidator()).isValid(new MockRewrite(),
                new MockEvaluationContext(), value);
 
-      Assert.assertTrue(validated);
-      Assert.assertFalse(valid);
-      Assert.assertTrue(converted);
-      Assert.assertNull(value);
+      assertThat(validated).isTrue();
+      assertThat(valid).isFalse();
+      assertThat(converted).isTrue();
+      assertThat(value).isNull();
    }
 
 }

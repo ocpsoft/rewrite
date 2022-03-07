@@ -15,12 +15,12 @@
  */
 package com.ocpsoft.pretty.faces.el;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.config.mapping.PathParameter;
 import com.ocpsoft.pretty.faces.el.processor.RegexOverride;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RegexOverrideExpressionProcessorTest
 {
@@ -34,8 +34,8 @@ public class RegexOverrideExpressionProcessorTest
       param.setExpression(expression);
       param = p.process(param);
 
-      assertEquals("#{name}", param.getExpression().getELExpression());
-      assertEquals("test", param.getRegex());
+      assertThat(param.getExpression().getELExpression()).isEqualTo("#{name}");
+      assertThat(param.getRegex()).isEqualTo("test");
    }
 
    @Test
@@ -46,8 +46,8 @@ public class RegexOverrideExpressionProcessorTest
       param.setExpression(expression);
       param = p.process(param);
 
-      assertEquals("#{name:point}", param.getExpression().getELExpression());
-      assertEquals("test", param.getRegex());
+      assertThat(param.getExpression().getELExpression()).isEqualTo("#{name:point}");
+      assertThat(param.getRegex()).isEqualTo("test");
    }
 
    @Test
@@ -58,8 +58,8 @@ public class RegexOverrideExpressionProcessorTest
       param.setExpression(expression);
       param = p.process(param);
 
-      assertEquals("#{name}", param.getExpression().getELExpression());
-      assertEquals("test", param.getRegex());
+      assertThat(param.getExpression().getELExpression()).isEqualTo("#{name}");
+      assertThat(param.getRegex()).isEqualTo("test");
    }
 
    @Test
@@ -70,8 +70,8 @@ public class RegexOverrideExpressionProcessorTest
       param.setExpression(expression);
       param = p.process(param);
 
-      assertEquals("#{name:point.p}", param.getExpression().getELExpression());
-      assertEquals("test", param.getRegex());
+      assertThat(param.getExpression().getELExpression()).isEqualTo("#{name:point.p}");
+      assertThat(param.getRegex()).isEqualTo("test");
    }
 
    @Test
@@ -82,8 +82,8 @@ public class RegexOverrideExpressionProcessorTest
       param.setExpression(expression);
       param = p.process(param);
 
-      assertEquals("#{name}", param.getExpression().getELExpression());
-      assertEquals("te/st", param.getRegex());
+      assertThat(param.getExpression().getELExpression()).isEqualTo("#{name}");
+      assertThat(param.getRegex()).isEqualTo("te/st");
    }
 
    @Test
@@ -94,7 +94,7 @@ public class RegexOverrideExpressionProcessorTest
       param.setExpression(expression);
       param = p.process(param);
 
-      assertEquals("#{name}", param.getExpression().getELExpression());
-      assertEquals("te[^/]+/st", param.getRegex());
+      assertThat(param.getExpression().getELExpression()).isEqualTo("#{name}");
+      assertThat(param.getRegex()).isEqualTo("te[^/]+/st");
    }
 }

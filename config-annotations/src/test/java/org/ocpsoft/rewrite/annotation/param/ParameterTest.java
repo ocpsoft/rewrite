@@ -1,12 +1,9 @@
 package org.ocpsoft.rewrite.annotation.param;
 
-import org.apache.http.client.methods.HttpGet;
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +11,8 @@ import org.ocpsoft.rewrite.annotation.RewriteAnnotationTest;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore("This still fails randomly/sporadically.")
 @RunWith(Arquillian.class)
@@ -35,9 +34,9 @@ public class ParameterTest extends RewriteTestBase
    @Test
    public void testParameterBindingAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/param/christian/");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertThat(action.getResponseContent(), Matchers.containsString("Value: [christian]"));
+      HttpAction action = get("/param/christian/");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).contains("Value: [christian]");
    }
 
 }

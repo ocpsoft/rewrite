@@ -15,10 +15,6 @@
  */
 package org.ocpsoft.rewrite.faces.annotation.navigate;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.junit.Assert.assertThat;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,6 +25,8 @@ import org.ocpsoft.rewrite.test.RewriteTest;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class NavigateEncodingTest extends RewriteTestBase
@@ -51,10 +49,10 @@ public class NavigateEncodingTest extends RewriteTestBase
       HtmlPage firstPage = getWebClient("/navigate").getPage();
       HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectSimpleString").click();
 
-      assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/navigate?q=foo");
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
-      assertThat(secondPageContent, containsString("Value = [foo]"));
+      assertThat(secondPageContent).contains("Value = [foo]");
 
    }
 
@@ -65,10 +63,10 @@ public class NavigateEncodingTest extends RewriteTestBase
       HtmlPage firstPage = getWebClient("/navigate").getPage();
       HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectStringWithSpace").click();
 
-      assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo+bar"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/navigate?q=foo+bar");
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
-      assertThat(secondPageContent, containsString("Value = [foo bar]"));
+      assertThat(secondPageContent).contains("Value = [foo bar]");
 
    }
 
@@ -79,10 +77,10 @@ public class NavigateEncodingTest extends RewriteTestBase
       HtmlPage firstPage = getWebClient("/navigate").getPage();
       HtmlPage secondPage = firstPage.getHtmlElementById("form:redirectProblematicCharacters").click();
 
-      assertThat(secondPage.getUrl().toString(), endsWith("/navigate?q=foo%3Dbar"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/navigate?q=foo%3Dbar");
 
       String secondPageContent = secondPage.getWebResponse().getContentAsString();
-      assertThat(secondPageContent, containsString("Value = [foo=bar]"));
+      assertThat(secondPageContent).contains("Value = [foo=bar]");
 
    }
 

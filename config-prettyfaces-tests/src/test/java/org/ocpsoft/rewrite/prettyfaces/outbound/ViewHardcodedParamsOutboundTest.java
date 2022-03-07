@@ -1,9 +1,5 @@
 package org.ocpsoft.rewrite.prettyfaces.outbound;
 
-import static org.hamcrest.Matchers.endsWith;
-import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
@@ -18,6 +14,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Ignored for Wildfly Beta1 because it ships with Mojarra 2.2.3 which ALWAYS appends 'jftfdi' and 'jffi' parameters.
@@ -48,7 +46,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String hlink = browser.findElement(By.id("hLink")).getAttribute("href");
-      assertThat(hlink, Matchers.endsWith("/view-hardcoded-params"));
+      assertThat(hlink).endsWith("/view-hardcoded-params");
    }
 
    @Test
@@ -56,7 +54,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String hlink = browser.findElement(By.id("hLink-extra")).getAttribute("href");
-      assertThat(hlink, Matchers.endsWith("/view-hardcoded-params?extraParam=extraValue"));
+      assertThat(hlink).endsWith("/view-hardcoded-params?extraParam=extraValue");
    }
 
    @Test
@@ -64,7 +62,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String url = browser.findElement(By.id("prettyLink")).getAttribute("href");
-      assertThat(url, Matchers.endsWith("/view-hardcoded-params"));
+      assertThat(url).endsWith("/view-hardcoded-params");
    }
 
    @Test
@@ -72,7 +70,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/index");
       String url = browser.findElement(By.id("prettyLink-extra")).getAttribute("href");
-      assertThat(url, Matchers.endsWith("/view-hardcoded-params?extraParam=extraValue"));
+      assertThat(url).endsWith("/view-hardcoded-params?extraParam=extraValue");
    }
 
    @Test
@@ -80,7 +78,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       HtmlPage firstPage = getWebClient("/index").getPage();
       HtmlPage secondPage = firstPage.getHtmlElementById("hCommandLink").click();
-      assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/view-hardcoded-params");
    }
 
    @Test
@@ -88,7 +86,7 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       HtmlPage firstPage = getWebClient("/index").getPage();
       HtmlPage secondPage = firstPage.getHtmlElementById("hCommandLink-extra").click();
-      assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params?extraParam=extraValue"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/view-hardcoded-params?extraParam=extraValue");
    }
 
    @Test
@@ -96,6 +94,6 @@ public class ViewHardcodedParamsOutboundTest extends RewriteTestBase
    {
       HtmlPage firstPage = getWebClient("/index").getPage();
       HtmlPage secondPage = firstPage.getHtmlElementById("hCommandLink-notMapped").click();
-      assertThat(secondPage.getUrl().toString(), endsWith("/view-hardcoded-params.jsf?param=value2"));
+      assertThat(secondPage.getUrl().toString()).endsWith("/view-hardcoded-params.jsf?param=value2");
    }
 }

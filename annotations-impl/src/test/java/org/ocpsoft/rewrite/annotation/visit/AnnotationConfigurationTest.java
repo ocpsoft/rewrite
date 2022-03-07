@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.annotation.visit;
 
-import org.junit.Assert;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,6 +25,8 @@ import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -50,35 +49,35 @@ public class AnnotationConfigurationTest extends RewriteTest
    @Test
    public void testControl() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/control");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/control");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testTypeAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/type");
-      Assert.assertEquals(204, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/type");
+      assertThat(action.getStatusCode()).isEqualTo(204);
    }
 
    @Test
    public void testFieldAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/field");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/field");
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
    @Test
    public void testMethodAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/method");
-      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/method");
+      assertThat(action.getStatusCode()).isEqualTo(202);
    }
 
    @Test
    public void testParameterAnnotation() throws Exception
    {
-      HttpAction<HttpGet> action = get("/annotation/parameter");
-      Assert.assertEquals(203, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/annotation/parameter");
+      assertThat(action.getStatusCode()).isEqualTo(203);
    }
 }

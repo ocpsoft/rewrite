@@ -1,7 +1,5 @@
 package org.ocpsoft.rewrite.annotation;
 
-import static org.junit.Assert.assertEquals;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +12,8 @@ import org.ocpsoft.rewrite.annotation.api.HandlerChain;
 import org.ocpsoft.rewrite.annotation.context.ClassContextImpl;
 import org.ocpsoft.rewrite.annotation.spi.AnnotationHandler;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HandlerChainImplTest
 {
@@ -29,7 +29,7 @@ public class HandlerChainImplTest
 
       chain.proceed();
 
-      assertEquals(0, log.size());
+      assertThat(log.size()).isEqualTo(0);
 
    }
 
@@ -45,10 +45,10 @@ public class HandlerChainImplTest
 
       chain.proceed();
 
-      assertEquals(Arrays.asList(
-               "Before: Handler",
-               "After: Handler"
-               ), log);
+      assertThat(log).isEqualTo(Arrays.asList(
+              "Before: Handler",
+              "After: Handler"
+      ));
 
    }
 
@@ -66,12 +66,12 @@ public class HandlerChainImplTest
 
       chain.proceed();
 
-      assertEquals(Arrays.asList(
-               "Before: First",
-               "Before: Second",
-               "After: Second",
-               "After: First"
-               ), log);
+      assertThat(log).isEqualTo(Arrays.asList(
+              "Before: First",
+              "Before: Second",
+              "After: Second",
+              "After: First"
+      ));
 
    }
 

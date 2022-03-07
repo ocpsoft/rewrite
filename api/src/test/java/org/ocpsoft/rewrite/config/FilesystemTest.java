@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.rewrite.MockEvaluationContext;
@@ -31,6 +30,8 @@ import org.ocpsoft.rewrite.param.DefaultParameterValueStore;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -74,9 +75,9 @@ public class FilesystemTest
          initialize(DefaultParameterStore.getInstance(context), filesystem);
 
          tempFile.delete();
-         Assert.assertFalse(filesystem.evaluate(event, context));
+         assertThat(filesystem.evaluate(event, context)).isFalse();
          tempFile.createNewFile();
-         Assert.assertTrue(filesystem.evaluate(event, context));
+         assertThat(filesystem.evaluate(event, context)).isTrue();
       }
       finally {
          System.setProperty("file.separator", separator);

@@ -11,4 +11,11 @@
 
    <artifactId>rewrite-test-base</artifactId>
 
+   <dependencies>
+      <dependency>
+         <groupId>org.assertj</groupId>
+         <artifactId>assertj-core</artifactId>
+         <version>3.22.0</version>
+      </dependency>
+   </dependencies>
 </project>

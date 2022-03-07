@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.transform.minify;
 
-import static org.junit.Assert.assertEquals;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -29,6 +26,8 @@ import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 
@@ -61,17 +60,17 @@ public class JsMinifyTest extends RewriteTest
    @Category(IgnoreForWildfly.class)
    public void testJavaScriptCompression() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test.js");
-      assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      assertEquals("var text=\"hello\";alert(text);", action.getResponseContent());
+      HttpAction action = get("/test.js");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("var text=\"hello\";alert(text);");
    }
 
    @Test
    @Category(IgnoreForWildfly.class)
    public void testNotExistingSourceFile() throws Exception
    {
-      HttpAction<HttpGet> action = get("/not-existing.js");
-      assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/not-existing.js");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
 }

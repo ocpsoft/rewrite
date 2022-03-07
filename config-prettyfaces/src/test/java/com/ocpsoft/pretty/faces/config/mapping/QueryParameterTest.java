@@ -15,14 +15,13 @@
  */
 package com.ocpsoft.pretty.faces.config.mapping;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.config.mapping.QueryParameter;
 import com.ocpsoft.pretty.faces.config.mapping.RequestParameter;
 import com.ocpsoft.pretty.faces.el.ConstantExpression;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author lb3
@@ -37,31 +36,31 @@ public class QueryParameterTest
         RequestParameter param3 = new QueryParameter("foo", "bar2");
         RequestParameter param4 = new QueryParameter("foo2", "bar");
 
-        assertNotSame(param1.hashCode(), param3.hashCode());
-        assertNotSame(param1.hashCode(), param4.hashCode());
-        assertNotSame(param3.hashCode(), param4.hashCode());
-        assertEquals(param1.hashCode(), param2.hashCode());
+        assertThat(param3.hashCode()).isNotSameAs(param1.hashCode());
+        assertThat(param4.hashCode()).isNotSameAs(param1.hashCode());
+        assertThat(param4.hashCode()).isNotSameAs(param3.hashCode());
+        assertThat(param2.hashCode()).isEqualTo(param1.hashCode());
 
-        assertNotSame(param1, param3);
-        assertNotSame(param1, param4);
-        assertNotSame(param3, param4);
-        assertEquals(param1, param2);
+        assertThat(param3).isNotSameAs(param1);
+        assertThat(param4).isNotSameAs(param1);
+        assertThat(param4).isNotSameAs(param3);
+        assertThat(param2).isEqualTo(param1);
     }
 
     @Test
     public void testQueryParameterStringString()
     {
         QueryParameter param1 = new QueryParameter("foo", "bar");
-        assertEquals("foo", param1.getName());
-        assertEquals("bar", param1.getValue());
+        assertThat(param1.getName()).isEqualTo("foo");
+        assertThat(param1.getValue()).isEqualTo("bar");
     }
 
     @Test
     public void testQueryParameterStringStringString()
     {
         QueryParameter param1 = new QueryParameter("name", "value", new ConstantExpression("expression"));
-        assertEquals("name", param1.getName());
-        assertEquals("value", param1.getValue());
-        assertEquals("expression", param1.getExpression().getELExpression());
+        assertThat(param1.getName()).isEqualTo("name");
+        assertThat(param1.getValue()).isEqualTo("value");
+        assertThat(param1.getExpression().getELExpression()).isEqualTo("expression");
     }
 }

@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -27,6 +26,8 @@ import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.servlet.impl.HttpOutboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
 import org.ocpsoft.urlbuilder.AddressBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -53,7 +54,7 @@ public class DomainTest
    @Test
    public void testDomainMatchesInbound()
    {
-      Assert.assertTrue(Domain.matches("example.com").evaluate(inbound, new MockEvaluationContext()));
+      assertThat(Domain.matches("example.com").evaluate(inbound, new MockEvaluationContext())).isTrue();
    }
 
    @Test
@@ -64,24 +65,24 @@ public class DomainTest
 
       ParameterUtils.initialize(context, hostname);
 
-      Assert.assertTrue(hostname.evaluate(inbound, context));
+      assertThat(hostname.evaluate(inbound, context)).isTrue();
    }
 
    @Test
    public void testDomainNotMatchesInbound()
    {
-      Assert.assertFalse(Domain.matches("other.com").evaluate(inbound, new MockEvaluationContext()));
+      assertThat(Domain.matches("other.com").evaluate(inbound, new MockEvaluationContext())).isFalse();
    }
 
    @Test
    public void testDomainMatchesOutbound()
    {
-      Assert.assertTrue(Domain.matches("example.com").evaluate(outbound, new MockEvaluationContext()));
+      assertThat(Domain.matches("example.com").evaluate(outbound, new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testDomainNotMatchesOutbound()
    {
-      Assert.assertFalse(Domain.matches("other.com").evaluate(outbound, new MockEvaluationContext()));
+      assertThat(Domain.matches("other.com").evaluate(outbound, new MockEvaluationContext())).isFalse();
    }
 }

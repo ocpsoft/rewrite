@@ -15,10 +15,9 @@
  */
 package org.ocpsoft.rewrite.annotation.scan;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PackageFilterTest
 {
@@ -26,10 +25,10 @@ public class PackageFilterTest
    @Test
    public void testEmptyFilter()
    {
-      assertTrue(new PackageFilter(null).isAllowedPackage("org.ocpsoft"));
-      assertTrue(new PackageFilter("").isAllowedPackage("org.ocpsoft"));
-      assertTrue(new PackageFilter("  ").isAllowedPackage("org.ocpsoft"));
-      assertTrue(new PackageFilter(" ,, ").isAllowedPackage("org.ocpsoft"));
+      assertThat(new PackageFilter(null).isAllowedPackage("org.ocpsoft")).isTrue();
+      assertThat(new PackageFilter("").isAllowedPackage("org.ocpsoft")).isTrue();
+      assertThat(new PackageFilter("  ").isAllowedPackage("org.ocpsoft")).isTrue();
+      assertThat(new PackageFilter(" ,, ").isAllowedPackage("org.ocpsoft")).isTrue();
    }
 
    @Test
@@ -38,14 +37,14 @@ public class PackageFilterTest
 
       // test simple filter
       PackageFilter filter = new PackageFilter("org.ocpsoft");
-      assertEquals(true, filter.isAllowedPackage("org.ocpsoft.pretty.faces"));
-      assertEquals(true, filter.isAllowedPackage("org.ocpsoft"));
-      assertEquals(false, filter.isAllowedPackage("com"));
-      assertEquals(false, filter.isAllowedPackage("de"));
+      assertThat(filter.isAllowedPackage("org.ocpsoft.pretty.faces")).isEqualTo(true);
+      assertThat(filter.isAllowedPackage("org.ocpsoft")).isEqualTo(true);
+      assertThat(filter.isAllowedPackage("com")).isEqualTo(false);
+      assertThat(filter.isAllowedPackage("de")).isEqualTo(false);
 
       // test some danger configuration parameter inputs
-      assertEquals(true, new PackageFilter("  org.ocpsoft ").isAllowedPackage("org.ocpsoft.pretty.faces"));
-      assertEquals(true, new PackageFilter(" , org.ocpsoft, ").isAllowedPackage("org.ocpsoft.pretty.faces"));
+      assertThat(new PackageFilter("  org.ocpsoft ").isAllowedPackage("org.ocpsoft.pretty.faces")).isEqualTo(true);
+      assertThat(new PackageFilter(" , org.ocpsoft, ").isAllowedPackage("org.ocpsoft.pretty.faces")).isEqualTo(true);
 
    }
 
@@ -55,17 +54,17 @@ public class PackageFilterTest
 
       // test simple filter
       PackageFilter filter = new PackageFilter("org.ocpsoft,de.chkal");
-      assertEquals(true, filter.isAllowedPackage("org.ocpsoft.pretty.faces"));
-      assertEquals(true, filter.isAllowedPackage("org.ocpsoft"));
-      assertEquals(true, filter.isAllowedPackage("de.chkal.bla"));
-      assertEquals(true, filter.isAllowedPackage("de.chkal"));
-      assertEquals(false, filter.isAllowedPackage("com"));
-      assertEquals(false, filter.isAllowedPackage("com.google"));
-      assertEquals(false, filter.isAllowedPackage("de"));
+      assertThat(filter.isAllowedPackage("org.ocpsoft.pretty.faces")).isEqualTo(true);
+      assertThat(filter.isAllowedPackage("org.ocpsoft")).isEqualTo(true);
+      assertThat(filter.isAllowedPackage("de.chkal.bla")).isEqualTo(true);
+      assertThat(filter.isAllowedPackage("de.chkal")).isEqualTo(true);
+      assertThat(filter.isAllowedPackage("com")).isEqualTo(false);
+      assertThat(filter.isAllowedPackage("com.google")).isEqualTo(false);
+      assertThat(filter.isAllowedPackage("de")).isEqualTo(false);
 
       // test some danger configuration parameter inputs
-      assertEquals(true, new PackageFilter("  org.ocpsoft , de.chkal ").isAllowedPackage("org.ocpsoft.pretty.faces"));
-      assertEquals(true, new PackageFilter(" , org.ocpsoft, de.chkal ,,").isAllowedPackage("de.chkal.bla"));
+      assertThat(new PackageFilter("  org.ocpsoft , de.chkal ").isAllowedPackage("org.ocpsoft.pretty.faces")).isEqualTo(true);
+      assertThat(new PackageFilter(" , org.ocpsoft, de.chkal ,,").isAllowedPackage("de.chkal.bla")).isEqualTo(true);
 
    }
 

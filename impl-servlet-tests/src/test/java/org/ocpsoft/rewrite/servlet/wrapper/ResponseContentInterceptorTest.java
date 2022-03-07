@@ -16,18 +16,18 @@
 package org.ocpsoft.rewrite.servlet.wrapper;
 
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -51,31 +51,31 @@ public class ResponseContentInterceptorTest extends RewriteTest
    @Test
    public void testResponseBufferingAppliesAllBuffers() throws Exception
    {
-      HttpAction<HttpGet> action = get("/index.html");
-      Assert.assertEquals(200, action.getStatusCode());
-      Assert.assertEquals("lowercase", action.getResponseContent());
+      HttpAction action = get("/index.html");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getResponseContent()).isEqualTo("lowercase");
    }
 
    @Test
    public void testResponseBufferingOnlyAppliesWhenBuffersRegistered() throws Exception
    {
-      HttpAction<HttpGet> action = get("/unbuffered");
-      Assert.assertEquals(201, action.getStatusCode());
-      Assert.assertEquals("UPPERCASE", action.getResponseContent());
+      HttpAction action = get("/unbuffered");
+      assertThat(action.getStatusCode()).isEqualTo(201);
+      assertThat(action.getResponseContent()).isEqualTo("UPPERCASE");
    }
 
    @Test
    public void testResponseBufferingAcceptedAfterForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/bufferforward");
-      Assert.assertEquals(202, action.getStatusCode());
-      Assert.assertEquals("uppercase", action.getResponseContent());
+      HttpAction action = get("/bufferforward");
+      assertThat(action.getStatusCode()).isEqualTo(202);
+      assertThat(action.getResponseContent()).isEqualTo("uppercase");
    }
 
    @Test
    public void testResponseBufferingRejectedAfterStreamAccessed() throws Exception
    {
-      HttpAction<HttpGet> action = get("/bufferfail");
-      Assert.assertEquals(503, action.getStatusCode());
+      HttpAction action = get("/bufferfail");
+      assertThat(action.getStatusCode()).isEqualTo(503);
    }
 }

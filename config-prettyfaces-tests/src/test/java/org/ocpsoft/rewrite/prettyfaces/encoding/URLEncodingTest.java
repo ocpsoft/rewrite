@@ -16,12 +16,10 @@
  */
 package org.ocpsoft.rewrite.prettyfaces.encoding;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
@@ -29,6 +27,8 @@ import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class URLEncodingTest extends RewriteTestBase
@@ -53,10 +53,10 @@ public class URLEncodingTest extends RewriteTestBase
       String target = "/virtual/rewrite/substitute";
       String expected = "/virtu%C3%A1ln%C3%AD";
 
-      HttpAction<HttpGet> action = get(target);
+      HttpAction action = get(target);
 
       String responseContent = action.getResponseContent();
-      Assert.assertTrue(responseContent.contains(action.getContextPath() + expected));
+      assertThat(responseContent).contains(action.getContextPath() + expected);
    }
 
    /**
@@ -70,10 +70,10 @@ public class URLEncodingTest extends RewriteTestBase
       String target = "/virtual/rewrite/url";
       String expected = "/virtu%C3%A1ln%C3%AD";
 
-      HttpAction<HttpGet> action = get(target);
+      HttpAction action = get(target);
 
-      Assert.assertTrue(action.getCurrentURL().endsWith(expected));
-      Assert.assertTrue(action.getResponseContent().contains(expected));
+      assertThat(action.getCurrentURL()).endsWith(expected);
+      assertThat(action.getResponseContent()).contains(expected);
    }
 
    @Test
@@ -81,10 +81,10 @@ public class URLEncodingTest extends RewriteTestBase
    {
       String expected = "/custom/form";
 
-      HttpAction<HttpGet> action = get(expected);
+      HttpAction action = get(expected);
 
-      Assert.assertTrue(action.getCurrentURL().endsWith(expected));
-      Assert.assertTrue(action.getResponseContent().contains(expected));
+      assertThat(action.getCurrentURL()).endsWith(expected);
+      assertThat(action.getResponseContent()).contains(expected);
    }
 
    @Test
@@ -93,21 +93,21 @@ public class URLEncodingTest extends RewriteTestBase
    {
       String expected = "/foo/bar/baz/car/";
 
-      HttpAction<HttpGet> action = get(expected);
+      HttpAction action = get(expected);
 
-      Assert.assertTrue(action.getCurrentURL().endsWith(expected));
-      Assert.assertTrue(action.getResponseContent().contains(expected));
+      assertThat(action.getCurrentURL()).endsWith(expected);
+      assertThat(action.getResponseContent()).contains(expected);
 
-      Assert.assertTrue(action.getResponseContent().contains("beanPathText=foo/bar/baz/car"));
+      assertThat(action.getResponseContent()).contains("beanPathText=foo/bar/baz/car");
    }
 
    @Test
    public void testNonMappedRequestRendersRewrittenURL() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding.jsf");
+      HttpAction action = get("/encoding.jsf");
 
-      Assert.assertTrue(action.getCurrentURL().endsWith("/encoding.jsf"));
-      Assert.assertTrue(action.getResponseContent().contains("/custom/form"));
+      assertThat(action.getCurrentURL()).endsWith("/encoding.jsf");
+      assertThat(action.getResponseContent()).contains("/custom/form");
    }
 
    @Drone
@@ -117,9 +117,9 @@ public class URLEncodingTest extends RewriteTestBase
    public void testURLDecoding() throws Exception
    {
       browser.get(getBaseURL() + getContextPath() + "/encoding/Vračar?dis=Fooo Bar");
-      Assert.assertTrue(browser.getPageSource().contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar"));
-      Assert.assertTrue(browser.getPageSource().contains("beanPathText=Vračar"));
-      Assert.assertTrue(browser.getPageSource().contains("beanQueryText=Fooo Bar"));
+      assertThat(browser.getPageSource()).contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar");
+      assertThat(browser.getPageSource()).contains("beanPathText=Vračar");
+      assertThat(browser.getPageSource()).contains("beanQueryText=Fooo Bar");
    }
 
    @Test
@@ -127,9 +127,9 @@ public class URLEncodingTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/encoding/V%23r?dis=gt%23%232206");
       String pageSource = browser.getPageSource();
-      Assert.assertTrue(pageSource.contains("/encoding/V%23r?dis=gt%23%232206"));
-      Assert.assertTrue(pageSource.contains("beanPathText=V#r"));
-      Assert.assertTrue(pageSource.contains("beanQueryText=gt##2206"));
+      assertThat(pageSource).contains("/encoding/V%23r?dis=gt%23%232206");
+      assertThat(pageSource).contains("beanPathText=V#r");
+      assertThat(pageSource).contains("beanQueryText=gt##2206");
    }
 
    @Test
@@ -137,54 +137,54 @@ public class URLEncodingTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/encoding/V%23r?dis=gt##2206");
       String pageSource = browser.getPageSource();
-      Assert.assertTrue(pageSource.contains("/encoding/V%23r?dis=gt"));
-      Assert.assertTrue(pageSource.contains("beanPathText=V#r"));
-      Assert.assertTrue(pageSource.contains("beanQueryText=gt"));
+      assertThat(pageSource).contains("/encoding/V%23r?dis=gt");
+      assertThat(pageSource).contains("beanPathText=V#r");
+      assertThat(pageSource).contains("beanQueryText=gt");
    }
 
    @Test
    public void testQueryDecoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo%20Bar");
+      HttpAction action = get("/encoding/Vračar?dis=Fooo%20Bar");
 
-      Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo%20Bar"));
+      assertThat(action.getCurrentURL()).endsWith("/encoding/Vračar?dis=Fooo%20Bar");
       String responseContent = action.getResponseContent();
-      Assert.assertTrue(responseContent.contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar"));
-      Assert.assertTrue(responseContent.contains("beanQueryText=Fooo Bar"));
+      assertThat(responseContent).contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar");
+      assertThat(responseContent).contains("beanQueryText=Fooo Bar");
    }
 
    @Test
    public void testEncodedPathDecoding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/Vračar?dis=Fooo%20Bar");
+      HttpAction action = get("/encoding/Vračar?dis=Fooo%20Bar");
 
-      Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=Fooo%20Bar"));
-      Assert.assertTrue(action.getResponseContent().contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar"));
-      Assert.assertTrue(action.getResponseContent().contains("beanPathText=Vračar"));
+      assertThat(action.getCurrentURL()).endsWith("/encoding/Vračar?dis=Fooo%20Bar");
+      assertThat(action.getResponseContent()).contains("/encoding/Vra%C4%8Dar?dis=Fooo+Bar");
+      assertThat(action.getResponseContent()).contains("beanPathText=Vračar");
    }
 
    @Test
    public void testQueryWithGermanUmlaut() throws Exception
    {
-      HttpAction<HttpGet> action = get("/encoding/Vračar?dis=%C3%BC");
-      Assert.assertTrue(action.getCurrentURL().endsWith("/encoding/Vračar?dis=%C3%BC"));
-      Assert.assertTrue(action.getResponseContent().contains(getContextPath() + "/encoding/Vra%C4%8Dar?dis=%C3%BC"));
-      Assert.assertTrue(action.getResponseContent().contains("beanPathText=Vračar"));
-      Assert.assertTrue(action.getResponseContent().contains("beanQueryText=\u00fc"));
+      HttpAction action = get("/encoding/Vračar?dis=%C3%BC");
+      assertThat(action.getCurrentURL()).endsWith("/encoding/Vračar?dis=%C3%BC");
+      assertThat(action.getResponseContent()).contains(getContextPath() + "/encoding/Vra%C4%8Dar?dis=%C3%BC");
+      assertThat(action.getResponseContent()).contains("beanPathText=Vračar");
+      assertThat(action.getResponseContent()).contains("beanQueryText=\u00fc");
    }
 
    @Test
    public void testUrlMappingPatternDecoding() throws Exception
    {
       browser.get(getBaseURL() + getContextPath() + "/hard encoding/Vračar");
-      Assert.assertNotNull(browser.findElement(By.id("form")));
+      assertThat(browser.findElement(By.id("form"))).isNotNull();
    }
 
    @Test
    public void testEncodedURLMatchesNonEncodedPattern() throws Exception
    {
       browser.get(getBaseURL() + getContextPath() + "/URL%20ENCODED");
-      Assert.assertNotNull(browser.findElement(By.id("form")));
+      assertThat(browser.findElement(By.id("form"))).isNotNull();
    }
 
    @Test
@@ -192,23 +192,23 @@ public class URLEncodingTest extends RewriteTestBase
    {
       browser.get(getBaseURL() + getContextPath() + "/decodequery");
 
-      Assert.assertTrue(browser.getPageSource().contains("viewId=/encoding.xhtml"));
+      assertThat(browser.getPageSource()).contains("viewId=/encoding.xhtml");
       browser.findElement(By.id("input1")).sendKeys("%");
       browser.findElement(By.id("submit")).click();
-      Assert.assertTrue(browser.getPageSource().contains("viewId=/encoding.xhtml"));
+      assertThat(browser.getPageSource()).contains("viewId=/encoding.xhtml");
    }
 
    @Test
    public void testBracesAndBracketsInURL() throws Exception
    {
       browser.get(getBaseURL() + getContextPath() + "/basic/[]{}");
-      Assert.assertNotNull(browser.findElement(By.id("form")));
+      assertThat(browser.findElement(By.id("form"))).isNotNull();
    }
 
    @Test
    public void testBracesAndBracketsInURLEncoded() throws Exception
    {
       browser.get(getBaseURL() + getContextPath() + "/basic/%5B%5D%7B%7D");
-      Assert.assertNotNull(browser.findElement(By.id("form")));
+      assertThat(browser.findElement(By.id("form"))).isNotNull();
    }
 }

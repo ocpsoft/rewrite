@@ -16,9 +16,6 @@ package org.ocpsoft.rewrite.faces;
  * limitations under the License.
  */
 
-import org.junit.Assert;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,6 +25,8 @@ import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -50,21 +49,21 @@ public class DeferredOperationTest extends RewriteTest
    @Test
    public void testDeferOperationRedirectView() throws Exception
    {
-      HttpAction<HttpGet> action = get("/redirect");
+      HttpAction action = get("/redirect");
       String content = action.getResponseContent();
-      Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("/redirect_result", action.getCurrentContextRelativeURL());
+      assertThat(content == null || content.isEmpty()).isTrue();
+      assertThat(action.getStatusCode()).isEqualTo(201);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/redirect_result");
    }
 
    @Test
    public void testDeferOperationForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/forward");
+      HttpAction action = get("/forward");
       String content = action.getResponseContent();
-      Assert.assertTrue(content == null || content.isEmpty());
-      Assert.assertEquals(202, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("True", action.getResponseHeaderValues("Forward-Occurred").get(0));
-      Assert.assertEquals("/forward", action.getCurrentContextRelativeURL());
+      assertThat(content == null || content.isEmpty()).isTrue();
+      assertThat(action.getStatusCode()).isEqualTo(202);
+      assertThat(action.getResponseHeaderValues("Forward-Occurred").get(0)).isEqualTo("True");
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/forward");
    }
 }

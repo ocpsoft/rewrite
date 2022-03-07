@@ -20,7 +20,6 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -28,6 +27,8 @@ import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -69,15 +70,14 @@ public class HeaderAndPathTest
         Header header = Header.exists("Accept-{charset}");
         ParameterUtils.initialize(context, header);
 
-        Assert.assertTrue(path.and(header).evaluate(rewrite, context));
+        assertThat(path.and(header).evaluate(rewrite, context)).isTrue();
     }
 
     @Test
     public void testHeaderAndPathDoNotMatch()
     {
-        Assert.assertFalse(
-                    Path.matches("/wrong-application/{path}").and(
-                                Header.exists("Accept-{charset}")
-                                ).evaluate(rewrite, new MockEvaluationContext()));
+        assertThat(Path.matches("/wrong-application/{path}").and(
+                Header.exists("Accept-{charset}")
+        ).evaluate(rewrite, new MockEvaluationContext())).isFalse();
     }
 }

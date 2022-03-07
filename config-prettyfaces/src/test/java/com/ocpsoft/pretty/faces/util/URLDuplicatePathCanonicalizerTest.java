@@ -15,11 +15,11 @@
  */
 package com.ocpsoft.pretty.faces.util;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.ocpsoft.pretty.faces.util.URLDuplicatePathCanonicalizer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class URLDuplicatePathCanonicalizerTest
 {
@@ -32,7 +32,7 @@ public class URLDuplicatePathCanonicalizerTest
 
         String expected = "http://ocpsoft.com/prettyfaces/";
 
-        assertEquals(expected, c.canonicalize(url));
+        assertThat(c.canonicalize(url)).isEqualTo(expected);
     }
 
     @Test
@@ -42,6 +42,6 @@ public class URLDuplicatePathCanonicalizerTest
 
         String expected = "http://ocpsoft.com/prettyfaces/../scrumshark/";
 
-        assertEquals(expected, c.canonicalize(url));
+        assertThat(c.canonicalize(url)).isEqualTo(expected);
     }
 }

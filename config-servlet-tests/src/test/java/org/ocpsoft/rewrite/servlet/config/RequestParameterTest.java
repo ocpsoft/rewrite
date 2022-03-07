@@ -20,7 +20,6 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -34,6 +33,8 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -72,7 +73,7 @@ public class RequestParameterTest
       RequestParameter parameter = RequestParameter.exists("foo");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, parameter);
-      Assert.assertTrue(parameter.evaluate(rewrite, context));
+      assertThat(parameter.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -81,13 +82,13 @@ public class RequestParameterTest
       RequestParameter parameter = RequestParameter.exists("baz");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, parameter);
-      Assert.assertTrue(parameter.evaluate(rewrite, context));
+      assertThat(parameter.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testRequestParameterExistsFalse()
    {
-      Assert.assertFalse(RequestParameter.exists("nope").evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(RequestParameter.exists("nope").evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 
    @Test
@@ -96,7 +97,7 @@ public class RequestParameterTest
       RequestParameter parameter = RequestParameter.valueExists("bar");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, parameter);
-      Assert.assertTrue(parameter.evaluate(rewrite, context));
+      assertThat(parameter.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -106,12 +107,12 @@ public class RequestParameterTest
 
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, parameter);
-      Assert.assertTrue(parameter.evaluate(rewrite, context));
+      assertThat(parameter.evaluate(rewrite, context)).isTrue();
 
       ParameterStore store = DefaultParameterStore.getInstance(context);
       Parameter<?> p = store.get("value");
       ((ParameterConfiguration<?>) p).constrainedBy(new RegexConstraint("(bar|baz)"));
-      Assert.assertFalse(parameter.evaluate(rewrite, context));
+      assertThat(parameter.evaluate(rewrite, context)).isFalse();
    }
 
    @Test
@@ -122,7 +123,7 @@ public class RequestParameterTest
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, requestParam);
 
-      Assert.assertTrue(requestParam.evaluate(rewrite, context));
+      assertThat(requestParam.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -131,7 +132,7 @@ public class RequestParameterTest
       RequestParameter parameter = RequestParameter.matchesAll("{name}", "{value}");
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, parameter);
-      Assert.assertTrue(parameter.evaluate(rewrite, context));
+      assertThat(parameter.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -143,7 +144,7 @@ public class RequestParameterTest
 
       ParameterStore store = DefaultParameterStore.getInstance(context);
       ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("nothing"));
-      Assert.assertFalse(parameter.evaluate(rewrite, context));
+      assertThat(parameter.evaluate(rewrite, context)).isFalse();
    }
 
    @Test
@@ -155,7 +156,7 @@ public class RequestParameterTest
 
       ParameterStore store = DefaultParameterStore.getInstance(context);
       ((ParameterConfiguration<?>) store.get("name")).constrainedBy(new RegexConstraint("nothing"));
-      Assert.assertFalse(requestParam.evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(requestParam.evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 
    @Test
@@ -168,13 +169,13 @@ public class RequestParameterTest
       ParameterStore store = DefaultParameterStore.getInstance(context);
 
       ((ParameterConfiguration<?>) store.get("value")).constrainedBy(new RegexConstraint("(cab|xxx)"));
-      Assert.assertFalse(requestParam.evaluate(rewrite, context));
+      assertThat(requestParam.evaluate(rewrite, context)).isFalse();
    }
 
    @Test
    public void testBadRegexThrowsException()
    {
-      Assert.assertFalse(RequestParameter.matches(".*", "bar").evaluate(rewrite, new MockEvaluationContext()));
+      assertThat(RequestParameter.matches(".*", "bar").evaluate(rewrite, new MockEvaluationContext())).isFalse();
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -198,6 +199,6 @@ public class RequestParameterTest
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(RequestParameter.exists("foo").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(RequestParameter.exists("foo").evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 }

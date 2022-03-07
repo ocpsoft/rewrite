@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -30,6 +29,8 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
 import org.ocpsoft.rewrite.util.ParameterUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -72,7 +73,7 @@ public class URLTest
       MockEvaluationContext context = new MockEvaluationContext();
       URL url = URL.matches("http://domain.com:8080/context/application/{seg}?foo=bar&baz=bazaar");
       ParameterUtils.initialize(context, url);
-      Assert.assertTrue(url.evaluate(rewrite, context));
+      assertThat(url.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -87,7 +88,7 @@ public class URLTest
       ((ParameterConfiguration<?>) store .get("prefix")).constrainedBy(new RegexConstraint(".*"));
       ((ParameterConfiguration<?>) store.get("suffix")).constrainedBy(new RegexConstraint("\\?.*"));
 
-      Assert.assertTrue(url.evaluate(rewrite, context));
+      assertThat(url.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -98,27 +99,27 @@ public class URLTest
       MockEvaluationContext context = new MockEvaluationContext();
       ParameterUtils.initialize(context, url);
 
-      Assert.assertTrue(url.evaluate(rewrite, context));
+      assertThat(url.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testMatchesLiteral()
    {
-      Assert.assertTrue(URL.matches("http://domain.com:8080/context/application/path?foo=bar&baz=bazaar").evaluate(
-               rewrite, new MockEvaluationContext()));
+      assertThat(URL.matches("http://domain.com:8080/context/application/path?foo=bar&baz=bazaar").evaluate(
+              rewrite, new MockEvaluationContext())).isTrue();
    }
 
    @Test
    public void testCannotUseRegexWithoutParam()
    {
-      Assert.assertFalse(URL.matches(".*/context/application/pa.*").evaluate(rewrite,
-               new MockEvaluationContext()));
+      assertThat(URL.matches(".*/context/application/pa.*").evaluate(rewrite,
+              new MockEvaluationContext())).isFalse();
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(URL.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext()));
+      assertThat(URL.matches("/blah").evaluate(new MockRewrite(), new MockEvaluationContext())).isFalse();
    }
 
    @Test(expected = IllegalArgumentException.class)

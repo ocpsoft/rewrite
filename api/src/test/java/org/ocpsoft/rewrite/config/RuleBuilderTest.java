@@ -15,12 +15,13 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.context.RewriteState;
 import org.ocpsoft.rewrite.event.Rewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -68,17 +69,17 @@ public class RuleBuilderTest
    @Test
    public void testRuleBuilderDefaultsToAlwaysPerform()
    {
-      Assert.assertTrue(RuleBuilder.define().evaluate(null, context));
+      assertThat(RuleBuilder.define().evaluate(null, context)).isTrue();
    }
 
    @Test
    public void testRuleBuilderIsRelocatable()
    {
       RuleBuilder ruleBuilder = RuleBuilder.define();
-      Assert.assertTrue(ruleBuilder instanceof Weighted);
-      Assert.assertTrue(ruleBuilder instanceof Rule);
-      Assert.assertTrue(ruleBuilder instanceof Relocatable);
-      Assert.assertTrue(ruleBuilder instanceof RelocatableRule);
+      assertThat(ruleBuilder).isInstanceOf(Weighted.class);
+      assertThat(ruleBuilder).isInstanceOf(Rule.class);
+      assertThat(ruleBuilder).isInstanceOf(Relocatable.class);
+      assertThat(ruleBuilder).isInstanceOf(RelocatableRule.class);
    }
 
    @Test
@@ -104,8 +105,8 @@ public class RuleBuilderTest
 
       RuleBuilder ruleBuilder = RuleBuilder.wrap(rule);
 
-      Assert.assertEquals(null, ruleBuilder.getId());
-      Assert.assertEquals(0, ruleBuilder.priority());
+      assertThat(ruleBuilder.getId()).isEqualTo(null);
+      assertThat(ruleBuilder.priority()).isEqualTo(0);
    }
 
 }

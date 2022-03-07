@@ -15,18 +15,18 @@
  */
 package org.ocpsoft.rewrite.cdi.bridge;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.cdi.bind.BindingBean;
 import org.ocpsoft.rewrite.cdi.bind.ExpressionLanguageTestConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -54,16 +54,16 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    @Test
    public void testRewriteProviderBridgeAcceptsChanges() throws Exception
    {
-      HttpAction<HttpGet> action = get("/success");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/success");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
    public void testRewriteRedirect301() throws Exception
    {
-      HttpAction<HttpGet> action = get("/redirect-301");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
-      Assert.assertEquals("/outbound-rewritten", action.getCurrentContextRelativeURL());
+      HttpAction action = get("/redirect-301");
+      assertThat(action.getStatusCode()).isEqualTo(200);
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/outbound-rewritten");
    }
 
    /*
@@ -72,8 +72,8 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    @Test
    public void testCdiServiceEnricherProvidesEnrichment() throws Exception
    {
-      HttpAction<HttpGet> action = get("/cdi/inject");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/cdi/inject");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    /*
@@ -82,24 +82,24 @@ public class CdiMultipleFeaturesTest extends RewriteTest
    @Test
    public void testParameterExpressionBinding() throws Exception
    {
-      HttpAction<HttpGet> action = get("/one/2");
-      Assert.assertEquals("/result/2/one", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/one/2");
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/result/2/one");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
    public void testParameterRegexValidationIgnoresInvalidInput1() throws Exception
    {
-      HttpAction<HttpGet> action = get("/one/44");
-      Assert.assertEquals("/one/44", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/one/44");
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/one/44");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testParameterRegexValidationIgnoresInvalidInput2() throws Exception
    {
-      HttpAction<HttpGet> action = get("/one/two");
-      Assert.assertEquals("/one/two", action.getCurrentContextRelativeURL());
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/one/two");
+      assertThat(action.getCurrentContextRelativeURL()).isEqualTo("/one/two");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 }

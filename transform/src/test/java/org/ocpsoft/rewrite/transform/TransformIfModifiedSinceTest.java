@@ -15,18 +15,13 @@
  */
 package org.ocpsoft.rewrite.transform;
 
-import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.apache.http.Header;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
+import okhttp3.Headers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -36,6 +31,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test for correct handling of the 'If-Modified-Since' header.
@@ -61,9 +58,9 @@ public class TransformIfModifiedSinceTest extends RewriteTest
       /**
        * No 'If-Modified-Since' header is set. Therefore the result should be a 200 OK with the expected content.
        */
-      HttpAction<HttpGet> first = get("/test.txt");
-      assertEquals(200, first.getResponse().getStatusLine().getStatusCode());
-      assertEquals("SOMETHING", first.getResponseContent());
+      HttpAction first = get("/test.txt");
+      assertThat(first.getStatusCode()).isEqualTo(200);
+      assertThat(first.getResponseContent()).isEqualTo("SOMETHING");
    }
 
    @Test
@@ -75,9 +72,9 @@ public class TransformIfModifiedSinceTest extends RewriteTest
        * since the last time he requested it (which is one hour ago). As the modification date is newer, the resource
        * has to be sent again.
        */
-      HttpAction<HttpGet> request = get(new DefaultHttpClient(), "/test.txt", ifModifiedSinceHeaderNowPlusHours(-1));
-      assertEquals(200, request.getResponse().getStatusLine().getStatusCode());
-      assertEquals("SOMETHING", request.getResponseContent());
+      HttpAction request = get(client, "/test.txt", ifModifiedSinceHeaderNowPlusHours(-1));
+      assertThat(request.getStatusCode()).isEqualTo(200);
+      assertThat(request.getResponseContent()).isEqualTo("SOMETHING");
    }
 
    @Test
@@ -89,11 +86,11 @@ public class TransformIfModifiedSinceTest extends RewriteTest
        * asking for the resource again and provides a date that is after the last modification date of the resouce.
        * Therefore the server can send a '304 Not Modified' response.
        */
-      HttpAction<HttpGet> second = get(new DefaultHttpClient(), "/test.txt", ifModifiedSinceHeaderNowPlusHours(1));
-      assertEquals(304, second.getResponse().getStatusLine().getStatusCode());
+      HttpAction second = get(client, "/test.txt", ifModifiedSinceHeaderNowPlusHours(1));
+      assertThat(second.getStatusCode()).isEqualTo(304);
    }
 
-   private Header ifModifiedSinceHeaderNowPlusHours(int hours)
+   private Headers ifModifiedSinceHeaderNowPlusHours(int hours)
    {
 
       Calendar cal = GregorianCalendar.getInstance();
@@ -102,8 +99,7 @@ public class TransformIfModifiedSinceTest extends RewriteTest
 
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
 
-      return new BasicHeader("If-Modified-Since", simpleDateFormat.format(date));
-
+      return Headers.of("If-Modified-Since", simpleDateFormat.format(date));
    }
 
 }

@@ -12,12 +12,9 @@
  */
 package com.ocpsoft.pretty.faces.util;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author haaawk@gmail.com
@@ -29,80 +26,80 @@ public class StringUtilsTest
    @Test
    public void testHasLeadingSlash()
    {
-      assertTrue(StringUtils.hasLeadingSlash("/"));
-      assertTrue(StringUtils.hasLeadingSlash("/test"));
-      assertTrue(StringUtils.hasLeadingSlash("//"));
-      assertTrue(StringUtils.hasLeadingSlash("//test"));
-      assertTrue(StringUtils.hasLeadingSlash("/test/"));
-      assertFalse(StringUtils.hasLeadingSlash(null));
-      assertFalse(StringUtils.hasLeadingSlash(""));
-      assertFalse(StringUtils.hasLeadingSlash("test"));
-      assertFalse(StringUtils.hasLeadingSlash("test/"));
-      assertFalse(StringUtils.hasLeadingSlash("test//"));
+      assertThat(StringUtils.hasLeadingSlash("/")).isTrue();
+      assertThat(StringUtils.hasLeadingSlash("/test")).isTrue();
+      assertThat(StringUtils.hasLeadingSlash("//")).isTrue();
+      assertThat(StringUtils.hasLeadingSlash("//test")).isTrue();
+      assertThat(StringUtils.hasLeadingSlash("/test/")).isTrue();
+      assertThat(StringUtils.hasLeadingSlash(null)).isFalse();
+      assertThat(StringUtils.hasLeadingSlash("")).isFalse();
+      assertThat(StringUtils.hasLeadingSlash("test")).isFalse();
+      assertThat(StringUtils.hasLeadingSlash("test/")).isFalse();
+      assertThat(StringUtils.hasLeadingSlash("test//")).isFalse();
    }
 
    @Test
    public void testHasTrailingSlash()
    {
-      assertTrue(StringUtils.hasTrailingSlash("/"));
-      assertTrue(StringUtils.hasTrailingSlash("test/"));
-      assertTrue(StringUtils.hasTrailingSlash("//"));
-      assertTrue(StringUtils.hasTrailingSlash("test//"));
-      assertTrue(StringUtils.hasTrailingSlash("/test/"));
-      assertFalse(StringUtils.hasTrailingSlash(null));
-      assertFalse(StringUtils.hasTrailingSlash(""));
-      assertFalse(StringUtils.hasTrailingSlash("test"));
-      assertFalse(StringUtils.hasTrailingSlash("/test"));
-      assertFalse(StringUtils.hasTrailingSlash("//test"));
+      assertThat(StringUtils.hasTrailingSlash("/")).isTrue();
+      assertThat(StringUtils.hasTrailingSlash("test/")).isTrue();
+      assertThat(StringUtils.hasTrailingSlash("//")).isTrue();
+      assertThat(StringUtils.hasTrailingSlash("test//")).isTrue();
+      assertThat(StringUtils.hasTrailingSlash("/test/")).isTrue();
+      assertThat(StringUtils.hasTrailingSlash(null)).isFalse();
+      assertThat(StringUtils.hasTrailingSlash("")).isFalse();
+      assertThat(StringUtils.hasTrailingSlash("test")).isFalse();
+      assertThat(StringUtils.hasTrailingSlash("/test")).isFalse();
+      assertThat(StringUtils.hasTrailingSlash("//test")).isFalse();
    }
 
    @Test
    public void testSplitBySlash()
    {
-      assertArrayEquals(new String[0], StringUtils.splitBySlash(null));
-      assertArrayEquals(new String[0], StringUtils.splitBySlash(""));
+      assertThat(StringUtils.splitBySlash(null)).isEqualTo(new String[0]);
+      assertThat(StringUtils.splitBySlash("")).isEqualTo(new String[0]);
 
-      assertArrayEquals(new String[] { "test" }, StringUtils.splitBySlash("test"));
-      assertArrayEquals(new String[] { "a", "b" }, StringUtils.splitBySlash("a/b"));
-      assertArrayEquals(new String[] { "a", "b", "c" }, StringUtils.splitBySlash("a/b/c"));
+      assertThat(StringUtils.splitBySlash("test")).isEqualTo(new String[]{"test"});
+      assertThat(StringUtils.splitBySlash("a/b")).isEqualTo(new String[]{"a", "b"});
+      assertThat(StringUtils.splitBySlash("a/b/c")).isEqualTo(new String[]{"a", "b", "c"});
 
-      assertArrayEquals(new String[] { "", "test" }, StringUtils.splitBySlash("/test"));
-      assertArrayEquals(new String[] { "test", "" }, StringUtils.splitBySlash("test/"));
-      assertArrayEquals(new String[] { "", "test", "" }, StringUtils.splitBySlash("/test/"));
+      assertThat(StringUtils.splitBySlash("/test")).isEqualTo(new String[]{"", "test"});
+      assertThat(StringUtils.splitBySlash("test/")).isEqualTo(new String[]{"test", ""});
+      assertThat(StringUtils.splitBySlash("/test/")).isEqualTo(new String[]{"", "test", ""});
 
-      assertArrayEquals(new String[] { "", "" }, StringUtils.splitBySlash("/"));
-      assertArrayEquals(new String[] { "", "", "" }, StringUtils.splitBySlash("//"));
-      assertArrayEquals(new String[] { "", "", "test" }, StringUtils.splitBySlash("//test"));
-      assertArrayEquals(new String[] { "test", "", "" }, StringUtils.splitBySlash("test//"));
-      assertArrayEquals(new String[] { "", "", "test", "", "" }, StringUtils.splitBySlash("//test//"));
+      assertThat(StringUtils.splitBySlash("/")).isEqualTo(new String[]{"", ""});
+      assertThat(StringUtils.splitBySlash("//")).isEqualTo(new String[]{"", "", ""});
+      assertThat(StringUtils.splitBySlash("//test")).isEqualTo(new String[]{"", "", "test"});
+      assertThat(StringUtils.splitBySlash("test//")).isEqualTo(new String[]{"test", "", ""});
+      assertThat(StringUtils.splitBySlash("//test//")).isEqualTo(new String[]{"", "", "test", "", ""});
 
-      assertArrayEquals(new String[] { "", "a", "b" }, StringUtils.splitBySlash("/a/b"));
-      assertArrayEquals(new String[] { "a", "", "b" }, StringUtils.splitBySlash("a//b"));
-      assertArrayEquals(new String[] { "a", "b", "" }, StringUtils.splitBySlash("a/b/"));
-      assertArrayEquals(new String[] { "", "a", "", "b", "" }, StringUtils.splitBySlash("/a//b/"));
+      assertThat(StringUtils.splitBySlash("/a/b")).isEqualTo(new String[]{"", "a", "b"});
+      assertThat(StringUtils.splitBySlash("a//b")).isEqualTo(new String[]{"a", "", "b"});
+      assertThat(StringUtils.splitBySlash("a/b/")).isEqualTo(new String[]{"a", "b", ""});
+      assertThat(StringUtils.splitBySlash("/a//b/")).isEqualTo(new String[]{"", "a", "", "b", ""});
 
-      assertArrayEquals(new String[] { "", "a", "b", "c" }, StringUtils.splitBySlash("/a/b/c"));
-      assertArrayEquals(new String[] { "a", "", "b", "c" }, StringUtils.splitBySlash("a//b/c"));
-      assertArrayEquals(new String[] { "a", "b", "", "c" }, StringUtils.splitBySlash("a/b//c"));
-      assertArrayEquals(new String[] { "a", "b", "c", "" }, StringUtils.splitBySlash("a/b/c/"));
-      assertArrayEquals(new String[] { "", "a", "", "b", "", "c", "" }, StringUtils.splitBySlash("/a//b//c/"));
+      assertThat(StringUtils.splitBySlash("/a/b/c")).isEqualTo(new String[]{"", "a", "b", "c"});
+      assertThat(StringUtils.splitBySlash("a//b/c")).isEqualTo(new String[]{"a", "", "b", "c"});
+      assertThat(StringUtils.splitBySlash("a/b//c")).isEqualTo(new String[]{"a", "b", "", "c"});
+      assertThat(StringUtils.splitBySlash("a/b/c/")).isEqualTo(new String[]{"a", "b", "c", ""});
+      assertThat(StringUtils.splitBySlash("/a//b//c/")).isEqualTo(new String[]{"", "a", "", "b", "", "c", ""});
 
    }
 
    @Test
    public void testCountSlashes()
    {
-      assertEquals(0, StringUtils.countSlashes(""));
-      assertEquals(0, StringUtils.countSlashes("abcde"));
-      assertEquals(1, StringUtils.countSlashes("/"));
-      assertEquals(1, StringUtils.countSlashes("/test"));
-      assertEquals(1, StringUtils.countSlashes("test/"));
-      assertEquals(1, StringUtils.countSlashes("test/test"));
-      assertEquals(2, StringUtils.countSlashes("//"));
-      assertEquals(2, StringUtils.countSlashes("//test"));
-      assertEquals(2, StringUtils.countSlashes("test//"));
-      assertEquals(2, StringUtils.countSlashes("/test/"));
-      assertEquals(3, StringUtils.countSlashes("/test/test/"));
+      assertThat(StringUtils.countSlashes("")).isEqualTo(0);
+      assertThat(StringUtils.countSlashes("abcde")).isEqualTo(0);
+      assertThat(StringUtils.countSlashes("/")).isEqualTo(1);
+      assertThat(StringUtils.countSlashes("/test")).isEqualTo(1);
+      assertThat(StringUtils.countSlashes("test/")).isEqualTo(1);
+      assertThat(StringUtils.countSlashes("test/test")).isEqualTo(1);
+      assertThat(StringUtils.countSlashes("//")).isEqualTo(2);
+      assertThat(StringUtils.countSlashes("//test")).isEqualTo(2);
+      assertThat(StringUtils.countSlashes("test//")).isEqualTo(2);
+      assertThat(StringUtils.countSlashes("/test/")).isEqualTo(2);
+      assertThat(StringUtils.countSlashes("/test/test/")).isEqualTo(3);
    }
 
 }

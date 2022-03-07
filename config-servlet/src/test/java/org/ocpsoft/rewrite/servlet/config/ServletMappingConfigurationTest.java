@@ -15,9 +15,6 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.junit.Assert;
-
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Christian Kaltepoth
@@ -46,15 +45,15 @@ public class ServletMappingConfigurationTest extends RewriteTest
    @Test
    public void testServletMappingConditionMatches() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test-with-mapped-url");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/test-with-mapped-url");
+      assertThat(action.getStatusCode()).isEqualTo(210);
    }
 
    @Test
    public void testServletMappingConditionDoesNotMatch() throws Exception
    {
-      HttpAction<HttpGet> action = get("/test-with-unmapped-url");
-      Assert.assertEquals(210, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/test-with-unmapped-url");
+      assertThat(action.getStatusCode()).isEqualTo(210);
    }
 
 }

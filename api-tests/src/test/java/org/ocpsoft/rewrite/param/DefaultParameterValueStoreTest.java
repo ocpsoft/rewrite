@@ -15,11 +15,12 @@
  */
 package org.ocpsoft.rewrite.param;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.rewrite.mock.MockEvaluationContext;
 import org.ocpsoft.rewrite.mock.MockRewrite;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -47,8 +48,8 @@ public class DefaultParameterValueStoreTest
 
       Parameter<?> parameter = store.get("foo", new DefaultParameter("foo"));
       String expected = "value";
-      Assert.assertTrue(valueStore.submit(event, context, parameter, expected));
-      Assert.assertEquals(expected, valueStore.retrieve(parameter));
+      assertThat(valueStore.submit(event, context, parameter, expected)).isTrue();
+      assertThat(valueStore.retrieve(parameter)).isEqualTo(expected);
    }
 
    @Test
@@ -59,9 +60,9 @@ public class DefaultParameterValueStoreTest
 
       Parameter<?> parameter = store.get("foo", new DefaultParameter("foo"));
       String expected = "value";
-      Assert.assertTrue(valueStore.submit(event, context, parameter, expected));
-      Assert.assertTrue(valueStore.submit(event, context, parameter, expected));
-      Assert.assertEquals(expected, valueStore.retrieve(parameter));
+      assertThat(valueStore.submit(event, context, parameter, expected)).isTrue();
+      assertThat(valueStore.submit(event, context, parameter, expected)).isTrue();
+      assertThat(valueStore.retrieve(parameter)).isEqualTo(expected);
    }
 
    @Test
@@ -72,9 +73,9 @@ public class DefaultParameterValueStoreTest
 
       Parameter<?> parameter = store.get("foo", new DefaultParameter("foo"));
       String expected = "value";
-      Assert.assertTrue(valueStore.submit(event, context, parameter, expected));
-      Assert.assertFalse(valueStore.submit(event, context, parameter, expected + "bad"));
-      Assert.assertEquals(expected, valueStore.retrieve(parameter));
+      assertThat(valueStore.submit(event, context, parameter, expected)).isTrue();
+      assertThat(valueStore.submit(event, context, parameter, expected + "bad")).isFalse();
+      assertThat(valueStore.retrieve(parameter)).isEqualTo(expected);
    }
 
    @Test
@@ -85,8 +86,8 @@ public class DefaultParameterValueStoreTest
 
       Parameter<?> parameter = store.get("foo", new DefaultParameter("foo").constrainedBy(new RegexConstraint("\\w+")));
       String expected = "value";
-      Assert.assertFalse(valueStore.isValid(event, context, parameter, "y7* ^T&"));
-      Assert.assertTrue(valueStore.submit(event, context, parameter, expected));
-      Assert.assertEquals(expected, valueStore.retrieve(parameter));
+      assertThat(valueStore.isValid(event, context, parameter, "y7* ^T&")).isFalse();
+      assertThat(valueStore.submit(event, context, parameter, expected)).isTrue();
+      assertThat(valueStore.retrieve(parameter)).isEqualTo(expected);
    }
 }

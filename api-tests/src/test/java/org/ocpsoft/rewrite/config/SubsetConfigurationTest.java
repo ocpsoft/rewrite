@@ -15,14 +15,14 @@
  */
 package org.ocpsoft.rewrite.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,15 +45,15 @@ public class SubsetConfigurationTest extends RewriteTest
    @Test
    public void testSubsetBasicFlowControlPerform() throws Exception
    {
-      HttpAction<HttpGet> action = get("/subset/perform");
-      Assert.assertEquals(200, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/subset/perform");
+      assertThat(action.getStatusCode()).isEqualTo(200);
    }
 
    @Test
    public void testSubsetBasicFlowControlOtherwise() throws Exception
    {
-      HttpAction<HttpGet> action = get("/subset/otherwise");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/subset/otherwise");
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
 }

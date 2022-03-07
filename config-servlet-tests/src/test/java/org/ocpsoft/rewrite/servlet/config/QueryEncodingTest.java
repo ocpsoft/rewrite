@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -31,6 +30,8 @@ import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
 import org.ocpsoft.rewrite.param.RegexConstraint;
 import org.ocpsoft.rewrite.servlet.impl.HttpInboundRewriteImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -68,7 +69,7 @@ public class QueryEncodingTest
    public void testQueryStringMatchesWithParameters()
    {
       store.get("my cat", new DefaultParameter("my cat"));
-      Assert.assertTrue(Query.parameterExists("my cat").evaluate(rewrite, context));
+      assertThat(Query.parameterExists("my cat").evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -76,13 +77,13 @@ public class QueryEncodingTest
    {
       Query query = Query.valueExists("{*}∂ve{*}");
       query.setParameterStore(store);
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testQueryStringMatchesLiteral()
    {
-      Assert.assertTrue(Path.matches("/application/path").evaluate(rewrite, context));
+      assertThat(Path.matches("/application/path").evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -91,7 +92,7 @@ public class QueryEncodingTest
       store.get("x", new DefaultParameter("x").constrainedBy(new RegexConstraint(".*&one=1.*")));
       Query query = Query.matches("{x}");
       query.setParameterStore(store);
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
@@ -100,15 +101,15 @@ public class QueryEncodingTest
       store.get("x", new DefaultParameter("x").constrainedBy(new RegexConstraint(".*&one=1.*")));
       Query query = Query.matches("{x}");
       query.setParameterStore(store);
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
 
-      Assert.assertTrue(query.evaluate(rewrite, context));
+      assertThat(query.evaluate(rewrite, context)).isTrue();
    }
 
    @Test
    public void testDoesNotMatchNonHttpRewrites()
    {
-      Assert.assertFalse(Query.matches(".*").evaluate(new MockRewrite(), context));
+      assertThat(Query.matches(".*").evaluate(new MockRewrite(), context)).isFalse();
    }
 
    @Test(expected = IllegalArgumentException.class)

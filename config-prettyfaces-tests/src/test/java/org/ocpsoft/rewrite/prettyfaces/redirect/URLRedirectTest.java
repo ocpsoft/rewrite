@@ -20,7 +20,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.prettyfaces.PrettyFacesTestBase;
@@ -28,6 +27,8 @@ import org.ocpsoft.rewrite.test.RewriteTestBase;
 import org.ocpsoft.urlbuilder.util.Encoder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class URLRedirectTest extends RewriteTestBase
@@ -50,7 +51,7 @@ public class URLRedirectTest extends RewriteTestBase
       browser.get(getBaseURL() + getContextPath() + "/1 1/2 2");
       String expected = browser.getCurrentUrl();
       browser.findElement(By.id("refresh")).click();
-      Assert.assertEquals(expected, browser.getCurrentUrl());
+      assertThat(browser.getCurrentUrl()).isEqualTo(expected);
    }
 
    @Test
@@ -64,8 +65,8 @@ public class URLRedirectTest extends RewriteTestBase
       // String browserURL = client.getContentPage().getUrl().toString();
       // assertTrue(browserURL.contains(requestURL));
 
-      Assert.assertTrue(action.contains("/foo/" + Encoder.path(RedirectBean.PATH_VALUE)));
-      Assert.assertTrue(browser.getPageSource().contains("/foo/" + Encoder.path(RedirectBean.PATH_VALUE)));
-      Assert.assertTrue(browser.getPageSource().contains("?que=" + Encoder.query(RedirectBean.QUERY_VALUE)));
+      assertThat(action).contains("/foo/" + Encoder.path(RedirectBean.PATH_VALUE));
+      assertThat(browser.getPageSource()).contains("/foo/" + Encoder.path(RedirectBean.PATH_VALUE));
+      assertThat(browser.getPageSource()).contains("?que=" + Encoder.query(RedirectBean.QUERY_VALUE));
    }
 }

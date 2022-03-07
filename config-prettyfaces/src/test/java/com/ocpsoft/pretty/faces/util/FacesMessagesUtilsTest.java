@@ -1,7 +1,5 @@
 package com.ocpsoft.pretty.faces.util;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +18,8 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKit;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FacesMessagesUtilsTest
 {
@@ -40,9 +40,9 @@ public class FacesMessagesUtilsTest
       int saved = new FacesMessagesUtils().saveMessages(facesContext, sessionMap);
 
       // messages stored in session
-      assertEquals(3, saved);
-      assertNotNull(sessionMap.get(FacesMessagesUtils.token));
-      assertEquals(3, ((Collection<?>) sessionMap.get(FacesMessagesUtils.token)).size());
+      assertThat(saved).isEqualTo(3);
+      assertThat(sessionMap.get(FacesMessagesUtils.token)).isNotNull();
+      assertThat(((Collection<?>) sessionMap.get(FacesMessagesUtils.token)).size()).isEqualTo(3);
    }
 
    @Test
@@ -67,9 +67,9 @@ public class FacesMessagesUtilsTest
       int saved = utils.saveMessages(facesContext, sessionMap);
 
       // check message are saved
-      assertEquals(3, saved);
-      assertNotNull(sessionMap.get(FacesMessagesUtils.token));
-      assertEquals(3, ((Collection<?>) sessionMap.get(FacesMessagesUtils.token)).size());
+      assertThat(saved).isEqualTo(3);
+      assertThat(sessionMap.get(FacesMessagesUtils.token)).isNotNull();
+      assertThat(((Collection<?>) sessionMap.get(FacesMessagesUtils.token)).size()).isEqualTo(3);
 
       /*
        * Step 2: Restore
@@ -84,8 +84,8 @@ public class FacesMessagesUtilsTest
       int restored = utils.restoreMessages(facesContext, sessionMap);
 
       // check that two of the three messages have been restored
-      assertEquals(2, restored);
-      assertEquals(4, facesContext.getAllMessages().size());
+      assertThat(restored).isEqualTo(2);
+      assertThat(facesContext.getAllMessages().size()).isEqualTo(4);
 
    }
 

@@ -15,17 +15,17 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -45,21 +45,21 @@ public class HttpConfigurationTest extends RewriteTest
    @Test
    public void testConfigurationProviderForward() throws Exception
    {
-      HttpAction<HttpGet> action = get("/path");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/path");
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 
    @Test
    public void testConfigurationIngoresUnconfiguredRequests() throws Exception
    {
-      HttpAction<HttpGet> action = get("/other");
-      Assert.assertEquals(404, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/other");
+      assertThat(action.getStatusCode()).isEqualTo(404);
    }
 
    @Test
    public void testConfigurationProviderRedirect() throws Exception
    {
-      HttpAction<HttpGet> action = get("/redirect");
-      Assert.assertEquals(201, action.getResponse().getStatusLine().getStatusCode());
+      HttpAction action = get("/redirect");
+      assertThat(action.getStatusCode()).isEqualTo(201);
    }
 }
