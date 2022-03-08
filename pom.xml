@@ -427,14 +427,20 @@
          <url>http://chkal.blogspot.com/</url>
          <timezone>+1</timezone>
       </developer>
+      <developer>
+         <id>larsgrefer</id>
+         <name>Lars Grefer</name>
+         <email>github@larsgrefer.de</email>
+         <timezone>Europe/Berlin</timezone>
+      </developer>
    </developers>
 
-   <url>http://ocpsoft.org/rewrite/</url>
+   <url>https://ocpsoft.org/rewrite/</url>
 
    <licenses>
       <license>
          <name>Apache License</name>
-         <url>http://www.apache.org/licenses/</url>
+         <url>https://www.apache.org/licenses/</url>
          <distribution>repo</distribution>
       </license>
    </licenses>
@@ -442,13 +448,18 @@
    <scm>
       <connection>scm:git:git://github.com/ocpsoft/rewrite.git</connection>
       <developerConnection>scm:git:git@github.com:ocpsoft/rewrite.git</developerConnection>
-      <url>http://github.com/ocpsoft/rewrite</url>
+      <url>https://github.com/ocpsoft/rewrite</url>
       <tag>HEAD</tag>
    </scm>
 
    <issueManagement>
-      <system>GitHub</system>
+      <system>GitHub Issues</system>
       <url>https://github.com/ocpsoft/rewrite/issues</url>
    </issueManagement>
+
+   <ciManagement>
+      <system>GitHub Actions</system>
+      <url>https://github.com/ocpsoft/rewrite/actions</url>
+   </ciManagement>
 
 </project>
