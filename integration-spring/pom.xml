@@ -23,7 +23,7 @@
 
       <dependency>
          <groupId>org.springframework</groupId>
-         <artifactId>spring-web</artifactId>
+         <artifactId>spring-webmvc</artifactId>
          <version>${version.spring}</version>
          <scope>provided</scope>
       </dependency>
