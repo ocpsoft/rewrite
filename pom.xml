@@ -31,7 +31,7 @@
 
       <!-- Versions -->
       <version.junit>4.13.1</version.junit>
-      <version.common>1.0.5.Final</version.common>
+      <version.common>1.0.6.Final</version.common>
       <version.logging>1.0.5.Final</version.logging>
       <version.arquillian>1.1.1.Final</version.arquillian>
       <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
