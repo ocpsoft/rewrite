@@ -120,8 +120,8 @@ public class RewriteTest extends RewriteTestBase
          }
 
          // setup Mojarra
-         archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:2.3.7"));
-         archive.addAsLibraries(resolveDependencies("javax.servlet:jstl:1.2"));
+         //archive.addAsLibraries(resolveDependencies("org.glassfish:javax.faces:2.3.7"));
+         //archive.addAsLibraries(resolveDependencies("javax.servlet:jstl:1.2"));
 
       }
 
