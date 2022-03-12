@@ -66,15 +66,13 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>javax.servlet.jsp</groupId>
-         <artifactId>jsp-api</artifactId>
-         <version>2.1</version>
+         <groupId>jakarta.servlet.jsp</groupId>
+         <artifactId>jakarta.servlet.jsp-api</artifactId>
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>javax.servlet</groupId>
-         <artifactId>jstl</artifactId>
-         <version>1.1.2</version>
+         <groupId>jakarta.servlet.jsp.jstl</groupId>
+         <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
          <scope>provided</scope>
       </dependency>
 

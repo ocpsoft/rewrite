@@ -48,9 +48,8 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>jstl</groupId>
-         <artifactId>jstl</artifactId>
-         <version>1.2</version>
+         <groupId>jakarta.servlet.jsp.jstl</groupId>
+         <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
          <scope>provided</scope>
       </dependency>
 
