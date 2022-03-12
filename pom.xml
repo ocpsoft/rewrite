@@ -16,7 +16,7 @@
    <parent>
       <groupId>org.ocpsoft</groupId>
       <artifactId>ocpsoft-parent</artifactId>
-      <version>15</version>
+      <version>16</version>
    </parent>
 
    <properties>
@@ -29,10 +29,6 @@
       <maven.compiler.target>1.8</maven.compiler.target>
       <maven.compiler.source>1.8</maven.compiler.source>
 
-      <!-- Required by ocpsoft-parent for the compiler configuration -->
-      <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
-      <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
-
       <!-- Versions -->
       <version.junit>4.13.1</version.junit>
       <version.common>1.0.5.Final</version.common>
@@ -41,8 +37,6 @@
       <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
       <version.arquillian.glassfish>1.0.0.CR4</version.arquillian.glassfish>
       <version.arquillian.tomcat>1.1.0.Final</version.arquillian.tomcat>
-
-      <version.war.plugin>3.3.2</version.war.plugin>
    </properties>
 
    <modules>
