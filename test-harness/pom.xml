@@ -96,13 +96,18 @@
       <dependency>
          <groupId>org.apache.tomcat.embed</groupId>
          <artifactId>tomcat-embed-core</artifactId>
-         <version>9.0.55</version>
+         <version>9.0.59</version>
          <scope>runtime</scope>
       </dependency>
       <dependency>
          <groupId>org.apache.tomcat.embed</groupId>
          <artifactId>tomcat-embed-jasper</artifactId>
-         <version>9.0.55</version>
+         <version>9.0.59</version>
+         <scope>runtime</scope>
+      </dependency><dependency>
+         <groupId>org.apache.tomcat.embed</groupId>
+         <artifactId>tomcat-embed-websocket</artifactId>
+         <version>9.0.59</version>
          <scope>runtime</scope>
       </dependency>
       <dependency>
