@@ -33,10 +33,8 @@
       <version.junit>4.13.1</version.junit>
       <version.common>1.0.6.Final</version.common>
       <version.logging>1.0.5.Final</version.logging>
-      <version.arquillian>1.1.1.Final</version.arquillian>
-      <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
-      <version.arquillian.glassfish>1.0.0.CR4</version.arquillian.glassfish>
-      <version.arquillian.tomcat>1.1.0.Final</version.arquillian.tomcat>
+      <version.arquillian>1.6.0.Final</version.arquillian>
+      <version.arquillian.drone>2.5.5</version.arquillian.drone>
    </properties>
 
    <modules>
@@ -363,16 +361,6 @@
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
             <scope>test</scope>
-         </dependency>
-
-         <!-- Enforce new ShrinkWrap Resolvers version -->
-         <!-- Overwrites 1.x.y pulled in by Arquillian -->
-         <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-bom</artifactId>
-            <version>3.1.3</version>
-            <type>pom</type>
-            <scope>import</scope>
          </dependency>
 
          <dependency>
