@@ -32,7 +32,7 @@ public abstract class RewriteTestBase
    protected final OkHttpClient client;
 
    protected RewriteTestBase() {
-      HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+      HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(System.out::println);
       loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
       client = new OkHttpClient.Builder()
