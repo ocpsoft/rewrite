@@ -4,7 +4,7 @@
    <parent>
       <artifactId>rewrite-parent</artifactId>
       <groupId>org.ocpsoft.rewrite</groupId>
-      <version>3.5.2-SNAPSHOT</version>
+      <version>3.6.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
    </parent>
 
@@ -48,9 +48,8 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>jstl</groupId>
-         <artifactId>jstl</artifactId>
-         <version>1.2</version>
+         <groupId>jakarta.servlet.jsp.jstl</groupId>
+         <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
          <scope>provided</scope>
       </dependency>
 
@@ -61,20 +60,4 @@
       </dependency>
    </dependencies>
 
-   <profiles>
-      <profile>
-         <id>JETTY_EMBEDDED_8.X</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>
-                     <forkMode>always</forkMode>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-   </profiles>
 </project>

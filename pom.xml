@@ -10,13 +10,13 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-parent</artifactId>
-   <version>3.5.2-SNAPSHOT</version>
+   <version>3.6.0-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <parent>
       <groupId>org.ocpsoft</groupId>
       <artifactId>ocpsoft-parent</artifactId>
-      <version>15</version>
+      <version>16</version>
    </parent>
 
    <properties>
@@ -29,20 +29,12 @@
       <maven.compiler.target>1.8</maven.compiler.target>
       <maven.compiler.source>1.8</maven.compiler.source>
 
-      <!-- Required by ocpsoft-parent for the compiler configuration -->
-      <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
-      <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
-
       <!-- Versions -->
-      <version.junit>4.13.1</version.junit>
-      <version.common>1.0.5.Final</version.common>
+      <version.junit>4.13.2</version.junit>
+      <version.common>1.0.6.Final</version.common>
       <version.logging>1.0.5.Final</version.logging>
-      <version.arquillian>1.1.1.Final</version.arquillian>
-      <version.arquillian.drone>1.1.1.Final</version.arquillian.drone>
-      <version.arquillian.glassfish>1.0.0.CR4</version.arquillian.glassfish>
-      <version.arquillian.tomcat>1.1.0.Final</version.arquillian.tomcat>
-
-      <version.war.plugin>3.3.2</version.war.plugin>
+      <version.arquillian>1.6.0.Final</version.arquillian>
+      <version.arquillian.drone>2.5.5</version.arquillian.drone>
    </properties>
 
    <modules>
@@ -110,7 +102,6 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-surefire-plugin</artifactId>
-               <version>2.22.2</version>
                <configuration>
                   <argLine>-Xms256m -Xmx512m</argLine>
                   <!--Use a fresh JVM and fresh embedded container for each test-->
@@ -121,20 +112,14 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-javadoc-plugin</artifactId>
-               <version>3.01</version>
                <configuration>
                   <failOnError>false</failOnError>
                   <links>
-                     <link>http://docs.oracle.com/javase/8/docs/api/</link>
-                     <link>http://docs.oracle.com/javaee/7/api/</link>
+                     <link>https://docs.oracle.com/javase/8/docs/api/</link>
+                     <link>https://jakarta.ee/specifications/platform/8/apidocs/</link>
                   </links>
                   <additionalparam>-Xdoclint:none</additionalparam>
                </configuration>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-gpg-plugin</artifactId>
-               <version>1.6</version>
             </plugin>
          </plugins>
       </pluginManagement>
@@ -376,16 +361,6 @@
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
             <scope>test</scope>
-         </dependency>
-
-         <!-- Enforce new ShrinkWrap Resolvers version -->
-         <!-- Overwrites 1.x.y pulled in by Arquillian -->
-         <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-bom</artifactId>
-            <version>3.1.3</version>
-            <type>pom</type>
-            <scope>import</scope>
          </dependency>
 
          <dependency>
