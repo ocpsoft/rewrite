@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.cdi.resolver;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * @author Christian Kaltepoth

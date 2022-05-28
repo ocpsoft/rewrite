@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Arrays;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.common.util.Strings;

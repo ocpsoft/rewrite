@@ -1,7 +1,7 @@
 package org.ocpsoft.rewrite.faces.config;
 
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
 
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.common.services.ServiceLoader;

@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.cdi.expressions;
 
 import java.lang.reflect.Method;
 
-import javax.el.FunctionMapper;
+import jakarta.el.FunctionMapper;
 
 /**
  * <p>

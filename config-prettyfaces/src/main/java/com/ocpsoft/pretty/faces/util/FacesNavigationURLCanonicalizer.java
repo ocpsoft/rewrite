@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.pretty.faces.util;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /**
  * <p>
@@ -56,8 +56,8 @@ public class FacesNavigationURLCanonicalizer
     * @param viewId
     *           the view id
     * @return the URI without additional FacesServlet mappings
-    * @see javax.servlet.http.HttpServletRequest#getServletPath()
-    * @see javax.servlet.http.HttpServletRequest#getPathInfo()
+    * @see jakarta.servlet.http.HttpServletRequest#getServletPath()
+    * @see jakarta.servlet.http.HttpServletRequest#getPathInfo()
     */
    public static String normalizeRequestURI(final String servletPath, final String requestPathInfo, final String viewId)
    {

@@ -17,8 +17,8 @@ package org.ocpsoft.rewrite.showcase.bookstore.web.utils;
 
 import java.io.IOException;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ResponseUtils
 {

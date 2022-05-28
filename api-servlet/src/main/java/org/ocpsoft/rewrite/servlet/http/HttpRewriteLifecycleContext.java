@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.servlet.http;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.servlet.RewriteLifecycleContext;
 

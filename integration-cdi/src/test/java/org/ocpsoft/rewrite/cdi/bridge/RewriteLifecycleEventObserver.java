@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.cdi.bridge;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Observes;
 
 import org.ocpsoft.rewrite.cdi.events.AfterInboundRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;

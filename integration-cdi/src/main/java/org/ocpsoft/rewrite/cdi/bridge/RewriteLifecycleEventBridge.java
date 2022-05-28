@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.cdi.bridge;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 import org.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import org.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;

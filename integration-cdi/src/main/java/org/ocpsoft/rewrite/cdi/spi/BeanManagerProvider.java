@@ -16,7 +16,7 @@
  */
 package org.ocpsoft.rewrite.cdi.spi;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.common.services.NonEnriching;

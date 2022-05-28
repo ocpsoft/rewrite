@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.showcase.rest;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.event.Rewrite;

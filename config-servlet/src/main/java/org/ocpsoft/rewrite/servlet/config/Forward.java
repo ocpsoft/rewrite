@@ -17,8 +17,8 @@ package org.ocpsoft.rewrite.servlet.config;
 
 import java.util.Set;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
@@ -70,7 +70,7 @@ public class Forward extends HttpOperation implements Parameterized
     * 
     * @see {@link ConfigurationRuleParameterBuilder#where(String)}
     *      {@link HttpServletRequest#getRequestDispatcher(String)}
-    *      {@link RequestDispatcher#forward(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}
+    *      {@link RequestDispatcher#forward(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)}
     */
    public static Forward to(final String location)
    {

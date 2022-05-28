@@ -16,8 +16,8 @@
  */
 package org.ocpsoft.rewrite.cdi.manager;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 
 /**
  * A convenient base class for obtaining a reference to the BeanManager from a non-managed class, or a class which may

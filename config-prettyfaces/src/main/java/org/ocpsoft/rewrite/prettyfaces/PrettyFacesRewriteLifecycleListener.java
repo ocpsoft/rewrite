@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.prettyfaces;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleListener;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;

@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.pretty.faces2.config.reload;
 
-import javax.faces.application.ProjectStage;
-import javax.servlet.ServletContext;
+import jakarta.faces.application.ProjectStage;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.logging.Logger;
 

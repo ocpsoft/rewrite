@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.faces.component.UIParameter;
+import jakarta.faces.component.UIParameter;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

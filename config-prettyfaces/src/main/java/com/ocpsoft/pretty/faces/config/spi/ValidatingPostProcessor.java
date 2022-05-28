@@ -16,7 +16,7 @@
 
 package com.ocpsoft.pretty.faces.config.spi;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.ocpsoft.pretty.faces.config.PrettyConfig;
 import com.ocpsoft.pretty.faces.config.mapping.UrlMapping;

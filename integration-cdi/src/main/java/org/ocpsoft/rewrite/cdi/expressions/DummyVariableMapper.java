@@ -16,8 +16,8 @@
  */
 package org.ocpsoft.rewrite.cdi.expressions;
 
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 /**
  * <p>

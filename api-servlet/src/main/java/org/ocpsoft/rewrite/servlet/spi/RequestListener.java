@@ -15,9 +15,9 @@
  */
 package org.ocpsoft.rewrite.servlet.spi;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletRequestEvent;
 
 import org.ocpsoft.common.pattern.Weighted;
 

@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.faces.outbound;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
@@ -45,7 +45,7 @@ public class OutboundResourceTestProvider extends HttpConfigurationProvider
    {
       return ConfigurationBuilder.begin()
                .addRule(Join.path("/outbound").to("/faces/outbound.xhtml"))
-               .addRule(Join.path("/css/{file}").to("/faces/javax.faces.resource/css/{file}"))
+               .addRule(Join.path("/css/{file}").to("/faces/jakarta.faces.resource/css/{file}"))
                .addRule()
                .when(Direction.isInbound().and(DispatchType.isRequest()))
                .perform(SendStatus.error(403));

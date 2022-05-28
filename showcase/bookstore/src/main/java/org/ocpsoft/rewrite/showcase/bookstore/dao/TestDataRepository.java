@@ -3,8 +3,8 @@ package org.ocpsoft.rewrite.showcase.bookstore.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.ocpsoft.rewrite.showcase.bookstore.model.Book;
 import org.ocpsoft.rewrite.showcase.bookstore.model.Category;

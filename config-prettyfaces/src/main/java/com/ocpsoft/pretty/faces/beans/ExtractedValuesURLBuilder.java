@@ -18,9 +18,9 @@ package com.ocpsoft.pretty.faces.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.el.ELException;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
+import jakarta.el.ELException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
 
 import com.ocpsoft.pretty.PrettyException;
 import com.ocpsoft.pretty.faces.config.mapping.PathParameter;

@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.faces.resolver;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.faces.event.PhaseId;
-import javax.servlet.ServletContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;

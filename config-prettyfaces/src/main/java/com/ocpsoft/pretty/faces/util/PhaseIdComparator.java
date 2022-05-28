@@ -30,24 +30,24 @@ public class PhaseIdComparator
     * @param currentPhaseId
     * @return
     */
-   public static boolean equals(PhaseId phaseId, javax.faces.event.PhaseId currentPhaseId)
+   public static boolean equals(PhaseId phaseId, jakarta.faces.event.PhaseId currentPhaseId)
    {
       switch (phaseId)
       {
       case ANY_PHASE:
-         return javax.faces.event.PhaseId.ANY_PHASE.equals(currentPhaseId);
+         return jakarta.faces.event.PhaseId.ANY_PHASE.equals(currentPhaseId);
       case RESTORE_VIEW:
-         return javax.faces.event.PhaseId.RESTORE_VIEW.equals(currentPhaseId);
+         return jakarta.faces.event.PhaseId.RESTORE_VIEW.equals(currentPhaseId);
       case APPLY_REQUEST_VALUES:
-         return javax.faces.event.PhaseId.APPLY_REQUEST_VALUES.equals(currentPhaseId);
+         return jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES.equals(currentPhaseId);
       case PROCESS_VALIDATIONS:
-         return javax.faces.event.PhaseId.PROCESS_VALIDATIONS.equals(currentPhaseId);
+         return jakarta.faces.event.PhaseId.PROCESS_VALIDATIONS.equals(currentPhaseId);
       case UPDATE_MODEL_VALUES:
-         return javax.faces.event.PhaseId.UPDATE_MODEL_VALUES.equals(currentPhaseId);
+         return jakarta.faces.event.PhaseId.UPDATE_MODEL_VALUES.equals(currentPhaseId);
       case INVOKE_APPLICATION:
-         return javax.faces.event.PhaseId.INVOKE_APPLICATION.equals(currentPhaseId);
+         return jakarta.faces.event.PhaseId.INVOKE_APPLICATION.equals(currentPhaseId);
       case RENDER_RESPONSE:
-         return javax.faces.event.PhaseId.RENDER_RESPONSE.equals(currentPhaseId);
+         return jakarta.faces.event.PhaseId.RENDER_RESPONSE.equals(currentPhaseId);
       }
       return false;
    }

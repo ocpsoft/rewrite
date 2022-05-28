@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.pretty.faces.component.tag;
 
-import javax.faces.component.UIComponent;
+import jakarta.faces.component.UIComponent;
 
 import com.ocpsoft.pretty.faces.component.Link;
 import com.ocpsoft.pretty.faces.component.PrettyTagBase;

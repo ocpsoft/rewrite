@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.pretty.faces.spi;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * This SPI is used by PrettyFaces to detect whether it should run in development mode.

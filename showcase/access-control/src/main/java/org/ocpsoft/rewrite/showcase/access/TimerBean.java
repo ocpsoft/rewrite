@@ -2,8 +2,8 @@ package org.ocpsoft.rewrite.showcase.access;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 import org.joda.time.DateTime;
 import org.ocpsoft.pretty.time.PrettyTime;

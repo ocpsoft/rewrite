@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.servlet.config.response;
 
 import java.nio.charset.Charset;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Holds contents of the fully completed {@link HttpServletResponse}.

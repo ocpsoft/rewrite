@@ -20,10 +20,10 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,6 +97,7 @@ public class PrettyContext implements Serializable
       requestQuery = QueryString.build(request.getQueryString());
 
       log.trace("Initialized PrettyContext");
+      log.info("Initialized PrettyContext (has support for Jakarta EE9+)");
    }
 
    /**

@@ -22,7 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.faces.validator.Validator;
+import jakarta.faces.validator.Validator;
 
 /**
  * <p>
@@ -67,7 +67,7 @@ public @interface URLValidator {
     * <p>
     * EL method binding referring to a method performing the validation.
     * The referenced method must have the same signature as
-    * {@link Validator#validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, Object)}.
+    * {@link Validator#validate(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, Object)}.
     * </p>
     * 
     * @see Validator

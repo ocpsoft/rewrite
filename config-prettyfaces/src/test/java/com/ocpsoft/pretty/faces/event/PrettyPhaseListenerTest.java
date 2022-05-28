@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.pretty.faces.event;
 
-import javax.faces.event.PhaseId;
+import jakarta.faces.event.PhaseId;
 
 import org.junit.Test;
 

@@ -18,9 +18,9 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.net.MalformedURLException;
 import java.util.*;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.config.Condition;

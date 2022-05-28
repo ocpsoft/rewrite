@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.showcase.access;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.joda.time.DateTime;
 import org.ocpsoft.rewrite.config.Configuration;
@@ -54,7 +54,7 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                .addRule()
                .when(Direction.isInbound()
                         .and(DispatchType.isRequest())
-                        .andNot(Path.matches("{*}javax.faces.resource{*}")))
+                        .andNot(Path.matches("{*}jakarta.faces.resource{*}")))
                .perform(Forward.to("/accessDenied.xhtml"));
 
    }

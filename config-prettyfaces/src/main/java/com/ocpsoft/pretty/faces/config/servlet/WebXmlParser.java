@@ -18,9 +18,9 @@ package com.ocpsoft.pretty.faces.config.servlet;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.faces.webapp.FacesServlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
+import jakarta.faces.webapp.FacesServlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +38,7 @@ public class WebXmlParser
 {
    private static final Log log = LogFactory.getLog(WebXmlParser.class);
 
-   private static final String FACES_SERVLET = "javax.faces.webapp.FacesServlet";
+   private static final String FACES_SERVLET = "jakarta.faces.webapp.FacesServlet";
 
    private String facesMapping = null;
 
@@ -55,7 +55,7 @@ public class WebXmlParser
       }
 
       if (facesMapping == null) {
-         log.warn("Faces Servlet (javax.faces.webapp.FacesServlet) not found in web context - cannot configure PrettyFaces DynaView");
+         log.warn("Faces Servlet (jakarta.faces.webapp.FacesServlet) not found in web context - cannot configure PrettyFaces DynaView");
       }
 
    }

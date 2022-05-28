@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.pretty.faces.component;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>

@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.pretty.faces.config.reload;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.ocpsoft.pretty.faces.spi.DevelopmentModeDetector;
 

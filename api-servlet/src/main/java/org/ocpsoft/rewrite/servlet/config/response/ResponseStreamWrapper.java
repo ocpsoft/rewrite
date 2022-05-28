@@ -17,8 +17,8 @@ package org.ocpsoft.rewrite.servlet.config.response;
 
 import java.io.OutputStream;
 
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 

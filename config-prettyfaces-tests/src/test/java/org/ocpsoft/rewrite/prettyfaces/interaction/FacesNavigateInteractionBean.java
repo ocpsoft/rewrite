@@ -2,8 +2,8 @@ package org.ocpsoft.rewrite.prettyfaces.interaction;
 
 import org.ocpsoft.rewrite.faces.navigate.Navigate;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 @Named("facesInteraction")
 @RequestScoped

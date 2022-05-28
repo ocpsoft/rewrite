@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.transform.minify;
 
 import java.nio.charset.Charset;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;

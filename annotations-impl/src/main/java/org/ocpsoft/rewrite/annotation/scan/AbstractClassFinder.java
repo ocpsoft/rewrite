@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.annotation.scan;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;

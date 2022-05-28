@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.pretty.faces2.component;
 
-import javax.faces.component.behavior.ClientBehaviorBase;
-import javax.faces.component.behavior.ClientBehaviorContext;
+import jakarta.faces.component.behavior.ClientBehaviorBase;
+import jakarta.faces.component.behavior.ClientBehaviorContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

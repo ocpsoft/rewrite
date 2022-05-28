@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
@@ -144,15 +144,23 @@ public class RewriteFilter implements Filter
 
       if ((configurations == null) || configurations.isEmpty())
       {
+          log.info("configurations are null or empty");
          if (log.isWarnEnabled())
             log.warn("No ConfigurationProviders were registered: " +
                      "Rewrite will not be enabled on this application. " +
                      "Did you forget to create a '/META-INF/services/" + ConfigurationProvider.class.getName() +
                      " file containing the fully qualified name of your provider implementation?");
+      } else {
+          log.info("configuration is ok");
       }
+//       for (ConfigurationProvider<?> configuration : configurations) {
+//           log.info("configuration: " + configuration.toString());
+//           
+//       }
 
       if (log.isInfoEnabled())
-         log.info(Version.getFullName() + " initialized.");
+//         log.info(Version.getFullName() + " initialized.");
+         log.info(Version.getFullName() + " initialized (has support for Jakarta EE9+)003.");
    }
 
    @Override

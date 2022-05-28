@@ -16,10 +16,10 @@
  */
 package org.ocpsoft.rewrite.cdi.expressions;
 
-import javax.el.ExpressionFactory;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.el.ExpressionFactory;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 /**
  * Responsible for producing the {@link ExpressionFactory}

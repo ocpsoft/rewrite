@@ -15,9 +15,9 @@
  */
 package org.ocpsoft.rewrite.prettyfaces;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.faces.spi.FacesActionUrlProvider;
 

@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.spi;
 
-import javax.servlet.FilterChain;
+import jakarta.servlet.FilterChain;
 
 import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;
@@ -65,7 +65,7 @@ public interface RewriteLifecycleListener<T extends Rewrite> extends Specialized
 
    /**
     * Invoked after application has returned control of the request to the rewrite engine, and after the rewrite engine
-    * calls {@link FilterChain#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse)} or ends the
+    * calls {@link FilterChain#doFilter(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)} or ends the
     * request.
     */
    void afterInboundLifecycle(T event);

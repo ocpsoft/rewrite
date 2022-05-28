@@ -12,7 +12,7 @@
    <artifactId>rewrite-config-tuckey</artifactId>
 
    <properties>
-      <version.tuckey>3.1.0</version.tuckey>
+      <version.tuckey>4.0.3</version.tuckey>
    </properties>
 
    <dependencies>
@@ -28,6 +28,7 @@
       <dependency>
          <groupId>jakarta.servlet</groupId>
          <artifactId>jakarta.servlet-api</artifactId>
+         <version>5.0.0</version>
          <scope>provided</scope>
       </dependency>
       

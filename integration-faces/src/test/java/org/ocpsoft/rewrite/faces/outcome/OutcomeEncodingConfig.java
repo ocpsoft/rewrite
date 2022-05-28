@@ -30,7 +30,7 @@
  */
 package org.ocpsoft.rewrite.faces.outcome;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;

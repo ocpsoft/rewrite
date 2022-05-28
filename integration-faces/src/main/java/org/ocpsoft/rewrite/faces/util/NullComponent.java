@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.faces.util;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 /**
  * Dummy component used for invoking converters and validators.

@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;

@@ -1,7 +1,7 @@
 package org.ocpsoft.rewrite.faces.artifact;
 
-import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.ValidatorException;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -34,7 +34,7 @@ public class FacesValidatorProvider implements ValidatorProvider
       Assert.notNull(facesContext, "FacesContext.getCurrentInstance() returned null. " +
                "You should use @Deferred so the binding gets executed within the JSF lifecycle.");
 
-      javax.faces.validator.Validator validator = facesContext.getApplication().createValidator(id);
+      jakarta.faces.validator.Validator validator = facesContext.getApplication().createValidator(id);
 
       if (validator!= null) {
          return FacesValidatorAdapter.from(validator);
@@ -54,14 +54,14 @@ public class FacesValidatorProvider implements ValidatorProvider
    private static class FacesValidatorAdapter<T> implements Validator<T>
    {
 
-      private final javax.faces.validator.Validator validator;
+      private final jakarta.faces.validator.Validator validator;
 
-      private FacesValidatorAdapter(javax.faces.validator.Validator validator)
+      private FacesValidatorAdapter(jakarta.faces.validator.Validator validator)
       {
          this.validator = validator;
       }
 
-      public static <T> FacesValidatorAdapter<T> from(javax.faces.validator.Validator validator)
+      public static <T> FacesValidatorAdapter<T> from(jakarta.faces.validator.Validator validator)
       {
          return new FacesValidatorAdapter<T>(validator);
       }

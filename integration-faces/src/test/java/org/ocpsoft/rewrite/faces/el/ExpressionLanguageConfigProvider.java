@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.faces.el;
 
-import javax.faces.event.PhaseId;
-import javax.servlet.ServletContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;

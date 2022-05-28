@@ -16,9 +16,9 @@
 
 package com.ocpsoft.pretty.faces.util;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.application.ApplicationFactory;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.ApplicationFactory;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
