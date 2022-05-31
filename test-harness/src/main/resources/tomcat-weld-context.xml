@@ -2,7 +2,7 @@
 <Context>
 
    <JarScanner scanManifest="false"/>
-   <Resource name="BeanManager" auth="Container" type="javax.enterprise.inject.spi.BeanManager" 
+   <Resource name="BeanManager" auth="Container" type="jakarta.enterprise.inject.spi.BeanManager"
       factory="org.jboss.weld.resources.ManagerObjectFactory" />
 
 </Context>
