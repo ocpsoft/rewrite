@@ -79,17 +79,6 @@
          <version>${project.version}</version>
          <classifier>sources</classifier>
       </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-config-tuckey</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-config-tuckey</artifactId>
-         <version>${project.version}</version>
-         <classifier>sources</classifier>
-      </dependency>
 
       <!-- Integration -->
       <dependency>
