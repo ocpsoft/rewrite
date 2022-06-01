@@ -10,10 +10,6 @@
 
    <artifactId>rewrite-config-proxy</artifactId>
 
-   <properties>
-      <version.jodatime>1.6.2</version.jodatime>
-   </properties>
-
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
