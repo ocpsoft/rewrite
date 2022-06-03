@@ -2,12 +2,12 @@ package org.ocpsoft.rewrite.showcase.access;
 
 import javax.servlet.ServletContext;
 
-import org.joda.time.DateTime;
+import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Direction;
-import org.ocpsoft.rewrite.config.jodatime.JodaTime;
-import org.ocpsoft.rewrite.config.jodatime.TimeCondition;
+import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.config.DispatchType;
 import org.ocpsoft.rewrite.servlet.config.Domain;
 import org.ocpsoft.rewrite.servlet.config.Forward;
@@ -15,6 +15,8 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Lifecycle;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
+
+import java.time.LocalDateTime;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -41,13 +43,13 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
                 * Time based access control (only grants access during the first half of each minute)
                 */
                .addRule(Join.path("/timer").to("/timer.xhtml").withInboundCorrection())
-               .when(Direction.isInbound().and(JodaTime.matches(timeGranted)))
+               .when(Direction.isInbound().and(timeGranted))
 
                .addRule()
                .when(Direction.isInbound()
                         .and(DispatchType.isForward())
                         .and(Path.matches("/timer.xhtml"))
-                        .andNot(JodaTime.matches(timeGranted))
+                        .andNot(timeGranted)
                         .and(DispatchType.isRequest()))
                .perform(Lifecycle.handled())
 
@@ -59,11 +61,11 @@ public class AccessRewriteConfiguration extends HttpConfigurationProvider
 
    }
 
-   private final TimeCondition timeGranted = new TimeCondition() {
+   private final Condition timeGranted = new Condition() {
       @Override
-      public boolean matches(final DateTime time)
+      public boolean evaluate(Rewrite event, EvaluationContext context)
       {
-         return time.getSecondOfMinute() < 30;
+         return LocalDateTime.now().getSecond() < 30;
       }
    };
 

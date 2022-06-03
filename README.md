@@ -72,7 +72,6 @@ Note that your annotated class won't be found, by default, if your Configuration
 5. Add rules to your configuration. Condition objects such as 'Direction.isInbound()' and 'Path.matches(...)' can be found in the 'org.ocpsoft.rewrite.config.*' and 'org.ocpsoft.rewrite.servlet.config.*' packages.
 
 6. Consider using Rewrite extensions for extra power:
-   * [JodaTime Integration](https://github.com/ocpsoft/rewrite/tree/master/config-jodatime)
    * [Tuckey URLRewriteFilter Integration](https://github.com/ocpsoft/rewrite/tree/master/config-tuckey)
    * [CDI Integration](https://github.com/ocpsoft/rewrite/tree/master/integration-cdi)
    * And more... read the [Documentation](http://ocpsoft.org/rewrite/docs/)
