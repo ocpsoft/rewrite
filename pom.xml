@@ -48,13 +48,11 @@
       <module>annotations-api</module>
       <module>annotations-impl</module>
       <module>config-annotations</module>
-      <module>config-jodatime</module>
       <module>config-prettyfaces</module>
       <module>config-prettyfaces-tests</module>
       <module>config-proxy</module>
       <module>config-servlet</module>
       <module>config-servlet-tests</module>
-      <!--module>config-tuckey</module-->
       <module>addressbuilder</module>
       <module>api-el</module>
       <module>api-servlet</module>
@@ -231,17 +229,7 @@
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
-            <artifactId>rewrite-config-jodatime</artifactId>
-            <version>${project.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.ocpsoft.rewrite</groupId>
             <artifactId>rewrite-config-prettyfaces</artifactId>
-            <version>${project.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.ocpsoft.rewrite</groupId>
-            <artifactId>rewrite-config-tuckey</artifactId>
             <version>${project.version}</version>
          </dependency>
          <dependency>

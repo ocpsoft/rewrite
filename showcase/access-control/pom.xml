@@ -28,10 +28,6 @@
       </dependency>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-config-jodatime</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-integration-cdi</artifactId>
       </dependency>
       <dependency>

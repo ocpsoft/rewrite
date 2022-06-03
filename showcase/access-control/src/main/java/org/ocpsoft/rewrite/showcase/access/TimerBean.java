@@ -1,13 +1,13 @@
 package org.ocpsoft.rewrite.showcase.access;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
-import org.joda.time.DateTime;
-import org.ocpsoft.pretty.time.PrettyTime;
-import org.ocpsoft.pretty.time.units.Second;
+import org.ocpsoft.prettytime.PrettyTime;
+import org.ocpsoft.prettytime.units.Second;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -21,21 +21,21 @@ public class TimerBean implements Serializable
 
    public String getSecondsUntilGranted()
    {
-      DateTime time = new DateTime();
-      int secondsRemain = 60 - time.getSecondOfMinute();
-      DateTime deniedTime = time.plusSeconds(secondsRemain);
+      LocalDateTime time = LocalDateTime.now();
+      int secondsRemain = 60 - time.getSecond();
+      LocalDateTime deniedTime = time.plusSeconds(secondsRemain);
       PrettyTime prettyTime = new PrettyTime();
-      prettyTime.setUnits(new Second(prettyTime.getLocale()));
-      return prettyTime.format(deniedTime.toDate());
+      prettyTime.setUnits(new Second());
+      return prettyTime.format(deniedTime);
    }
 
    public String getSecondsUntilDenied()
    {
-      DateTime time = new DateTime();
-      int secondsRemain = 30 - time.getSecondOfMinute();
-      DateTime grantedTime = time.plusSeconds(secondsRemain);
+      LocalDateTime time = LocalDateTime.now();
+      int secondsRemain = 30 - time.getSecond();
+      LocalDateTime grantedTime = time.plusSeconds(secondsRemain);
       PrettyTime prettyTime = new PrettyTime();
-      prettyTime.setUnits(new Second(prettyTime.getLocale()));
-      return prettyTime.format(grantedTime.toDate());
+      prettyTime.setUnits(new Second());
+      return prettyTime.format(grantedTime);
    }
 }
