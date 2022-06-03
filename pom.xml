@@ -47,7 +47,6 @@
       <module>annotations-api</module>
       <module>annotations-impl</module>
       <module>config-annotations</module>
-      <module>config-jodatime</module>
       <module>config-prettyfaces</module>
       <module>config-prettyfaces-tests</module>
       <module>config-proxy</module>
@@ -216,11 +215,6 @@
             <artifactId>rewrite-annotations-impl</artifactId>
             <version>${project.version}</version>
             <classifier>sources</classifier>
-         </dependency>
-         <dependency>
-            <groupId>org.ocpsoft.rewrite</groupId>
-            <artifactId>rewrite-config-jodatime</artifactId>
-            <version>${project.version}</version>
          </dependency>
          <dependency>
             <groupId>org.ocpsoft.rewrite</groupId>
