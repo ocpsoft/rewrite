@@ -21,7 +21,7 @@ import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.ocpsoft.rewrite.Root;
-import org.ocpsoft.rewrite.test.RewriteTest;
+import org.ocpsoft.rewrite.test.RewriteIT;
 
 /**
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
@@ -33,7 +33,7 @@ public class SubsetParameterReconfigurationTest
    @ShouldThrowException(DeploymentException.class)
    public static WebArchive getDeployment()
    {
-      WebArchive deployment = RewriteTest
+      WebArchive deployment = RewriteIT
                .getDeployment()
                .addPackages(true, Root.class.getPackage())
                .addAsServiceProvider(ConfigurationProvider.class,
