@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 8, 11 ]
-        container: ['TOMCAT_EMBEDDED', 'WILDFLY_MANAGED']
+        container: ['WILDFLY_MANAGED', 'TOMCAT_EMBEDDED', 'JETTY_EMBEDDED']
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}

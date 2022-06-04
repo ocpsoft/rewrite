@@ -483,6 +483,39 @@
             </dependency>
          </dependencies>
       </profile>
+
+      <profile>
+         <id>JETTY_EMBEDDED</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-jetty-embedded-9</artifactId>
+               <version>1.0.0.Final</version>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.junit.vintage</groupId>
+               <artifactId>junit-vintage-engine</artifactId>
+               <version>5.8.2</version>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.eclipse.jetty</groupId>
+               <artifactId>jetty-webapp</artifactId>
+               <version>9.4.46.v20220331</version>
+            </dependency>
+            <dependency>
+               <groupId>org.eclipse.jetty</groupId>
+               <artifactId>jetty-deploy</artifactId>
+               <version>9.4.46.v20220331</version>
+            </dependency>
+            <dependency>
+               <groupId>org.eclipse.jetty</groupId>
+               <artifactId>jetty-annotations</artifactId>
+               <version>9.4.46.v20220331</version>
+            </dependency>
+         </dependencies>
+      </profile>
    </profiles>
 
    <developers>
