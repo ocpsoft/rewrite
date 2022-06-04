@@ -106,12 +106,6 @@
                   </goals>
                </execution>
             </executions>
-            <configuration>
-               <forkCount>1</forkCount>
-               <reuseForks>false</reuseForks>
-               <!--TODO: fix Integration tests-->
-               <testFailureIgnore>true</testFailureIgnore>
-            </configuration>
          </plugin>
       </plugins>
       <pluginManagement>
