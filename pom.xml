@@ -425,6 +425,8 @@
                      <classpathDependencyExcludes>
                         <classpathDependencyExclude>jakarta.servlet:jakarta.servlet-api</classpathDependencyExclude>
                      </classpathDependencyExcludes>
+                     <forkCount>1</forkCount>
+                     <reuseForks>false</reuseForks>
                   </configuration>
                </plugin>
             </plugins>
