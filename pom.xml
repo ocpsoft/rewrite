@@ -35,6 +35,8 @@
       <version.logging>1.0.5.Final</version.logging>
       <version.arquillian>1.6.0.Final</version.arquillian>
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
+
+      <version.wildfly>26.1.1.Final</version.wildfly>
    </properties>
 
    <modules>
@@ -389,9 +391,6 @@
    <profiles>
       <profile>
          <id>WILDFLY_MANAGED</id>
-         <properties>
-            <version.wildfly>26.1.1.Final</version.wildfly>
-         </properties>
          <build>
             <plugins>
                <plugin>
@@ -441,6 +440,55 @@
                <scope>test</scope>
             </dependency>
          </dependencies>
+      </profile>
+
+      <profile>
+         <id>WILDFLY_REMOTE</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.wildfly.arquillian</groupId>
+               <artifactId>wildfly-arquillian-container-remote</artifactId>
+               <version>3.0.1.Final</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-failsafe-plugin</artifactId>
+                  <configuration>
+                     <excludedGroups>
+                        org.ocpsoft.rewrite.category.IgnoreForWildfly
+                     </excludedGroups>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.wildfly.plugins</groupId>
+                  <artifactId>wildfly-maven-plugin</artifactId>
+                  <version>2.1.0.Beta1</version>
+                  <executions>
+                     <execution>
+                        <id>start-wildfly</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                           <goal>start</goal>
+                        </goals>
+                     </execution>
+                     <execution>
+                        <id>stop-wildfly</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                           <goal>shutdown</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <version>${version.wildfly}</version>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
       </profile>
    </profiles>
 
