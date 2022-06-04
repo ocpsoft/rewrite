@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 import javax.servlet.ServletContext;
 
@@ -65,7 +66,7 @@ public class ParentingPostProcessorTest
    {
       final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
 
-      EasyMock.expect(servletContext.getMajorVersion()).andReturn(3).anyTimes();
+      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(new HashMap<>()).anyTimes();
       EasyMock.expect(servletContext.getInitParameterNames()).andReturn(initParameterNames).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn(null).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(ClassLoaderConfigurationProvider.CLASSPATH_CONFIG_ENABLED))
