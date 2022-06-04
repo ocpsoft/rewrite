@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Arrays;
@@ -62,9 +63,7 @@ public class WebLibFinderTest
       Mockito.when(servletContext.getResource("/WEB-INF/lib/mylib.jar")).thenReturn(jarUrl);
 
       // ClassLoader that knows the test class
-      ClassLoader classLoader = Mockito.mock(ClassLoader.class);
-      Mockito.when(classLoader.loadClass(ClassFinderTestBean.class.getName()))
-               .thenReturn((Class) ClassFinderTestBean.class);
+      ClassLoader classLoader = ClassFinderTestBean.class.getClassLoader();
 
       // We will need the ByteCodeFilter
       Set<Class<? extends Annotation>> types = new HashSet<Class<? extends Annotation>>();
