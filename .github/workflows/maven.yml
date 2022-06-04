@@ -27,6 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 8, 11 ]
+        container: ['TOMCAT_EMBEDDED', 'WILDFLY_MANAGED']
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
@@ -34,4 +35,4 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
-      - run: ./mvnw --batch-mode --update-snapshots install
+      - run: ./mvnw --batch-mode --update-snapshots -P ${{ matrix.container }} install
