@@ -28,7 +28,7 @@ import org.ocpsoft.rewrite.transform.Transform;
 
 /**
  * 
- * {@link ConfigurationProvider} for {@link JsMinifyTest}.
+ * {@link ConfigurationProvider} for {@link JsMinifyIT}.
  * 
  * @author Christian Kaltepoth
  * 

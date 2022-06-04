@@ -27,7 +27,7 @@ import org.ocpsoft.rewrite.transform.Transform;
 
 /**
  * 
- * {@link ConfigurationProvider} for {@link LessIntegrationTest}.
+ * {@link ConfigurationProvider} for {@link LessIntegrationIT}.
  * 
  * @author Christian Kaltepoth
  * 
