@@ -434,15 +434,18 @@
 
       <profile>
          <id>WILDFLY_MANAGED</id>
+         <properties>
+            <version.wildfly>26.1.1.Final</version.wildfly>
+         </properties>
          <build>
             <plugins>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
                   <configuration>
-                     <systemPropertyVariables>
-                        <arquillian.launch>wildfly_managed</arquillian.launch>
-                     </systemPropertyVariables>
+                     <environmentVariables>
+                        <JBOSS_HOME>${project.build.directory}/container/wildfly-${version.wildfly}</JBOSS_HOME>
+                     </environmentVariables>
                      <excludedGroups>
                         org.ocpsoft.rewrite.category.IgnoreForWildfly
                      </excludedGroups>
@@ -463,7 +466,7 @@
                               <artifactItem>
                                  <groupId>org.wildfly</groupId>
                                  <artifactId>wildfly-dist</artifactId>
-                                 <version>26.1.1.Final</version>
+                                 <version>${version.wildfly}</version>
                                  <type>zip</type>
                                  <overWrite>false</overWrite>
                                  <outputDirectory>${project.build.directory}/container</outputDirectory>
