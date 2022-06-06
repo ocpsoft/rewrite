@@ -56,8 +56,9 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
-         <groupId>org.jboss.spec.javax.faces</groupId>
-         <artifactId>jboss-jsf-api_${jsf.spec}_spec</artifactId>
+         <groupId>org.glassfish</groupId>
+         <artifactId>javax.faces</artifactId>
+         <version>2.3.9</version>
          <scope>provided</scope>
       </dependency>
       <dependency>
