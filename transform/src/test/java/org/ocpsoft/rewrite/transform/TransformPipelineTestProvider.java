@@ -26,7 +26,7 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 
 /**
  * 
- * {@link ConfigurationProvider} for {@link TransformPipelineTest}.
+ * {@link ConfigurationProvider} for {@link TransformPipelineIT}.
  * 
  * @author Christian Kaltepoth
  * 

@@ -25,7 +25,7 @@ import org.ocpsoft.rewrite.servlet.config.Path;
 
 /**
  * 
- * {@link ConfigurationProvider} for {@link TransformIfModifiedSinceTest}.
+ * {@link ConfigurationProvider} for {@link TransformIfModifiedSinceIT}.
  * 
  * @author Christian Kaltepoth
  * 

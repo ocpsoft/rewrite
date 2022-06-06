@@ -21,7 +21,7 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 
 /**
- * Configuration provider for {@link PathAndQueryTest}.
+ * Configuration provider for {@link PathAndQueryIT}.
  */
 public class PathAndQueryProvider extends HttpConfigurationProvider
 {
