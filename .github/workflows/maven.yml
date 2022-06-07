@@ -14,11 +14,11 @@ jobs:
         with:
           java-version: 8
           distribution: 'temurin'
+          cache: 'maven'
       - run: ./mvnw --batch-mode --update-snapshots install -DskipTests
 
   test:
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
@@ -30,4 +30,5 @@ jobs:
         with:
           java-version: 8
           distribution: 'temurin'
+          cache: 'maven'
       - run: ./mvnw --batch-mode --update-snapshots -P ${{ matrix.container }} install
