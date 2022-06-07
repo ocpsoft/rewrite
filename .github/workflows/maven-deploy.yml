@@ -17,3 +17,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - run: ./mvnw --batch-mode -s .github/settings.xml -DperformRelease -DskipTests -Dgpg.skip=true deploy
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
