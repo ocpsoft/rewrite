@@ -15,9 +15,9 @@
  */
 package org.ocpsoft.rewrite.test;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.AbstractRewrite;
 import org.ocpsoft.rewrite.event.Flow;

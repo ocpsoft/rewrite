@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;

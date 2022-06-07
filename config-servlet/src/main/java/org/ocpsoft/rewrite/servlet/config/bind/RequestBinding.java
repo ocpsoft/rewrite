@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.servlet.config.bind;
 
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.context.EvaluationContext;

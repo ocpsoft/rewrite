@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.annotation.api.ClassVisitor;
 import org.ocpsoft.rewrite.annotation.spi.ClassFinder;

@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.rewrite.config.Configuration;

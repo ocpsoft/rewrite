@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.servlet.util;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.common.util.Assert;
 

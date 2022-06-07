@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.faces;
 
-import javax.faces.bean.ManagedBean;
+import jakarta.faces.bean.ManagedBean;
 
 import org.ocpsoft.rewrite.el.spi.BeanNameResolver;
 

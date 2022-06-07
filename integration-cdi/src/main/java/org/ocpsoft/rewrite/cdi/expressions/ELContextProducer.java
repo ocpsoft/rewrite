@@ -16,13 +16,13 @@
  */
 package org.ocpsoft.rewrite.cdi.expressions;
 
-import javax.el.ELContext;
-import javax.el.ELResolver;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+import jakarta.el.FunctionMapper;
+import jakarta.el.VariableMapper;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 /**
  * Responsible for creating and exposing the ELContext

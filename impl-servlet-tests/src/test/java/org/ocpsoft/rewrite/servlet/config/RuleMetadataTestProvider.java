@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.logging.Logger.Level;
 import org.ocpsoft.rewrite.config.Configuration;

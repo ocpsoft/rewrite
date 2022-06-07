@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.faces.event.PhaseId;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.faces.event.PhaseId;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.pattern.Weighted;
 import org.ocpsoft.common.pattern.WeightedComparator;

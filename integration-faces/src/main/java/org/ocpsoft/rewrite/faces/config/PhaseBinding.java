@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.faces.event.PhaseId;
+import jakarta.faces.event.PhaseId;
 
 import org.ocpsoft.rewrite.bind.Binding;
 import org.ocpsoft.rewrite.bind.Submission;

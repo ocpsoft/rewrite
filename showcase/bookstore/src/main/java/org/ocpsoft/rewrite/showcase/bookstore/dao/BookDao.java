@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 import org.ocpsoft.rewrite.showcase.bookstore.model.Book;
 import org.ocpsoft.rewrite.showcase.bookstore.model.Category;

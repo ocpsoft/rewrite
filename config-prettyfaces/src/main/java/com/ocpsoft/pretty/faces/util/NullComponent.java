@@ -1,6 +1,6 @@
 package com.ocpsoft.pretty.faces.util;
 
-import javax.faces.component.UIComponentBase;
+import jakarta.faces.component.UIComponentBase;
 
 /**
  * This component exists only to provide Path and Query Validators with a component for which they should not throw

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIParameter;
 
 import com.ocpsoft.pretty.faces.config.mapping.QueryParameter;
 import com.ocpsoft.pretty.faces.config.mapping.RequestParameter;

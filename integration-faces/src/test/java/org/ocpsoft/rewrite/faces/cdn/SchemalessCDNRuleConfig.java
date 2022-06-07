@@ -30,7 +30,7 @@
  */
 package org.ocpsoft.rewrite.faces.cdn;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
@@ -44,7 +44,7 @@ public class SchemalessCDNRuleConfig extends HttpConfigurationProvider
    public Configuration getConfiguration(ServletContext context)
    {
       return ConfigurationBuilder.begin()
-               .addRule(CDN.relocate("/javax.faces.resource/jquery.js.xhtml")
+               .addRule(CDN.relocate("/jakarta.faces.resource/jquery.js.xhtml")
                         .to("//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"));
    }
 

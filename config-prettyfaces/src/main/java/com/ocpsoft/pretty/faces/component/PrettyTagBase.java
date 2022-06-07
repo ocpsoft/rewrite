@@ -15,12 +15,12 @@
  */
 package com.ocpsoft.pretty.faces.component;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.webapp.UIComponentELTag;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.webapp.UIComponentELTag;
 
 import com.ocpsoft.pretty.faces.el.Expressions;
 

@@ -21,7 +21,7 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.servlet.RewriteWrappedRequest;
 import org.ocpsoft.rewrite.util.CompositeMap;

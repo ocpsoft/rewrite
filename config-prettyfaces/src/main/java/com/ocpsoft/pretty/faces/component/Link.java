@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.pretty.faces.component;
 
-import javax.faces.component.html.HtmlOutputLink;
+import jakarta.faces.component.html.HtmlOutputLink;
 
 /**
  * @author Derek Hollis <derek@ocpsoft.com>

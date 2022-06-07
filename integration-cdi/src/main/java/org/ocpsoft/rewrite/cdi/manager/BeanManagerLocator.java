@@ -22,9 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
 
 import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.rewrite.cdi.spi.BeanManagerProvider;

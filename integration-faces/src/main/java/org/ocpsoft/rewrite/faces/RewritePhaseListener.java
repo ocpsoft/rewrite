@@ -3,12 +3,12 @@ package org.ocpsoft.rewrite.faces;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.event.PhaseListener;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.context.EvaluationContext;

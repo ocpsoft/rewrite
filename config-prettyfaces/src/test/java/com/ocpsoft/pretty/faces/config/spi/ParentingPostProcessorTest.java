@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.easymock.EasyMock;
 import org.junit.Test;

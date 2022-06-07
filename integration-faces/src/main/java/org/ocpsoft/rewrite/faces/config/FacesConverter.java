@@ -15,9 +15,9 @@
  */
 package org.ocpsoft.rewrite.faces.config;
 
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.ConverterException;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.ConverterException;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.context.EvaluationContext;
@@ -68,7 +68,7 @@ public class FacesConverter<T> implements Converter<T>
       Assert.notNull(facesContext, "FacesContext.getCurrentInstance() returned null. " +
                "You should use @Deferred so the binding gets executed within the JSF lifecycle.");
 
-      javax.faces.convert.Converter converter = null;
+      jakarta.faces.convert.Converter converter = null;
       if (converterId != null) {
          converter = facesContext.getApplication().createConverter(converterId);
          Assert.notNull(converter, "Could not create JSF converter for ID: " + converterId);

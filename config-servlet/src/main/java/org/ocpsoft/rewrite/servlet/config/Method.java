@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.config;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Strings;
 import org.ocpsoft.rewrite.config.Condition;

@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.config;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationCacheProvider;
 

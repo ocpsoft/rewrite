@@ -17,11 +17,11 @@ package org.ocpsoft.rewrite.showcase.bookstore.web.details;
 
 import java.io.IOException;
 
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;

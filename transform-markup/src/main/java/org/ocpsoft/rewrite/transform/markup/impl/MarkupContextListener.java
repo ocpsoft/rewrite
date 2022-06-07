@@ -2,8 +2,8 @@ package org.ocpsoft.rewrite.transform.markup.impl;
 
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
 
 import org.jruby.embed.ScriptingContainer;
 import org.ocpsoft.rewrite.servlet.spi.ContextListener;

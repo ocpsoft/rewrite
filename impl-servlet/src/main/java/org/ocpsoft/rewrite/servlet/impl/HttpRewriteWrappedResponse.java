@@ -26,9 +26,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.util.Streams;
 import org.ocpsoft.logging.Logger;

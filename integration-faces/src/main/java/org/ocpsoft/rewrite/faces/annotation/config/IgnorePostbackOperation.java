@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.faces.annotation.config;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.ocpsoft.common.util.Assert;
 import org.ocpsoft.rewrite.config.Operation;

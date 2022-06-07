@@ -20,7 +20,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -30,13 +30,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <p>
- * Qualifier used to identify a javax.el.ELResolver to register with the
- * application wide javax.el.ELResolver provided by Solder
+ * Qualifier used to identify a jakarta.el.ELResolver to register with the
+ * application wide jakarta.el.ELResolver provided by Solder
  * </p>
  * <p/>
  * <p>
- * Solder will inject a javax.el.ELResolver for each instantiation of an
- * javax.el.ELContext (and hence for each instantiation of {@link Expressions});
+ * Solder will inject a jakarta.el.ELResolver for each instantiation of an
+ * jakarta.el.ELContext (and hence for each instantiation of {@link Expressions});
  * any overrides of this bean should ensure that obtaining the bean instance is
  * a lightweight operation.
  * </p>

@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.RewriteWrappedResponse;

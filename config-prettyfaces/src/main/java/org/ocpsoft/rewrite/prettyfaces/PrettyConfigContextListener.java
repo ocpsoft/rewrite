@@ -21,7 +21,7 @@
  */
 package org.ocpsoft.rewrite.prettyfaces;
 
-import javax.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextEvent;
 
 import org.ocpsoft.rewrite.servlet.spi.ContextListener;
 

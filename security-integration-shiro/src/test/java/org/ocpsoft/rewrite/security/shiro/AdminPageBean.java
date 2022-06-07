@@ -1,6 +1,6 @@
 package org.ocpsoft.rewrite.security.shiro;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 import org.ocpsoft.rewrite.annotation.ForwardTo;
 import org.ocpsoft.rewrite.annotation.PathPattern;

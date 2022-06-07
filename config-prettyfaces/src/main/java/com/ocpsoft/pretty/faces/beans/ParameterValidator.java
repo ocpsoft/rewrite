@@ -18,14 +18,14 @@ package com.ocpsoft.pretty.faces.beans;
 import java.io.IOException;
 import java.util.List;
 
-import javax.el.ELException;
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.el.ELException;
+import jakarta.faces.FacesException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.Validator;
+import jakarta.faces.validator.ValidatorException;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

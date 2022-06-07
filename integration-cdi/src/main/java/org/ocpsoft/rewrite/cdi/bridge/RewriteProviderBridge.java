@@ -15,11 +15,11 @@
  */
 package org.ocpsoft.rewrite.cdi.bridge;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.ServletRewriteProvider;

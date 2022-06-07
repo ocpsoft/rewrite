@@ -30,8 +30,8 @@
  */
 package org.ocpsoft.rewrite.faces.error;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.RequestScoped;
 
 @ManagedBean
 @RequestScoped

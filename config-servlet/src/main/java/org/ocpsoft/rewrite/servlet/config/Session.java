@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.servlet.config;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Responsible for performing actions on the current {@link HttpSession}

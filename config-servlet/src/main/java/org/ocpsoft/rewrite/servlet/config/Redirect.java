@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.net.URL;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.config.ConfigurationRuleParameterBuilder;
 import org.ocpsoft.rewrite.config.Operation;

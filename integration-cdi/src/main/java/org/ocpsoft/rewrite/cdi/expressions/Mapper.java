@@ -19,10 +19,10 @@ package org.ocpsoft.rewrite.cdi.expressions;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.el.ELContext;
-import javax.el.FunctionMapper;
-import javax.el.VariableMapper;
-import javax.inject.Qualifier;
+import jakarta.el.ELContext;
+import jakarta.el.FunctionMapper;
+import jakarta.el.VariableMapper;
+import jakarta.inject.Qualifier;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

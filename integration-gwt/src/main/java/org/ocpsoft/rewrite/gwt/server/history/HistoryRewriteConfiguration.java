@@ -1,7 +1,7 @@
 package org.ocpsoft.rewrite.gwt.server.history;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.Cookie;
 
 import org.ocpsoft.logging.Logger;
 

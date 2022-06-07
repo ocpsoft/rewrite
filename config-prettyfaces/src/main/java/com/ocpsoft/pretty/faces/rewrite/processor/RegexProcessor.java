@@ -18,8 +18,8 @@ package com.ocpsoft.pretty.faces.rewrite.processor;
 
 import java.util.regex.Matcher;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.ocpsoft.pretty.faces.config.rewrite.RewriteRule;
 import com.ocpsoft.pretty.faces.rewrite.Processor;

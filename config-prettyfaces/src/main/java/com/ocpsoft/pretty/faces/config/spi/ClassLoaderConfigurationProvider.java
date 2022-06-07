@@ -22,7 +22,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.xml.sax.SAXException;
 

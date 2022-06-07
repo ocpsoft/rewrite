@@ -15,10 +15,10 @@
  */
 package org.ocpsoft.rewrite.servlet.event;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.event.Rewrite;

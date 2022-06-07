@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Similar to <code>javax.servlet.ServletRegistration</code>. But as the original is only available in Servlet 3.0 and
+ * Similar to <code>jakarta.servlet.ServletRegistration</code>. But as the original is only available in Servlet 3.0 and
  * new we use or own.
  * 
  * @author Christian Kaltepoth

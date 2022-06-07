@@ -15,11 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.event;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestWrapper;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletResponseWrapper;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletRequestWrapper;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.ServletResponseWrapper;
 
 import org.ocpsoft.rewrite.event.InboundRewrite;
 import org.ocpsoft.rewrite.spi.RewriteProvider;

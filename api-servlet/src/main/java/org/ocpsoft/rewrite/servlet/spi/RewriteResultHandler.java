@@ -17,7 +17,7 @@ package org.ocpsoft.rewrite.servlet.spi;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.ocpsoft.common.pattern.Specialized;
 import org.ocpsoft.common.pattern.Weighted;

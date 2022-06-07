@@ -18,9 +18,9 @@ package org.ocpsoft.rewrite.servlet.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.event.Flow;
 import org.ocpsoft.rewrite.event.Rewrite;
@@ -81,7 +81,7 @@ public abstract class BaseHttpRewrite extends BaseRewrite<HttpServletRequest, Ht
 
          // for forwards the requestURI isn't URL encoded as we expect it
          // see: https://github.com/ocpsoft/rewrite/issues/165
-         if (getRequest().getAttribute("javax.servlet.forward.request_uri") != null) {
+         if (getRequest().getAttribute("jakarta.servlet.forward.request_uri") != null) {
             requestURI = Encoder.path(requestURI);
          }
 

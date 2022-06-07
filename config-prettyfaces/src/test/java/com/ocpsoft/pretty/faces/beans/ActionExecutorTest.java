@@ -34,7 +34,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(true);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true)).isTrue();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.RESTORE_VIEW, true)).isTrue();
    }
 
    @Test
@@ -42,7 +42,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(true);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
    }
 
    @Test
@@ -50,7 +50,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
    }
 
    @Test
@@ -58,7 +58,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.APPLY_REQUEST_VALUES, false)).isFalse();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES, false)).isFalse();
    }
 
    @Test
@@ -66,7 +66,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true)).isTrue();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.RESTORE_VIEW, true)).isTrue();
    }
 
    @Test
@@ -74,7 +74,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.RESTORE_VIEW);
       action.setOnPostback(true);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.APPLY_REQUEST_VALUES, true)).isFalse();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES, true)).isFalse();
    }
 
    @Test
@@ -82,7 +82,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(false);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, true)).isFalse();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.RESTORE_VIEW, true)).isFalse();
    }
 
    @Test
@@ -90,7 +90,7 @@ public class ActionExecutorTest
    {
       UrlAction action = new UrlAction("action", PhaseId.ANY_PHASE);
       action.setOnPostback(false);
-      assertThat(executor.shouldExecute(action, javax.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
+      assertThat(executor.shouldExecute(action, jakarta.faces.event.PhaseId.RESTORE_VIEW, false)).isTrue();
    }
 
 }

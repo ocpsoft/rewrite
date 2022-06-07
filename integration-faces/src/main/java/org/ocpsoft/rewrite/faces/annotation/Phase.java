@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.faces.annotation;
 
-import javax.faces.event.PhaseId;
+import jakarta.faces.event.PhaseId;
 
 /**
  * Defines a type-safe handle to the {@link PhaseId} constant string values.
@@ -26,21 +26,21 @@ public enum Phase
 {
 
    NONE(null),
-   RESTORE_VIEW(javax.faces.event.PhaseId.RESTORE_VIEW),
-   APPLY_REQUEST_VALUES(javax.faces.event.PhaseId.APPLY_REQUEST_VALUES),
-   PROCESS_VALIDATIONS(javax.faces.event.PhaseId.PROCESS_VALIDATIONS),
-   UPDATE_MODEL_VALUES(javax.faces.event.PhaseId.UPDATE_MODEL_VALUES),
-   INVOKE_APPLICATION(javax.faces.event.PhaseId.INVOKE_APPLICATION),
-   RENDER_RESPONSE(javax.faces.event.PhaseId.RENDER_RESPONSE);
+   RESTORE_VIEW(jakarta.faces.event.PhaseId.RESTORE_VIEW),
+   APPLY_REQUEST_VALUES(jakarta.faces.event.PhaseId.APPLY_REQUEST_VALUES),
+   PROCESS_VALIDATIONS(jakarta.faces.event.PhaseId.PROCESS_VALIDATIONS),
+   UPDATE_MODEL_VALUES(jakarta.faces.event.PhaseId.UPDATE_MODEL_VALUES),
+   INVOKE_APPLICATION(jakarta.faces.event.PhaseId.INVOKE_APPLICATION),
+   RENDER_RESPONSE(jakarta.faces.event.PhaseId.RENDER_RESPONSE);
 
-   private final javax.faces.event.PhaseId phaseId;
+   private final jakarta.faces.event.PhaseId phaseId;
 
-   private Phase(javax.faces.event.PhaseId phaseId)
+   private Phase(jakarta.faces.event.PhaseId phaseId)
    {
       this.phaseId = phaseId;
    }
 
-   public javax.faces.event.PhaseId getPhaseId()
+   public jakarta.faces.event.PhaseId getPhaseId()
    {
       return phaseId;
    }

@@ -18,8 +18,8 @@ package org.ocpsoft.rewrite.showcase.bookstore.dao;
 import java.util.Collections;
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 import org.ocpsoft.rewrite.showcase.bookstore.model.Category;
 

@@ -18,10 +18,10 @@ package com.ocpsoft.pretty.faces.component.renderer;
 
 import java.io.IOException;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
-import javax.faces.render.Renderer;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.render.Renderer;
 
 import com.ocpsoft.pretty.PrettyContext;
 import com.ocpsoft.pretty.PrettyException;
@@ -35,7 +35,7 @@ import com.ocpsoft.pretty.faces.util.PrettyURLBuilder;
  */
 public class LinkRenderer extends Renderer
 {
-   public static final String RENDERER_TYPE = "javax.faces.Link";
+   public static final String RENDERER_TYPE = "jakarta.faces.Link";
    protected final PrettyURLBuilder urlBuilder = new PrettyURLBuilder();
 
    @Override

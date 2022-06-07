@@ -3,9 +3,9 @@ package org.ocpsoft.rewrite.faces.annotation.binding;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.faces.bean.RequestScoped;
+import jakarta.faces.context.FacesContext;
 
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;

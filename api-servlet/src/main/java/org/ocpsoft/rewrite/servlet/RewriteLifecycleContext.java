@@ -17,8 +17,8 @@ package org.ocpsoft.rewrite.servlet;
 
 import java.util.List;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.ocpsoft.rewrite.context.Context;
 import org.ocpsoft.rewrite.event.Rewrite;

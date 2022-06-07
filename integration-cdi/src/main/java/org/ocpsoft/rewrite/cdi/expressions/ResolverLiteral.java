@@ -16,7 +16,7 @@
  */
 package org.ocpsoft.rewrite.cdi.expressions;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 public class ResolverLiteral extends AnnotationLiteral<Resolver> implements Resolver {
     private static final long serialVersionUID = -8137340248362361317L;

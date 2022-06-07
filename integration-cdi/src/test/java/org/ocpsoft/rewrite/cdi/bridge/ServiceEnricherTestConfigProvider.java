@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.cdi.bridge;
 
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 
 import org.ocpsoft.rewrite.config.Condition;
 import org.ocpsoft.rewrite.config.Configuration;

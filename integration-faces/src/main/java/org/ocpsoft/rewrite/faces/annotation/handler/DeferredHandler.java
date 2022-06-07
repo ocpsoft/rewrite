@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.faces.annotation.handler;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.faces.event.PhaseId;
+import jakarta.faces.event.PhaseId;
 
 import org.ocpsoft.rewrite.annotation.api.ClassContext;
 import org.ocpsoft.rewrite.annotation.api.FieldContext;

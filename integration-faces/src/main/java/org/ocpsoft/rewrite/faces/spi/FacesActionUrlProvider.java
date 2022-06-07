@@ -15,7 +15,7 @@
  */
 package org.ocpsoft.rewrite.faces.spi;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.ocpsoft.common.pattern.Weighted;
 

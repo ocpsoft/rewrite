@@ -26,8 +26,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.el.ELResolver;
-import javax.inject.Qualifier;
+import jakarta.el.ELResolver;
+import jakarta.inject.Qualifier;
 
 /**
  * <p>

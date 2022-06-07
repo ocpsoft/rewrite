@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

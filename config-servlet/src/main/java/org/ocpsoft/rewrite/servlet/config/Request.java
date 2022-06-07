@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.servlet.config;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;

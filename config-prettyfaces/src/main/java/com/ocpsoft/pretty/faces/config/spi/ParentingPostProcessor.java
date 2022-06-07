@@ -19,7 +19,7 @@ package com.ocpsoft.pretty.faces.config.spi;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import com.ocpsoft.pretty.PrettyException;
 import com.ocpsoft.pretty.faces.config.PrettyConfig;

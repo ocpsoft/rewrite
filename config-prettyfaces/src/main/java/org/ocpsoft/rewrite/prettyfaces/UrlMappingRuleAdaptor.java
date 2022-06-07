@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.faces.component.UIParameter;
+import jakarta.faces.component.UIParameter;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.config.Rule;

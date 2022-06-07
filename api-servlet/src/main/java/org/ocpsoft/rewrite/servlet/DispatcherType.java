@@ -16,7 +16,7 @@
 package org.ocpsoft.rewrite.servlet;
 
 /**
- * Same as <code>javax.servlet.DispatcherType</code>. We are using our own enum because it is only available in Servlet
+ * Same as <code>jakarta.servlet.DispatcherType</code>. We are using our own enum because it is only available in Servlet
  * 3.0 and newer.
  * 
  * @author Christian Kaltepoth

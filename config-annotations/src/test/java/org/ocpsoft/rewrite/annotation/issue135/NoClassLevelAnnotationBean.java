@@ -15,8 +15,8 @@
  */
 package org.ocpsoft.rewrite.annotation.issue135;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.RequestAction;
 

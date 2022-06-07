@@ -1,7 +1,7 @@
 package org.ocpsoft.rewrite.faces;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.servlet.http.HttpRewriteLifecycleListener;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;

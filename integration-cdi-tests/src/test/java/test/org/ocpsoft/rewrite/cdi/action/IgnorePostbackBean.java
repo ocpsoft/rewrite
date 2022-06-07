@@ -30,9 +30,9 @@
  */
 package test.org.ocpsoft.rewrite.cdi.action;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.ManagedBean;
-import javax.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.bean.ManagedBean;
+import jakarta.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;

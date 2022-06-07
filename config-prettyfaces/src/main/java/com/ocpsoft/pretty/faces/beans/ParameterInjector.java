@@ -17,8 +17,8 @@ package com.ocpsoft.pretty.faces.beans;
 
 import java.util.List;
 
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

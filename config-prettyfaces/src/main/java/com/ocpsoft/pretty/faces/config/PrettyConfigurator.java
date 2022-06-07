@@ -15,7 +15,7 @@
  */
 package com.ocpsoft.pretty.faces.config;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

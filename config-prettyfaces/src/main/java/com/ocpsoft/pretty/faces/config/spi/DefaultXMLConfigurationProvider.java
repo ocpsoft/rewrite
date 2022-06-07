@@ -19,7 +19,7 @@ package com.ocpsoft.pretty.faces.config.spi;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,9 +44,13 @@ public class DefaultXMLConfigurationProvider implements ConfigurationProvider
    @Override
    public PrettyConfig loadConfiguration(ServletContext servletContext)
    {
+      log.info("loadConfiguration called...");
       final PrettyConfigBuilder builder = new PrettyConfigBuilder();
       PrettyConfigParser configParser = new DigesterPrettyConfigParser();
       final InputStream is = servletContext.getResourceAsStream(DEFAULT_PRETTY_FACES_CONFIG);
+      if (is == null) {
+          log.trace("Problem reading config [" + DEFAULT_PRETTY_FACES_CONFIG + "]. Input stream is null!");
+      }
       if (is != null)
       {
          log.trace("Reading config [" + DEFAULT_PRETTY_FACES_CONFIG + "].");

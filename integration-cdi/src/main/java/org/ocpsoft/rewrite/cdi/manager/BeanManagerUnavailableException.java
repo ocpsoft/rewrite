@@ -18,7 +18,7 @@ package org.ocpsoft.rewrite.cdi.manager;
 
 import java.util.List;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 
 import org.ocpsoft.rewrite.cdi.spi.BeanManagerProvider;
 

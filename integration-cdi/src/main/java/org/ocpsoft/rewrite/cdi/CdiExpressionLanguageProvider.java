@@ -15,12 +15,12 @@
  */
 package org.ocpsoft.rewrite.cdi;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 import org.ocpsoft.rewrite.cdi.expressions.Expressions;
 import org.ocpsoft.rewrite.el.spi.ExpressionLanguageProvider;

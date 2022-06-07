@@ -19,11 +19,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.faces.application.ConfigurableNavigationHandler;
+import jakarta.faces.application.NavigationCase;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.rewrite.exception.RewriteException;
 import org.ocpsoft.urlbuilder.AddressBuilder;

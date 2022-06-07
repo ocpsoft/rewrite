@@ -15,11 +15,11 @@
  */
 package org.ocpsoft.rewrite.servlet.impl;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.common.services.NonEnriching;
 import org.ocpsoft.rewrite.servlet.event.InboundServletRewrite;
