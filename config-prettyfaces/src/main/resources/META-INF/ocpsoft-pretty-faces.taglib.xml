@@ -52,7 +52,7 @@
     <tag-name>link</tag-name>
     <component>
       <component-type>com.ocpsoft.pretty.Link</component-type>
-      <renderer-type>javax.faces.Link</renderer-type>
+      <renderer-type>jakarta.faces.Link</renderer-type>
     </component>
     <attribute>
       <description>

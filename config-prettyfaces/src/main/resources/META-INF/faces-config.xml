@@ -56,7 +56,7 @@
 	     		PRETTY_FACES_FAMILY
 	     	</component-family>
 	     	<renderer-type>
-	     		javax.faces.Link
+	     		jakarta.faces.Link
 	     	</renderer-type>
 	     	<renderer-class>
 	     		com.ocpsoft.pretty.faces.component.renderer.LinkRenderer
