@@ -48,7 +48,7 @@
          <artifactId>slf4j-simple</artifactId>
       </dependency>
 
-      <dependency>
+       <dependency>
          <groupId>com.squareup.okhttp3</groupId>
          <artifactId>okhttp</artifactId>
          <version>4.9.3</version>
@@ -59,14 +59,6 @@
          <version>4.9.3</version>
       </dependency>
 
-      <!-- Exactly these versions are required by Drone -->
-      <dependency>
-         <groupId>net.sourceforge.htmlunit</groupId>
-         <artifactId>htmlunit</artifactId>
-         <version>2.12</version>
-         <scope>compile</scope>
-      </dependency>
-      
       <dependency>
          <groupId>org.jboss.shrinkwrap.resolver</groupId>
          <artifactId>shrinkwrap-resolver-api</artifactId>
