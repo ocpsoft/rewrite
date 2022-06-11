@@ -15,24 +15,20 @@
  */
 package org.ocpsoft.rewrite.transform.markup;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.jruby.embed.ScriptingContainer;
+import de.larsgrefer.sass.embedded.SassCompiler;
+import de.larsgrefer.sass.embedded.SassCompilerFactory;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.rewrite.transform.StringTransformer;
 import org.ocpsoft.rewrite.transform.Transformer;
-import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
+import sass.embedded_protocol.EmbeddedSass;
 
 /**
  * A {@link Transformer} that translates SASS files into CSS.
  * 
  * @author Christian Kaltepoth
  */
-public class Sass extends JRubyTransformer<Sass>
+public class Sass extends StringTransformer
 {
-
-   private static final String SCRIPT = "require 'sass'\n" +
-            "engine = Sass::Engine.new(input, :syntax => :scss, :cache => false)\n" +
-            "engine.render\n";
 
    /**
     * Create a {@link Transformer} that compiles SASS files into CSS.
@@ -46,30 +42,12 @@ public class Sass extends JRubyTransformer<Sass>
    {}
 
    @Override
-   public List<String> getLoadPaths()
-   {
-      return Arrays.asList("ruby/sass/lib");
-   }
-
-   @Override
-   public Object runScript(ScriptingContainer container)
-   {
-      return container.runScriptlet(SCRIPT);
-   }
-
-   @Override
-   public Sass self()
-   {
-      return this;
-   }
-
-   @Override
-   protected void prepareContainer(ScriptingContainer container)
-   {}
-
-   @Override
-   protected Class<Sass> getTransformerType()
-   {
-      return Sass.class;
+   public String transform(HttpServletRewrite event, String input) {
+      try (SassCompiler sassCompiler = SassCompilerFactory.bundled()) {
+         EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileSuccess = sassCompiler.compileString(input, EmbeddedSass.Syntax.SCSS);
+         return compileSuccess.getCss();
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
    }
 }
