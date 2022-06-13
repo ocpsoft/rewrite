@@ -35,6 +35,8 @@
       <version.logging>1.0.5.Final</version.logging>
       <version.arquillian>1.6.0.Final</version.arquillian>
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
+
+      <version.wildfly>26.1.1.Final</version.wildfly>
    </properties>
 
    <modules>
@@ -106,12 +108,6 @@
                   </goals>
                </execution>
             </executions>
-            <configuration>
-               <forkCount>1</forkCount>
-               <reuseForks>false</reuseForks>
-               <!--TODO: fix Integration tests-->
-               <testFailureIgnore>true</testFailureIgnore>
-            </configuration>
          </plugin>
       </plugins>
       <pluginManagement>
@@ -391,6 +387,110 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
+
+   <profiles>
+      <profile>
+         <id>WILDFLY_MANAGED</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-failsafe-plugin</artifactId>
+                  <configuration>
+                     <environmentVariables>
+                        <JBOSS_HOME>${project.build.directory}/container/wildfly-${version.wildfly}</JBOSS_HOME>
+                     </environmentVariables>
+                     <excludedGroups>
+                        org.ocpsoft.rewrite.category.IgnoreForWildfly
+                     </excludedGroups>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <extensions>false</extensions>
+                  <executions>
+                     <execution>
+                        <id>unpack-wildfly</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                           <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                           <artifactItems>
+                              <artifactItem>
+                                 <groupId>org.wildfly</groupId>
+                                 <artifactId>wildfly-dist</artifactId>
+                                 <version>${version.wildfly}</version>
+                                 <type>zip</type>
+                                 <overWrite>false</overWrite>
+                                 <outputDirectory>${project.build.directory}/container</outputDirectory>
+                              </artifactItem>
+                           </artifactItems>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+         <dependencies>
+            <dependency>
+               <groupId>org.wildfly.arquillian</groupId>
+               <artifactId>wildfly-arquillian-container-managed</artifactId>
+               <version>3.0.1.Final</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <id>WILDFLY_REMOTE</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.wildfly.arquillian</groupId>
+               <artifactId>wildfly-arquillian-container-remote</artifactId>
+               <version>3.0.1.Final</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-failsafe-plugin</artifactId>
+                  <configuration>
+                     <excludedGroups>
+                        org.ocpsoft.rewrite.category.IgnoreForWildfly
+                     </excludedGroups>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.wildfly.plugins</groupId>
+                  <artifactId>wildfly-maven-plugin</artifactId>
+                  <version>2.1.0.Beta1</version>
+                  <executions>
+                     <execution>
+                        <id>start-wildfly</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                           <goal>start</goal>
+                        </goals>
+                     </execution>
+                     <execution>
+                        <id>stop-wildfly</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                           <goal>shutdown</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <version>${version.wildfly}</version>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 
    <developers>
       <developer>
