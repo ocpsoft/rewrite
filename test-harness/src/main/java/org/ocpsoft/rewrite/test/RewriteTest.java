@@ -85,7 +85,7 @@ public class RewriteTest extends RewriteTestBase
          * Set the EL implementation
          */
          archive.add(new StringAsset("com.sun.el.ExpressionFactoryImpl"),
-                  "/WEB-INF/classes/META-INF/services/javax.el.ExpressionFactory");
+                  "/WEB-INF/classes/META-INF/services/jakarta.el.ExpressionFactory");
 
          /*
          * Set up container configuration

@@ -20,12 +20,12 @@ see the URL you forwarded the request to if you use something like
 
 In some situations you may need to obtain the original URL sent by the client.
 The Servlet spec specifies that the original URL is stored in a request
-attribute called +javax.servlet.forward.request_uri+. So to get the original
+attribute called +jakarta.servlet.forward.request_uri+. So to get the original
 URL you can use the following code:
 
 [source,java]
 ----
-String url = request.getAttribute("javax.servlet.forward.request_uri");
+String url = request.getAttribute("jakarta.servlet.forward.request_uri");
 ----
 
 === Why are file uploads not working correctly any more?
