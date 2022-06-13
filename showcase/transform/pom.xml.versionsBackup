@@ -1,26 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
+
    <parent>
       <artifactId>rewrite-showcase</artifactId>
       <groupId>org.ocpsoft.rewrite.showcase</groupId>
-      <version>5.0.0-SNAPSHOT</version>
+      <version>3.6.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-showcase-composite-query</artifactId>
+   <artifactId>rewrite-showcase-transform</artifactId>
    <packaging>war</packaging>
 
    <dependencies>
+
       <dependency>
          <groupId>jakarta.platform</groupId>
          <artifactId>jakarta.jakartaee-api</artifactId>
          <scope>provided</scope>
       </dependency>
+
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-servlet</artifactId>
       </dependency>
+
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-transform-markup</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-transform-less</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.ocpsoft.rewrite</groupId>
+         <artifactId>rewrite-transform-minify</artifactId>
+      </dependency>
+
       <dependency>
         <groupId>org.ocpsoft.rewrite</groupId>
         <artifactId>rewrite-config-servlet</artifactId>

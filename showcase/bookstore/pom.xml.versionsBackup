@@ -5,11 +5,11 @@
    <parent>
       <artifactId>rewrite-showcase</artifactId>
       <groupId>org.ocpsoft.rewrite.showcase</groupId>
-      <version>5.0.0-SNAPSHOT</version>
+      <version>3.6.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
    </parent>
 
-   <artifactId>rewrite-showcase-transform</artifactId>
+   <artifactId>rewrite-showcase-bookstore</artifactId>
    <packaging>war</packaging>
 
    <dependencies>
@@ -20,6 +20,13 @@
          <scope>provided</scope>
       </dependency>
 
+      <!-- https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api -->
+      <dependency>
+         <groupId>jakarta.annotation</groupId>
+         <artifactId>jakarta.annotation-api</artifactId>
+         <version>2.1.0</version>
+      </dependency>
+
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
          <artifactId>rewrite-servlet</artifactId>
@@ -27,19 +34,30 @@
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-transform-markup</artifactId>
+         <artifactId>rewrite-integration-faces</artifactId>
       </dependency>
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-transform-less</artifactId>
+         <artifactId>rewrite-integration-cdi</artifactId>
       </dependency>
 
       <dependency>
-         <groupId>org.ocpsoft.rewrite</groupId>
-         <artifactId>rewrite-transform-minify</artifactId>
+         <groupId>org.dbunit</groupId>
+         <artifactId>dbunit</artifactId>
+         <version>2.4.9</version>
       </dependency>
 
+      <dependency>
+         <groupId>com.h2database</groupId>
+         <artifactId>h2</artifactId>
+         <version>1.3.170</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ocpsoft.rewrite</groupId>
+        <artifactId>rewrite-config-annotations</artifactId>
+      </dependency>
       <dependency>
         <groupId>org.ocpsoft.rewrite</groupId>
         <artifactId>rewrite-config-servlet</artifactId>
