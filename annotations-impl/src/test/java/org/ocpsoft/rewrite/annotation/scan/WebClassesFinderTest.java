@@ -17,6 +17,7 @@ package org.ocpsoft.rewrite.annotation.scan;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,8 +59,15 @@ public class WebClassesFinderTest
       Mockito.when(servletContext.getResource("/WEB-INF/classes/package/TestClass.class")).thenReturn(classUrl);
 
       // ClassLoader that knows the test class
-      ClassLoader classLoader = Mockito.mock(ClassLoader.class);
-      Mockito.when(classLoader.loadClass("package.TestClass")).thenReturn((Class) ClassFinderTestBean.class);
+      ClassLoader classLoader = new URLClassLoader(new URL[0]) {
+         @Override
+         public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if(name.equals("package.TestClass")) {
+               return ClassFinderTestBean.class;
+            }
+            return super.loadClass(name);
+         }
+      };
 
       // Create the ByteCodeFilter
       Set<Class<? extends Annotation>> types = new HashSet<Class<? extends Annotation>>();

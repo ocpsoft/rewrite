@@ -18,6 +18,7 @@ package com.ocpsoft.pretty.faces.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 
 import jakarta.servlet.ServletContext;
 
@@ -44,7 +45,7 @@ public class PrettyConfiguratorTest
    {
       final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
 
-      EasyMock.expect(servletContext.getMajorVersion()).andReturn(3).anyTimes();
+      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(new HashMap<>()).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn(null).anyTimes();
       EasyMock.expect(servletContext.getResourceAsStream(DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG)).andReturn(null).anyTimes();
 
@@ -61,7 +62,7 @@ public class PrettyConfiguratorTest
    {
       final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
 
-      EasyMock.expect(servletContext.getMajorVersion()).andReturn(3).anyTimes();
+      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(new HashMap<>()).anyTimes();
       EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn("car.xml, cdr.xml").anyTimes();
       EasyMock.expect(servletContext.getInitParameter(ClassLoaderConfigurationProvider.CLASSPATH_CONFIG_ENABLED)).andReturn("false").anyTimes();
       EasyMock.expect(servletContext.getResourceAsStream("car.xml")).andReturn(mockPrettyConfigInputStream()).anyTimes();

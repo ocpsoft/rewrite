@@ -29,7 +29,7 @@ import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
 /**
- * Configuration for {@link JoinEncodingConfigurationTest}.
+ * Configuration for {@link JoinEncodingConfigurationIT}.
  * 
  * @author Christian Kaltepoth
  */
