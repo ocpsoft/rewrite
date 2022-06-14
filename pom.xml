@@ -410,7 +410,7 @@
                   <artifactId>maven-failsafe-plugin</artifactId>
                   <configuration>
                      <environmentVariables>
-                        <JBOSS_HOME>${project.build.directory}/container/wildfly-${version.wildfly}</JBOSS_HOME>
+                        <JBOSS_HOME>${project.build.directory}/container/wildfly-preview-${version.wildfly}</JBOSS_HOME>
                      </environmentVariables>
                      <excludedGroups>
                         org.ocpsoft.rewrite.category.IgnoreForWildfly
@@ -431,7 +431,7 @@
                            <artifactItems>
                               <artifactItem>
                                  <groupId>org.wildfly</groupId>
-                                 <artifactId>wildfly-dist</artifactId>
+                                 <artifactId>wildfly-preview-dist</artifactId>
                                  <version>${version.wildfly}</version>
                                  <type>zip</type>
                                  <overWrite>false</overWrite>
@@ -448,7 +448,7 @@
             <dependency>
                <groupId>org.wildfly.arquillian</groupId>
                <artifactId>wildfly-arquillian-container-managed</artifactId>
-               <version>3.0.1.Final</version>
+               <version>4.0.0.Alpha4</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
