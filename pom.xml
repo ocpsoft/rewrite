@@ -338,6 +338,14 @@
             <scope>import</scope>
          </dependency>
 
+         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-framework-bom</artifactId>
+            <version>5.3.20</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+
          <!-- Enforce this version of Xalan, because jboss-javaee-6.0 depends on a version which isn't available in central. 
             As this dependency is used only in 'provided' scope, this should be ok. -->
          <dependency>
