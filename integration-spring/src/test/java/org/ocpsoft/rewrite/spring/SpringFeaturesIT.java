@@ -49,7 +49,7 @@ public class SpringFeaturesIT extends RewriteIT
       return RewriteIT.getDeployment()
                .setWebXML("spring-web.xml")
                .addAsWebInfResource("applicationContext.xml")
-               .addAsLibraries(resolveDependencies("org.springframework:spring-web:3.0.6.RELEASE"))
+               .addAsLibraries(resolveDependencies("org.springframework:spring-webmvc:5.3.20"))
                .addClasses(SpringFeaturesBean.class, SpringFeaturesConfigProvider.class);
    }
 
