@@ -10,10 +10,6 @@
 
    <artifactId>rewrite-integration-spring</artifactId>
 
-   <properties>
-      <version.spring>5.3.16</version.spring>
-   </properties>
-
    <dependencies>
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>
@@ -24,7 +20,6 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-webmvc</artifactId>
-         <version>${version.spring}</version>
          <scope>provided</scope>
       </dependency>
       <dependency>

@@ -337,19 +337,15 @@
             <type>pom</type>
             <scope>import</scope>
          </dependency>
+
          <dependency>
-             <groupId>jakarta.servlet</groupId>
-             <artifactId>jakarta.servlet-api</artifactId>
-             <version>5.0.0</version>
-             <scope>provided</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-framework-bom</artifactId>
+            <version>6.0.0-M4</version>
+            <type>pom</type>
+            <scope>import</scope>
          </dependency>
-         <!-- https://mvnrepository.com/artifact/jakarta.servlet/servlet-parent -->
-         <dependency>
-             <groupId>jakarta.servlet</groupId>
-             <artifactId>servlet-parent</artifactId>
-             <version>6.0.0.RC1-jbossorg-1</version>
-             <type>pom</type>
-         </dependency>
+
          <!-- Enforce this version of Xalan, because jboss-javaee-6.0 depends on a version which isn't available in central. 
             As this dependency is used only in 'provided' scope, this should be ok. -->
          <dependency>
