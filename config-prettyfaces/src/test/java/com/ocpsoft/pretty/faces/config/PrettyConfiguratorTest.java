@@ -22,8 +22,8 @@ import java.util.HashMap;
 
 import jakarta.servlet.ServletContext;
 
-import org.easymock.EasyMock;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.xml.sax.SAXException;
 
 import com.ocpsoft.pretty.PrettyContext;
@@ -43,15 +43,14 @@ public class PrettyConfiguratorTest
    @Test
    public void testMETAINFConfiguration() throws SAXException, IOException
    {
-      final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
+      final ServletContext servletContext = Mockito.mock(ServletContext.class);
 
-      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(new HashMap<>()).anyTimes();
-      EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn(null).anyTimes();
-      EasyMock.expect(servletContext.getResourceAsStream(DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG)).andReturn(null).anyTimes();
+      Mockito.when(servletContext.getServletRegistrations()).thenReturn(new HashMap<>());
+      Mockito.when(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).thenReturn(null);
+      Mockito.when(servletContext.getResourceAsStream(DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG)).thenReturn(null);
 
       final PrettyConfigurator configurator = new PrettyConfigurator(servletContext);
 
-      EasyMock.replay(servletContext);
       configurator.configure();
       final PrettyConfig config = configurator.getConfig();
       assertThat(config.getMappings().size()).isEqualTo(10);
@@ -60,17 +59,16 @@ public class PrettyConfiguratorTest
    @Test
    public void testInitParameterLocationConfiguration() throws SAXException, IOException
    {
-      final ServletContext servletContext = EasyMock.createNiceMock(ServletContext.class);
+      final ServletContext servletContext = Mockito.mock(ServletContext.class);
 
-      EasyMock.expect(servletContext.getServletRegistrations()).andReturn(new HashMap<>()).anyTimes();
-      EasyMock.expect(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).andReturn("car.xml, cdr.xml").anyTimes();
-      EasyMock.expect(servletContext.getInitParameter(ClassLoaderConfigurationProvider.CLASSPATH_CONFIG_ENABLED)).andReturn("false").anyTimes();
-      EasyMock.expect(servletContext.getResourceAsStream("car.xml")).andReturn(mockPrettyConfigInputStream()).anyTimes();
-      EasyMock.expect(servletContext.getResourceAsStream("cdr.xml")).andReturn(mockPrettyConfigInputStream()).anyTimes();
-      EasyMock.expect(servletContext.getResourceAsStream(DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG)).andReturn(mockPrettyConfigInputStream()).anyTimes();
+      Mockito.when(servletContext.getServletRegistrations()).thenReturn(new HashMap<>());
+      Mockito.when(servletContext.getInitParameter(PrettyContext.CONFIG_KEY)).thenReturn("car.xml, cdr.xml");
+      Mockito.when(servletContext.getInitParameter(ClassLoaderConfigurationProvider.CLASSPATH_CONFIG_ENABLED)).thenReturn("false");
+      Mockito.when(servletContext.getResourceAsStream("car.xml")).thenReturn(mockPrettyConfigInputStream());
+      Mockito.when(servletContext.getResourceAsStream("cdr.xml")).thenReturn(mockPrettyConfigInputStream());
+      Mockito.when(servletContext.getResourceAsStream(DefaultXMLConfigurationProvider.DEFAULT_PRETTY_FACES_CONFIG)).thenReturn(mockPrettyConfigInputStream());
 
       final PrettyConfigurator configurator = new PrettyConfigurator(servletContext);
-      EasyMock.replay(servletContext);
       configurator.configure();
       final PrettyConfig config = configurator.getConfig();
       assertThat(config.getMappings().size()).isEqualTo(30);
