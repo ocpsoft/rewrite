@@ -37,7 +37,7 @@ public class LazyExpressionTest
       assertThat(expr.getELExpression()).isEqualTo("#{someTestBean.property}");
 
       // verify mock
-      Mockito.verify(beanNameFinder);
+      Mockito.verify(beanNameFinder).findBeanName(SomeTestBean.class);
 
    }
 
