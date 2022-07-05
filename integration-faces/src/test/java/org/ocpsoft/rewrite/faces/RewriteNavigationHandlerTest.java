@@ -26,7 +26,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -69,7 +69,7 @@ public class RewriteNavigationHandlerTest
 
       ExternalContext externalContext = mock(ExternalContext.class);
       when(externalContext.getRequestContextPath()).thenReturn("/myapp");
-      when(externalContext.encodeActionURL(Matchers.anyString())).thenAnswer(new Answer<String>() {
+      when(externalContext.encodeActionURL(ArgumentMatchers.anyString())).thenAnswer(new Answer<String>() {
          @Override
          public String answer(InvocationOnMock invocation) throws Throwable
          {
