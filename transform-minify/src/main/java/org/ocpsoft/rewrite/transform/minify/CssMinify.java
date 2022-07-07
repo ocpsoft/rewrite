@@ -15,17 +15,18 @@
  */
 package org.ocpsoft.rewrite.transform.minify;
 
+import com.google.protobuf.ByteString;
+import de.larsgrefer.sass.embedded.SassCompiler;
+import de.larsgrefer.sass.embedded.SassCompilerFactory;
+import sass.embedded_protocol.EmbeddedSass.OutputStyle;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
 
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.Transformer;
-
-import com.yahoo.platform.yui.compressor.CssCompressor;
 
 /**
  * 
@@ -41,15 +42,20 @@ public class CssMinify extends Minify implements Transformer
    @Override
    public void transform(HttpServletRewrite event, InputStream input, OutputStream output) throws IOException
    {
+      ByteString css = ByteString.readFrom(input);
 
-      // prepare input reader
-      Reader reader = new InputStreamReader(input, getCharset());
-      CssCompressor compressor = new CssCompressor(reader);
+      try (SassCompiler sassCompiler = SassCompilerFactory.bundled()) {
+         sassCompiler.setOutputStyle(OutputStyle.COMPRESSED);
 
-      // write compressed output
-      OutputStreamWriter writer = new OutputStreamWriter(output, getCharset());
-      compressor.compress(writer, 0);
-      writer.flush();
+         CompileSuccess compileSuccess = sassCompiler.compileCssString(css.toStringUtf8());
+         compileSuccess.getCssBytes().writeTo(output);
+
+      } catch (Exception e) {
+         event.getServletContext().log("Failed to minify css", e);
+         css.writeTo(output);
+      } finally {
+         output.flush();
+      }
 
    }
 

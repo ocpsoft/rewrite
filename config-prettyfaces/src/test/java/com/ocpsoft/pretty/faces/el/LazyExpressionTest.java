@@ -15,8 +15,8 @@
  */
 package com.ocpsoft.pretty.faces.el;
 
-import org.easymock.classextension.EasyMock;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,9 +28,8 @@ public class LazyExpressionTest
    {
 
       // prepare LazyBeanNameFinder mock
-      LazyBeanNameFinder beanNameFinder = EasyMock.createNiceMock(LazyBeanNameFinder.class);
-      EasyMock.expect(beanNameFinder.findBeanName(SomeTestBean.class)).andReturn("someTestBean").once();
-      EasyMock.replay(beanNameFinder);
+      LazyBeanNameFinder beanNameFinder = Mockito.mock(LazyBeanNameFinder.class);
+      Mockito.when(beanNameFinder.findBeanName(SomeTestBean.class)).thenReturn("someTestBean");
 
       // create expression and evaluate it twice (to check LazyBeanNameFinder is called only once)
       PrettyExpression expr = new LazyExpression(beanNameFinder, SomeTestBean.class, "property");
@@ -38,7 +37,7 @@ public class LazyExpressionTest
       assertThat(expr.getELExpression()).isEqualTo("#{someTestBean.property}");
 
       // verify mock
-      EasyMock.verify(beanNameFinder);
+      Mockito.verify(beanNameFinder).findBeanName(SomeTestBean.class);
 
    }
 
@@ -47,9 +46,8 @@ public class LazyExpressionTest
    {
 
       // prepare LazyBeanNameFinder mock
-      LazyBeanNameFinder beanNameFinder = EasyMock.createNiceMock(LazyBeanNameFinder.class);
-      EasyMock.expect(beanNameFinder.findBeanName(SomeTestBean.class)).andThrow(new IllegalStateException()).once();
-      EasyMock.replay(beanNameFinder);
+      LazyBeanNameFinder beanNameFinder = Mockito.mock(LazyBeanNameFinder.class);
+      Mockito.when(beanNameFinder.findBeanName(SomeTestBean.class)).thenThrow(new IllegalStateException());
 
       // this call will fail, because LazyBeanNameFinder will throw an IllegalStateException
       PrettyExpression expr = new LazyExpression(beanNameFinder, SomeTestBean.class, "property");

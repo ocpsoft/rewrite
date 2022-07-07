@@ -11,7 +11,8 @@
    <artifactId>rewrite-integration-spring</artifactId>
 
    <properties>
-      <version.spring>5.3.16</version.spring>
+      <maven.compiler.target>17</maven.compiler.target>
+      <maven.compiler.source>17</maven.compiler.source>
    </properties>
 
    <dependencies>
@@ -24,7 +25,6 @@
       <dependency>
          <groupId>org.springframework</groupId>
          <artifactId>spring-webmvc</artifactId>
-         <version>${version.spring}</version>
          <scope>provided</scope>
       </dependency>
       <dependency>

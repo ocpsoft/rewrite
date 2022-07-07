@@ -51,7 +51,7 @@ public class ConfigurationBuilderMetadataTest
       String location = (String) ((Context) rule).get(RuleMetadata.PROVIDER_LOCATION);
       assertThat(location).isEqualTo("org.ocpsoft.rewrite.metadata.ConfigurationBuilderMetadataTest"
               + ".testBuildConfigurationMetadata"
-              + "(ConfigurationBuilderMetadataTest.java:39)");
+              + "(ConfigurationBuilderMetadataTest.java:40)");
    }
 
    @Test
@@ -66,7 +66,7 @@ public class ConfigurationBuilderMetadataTest
       String location = (String) ((Context) rule).get(RuleMetadata.PROVIDER_LOCATION);
       assertThat(location).isEqualTo("org.ocpsoft.rewrite.metadata.ConfigurationBuilderMetadataTest"
               + ".testBuildConfigurationMetadataWrappedRule"
-              + "(ConfigurationBuilderMetadataTest.java:61)");
+              + "(ConfigurationBuilderMetadataTest.java:60)");
    }
 
    @Test
@@ -94,7 +94,7 @@ public class ConfigurationBuilderMetadataTest
          String location = (String) ((Context) rule).get(RuleMetadata.PROVIDER_LOCATION);
          assertThat(location).isEqualTo("org.ocpsoft.rewrite.metadata.ConfigurationBuilderMetadataTest"
                  + ".testBuildConfigurationMetadataOtherwise"
-                 + "(ConfigurationBuilderMetadataTest.java:78)");
+                 + "(ConfigurationBuilderMetadataTest.java:75)");
       }
    }
 }

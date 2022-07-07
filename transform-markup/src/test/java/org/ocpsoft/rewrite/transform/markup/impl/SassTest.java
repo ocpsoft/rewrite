@@ -23,16 +23,13 @@ import jakarta.servlet.ServletContextEvent;
 import org.jruby.embed.ScriptingContainer;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.markup.Sass;
-import org.ocpsoft.rewrite.transform.markup.impl.JRubyTransformer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
 public class SassTest
 {
 
@@ -43,8 +40,6 @@ public class SassTest
    public void before()
    {
       context = Mockito.mock(ServletContext.class);
-      Mockito.when(context.getAttribute(JRubyTransformer.CONTAINER_STORE_KEY))
-               .thenReturn(new HashMap<Class<?>, ScriptingContainer>());
 
       event = Mockito.mock(HttpServletRewrite.class);
       Mockito.when(event.getServletContext()).thenReturn(context);
@@ -63,7 +58,7 @@ public class SassTest
       String sass = ".class { width: 1+1 }";
       String css = Sass.compiler().transform(event, sass);
 
-      assertThat(normalize(css)).isEqualTo(".class { width: 2; }");
+      assertThat(normalize(css)).isEqualTo(".class { width: 2;}");
 
    }
 
@@ -74,7 +69,7 @@ public class SassTest
       String sass = ".outer { margin: 2px; .inner { padding: 3px; } }";
       String css = Sass.compiler().transform(event, sass);
 
-      assertThat(normalize(css)).isEqualTo(".outer { margin: 2px; } .outer .inner { padding: 3px; }");
+      assertThat(normalize(css)).isEqualTo(".outer { margin: 2px;}.outer .inner { padding: 3px;}");
 
    }
 
@@ -85,7 +80,7 @@ public class SassTest
       String sass = "$mycolor: #123456; .class { color: $mycolor }";
       String css = Sass.compiler().transform(event, sass);
 
-      assertThat(normalize(css)).isEqualTo(".class { color: #123456; }");
+      assertThat(normalize(css)).isEqualTo(".class { color: #123456;}");
 
    }
 
@@ -96,7 +91,7 @@ public class SassTest
       String sass = "@mixin invalid { color: red } .label { @include invalid }";
       String css = Sass.compiler().transform(event, sass);
 
-      assertThat(normalize(css)).isEqualTo(".label { color: red; }");
+      assertThat(normalize(css)).isEqualTo(".label { color: red;}");
 
    }
 

@@ -10,28 +10,50 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 11, 17, 18 ]
+        java: [ 17, 18 ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
+          cache: 'maven'
       - run: ./mvnw --batch-mode --update-snapshots install -DskipTests
 
-  test:
+  unit-test:
     runs-on: ubuntu-latest
-
+    needs: build
     strategy:
       fail-fast: false
       matrix:
-        java: [ 11, 17, 18 ]
+        java: [ 17, 18 ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
-      - run: ./mvnw --batch-mode --update-snapshots install
+          cache: 'maven'
+      - run: ./mvnw --batch-mode --update-snapshots install -DskipTests
+      - run: ./mvnw --batch-mode test
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 17, 18 ]
+        container: [ 'WILDFLY_MANAGED', 'WILDFLY_REMOTE' ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+      - run: ./mvnw -V --batch-mode --update-snapshots install -DskipTests
+      - run: ./mvnw -V --batch-mode -P ${{ matrix.container }} verify

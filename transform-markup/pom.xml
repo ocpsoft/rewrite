@@ -11,7 +11,7 @@
    <artifactId>rewrite-transform-markup</artifactId>
 
    <properties>
-      <jruby.version>1.7.4</jruby.version>
+      <jruby.version>1.7.27</jruby.version>
    </properties>
 
    <dependencies>
@@ -35,6 +35,11 @@
          <groupId>org.jruby</groupId>
          <artifactId>jruby-complete</artifactId>
          <version>${jruby.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>de.larsgrefer.sass</groupId>
+         <artifactId>sass-embedded-host</artifactId>
+         <version>1.3.2</version>
       </dependency>
 
       <dependency>
