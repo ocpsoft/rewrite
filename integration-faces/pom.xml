@@ -4,7 +4,7 @@
    <parent>
       <artifactId>rewrite-parent</artifactId>
       <groupId>org.ocpsoft.rewrite</groupId>
-      <version>5.0.0-SNAPSHOT</version>
+      <version>5.0.0.Alpha1</version>
       <relativePath>../</relativePath>
    </parent>
 
