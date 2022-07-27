@@ -30,15 +30,15 @@
  */
 package org.ocpsoft.rewrite.faces.annotation.navigate;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
-
+import jakarta.enterprise.context.RequestScoped;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.navigate.Navigate;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 @Join(path = "/navigate", to = "/faces/navigate-encoding.xhtml")
 public class NavigateEncodingBean

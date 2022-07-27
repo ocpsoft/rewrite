@@ -1,18 +1,17 @@
 package org.ocpsoft.rewrite.faces.annotation.binding;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.FacesContext;
-
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.Phase;
 
-@ManagedBean
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
+
+@Named
 @RequestScoped
 @Join(path = "/binding/{value}/", to = "/faces/binding.xhtml")
 public class DeferredBindingBean

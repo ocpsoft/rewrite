@@ -15,13 +15,13 @@
  */
 package org.ocpsoft.rewrite.faces.jsession;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
-
+import jakarta.enterprise.context.RequestScoped;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.faces.navigate.Navigate;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 @Join(path = "/test", to = "/faces/test.xhtml")
 public class JSessionIdBean

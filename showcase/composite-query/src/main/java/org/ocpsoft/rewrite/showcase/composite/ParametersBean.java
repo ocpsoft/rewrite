@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.ocpsoft.common.util.Strings;
 
-@ManagedBean
+@Named
 public class ParametersBean
 {
    public List<String> getList()

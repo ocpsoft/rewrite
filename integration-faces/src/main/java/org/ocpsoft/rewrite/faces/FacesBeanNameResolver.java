@@ -15,12 +15,11 @@
  */
 package org.ocpsoft.rewrite.faces;
 
-import jakarta.faces.bean.ManagedBean;
-
+import jakarta.inject.Named;
 import org.ocpsoft.rewrite.el.spi.BeanNameResolver;
 
 /**
- * Implementation of {@link BeanNameResolver} that checks for {@link ManagedBean} annotations on the class.
+ * Implementation of {@link BeanNameResolver} that checks for {@link Named} annotations on the class.
  * 
  * @author Christian Kaltepoth
  */
@@ -30,12 +29,12 @@ public class FacesBeanNameResolver implements BeanNameResolver
    @Override
    public String getBeanName(Class<?> clazz)
    {
-      ManagedBean annotation = clazz.getAnnotation(ManagedBean.class);
+      Named annotation = clazz.getAnnotation(Named.class);
       if (annotation != null) {
 
          // name is set using the annotation
-         if (annotation.name().length() > 0) {
-            return annotation.name();
+         if (annotation.value().length() > 0) {
+            return annotation.value();
          }
 
          // no name, so name is auto generated
