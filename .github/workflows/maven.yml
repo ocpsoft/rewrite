@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 11, 17, 18 ]
+        java: [ 17, 18 ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 11, 17, 18 ]
+        java: [ 17, 18 ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
@@ -45,7 +45,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 11, 17, 18 ]
+        java: [ 17, 18 ]
         container: [ 'WILDFLY_MANAGED', 'WILDFLY_REMOTE' ]
     steps:
       - uses: actions/checkout@v3
