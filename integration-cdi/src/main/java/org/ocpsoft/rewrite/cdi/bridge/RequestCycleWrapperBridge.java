@@ -20,7 +20,6 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.ocpsoft.rewrite.cdi.events.WrapRequest;
 import org.ocpsoft.rewrite.cdi.events.WrapResponse;
 import org.ocpsoft.rewrite.servlet.http.HttpRequestCycleWrapper;
@@ -38,7 +37,7 @@ public class RequestCycleWrapperBridge extends HttpRequestCycleWrapper
             ServletContext servletContext)
    {
       WrapRequest wrap = new WrapRequest(request, response);
-      manager.fireEvent(wrap);
+      manager.getEvent().fire(wrap);
       return wrap.getRequest() == null ? request : wrap.getRequest();
    }
 
@@ -47,7 +46,7 @@ public class RequestCycleWrapperBridge extends HttpRequestCycleWrapper
             ServletContext servletContext)
    {
       WrapResponse wrap = new WrapResponse(request, response);
-      manager.fireEvent(wrap);
+      manager.getEvent().fire(wrap);
       return wrap.getResponse() == null ? response : wrap.getResponse();
    }
 

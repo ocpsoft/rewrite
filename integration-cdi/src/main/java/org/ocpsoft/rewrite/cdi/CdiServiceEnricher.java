@@ -24,6 +24,7 @@ import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionTarget;
 
+import jakarta.enterprise.inject.spi.InjectionTargetFactory;
 import org.ocpsoft.common.spi.ServiceEnricher;
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.cdi.manager.BeanManagerAware;
@@ -70,13 +71,14 @@ public class CdiServiceEnricher extends BeanManagerAware implements ServiceEnric
       if (service != null)
       {
          BeanManager manager = getBeanManager();
-         CreationalContext<Object> context = manager.createCreationalContext(null);
-         InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) manager
-                  .createInjectionTarget(manager.createAnnotatedType(service.getClass()));
+   
+         InjectionTargetFactory targetFactory = manager.getInjectionTargetFactory(manager.createAnnotatedType(service.getClass()));
+         InjectionTarget<Object> injectionTarget = targetFactory.createInjectionTarget(null);
+         CreationalContext<Object> creationalContext = manager.createCreationalContext(null);
+   
+         injectionTarget.inject(service, creationalContext);
 
-         injectionTarget.inject(service, context);
-
-         if ((context != null) && log.isDebugEnabled())
+         if ((creationalContext != null) && log.isDebugEnabled())
          {
             log.debug("Enriched non-contextual instance of service [" + service.getClass().getName() + "]");
          }

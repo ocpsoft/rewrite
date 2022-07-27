@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.cdi.bridge;
 
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
-
 import org.ocpsoft.rewrite.cdi.events.AfterRewrite;
 import org.ocpsoft.rewrite.cdi.events.AfterRewriteLifecycle;
 import org.ocpsoft.rewrite.cdi.events.BeforeRewrite;
@@ -45,36 +44,36 @@ public class RewriteLifecycleEventBridge extends HttpRewriteLifecycleListener
    @Override
    public void beforeInboundLifecycle(final HttpServletRewrite event)
    {
-      manager.fireEvent(new BeforeRewriteLifecycle(event));
+      manager.getEvent().fire(new BeforeRewriteLifecycle(event));
    }
 
    @Override
    public void beforeInboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(new BeforeRewrite(event));
+      manager.getEvent().fire(new BeforeRewrite(event));
    }
 
    @Override
    public void afterInboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(new AfterRewrite(event));
+      manager.getEvent().fire(new AfterRewrite(event));
    }
 
    @Override
    public void afterInboundLifecycle(final HttpServletRewrite event)
    {
-      manager.fireEvent(new AfterRewriteLifecycle(event));
+      manager.getEvent().fire(new AfterRewriteLifecycle(event));
    }
 
    @Override
    public void beforeOutboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(new BeforeRewrite(event));
+      manager.getEvent().fire(new BeforeRewrite(event));
    }
 
    @Override
    public void afterOutboundRewrite(final HttpServletRewrite event)
    {
-      manager.fireEvent(new AfterRewrite(event));
+      manager.getEvent().fire(new AfterRewrite(event));
    }
 }

@@ -4,6 +4,8 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.InjectionTargetFactory;
+
 import java.lang.annotation.Annotation;
 
 /**
@@ -32,9 +34,10 @@ public abstract class BeanManagerUtils
    {
       if (instance != null)
       {
+         InjectionTargetFactory targetFactory = manager.getInjectionTargetFactory(manager.createAnnotatedType(instance.getClass()));
+         InjectionTarget<Object> injectionTarget = targetFactory.createInjectionTarget(null);
          CreationalContext<Object> creationalContext = manager.createCreationalContext(null);
-         InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) manager
-                  .createInjectionTarget(manager.createAnnotatedType(instance.getClass()));
+   
          injectionTarget.inject(instance, creationalContext);
          return creationalContext;
       }
