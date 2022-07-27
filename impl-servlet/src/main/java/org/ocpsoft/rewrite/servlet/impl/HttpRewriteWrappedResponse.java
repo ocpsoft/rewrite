@@ -370,13 +370,13 @@ public class HttpRewriteWrappedResponse extends RewriteWrappedResponse
    /*
     * End buffering facilities
     */
-   @Override
+   //@Override
    public String encodeRedirectUrl(final String url)
    {
       return encodeRedirectURL(url);
    }
 
-   @Override
+   //@Override
    public String encodeUrl(final String url)
    {
       return encodeURL(url);
