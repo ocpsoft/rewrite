@@ -31,7 +31,6 @@
 package test.org.ocpsoft.rewrite.cdi.action;
 
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.bean.ManagedBean;
 import jakarta.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
@@ -41,7 +40,6 @@ import org.ocpsoft.rewrite.faces.annotation.IgnorePostback;
 
 @Named
 @RequestScoped
-@ManagedBean
 @Join(path = "/action", to = "/faces/action.xhtml")
 public class IgnorePostbackBean
 {

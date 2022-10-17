@@ -20,7 +20,6 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-
 import org.ocpsoft.rewrite.event.Rewrite;
 import org.ocpsoft.rewrite.servlet.ServletRewriteProvider;
 import org.ocpsoft.rewrite.servlet.event.ServletRewrite;
@@ -36,13 +35,13 @@ public class RewriteProviderBridge extends ServletRewriteProvider<ServletRewrite
    @Override
    public void init(ServletContext context)
    {
-      manager.fireEvent(context);
+      manager.getEvent().fire(context);
    }
 
    @Override
    public void rewrite(Rewrite event)
    {
-      manager.fireEvent(event);
+      manager.getEvent().fire(event);
    }
 
    @Override
@@ -54,7 +53,7 @@ public class RewriteProviderBridge extends ServletRewriteProvider<ServletRewrite
    @Override
    public void shutdown(ServletContext context)
    {
-      manager.fireEvent(context);
+      manager.getEvent().fire(context);
    }
 
 }

@@ -15,12 +15,13 @@
  */
 package org.ocpsoft.rewrite.faces.actionurl;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
 import jakarta.faces.context.FacesContext;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 public class ActionUrlAfterPostbackBean
 {

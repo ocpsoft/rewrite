@@ -30,10 +30,10 @@
  */
 package org.ocpsoft.rewrite.faces.navigate;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class NavigateOutcomeBean
 {

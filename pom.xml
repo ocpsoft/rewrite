@@ -24,10 +24,8 @@
       <!-- Encoding -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
       <!-- JDK version -->
-      <maven.compiler.target>11</maven.compiler.target>
-      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.release>11</maven.compiler.release>
 
       <!-- Versions -->
       <version.junit>4.13.2</version.junit>
@@ -37,6 +35,10 @@
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
 
       <version.wildfly>26.1.1.Final</version.wildfly>
+      
+      <version.jakarta>9.1.0</version.jakarta>
+      <version.spring>6.0.0-M4</version.spring>
+      
    </properties>
 
    <modules>
@@ -79,6 +81,26 @@
 
    <build>
       <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>${version.enforcer.plugin}</version>
+            <configuration>
+               <rules>
+                  <requireJavaVersion>
+                     <version>17.0.0</version>
+                  </requireJavaVersion>
+               </rules>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${version.compiler.plugin}</version>
+            <configuration>
+               <release>${maven.compiler.release}</release>
+            </configuration>
+         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
@@ -344,7 +366,7 @@
          <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-bom</artifactId>
-            <version>9.1.0</version>
+            <version>${version.jakarta}</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
@@ -352,7 +374,7 @@
          <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
-            <version>6.0.0-M4</version>
+            <version>${version.spring}</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>

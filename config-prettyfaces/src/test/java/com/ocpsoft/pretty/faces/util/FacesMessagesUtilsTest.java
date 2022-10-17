@@ -15,6 +15,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseStream;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.render.RenderKit;
 
 import org.junit.Test;
@@ -125,7 +126,13 @@ public class FacesMessagesUtilsTest
       {
          return null;
       }
-
+   
+      //@Override - one may not add this here, otherwise it's not compatible with Jakarta EE 9 & EE 10 JSF,
+      //            where this method is either required or absent!
+      public Lifecycle getLifecycle() {
+         return null;
+      }
+   
       @Override
       public ExternalContext getExternalContext()
       {

@@ -46,6 +46,11 @@
          <artifactId>jakarta.enterprise.cdi-api</artifactId>
          <scope>provided</scope>
       </dependency>
+      <dependency>
+         <groupId>jakarta.inject</groupId>
+         <artifactId>jakarta.inject-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
 
       <dependency>
          <groupId>org.ocpsoft.rewrite</groupId>

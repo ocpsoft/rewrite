@@ -1,15 +1,16 @@
 package org.ocpsoft.rewrite.faces;
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
 
+import jakarta.enterprise.context.RequestScoped;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.Phase;
 import org.ocpsoft.rewrite.faces.navigate.Navigate;
 
+import javax.inject.Named;
 
-@ManagedBean
+
+@Named
 @RequestScoped
 @Join(path = "/navigate", to = "/faces/navigate-before-restoreview.xhtml")
 public class NavigateBeforeRestoreViewBean

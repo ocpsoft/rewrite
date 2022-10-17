@@ -30,12 +30,12 @@
  */
 package org.ocpsoft.rewrite.faces.outbound;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
-
+import jakarta.enterprise.context.RequestScoped;
 import org.ocpsoft.rewrite.annotation.Join;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 @Join(path = "/outbound", to = "/faces/outbound.xhtml")
 public class OutboundRewriteHrefJsTestBean

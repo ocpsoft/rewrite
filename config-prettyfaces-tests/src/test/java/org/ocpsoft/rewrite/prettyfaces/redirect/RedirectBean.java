@@ -1,17 +1,17 @@
 package org.ocpsoft.rewrite.prettyfaces.redirect;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
-@ManagedBean
+@Named
 @RequestScoped
 public class RedirectBean
 {
    public static final String PATH_VALUE = " ? ";
    public static final String QUERY_VALUE = "ora. es";
 
-   public String value;
-   public String queryValue;
+   private String value;
+   private String queryValue;
 
    public String redirect()
    {

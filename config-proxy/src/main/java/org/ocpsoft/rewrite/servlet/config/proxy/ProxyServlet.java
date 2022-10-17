@@ -183,8 +183,9 @@ public class ProxyServlet
             EntityUtils.consume(proxyResponse.getEntity());
             return;
          }
-
-         setResponseStatus(servletResponse, statusCode, proxyResponse.getStatusLine().getReasonPhrase());
+   
+         // Copy the status code of the proxied response
+         servletResponse.setStatus(statusCode);
 
          copyResponseHeaders(proxyResponse, servletResponse);
 
@@ -205,15 +206,6 @@ public class ProxyServlet
             throw (IOException) e;
          throw new RuntimeException(e);
       }
-   }
-
-   @SuppressWarnings("deprecation")
-   private void setResponseStatus(HttpServletResponse servletResponse, int statusCode, String reason) {
-       /*
-        * Pass the response code. This method with the "reason phrase" is deprecated but it's the only way to pass the
-        * reason along too. noinspection deprecation
-        */
-       servletResponse.setStatus(statusCode, reason);
    }
 
    protected boolean doResponseRedirectOrNotModifiedLogic(

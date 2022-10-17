@@ -15,13 +15,13 @@
  */
 package org.ocpsoft.rewrite.faces.resolver;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * @author Christian Kaltepoth
  */
-@ManagedBean
+@Named
 @RequestScoped
 public class FacesBeanNameResolverBean
 {

@@ -30,15 +30,15 @@
  */
 package org.ocpsoft.rewrite.faces.concurrency;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
-
+import jakarta.enterprise.context.RequestScoped;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 @Join(path = "/test/{param}/", to = "/faces/page.xhtml")
 public class ConcurrencyBean

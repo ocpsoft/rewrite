@@ -30,15 +30,15 @@
  */
 package org.ocpsoft.rewrite.faces.annotation.action;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
-
+import jakarta.enterprise.context.RequestScoped;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.IgnorePostback;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 @Join(path = "/action", to = "/faces/action.xhtml")
 public class IgnorePostbackBean

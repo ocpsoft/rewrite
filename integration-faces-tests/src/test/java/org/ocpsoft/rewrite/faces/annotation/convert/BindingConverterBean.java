@@ -15,15 +15,15 @@
  */
 package org.ocpsoft.rewrite.faces.annotation.convert;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
-
+import jakarta.enterprise.context.RequestScoped;
 import org.ocpsoft.rewrite.annotation.Convert;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 @Join(path = "/convert/{value}/", to = "/faces/convert.xhtml")
 public class BindingConverterBean

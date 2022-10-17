@@ -30,10 +30,11 @@
  */
 package org.ocpsoft.rewrite.faces.error;
 
-import jakarta.faces.bean.ManagedBean;
-import jakarta.faces.bean.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
-@ManagedBean
+import javax.inject.Named;
+
+@Named
 @RequestScoped
 public class ErrorBean
 {
