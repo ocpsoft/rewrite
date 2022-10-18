@@ -584,6 +584,12 @@
          <email>github@larsgrefer.de</email>
          <timezone>Europe/Berlin</timezone>
       </developer>
+      <developer>
+         <id>poikilotherm</id>
+         <name>Oliver Bertuch</name>
+         <email>github@bertuch.eu</email>
+         <timezone>Europe/Berlin</timezone>
+      </developer>
    </developers>
 
    <url>https://ocpsoft.org/rewrite/</url>
