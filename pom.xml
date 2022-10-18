@@ -437,6 +437,15 @@
 
    <profiles>
       <profile>
+         <id>EE10</id>
+         <properties>
+            <version.jakarta>10.0.0</version.jakarta>
+            <version.wildfly>27.0.0.Beta1</version.wildfly>
+         </properties>
+      </profile>
+      
+      <!-- WILDFLY -->
+      <profile>
          <id>WILDFLY_MANAGED</id>
          <build>
             <plugins>
