@@ -35,6 +35,10 @@
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
       <version.arquillian.container.managed.wildfly>3.0.1.Final</version.arquillian.container.managed.wildfly>
       <version.arquillian.container.remote.wildfly>3.0.1.Final</version.arquillian.container.remote.wildfly>
+      <version.arquillian.container.managed.payara>2.4.6</version.arquillian.container.managed.payara>
+      
+      <version.payara>5.2022.3</version.payara>
+      <payara.home>${project.build.directory}/payara5</payara.home>
 
       <version.wildfly>26.1.1.Final</version.wildfly>
       
@@ -442,9 +446,15 @@
          <id>EE10</id>
          <properties>
             <version.jakarta>10.0.0</version.jakarta>
+            
             <version.wildfly>27.0.0.Beta1</version.wildfly>
+            
+            <version.payara>6.2022.1.Alpha4</version.payara>
+            <payara.home>${project.build.directory}/payara6</payara.home>
+            
             <version.arquillian.container.managed.wildfly>5.0.0.Alpha5</version.arquillian.container.managed.wildfly>
             <version.arquillian.container.remote.wildfly>5.0.0.Alpha5</version.arquillian.container.remote.wildfly>
+            <version.arquillian.container.managed.payara>3.0.alpha6</version.arquillian.container.managed.payara>
          </properties>
       </profile>
       
@@ -575,6 +585,87 @@
             </plugins>
          </build>
       </profile>
+      
+      
+      <!-- PAYARA -->
+      <profile>
+         <id>PAYARA_MANAGED</id>
+         <properties>
+            <skipTests>false</skipTests>
+         </properties>
+         <dependencies>
+            
+            <!-- Required since arquillian-payara 2.4 -->
+            <dependency>
+               <groupId>fish.payara.arquillian</groupId>
+               <artifactId>payara-client-ee9</artifactId>
+               <version>${version.arquillian.container.managed.payara}</version>
+            </dependency>
+         
+            <!-- Payara Server Container adaptor -->
+            <dependency>
+               <groupId>fish.payara.arquillian</groupId>
+               <artifactId>arquillian-payara-server-managed</artifactId>
+               <version>${version.arquillian.container.managed.payara}</version>
+               <scope>test</scope>
+            </dependency>
+         
+            <!-- Env Sync -->
+            <dependency>
+               <groupId>fish.payara.arquillian</groupId>
+               <artifactId>environment-setup</artifactId>
+               <version>${version.arquillian.container.managed.payara}</version>
+               <scope>test</scope>
+            </dependency>
+      
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <version>${version.dependency.plugin}</version>
+                  <executions>
+                     <execution>
+                        <id>unpack</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                           <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                           <artifactItems>
+                              <artifactItem>
+                                 <groupId>fish.payara.distributions</groupId>
+                                 <artifactId>payara</artifactId>
+                                 <version>${version.payara}</version>
+                                 <type>zip</type>
+                                 <overWrite>false</overWrite>
+                                 <outputDirectory>${project.build.directory}</outputDirectory>
+                              </artifactItem>
+                           </artifactItems>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-failsafe-plugin</artifactId>
+                  <version>${version.failsafe.plugin}</version>
+                  <configuration>
+                     <excludedGroups>
+                        org.ocpsoft.rewrite.category.IgnoreForPayara
+                     </excludedGroups>
+                     <argLine>--illegal-access=debug --add-opens=java.base/java.util=ALL-UNNAMED</argLine>
+                     <systemPropertyVariables>
+                        <payara.home>${payara.home}</payara.home>
+                     </systemPropertyVariables>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      
+      
    </profiles>
 
    <developers>
