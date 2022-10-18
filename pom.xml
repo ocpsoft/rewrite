@@ -33,6 +33,8 @@
       <version.logging>1.0.5.Final</version.logging>
       <version.arquillian>1.6.0.Final</version.arquillian>
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
+      <version.arquillian.container.managed.wildfly>3.0.1.Final</version.arquillian.container.managed.wildfly>
+      <version.arquillian.container.remote.wildfly>3.0.1.Final</version.arquillian.container.remote.wildfly>
 
       <version.wildfly>26.1.1.Final</version.wildfly>
       
@@ -441,6 +443,8 @@
          <properties>
             <version.jakarta>10.0.0</version.jakarta>
             <version.wildfly>27.0.0.Beta1</version.wildfly>
+            <version.arquillian.container.managed.wildfly>5.0.0.Alpha5</version.arquillian.container.managed.wildfly>
+            <version.arquillian.container.remote.wildfly>5.0.0.Alpha5</version.arquillian.container.remote.wildfly>
          </properties>
       </profile>
       
@@ -492,7 +496,7 @@
             <dependency>
                <groupId>org.wildfly.arquillian</groupId>
                <artifactId>wildfly-arquillian-container-managed</artifactId>
-               <version>4.0.0.Alpha4</version>
+               <version>${version.arquillian.container.managed.wildfly}</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
@@ -504,7 +508,7 @@
             <dependency>
                <groupId>org.wildfly.arquillian</groupId>
                <artifactId>wildfly-arquillian-container-remote</artifactId>
-               <version>3.0.1.Final</version>
+               <version>${version.arquillian.container.remote.wildfly}</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
