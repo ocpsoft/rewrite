@@ -48,6 +48,9 @@ public class LocaleTranspositionIT extends RewriteIT
                .getDeployment()
                .addPackages(true, Root.class.getPackage())
                .setWebXML(new File("src/test/webapp/WEB-INF/web.xml"))
+               // This is necessary as of Faces 4.0 - CDI needs to be enabled explicitly!
+               // See also https://github.com/eclipse-ee4j/glassfish/issues/23917
+               .addAsWebInfResource(new File("src/test/webapp/WEB-INF/beans.xml"))
                .addAsServiceProvider(ConfigurationProvider.class, LocaleTranspositionConfigurationProvider.class)
                .addAsWebResource(new StringAsset("search page"), "search")
                .addAsWebResource(new StringAsset("library page"), "library")
