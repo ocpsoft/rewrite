@@ -45,6 +45,8 @@
       <version.jakarta>9.1.0</version.jakarta>
       <version.spring>6.0.0-M4</version.spring>
       
+      <ignoreSelectedFails>true</ignoreSelectedFails>
+      
    </properties>
 
    <modules>

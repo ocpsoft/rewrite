@@ -60,7 +60,7 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
                <!--TODO: fix Integration tests-->
-               <testFailureIgnore>true</testFailureIgnore>
+               <testFailureIgnore>${ignoreSelectedFails}</testFailureIgnore>
             </configuration>
          </plugin>
       </plugins>
