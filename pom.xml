@@ -40,7 +40,7 @@
       <version.payara>5.2022.3</version.payara>
       <payara.home>${project.build.directory}/payara5</payara.home>
 
-      <version.wildfly>26.1.1.Final</version.wildfly>
+      <version.wildfly>26.1.2.Final</version.wildfly>
       
       <version.jakarta>9.1.0</version.jakarta>
       <version.spring>6.0.0-M4</version.spring>
