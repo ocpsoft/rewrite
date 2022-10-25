@@ -25,6 +25,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.ocpsoft.rewrite.category.IgnoreForGlassfish3;
 import org.ocpsoft.rewrite.category.IgnoreForGlassfish4;
+import org.ocpsoft.rewrite.category.IgnoreForPayara;
 import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
 import org.ocpsoft.rewrite.test.RewriteIT;
@@ -36,7 +37,7 @@ import org.ocpsoft.rewrite.test.RewriteIT;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 @RunWith(Arquillian.class)
-@Category({ IgnoreForWildfly.class, IgnoreForGlassfish3.class, IgnoreForGlassfish4.class })
+@Category({ IgnoreForWildfly.class, IgnoreForGlassfish3.class, IgnoreForGlassfish4.class, IgnoreForPayara.class })
 public class ConfigurationDeploymentIT
 {
    @Deployment(testable = false)
