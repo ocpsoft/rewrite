@@ -18,6 +18,7 @@ package org.ocpsoft.rewrite.faces.error;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,7 @@ public class ErrorPageIT extends RewriteITBase
       return RewriteIT.getDeploymentNoWebXml()
                .setWebXML("error-page-web.xml")
                .addAsWebInfResource("faces-config.xml", "faces-config.xml")
+               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
                .addClass(ErrorPageConfig.class)
                .addAsServiceProviderAndClasses(ConfigurationProvider.class, ErrorPageConfig.class)
                .addAsWebResource(EmptyAsset.INSTANCE, "some-page.xhtml")
