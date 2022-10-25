@@ -20,7 +20,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForPayara;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.faces.test.FacesBase;
 import org.ocpsoft.rewrite.test.HttpAction;
@@ -43,6 +45,8 @@ public class SchemalessCDNRuleIT extends RewriteITBase
    }
 
    @Test
+   // TODO: Remove this ignore & try again when https://github.com/payara/Payara/issues/5842 is resolved!
+   @Category(IgnoreForPayara.class)
    public void shouldRewriteToSchemalessURL() throws Exception
    {
 
