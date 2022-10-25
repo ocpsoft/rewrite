@@ -33,9 +33,9 @@
       <version.logging>1.0.5.Final</version.logging>
       <version.arquillian>1.6.0.Final</version.arquillian>
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
-      <version.arquillian.container.managed.wildfly>3.0.1.Final</version.arquillian.container.managed.wildfly>
-      <version.arquillian.container.remote.wildfly>3.0.1.Final</version.arquillian.container.remote.wildfly>
-      <version.arquillian.container.managed.payara>2.4.6</version.arquillian.container.managed.payara>
+      <version.arquillian.container.managed.wildfly>5.0.0.Alpha5</version.arquillian.container.managed.wildfly>
+      <version.arquillian.container.remote.wildfly>5.0.0.Alpha5</version.arquillian.container.remote.wildfly>
+      <version.arquillian.container.managed.payara>3.0.alpha6</version.arquillian.container.managed.payara>
       
       <version.payara>5.2022.3</version.payara>
       <payara.home>${project.build.directory}/payara5</payara.home>
@@ -451,10 +451,6 @@
             
             <version.payara>6.2022.1.Alpha4</version.payara>
             <payara.home>${project.build.directory}/payara6</payara.home>
-            
-            <version.arquillian.container.managed.wildfly>5.0.0.Alpha5</version.arquillian.container.managed.wildfly>
-            <version.arquillian.container.remote.wildfly>5.0.0.Alpha5</version.arquillian.container.remote.wildfly>
-            <version.arquillian.container.managed.payara>3.0.alpha6</version.arquillian.container.managed.payara>
          </properties>
       </profile>
       
