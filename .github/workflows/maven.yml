@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17, 18 ]
+        java: [ 17, 19 ]
         jakarta: [ 9, 10 ]
     steps:
       - uses: actions/checkout@v3
@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17, 18 ]
+        java: [ 17, 19 ]
         jakarta: [ 9, 10 ]
     steps:
       - uses: actions/checkout@v3
@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17, 18 ]
+        java: [ 17, 19 ]
         container: [ 'WILDFLY_MANAGED', 'WILDFLY_REMOTE', 'PAYARA_MANAGED' ]
         jakarta: [ 9, 10 ]
     steps:
