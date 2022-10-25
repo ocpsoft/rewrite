@@ -449,6 +449,14 @@
 
    <profiles>
       <profile>
+         <id>EE9</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <!-- Intentionally left blank - used for CI matrix compatibility only -->
+      </profile>
+      
+      <profile>
          <id>EE10</id>
          <properties>
             <version.jakarta>10.0.0</version.jakarta>
