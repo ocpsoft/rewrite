@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Maven
 
 on:
   - push
@@ -12,6 +12,7 @@ jobs:
       matrix:
         java: [ 17, 19 ]
         jakarta: [ 9, 10 ]
+    name: Build w/o tests (Java ${{ matrix.java }}, Jakarta EE ${{ matrix.jakarta }})
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
@@ -30,6 +31,7 @@ jobs:
       matrix:
         java: [ 17, 19 ]
         jakarta: [ 9, 10 ]
+    name: Unit tests (Java ${{ matrix.java }}, Jakarta EE ${{ matrix.jakarta }})
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
@@ -50,6 +52,7 @@ jobs:
         java: [ 17, 19 ]
         container: [ 'WILDFLY_MANAGED', 'WILDFLY_REMOTE', 'PAYARA_MANAGED' ]
         jakarta: [ 9, 10 ]
+    name: Integration tests (Java ${{ matrix.java }}, Jakarta EE ${{ matrix.jakarta }}, Container ${{ matrix.container }})
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
