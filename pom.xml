@@ -39,6 +39,7 @@
       
       <version.payara>5.2022.3</version.payara>
       <payara.home>${project.build.directory}/payara5</payara.home>
+      <it.ignore.forPayaraVersion>IgnoreForPayara5</it.ignore.forPayaraVersion>
 
       <version.wildfly>26.1.2.Final</version.wildfly>
       
@@ -467,6 +468,7 @@
             
             <version.payara>6.2022.1.Alpha4</version.payara>
             <payara.home>${project.build.directory}/payara6</payara.home>
+            <it.ignore.forPayaraVersion>IgnoreForPayara6</it.ignore.forPayaraVersion>
          </properties>
       </profile>
       
@@ -665,7 +667,8 @@
                   <version>${version.failsafe.plugin}</version>
                   <configuration>
                      <excludedGroups>
-                        org.ocpsoft.rewrite.category.IgnoreForPayara
+                        org.ocpsoft.rewrite.category.IgnoreForPayara,
+                        ${it.ignore.forPayaraVersion}
                      </excludedGroups>
                      <argLine>--illegal-access=debug --add-opens=java.base/java.util=ALL-UNNAMED</argLine>
                      <systemPropertyVariables>
