@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17, 19 ]
+        java: [ 17 ]
         container: [ 'WILDFLY_MANAGED', 'WILDFLY_REMOTE', 'PAYARA_MANAGED' ]
         jakarta: [ 9, 10 ]
     name: Integration tests (Java ${{ matrix.java }}, Jakarta EE ${{ matrix.jakarta }}, Container ${{ matrix.container }})
