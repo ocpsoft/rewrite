@@ -45,8 +45,20 @@
       
       <version.jakarta>9.1.0</version.jakarta>
       <version.spring>6.0.0-M4</version.spring>
-      
-      <ignoreSelectedFails>true</ignoreSelectedFails>
+   
+      <!-- Official Maven Plugins -->
+      <version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
+      <version.maven-jar-plugin>3.3.0</version.maven-jar-plugin>
+      <version.maven-dependency-plugin>3.3.0</version.maven-dependency-plugin>
+      <version.maven-shade-plugin>3.4.0</version.maven-shade-plugin>
+      <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
+      <version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
+      <version.maven-plugin-plugin>3.6.4</version.maven-plugin-plugin>
+      <version.maven-site-plugin>4.0.0-M3</version.maven-site-plugin>
+      <version.maven-source-plugin>3.2.1</version.maven-source-plugin>
+      <version.maven-javadoc-plugin>3.4.1</version.maven-javadoc-plugin>
+      <version.maven-release-plugin>3.0.0-M6</version.maven-release-plugin>
+      <version.maven-enforcer-plugin>3.1.0</version.maven-enforcer-plugin>
       
    </properties>
 
@@ -93,7 +105,6 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>${version.enforcer.plugin}</version>
             <configuration>
                <rules>
                   <requireJavaVersion>
@@ -104,11 +115,7 @@
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${version.compiler.plugin}</version>
-            <configuration>
-               <release>${maven.compiler.release}</release>
-            </configuration>
+            <artifactId>maven-jar-plugin</artifactId>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -130,29 +137,78 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.22.2</version>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>integration-test</goal>
-                     <goal>verify</goal>
-                  </goals>
-               </execution>
-            </executions>
          </plugin>
       </plugins>
       <pluginManagement>
          <plugins>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-enforcer-plugin</artifactId>
+               <version>${version.maven-enforcer-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <version>${version.maven-compiler-plugin}</version>
+               <configuration>
+                  <release>${maven.compiler.release}</release>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <version>${version.maven-jar-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-dependency-plugin</artifactId>
+               <version>${version.maven-dependency-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-shade-plugin</artifactId>
+               <version>${version.maven-shade-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-surefire-plugin</artifactId>
+               <version>${version.maven-surefire-plugin}</version>
                <configuration>
                   <argLine>-Xms256m -Xmx512m</argLine>
                </configuration>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-failsafe-plugin</artifactId>
+               <version>${version.maven-failsafe-plugin}</version>
+               <executions>
+                  <execution>
+                     <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-plugin-plugin</artifactId>
+               <version>${version.maven-plugin-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <version>${version.maven-site-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-source-plugin</artifactId>
+               <version>${version.maven-source-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-javadoc-plugin</artifactId>
+               <version>${version.maven-javadoc-plugin}</version>
                <configuration>
                   <failOnError>false</failOnError>
                   <links>
@@ -162,6 +218,12 @@
                   <additionalparam>-Xdoclint:none</additionalparam>
                </configuration>
             </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-release-plugin</artifactId>
+               <version>${version.maven-release-plugin}</version>
+            </plugin>
+            
          </plugins>
       </pluginManagement>
 
