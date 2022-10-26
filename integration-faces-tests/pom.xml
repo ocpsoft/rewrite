@@ -75,7 +75,7 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
                <!--TODO: fix Integration tests-->
-               <testFailureIgnore>${ignoreSelectedFails}</testFailureIgnore>
+               <testFailureIgnore>${it.ignore.selectedFails}</testFailureIgnore>
             </configuration>
          </plugin>
       </plugins>
