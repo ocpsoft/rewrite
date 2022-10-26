@@ -49,6 +49,7 @@
       <version.wildfly>26.1.2.Final</version.wildfly>
       
       <version.jakarta>9.1.0</version.jakarta>
+      <version.jakarta-faces.impl>3.0.2</version.jakarta-faces.impl>
       <version.spring>6.0.0-M4</version.spring>
    
       <!-- Official Maven Plugins -->
@@ -452,7 +453,12 @@
             <type>pom</type>
             <scope>import</scope>
          </dependency>
-
+         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
+            <version>${version.jakarta-faces.impl}</version>
+         </dependency>
+         
          <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
@@ -530,6 +536,7 @@
          <id>EE10</id>
          <properties>
             <version.jakarta>10.0.0</version.jakarta>
+            <version.jakarta-faces.impl>4.0.0</version.jakarta-faces.impl>
             
             <version.wildfly>27.0.0.Beta1</version.wildfly>
             

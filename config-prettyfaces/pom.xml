@@ -90,7 +90,6 @@
       <dependency>
          <groupId>org.glassfish</groupId>
          <artifactId>jakarta.faces</artifactId>
-         <version>3.0.0</version>
          <scope>test</scope>
       </dependency>
       <dependency>
