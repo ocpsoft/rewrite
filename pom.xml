@@ -41,16 +41,16 @@
       <version.arquillian.container.managed.wildfly>5.0.0.Alpha5</version.arquillian.container.managed.wildfly>
       <version.arquillian.container.remote.wildfly>5.0.0.Alpha5</version.arquillian.container.remote.wildfly>
       <version.arquillian.container.managed.payara>3.0.alpha6</version.arquillian.container.managed.payara>
-      
-      <version.payara>5.2022.3</version.payara>
-      <payara.home>${project.build.directory}/payara5</payara.home>
-      <it.ignore.forPayaraVersion>IgnoreForPayara5</it.ignore.forPayaraVersion>
-
-      <version.wildfly>26.1.2.Final</version.wildfly>
-      
-      <version.jakarta>9.1.0</version.jakarta>
-      <version.jakarta-faces.impl>3.0.2</version.jakarta-faces.impl>
+   
+      <version.jakarta>10.0.0</version.jakarta>
+      <version.jakarta-faces.impl>4.0.0</version.jakarta-faces.impl>
       <version.spring>6.0.0-M4</version.spring>
+   
+      <version.wildfly>27.0.0.Beta1</version.wildfly>
+   
+      <version.payara>6.2022.1.Alpha4</version.payara>
+      <payara.home>${project.build.directory}/payara6</payara.home>
+      <it.ignore.forPayaraVersion>IgnoreForPayara6</it.ignore.forPayaraVersion>
    
       <!-- Official Maven Plugins -->
       <version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
@@ -526,24 +526,24 @@
    <profiles>
       <profile>
          <id>EE9</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-         </activation>
-         <!-- Intentionally left blank - used for CI matrix compatibility only -->
+         <properties>
+            <version.jakarta>9.1.0</version.jakarta>
+            <version.jakarta-faces.impl>3.0.2</version.jakarta-faces.impl>
+            
+            <version.wildfly>26.1.2.Final</version.wildfly>
+            
+            <version.payara>5.2022.3</version.payara>
+            <payara.home>${project.build.directory}/payara5</payara.home>
+            <it.ignore.forPayaraVersion>IgnoreForPayara5</it.ignore.forPayaraVersion>
+         </properties>
       </profile>
       
       <profile>
          <id>EE10</id>
-         <properties>
-            <version.jakarta>10.0.0</version.jakarta>
-            <version.jakarta-faces.impl>4.0.0</version.jakarta-faces.impl>
-            
-            <version.wildfly>27.0.0.Beta1</version.wildfly>
-            
-            <version.payara>6.2022.1.Alpha4</version.payara>
-            <payara.home>${project.build.directory}/payara6</payara.home>
-            <it.ignore.forPayaraVersion>IgnoreForPayara6</it.ignore.forPayaraVersion>
-         </properties>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <!-- Intentionally left blank - used for CI matrix compatibility only -->
       </profile>
       
       <!-- WILDFLY -->
