@@ -24,8 +24,10 @@
       <!-- Encoding -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-      <!-- JDK version -->
+      <!-- Target Java version for compatibility -->
       <maven.compiler.release>11</maven.compiler.release>
+      <!-- Minimum JDK necessary to successfully compile and test -->
+      <maven.enforce.jdk>17.0.0</maven.enforce.jdk>
    
       <!-- Allow to ignore some failing integration tests -->
       <it.ignore.selectedFails>true</it.ignore.selectedFails>
@@ -111,7 +113,7 @@
             <configuration>
                <rules>
                   <requireJavaVersion>
-                     <version>17.0.0</version>
+                     <version>${maven.enforce.jdk}</version>
                   </requireJavaVersion>
                </rules>
             </configuration>
