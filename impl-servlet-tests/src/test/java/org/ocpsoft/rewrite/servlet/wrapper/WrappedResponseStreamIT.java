@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForPayara;
 import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.ServletRoot;
@@ -59,11 +60,14 @@ public class WrappedResponseStreamIT extends RewriteIT
 
    /**
     * Ignored on Wildlfy because there seems to be some issue with the content length.
-    * 
-    * @see https://github.com/ocpsoft/rewrite/issues/145
+    *
+    * 2022-10-25: Retested with Wildfly 27 and Payara 6: the "Content-Encoding" array is (still) empty,
+    *             same error for both. Now ignoring for Payara, too.
+    *
+    * @see <a href="https://github.com/ocpsoft/rewrite/issues/145">GitHub Issue 145</a>
     */
    @Test
-   @Category(IgnoreForWildfly.class)
+   @Category({IgnoreForWildfly.class, IgnoreForPayara.class})
    public void testWrappedResponseStreamToGZip() throws Exception
    {
 

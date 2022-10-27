@@ -15,7 +15,6 @@
  */
 package org.ocpsoft.rewrite.transform.minify;
 
-import com.google.protobuf.ByteString;
 import de.larsgrefer.sass.embedded.SassCompiler;
 import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import sass.embedded_protocol.EmbeddedSass.OutputStyle;
@@ -24,6 +23,7 @@ import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.Compi
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.rewrite.transform.Transformer;
@@ -42,17 +42,17 @@ public class CssMinify extends Minify implements Transformer
    @Override
    public void transform(HttpServletRewrite event, InputStream input, OutputStream output) throws IOException
    {
-      ByteString css = ByteString.readFrom(input);
+      String css = new String(input.readAllBytes(), StandardCharsets.UTF_8);
 
       try (SassCompiler sassCompiler = SassCompilerFactory.bundled()) {
          sassCompiler.setOutputStyle(OutputStyle.COMPRESSED);
 
-         CompileSuccess compileSuccess = sassCompiler.compileCssString(css.toStringUtf8());
+         CompileSuccess compileSuccess = sassCompiler.compileCssString(css);
          compileSuccess.getCssBytes().writeTo(output);
 
       } catch (Exception e) {
          event.getServletContext().log("Failed to minify css", e);
-         css.writeTo(output);
+         output.write(css.getBytes(StandardCharsets.UTF_8));
       } finally {
          output.flush();
       }

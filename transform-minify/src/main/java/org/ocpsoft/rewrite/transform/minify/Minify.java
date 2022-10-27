@@ -1,6 +1,7 @@
 package org.ocpsoft.rewrite.transform.minify;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.ocpsoft.rewrite.transform.Transformer;
 
@@ -11,7 +12,7 @@ import org.ocpsoft.rewrite.transform.Transformer;
  */
 public abstract class Minify implements Transformer
 {
-   private Charset charset = Charset.forName("UTF-8");
+   private Charset charset = StandardCharsets.UTF_8;
 
    /**
     * Specify the {@link Charset} to be used during minification.

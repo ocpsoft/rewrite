@@ -17,9 +17,12 @@ package org.ocpsoft.rewrite.spring.resolver;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForPayara5;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteIT;
 
@@ -29,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Christian Kaltepoth
  */
 @RunWith(Arquillian.class)
+@Category(IgnoreForPayara5.class)
 public class SpringBeanNameResolverIT extends RewriteIT
 {
  
@@ -37,8 +41,10 @@ public class SpringBeanNameResolverIT extends RewriteIT
    {
       return RewriteIT.getDeployment()
                .setWebXML("spring-web.xml")
-               .addAsLibraries(resolveDependencies("org.springframework:spring-webmvc:5.3.20"))
+               .addAsLibraries(resolveDependencies("org.springframework:spring-webmvc"))
                .addAsWebInfResource("applicationContext.xml")
+               // Necessary to enable CDI in EE 10 or fallback to CDI lite
+               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
                .addClasses(SpringBeanNameResolverBean.class, SpringBeanNameResolverConfigProvider.class);
    }
 

@@ -10,7 +10,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.ocpsoft.rewrite</groupId>
    <artifactId>rewrite-parent</artifactId>
-   <version>5.0.0-SNAPSHOT</version>
+   <version>6.0.0-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <parent>
@@ -24,20 +24,47 @@
       <!-- Encoding -->
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-      <!-- JDK version -->
+      <!-- Target Java version for compatibility -->
       <maven.compiler.release>11</maven.compiler.release>
-
+      <!-- Minimum JDK necessary to successfully compile and test -->
+      <maven.enforce.jdk>17.0.0</maven.enforce.jdk>
+   
+      <!-- Allow to ignore some failing integration tests -->
+      <it.ignore.selectedFails>true</it.ignore.selectedFails>
+      
       <!-- Versions -->
       <version.junit>4.13.2</version.junit>
       <version.common>1.0.6.Final</version.common>
       <version.logging>1.0.5.Final</version.logging>
       <version.arquillian>1.6.0.Final</version.arquillian>
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
-
-      <version.wildfly>26.1.1.Final</version.wildfly>
-      
-      <version.jakarta>9.1.0</version.jakarta>
+      <version.arquillian.container.managed.wildfly>5.0.0.Alpha5</version.arquillian.container.managed.wildfly>
+      <version.arquillian.container.remote.wildfly>5.0.0.Alpha5</version.arquillian.container.remote.wildfly>
+      <version.arquillian.container.managed.payara>3.0.alpha6</version.arquillian.container.managed.payara>
+   
+      <version.jakarta>10.0.0</version.jakarta>
+      <version.jakarta-faces.impl>4.0.0</version.jakarta-faces.impl>
       <version.spring>6.0.0-M4</version.spring>
+   
+      <version.wildfly>27.0.0.Beta1</version.wildfly>
+   
+      <version.payara>6.2022.1.Alpha4</version.payara>
+      <payara.home>${project.build.directory}/payara6</payara.home>
+      <it.ignore.forPayaraVersion>IgnoreForPayara6</it.ignore.forPayaraVersion>
+   
+      <!-- Official Maven Plugins -->
+      <version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
+      <version.maven-jar-plugin>3.3.0</version.maven-jar-plugin>
+      <version.maven-dependency-plugin>3.3.0</version.maven-dependency-plugin>
+      <version.maven-shade-plugin>3.4.0</version.maven-shade-plugin>
+      <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
+      <version.maven-failsafe-plugin>3.0.0-M7</version.maven-failsafe-plugin>
+      <version.maven-plugin-plugin>3.6.4</version.maven-plugin-plugin>
+      <version.maven-site-plugin>4.0.0-M3</version.maven-site-plugin>
+      <version.maven-source-plugin>3.2.1</version.maven-source-plugin>
+      <version.maven-javadoc-plugin>3.4.1</version.maven-javadoc-plugin>
+      <version.maven-release-plugin>3.0.0-M6</version.maven-release-plugin>
+      <version.maven-enforcer-plugin>3.1.0</version.maven-enforcer-plugin>
       
    </properties>
 
@@ -84,22 +111,17 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
-            <version>${version.enforcer.plugin}</version>
             <configuration>
                <rules>
                   <requireJavaVersion>
-                     <version>17.0.0</version>
+                     <version>${maven.enforce.jdk}</version>
                   </requireJavaVersion>
                </rules>
             </configuration>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${version.compiler.plugin}</version>
-            <configuration>
-               <release>${maven.compiler.release}</release>
-            </configuration>
+            <artifactId>maven-jar-plugin</artifactId>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -121,29 +143,78 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.22.2</version>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>integration-test</goal>
-                     <goal>verify</goal>
-                  </goals>
-               </execution>
-            </executions>
          </plugin>
       </plugins>
       <pluginManagement>
          <plugins>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-enforcer-plugin</artifactId>
+               <version>${version.maven-enforcer-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <version>${version.maven-compiler-plugin}</version>
+               <configuration>
+                  <release>${maven.compiler.release}</release>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <version>${version.maven-jar-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-dependency-plugin</artifactId>
+               <version>${version.maven-dependency-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-shade-plugin</artifactId>
+               <version>${version.maven-shade-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-surefire-plugin</artifactId>
+               <version>${version.maven-surefire-plugin}</version>
                <configuration>
                   <argLine>-Xms256m -Xmx512m</argLine>
                </configuration>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-failsafe-plugin</artifactId>
+               <version>${version.maven-failsafe-plugin}</version>
+               <executions>
+                  <execution>
+                     <goals>
+                        <goal>integration-test</goal>
+                        <goal>verify</goal>
+                     </goals>
+                  </execution>
+               </executions>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-plugin-plugin</artifactId>
+               <version>${version.maven-plugin-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <version>${version.maven-site-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-source-plugin</artifactId>
+               <version>${version.maven-source-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-javadoc-plugin</artifactId>
+               <version>${version.maven-javadoc-plugin}</version>
                <configuration>
                   <failOnError>false</failOnError>
                   <links>
@@ -153,6 +224,12 @@
                   <additionalparam>-Xdoclint:none</additionalparam>
                </configuration>
             </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-release-plugin</artifactId>
+               <version>${version.maven-release-plugin}</version>
+            </plugin>
+            
          </plugins>
       </pluginManagement>
 
@@ -168,6 +245,12 @@
    </build>
 
    <repositories>
+      <repository>
+         <id>central-repo</id>
+         <name>Central Repository</name>
+         <url>https://repo1.maven.org/maven2</url>
+         <layout>default</layout>
+      </repository>
       <repository>
          <id>spring-milestones</id>
          <name>Spring Milestones</name>
@@ -370,7 +453,12 @@
             <type>pom</type>
             <scope>import</scope>
          </dependency>
-
+         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
+            <version>${version.jakarta-faces.impl}</version>
+         </dependency>
+         
          <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
@@ -437,6 +525,29 @@
 
    <profiles>
       <profile>
+         <id>EE9</id>
+         <properties>
+            <version.jakarta>9.1.0</version.jakarta>
+            <version.jakarta-faces.impl>3.0.2</version.jakarta-faces.impl>
+            
+            <version.wildfly>26.1.2.Final</version.wildfly>
+            
+            <version.payara>5.2022.3</version.payara>
+            <payara.home>${project.build.directory}/payara5</payara.home>
+            <it.ignore.forPayaraVersion>IgnoreForPayara5</it.ignore.forPayaraVersion>
+         </properties>
+      </profile>
+      
+      <profile>
+         <id>EE10</id>
+         <activation>
+            <activeByDefault>true</activeByDefault>
+         </activation>
+         <!-- Intentionally left blank - used for CI matrix compatibility only -->
+      </profile>
+      
+      <!-- WILDFLY -->
+      <profile>
          <id>WILDFLY_MANAGED</id>
          <build>
             <plugins>
@@ -483,7 +594,7 @@
             <dependency>
                <groupId>org.wildfly.arquillian</groupId>
                <artifactId>wildfly-arquillian-container-managed</artifactId>
-               <version>4.0.0.Alpha4</version>
+               <version>${version.arquillian.container.managed.wildfly}</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
@@ -495,7 +606,7 @@
             <dependency>
                <groupId>org.wildfly.arquillian</groupId>
                <artifactId>wildfly-arquillian-container-remote</artifactId>
-               <version>3.0.1.Final</version>
+               <version>${version.arquillian.container.remote.wildfly}</version>
                <scope>test</scope>
             </dependency>
          </dependencies>
@@ -538,7 +649,7 @@
                <plugin>
                   <groupId>org.wildfly.plugins</groupId>
                   <artifactId>wildfly-maven-plugin</artifactId>
-                  <version>3.0.1.Final</version>
+                  <version>3.0.2.Final</version>
                   <executions>
                      <execution>
                         <id>start-wildfly</id>
@@ -562,6 +673,88 @@
             </plugins>
          </build>
       </profile>
+      
+      
+      <!-- PAYARA -->
+      <profile>
+         <id>PAYARA_MANAGED</id>
+         <properties>
+            <skipTests>false</skipTests>
+         </properties>
+         <dependencies>
+            
+            <!-- Required since arquillian-payara 2.4 -->
+            <dependency>
+               <groupId>fish.payara.arquillian</groupId>
+               <artifactId>payara-client-ee9</artifactId>
+               <version>${version.arquillian.container.managed.payara}</version>
+            </dependency>
+         
+            <!-- Payara Server Container adaptor -->
+            <dependency>
+               <groupId>fish.payara.arquillian</groupId>
+               <artifactId>arquillian-payara-server-managed</artifactId>
+               <version>${version.arquillian.container.managed.payara}</version>
+               <scope>test</scope>
+            </dependency>
+         
+            <!-- Env Sync -->
+            <dependency>
+               <groupId>fish.payara.arquillian</groupId>
+               <artifactId>environment-setup</artifactId>
+               <version>${version.arquillian.container.managed.payara}</version>
+               <scope>test</scope>
+            </dependency>
+      
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-dependency-plugin</artifactId>
+                  <version>${version.dependency.plugin}</version>
+                  <executions>
+                     <execution>
+                        <id>unpack</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                           <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                           <artifactItems>
+                              <artifactItem>
+                                 <groupId>fish.payara.distributions</groupId>
+                                 <artifactId>payara</artifactId>
+                                 <version>${version.payara}</version>
+                                 <type>zip</type>
+                                 <overWrite>false</overWrite>
+                                 <outputDirectory>${project.build.directory}</outputDirectory>
+                              </artifactItem>
+                           </artifactItems>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-failsafe-plugin</artifactId>
+                  <version>${version.failsafe.plugin}</version>
+                  <configuration>
+                     <excludedGroups>
+                        org.ocpsoft.rewrite.category.IgnoreForPayara,
+                        ${it.ignore.forPayaraVersion}
+                     </excludedGroups>
+                     <argLine>--illegal-access=debug --add-opens=java.base/java.util=ALL-UNNAMED</argLine>
+                     <systemPropertyVariables>
+                        <payara.home>${payara.home}</payara.home>
+                     </systemPropertyVariables>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      
+      
    </profiles>
 
    <developers>
@@ -582,6 +775,12 @@
          <id>larsgrefer</id>
          <name>Lars Grefer</name>
          <email>github@larsgrefer.de</email>
+         <timezone>Europe/Berlin</timezone>
+      </developer>
+      <developer>
+         <id>poikilotherm</id>
+         <name>Oliver Bertuch</name>
+         <email>github@bertuch.eu</email>
          <timezone>Europe/Berlin</timezone>
       </developer>
    </developers>

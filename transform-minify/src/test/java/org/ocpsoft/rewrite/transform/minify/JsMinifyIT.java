@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.ocpsoft.rewrite.category.IgnoreForPayara;
 import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
@@ -57,7 +58,7 @@ public class JsMinifyIT extends RewriteIT
     * @see https://github.com/ocpsoft/rewrite/issues/145
     */
    @Test
-   @Category(IgnoreForWildfly.class)
+   @Category({IgnoreForWildfly.class, IgnoreForPayara.class})
    public void testJavaScriptCompression() throws Exception
    {
       HttpAction action = get("/test.js");
@@ -66,7 +67,7 @@ public class JsMinifyIT extends RewriteIT
    }
 
    @Test
-   @Category(IgnoreForWildfly.class)
+   @Category({IgnoreForWildfly.class, IgnoreForPayara.class})
    public void testNotExistingSourceFile() throws Exception
    {
       HttpAction action = get("/not-existing.js");

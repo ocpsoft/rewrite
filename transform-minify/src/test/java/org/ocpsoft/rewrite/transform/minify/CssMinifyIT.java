@@ -15,8 +15,6 @@
  */
 package org.ocpsoft.rewrite.transform.minify;
 
-import java.io.File;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -24,12 +22,12 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.ocpsoft.rewrite.category.IgnoreForWildfly;
 import org.ocpsoft.rewrite.config.ConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteIT;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,6 +48,8 @@ public class CssMinifyIT extends RewriteIT
                .addAsWebResource(new StringAsset(".class {\n  width : 100px;\n}"), "test.css")
                .addAsLibraries(getTransformArchive())
                .addAsLibraries(resolveDependency("com.yahoo.platform.yui:yuicompressor"))
+               .addAsLibraries(resolveDependencies("de.larsgrefer.sass:sass-embedded-host"))
+               .addAsLibraries(resolveDependencies("de.larsgrefer.sass:sass-embedded-protocol"))
                .addClasses(CssMinifyTestProvider.class)
                .addAsServiceProvider(ConfigurationProvider.class, CssMinifyTestProvider.class);
    }
@@ -62,14 +62,8 @@ public class CssMinifyIT extends RewriteIT
 
       return archive;
    }
-
-   /**
-    * Ignored on Wildlfy because there seems to be some issue with the content length.
-    * 
-    * @see https://github.com/ocpsoft/rewrite/issues/145
-    */
+   
    @Test
-   @Category(IgnoreForWildfly.class)
    public void testCssFileCompression() throws Exception
    {
       HttpAction action = get("/test.css");
@@ -78,7 +72,6 @@ public class CssMinifyIT extends RewriteIT
    }
 
    @Test
-   @Category(IgnoreForWildfly.class)
    public void testNotExistingSourceFile() throws Exception
    {
       HttpAction action = get("/not-existing.css");

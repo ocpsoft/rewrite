@@ -17,7 +17,6 @@ package org.ocpsoft.rewrite.cdi.bridge;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +24,8 @@ import org.ocpsoft.rewrite.cdi.bind.BindingBean;
 import org.ocpsoft.rewrite.cdi.bind.ExpressionLanguageTestConfigurationProvider;
 import org.ocpsoft.rewrite.test.HttpAction;
 import org.ocpsoft.rewrite.test.RewriteIT;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,7 +44,8 @@ public class CdiMultipleFeaturesIT extends RewriteIT
    {
       return RewriteIT
                .getDeployment()
-               .addAsWebInfResource(new StringAsset("<beans/>"), "beans.xml")
+               // Necessary as of CDI 4.0 because we need bean-discovery-mode="all"
+               .addAsWebInfResource(new File("src/main/resources/META-INF/beans.xml"))
                .addClasses(BindingBean.class, ExpressionLanguageTestConfigurationProvider.class, MockBean.class,
                         RewriteLifecycleEventObserver.class, ServiceEnricherTestConfigProvider.class);
    }
