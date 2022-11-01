@@ -5,19 +5,27 @@ on:
     branches:
       - main
       - develop
+      - 'develop-jakartaee-*'
+
+permissions:
+  contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 8
+      - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: 'temurin'
           cache: 'maven'
-      - run: ./mvnw --batch-mode -s .github/settings.xml -DperformRelease -DskipTests -Dgpg.skip=true deploy
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Publish snapshot
+        run: mvn deploy -DskipTests
         env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
