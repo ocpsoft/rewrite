@@ -37,6 +37,13 @@
       <version.arquillian.drone>2.5.5</version.arquillian.drone>
 
       <version.wildfly>26.1.1.Final</version.wildfly>
+   
+      <!-- Official Maven Plugins -->
+      <version.maven-release-plugin>3.0.0-M6</version.maven-release-plugin>
+      <version.maven-flatten-plugin>1.3.0</version.maven-flatten-plugin>
+      <version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
+      <version.pomchecker-maven-plugin>1.3.0</version.pomchecker-maven-plugin>
+      <version.nexus-staging-plugin>1.6.13</version.nexus-staging-plugin>
    </properties>
 
    <modules>
@@ -83,6 +90,21 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
          </plugin>
+         
+         <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+               <serverId>ossrh</serverId>
+               <nexusUrl>https://oss.sonatype.org</nexusUrl>
+               <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.kordamp.maven</groupId>
+            <artifactId>pomchecker-maven-plugin</artifactId>
+         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
@@ -96,6 +118,7 @@
                </checkModificationExcludes>
             </configuration>
          </plugin>
+         
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
@@ -130,6 +153,31 @@
                   </links>
                   <additionalparam>-Xdoclint:none</additionalparam>
                </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-release-plugin</artifactId>
+               <version>${version.maven-release-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-gpg-plugin</artifactId>
+               <version>${version.maven-gpg-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>flatten-maven-plugin</artifactId>
+               <version>${version.maven-flatten-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.kordamp.maven</groupId>
+               <artifactId>pomchecker-maven-plugin</artifactId>
+               <version>${version.pomchecker-maven-plugin}</version>
+            </plugin>
+            <plugin>
+               <groupId>org.sonatype.plugins</groupId>
+               <artifactId>nexus-staging-maven-plugin</artifactId>
+               <version>${version.nexus-staging-plugin}</version>
             </plugin>
          </plugins>
       </pluginManagement>
