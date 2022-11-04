@@ -95,9 +95,8 @@ public class PrettyContext implements Serializable
       requestURL = requestURL.decode();
 
       requestQuery = QueryString.build(request.getQueryString());
-
+      
       log.trace("Initialized PrettyContext");
-      log.info("Initialized PrettyContext (has support for Jakarta EE9+)");
    }
 
    /**
