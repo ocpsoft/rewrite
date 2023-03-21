@@ -17,10 +17,14 @@ package org.ocpsoft.rewrite.spring;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.ocpsoft.common.spi.ServiceEnricher;
 import org.ocpsoft.logging.Logger;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * {@link ServiceEnricher} implementation for Spring.
@@ -35,7 +39,13 @@ public class SpringServiceEnricher implements ServiceEnricher
    @Override
    public <T> void enrich(final T service)
    {
-      SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(service);
+      ServletContext context = SpringServletContextLoader.findCurrentServletContext();
+      if (context != null) {
+         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(service, context);
+      }
+      else {
+         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(service);
+      }
       if (log.isDebugEnabled())
          log.debug("Enriched instance of service [" + service.getClass().getName() + "]");
 
@@ -44,8 +54,15 @@ public class SpringServiceEnricher implements ServiceEnricher
    @Override
    public <T> Collection<T> produce(final Class<T> type)
    {
-      // TODO implement
-      return new ArrayList<T>();
+      WebApplicationContext webApplicationContext = SpringServletContextLoader.findCurrentApplicationContext();
+
+      if (webApplicationContext == null) {
+         return new ArrayList<>();
+      }
+
+      return webApplicationContext.getBeanProvider(type)
+               .stream()
+               .collect(Collectors.toList());
    }
 
 }

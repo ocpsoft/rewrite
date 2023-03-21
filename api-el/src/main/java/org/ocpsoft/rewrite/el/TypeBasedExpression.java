@@ -15,7 +15,9 @@
  */
 package org.ocpsoft.rewrite.el;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.logging.Logger;
@@ -62,43 +64,55 @@ class TypeBasedExpression implements Expression
    @SuppressWarnings("unchecked")
    private String lookupBeanName()
    {
-
       // load the available SPI implementations
       Iterator<BeanNameResolver> iterator = ServiceLoader.load(BeanNameResolver.class).iterator();
+
+      List<Exception> deferred = new ArrayList<>();
       while (iterator.hasNext()) {
          BeanNameResolver resolver = iterator.next();
 
-         // check if this implementation is able to tell the name
-         String beanName = resolver.getBeanName(clazz);
-
-         if (log.isTraceEnabled()) {
-            log.trace("Service provider [{}] returned [{}] for class [{}]", new Object[] {
-                     resolver.getClass().getSimpleName(), beanName, clazz.getName()
-            });
-         }
-
-         // the first result is accepted
-         if (beanName != null) {
-
-            // create the complete EL expression including the component
-            String el = new StringBuilder()
-                     .append(beanName).append('.').append(component)
-                     .toString();
+         try {
+            // check if this implementation is able to tell the name
+            String beanName = resolver.getBeanName(clazz);
 
             if (log.isTraceEnabled()) {
-               log.debug("Creation of EL expression for component [{}] of class [{}] successful: {}", new Object[] {
-                        component, clazz.getName(), el
+               log.trace("Service provider [{}] returned [{}] for class [{}]", new Object[] {
+                        resolver.getClass().getSimpleName(), beanName, clazz.getName()
                });
             }
 
-            return el;
+            // the first result is accepted
+            if (beanName != null) {
+
+               // create the complete EL expression including the component
+               String el = new StringBuilder()
+                        .append(beanName).append('.').append(component)
+                        .toString();
+
+               if (log.isTraceEnabled()) {
+                  log.debug("Creation of EL expression for component [{}] of class [{}] successful: {}", new Object[] {
+                           component, clazz.getName(), el
+                  });
+               }
+
+               return el;
+            }
+         }
+         catch (Exception e) {
+            log.debug("Failed to resolve bean names using [" + resolver.getClass().getName() + "]", e);
+            deferred.add(e);
          }
 
       }
 
+      if (deferred.size() > 1) {
+         for (Exception e : deferred) {
+            log.error("Failed to resolve bean names.", e);
+         }
+      }
       throw new IllegalStateException("Unable to obtain EL name for bean of type [" + clazz.getName()
                + "] from any of the SPI implementations. You should conside placing a @"
-               + ELBeanName.class.getSimpleName() + " on the class.");
+               + ELBeanName.class.getSimpleName() + " on the class.", (deferred.size() == 1 ? deferred.get(0) : null));
 
    }
 
