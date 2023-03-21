@@ -16,12 +16,12 @@
 package org.ocpsoft.rewrite.spring;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.ocpsoft.logging.Logger;
 import org.ocpsoft.rewrite.el.spi.BeanNameResolver;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -29,24 +29,28 @@ import org.springframework.web.context.WebApplicationContext;
  * {@link BeanNameResolver} implementation for Spring.
  * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class SpringBeanNameResolver implements BeanNameResolver
 {
 
    private final Logger log = Logger.getLogger(SpringBeanNameResolver.class);
 
+   @Autowired
+   private WebApplicationContext applicationContext;
+
    @Override
    public String getBeanName(Class<?> clazz)
    {
-
-      // try to obtain the WebApplicationContext using ContextLoader
-      WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-      if (context == null) {
-         throw new IllegalStateException("Unable to get current WebApplicationContext");
+      if (applicationContext == null) {
+         applicationContext = ContextLoader.getCurrentWebApplicationContext();
+         if (applicationContext == null) {
+            throw new IllegalStateException("Unable to get current WebApplicationContext");
+         }
       }
 
       // obtain a map of bean names
-      Set<String> beanNames = resolveBeanNames(context, clazz);
+      Set<String> beanNames = resolveBeanNames(applicationContext, clazz);
 
       // no beans of that type, nothing we can do
       if (beanNames == null || beanNames.size() == 0) {
@@ -76,15 +80,14 @@ public class SpringBeanNameResolver implements BeanNameResolver
 
       final Set<String> result = new HashSet<String>();
 
-      Map<String, ?> beanMap = beanFactory.getBeansOfType(clazz);
-      if (beanMap != null) {
-         for (String name : beanMap.keySet()) {
+      String[] names = beanFactory.getBeanNamesForType(clazz);
+      if (names != null) {
+         for (String name : names) {
             if (name != null && !name.startsWith("scopedTarget.")) {
                result.add(name);
             }
          }
       }
-
       return result;
 
    }

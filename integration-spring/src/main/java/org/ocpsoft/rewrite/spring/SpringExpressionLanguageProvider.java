@@ -33,6 +33,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.expression.spel.support.StandardTypeConverter;
 import org.springframework.expression.spel.support.StandardTypeLocator;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -135,6 +136,13 @@ public class SpringExpressionLanguageProvider implements ExpressionLanguageProvi
 
          // we need a ConfigurableBeanFactory to build the BeanExpressionContext
          ConfigurableBeanFactory beanFactory = null;
+
+         if (applicationContext == null) {
+            applicationContext = ContextLoader.getCurrentWebApplicationContext();
+            if (applicationContext == null) {
+               throw new IllegalStateException("Unable to get current WebApplicationContext");
+            }
+         }
 
          // the WebApplicationContext MAY implement ConfigurableBeanFactory
          if (applicationContext instanceof ConfigurableBeanFactory) {
