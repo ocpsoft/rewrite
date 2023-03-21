@@ -21,31 +21,29 @@ import java.util.Map;
 import java.util.Set;
 
 import org.ocpsoft.common.spi.ServiceLocator;
-import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
  * {@link ServiceLocator} implementation for Spring.
  * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class SpringServiceLocator implements ServiceLocator
 {
-
    @Override
    @SuppressWarnings("unchecked")
    public <T> Collection<Class<T>> locate(Class<T> clazz)
    {
       Set<Class<T>> result = new LinkedHashSet<Class<T>>();
 
-      // use the Spring API to obtain the WebApplicationContext
-      WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+      WebApplicationContext applicationContext = SpringServletContextLoader.findCurrentApplicationContext();
 
       // may be null if Spring hasn't started yet
-      if (context != null) {
+      if (applicationContext != null) {
 
          // ask spring about SPI implementations
-         Map<String, T> beans = context.getBeansOfType(clazz);
+         Map<String, T> beans = applicationContext.getBeansOfType(clazz);
 
          // add the implementations Class objects to the result set
          for (T type : beans.values()) {
