@@ -20,17 +20,24 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import org.ocpsoft.common.spi.ServiceLocator;
+import org.ocpsoft.rewrite.servlet.spi.ContextListener;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * {@link ServiceLocator} implementation for Spring.
  * 
  * @author Christian Kaltepoth
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class SpringServiceLocator implements ServiceLocator
+public class SpringServiceLocator implements ServiceLocator, ContextListener
 {
+   private static ServletContext servletContext;
 
    @Override
    @SuppressWarnings("unchecked")
@@ -38,14 +45,19 @@ public class SpringServiceLocator implements ServiceLocator
    {
       Set<Class<T>> result = new LinkedHashSet<Class<T>>();
 
-      // use the Spring API to obtain the WebApplicationContext
-      WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+      WebApplicationContext applicationContext = null;
+      if (servletContext != null) {
+         applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+      }
+      else {
+         applicationContext = ContextLoader.getCurrentWebApplicationContext();
+      }
 
       // may be null if Spring hasn't started yet
-      if (context != null) {
+      if (applicationContext != null) {
 
          // ask spring about SPI implementations
-         Map<String, T> beans = context.getBeansOfType(clazz);
+         Map<String, T> beans = applicationContext.getBeansOfType(clazz);
 
          // add the implementations Class objects to the result set
          for (T type : beans.values()) {
@@ -55,6 +67,24 @@ public class SpringServiceLocator implements ServiceLocator
       }
 
       return result;
+   }
+
+   @Override
+   public void contextInitialized(ServletContextEvent event)
+   {
+      servletContext = event.getServletContext();
+   }
+
+   @Override
+   public void contextDestroyed(ServletContextEvent event)
+   {
+      servletContext = null;
+   }
+
+   @Override
+   public int priority()
+   {
+      return 0;
    }
 
 }
