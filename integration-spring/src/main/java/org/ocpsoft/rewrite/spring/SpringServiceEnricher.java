@@ -19,11 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 
 import org.ocpsoft.common.spi.ServiceEnricher;
 import org.ocpsoft.logging.Logger;
-import org.ocpsoft.rewrite.servlet.spi.ContextListener;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 /**
@@ -31,15 +29,15 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
  * 
  * @author Christian Kaltepoth
  */
-public class SpringServiceEnricher implements ServiceEnricher, ContextListener
+public class SpringServiceEnricher implements ServiceEnricher
 {
 
    private final Logger log = Logger.getLogger(SpringServiceEnricher.class);
-   private static ServletContext context;
 
    @Override
    public <T> void enrich(final T service)
    {
+      ServletContext context = SpringServletContextLoader.getCurrentServletContext();
       if (context != null) {
          SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(service, context);
       }
@@ -56,24 +54,6 @@ public class SpringServiceEnricher implements ServiceEnricher, ContextListener
    {
       // TODO implement
       return new ArrayList<T>();
-   }
-
-   @Override
-   public void contextInitialized(ServletContextEvent event)
-   {
-      context = event.getServletContext();
-   }
-
-   @Override
-   public void contextDestroyed(ServletContextEvent event)
-   {
-      context = null;
-   }
-
-   @Override
-   public int priority()
-   {
-      return 0;
    }
 
 }

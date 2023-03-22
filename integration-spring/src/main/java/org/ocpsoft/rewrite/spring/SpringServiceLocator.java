@@ -21,10 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 
 import org.ocpsoft.common.spi.ServiceLocator;
-import org.ocpsoft.rewrite.servlet.spi.ContextListener;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -35,16 +33,15 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author Christian Kaltepoth
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class SpringServiceLocator implements ServiceLocator, ContextListener
+public class SpringServiceLocator implements ServiceLocator
 {
-   private static ServletContext servletContext;
-
    @Override
    @SuppressWarnings("unchecked")
    public <T> Collection<Class<T>> locate(Class<T> clazz)
    {
       Set<Class<T>> result = new LinkedHashSet<Class<T>>();
 
+      ServletContext servletContext = SpringServletContextLoader.getCurrentServletContext();
       WebApplicationContext applicationContext = null;
       if (servletContext != null) {
          applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
@@ -67,24 +64,6 @@ public class SpringServiceLocator implements ServiceLocator, ContextListener
       }
 
       return result;
-   }
-
-   @Override
-   public void contextInitialized(ServletContextEvent event)
-   {
-      servletContext = event.getServletContext();
-   }
-
-   @Override
-   public void contextDestroyed(ServletContextEvent event)
-   {
-      servletContext = null;
-   }
-
-   @Override
-   public int priority()
-   {
-      return 0;
    }
 
 }
