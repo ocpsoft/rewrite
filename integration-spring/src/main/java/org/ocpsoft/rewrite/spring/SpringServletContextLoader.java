@@ -16,23 +16,25 @@
 package org.ocpsoft.rewrite.spring;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletRequestEvent;
 
 import org.ocpsoft.rewrite.servlet.spi.ContextListener;
-import org.ocpsoft.rewrite.servlet.spi.RequestListener;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Thread-safe {@link ServletContext} loader implementation for Spring.
  * 
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
-public class SpringServletContextLoader implements ContextListener, RequestListener
-{
+public class SpringServletContextLoader implements ContextListener {
    private static final Map<ClassLoader, ServletContext> contextMap = new ConcurrentHashMap<>(1);
 
    @Override
@@ -40,42 +42,39 @@ public class SpringServletContextLoader implements ContextListener, RequestListe
    {
       ServletContext servletContext = event.getServletContext();
       contextMap.put(Thread.currentThread().getContextClassLoader(), servletContext);
+      contextMap.put(servletContext.getClassLoader(), servletContext);
    }
 
    @Override
    public void contextDestroyed(ServletContextEvent event)
    {
-      removeContext(event.getServletContext());
+       ServletContext context = event.getServletContext();
+       contextMap.entrySet().removeIf(entry -> entry.getValue() == context);
    }
 
-   @Override
-   public void requestInitialized(ServletRequestEvent event)
+   public static ServletContext findCurrentServletContext()
    {
-      ServletContext servletContext = event.getServletContext();
-      contextMap.put(Thread.currentThread().getContextClassLoader(), servletContext);
-   }
+       RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 
-   @Override
-   public void requestDestroyed(ServletRequestEvent event)
-   {
-      removeContext(event.getServletContext());
+       if (requestAttributes instanceof ServletRequestAttributes) {
+           return ((ServletRequestAttributes) requestAttributes).getRequest().getServletContext();
+       }
 
-   }
-
-   private static void removeContext(ServletContext context)
-   {
-      if (contextMap.containsValue(context)) {
-         for (Entry<ClassLoader, ServletContext> entry : contextMap.entrySet()) {
-            if (entry.getValue() == context) {
-               contextMap.remove(entry.getKey());
-            }
-         }
-      }
-   }
-
-   public static ServletContext getCurrentServletContext()
-   {
       return contextMap.get(Thread.currentThread().getContextClassLoader());
+   }
+
+   public static WebApplicationContext findCurrentApplicationContext()
+   {
+       ServletContext currentServletContext = findCurrentServletContext();
+
+       if (currentServletContext != null) {
+           WebApplicationContext webApplicationContext = WebApplicationContextUtils.findWebApplicationContext(currentServletContext);
+           if (webApplicationContext != null) {
+               return webApplicationContext;
+           }
+       }
+
+       return ContextLoader.getCurrentWebApplicationContext();
    }
 
    @Override

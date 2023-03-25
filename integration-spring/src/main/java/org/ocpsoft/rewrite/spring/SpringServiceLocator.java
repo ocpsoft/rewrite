@@ -41,14 +41,7 @@ public class SpringServiceLocator implements ServiceLocator
    {
       Set<Class<T>> result = new LinkedHashSet<Class<T>>();
 
-      ServletContext servletContext = SpringServletContextLoader.getCurrentServletContext();
-      WebApplicationContext applicationContext = null;
-      if (servletContext != null) {
-         applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-      }
-      else {
-         applicationContext = ContextLoader.getCurrentWebApplicationContext();
-      }
+      WebApplicationContext applicationContext = SpringServletContextLoader.findCurrentApplicationContext();
 
       // may be null if Spring hasn't started yet
       if (applicationContext != null) {
