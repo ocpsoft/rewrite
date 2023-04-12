@@ -28,6 +28,7 @@
       <maven.compiler.release>11</maven.compiler.release>
       <!-- Minimum JDK necessary to successfully compile and test -->
       <maven.enforce.jdk>17.0.0</maven.enforce.jdk>
+      <maven.javadoc.lint>none</maven.javadoc.lint>
    
       <!-- Allow to ignore some failing integration tests -->
       <it.ignore.selectedFails>true</it.ignore.selectedFails>
@@ -67,7 +68,7 @@
       <version.maven-enforcer-plugin>3.1.0</version.maven-enforcer-plugin>
       <version.maven-flatten-plugin>1.3.0</version.maven-flatten-plugin>
       <version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
-      <version.pomchecker-maven-plugin>1.3.0</version.pomchecker-maven-plugin>
+      <version.pomchecker-maven-plugin>1.4.0</version.pomchecker-maven-plugin>
       <version.nexus-staging-plugin>1.6.13</version.nexus-staging-plugin>
       
    </properties>
@@ -583,6 +584,56 @@
             <activeByDefault>true</activeByDefault>
          </activation>
          <!-- Intentionally left blank - used for CI matrix compatibility only -->
+      </profile>
+      
+      <profile>
+         <id>release</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <source>${maven.compiler.release}</source>
+                     <detectJavaApiLink>false</detectJavaApiLink>
+                     <doclint>${maven.javadoc.lint}</doclint>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-source-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
       </profile>
       
       <!-- WILDFLY -->
