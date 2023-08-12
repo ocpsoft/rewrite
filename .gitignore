@@ -15,3 +15,6 @@ bin/
 .gitignore.swp
 .faces-config.xml.jsfdia
 docs/reference/src/main/docbook/en-US/version_info.xml
+/config-prettyfaces/dependency-reduced-pom.xml
+/config-tuckey/dependency-reduced-pom.xml
+/transform-minify/dependency-reduced-pom.xml
