@@ -39,10 +39,10 @@
       <version.wildfly>26.1.1.Final</version.wildfly>
    
       <!-- Official Maven Plugins -->
-      <version.maven-release-plugin>3.0.0-M6</version.maven-release-plugin>
-      <version.maven-flatten-plugin>1.3.0</version.maven-flatten-plugin>
-      <version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
-      <version.pomchecker-maven-plugin>1.3.0</version.pomchecker-maven-plugin>
+      <version.maven-release-plugin>3.0.1</version.maven-release-plugin>
+      <version.maven-flatten-plugin>1.5.0</version.maven-flatten-plugin>
+      <version.maven-gpg-plugin>3.1.0</version.maven-gpg-plugin>
+      <version.pomchecker-maven-plugin>1.9.0</version.pomchecker-maven-plugin>
       <version.nexus-staging-plugin>1.6.13</version.nexus-staging-plugin>
    </properties>
 
