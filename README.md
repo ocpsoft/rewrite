@@ -37,6 +37,13 @@ Get Started
            <version>${rewrite.version}</version>
         </dependency>
 
+        Version Reference Table:
+        -------------------------------------
+        Jakarta EE 10 | Rewrite 10.x
+        Jakarta EE 9  | Rewrite 9.x
+        Jakarta EE 8  | Rewrite 8.x
+        Java EE <= 7  | Rewrite 3.x
+
 3. Add a configuration provider implementing the 'org.ocpsoft.rewrite.config.ConfigurationProvider' interface, or extending from the abstract HttpConfigurationProvider class for convenience:
 
         package com.example;
