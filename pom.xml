@@ -63,11 +63,11 @@
       <version.maven-site-plugin>4.0.0-M3</version.maven-site-plugin>
       <version.maven-source-plugin>3.2.1</version.maven-source-plugin>
       <version.maven-javadoc-plugin>3.4.1</version.maven-javadoc-plugin>
-      <version.maven-release-plugin>3.0.0-M6</version.maven-release-plugin>
+      <version.maven-release-plugin>3.0.1</version.maven-release-plugin>
       <version.maven-enforcer-plugin>3.1.0</version.maven-enforcer-plugin>
-      <version.maven-flatten-plugin>1.3.0</version.maven-flatten-plugin>
-      <version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
-      <version.pomchecker-maven-plugin>1.3.0</version.pomchecker-maven-plugin>
+      <version.maven-flatten-plugin>1.5.0</version.maven-flatten-plugin>
+      <version.maven-gpg-plugin>3.1.0</version.maven-gpg-plugin>
+      <version.pomchecker-maven-plugin>1.9.0</version.pomchecker-maven-plugin>
       <version.nexus-staging-plugin>1.6.13</version.nexus-staging-plugin>
       
    </properties>
@@ -138,7 +138,7 @@
             <extensions>true</extensions>
             <configuration>
                <serverId>ossrh</serverId>
-               <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
+               <nexusUrl>https://oss.sonatype.org</nexusUrl>
                <autoReleaseAfterClose>true</autoReleaseAfterClose>
             </configuration>
          </plugin>
