@@ -28,10 +28,10 @@
       <maven.compiler.release>11</maven.compiler.release>
       <!-- Minimum JDK necessary to successfully compile and test -->
       <maven.enforce.jdk>17.0.0</maven.enforce.jdk>
-   
+
       <!-- Allow to ignore some failing integration tests -->
       <it.ignore.selectedFails>true</it.ignore.selectedFails>
-      
+
       <!-- Versions -->
       <version.junit>4.13.2</version.junit>
       <version.common>1.0.6.Final</version.common>
@@ -41,17 +41,17 @@
       <version.arquillian.container.managed.wildfly>5.0.0.Alpha5</version.arquillian.container.managed.wildfly>
       <version.arquillian.container.remote.wildfly>5.0.0.Alpha5</version.arquillian.container.remote.wildfly>
       <version.arquillian.container.managed.payara>3.0.alpha7</version.arquillian.container.managed.payara>
-   
+
       <version.jakarta>10.0.0</version.jakarta>
       <version.jakarta-faces.impl>4.0.0</version.jakarta-faces.impl>
       <version.spring>6.0.0-M4</version.spring>
    
       <version.wildfly>27.0.0.Beta1</version.wildfly>
-   
+
       <version.payara>6.2022.1</version.payara>
       <payara.home>${project.build.directory}/payara6</payara.home>
       <it.ignore.forPayaraVersion>IgnoreForPayara6</it.ignore.forPayaraVersion>
-   
+
       <!-- Official Maven Plugins -->
       <version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
       <version.maven-jar-plugin>3.3.0</version.maven-jar-plugin>
@@ -69,7 +69,7 @@
       <version.maven-gpg-plugin>3.1.0</version.maven-gpg-plugin>
       <version.pomchecker-maven-plugin>1.9.0</version.pomchecker-maven-plugin>
       <version.nexus-staging-plugin>1.6.13</version.nexus-staging-plugin>
-      
+
    </properties>
 
    <modules>
@@ -290,14 +290,6 @@
          <url>https://repo1.maven.org/maven2</url>
          <layout>default</layout>
       </repository>
-      <repository>
-         <id>spring-milestones</id>
-         <name>Spring Milestones</name>
-         <url>https://repo.spring.io/milestone</url>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
    </repositories>
 
    <dependencyManagement>
@@ -497,11 +489,11 @@
             <artifactId>jakarta.faces</artifactId>
             <version>${version.jakarta-faces.impl}</version>
          </dependency>
-         
+
          <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
-            <version>${version.spring}</version>
+            <version>6.0.9</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
@@ -568,15 +560,15 @@
          <properties>
             <version.jakarta>9.1.0</version.jakarta>
             <version.jakarta-faces.impl>3.0.2</version.jakarta-faces.impl>
-            
+
             <version.wildfly>26.1.2.Final</version.wildfly>
-            
+
             <version.payara>5.2022.4</version.payara>
             <payara.home>${project.build.directory}/payara5</payara.home>
             <it.ignore.forPayaraVersion>IgnoreForPayara5</it.ignore.forPayaraVersion>
          </properties>
       </profile>
-      
+
       <profile>
          <id>EE10</id>
          <activation>
@@ -584,7 +576,7 @@
          </activation>
          <!-- Intentionally left blank - used for CI matrix compatibility only -->
       </profile>
-      
+
       <!-- WILDFLY -->
       <profile>
          <id>WILDFLY_MANAGED</id>
@@ -712,8 +704,8 @@
             </plugins>
          </build>
       </profile>
-      
-      
+
+
       <!-- PAYARA -->
       <profile>
          <id>PAYARA_MANAGED</id>
@@ -721,14 +713,14 @@
             <skipTests>false</skipTests>
          </properties>
          <dependencies>
-            
+
             <!-- Required since arquillian-payara 2.4 -->
             <dependency>
                <groupId>fish.payara.arquillian</groupId>
                <artifactId>payara-client-ee9</artifactId>
                <version>${version.arquillian.container.managed.payara}</version>
             </dependency>
-         
+
             <!-- Payara Server Container adaptor -->
             <dependency>
                <groupId>fish.payara.arquillian</groupId>
@@ -736,7 +728,7 @@
                <version>${version.arquillian.container.managed.payara}</version>
                <scope>test</scope>
             </dependency>
-         
+
             <!-- Env Sync -->
             <dependency>
                <groupId>fish.payara.arquillian</groupId>
@@ -744,7 +736,7 @@
                <version>${version.arquillian.container.managed.payara}</version>
                <scope>test</scope>
             </dependency>
-      
+
          </dependencies>
          <build>
             <plugins>
@@ -792,8 +784,8 @@
             </plugins>
          </build>
       </profile>
-      
-      
+
+
    </profiles>
 
    <developers>
