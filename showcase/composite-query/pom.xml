@@ -4,7 +4,7 @@
    <parent>
       <artifactId>rewrite-showcase</artifactId>
       <groupId>org.ocpsoft.rewrite.showcase</groupId>
-      <version>3.5.2.Final</version>
+      <version>3.5.3-SNAPSHOT</version>
       <relativePath>../</relativePath>
    </parent>
 
