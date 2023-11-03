@@ -16,6 +16,8 @@
 package org.ocpsoft.rewrite.faces;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +35,9 @@ import org.ocpsoft.common.pattern.WeightedComparator;
 import org.ocpsoft.common.services.ServiceLoader;
 import org.ocpsoft.common.util.Iterators;
 import org.ocpsoft.rewrite.faces.spi.FacesActionUrlProvider;
-import org.ocpsoft.rewrite.servlet.util.URLBuilder;
+import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
+import org.ocpsoft.urlbuilder.util.Encoder;
 
 /**
  * @author Lincoln Baxter, III <lincoln@ocpsoft.com>
@@ -100,9 +104,37 @@ public class RewriteViewHandler extends ViewHandlerWrapper
             String parentActionURL = parent.getActionURL(context, viewId);
             if (parentActionURL.contains("?"))
             {
-               URLBuilder builder = URLBuilder.createFrom(result);
-               builder.getQueryStringBuilder().addParameters(parentActionURL);
-               result = builder.toURL();
+               try
+               {
+                   URI uri = new URI(result);
+                   URI action = new URI(parentActionURL);
+                   StringBuilder query = new StringBuilder(uri.getQuery());
+                   if (query.length() > 0 && action.getQuery() != null) {
+                       query.append('&');
+                   }
+                   query.append(action.getQuery());
+                   
+                   if (uri.getScheme() == null && uri.getHost() != null) {
+                       Address address
+                           = AddressBuilder.begin()
+                                           .scheme(uri.getScheme())
+                                           .domain(uri.getHost())
+                                           .port(uri.getPort())
+                                           .pathDecoded(uri.getPath())
+                                           .queryLiteral(query.toString())
+                                           .anchor(uri.getRawFragment())
+                                           .buildLiteral();
+                       
+                       result = address.toString();
+                   }
+               }
+               catch (URISyntaxException e)
+               {
+                   throw new IllegalArgumentException(
+                           "[" + result + "] is not a valid URL fragment. Consider encoding relevant portions of the URL with ["
+                                    + Encoder.class
+                                    + "], or use the provided builder pattern to specify part encoding.", e);
+               }
             }
          }
       }
