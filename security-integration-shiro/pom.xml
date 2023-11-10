@@ -4,7 +4,7 @@
    <parent>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-parent</artifactId>
-      <version>10.0.2.Final</version>
+      <version>10.0.3-SNAPSHOT</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
 
