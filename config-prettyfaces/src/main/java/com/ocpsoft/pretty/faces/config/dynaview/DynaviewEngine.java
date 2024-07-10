@@ -163,7 +163,7 @@ public class DynaviewEngine
                urlMapping = context.getConfig().getMappingById(viewId);
                viewId = urlMapping.getViewId();
                ExtractedValuesURLBuilder builder = new ExtractedValuesURLBuilder();
-               result = context.getContextPath() + builder.buildURL(urlMapping).encode()
+               result = context.getContextPath() + builder.buildURL(urlMapping)
                          + builder.buildQueryString(urlMapping);
             }
             else

@@ -69,7 +69,7 @@ public class PrettyRedirector
             UrlMapping mapping = config.getMappingById(action);
             if (mapping != null)
             {
-               String target = contextPath + builder.buildURL(mapping).encode()
+               String target = contextPath + builder.buildURL(mapping)
                         + builder.buildQueryString(mapping);
                log.trace("Redirecting to mappingId [" + mapping.getId() + "], [" + target + "]");
                encodeURL(externalContext, config, target);
